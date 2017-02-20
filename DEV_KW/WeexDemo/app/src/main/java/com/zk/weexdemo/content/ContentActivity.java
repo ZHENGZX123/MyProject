@@ -31,7 +31,7 @@ public class ContentActivity extends AppCompatActivity implements IWXRenderListe
         module = (Module) getIntent().getSerializableExtra("module");
 
 
-        jsPath = "/mnt/sdcard/weex/" + module.jsName + ".js";
+        jsPath = "/mnt/sdcard/weex/" + module.jsName + "/" + module.jsName + ".js";
         //1.判断本地是否有缓存
         if (new File(jsPath).exists()) {
             Log.d("test", "加载本地");
@@ -48,19 +48,16 @@ public class ContentActivity extends AppCompatActivity implements IWXRenderListe
             @Override
             public void run() {
                 HttpDownload httpDownload = new HttpDownload();
-                int ret = httpDownload.downFile("http://120.24.84.206/weex/" + module.jsName + ".js", "/mnt/sdcard/weex/", module.jsName + ".js");
+                int ret = httpDownload.downFile("http://120.24.84.206/weex/" + module.jsName + "/" + module.jsName + ".js", "/mnt/sdcard/weex/" + module.jsName + "/", module.jsName + ".js");
                 Log.d("test", "下载返回值 ret = " + ret);
                 if (ret != 0) {
                     Toast.makeText(ContentActivity.this, "加载模块失败", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                try {
-                    Log.d("test", "加载本地");
-                    String path = "/mnt/sdcard/weex/" + module.jsName + ".js";
-                    mWXSDKInstance.render("WXSample", FileUtils.loadFile(path, ContentActivity.this), null, null, -1, -1, WXRenderStrategy.APPEND_ASYNC);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                //3.解压zip文件
+                Log.d("test", "加载本地");
+                String path = "/mnt/sdcard/weex/" + module.jsName + "/" + module.jsName + ".js";
+                mWXSDKInstance.render("WXSample", FileUtils.loadFile(path, ContentActivity.this), null, null, -1, -1, WXRenderStrategy.APPEND_ASYNC);
             }
         }).start();
     }
