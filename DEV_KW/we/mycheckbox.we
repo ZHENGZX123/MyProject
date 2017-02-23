@@ -1,0 +1,6 @@
+<template>
+  <div>      
+<my_checkbox setchecked="true" settext="clickme" style="width:400;height:200">
+</my_checkbox>
+</div>
+</template>
