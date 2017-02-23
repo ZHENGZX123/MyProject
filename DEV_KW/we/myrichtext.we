@@ -1,0 +1,5 @@
+<template>
+  <div>
+      <my_richtext tel="12305" style="width:200;height:100">12305</my_richtext>
+</div>
+</template>
