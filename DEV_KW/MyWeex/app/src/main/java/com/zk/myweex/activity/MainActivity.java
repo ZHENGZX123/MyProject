@@ -33,14 +33,12 @@ public class MainActivity extends TabActivity {
     private TextView tv4;
 
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         initView();
-
     }
 
     private void initView() {

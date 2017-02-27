@@ -202,49 +202,80 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.zk.myweex.adapter;
+package com.zk.myweex.extend.adapter;
 
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
+import android.net.Uri;
+import android.text.TextUtils;
+import android.widget.ImageView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.taobao.weex.ui.view.gesture.WXGesture;
-import com.taobao.weex.ui.view.gesture.WXGestureObservable;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.taobao.weex.WXEnvironment;
+import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.adapter.IWXImgLoaderAdapter;
+import com.taobao.weex.common.WXImageStrategy;
+import com.taobao.weex.dom.WXImageQuality;
 
-/**
- * Created by sospartan on 8/19/16.
- */
-public class FrescoImageView extends SimpleDraweeView implements WXGestureObservable {
-  public FrescoImageView(Context context) {
-    super(context);
-  }
+public class PicassoImageAdapter implements IWXImgLoaderAdapter {
 
-  public FrescoImageView(Context context, AttributeSet attrs) {
-    super(context, attrs);
-  }
-
-  public FrescoImageView(Context context, AttributeSet attrs, int defStyle) {
-    super(context, attrs, defStyle);
-  }
-
-  public FrescoImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-    super(context, attrs, defStyleAttr, defStyleRes);
-  }
-
-  private WXGesture wxGesture;
-
-  @Override
-  public void registerGestureListener(WXGesture wxGesture) {
-    this.wxGesture = wxGesture;
+  public PicassoImageAdapter() {
   }
 
   @Override
-  public boolean onTouchEvent(MotionEvent event) {
-    boolean result = super.onTouchEvent(event);
-    if (wxGesture != null) {
-      result |= wxGesture.onTouch(this, event);
-    }
-    return result;
+  public void setImage(final String url, final ImageView view,
+                       WXImageQuality quality, final WXImageStrategy strategy) {
+
+    WXSDKManager.getInstance().postOnUiThread(new Runnable() {
+
+      @Override
+      public void run() {
+        if(view==null||view.getLayoutParams()==null){
+          return;
+        }
+        if (TextUtils.isEmpty(url)) {
+          view.setImageBitmap(null);
+          return;
+        }
+        String temp = url;
+        if (url.startsWith("//")) {
+          temp = "http:" + url;
+        }
+        if (view.getLayoutParams().width <= 0 || view.getLayoutParams().height <= 0) {
+          return;
+        }
+
+
+        if(!TextUtils.isEmpty(strategy.placeHolder)){
+          Picasso.Builder builder=new Picasso.Builder(WXEnvironment.getApplication());
+          Picasso picasso=builder.build();
+          picasso.load(Uri.parse(strategy.placeHolder)).into(view);
+
+          view.setTag(strategy.placeHolder.hashCode(),picasso);
+        }
+
+        Picasso.with(WXEnvironment.getApplication())
+            .load(temp)
+            .transform(new BlurTransformation(strategy.blurRadius))
+            .into(view, new Callback() {
+              @Override
+              public void onSuccess() {
+                if(strategy.getImageListener()!=null){
+                  strategy.getImageListener().onImageFinish(url,view,true,null);
+                }
+
+                if(!TextUtils.isEmpty(strategy.placeHolder)){
+                  ((Picasso) view.getTag(strategy.placeHolder.hashCode())).cancelRequest(view);
+                }
+              }
+
+              @Override
+              public void onError() {
+                if(strategy.getImageListener()!=null){
+                  strategy.getImageListener().onImageFinish(url,view,false,null);
+                }
+              }
+            });
+      }
+    },0);
   }
 }

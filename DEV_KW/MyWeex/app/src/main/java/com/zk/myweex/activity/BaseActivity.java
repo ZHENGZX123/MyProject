@@ -212,6 +212,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.taobao.weex.IWXRenderListener;
 import com.taobao.weex.WXSDKInstance;
@@ -226,8 +227,9 @@ import java.util.Map;
 /**
  * Created by sospartan on 5/30/16.
  */
-public abstract class AbstractWeexActivity extends AppCompatActivity implements IWXRenderListener {
-    private static final String TAG = "AbstractWeexActivity";
+public abstract class BaseActivity extends AppCompatActivity implements IWXRenderListener {
+
+    private static final String TAG = "BaseActivity";
 
     private ViewGroup mContainer;
     public WXSDKInstance mInstance;
@@ -409,5 +411,25 @@ public abstract class AbstractWeexActivity extends AppCompatActivity implements 
     @CallSuper
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         return (mWxAnalyzerDelegate != null && mWxAnalyzerDelegate.onKeyUp(keyCode, event)) || super.onKeyUp(keyCode, event);
+    }
+
+    protected void toast(final String id) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(BaseActivity.this, id, Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+    }
+
+    protected void toast(final int id) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(BaseActivity.this, id, Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
     }
 }
