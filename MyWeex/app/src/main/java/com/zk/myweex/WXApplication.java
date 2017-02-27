@@ -8,9 +8,11 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.taobao.weex.InitConfig;
 import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.common.WXException;
 import com.zk.myweex.adapter.DefaultWebSocketAdapterFactory;
 import com.zk.myweex.adapter.JSExceptionAdapter;
 import com.zk.myweex.adapter.PicassoImageAdapter;
+import com.zk.myweex.extend.module.MyTab2;
 
 /**
  * Created by Administrator on 2017/2/22.
@@ -45,6 +47,13 @@ public class WXApplication extends Application {
         );
 
         Fresco.initialize(this);
+
+        //注册组件
+        try {
+            WXSDKEngine.registerModule("my_tab2", MyTab2.class);
+        } catch (WXException e) {
+            e.printStackTrace();
+        }
 
         registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
             @Override
