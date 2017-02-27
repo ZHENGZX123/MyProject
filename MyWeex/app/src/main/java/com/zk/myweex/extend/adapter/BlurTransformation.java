@@ -202,125 +202,37 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.zk.myweex.adapter;
+package com.zk.myweex.extend.adapter;
 
-import android.support.annotation.Nullable;
+import android.graphics.Bitmap;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ws.WebSocket;
-import com.squareup.okhttp.ws.WebSocketCall;
-import com.squareup.okhttp.ws.WebSocketListener;
-import com.taobao.weex.appfram.websocket.IWebSocketAdapter;
-import com.taobao.weex.appfram.websocket.WebSocketCloseCodes;
+import com.squareup.picasso.Transformation;
 
-import java.io.EOFException;
-import java.io.IOException;
+public class BlurTransformation implements Transformation {
 
-import okio.Buffer;
-import okio.BufferedSource;
+  private int mRadius;
 
-/**
- * Created by moxun on 16/12/27.
- */
+  public BlurTransformation(int radius) {
+    mRadius = radius;
+  }
 
-public class DefaultWebSocketAdapter implements IWebSocketAdapter {
-
-    private WebSocket ws;
-    private EventListener eventListener;
-
-    @Override
-    public void connect(String url, @Nullable String protocol, EventListener listener) {
-        this.eventListener = listener;
-        OkHttpClient okHttpClient = new OkHttpClient();
-
-        Request.Builder builder = new Request.Builder();
-
-        if (protocol != null) {
-            builder.addHeader(HEADER_SEC_WEBSOCKET_PROTOCOL, protocol);
-        }
-
-        builder.url(url);
-
-        WebSocketCall.create(okHttpClient, builder.build()).enqueue(new WebSocketListener() {
-            @Override
-            public void onOpen(WebSocket webSocket, Request request, Response response) throws IOException {
-                ws = webSocket;
-                eventListener.onOpen();
-            }
-
-            @Override
-            public void onMessage(BufferedSource payload, WebSocket.PayloadType type) throws IOException {
-                eventListener.onMessage(payload.readUtf8());
-                payload.close();
-            }
-
-            @Override
-            public void onPong(Buffer payload) {
-
-            }
-
-            @Override
-            public void onClose(int code, String reason) {
-                eventListener.onClose(code, reason, true);
-            }
-
-            @Override
-            public void onFailure(IOException e) {
-                e.printStackTrace();
-                if (e instanceof EOFException) {
-                    eventListener.onClose(WebSocketCloseCodes.CLOSE_NORMAL.getCode(), WebSocketCloseCodes.CLOSE_NORMAL.name(), true);
-                } else {
-                    eventListener.onError(e.getMessage());
-                }
-            }
-        });
+  @Override public Bitmap transform(Bitmap source) {
+    if(mRadius <= 0) {
+      return source;
     }
-
-    @Override
-    public void send(String data) {
-        if (ws != null) {
-            try {
-                Buffer buffer = new Buffer().writeUtf8(data);
-                ws.sendMessage(WebSocket.PayloadType.TEXT, buffer.buffer());
-                buffer.flush();
-                buffer.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                reportError(e.getMessage());
-            }
-        } else {
-            reportError("WebSocket is not ready");
-        }
+    Bitmap bitmap;
+    try {
+      bitmap = BlurTool.blur(source, mRadius);
+    }catch (Exception e){
+      bitmap = source;
     }
-
-    @Override
-    public void close(int code, String reason) {
-        if (ws != null) {
-            try {
-                ws.close(code, reason);
-            } catch (Exception e) {
-                e.printStackTrace();
-                reportError(e.getMessage());
-            }
-        }
+    if(bitmap != source) {
+      source.recycle();
     }
+    return bitmap;
+  }
 
-    @Override
-    public void destroy() {
-        if (ws != null) {
-            try {
-                ws.close(WebSocketCloseCodes.CLOSE_GOING_AWAY.getCode(), WebSocketCloseCodes.CLOSE_GOING_AWAY.name());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void reportError(String message) {
-        if (eventListener != null) {
-            eventListener.onError(message);
-        }
-    }
+  @Override public String key() {
+    return "BlurTransformation(radius=" + mRadius + ")";
+  }
 }
