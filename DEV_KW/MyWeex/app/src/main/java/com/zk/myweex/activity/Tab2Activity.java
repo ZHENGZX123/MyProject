@@ -18,5 +18,7 @@ public class Tab2Activity extends AbstractWeexActivity {
 
 
         renderPage(WXFileUtils.loadAsset("yjpt/tab2.js", this), "file://assets/");
+
+
     }
 }
