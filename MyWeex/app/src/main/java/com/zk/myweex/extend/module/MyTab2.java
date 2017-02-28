@@ -1,6 +1,7 @@
 package com.zk.myweex.extend.module;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -18,6 +19,7 @@ import java.io.File;
 
 public class MyTab2 extends WXModule {
 
+    private ProgressDialog pd;
 
     @JSMethod(uiThread = true)
     public void loadFunction(String zipName, JSCallback callback) {
@@ -29,6 +31,9 @@ public class MyTab2 extends WXModule {
             loadJSBundle(zipName);
         } else {
             Log.d("test", "不存在，下载");
+            pd = new ProgressDialog(mWXSDKInstance.getContext());
+            pd.setMessage("首次加载，请稍等");
+            pd.show();
             downloadJSBundle(zipName);
         }
     }
@@ -53,8 +58,9 @@ public class MyTab2 extends WXModule {
             @Override
             public void run() {
                 HttpDownload httpDownload = new HttpDownload();
-                int ret = httpDownload.downFile("http://120.24.84.206/yjpt/" + zipName, "/mnt/sdcard/yjpt/", zipName);
+                int ret = httpDownload.downFile("http://120.24.84.206/yjpt/" + zipName, WXApplication.PATH, zipName);
                 Log.d("test", "下载返回值 ret = " + ret);
+                hidePD();
                 if (ret != 0) {
                     toast("下载失败，请稍后再试");
                     return;
@@ -67,8 +73,18 @@ public class MyTab2 extends WXModule {
         }).start();
     }
 
+    private void hidePD() {
+        ((Activity) mWXSDKInstance.getContext()).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pd.dismiss();
+            }
+        });
+
+    }
+
     private void loadJSBundle(String zipName) {
-        //假设路径是function1.zip/function1/index.js
+        //TODO 假设路径是function1.zip/function1/index.js
         String fileName = zipName.replace(".zip", "");
         String path = "file://" + WXApplication.PATH + zipName + "/" + fileName + "/index.js";
         Intent intent = new Intent(mWXSDKInstance.getContext(), WXPageActivity.class);

@@ -10,8 +10,7 @@ import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.common.WXException;
 import com.zk.myweex.extend.adapter.PicassoImageAdapter;
 import com.zk.myweex.extend.module.MyTab2;
-
-import java.io.File;
+import com.zk.myweex.utils.VersionManager;
 
 /**
  * Created by Administrator on 2017/2/22.
@@ -19,15 +18,19 @@ import java.io.File;
 
 public class WXApplication extends Application {
 
-    public static String PATH = "/mnt/sdcard/yjpt/";
+    public static String PATH = "/mnt/sdcard/kiway/yjpt/";
+
+    public static String PATH_TMP = "/mnt/sdcard/kiway/tmp/";
+
+    public static String PATH_BACKUP = "/mnt/sdcard/kiway/backup/";
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        if (!new File(PATH).exists()) {
-            new File(PATH).mkdirs();
-        }
+        VersionManager manager = new VersionManager();
+        manager.init(this);
+        manager.checkVersionUp();
 
 //    initDebugEnvironment(true, false, "DEBUG_SERVER_HOST");
         WXSDKEngine.addCustomOptions("appName", "WXSample");
