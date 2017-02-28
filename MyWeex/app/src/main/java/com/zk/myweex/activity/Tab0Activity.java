@@ -17,5 +17,8 @@ public class Tab0Activity extends BaseActivity {
         getSupportActionBar().hide();
 
         renderPage(WXFileUtils.loadAsset("yjpt/tab0.js", this), "file://assets/");
+
+//        renderPage(WXFileUtils.readFileInZip("/mnt/sdcard/yjpt_sdcard.zip/yjpt/weex/login.js"), "file:///mnt/sdcard/yjpt_sdcard.zip/yjpt/weex/");
     }
+
 }

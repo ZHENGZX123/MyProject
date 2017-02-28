@@ -36,7 +36,7 @@ public class VersionManager {
     //2.比较是否有新的版本，如果有，提示下载。(是单个更新还是一次性更新)
     //3.下载替换zip文件
 
-    public void checkVersionUp() {
+    public void getRemoteVersion() {
         File root = new File(WXApplication.PATH);
         File[] files = root.listFiles();
         if (files == null) {
@@ -98,7 +98,7 @@ public class VersionManager {
                 context.getSharedPreferences("yjpt", 0).edit().putString("version_" + zipName, "1.0.1").commit();
             }
         }).start();
-        
+
         if (true) {
             return;
         }
@@ -108,4 +108,19 @@ public class VersionManager {
         return true;
     }
 
+    public void getLocalVersion() {
+        //检查tmp目录下有zip包，如果有，提示用户更新
+        File root = new File(WXApplication.PATH_TMP);
+        File[] files = root.listFiles();
+        if (files == null) {
+            return;
+        }
+        if (files.length == 0) {
+            return;
+        }
+
+        //1.如果是完整的f.zip，直接替换
+
+        //2.如果是增量的p.zip，增量替换
+    }
 }
