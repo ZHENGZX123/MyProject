@@ -30,7 +30,9 @@ public class WXApplication extends Application {
 
         VersionManager manager = new VersionManager();
         manager.init(this);
-        manager.checkVersionUp();
+        manager.getLocalVersion();
+        manager.getRemoteVersion();
+
 
 //    initDebugEnvironment(true, false, "DEBUG_SERVER_HOST");
         WXSDKEngine.addCustomOptions("appName", "WXSample");
