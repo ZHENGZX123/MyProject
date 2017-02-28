@@ -81,7 +81,10 @@ public class FileUtils {
             if (!new File(path).exists()) {
                 new File(path).mkdirs();
             }
-            String savedFilePath = path + fileName;
+
+            String tmpFilename = fileName.replace("zip", "tmp");
+
+            String savedFilePath = path + tmpFilename;
             createSDDir(path);
             file = new File(savedFilePath);
             output = new FileOutputStream(file);
@@ -94,7 +97,11 @@ public class FileUtils {
             output.flush();
         } catch (IOException e) {
             e.printStackTrace();
+            //下载失败把文件删掉
+            file.delete();
         } finally {
+            //下载成功再改名
+            file.renameTo(new File(path + fileName));
             try {
                 output.close();
                 input.close();
