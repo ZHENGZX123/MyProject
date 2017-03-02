@@ -28,9 +28,10 @@ public class MyTab2 extends WXModule {
     @JSMethod(uiThread = true)
     public void loadFunction(String zipName, JSCallback callback) {
         Toast.makeText(mWXSDKInstance.getContext(), " loadJSBundle js :" + zipName, Toast.LENGTH_SHORT).show();
-        String path = "file://" + WXApplication.PATH + zipName;
+        String path = WXApplication.PATH + zipName;
         Log.d("test", "path = " + path);
         if (new File(path).exists()) {
+            //TODO  这里还要判断realm里是否有版本号，如果没有，就说明程序被卸载过。。。
             Log.d("test", "存在，直接加载");
             loadJSBundle(zipName);
         } else {
