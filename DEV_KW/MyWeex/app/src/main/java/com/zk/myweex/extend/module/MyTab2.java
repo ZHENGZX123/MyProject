@@ -12,9 +12,13 @@ import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.activity.WXPageActivity;
+import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.https.HttpDownload;
 
 import java.io.File;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 
 public class MyTab2 extends WXModule {
@@ -45,13 +49,20 @@ public class MyTab2 extends WXModule {
         if (new File(path).exists()) {
             Log.d("test", "存在，删除");
             new File(path).delete();
-            mWXSDKInstance.getContext().getSharedPreferences("yjpt", 0).edit().remove("version_" + zipName).commit();
+            final RealmResults<ZipPackage> results = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findAll();
+            Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    results.clear();
+                }
+            });
             callback.invoke("delete success");
         } else {
             Log.d("test", "不存在，不用管");
         }
     }
 
+    //首次下载
     private void downloadJSBundle(final String zipName) {
         //1.访问接口，参数是zipName，返回是 name， 下载地址 ， 版本号
         new Thread(new Runnable() {
@@ -66,7 +77,13 @@ public class MyTab2 extends WXModule {
                     return;
                 }
                 Log.d("test", "下载成功，保存版本号");
-                mWXSDKInstance.getContext().getSharedPreferences("yjpt", 0).edit().putString("version_" + zipName, "1.0.0").commit();
+
+                Realm.getDefaultInstance().beginTransaction();
+                ZipPackage zip = Realm.getDefaultInstance().createObject(ZipPackage.class);
+                zip.name = zipName;
+                zip.indexPath = "要填这个哦";
+                zip.version = "1.0.0";
+                Realm.getDefaultInstance().commitTransaction();
                 Log.d("test", "下载成功，加载本地sdcard");
                 loadJSBundle(zipName);
             }

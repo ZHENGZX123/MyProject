@@ -12,6 +12,9 @@ import com.zk.myweex.extend.adapter.PicassoImageAdapter;
 import com.zk.myweex.extend.module.MyTab2;
 import com.zk.myweex.utils.VersionManager;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
 /**
  * Created by Administrator on 2017/2/22.
  */
@@ -28,11 +31,14 @@ public class WXApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        Realm.init(this);
+        RealmConfiguration config = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(config);
+
         VersionManager manager = new VersionManager();
         manager.init(this);
         manager.getLocalVersion();
         manager.getRemoteVersion();
-
 
 //    initDebugEnvironment(true, false, "DEBUG_SERVER_HOST");
         WXSDKEngine.addCustomOptions("appName", "WXSample");
