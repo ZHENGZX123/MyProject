@@ -3,6 +3,7 @@ package com.zk.myweex.activity;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zk.myweex.R;
+
+import java.util.List;
 
 
 public class MainActivity extends TabActivity {
@@ -37,13 +40,11 @@ public class MainActivity extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initView();
+
     }
 
     private void initView() {
-
-
         ll1 = (LinearLayout) findViewById(R.id.ll1);
         ll2 = (LinearLayout) findViewById(R.id.ll2);
         ll3 = (LinearLayout) findViewById(R.id.ll3);

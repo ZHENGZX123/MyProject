@@ -84,7 +84,7 @@ public class MyTab2 extends WXModule {
     }
 
     private void loadJSBundle(String zipName) {
-        //TODO 假设路径是function1.zip/function1/index.js
+        //TODO 假设路径是function1.zip/function1/index.js , 这个路径要求web传过来。
         String fileName = zipName.replace(".zip", "");
         String path = "file://" + WXApplication.PATH + zipName + "/" + fileName + "/index.js";
         Intent intent = new Intent(mWXSDKInstance.getContext(), WXPageActivity.class);
