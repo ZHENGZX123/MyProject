@@ -4,9 +4,12 @@ import android.content.Context;
 import android.util.Log;
 
 import com.zk.myweex.WXApplication;
+import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.https.HttpDownload;
 
 import java.io.File;
+
+import io.realm.Realm;
 
 /**
  * Created by Administrator on 2017/2/28.
@@ -48,15 +51,17 @@ public class VersionManager {
         for (File f : files) {
             String name = f.getName();
             Log.d("test", "file = " + f.getAbsolutePath());
-            String version = this.context.getSharedPreferences("yjpt", 0).getString("version_" + name, "1.0.0");
-            Log.d("test", "version = " + version);
+            ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", name).findFirst();
+            if (zip != null) {
+                Log.d("test", "version = " + zip.version);
+            }
         }
         //访问http，提交参数： zip名字, 版本号(支持数组)
         boolean hasNewVersion = hasNewVersion();
         if (hasNewVersion) {
 //        改为静默更新
 //            showUpdateConfirmDialog("http://120.24.84.206/yjpt/function1.zip", "function1.zip");
-            downloadNewVersion("http://120.24.84.206/yjpt/function1.zip", "function1.zip");
+//            downloadNewVersion("http://120.24.84.206/yjpt/function1.zip", "function1.zip");
         }
     }
 
@@ -95,13 +100,18 @@ public class VersionManager {
                 File newFile = new File(WXApplication.PATH_TMP + zipName);
                 boolean move2 = newFile.renameTo(new File(WXApplication.PATH + zipName));
                 //3.保存版本号
-                context.getSharedPreferences("yjpt", 0).edit().putString("version_" + zipName, "1.0.1").commit();
+
+                final ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
+                Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        if (zip != null) {
+                            zip.version = "1.0.1";
+                        }
+                    }
+                });
             }
         }).start();
-
-        if (true) {
-            return;
-        }
     }
 
     private boolean hasNewVersion() {
