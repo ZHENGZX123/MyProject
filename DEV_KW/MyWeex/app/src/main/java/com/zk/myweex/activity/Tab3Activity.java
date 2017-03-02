@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import com.taobao.weex.utils.WXFileUtils;
 import com.zk.myweex.R;
 
-public class Tab3Activity extends BaseActivity {
+public class Tab3Activity extends WXBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import com.taobao.weex.utils.WXFileUtils;
 import com.zk.myweex.R;
 
-public class Tab2Activity extends BaseActivity {
+public class Tab2Activity extends WXBaseActivity {
 
     private int lastProgress;
     private ProgressDialog pd;

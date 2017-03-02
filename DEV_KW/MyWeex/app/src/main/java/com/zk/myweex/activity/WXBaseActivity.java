@@ -218,7 +218,7 @@ import android.widget.Toast;
 import com.taobao.weex.IWXRenderListener;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.common.WXRenderStrategy;
-import com.zk.myweex.WXAnalyzerDelegate;
+import com.zk.myweex.utils.WXAnalyzerDelegate;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.https.HttpDownload;
@@ -233,9 +233,9 @@ import io.realm.Realm;
 /**
  * Created by sospartan on 5/30/16.
  */
-public abstract class BaseActivity extends AppCompatActivity implements IWXRenderListener {
+public abstract class WXBaseActivity extends AppCompatActivity implements IWXRenderListener {
 
-    private static final String TAG = "BaseActivity";
+    private static final String TAG = "WXBaseActivity";
 
     private ViewGroup mContainer;
     public WXSDKInstance mInstance;
@@ -423,7 +423,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IWXRende
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(BaseActivity.this, id, Toast.LENGTH_SHORT)
+                Toast.makeText(WXBaseActivity.this, id, Toast.LENGTH_SHORT)
                         .show();
             }
         });
@@ -433,7 +433,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IWXRende
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(BaseActivity.this, id, Toast.LENGTH_SHORT)
+                Toast.makeText(WXBaseActivity.this, id, Toast.LENGTH_SHORT)
                         .show();
             }
         });

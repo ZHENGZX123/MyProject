@@ -32,7 +32,7 @@ import com.taobao.weex.ui.component.NestedContainer;
 import com.taobao.weex.utils.WXFileUtils;
 import com.taobao.weex.utils.WXLogUtils;
 import com.zk.myweex.R;
-import com.zk.myweex.WXAnalyzerDelegate;
+import com.zk.myweex.utils.WXAnalyzerDelegate;
 import com.zk.myweex.constants.Constants;
 import com.zk.myweex.https.HotRefreshManager;
 import com.zk.myweex.https.WXHttpManager;
