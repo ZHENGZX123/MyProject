@@ -30,8 +30,9 @@ public class MyTab2 extends WXModule {
         Toast.makeText(mWXSDKInstance.getContext(), " loadJSBundle js :" + zipName, Toast.LENGTH_SHORT).show();
         String path = WXApplication.PATH + zipName;
         Log.d("test", "path = " + path);
-        if (new File(path).exists()) {
-            //TODO  这里还要判断realm里是否有版本号，如果没有，就说明程序被卸载过。。。
+        //这里还要判断realm里是否有版本号，如果没有，就说明程序被卸载过。。。
+        ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
+        if (new File(path).exists() && zip != null) {
             Log.d("test", "存在，直接加载");
             loadJSBundle(zipName);
         } else {
@@ -91,15 +92,6 @@ public class MyTab2 extends WXModule {
         }).start();
     }
 
-    private void hidePD() {
-        ((Activity) mWXSDKInstance.getContext()).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                pd.dismiss();
-            }
-        });
-
-    }
 
     private void loadJSBundle(String zipName) {
         //TODO 假设路径是function1.zip/function1/index.js , 这个路径要求web传过来。
@@ -109,6 +101,16 @@ public class MyTab2 extends WXModule {
         intent.setData(Uri.parse(path));
         mWXSDKInstance.getContext().startActivity(intent);
     }
+
+    private void hidePD() {
+        ((Activity) mWXSDKInstance.getContext()).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pd.dismiss();
+            }
+        });
+    }
+
 
     private void toast(String txt) {
         ((Activity) mWXSDKInstance.getContext()).runOnUiThread(new Runnable() {

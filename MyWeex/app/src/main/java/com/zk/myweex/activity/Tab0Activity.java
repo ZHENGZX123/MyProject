@@ -16,9 +16,19 @@ public class Tab0Activity extends BaseActivity {
         setContainer((ViewGroup) findViewById(R.id.index_container));
         getSupportActionBar().hide();
 
-        renderPage(WXFileUtils.loadAsset("yjpt/tab0.js", this), "file://assets/");
 
-//        renderPage(WXFileUtils.readFileInZip("/mnt/sdcard/yjpt_sdcard.zip/yjpt/weex/login.js"), "file:///mnt/sdcard/yjpt_sdcard.zip/yjpt/weex/");
+        renderPage(WXFileUtils.loadAsset("yjpt/foo.weex.js", this), "file://assets/");
+
+//        String path = WXApplication.PATH + "tab0.zip";
+//        ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
+//        if (new File(path).exists() && zip != null) {
+//            Log.d("test", "存在，直接加载");
+//            loadJSBundle(zipName);
+//        } else {
+//            Log.d("test", "不存在，下载");
+//            downloadJSBundle(zipName);
+//        }
+
     }
 
 }

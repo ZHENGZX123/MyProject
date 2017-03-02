@@ -209,6 +209,7 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -218,11 +219,16 @@ import com.taobao.weex.IWXRenderListener;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.common.WXRenderStrategy;
 import com.zk.myweex.WXAnalyzerDelegate;
+import com.zk.myweex.WXApplication;
+import com.zk.myweex.entity.ZipPackage;
+import com.zk.myweex.https.HttpDownload;
 import com.zk.myweex.utils.AssertUtil;
 import com.zk.myweex.utils.ScreenUtil;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.realm.Realm;
 
 /**
  * Created by sospartan on 5/30/16.
@@ -432,4 +438,43 @@ public abstract class BaseActivity extends AppCompatActivity implements IWXRende
             }
         });
     }
+
+    //首次下载
+    private void downloadJSBundle(final String zipName) {
+        //1.访问接口，参数是zipName，返回是 name， 下载地址 ， 版本号
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpDownload httpDownload = new HttpDownload();
+                int ret = httpDownload.downFile("http://120.24.84.206/yjpt/" + zipName, WXApplication.PATH, zipName);
+                Log.d("test", "下载返回值 ret = " + ret);
+                if (ret != 0) {
+                    toast("下载失败，请稍后再试");
+                    return;
+                }
+                Log.d("test", "下载成功，保存版本号");
+
+                Realm.getDefaultInstance().beginTransaction();
+                ZipPackage zip = Realm.getDefaultInstance().createObject(ZipPackage.class);
+                zip.name = zipName;
+                zip.indexPath = "要填这个哦";
+                zip.version = "1.0.0";
+                Realm.getDefaultInstance().commitTransaction();
+                Log.d("test", "下载成功，加载本地sdcard");
+                loadJSBundle(zipName);
+            }
+        }).start();
+    }
+
+
+    private void loadJSBundle(String zipName) {
+        //TODO 假设路径是function1.zip/function1/index.js , 这个路径要求web传过来。
+//        String fileName = zipName.replace(".zip", "");
+//        String path = "file://" + WXApplication.PATH + zipName + "/" + fileName + "/index.js";
+//        Intent intent = new Intent(mWXSDKInstance.getContext(), WXPageActivity.class);
+//        intent.setData(Uri.parse(path));
+//        mWXSDKInstance.getContext().startActivity(intent);
+    }
+
+
 }

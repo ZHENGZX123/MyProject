@@ -65,6 +65,11 @@ dependencies {
     compile project(':sdk')
     //原common包
     compile 'com.squareup.picasso:picasso:2.5.2'
-//    compile 'io.realm:realm-android:0.84.1'
 
+    //sdk
+    compile files('libs/jdeferred-core-1.2.4.jar')
+    compile files('libs/org.apache.http.legacy.jar')
+    compile files('libs/sdk-0.0.2-SNAPSHOT.jar')
+    compile 'com.alibaba:fastjson:1.2.24'
+    compile 'org.slf4j:slf4j-android:1.7.24'
 }
