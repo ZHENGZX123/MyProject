@@ -152,6 +152,7 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
                 mConfigMap.put("bundleUrl", mUri.toString());
                 Log.d("test", "mUri = " + mUri.toString());
 
+                //这里是跳页渲染，地址写死可能不行，要根据web传过来的路径，进行修改。如果js里面写了，也行。
                 if (mUri.toString().contains("/mnt/sdcard/")) {
                     String path = mUri.toString().replace("file://", "");
                     Log.d("test", "path1 = " + path);
