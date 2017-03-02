@@ -149,12 +149,17 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
                 Activity ctx = WXPageActivity.this;
                 Rect outRect = new Rect();
                 ctx.getWindow().getDecorView().getWindowVisibleDisplayFrame(outRect);
-                mConfigMap.put("bundleUrl", mUri.toString());
-                Log.d("test", "mUri = " + mUri.toString());
+                String bundleUrl = mUri.toString();
+                mConfigMap.put("bundleUrl", bundleUrl);
 
+
+                Log.d("test", "bundleUrl = " + bundleUrl);
                 //这里是跳页渲染，地址写死可能不行，要根据web传过来的路径，进行修改。如果js里面写了，也行。
-                if (mUri.toString().contains("/mnt/sdcard/")) {
-                    String path = mUri.toString().replace("file://", "");
+//                ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", "function1.zip").findFirst();
+//                Log.d("test", "version = " + zip.version);
+
+                if (bundleUrl.contains("/mnt/sdcard/")) {
+                    String path = bundleUrl.replace("file://", "");
                     Log.d("test", "path1 = " + path);
                     if (path.contains("zip")) {
                         Log.d("test", "read zip");
