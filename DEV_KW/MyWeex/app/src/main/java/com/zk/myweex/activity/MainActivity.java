@@ -3,7 +3,6 @@ package com.zk.myweex.activity;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -13,12 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zk.myweex.R;
-
-import java.util.List;
-
-import cn.kiway.baas.sdk.Configure;
-import cn.kiway.baas.sdk.model.service.Package;
-import cn.kiway.baas.sdk.model.service.Service;
 
 
 public class MainActivity extends TabActivity {
@@ -46,28 +39,28 @@ public class MainActivity extends TabActivity {
         setContentView(R.layout.activity_main);
         initView();
 
-        Configure.getInstance().setHost("192.168.8.28");
-        Configure.getInstance().setPort(4000);
-        Configure.getInstance().setRoot("admin");
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    List<Service> services = new Service().find(null);
-                    Log.d("test", "services count = " + services.size());
-                    for (Service s : services) {
-                        Log.d("test", "s = " + s.toString());
-                        List<Package> packages = s.findPackageList(null);
-                        Log.d("test", "p size = " + packages.size());
-                        for (Package p : packages) {
-                            Log.d("test", "p = " + p.toString());
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
+
+
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                try {
+//                    List<Service> services = new Service().find(null);
+//                    Log.d("test", "services count = " + services.size());
+//
+//                    for (Service s : services) {
+//                        Log.d("test", "s = " + s.toString());
+//                        List<Package> packages = s.findPackageList(null);
+//                        Log.d("test", "p size = " + packages.size());
+//                        for (Package p : packages) {
+//                            Log.d("test", "p = " + p.toString());
+//                        }
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }.start();
 
 
     }
