@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
@@ -21,7 +23,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 
-public class MyTab2 extends WXModule {
+public class MyModule extends WXModule {
 
     private ProgressDialog pd;
 
@@ -111,7 +113,6 @@ public class MyTab2 extends WXModule {
         });
     }
 
-
     private void toast(String txt) {
         ((Activity) mWXSDKInstance.getContext()).runOnUiThread(new Runnable() {
             @Override
@@ -120,5 +121,50 @@ public class MyTab2 extends WXModule {
             }
         });
     }
+
+    @JSMethod(uiThread = true)
+    public void getGrid1(JSCallback callback) {
+        JSONArray a = new JSONArray();
+        JSONObject o1 = new JSONObject();
+        o1.put("title", "function1");
+        o1.put("src", "https://img.alicdn.com/tps/i2/TB1CpD7IXXXXXbSXXXXUAkPJpXX-87-87.png");
+        o1.put("path", "function1/index.js");
+        JSONObject o2 = new JSONObject();
+        o2.put("title", "function2");
+        o2.put("src", "https://img.alicdn.com/tps/i2/TB1CpD7IXXXXXbSXXXXUAkPJpXX-87-87.png");
+        o2.put("path", "function2/index.js");
+        JSONObject o3 = new JSONObject();
+        o3.put("title", "function3");
+        o3.put("src", "https://img.alicdn.com/tps/i2/TB1CpD7IXXXXXbSXXXXUAkPJpXX-87-87.png");
+        o3.put("path", "function3/index.js");
+        a.add(o1);
+        a.add(o2);
+        a.add(o3);
+        Log.d("test", "a.toString() = " + a.toString());
+        callback.invoke(a.toString());
+    }
+
+    @JSMethod(uiThread = true)
+    public void getGrid2(String zipName, JSCallback callback) {
+        JSONArray a = new JSONArray();
+        JSONObject o1 = new JSONObject();
+        o1.put("title", "function4");
+        o1.put("src", "https://img.alicdn.com/tps/i2/TB1CpD7IXXXXXbSXXXXUAkPJpXX-87-87.png");
+        o1.put("path", "function4/index.js");
+        JSONObject o2 = new JSONObject();
+        o2.put("title", "function5");
+        o2.put("src", "https://img.alicdn.com/tps/i2/TB1CpD7IXXXXXbSXXXXUAkPJpXX-87-87.png");
+        o2.put("path", "function5/index.js");
+        JSONObject o3 = new JSONObject();
+        o3.put("title", "function6");
+        o3.put("src", "https://img.alicdn.com/tps/i2/TB1CpD7IXXXXXbSXXXXUAkPJpXX-87-87.png");
+        o3.put("path", "function6/index.js");
+        a.add(o1);
+        a.add(o2);
+        a.add(o3);
+        Log.d("test", "a.toString() = " + a.toString());
+        callback.invoke(a.toString());
+    }
+
 }
 

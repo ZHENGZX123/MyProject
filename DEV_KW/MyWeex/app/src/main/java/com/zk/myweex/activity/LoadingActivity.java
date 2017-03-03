@@ -1,6 +1,7 @@
 package com.zk.myweex.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -85,31 +86,36 @@ public class LoadingActivity extends Activity implements View.OnClickListener {
 //                Log.i("启动service", "..........");
 //                startService(intentService);
 
-                MqttInstance.getInstance().conMqtt("13510530146", "123456", null);
-
-                HproseMqttClient client = MqttInstance.getInstance().getHproseMqttClient();
-                if (client == null) {
-                    Log.i("test", "服务器异常");
-                    return;
-                }
-                if (!MqttInstance.getInstance().getType()) {
-                    //登录失败
-                    Log.i("test", "登录失败");
-                } else {
-                    //登录成功
-                    Log.d("test", "登录成功");
-                    //userName
-                    //password
+                new Thread() {
+                    @Override
+                    public void run() {
+                        MqttInstance.getInstance().conMqtt("13510530146", "123456", null);
+                        HproseMqttClient client = MqttInstance.getInstance().getHproseMqttClient();
+                        if (client == null) {
+                            Log.i("test", "服务器异常");
+                            return;
+                        }
+                        if (!MqttInstance.getInstance().getType()) {
+                            //登录失败
+                            Log.i("test", "登录失败");
+                        } else {
+                            //登录成功
+                            Log.d("test", "登录成功");
+                            //userName
+                            //password
 //            userType
 //            PushInterface pushInterface = MqttInstance.getInstance().getPushInterface();
-                    //登陆成功后必须先执行此方法,获取个人信息
+                            //登陆成功后必须先执行此方法,获取个人信息
 //            getUserInfo(pushInterface);
 //            cn.kwim.mqttcilent.common.Global.getInstance().getUserId()
+                            String token = MqttInstance.getInstance().getHproseMqttClient().getToken();
+                            Log.d("test", "token = " + token);
 
-                    String token = MqttInstance.getInstance().getHproseMqttClient().getToken();
-                    Log.d("test", "token = " + token);
-                }
-
+                            startActivity(new Intent(LoadingActivity.this, MainActivity.class));
+                            finish();
+                        }
+                    }
+                }.start();
 
                 break;
             case R.id.resiger:

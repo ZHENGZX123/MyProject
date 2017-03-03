@@ -116,16 +116,17 @@
 	module.exports = {
 	  methods: {
 	    click1: function click1() {
-__weex_require__('@weex-module/my_tab2').loadFunction("function1.zip" , function (res) {
+__weex_require__('@weex-module/my_module').loadFunction("function1.zip" , function (res) {
 	       var modal = __weex_require__('@weex-module/modal');
                     modal.toast({
                                 message: res,
                                 duration: 2
                               });
-	      });
+	      }
+	      );
 	    },
 	     click2: function click2() {
-__weex_require__('@weex-module/my_tab2').loadFunction("function2.zip" , function (res) {
+__weex_require__('@weex-module/my_module').loadFunction("function2.zip" , function (res) {
 	       var modal = __weex_require__('@weex-module/modal');
                     modal.toast({
                                 message: res,
@@ -134,7 +135,7 @@ __weex_require__('@weex-module/my_tab2').loadFunction("function2.zip" , function
 	      });
          },
          click3: function click3() {
-__weex_require__('@weex-module/my_tab2').loadFunction("function3.zip" , function (res) {
+__weex_require__('@weex-module/my_module').loadFunction("function3.zip" , function (res) {
 	       var modal = __weex_require__('@weex-module/modal');
                     modal.toast({
                                 message: res,

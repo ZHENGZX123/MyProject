@@ -19,6 +19,7 @@ public class Tab0Activity extends WXBaseActivity {
 
         renderPage(WXFileUtils.loadAsset("yjpt/foo.weex.js", this), "file://assets/");
 
+//        String zipName = "tab0.zip";
 //        String path = WXApplication.PATH + "tab0.zip";
 //        ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
 //        if (new File(path).exists() && zip != null) {
