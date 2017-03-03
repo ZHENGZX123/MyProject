@@ -9,6 +9,9 @@ import com.zk.myweex.https.HttpDownload;
 
 import java.io.File;
 
+import cn.kiway.baas.sdk.KWQuery;
+import cn.kiway.baas.sdk.model.service.Package;
+import cn.kiway.baas.sdk.model.service.Service;
 import io.realm.Realm;
 
 /**
@@ -39,7 +42,7 @@ public class VersionManager {
     //2.比较是否有新的版本，如果有，提示下载。(是单个更新还是一次性更新)
     //3.下载替换zip文件
 
-    public void getRemoteVersion() {
+    public void getRemoteVersion() throws Exception {
         File root = new File(WXApplication.PATH);
         File[] files = root.listFiles();
         if (files == null) {
@@ -53,16 +56,28 @@ public class VersionManager {
             Log.d("test", "file = " + f.getAbsolutePath());
             ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", name).findFirst();
             if (zip != null) {
-                Log.d("test", "version = " + zip.version);
+                Service s = new Service().findOne(new KWQuery().equalTo("name", name.replace(".zip", "")));
+                Log.d("test", "s  = " + s.toString());
+
+                Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).descending("version"));
+                Log.d("test", "p = " + p.toString());
+
+                String currentVersion = zip.version;
+                String remoteVersion = p.get("version").toString();
+
+                if (remoteVersion.compareTo(currentVersion) > 0) {
+                    Log.d("test", "有新版本");
+//                    downloadNewVersion();
+                }
             }
         }
         //访问http，提交参数： zip名字, 版本号(支持数组)
-        boolean hasNewVersion = hasNewVersion();
-        if (hasNewVersion) {
+//        boolean hasNewVersion = hasNewVersion(S);
+//        if (hasNewVersion) {
 //        改为静默更新
 //            showUpdateConfirmDialog("http://120.24.84.206/yjpt/function1.zip", "function1.zip");
 //            downloadNewVersion("http://120.24.84.206/yjpt/function1.zip", "function1.zip");
-        }
+//        }
     }
 
 //    protected void showUpdateConfirmDialog(final String url, final String zipName) {
@@ -79,13 +94,13 @@ public class VersionManager {
 //        dialog_download.show();
 //    }
 
-    protected void downloadNewVersion(final String urlString, final String zipName) {
+    protected void downloadNewVersion(final String downloadUrl, final String zipName) {
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 HttpDownload httpDownload = new HttpDownload();
-                int ret = httpDownload.downFile(urlString, WXApplication.PATH_TMP, zipName);
+                int ret = httpDownload.downFile(downloadUrl, WXApplication.PATH_TMP, zipName);
                 Log.d("test", "下载返回值 ret = " + ret);
                 if (ret != 0) {
                     return;
@@ -114,9 +129,6 @@ public class VersionManager {
         }).start();
     }
 
-    private boolean hasNewVersion() {
-        return true;
-    }
 
     public void getLocalVersion() {
         //检查tmp目录下有zip包，如果有，提示用户更新

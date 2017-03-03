@@ -12,7 +12,6 @@ import com.zk.myweex.extend.adapter.PicassoImageAdapter;
 import com.zk.myweex.extend.module.MyModule;
 import com.zk.myweex.mqttclient.MqttInstance;
 import com.zk.myweex.mqttclient.mq.Conf;
-import com.zk.myweex.utils.VersionManager;
 
 import cn.kiway.baas.sdk.Configure;
 import io.realm.Realm;
@@ -49,10 +48,6 @@ public class WXApplication extends Application {
         RealmConfiguration config = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(config);
 
-        VersionManager manager = new VersionManager();
-        manager.init(this);
-        manager.getLocalVersion();
-        manager.getRemoteVersion();
 
 //    initDebugEnvironment(true, false, "DEBUG_SERVER_HOST");
         WXSDKEngine.addCustomOptions("appName", "WXSample");
