@@ -209,6 +209,7 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -219,12 +220,16 @@ import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.common.WXRenderStrategy;
 import com.taobao.weex.utils.WXFileUtils;
 import com.zk.myweex.WXApplication;
+import com.zk.myweex.entity.ZipPackage;
+import com.zk.myweex.https.HttpDownload;
 import com.zk.myweex.utils.AssertUtil;
 import com.zk.myweex.utils.ScreenUtil;
 import com.zk.myweex.utils.WXAnalyzerDelegate;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.realm.Realm;
 
 /**
  * Created by sospartan on 5/30/16.
@@ -436,38 +441,35 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
     }
 
     //首次下载
-    public void downloadJSBundle(final String zipName) {
+    public void downloadJSBundle(final String zipName, final String downloadUrl, final String version, final String baseUrl) {
         //1.访问接口，参数是zipName，返回是 name， 下载地址 ， 版本号
         new Thread(new Runnable() {
             @Override
             public void run() {
-//                HttpDownload httpDownload = new HttpDownload();
-//                int ret = httpDownload.downFile("http://120.24.84.206/yjpt/" + zipName, WXApplication.PATH, zipName);
-//                Log.d("test", "下载返回值 ret = " + ret);
-//                if (ret != 0) {
-//                    toast("下载失败，请稍后再试");
-//                    return;
-//                }
-//                Log.d("test", "下载成功，保存版本号");
-//
-//                Realm.getDefaultInstance().beginTransaction();
-//                ZipPackage zip = Realm.getDefaultInstance().createObject(ZipPackage.class);
-//                zip.name = zipName;
-//                zip.indexPath = "要填这个哦";
-//                zip.version = "1.0.0";
-//                Realm.getDefaultInstance().commitTransaction();
-//                Log.d("test", "下载成功，加载本地sdcard");
-//                loadJSBundle(zipName);
+                HttpDownload httpDownload = new HttpDownload();
+                int ret = httpDownload.downFile(downloadUrl, WXApplication.PATH, zipName);
+                Log.d("test", "下载返回值 ret = " + ret);
+                if (ret != 0) {
+                    toast("下载失败，请稍后再试");
+                    return;
+                }
+                Log.d("test", "下载成功，保存版本号");
+
+                Realm.getDefaultInstance().beginTransaction();
+                ZipPackage zip = Realm.getDefaultInstance().createObject(ZipPackage.class);
+                zip.name = zipName;
+                zip.indexPath = baseUrl;
+                zip.version = version;
+                Realm.getDefaultInstance().commitTransaction();
+                Log.d("test", "下载成功，加载本地sdcard");
+                loadJSBundle(zipName, baseUrl);
             }
         }).start();
     }
 
-
-    public void loadJSBundle(String zipName) {
-        //TODO 假设路径是aaa.zip/aaa/index.js , 这个路径要求web传过来。
-        String fileName = zipName.replace(".zip", "");
-        String path = "file://" + WXApplication.PATH + zipName + "/" + fileName + "/index.js";
-
+    public void loadJSBundle(String zipName, String baseUrl) {
+        String path = WXApplication.PATH + zipName + "/" + baseUrl;
+        Log.d("test", "loadJSBundle path = " + path);
         renderPage(WXFileUtils.readFileInZip(path), "file://" + WXApplication.PATH + zipName + "/");
     }
 

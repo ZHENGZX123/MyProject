@@ -14,6 +14,7 @@ import com.zk.myweex.mqttclient.MqttInstance;
 import com.zk.myweex.mqttclient.mq.Conf;
 import com.zk.myweex.utils.VersionManager;
 
+import cn.kiway.baas.sdk.Configure;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -32,6 +33,11 @@ public class WXApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        //sdk init
+        Configure.getInstance().setHost("192.168.8.28");
+        Configure.getInstance().setPort(4000);
+        Configure.getInstance().setRoot("admin");
 
         //初始化mqtt
         Conf.getInstance().init(this);
