@@ -1,7 +1,6 @@
 package com.zk.myweex.extend.module;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -19,30 +18,49 @@ import com.zk.myweex.https.HttpDownload;
 
 import java.io.File;
 
+import cn.kiway.baas.sdk.KWQuery;
+import cn.kiway.baas.sdk.model.service.Package;
+import cn.kiway.baas.sdk.model.service.Service;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
 
 public class MyModule extends WXModule {
 
-    private ProgressDialog pd;
-
     @JSMethod(uiThread = true)
-    public void loadFunction(String zipName, JSCallback callback) {
+    public void loadFunction(final String zipName, final JSCallback callback) {
         Toast.makeText(mWXSDKInstance.getContext(), " loadJSBundle js :" + zipName, Toast.LENGTH_SHORT).show();
+
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    load(zipName, callback);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    private void load(final String zipName, final JSCallback callback) throws Exception {
         String path = WXApplication.PATH + zipName;
         Log.d("test", "path = " + path);
         //这里还要判断realm里是否有版本号，如果没有，就说明程序被卸载过。。。
         ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
         if (new File(path).exists() && zip != null) {
             Log.d("test", "存在，直接加载");
-            loadJSBundle(zipName);
+            loadJSBundle(zipName, zip.indexPath);
         } else {
             Log.d("test", "不存在，下载");
-            pd = new ProgressDialog(mWXSDKInstance.getContext());
-            pd.setMessage("首次加载，请稍等");
-            pd.show();
-            downloadJSBundle(zipName);
+            Service s = new Service().findOne(new KWQuery().equalTo("name", zipName.replace(".zip", "")));
+            Log.d("test", "s  = " + s.toString());
+            Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).descending("version"));
+            Log.d("test", "p = " + p.toString());
+            String baseUrl = s.get("baseUrl").toString();
+            String downloadUrl = p.get("url").toString();
+            String version = p.get("version").toString();
+            downloadJSBundle(zipName, downloadUrl, version, baseUrl);
         }
     }
 
@@ -67,15 +85,14 @@ public class MyModule extends WXModule {
     }
 
     //首次下载
-    private void downloadJSBundle(final String zipName) {
+    public void downloadJSBundle(final String zipName, final String downloadUrl, final String version, final String baseUrl) {
         //1.访问接口，参数是zipName，返回是 name， 下载地址 ， 版本号
         new Thread(new Runnable() {
             @Override
             public void run() {
                 HttpDownload httpDownload = new HttpDownload();
-                int ret = httpDownload.downFile("http://120.24.84.206/yjpt/" + zipName, WXApplication.PATH, zipName);
+                int ret = httpDownload.downFile(downloadUrl, WXApplication.PATH, zipName);
                 Log.d("test", "下载返回值 ret = " + ret);
-                hidePD();
                 if (ret != 0) {
                     toast("下载失败，请稍后再试");
                     return;
@@ -85,32 +102,21 @@ public class MyModule extends WXModule {
                 Realm.getDefaultInstance().beginTransaction();
                 ZipPackage zip = Realm.getDefaultInstance().createObject(ZipPackage.class);
                 zip.name = zipName;
-                zip.indexPath = "要填这个哦";
-                zip.version = "1.0.0";
+                zip.indexPath = baseUrl;
+                zip.version = version;
                 Realm.getDefaultInstance().commitTransaction();
                 Log.d("test", "下载成功，加载本地sdcard");
-                loadJSBundle(zipName);
+                loadJSBundle(zipName, baseUrl);
             }
         }).start();
     }
 
-
-    private void loadJSBundle(String zipName) {
-        //TODO 假设路径是function1.zip/function1/index.js , 这个路径要求web传过来。
-        String fileName = zipName.replace(".zip", "");
-        String path = "file://" + WXApplication.PATH + zipName + "/" + fileName + "/index.js";
+    public void loadJSBundle(String zipName, String baseUrl) {
+        String path = WXApplication.PATH + zipName + "/" + baseUrl;
+        Log.d("test", "loadJSBundle path = " + path);
         Intent intent = new Intent(mWXSDKInstance.getContext(), WXPageActivity.class);
         intent.setData(Uri.parse(path));
         mWXSDKInstance.getContext().startActivity(intent);
-    }
-
-    private void hidePD() {
-        ((Activity) mWXSDKInstance.getContext()).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                pd.dismiss();
-            }
-        });
     }
 
     private void toast(String txt) {

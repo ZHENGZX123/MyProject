@@ -53,7 +53,7 @@ public class VersionManager {
         }
         for (File f : files) {
             String name = f.getName();
-            Log.d("test", "name = " + name);
+            Log.d("test", "检测" + name + "的新版本");
             ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", name).findFirst();
             if (zip != null) {
                 Service s = new Service().findOne(new KWQuery().equalTo("name", name.replace(".zip", "")));
