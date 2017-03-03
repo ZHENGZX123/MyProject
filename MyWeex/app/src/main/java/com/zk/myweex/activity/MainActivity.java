@@ -68,6 +68,8 @@ public class MainActivity extends TabActivity {
                 }
             }
         }.start();
+
+
     }
 
     private void initView() {
