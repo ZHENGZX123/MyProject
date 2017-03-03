@@ -10,6 +10,8 @@ import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.common.WXException;
 import com.zk.myweex.extend.adapter.PicassoImageAdapter;
 import com.zk.myweex.extend.module.MyTab2;
+import com.zk.myweex.mqttclient.MqttInstance;
+import com.zk.myweex.mqttclient.mq.Conf;
 import com.zk.myweex.utils.VersionManager;
 
 import io.realm.Realm;
@@ -31,6 +33,12 @@ public class WXApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        //初始化mqtt
+        Conf.getInstance().init(this);
+        //mqttSdk 初始化
+        MqttInstance.init(this);
+
+        //realm初始化
         Realm.init(this);
         RealmConfiguration config = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(config);
