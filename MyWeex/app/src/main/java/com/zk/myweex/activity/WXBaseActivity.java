@@ -226,9 +226,13 @@ import com.zk.myweex.utils.AssertUtil;
 import com.zk.myweex.utils.ScreenUtil;
 import com.zk.myweex.utils.WXAnalyzerDelegate;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.kiway.baas.sdk.KWQuery;
+import cn.kiway.baas.sdk.model.service.Package;
+import cn.kiway.baas.sdk.model.service.Service;
 import io.realm.Realm;
 
 /**
@@ -438,6 +442,35 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
                         .show();
             }
         });
+    }
+
+    public void load(final String name) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String zipName = name;
+                    String path = WXApplication.PATH + name;
+                    ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
+                    if (new File(path).exists() && zip != null) {
+                        Log.d("test", "存在，直接加载");
+                        loadJSBundle(zipName, zip.indexPath);
+                    } else {
+                        Log.d("test", "不存在，下载");
+                        Service s = new Service().findOne(new KWQuery().equalTo("name", name.replace(".zip", "")));
+                        Log.d("test", "s  = " + s.toString());
+                        Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).descending("version"));
+                        Log.d("test", "p = " + p.toString());
+                        String baseUrl = s.get("baseUrl").toString();
+                        String downloadUrl = p.get("url").toString();
+                        String version = p.get("version").toString();
+                        downloadJSBundle(zipName, downloadUrl, version, baseUrl);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     //首次下载
