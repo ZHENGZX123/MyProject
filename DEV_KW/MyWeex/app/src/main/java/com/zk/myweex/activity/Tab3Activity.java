@@ -12,11 +12,11 @@ public class Tab3Activity extends WXBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab3);
-
         setContainer((ViewGroup) findViewById(R.id.index_container));
         getSupportActionBar().hide();
 
-
         renderPage(WXFileUtils.loadAsset("yjpt/tab3.js", this), "file://assets/");
+
+        load("tab3.zip");
     }
 }

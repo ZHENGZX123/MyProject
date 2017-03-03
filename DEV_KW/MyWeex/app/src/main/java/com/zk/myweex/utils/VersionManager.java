@@ -53,48 +53,29 @@ public class VersionManager {
         }
         for (File f : files) {
             String name = f.getName();
-            Log.d("test", "file = " + f.getAbsolutePath());
+            Log.d("test", "name = " + name);
             ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", name).findFirst();
             if (zip != null) {
                 Service s = new Service().findOne(new KWQuery().equalTo("name", name.replace(".zip", "")));
                 Log.d("test", "s  = " + s.toString());
-
                 Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).descending("version"));
                 Log.d("test", "p = " + p.toString());
 
                 String currentVersion = zip.version;
                 String remoteVersion = p.get("version").toString();
-
                 if (remoteVersion.compareTo(currentVersion) > 0) {
                     Log.d("test", "有新版本");
-//                    downloadNewVersion();
+                    String downloadUrl = p.get("url").toString();
+                    String version = p.get("version").toString();
+                    downloadNewVersion(downloadUrl, name, version);
+                } else {
+                    Log.d("test", "没有新版本");
                 }
             }
         }
-        //访问http，提交参数： zip名字, 版本号(支持数组)
-//        boolean hasNewVersion = hasNewVersion(S);
-//        if (hasNewVersion) {
-//        改为静默更新
-//            showUpdateConfirmDialog("http://120.24.84.206/yjpt/function1.zip", "function1.zip");
-//            downloadNewVersion("http://120.24.84.206/yjpt/function1.zip", "function1.zip");
-//        }
     }
 
-//    protected void showUpdateConfirmDialog(final String url, final String zipName) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this.context, AlertDialog.THEME_HOLO_LIGHT);
-//        AlertDialog dialog_download = builder.setMessage("发现新的版本，是否更新？").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-//
-//            @Override
-//            public void onClick(DialogInterface d, int arg1) {
-//                d.dismiss();
-//                downloadNewVersion(url, zipName);
-//            }
-//        }).create();
-//        dialog_download.setCancelable(false);
-//        dialog_download.show();
-//    }
-
-    protected void downloadNewVersion(final String downloadUrl, final String zipName) {
+    protected void downloadNewVersion(final String downloadUrl, final String zipName, final String version) {
 
         new Thread(new Runnable() {
             @Override
@@ -106,8 +87,6 @@ public class VersionManager {
                     return;
                 }
                 Log.d("test", "下载成功");
-
-                //判断tmp下有完整的zip包，如果有的话，提示用户更新。
                 //1.先保存旧包
                 File currentFile = new File(WXApplication.PATH + zipName);
                 boolean move1 = currentFile.renameTo(new File(WXApplication.PATH_BACKUP + zipName));
@@ -121,7 +100,7 @@ public class VersionManager {
                     @Override
                     public void execute(Realm realm) {
                         if (zip != null) {
-                            zip.version = "1.0.1";
+                            zip.version = version;
                         }
                     }
                 });
