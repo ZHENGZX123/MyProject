@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zk.myweex.R;
+import com.zk.myweex.utils.VersionManager;
 
 
 public class MainActivity extends TabActivity {
@@ -40,29 +41,19 @@ public class MainActivity extends TabActivity {
         initView();
 
 
-
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                try {
-//                    List<Service> services = new Service().find(null);
-//                    Log.d("test", "services count = " + services.size());
-//
-//                    for (Service s : services) {
-//                        Log.d("test", "s = " + s.toString());
-//                        List<Package> packages = s.findPackageList(null);
-//                        Log.d("test", "p size = " + packages.size());
-//                        for (Package p : packages) {
-//                            Log.d("test", "p = " + p.toString());
-//                        }
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }.start();
-
-
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    VersionManager manager = new VersionManager();
+                    manager.init(getApplication());
+                    manager.getLocalVersion();
+                    manager.getRemoteVersion();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     private void initView() {
