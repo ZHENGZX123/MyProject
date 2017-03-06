@@ -43,12 +43,11 @@ public class MyModule extends WXModule {
     }
 
     private void load(final String zipName, final JSCallback callback) throws Exception {
+        Log.d("test", "load name = " + zipName);
         String path = WXApplication.PATH + zipName;
-        Log.d("test", "path = " + path);
-        //这里还要判断realm里是否有版本号，如果没有，就说明程序被卸载过。。。
-        ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
         if (new File(path).exists()) {
             Log.d("test", "存在，直接加载");
+            ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
             loadJSBundle(zipName, zip.indexPath);
         } else {
             Log.d("test", "不存在，下载");

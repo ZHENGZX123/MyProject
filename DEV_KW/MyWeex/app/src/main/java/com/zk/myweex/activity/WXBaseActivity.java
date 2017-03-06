@@ -445,15 +445,16 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
     }
 
     public void load(final String name) {
+        Log.d("test", "load name = " + name);
         new Thread() {
             @Override
             public void run() {
                 try {
                     String zipName = name;
                     String path = WXApplication.PATH + name;
-                    ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
                     if (new File(path).exists()) {
                         Log.d("test", "存在，直接加载");
+                        ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
                         loadJSBundle(zipName, zip.indexPath);
                     } else {
                         Log.d("test", "不存在，下载");
