@@ -48,14 +48,15 @@ public class MyModule extends WXModule {
         Log.d("test", "path = " + path);
         //这里还要判断realm里是否有版本号，如果没有，就说明程序被卸载过。。。
         ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
-        if (new File(path).exists() && zip != null) {
+        if (new File(path).exists()) {
             Log.d("test", "存在，直接加载");
             loadJSBundle(zipName, zip.indexPath);
         } else {
             Log.d("test", "不存在，下载");
             Service s = new Service().findOne(new KWQuery().equalTo("name", zipName.replace(".zip", "")));
             Log.d("test", "s  = " + s.toString());
-            Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).descending("version"));
+            //返回最新的全量包
+            Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").descending("version"));
             Log.d("test", "p = " + p.toString());
             String baseUrl = s.get("baseUrl").toString();
             String downloadUrl = p.get("url").toString();

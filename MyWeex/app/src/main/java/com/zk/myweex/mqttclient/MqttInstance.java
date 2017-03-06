@@ -53,7 +53,7 @@ public class MqttInstance {
 
         try{
             type = true;
-            client = new HproseMqttClient("yjpt", name, pwd, "1",//SharedPreferencesUtil.getString(contexts, IConstant.USER_NAME),SharedPreferencesUtil.getString(contexts, IConstant.PASSWORD),
+            client = new HproseMqttClient("weex", name, pwd, "1",//SharedPreferencesUtil.getString(contexts, IConstant.USER_NAME),SharedPreferencesUtil.getString(contexts, IConstant.PASSWORD),
                     new TopicProcessService() {
                         @Override
                         public void process(String topic, MqttMessage message, String time) {

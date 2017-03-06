@@ -15,7 +15,7 @@ public class Tab1Activity extends WXBaseActivity {
         setContainer((ViewGroup) findViewById(R.id.index_container));
         getSupportActionBar().hide();
 
-//        renderPage(WXFileUtils.loadAsset("yjpt/tab1.js", this), "file://assets/");
+//        renderPage(WXFileUtils.loadAsset("weex/tab1.js", this), "file://assets/");
 
         load("tab1.zip");
     }
