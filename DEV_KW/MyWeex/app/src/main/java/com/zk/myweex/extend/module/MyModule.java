@@ -30,7 +30,6 @@ public class MyModule extends WXModule {
     @JSMethod(uiThread = true)
     public void loadFunction(final String zipName, final JSCallback callback) {
         Toast.makeText(mWXSDKInstance.getContext(), " loadJSBundle js :" + zipName, Toast.LENGTH_SHORT).show();
-
         new Thread() {
             @Override
             public void run() {
@@ -88,28 +87,23 @@ public class MyModule extends WXModule {
     //首次下载
     public void downloadJSBundle(final String zipName, final String downloadUrl, final String version, final String baseUrl) {
         //1.访问接口，参数是zipName，返回是 name， 下载地址 ， 版本号
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpDownload httpDownload = new HttpDownload();
-                int ret = httpDownload.downFile(downloadUrl, WXApplication.PATH, zipName);
-                Log.d("test", "下载返回值 ret = " + ret);
-                if (ret != 0) {
-                    toast("下载失败，请稍后再试");
-                    return;
-                }
-                Log.d("test", "下载成功，保存版本号");
+        HttpDownload httpDownload = new HttpDownload();
+        int ret = httpDownload.downFile(downloadUrl, WXApplication.PATH, zipName);
+        Log.d("test", "下载返回值 ret = " + ret);
+        if (ret != 0) {
+            toast("下载失败，请稍后再试");
+            return;
+        }
+        Log.d("test", "下载成功，保存版本号");
 
-                Realm.getDefaultInstance().beginTransaction();
-                ZipPackage zip = Realm.getDefaultInstance().createObject(ZipPackage.class);
-                zip.name = zipName;
-                zip.indexPath = baseUrl;
-                zip.version = version;
-                Realm.getDefaultInstance().commitTransaction();
-                Log.d("test", "下载成功，加载本地sdcard");
-                loadJSBundle(zipName, baseUrl);
-            }
-        }).start();
+        Realm.getDefaultInstance().beginTransaction();
+        ZipPackage zip = Realm.getDefaultInstance().createObject(ZipPackage.class);
+        zip.name = zipName;
+        zip.indexPath = baseUrl;
+        zip.version = version;
+        Realm.getDefaultInstance().commitTransaction();
+        Log.d("test", "下载成功，加载本地sdcard");
+        loadJSBundle(zipName, baseUrl);
     }
 
     public void loadJSBundle(String zipName, String baseUrl) {
