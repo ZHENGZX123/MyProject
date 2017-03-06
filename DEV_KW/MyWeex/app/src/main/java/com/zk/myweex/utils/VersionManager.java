@@ -5,9 +5,12 @@ import android.util.Log;
 
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.entity.ZipPackage;
+import com.zk.myweex.file.FileUtils;
+import com.zk.myweex.file.ZipUtil;
 import com.zk.myweex.https.HttpDownload;
 
 import java.io.File;
+import java.util.List;
 
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Package;
@@ -36,12 +39,6 @@ public class VersionManager {
         }
     }
 
-    //在这里要做增量管理
-    //1.读取我当前的模块，请求服务器，查询对应模块的信息，返回值包括
-    // 模块id， 版本号 ， 文件大小 ， 下载地址
-    //2.比较是否有新的版本，如果有，提示下载。(是单个更新还是一次性更新)
-    //3.下载替换zip文件
-
     public void getRemoteVersion() throws Exception {
         File root = new File(WXApplication.PATH);
         File[] files = root.listFiles();
@@ -53,59 +50,103 @@ public class VersionManager {
         }
         for (File f : files) {
             String name = f.getName();
-            Log.d("test", "检测" + name + "的新版本");
+            Log.d("version", "====================检测" + name + "的新版本===============================");
             ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", name).findFirst();
-            if (zip != null) {
-                Service s = new Service().findOne(new KWQuery().equalTo("name", name.replace(".zip", "")));
-                Log.d("test", "s  = " + s.toString());
-                Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).descending("version"));
-                Log.d("test", "p = " + p.toString());
-
-                String currentVersion = zip.version;
-                String remoteVersion = p.get("version").toString();
-                if (remoteVersion.compareTo(currentVersion) > 0) {
-                    Log.d("test", "有新版本");
-                    String downloadUrl = p.get("url").toString();
-                    String version = p.get("version").toString();
-                    downloadNewVersion(downloadUrl, name, version);
+            Service s = new Service().findOne(new KWQuery().equalTo("name", name.replace(".zip", "")));
+            Log.d("version", "s  = " + s.toString());
+            Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").descending("version"));
+            Log.d("version", "p = " + p.toString());
+            String currentVersion = zip.version;
+            String remoteVersion = p.get("version").toString();
+            if (remoteVersion.compareTo(currentVersion) > 0) {
+                Log.d("version", "有新版本");
+                String downloadUrl = p.get("url").toString();
+                String version = p.get("version").toString();
+                downloadNewVersion(downloadUrl, name, version);
+            } else {
+                //如果版本号一样，检查增量包
+                List<Package> patchs = new Package().find(new KWQuery().equalTo("serviceId", s.getId()).equalTo("version", currentVersion).equalTo("updateType", "patch"));
+                if (patchs.size() == 0) {
+                    Log.d("version", "没有新版本");
                 } else {
-                    Log.d("test", "没有新版本");
+                    Log.d("version", "有增量包，要比较一下");
+                    for (Package patch : patchs) {
+                        Log.d("version", "patch = " + patch);
+                        //按顺序比较，打入增量包
+                        if (zip.patchs.contains(patch.getId())) {
+                            Log.d("version", "该增量包已经打过了。。。");
+                        } else {
+                            Log.d("version", "没有打过增量包,去打");
+                            addPatch(name, zip, patch);
+                        }
+                    }
                 }
             }
         }
     }
 
-    protected void downloadNewVersion(final String downloadUrl, final String zipName, final String version) {
+    private void addPatch(final String name, final ZipPackage zip, final Package patch) throws Exception {
+        //1.下载增量包
+        HttpDownload httpDownload = new HttpDownload();
+        String patchName = name.replace(".zip", "") + "_" + patch.get("version") + "_patch_" + patch.get("id") + ".zip";
+        int ret = httpDownload.downFile(patch.get("url").toString(), WXApplication.PATH_PATCH, patchName);
+        if (ret != 0) {
+            return;
+        }
 
-        new Thread(new Runnable() {
+        String zipA = WXApplication.PATH + name;
+        String zipB = WXApplication.PATH_PATCH + patchName;
+
+        // 1.先解压旧的，再解压新的，解压路径一致
+        new ZipUtil().unZip(zipA);
+        new File(zipA).delete();
+
+        File newB = new File(zipA);
+        new File(zipB).renameTo(newB);
+
+        new ZipUtil().unZip(zipA);
+        newB.delete();
+
+        // 2.删除2个旧包
+
+        //3.压缩
+        new ZipUtil().doZip(zipA.replace(".zip", ""));
+
+        //4.删除文件夹
+        FileUtils.delFolder(zipA.replace(".zip", ""));
+
+        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
-            public void run() {
-                HttpDownload httpDownload = new HttpDownload();
-                int ret = httpDownload.downFile(downloadUrl, WXApplication.PATH_TMP, zipName);
-                Log.d("test", "下载返回值 ret = " + ret);
-                if (ret != 0) {
-                    return;
-                }
-                Log.d("test", "下载成功");
-                //1.先保存旧包
-                File currentFile = new File(WXApplication.PATH + zipName);
-                boolean move1 = currentFile.renameTo(new File(WXApplication.PATH_BACKUP + zipName));
-                //2.替换旧包
-                File newFile = new File(WXApplication.PATH_TMP + zipName);
-                boolean move2 = newFile.renameTo(new File(WXApplication.PATH + zipName));
-                //3.保存版本号
-
-                final ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
-                Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        if (zip != null) {
-                            zip.version = version;
-                        }
-                    }
-                });
+            public void execute(Realm realm) {
+                zip.patchs = zip.patchs + " " + patch.getId();
             }
-        }).start();
+        });
+        Log.d("version", "包打好了");
+    }
+
+    protected void downloadNewVersion(final String downloadUrl, final String zipName, final String version) {
+        HttpDownload httpDownload = new HttpDownload();
+        int ret = httpDownload.downFile(downloadUrl, WXApplication.PATH_TMP, zipName);
+        Log.d("version", "下载返回值 ret = " + ret);
+        if (ret != 0) {
+            return;
+        }
+        Log.d("version", "下载成功");
+        //1.先保存旧包
+        File currentFile = new File(WXApplication.PATH + zipName);
+        boolean move1 = currentFile.renameTo(new File(WXApplication.PATH_BACKUP + zipName));
+        //2.替换旧包
+        File newFile = new File(WXApplication.PATH_TMP + zipName);
+        boolean move2 = newFile.renameTo(new File(WXApplication.PATH + zipName));
+        //3.保存版本号
+
+        final ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
+        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                zip.version = version;
+            }
+        });
     }
 
 

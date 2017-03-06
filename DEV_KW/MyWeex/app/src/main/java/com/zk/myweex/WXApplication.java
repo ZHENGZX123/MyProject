@@ -11,8 +11,11 @@ import com.taobao.weex.common.WXException;
 import com.zk.myweex.extend.adapter.PicassoImageAdapter;
 import com.zk.myweex.extend.module.MyHttp;
 import com.zk.myweex.extend.module.MyModule;
+import com.zk.myweex.file.FileUtils;
 import com.zk.myweex.mqttclient.MqttInstance;
 import com.zk.myweex.mqttclient.mq.Conf;
+
+import java.io.File;
 
 import cn.kiway.baas.sdk.Configure;
 import io.realm.Realm;
@@ -24,15 +27,28 @@ import io.realm.RealmConfiguration;
 
 public class WXApplication extends Application {
 
-    public static String PATH = "/mnt/sdcard/kiway/yjpt/";
+    public static String ROOT = "/mnt/sdcard/kiway/";
+
+    public static String PATH = "/mnt/sdcard/kiway/weex/";
 
     public static String PATH_TMP = "/mnt/sdcard/kiway/tmp/";
 
     public static String PATH_BACKUP = "/mnt/sdcard/kiway/backup/";
 
+    public static String PATH_PATCH = "/mnt/sdcard/kiway/patch/";
+
+
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
+            if (new File(WXApplication.ROOT).exists()) {
+                FileUtils.delFolder(WXApplication.ROOT);
+            }
+            getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", false).commit();
+        }
 
         //sdk init
         Configure.getInstance().setHost("192.168.8.28");
