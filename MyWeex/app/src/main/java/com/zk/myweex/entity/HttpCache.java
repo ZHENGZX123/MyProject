@@ -15,6 +15,6 @@ public class HttpCache extends RealmObject {
 
     @Override
     public String toString() {
-        return "url" + " " + param + " " + result;
+        return url + " " + param + " " + result;
     }
 }
