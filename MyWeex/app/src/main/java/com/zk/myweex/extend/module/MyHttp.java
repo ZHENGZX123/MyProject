@@ -8,10 +8,13 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
+import com.zk.myweex.entity.HttpCache;
 import com.zk.myweex.utils.NetworkUtil;
 
 import org.apache.http.entity.StringEntity;
 import org.json.JSONObject;
+
+import io.realm.Realm;
 
 
 /**
@@ -21,7 +24,10 @@ import org.json.JSONObject;
 public class MyHttp extends WXModule {
 
     @JSMethod(uiThread = true)
-    public void doRequest(String url, String param, final JSCallback callback) {
+    public void doRequest(final String url, final String param, final JSCallback callback) {
+        HttpCache temp = Realm.getDefaultInstance().where(HttpCache.class).equalTo("url", url).equalTo("param", param).findFirst();
+        Log.d("test", "temp = " + temp);
+
         if (!NetworkUtil.isNetworkAvailable(mWXSDKInstance.getContext())) {
             //没有网络，返回上次缓存的数据
             returnCacheData(callback);
@@ -45,6 +51,14 @@ public class MyHttp extends WXModule {
                     Log.d("test", "onSuccess = " + responseString);
                     //成功的话直接返回数据
                     callback.invoke("success");
+
+                    HttpCache cache = new HttpCache();
+                    cache.url = url;
+                    cache.param = param;
+                    cache.result = responseString;
+                    Realm.getDefaultInstance().beginTransaction();
+                    Realm.getDefaultInstance().insertOrUpdate(cache);
+                    Realm.getDefaultInstance().commitTransaction();
                 }
             });
         } catch (Exception e) {
