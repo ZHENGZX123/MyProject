@@ -10,7 +10,6 @@ import com.zk.myweex.R;
 
 public class BootActivity extends Activity {
 
-    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
