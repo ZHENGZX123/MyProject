@@ -15,8 +15,8 @@ public class Tab3Activity extends WXBaseActivity {
         setContainer((ViewGroup) findViewById(R.id.index_container));
         getSupportActionBar().hide();
 
-//        renderPage(WXFileUtils.loadAsset("yjpt/tab3.js", this), "file://assets/");
+        renderPage(WXFileUtils.loadAsset("yjpt/tab3.js", this), "file://assets/");
 
-        load("tab3.zip");
+//        load("tab3.zip");
     }
 }

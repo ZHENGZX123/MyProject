@@ -9,6 +9,7 @@ import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.common.WXException;
 import com.zk.myweex.extend.adapter.PicassoImageAdapter;
+import com.zk.myweex.extend.module.MyHttp;
 import com.zk.myweex.extend.module.MyModule;
 import com.zk.myweex.mqttclient.MqttInstance;
 import com.zk.myweex.mqttclient.mq.Conf;
@@ -61,6 +62,7 @@ public class WXApplication extends Application {
         //注册自定义组件
         try {
             WXSDKEngine.registerModule("my_module", MyModule.class);
+            WXSDKEngine.registerModule("my_http", MyHttp.class);
         } catch (WXException e) {
             e.printStackTrace();
         }

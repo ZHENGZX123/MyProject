@@ -3,10 +3,16 @@ package com.zk.myweex.extend.module;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
 import com.zk.myweex.utils.NetworkUtil;
+
+import org.apache.http.entity.StringEntity;
+import org.json.JSONObject;
+
 
 /**
  * Created by Administrator on 2017/3/2.
@@ -15,22 +21,41 @@ import com.zk.myweex.utils.NetworkUtil;
 public class MyHttp extends WXModule {
 
     @JSMethod(uiThread = true)
-    public void doGet(String url, String param, JSCallback callback) {
+    public void doRequest(String url, String param, final JSCallback callback) {
+        if (!NetworkUtil.isNetworkAvailable(mWXSDKInstance.getContext())) {
+            //没有网络，返回上次缓存的数据
+            returnCacheData(callback);
+            return;
+        }
+        //访问网络，缓存返回值，返回字符串
         try {
-            if (!NetworkUtil.isNetworkAvailable(mWXSDKInstance.getContext())) {
-                callback.invoke("error");
-                return;
-            }
-            //访问网络，缓存返回值，返回字符串
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            JSONObject jsonObject = new JSONObject();
+            StringEntity stringEntity = new StringEntity(jsonObject.toString(), "utf-8");
+            client.post(mWXSDKInstance.getContext(), url, stringEntity, "application/json", new TextHttpResponseHandler() {
+
+                public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
+                    Log.d("test", "onFailure = " + responseString);
+                    //失败的话，返回上次缓存的数据
+                    returnCacheData(callback);
+                }
+
+                public void onSuccess(int statusCode, org.apache.http.Header[] headers, String responseString) {
+                    Log.d("test", "onSuccess = " + responseString);
+                    //成功的话直接返回数据
+                    callback.invoke("success");
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
             Log.d("test", "exception = " + e.toString());
+            returnCacheData(callback);
         }
     }
 
-
-    public void doPost(String url, String param, JSCallback callback) {
-
+    private void returnCacheData(JSCallback callback) {
+        callback.invoke("failure");
     }
 
 
