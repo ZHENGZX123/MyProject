@@ -40,7 +40,6 @@ public class MainActivity extends TabActivity {
         setContentView(R.layout.activity_main);
         initView();
 
-
         new Thread() {
             @Override
             public void run() {
@@ -54,6 +53,19 @@ public class MainActivity extends TabActivity {
                 }
             }
         }.start();
+
+
+        //测试代码
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                try {
+//                    FileUtils.copyRawToSdcard(getApplicationContext());
+//                } catch (Throwable throwable) {
+//                    throwable.printStackTrace();
+//                }
+//            }
+//        }.start();
     }
 
     private void initView() {
