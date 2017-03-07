@@ -3,6 +3,7 @@ package com.zk.myweex;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.taobao.weex.InitConfig;
 import com.taobao.weex.WXSDKEngine;
@@ -18,8 +19,11 @@ import com.zk.myweex.mqttclient.mq.Conf;
 import java.io.File;
 
 import cn.kiway.baas.sdk.Configure;
+import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmMigration;
+import io.realm.RealmSchema;
 
 /**
  * Created by Administrator on 2017/2/22.
@@ -36,7 +40,6 @@ public class WXApplication extends Application {
     public static String PATH_BACKUP = "/mnt/sdcard/kiway/backup/";
 
     public static String PATH_PATCH = "/mnt/sdcard/kiway/patch/";
-
 
 
     @Override
@@ -62,13 +65,13 @@ public class WXApplication extends Application {
 
         //realm初始化
         Realm.init(this);
-        RealmConfiguration config = new RealmConfiguration.Builder().build();
+        RealmConfiguration config = new RealmConfiguration.Builder().schemaVersion(0)
+                .migration(migration).build();
         Realm.setDefaultConfiguration(config);
 
 
-//    initDebugEnvironment(true, false, "DEBUG_SERVER_HOST");
-        WXSDKEngine.addCustomOptions("appName", "WXSample");
-        WXSDKEngine.addCustomOptions("appGroup", "WXApp");
+//        WXSDKEngine.addCustomOptions("appName", "WXSample");
+//        WXSDKEngine.addCustomOptions("appGroup", "WXApp");
         WXSDKEngine.initialize(this,
                 new InitConfig.Builder()
                         .setImgAdapter(new PicassoImageAdapter())
@@ -123,6 +126,30 @@ public class WXApplication extends Application {
                 }
             }
         });
-
     }
+
+    RealmMigration migration = new RealmMigration() {
+        @Override
+        public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
+            Log.d("test", "db old = " + oldVersion + " , new = " + newVersion);
+            RealmSchema schema = realm.getSchema();
+            if (oldVersion == 0) {
+//                schema.get("HttpCache").addField("add1", String.class);
+//                oldVersion++;
+            }
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (other == null) {
+                return false;
+            }
+            return getClass() == other.getClass();
+        }
+
+        @Override
+        public int hashCode() {
+            return getClass().hashCode();
+        }
+    };
 }

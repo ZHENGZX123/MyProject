@@ -66,6 +66,38 @@ public class MainActivity extends TabActivity {
 //                }
 //            }
 //        }.start();
+
+
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                try {
+//                    List<Service> services = new Service().find(new KWQuery().like("name", "function%"));
+//                    Log.d("test", "所有的 function count = " + services.size());
+//
+//                    //已经下载的是：
+//                    List<Service> downloaded = new ArrayList<Service>();
+//                    //没有下载的是：
+//                    List<Service> notDownloaded = new ArrayList<Service>();
+//                    for (Service s : services) {
+//                        if (checkDownloaded(s.get("name").toString())) {
+//                            downloaded.add(s);
+//                        } else {
+//                            notDownloaded.add(s);
+//                        }
+//                    }
+//                    Log.d("test", "download function count = " + downloaded.size());
+//                    Log.d("test", "notdownload function count = " + notDownloaded.size());
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            private boolean checkDownloaded(String name) {
+//                return new File(WXApplication.PATH + name + ".zip").exists();
+//            }
+//        }.start();
     }
 
     private void initView() {
