@@ -9,8 +9,9 @@ import com.taobao.weex.InitConfig;
 import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.common.WXException;
+import com.zk.myweex.entity.HttpCache;
 import com.zk.myweex.extend.adapter.PicassoImageAdapter;
-import com.zk.myweex.extend.module.MyHttp;
+import com.zk.myweex.extend.module.MyHttpCache;
 import com.zk.myweex.extend.module.MyModule;
 import com.zk.myweex.file.FileUtils;
 import com.zk.myweex.mqttclient.MqttInstance;
@@ -23,6 +24,7 @@ import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
+import io.realm.RealmResults;
 import io.realm.RealmSchema;
 
 /**
@@ -69,6 +71,18 @@ public class WXApplication extends Application {
                 .migration(migration).build();
         Realm.setDefaultConfiguration(config);
 
+        //清掉时间差大于1天的数据
+        long current = System.currentTimeMillis();
+        long current_before_1day = current - 24 * 60 * 60 * 1000;
+        final RealmResults<HttpCache> caches = Realm.getDefaultInstance().where(HttpCache.class).lessThan("requestTime", current_before_1day).findAll();
+        Log.d("test", "temp.count = " + caches.size());
+        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                // remove single match
+                caches.deleteAllFromRealm();
+            }
+        });
 
 //        WXSDKEngine.addCustomOptions("appName", "WXSample");
 //        WXSDKEngine.addCustomOptions("appGroup", "WXApp");
@@ -81,7 +95,7 @@ public class WXApplication extends Application {
         //注册自定义组件
         try {
             WXSDKEngine.registerModule("my_module", MyModule.class);
-            WXSDKEngine.registerModule("my_http", MyHttp.class);
+            WXSDKEngine.registerModule("my_httpcache", MyHttpCache.class);
         } catch (WXException e) {
             e.printStackTrace();
         }

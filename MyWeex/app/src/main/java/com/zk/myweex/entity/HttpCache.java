@@ -11,10 +11,11 @@ public class HttpCache extends RealmObject {
     public String url;
     public String param;
     public String result;
+    public long requestTime;
 
 
     @Override
     public String toString() {
-        return url + " " + param + " " + result;
+        return url + " " + param + " " + requestTime;
     }
 }
