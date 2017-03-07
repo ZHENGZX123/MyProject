@@ -17,6 +17,8 @@ import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.https.HttpDownload;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Package;
@@ -168,6 +170,25 @@ public class MyModule extends WXModule {
         Log.d("test", "a.toString() = " + a.toString());
         callback.invoke(a.toString());
     }
+
+
+    @JSMethod(uiThread = true)
+    public void sendEvent(JSCallback callback) {
+
+        Log.d("test", "module id = " + mWXSDKInstance.getInstanceId());
+
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("test1", "test1");
+        params.put("test2", "test2");
+        //这个只能调用相同的instance
+//        mWXSDKInstance.fireGlobalEventCallback("tab1_event", params);
+        mWXSDKInstance.fireSuperGlobalEventCallback("tab1_event", params);
+
+//调自己的
+//        callback.invoke(params);
+    }
+
 
 }
 
