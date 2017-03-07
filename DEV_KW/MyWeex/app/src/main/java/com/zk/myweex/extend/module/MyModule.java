@@ -124,6 +124,7 @@ public class MyModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void getGrid1(JSCallback callback) {
+
         JSONArray a = new JSONArray();
         JSONObject o1 = new JSONObject();
         o1.put("title", "function1");
@@ -142,6 +143,8 @@ public class MyModule extends WXModule {
         a.add(o3);
         Log.d("test", "a.toString() = " + a.toString());
         callback.invoke(a.toString());
+
+        //根据tab名字，查找本机已经下载的function包
     }
 
     @JSMethod(uiThread = true)
