@@ -4,8 +4,10 @@ import android.content.Context;
 import android.os.Environment;
 
 import com.taobao.weex.utils.WXLogUtils;
+import com.zk.myweex.R;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -27,7 +29,6 @@ public class FileUtils {
     public FileUtils() {
         //得到当前外部存储设备的目录      /SDCARD/...
         SDPATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
-
     }
 
     /**
@@ -162,7 +163,7 @@ public class FileUtils {
 
     //删除指定文件夹下所有文件
 //param path 文件夹完整绝对路径
-    public static boolean delAllFile(String path) {
+    private static boolean delAllFile(String path) {
         boolean flag = false;
         File file = new File(path);
         if (!file.exists()) {
@@ -189,5 +190,23 @@ public class FileUtils {
             }
         }
         return flag;
+    }
+
+    public static void copyRawToSdcard(Context c) throws Throwable {
+        InputStream inStream = c.getResources().openRawResource(R.raw.tab0);
+        File file = new File("/mnt/sdcard/tab0.zip");
+        FileOutputStream fileOutputStream = new FileOutputStream(file);//存入SDCard
+        byte[] buffer = new byte[1024];
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        int len = 0;
+        while ((len = inStream.read(buffer)) != -1) {
+            outStream.write(buffer, 0, len);
+        }
+        byte[] bs = outStream.toByteArray();
+        fileOutputStream.write(bs);
+        outStream.close();
+        inStream.close();
+        fileOutputStream.flush();
+        fileOutputStream.close();
     }
 }
