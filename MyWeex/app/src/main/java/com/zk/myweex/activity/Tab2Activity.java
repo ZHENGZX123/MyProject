@@ -16,7 +16,6 @@ public class Tab2Activity extends WXBaseActivity {
         getSupportActionBar().hide();
 
 //        renderPage(WXFileUtils.loadAsset("weex/tab2.js", this), "file://assets/");
-
         load("tab2.zip");
 
     }

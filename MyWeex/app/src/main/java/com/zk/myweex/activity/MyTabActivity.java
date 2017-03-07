@@ -6,18 +6,22 @@ import android.view.ViewGroup;
 
 import com.zk.myweex.R;
 
-public class Tab0Activity extends WXBaseActivity {
+/**
+ * Created by Administrator on 2017/3/7.
+ */
+
+public class MyTabActivity extends WXBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tab0);
-
+        setContentView(R.layout.activity_mytab);
         setContainer((ViewGroup) findViewById(R.id.index_container));
         getSupportActionBar().hide();
 
-//        renderPage(WXFileUtils.loadAsset("weex/tab0.js", this), "file://assets/");
-        load("tab0.zip");
-        Log.d("test", "tab0 = " + mInstance.getInstanceId());
+        int position = getIntent().getIntExtra("position", 0);
+        Log.d("test", "position = " + position);
+        load("tab" + position + ".zip");
     }
+
 }
