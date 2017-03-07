@@ -56,7 +56,6 @@ public class MainActivity2 extends TabActivity {
             TextView tv = (TextView) ll.findViewById(R.id.tv);
             tv.setText("tab" + ii);
 
-
             bottom.addView(ll, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
 
             Intent tab = new Intent(this, MyTabActivity.class);
