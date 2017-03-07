@@ -92,7 +92,7 @@
 	module.exports = {
 	  methods: {
 	    click1: function click1() {
-__weex_require__('@weex-module/my_http').doRequest("http://www.baidu.com" , "param" , function (res) {
+__weex_require__('@weex-module/my_httpcache').doRequest("http://www.baidu.com" , "param" , function (res) {
 	       var modal = __weex_require__('@weex-module/modal');
                     modal.toast({
                                 message: res,

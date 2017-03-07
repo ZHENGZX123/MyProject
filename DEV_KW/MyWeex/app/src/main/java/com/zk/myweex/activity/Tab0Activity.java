@@ -19,8 +19,6 @@ public class Tab0Activity extends WXBaseActivity {
 //        renderPage(WXFileUtils.loadAsset("weex/tab0.js", this), "file://assets/");
 
         load("tab0.zip");
-
-
         Log.d("test", "tab0 = "+mInstance.getInstanceId());
     }
 }
