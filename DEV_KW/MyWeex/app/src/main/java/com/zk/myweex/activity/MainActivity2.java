@@ -15,11 +15,14 @@ import android.widget.Toast;
 import com.zk.myweex.R;
 import com.zk.myweex.utils.VersionManager;
 
+import java.util.ArrayList;
+
 
 public class MainActivity2 extends TabActivity {
 
     private TabHost tabhost;
     private LinearLayout bottom;
+    private ArrayList<LinearLayout> lls = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,7 @@ public class MainActivity2 extends TabActivity {
             tv.setText("tab" + ii);
 
             bottom.addView(ll, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
+            lls.add(ll);
 
             Intent tab = new Intent(this, MyTabActivity.class);
             tab.putExtra("position", ii);
@@ -70,8 +74,27 @@ public class MainActivity2 extends TabActivity {
                 @Override
                 public void onClick(View arg0) {
                     tabhost.setCurrentTab(ii);
+
+                    refreshUI(ii);
                 }
             });
+        }
+
+        refreshUI(0);
+    }
+
+    private void refreshUI(int position) {
+        for (int i = 0; i < lls.size(); i++) {
+            LinearLayout ll = lls.get(i);
+            ImageView iv = (ImageView) ll.findViewById(R.id.iv);
+            TextView tv = (TextView) ll.findViewById(R.id.tv);
+            if (i == position) {
+                tv.setTextColor(getResources().getColor(R.color.orange));
+//                iv.setBackgroundResource(R.drawable.tab12);
+            } else {
+                tv.setTextColor(getResources().getColor(R.color.lightblack));
+//                iv.setBackgroundResource(R.drawable.tab12);
+            }
         }
     }
 
