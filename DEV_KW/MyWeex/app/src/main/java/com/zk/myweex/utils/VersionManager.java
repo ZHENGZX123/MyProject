@@ -5,8 +5,6 @@ import android.util.Log;
 
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.entity.ZipPackage;
-import com.zk.myweex.file.FileUtils;
-import com.zk.myweex.file.ZipUtil;
 import com.zk.myweex.https.HttpDownload;
 
 import java.io.File;

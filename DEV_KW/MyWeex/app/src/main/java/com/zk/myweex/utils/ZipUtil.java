@@ -1,5 +1,5 @@
 
-package com.zk.myweex.file;
+package com.zk.myweex.utils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
