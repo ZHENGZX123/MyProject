@@ -3,7 +3,6 @@ package com.zk.myweex.activity;
 import android.os.Bundle;
 import android.view.ViewGroup;
 
-import com.taobao.weex.utils.WXFileUtils;
 import com.zk.myweex.R;
 
 public class Tab2Activity extends WXBaseActivity {
@@ -16,7 +15,7 @@ public class Tab2Activity extends WXBaseActivity {
         setContainer((ViewGroup) findViewById(R.id.index_container));
         getSupportActionBar().hide();
 
-//        load("tab2.zip");
-        renderPage(WXFileUtils.loadAsset("weex/mygridview.js", this), "file://assets/");
+        load("tab2.zip");
+//        renderPage(WXFileUtils.loadAsset("weex/mygridview.js", this), "file://assets/");
     }
 }
