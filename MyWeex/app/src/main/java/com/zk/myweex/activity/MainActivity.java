@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zk.myweex.R;
+import com.zk.myweex.utils.ServiceManager;
 import com.zk.myweex.utils.VersionManager;
 
 
@@ -48,6 +49,10 @@ public class MainActivity extends TabActivity {
                     manager.init(getApplication());
                     manager.getLocalVersion();
                     manager.getRemoteVersion();
+
+
+                    ServiceManager.getInstance().getService();
+                    
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

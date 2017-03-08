@@ -115,11 +115,11 @@ public class MyModule extends WXModule {
         mWXSDKInstance.getContext().startActivity(intent);
     }
 
-    private void toast(String txt) {
+    private void toast(final String txt) {
         ((Activity) mWXSDKInstance.getContext()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(mWXSDKInstance.getContext(), "txt", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mWXSDKInstance.getContext(), txt, Toast.LENGTH_SHORT).show();
             }
         });
     }
