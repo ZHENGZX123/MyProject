@@ -14,7 +14,7 @@ import com.zk.myweex.extend.adapter.PicassoImageAdapter;
 import com.zk.myweex.extend.component.MyGridView;
 import com.zk.myweex.extend.module.MyHttpCache;
 import com.zk.myweex.extend.module.MyModule;
-import com.zk.myweex.file.FileUtils;
+import com.zk.myweex.utils.FileUtils;
 import com.zk.myweex.mqttclient.MqttInstance;
 import com.zk.myweex.mqttclient.mq.Conf;
 

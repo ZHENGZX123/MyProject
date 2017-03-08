@@ -1,4 +1,4 @@
-package com.zk.myweex.file;
+package com.zk.myweex.utils;
 
 import android.content.Context;
 import android.os.Environment;

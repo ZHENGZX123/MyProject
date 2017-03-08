@@ -1,6 +1,6 @@
 package com.zk.myweex.https;
 
-import com.zk.myweex.file.FileUtils;
+import com.zk.myweex.utils.FileUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
