@@ -52,7 +52,7 @@ public class MainActivity extends TabActivity {
 
 
                     ServiceManager.getInstance().getService();
-                    
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
