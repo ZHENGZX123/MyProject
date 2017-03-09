@@ -1,4 +1,4 @@
-package com.zk.myweex.https;
+package com.zk.myweex.utils;
 
 import com.zk.myweex.utils.FileUtils;
 
