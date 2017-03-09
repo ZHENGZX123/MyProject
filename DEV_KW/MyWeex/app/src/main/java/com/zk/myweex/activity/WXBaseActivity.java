@@ -221,7 +221,7 @@ import com.taobao.weex.common.WXRenderStrategy;
 import com.taobao.weex.utils.WXFileUtils;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.entity.ZipPackage;
-import com.zk.myweex.https.HttpDownload;
+import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.AssertUtil;
 import com.zk.myweex.utils.ScreenUtil;
 import com.zk.myweex.utils.WXAnalyzerDelegate;

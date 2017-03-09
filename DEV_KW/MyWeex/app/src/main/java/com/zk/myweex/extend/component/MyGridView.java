@@ -30,7 +30,7 @@ import com.zk.myweex.R;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.activity.WXPageActivity;
 import com.zk.myweex.entity.ZipPackage;
-import com.zk.myweex.https.HttpDownload;
+import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.ServiceManager;
 
 import java.io.File;

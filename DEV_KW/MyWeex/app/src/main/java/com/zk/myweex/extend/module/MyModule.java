@@ -14,7 +14,7 @@ import com.taobao.weex.common.WXModule;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.activity.WXPageActivity;
 import com.zk.myweex.entity.ZipPackage;
-import com.zk.myweex.https.HttpDownload;
+import com.zk.myweex.utils.HttpDownload;
 
 import java.io.File;
 import java.util.HashMap;

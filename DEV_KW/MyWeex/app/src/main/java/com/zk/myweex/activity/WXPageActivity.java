@@ -2,16 +2,11 @@ package com.zk.myweex.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -26,27 +21,22 @@ import com.taobao.weex.RenderContainer;
 import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.appfram.navigator.IActivityNavBarSetter;
-import com.taobao.weex.common.IWXDebugProxy;
 import com.taobao.weex.common.WXRenderStrategy;
 import com.taobao.weex.ui.component.NestedContainer;
 import com.taobao.weex.utils.WXFileUtils;
 import com.taobao.weex.utils.WXLogUtils;
 import com.zk.myweex.R;
-import com.zk.myweex.utils.WXAnalyzerDelegate;
-import com.zk.myweex.constants.Constants;
-import com.zk.myweex.https.HotRefreshManager;
 import com.zk.myweex.https.WXHttpManager;
 import com.zk.myweex.https.WXHttpTask;
 import com.zk.myweex.https.WXRequestListener;
 import com.zk.myweex.utils.ScreenUtil;
+import com.zk.myweex.utils.WXAnalyzerDelegate;
 
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 
 
-public class WXPageActivity extends AppCompatActivity implements IWXRenderListener, Handler.Callback, WXSDKInstance.NestedInstanceInterceptor {
+public class WXPageActivity extends AppCompatActivity implements IWXRenderListener, WXSDKInstance.NestedInstanceInterceptor {
 
     private static final String TAG = "WXPageActivity";
     public static final String WXPAGE = "wxpage";
@@ -54,8 +44,6 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
     private ViewGroup mContainer;
     //    private ProgressBar mProgressBar;
     private WXSDKInstance mInstance;
-    private Handler mWXHandler;
-    private BroadcastReceiver mReceiver;
     private Uri mUri;
     private HashMap mConfigMap = new HashMap<String, Object>();
 
@@ -76,22 +64,18 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
         mUri = getIntent().getData();
         Bundle bundle = getIntent().getExtras();
         if (mUri == null && bundle == null) {
-            mUri = Uri.parse(Constants.BUNDLE_URL + Constants.WEEX_SAMPLES_KEY);
+            Log.d("test", "错误页面");
         }
         if (bundle != null) {
             String bundleUrl = bundle.getString("bundleUrl");
             Log.i(TAG, "bundleUrl==" + bundleUrl);
-
             if (bundleUrl != null) {
-                mConfigMap.put("bundleUrl", bundleUrl + Constants.WEEX_SAMPLES_KEY);
-                mUri = Uri.parse(bundleUrl + Constants.WEEX_SAMPLES_KEY);
-
+                mConfigMap.put("bundleUrl", bundleUrl);
+                mUri = Uri.parse(bundleUrl);
             }
         } else {
-            mConfigMap.put("bundleUrl", mUri.toString() + Constants.WEEX_SAMPLES_KEY);
-            // mUri = Uri.parse(mUri.toString() + Constants.WEEX_SAMPLES_KEY)
+            mConfigMap.put("bundleUrl", mUri.toString());
         }
-
         if (mUri == null) {
             Toast.makeText(this, "the uri is empty!", Toast.LENGTH_SHORT).show();
             finish();
@@ -104,18 +88,13 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
         if (WXPAGE.equals(mUri.getScheme())) {
             mUri = mUri.buildUpon().scheme("http").build();
             loadWXfromService(mUri.toString());
-            startHotRefresh();
         } else if (TextUtils.equals("http", mUri.getScheme()) || TextUtils.equals("https", mUri.getScheme())) {
-            // if url has key "_wx_tpl" then get weex bundle js
-            String weexTpl = mUri.getQueryParameter(Constants.WEEX_TPL_KEY);
-            String url = TextUtils.isEmpty(weexTpl) ? mUri.toString() : weexTpl;
+            String url = mUri.toString();
             loadWXfromService(url);
-            startHotRefresh();
         } else {
             loadWXfromLocal(false);
         }
         mInstance.onActivityCreate();
-        registerBroadcastReceiver();
 
         mWxAnalyzerDelegate = new WXAnalyzerDelegate(this);
         mWxAnalyzerDelegate.onCreate();
@@ -191,14 +170,8 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
     }
 
     private void initUIAndData() {
-
         getSupportActionBar().hide();
-
         mContainer = (ViewGroup) findViewById(R.id.container);
-//        mProgressBar = (ProgressBar) findViewById(R.id.progress);
-        mWXHandler = new Handler(this);
-        HotRefreshManager.getInstance().setHandler(mWXHandler);
-        addOnListener();
     }
 
     private void loadWXfromService(final String url) {
@@ -244,23 +217,6 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
         WXHttpManager.getInstance().sendRequest(httpTask);
     }
 
-    /**
-     * hot refresh
-     */
-    private void startHotRefresh() {
-        try {
-            String host = new URL(mUri.toString()).getHost();
-            String wsUrl = "ws://" + host + ":8082";
-            mWXHandler.obtainMessage(Constants.HOT_REFRESH_CONNECT, 0, 0, wsUrl).sendToTarget();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void addOnListener() {
-
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -268,10 +224,6 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
             mInstance.onActivityDestroy();
         }
         mContainer = null;
-        // TopScrollHelper.getInstance(getApplicationContext()).onDestory();
-        mWXHandler.obtainMessage(Constants.HOT_REFRESH_DISCONNECT).sendToTarget();
-        unregisterBroadcastReceiver();
-
         if (wxPageActivityInstance == this) {
             wxPageActivityInstance = null;
         }
@@ -322,29 +274,6 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
     }
 
     @Override
-    public boolean handleMessage(Message msg) {
-
-        switch (msg.what) {
-            case Constants.HOT_REFRESH_CONNECT:
-                HotRefreshManager.getInstance().connect(msg.obj.toString());
-                break;
-            case Constants.HOT_REFRESH_DISCONNECT:
-                HotRefreshManager.getInstance().disConnect();
-                break;
-            case Constants.HOT_REFRESH_REFRESH:
-                loadWXfromService(mUri.toString());
-                break;
-            case Constants.HOT_REFRESH_CONNECT_ERROR:
-                Toast.makeText(this, "hot refresh connect error!", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                break;
-        }
-
-        return false;
-    }
-
-    @Override
     public void onViewCreated(WXSDKInstance instance, View view) {
         WXLogUtils.e("into--[onViewCreated]");
         View wrappedView = null;
@@ -367,12 +296,10 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
         if (mWxAnalyzerDelegate != null) {
             mWxAnalyzerDelegate.onWeexRenderSuccess(instance);
         }
-//        mProgressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void onRefreshSuccess(WXSDKInstance instance, int width, int height) {
-//        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -381,7 +308,6 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
         if (mWxAnalyzerDelegate != null) {
             mWxAnalyzerDelegate.onException(instance, errCode, msg);
         }
-//        mProgressBar.setVisibility(View.GONE);
         if (!TextUtils.isEmpty(errCode) && errCode.contains("|")) {
             String[] errCodeList = errCode.split("\\|");
             String code = errCodeList[1];
@@ -428,19 +354,6 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
         }
     }
 
-    private void registerBroadcastReceiver() {
-        mReceiver = new RefreshBroadcastReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(IWXDebugProxy.ACTION_DEBUG_INSTANCE_REFRESH);
-        registerReceiver(mReceiver, filter);
-    }
-
-    private void unregisterBroadcastReceiver() {
-        if (mReceiver != null) {
-            unregisterReceiver(mReceiver);
-        }
-        mReceiver = null;
-    }
 
     private static class NavigatorAdapter implements IActivityNavBarSetter {
 
@@ -490,19 +403,5 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
         }
     }
 
-    public class RefreshBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (IWXDebugProxy.ACTION_DEBUG_INSTANCE_REFRESH.equals(intent.getAction())) {
-                Log.v(TAG, "connect to debug server success");
-                if (mUri != null) {
-                    if (TextUtils.equals(mUri.getScheme(), "http") || TextUtils.equals(mUri.getScheme(), "https")) {
-                        loadWXfromService(mUri.toString());
-                    } else {
-                        loadWXfromLocal(true);
-                    }
-                }
-            }
-        }
-    }
+
 }
