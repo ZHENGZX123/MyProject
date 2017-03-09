@@ -16,6 +16,7 @@ public class Tab2Activity extends WXBaseActivity {
         getSupportActionBar().hide();
 
         load("tab2.zip");
+        
 //        renderPage(WXFileUtils.loadAsset("weex/mygridview.js", this), "file://assets/");
     }
 }

@@ -42,7 +42,6 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
     public static final String WXPAGE = "wxpage";
     public static Activity wxPageActivityInstance;
     private ViewGroup mContainer;
-    //    private ProgressBar mProgressBar;
     private WXSDKInstance mInstance;
     private Uri mUri;
     private HashMap mConfigMap = new HashMap<String, Object>();
@@ -131,7 +130,6 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
                 String bundleUrl = mUri.toString();
                 mConfigMap.put("bundleUrl", bundleUrl);
 
-
                 Log.d("test", "bundleUrl = " + bundleUrl);
                 //这里是跳页渲染，地址写死可能不行，要根据web传过来的路径，进行修改。如果js里面写了，也行。
 //                ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", "function1.zip").findFirst();
@@ -175,12 +173,9 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
     }
 
     private void loadWXfromService(final String url) {
-//        mProgressBar.setVisibility(View.VISIBLE);
-
         if (mInstance != null) {
             mInstance.destroy();
         }
-
         RenderContainer renderContainer = new RenderContainer(this);
         mContainer.addView(renderContainer);
 
@@ -209,7 +204,6 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
             @Override
             public void onError(WXHttpTask task) {
                 Log.i(TAG, "into--[http:onError]");
-//                mProgressBar.setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(), "network error!", Toast.LENGTH_SHORT).show();
             }
         };

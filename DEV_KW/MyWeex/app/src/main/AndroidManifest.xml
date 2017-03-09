@@ -54,14 +54,14 @@
         <activity android:name=".activity.BootActivity"></activity>
         <activity android:name=".activity.LoadingActivity"></activity>
         <activity android:name=".activity.MyTabActivity"></activity>
-        <activity android:name=".activity.MainActivity"></activity>
-        <activity android:name=".activity.MainActivity2">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.MainActivity2"></activity>
     </application>
 
 </manifest>
