@@ -7,6 +7,7 @@ import com.zk.myweex.WXApplication;
 import com.zk.myweex.entity.ZipPackage;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.baas.sdk.KWQuery;
@@ -51,7 +52,7 @@ public class VersionManager {
             ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", name).findFirst();
             Service s = new Service().findOne(new KWQuery().equalTo("name", name.replace(".zip", "")));
             Log.d("version", "s  = " + s.toString());
-            Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").equalTo("platform","android").descending("version"));
+            Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
             Log.d("version", "p = " + p.toString());
             String currentVersion = zip.version;
             String remoteVersion = p.get("version").toString();
@@ -59,10 +60,10 @@ public class VersionManager {
                 Log.d("version", "有新版本");
                 String downloadUrl = p.get("url").toString();
                 String version = p.get("version").toString();
-                downloadNewVersion(downloadUrl, name, version);
+                downloadFull(downloadUrl, name, version);
             } else {
                 //如果版本号一样，检查增量包
-                List<Package> patchs = new Package().find(new KWQuery().equalTo("serviceId", s.getId()).equalTo("version", currentVersion).equalTo("updateType", "patch").equalTo("platform","android"));
+                List<Package> patchs = new Package().find(new KWQuery().equalTo("serviceId", s.getId()).equalTo("version", currentVersion).equalTo("updateType", "patch").equalTo("platform", "android"));
                 if (patchs.size() == 0) {
                     Log.d("version", "没有新版本");
                 } else {
@@ -74,7 +75,7 @@ public class VersionManager {
                             Log.d("version", "该增量包已经打过了。。。");
                         } else {
                             Log.d("version", "没有打过增量包,去打");
-                            addPatch(name, zip, patch);
+                            downloadPatch(name, zip, patch);
                         }
                     }
                 }
@@ -82,7 +83,7 @@ public class VersionManager {
         }
     }
 
-    private void addPatch(final String name, final ZipPackage zip, final Package patch) throws Exception {
+    private void downloadPatch(final String name, final ZipPackage zip, final Package patch) throws Exception {
         //1.下载增量包
         HttpDownload httpDownload = new HttpDownload();
         String patchName = name.replace(".zip", "") + "_" + patch.get("version") + "_patch_" + patch.get("id") + ".zip";
@@ -93,6 +94,9 @@ public class VersionManager {
 
         String zipA = WXApplication.PATH + name;
         String zipB = WXApplication.PATH_PATCH + patchName;
+
+        //0.检查旧包和新包的目录结构是否一致
+        //comparePackage(zipA, zipB);
 
         // 1.先解压旧的，再解压新的，解压路径一致
         new ZipUtil().unZip(zipA);
@@ -121,7 +125,8 @@ public class VersionManager {
         Log.d("version", "包打好了");
     }
 
-    protected void downloadNewVersion(final String downloadUrl, final String zipName, final String version) {
+    //全量包
+    protected void downloadFull(final String downloadUrl, final String zipName, final String version) {
         HttpDownload httpDownload = new HttpDownload();
         int ret = httpDownload.downFile(downloadUrl, WXApplication.PATH_TMP, zipName);
         Log.d("version", "下载返回值 ret = " + ret);
@@ -130,7 +135,7 @@ public class VersionManager {
         }
         Log.d("version", "下载成功");
         //0.检查旧包和新包的目录结构是否一致
-        comparePackage(WXApplication.PATH + zipName, WXApplication.PATH_TMP + zipName);
+        // comparePackage(WXApplication.PATH + zipName, WXApplication.PATH_TMP + zipName);
 
         //1.先保存旧包
         File currentFile = new File(WXApplication.PATH + zipName);
@@ -151,6 +156,36 @@ public class VersionManager {
 
     private void comparePackage(String currentPackage, String newPackage) {
         //不解压怎么判断。
+        ArrayList<String> files1 = ZipUtil.readZip(currentPackage);
+        ArrayList<String> files2 = ZipUtil.readZip(newPackage);
+        System.out.println("file1 count =" + files1.size());
+        System.out.println("file2 count =" + files2.size());
+        if (files1.size() > files2.size()) {
+            System.out.println(".......error.......");
+            return;
+        }
+        boolean error = false;
+        String errorFile = null;
+        for (int i = 0; i < files1.size(); i++) {
+            String file1 = files1.get(i);
+            boolean existed = false;
+            for (int j = 0; j < files2.size(); j++) {
+                String file2 = files2.get(j);
+                if (file1.equals(file2)) {
+                    existed = true;
+                }
+            }
+            if (!existed) {
+                errorFile = file1;
+                error = true;
+                break;
+            }
+        }
+        if (error) {
+            System.out.println("error:" + errorFile);
+        } else {
+            System.out.println("no error");
+        }
     }
 
 

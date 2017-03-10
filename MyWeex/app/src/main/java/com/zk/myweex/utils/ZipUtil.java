@@ -6,7 +6,10 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -16,7 +19,6 @@ import java.util.zip.ZipOutputStream;
  * @author Administrator
  */
 public class ZipUtil {
-
 
 
     private ZipInputStream zipIn; // 解压Zip
@@ -137,6 +139,26 @@ public class ZipUtil {
         // zip.unZip("f:\\tab0.zip");
         zip.doZip("f:/tab0");
         // zip.unZip("f:/tab0.zip");
+    }
+
+    public static ArrayList<String> readZip(String zipPath) {
+        ArrayList<String> files = new ArrayList<String>();
+        try {
+            ZipFile zf = new ZipFile(zipPath);
+            InputStream in = new BufferedInputStream(new FileInputStream(
+                    zipPath));
+            ZipInputStream zin = new ZipInputStream(in);
+            ZipEntry ze;
+            while ((ze = zin.getNextEntry()) != null) {
+                System.out.println("name = " + ze.getName());
+                files.add(ze.getName());
+            }
+            zin.closeEntry();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return files;
     }
 
 }
