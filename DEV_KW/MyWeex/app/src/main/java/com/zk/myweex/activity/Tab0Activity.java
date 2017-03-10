@@ -12,8 +12,6 @@ public class Tab0Activity extends SubActivity {
         super.onCreate(savedInstanceState);
 
 
-        setContainer((ViewGroup) findViewById(R.id.index_container));
-        getSupportActionBar().hide();
 
 //      renderPage(WXFileUtils.loadAsset("yjpt_py/weex/login.js", this), "file://assets/");
 //        renderPage(WXFileUtils.loadAsset("yjpt/weex_jzd/index.js", this), "file://assets/");

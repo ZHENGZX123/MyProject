@@ -13,8 +13,6 @@ public class Tab1Activity extends SubActivity {
         super.onCreate(savedInstanceState);
 
 
-        setContainer((ViewGroup) findViewById(R.id.index_container));
-        getSupportActionBar().hide();
 
 //        renderPage(WXFileUtils.loadAsset("weex/tab1.js", this), "file://assets/");
 

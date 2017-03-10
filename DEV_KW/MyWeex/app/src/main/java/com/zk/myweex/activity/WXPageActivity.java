@@ -8,7 +8,6 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -36,7 +35,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 
-public class WXPageActivity extends AppCompatActivity implements IWXRenderListener, WXSDKInstance.NestedInstanceInterceptor {
+public class WXPageActivity extends WXBaseActivity implements IWXRenderListener, WXSDKInstance.NestedInstanceInterceptor {
 
     private static final String TAG = "WXPageActivity";
     public static final String WXPAGE = "wxpage";
@@ -56,6 +55,8 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mContainer = (ViewGroup) findViewById(R.id.index_container);
 
         setCurrentWxPageActivity(this);
         WXSDKEngine.setActivityNavBarSetter(new NavigatorAdapter());
@@ -82,7 +83,6 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
         }
 
         Log.e("TestScript_Guide mUri==", mUri.toString());
-        initUIAndData();
 
         if (WXPAGE.equals(mUri.getScheme())) {
             mUri = mUri.buildUpon().scheme("http").build();
@@ -100,7 +100,7 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         if (mWxAnalyzerDelegate != null) {
             mWxAnalyzerDelegate.onStart();
@@ -131,7 +131,6 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
                 mConfigMap.put("bundleUrl", bundleUrl);
 
                 Log.d("test", "bundleUrl = " + bundleUrl);
-
 
                 if (bundleUrl.contains("/mnt/sdcard/")) {
                     //这里是跳页渲染，地址写死可能不行，要根据web传过来的路径，进行修改。如果js里面写了，也行。
@@ -164,11 +163,6 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
             return uri.getPath().replaceFirst("/", "");
         }
         return "";
-    }
-
-    private void initUIAndData() {
-        getSupportActionBar().hide();
-        mContainer = (ViewGroup) findViewById(R.id.index_container);
     }
 
     private void loadWXfromService(final String url) {
@@ -211,7 +205,7 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         if (mInstance != null) {
             mInstance.onActivityDestroy();
@@ -232,7 +226,7 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         if (mInstance != null) {
             mInstance.onActivityResume();
@@ -286,6 +280,7 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
 
     @Override
     public void onRenderSuccess(WXSDKInstance instance, int width, int height) {
+        super.onRenderSuccess(instance, width, height);
         if (mWxAnalyzerDelegate != null) {
             mWxAnalyzerDelegate.onWeexRenderSuccess(instance);
         }
@@ -298,6 +293,7 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
     @Override
     public void onException(WXSDKInstance instance, String errCode,
                             String msg) {
+        super.onException(instance, errCode, msg);
         if (mWxAnalyzerDelegate != null) {
             mWxAnalyzerDelegate.onException(instance, errCode, msg);
         }
@@ -326,7 +322,7 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
 
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         if (mInstance != null) {
             mInstance.onActivityPause();
@@ -337,7 +333,7 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         if (mInstance != null) {
             mInstance.onActivityStop();
