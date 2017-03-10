@@ -9,10 +9,8 @@ import com.taobao.weex.InitConfig;
 import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.common.WXException;
-import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.entity.HttpCache;
 import com.zk.myweex.extend.adapter.PicassoImageAdapter;
-import com.zk.myweex.extend.component.MyGridView;
 import com.zk.myweex.extend.module.LoginModule;
 import com.zk.myweex.extend.module.MyHttpCache;
 import com.zk.myweex.extend.module.MyModule;
@@ -100,7 +98,6 @@ public class WXApplication extends Application {
         try {
             WXSDKEngine.registerModule("my_module", MyModule.class);
             WXSDKEngine.registerModule("my_httpcache", MyHttpCache.class);
-            WXSDKEngine.registerComponent("my_gridview", MyGridView.class);
             WXSDKEngine.registerModule("login_module", LoginModule.class);
         } catch (WXException e) {
             e.printStackTrace();
