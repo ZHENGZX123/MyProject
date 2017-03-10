@@ -81,13 +81,10 @@ public class WXApplication extends Application {
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                // remove single match
                 caches.deleteAllFromRealm();
             }
         });
 
-//        WXSDKEngine.addCustomOptions("appName", "WXSample");
-//        WXSDKEngine.addCustomOptions("appGroup", "WXApp");
         WXSDKEngine.initialize(this,
                 new InitConfig.Builder()
                         .setImgAdapter(new PicassoImageAdapter())
