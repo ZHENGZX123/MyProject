@@ -56,7 +56,7 @@ public class WXPageActivity extends AppCompatActivity implements IWXRenderListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wxbase);
+
         setCurrentWxPageActivity(this);
         WXSDKEngine.setActivityNavBarSetter(new NavigatorAdapter());
         getWindow().setFormat(PixelFormat.TRANSLUCENT);

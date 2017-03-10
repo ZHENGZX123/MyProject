@@ -219,6 +219,7 @@ import com.taobao.weex.IWXRenderListener;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.common.WXRenderStrategy;
 import com.taobao.weex.utils.WXFileUtils;
+import com.zk.myweex.R;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.utils.AssertUtil;
@@ -250,6 +251,8 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_wxbase);
+
         createWeexInstance();
         mInstance.onActivityCreate();
 
