@@ -246,7 +246,7 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
 
     private static final String TAG = "WXBaseActivity";
 
-    private ViewGroup mContainer;
+    public ViewGroup mContainer;
     public WXSDKInstance mInstance;
     protected WXAnalyzerDelegate mWxAnalyzerDelegate;
     public static WXBaseActivity activity;
