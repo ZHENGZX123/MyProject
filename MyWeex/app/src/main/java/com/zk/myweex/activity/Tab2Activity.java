@@ -11,7 +11,7 @@ public class Tab2Activity extends SubActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tab2);
+        setContentView(R.layout.activity_wxbase);
         setContainer((ViewGroup) findViewById(R.id.index_container));
         getSupportActionBar().hide();
 
