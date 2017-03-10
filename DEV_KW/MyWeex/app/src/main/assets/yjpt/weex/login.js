@@ -3790,9 +3790,6 @@
 	    },
 	    methods: {
 	        redirect: function redirect(url) {
-	            modal.alert({
-	                message: 'url:---' + url
-	            }, function () {});
 	            Utils.navigate.push(this, url, 'true');
 	        },
 	        getImg: function getImg() {
