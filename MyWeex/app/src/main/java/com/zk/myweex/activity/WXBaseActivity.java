@@ -206,6 +206,8 @@ package com.zk.myweex.activity;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -213,6 +215,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.taobao.weex.IWXRenderListener;
@@ -245,13 +248,18 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
 
     private ViewGroup mContainer;
     public WXSDKInstance mInstance;
-
     protected WXAnalyzerDelegate mWxAnalyzerDelegate;
+    public static WXBaseActivity activity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wxbase);
+
+        setContainer((ViewGroup) findViewById(R.id.index_container));
+        getSupportActionBar().hide();
+
+        this.activity = this;
 
         createWeexInstance();
         mInstance.onActivityCreate();
@@ -260,6 +268,19 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         mWxAnalyzerDelegate.onCreate();
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
     }
+
+    public Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
+            int arg1 = msg.arg1;
+            if (arg1 == 0) {
+                rl_nonet.setVisibility(View.VISIBLE);
+            } else {
+                rl_nonet.setVisibility(View.GONE);
+            }
+        }
+    };
 
     protected final void setContainer(ViewGroup container) {
         mContainer = container;

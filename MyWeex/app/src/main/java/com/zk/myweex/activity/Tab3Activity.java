@@ -11,8 +11,6 @@ public class Tab3Activity extends SubActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContainer((ViewGroup) findViewById(R.id.index_container));
-        getSupportActionBar().hide();
 
         load("tab3.zip");
 

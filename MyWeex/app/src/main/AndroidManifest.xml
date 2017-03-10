@@ -62,6 +62,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.WebViewActivity"></activity>
+
+
+        <receiver android:name=".broadcast.NetChangeBroadCast">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

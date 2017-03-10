@@ -16,9 +16,6 @@ public class MyTabActivity extends WXBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContainer((ViewGroup) findViewById(R.id.index_container));
-        getSupportActionBar().hide();
-
         int position = getIntent().getIntExtra("position", 0);
         Log.d("test", "position = " + position);
         load("tab" + position + ".zip");
