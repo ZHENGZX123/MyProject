@@ -5,7 +5,7 @@ import android.view.ViewGroup;
 
 import com.zk.myweex.R;
 
-public class Tab2Activity extends WXBaseActivity {
+public class Tab2Activity extends SubActivity {
 
 
     @Override
