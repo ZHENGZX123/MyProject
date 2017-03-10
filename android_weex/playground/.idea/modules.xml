@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../commons/commons.iml" filepath="$PROJECT_DIR$/../commons/commons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dslv/dslv.iml" filepath="$PROJECT_DIR$/dslv/dslv.iml" />
+      <module fileurl="file://$PROJECT_DIR$/playground.iml" filepath="$PROJECT_DIR$/playground.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../weex_debug/weex_debug.iml" filepath="$PROJECT_DIR$/../weex_debug/weex_debug.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../sdk/weex_sdk.iml" filepath="$PROJECT_DIR$/../sdk/weex_sdk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wjc_ImagePicker/wjc_ImagePicker.iml" filepath="$PROJECT_DIR$/wjc_ImagePicker/wjc_ImagePicker.iml" />
+    </modules>
+  </component>
+</project>
