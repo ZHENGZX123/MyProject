@@ -40,7 +40,7 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
     private static final String TAG = "WXPageActivity";
     public static final String WXPAGE = "wxpage";
     public static Activity wxPageActivityInstance;
-    private ViewGroup mContainer;
+
     private WXSDKInstance mInstance;
     private Uri mUri;
     private HashMap mConfigMap = new HashMap<String, Object>();
@@ -56,7 +56,6 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mContainer = (ViewGroup) findViewById(R.id.index_container);
 
         setCurrentWxPageActivity(this);
         WXSDKEngine.setActivityNavBarSetter(new NavigatorAdapter());

@@ -27,10 +27,9 @@ public class WebViewActivity extends WXBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //如果是自己设置contentview，就要setcontainer
         setContentView(R.layout.activity_webview);
-
         setContainer((ViewGroup) findViewById(R.id.index_container));
-        getSupportActionBar().hide();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         et = (EditText) findViewById(R.id.et);
@@ -43,7 +42,6 @@ public class WebViewActivity extends WXBaseActivity {
         et.setText(url);
         renderPageByURL(url);
     }
-
 
     public void clickInput(View v) {
         rl.setVisibility(View.VISIBLE);
