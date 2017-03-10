@@ -532,6 +532,8 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         if (baseUrl.contains("/")) {
             int position = baseUrl.lastIndexOf("/") + 1;
             baseUrl = baseUrl.replace(baseUrl.substring(position), "");
+        } else {
+            baseUrl = "";
         }
         String bundleUrl = "file://" + WXApplication.PATH + zipName + "/" + baseUrl;
         Log.d("test", "path = " + path);
