@@ -12,7 +12,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.taobao.weex.IWXRenderListener;
@@ -24,7 +23,6 @@ import com.taobao.weex.common.WXRenderStrategy;
 import com.taobao.weex.ui.component.NestedContainer;
 import com.taobao.weex.utils.WXFileUtils;
 import com.taobao.weex.utils.WXLogUtils;
-import com.zk.myweex.R;
 import com.zk.myweex.https.WXHttpManager;
 import com.zk.myweex.https.WXHttpTask;
 import com.zk.myweex.https.WXRequestListener;
@@ -127,9 +125,16 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
                 Rect outRect = new Rect();
                 ctx.getWindow().getDecorView().getWindowVisibleDisplayFrame(outRect);
                 String bundleUrl = mUri.toString();
-                mConfigMap.put("bundleUrl", bundleUrl);
 
-                Log.d("test", "bundleUrl = " + bundleUrl);
+                String baseUrl = bundleUrl;
+                if (baseUrl.contains("/")) {
+                    int position = baseUrl.lastIndexOf("/") + 1;
+                    baseUrl = baseUrl.replace(baseUrl.substring(position), "");
+                } else {
+                    baseUrl = "";
+                }
+                mConfigMap.put("bundleUrl", baseUrl);
+                Log.d("test", "bundleUrl = " + baseUrl);
 
                 if (bundleUrl.contains("/mnt/sdcard/")) {
                     //这里是跳页渲染，地址写死可能不行，要根据web传过来的路径，进行修改。如果js里面写了，也行。
