@@ -19,7 +19,7 @@ import io.realm.Realm;
  * Created by Administrator on 2017/2/28.
  */
 
-public class VersionManager {
+public class VersionUpManager {
 
     private Context context;
 
@@ -188,7 +188,7 @@ public class VersionManager {
         }
     }
 
-
+    //目前没用到。。。
     public void getLocalVersion() {
         //检查tmp目录下有zip包，如果有，提示用户更新
         File root = new File(WXApplication.PATH_TMP);

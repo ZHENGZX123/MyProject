@@ -13,9 +13,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zk.myweex.R;
-import com.zk.myweex.utils.VersionManager;
+import com.zk.myweex.entity.TabEntity;
+import com.zk.myweex.utils.VersionUpManager;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import cn.kiway.baas.sdk.KWQuery;
+import cn.kiway.baas.sdk.model.service.Service;
+import io.realm.Realm;
 
 
 public class MainActivity2 extends TabActivity {
@@ -28,13 +34,35 @@ public class MainActivity2 extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        initView();
 
         new Thread() {
             @Override
             public void run() {
                 try {
-                    VersionManager manager = new VersionManager();
+                    //第一次，初始化tab
+                    int tabcount = Realm.getDefaultInstance().where(TabEntity.class).findAll().size();
+                    if (tabcount == 0) {
+                        List<Service> services = new Service().find(new KWQuery().like("name", "tab%"));
+                        for (Service s : services) {
+                            Realm.getDefaultInstance().beginTransaction();
+                            TabEntity tab = Realm.getDefaultInstance().createObject(TabEntity.class);
+                            tab.name = s.get("name").toString();
+                            tab.sort = 0;//TODO
+                            tab.image_default = "";
+                            tab.image_selected = "";
+                            Realm.getDefaultInstance().commitTransaction();
+                        }
+                    }
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            int tabcount = Realm.getDefaultInstance().where(TabEntity.class).findAll().size();
+                            initView(tabcount);
+                        }
+                    });
+
+                    VersionUpManager manager = new VersionUpManager();
                     manager.init(getApplication());
                     manager.getLocalVersion();
                     manager.getRemoteVersion();
@@ -45,13 +73,15 @@ public class MainActivity2 extends TabActivity {
         }.start();
     }
 
-    private void initView() {
+    private void initView(int tabcount) {
+        if (tabcount == 0) {
+            return;
+        }
         bottom = (LinearLayout) findViewById(R.id.bottom);
-        int num = 4;
-        bottom.setWeightSum(num);
+        bottom.setWeightSum(tabcount);
         tabhost = getTabHost();
 
-        for (int i = 0; i < num; i++) {
+        for (int i = 0; i < tabcount; i++) {
             final int ii = i;
             LayoutInflater inflater = LayoutInflater.from(this);
             LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.layout_tab, null);

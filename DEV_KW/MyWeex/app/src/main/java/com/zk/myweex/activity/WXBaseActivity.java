@@ -528,7 +528,7 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
 
         String path = WXApplication.PATH + zipName + "/" + baseUrl;//path要指到具体js
 
-        //baseUrl要去掉xxx.js。如果不包含/怎么办
+        //baseUrl要去掉xxx.js
         if (baseUrl.contains("/")) {
             int position = baseUrl.lastIndexOf("/") + 1;
             baseUrl = baseUrl.replace(baseUrl.substring(position), "");

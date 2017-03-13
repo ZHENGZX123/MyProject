@@ -64,7 +64,8 @@ dependencies {
     compile 'com.taobao.android:weex_inspector:0.10.0.3@aar'
     compile project(':sdk')
     //原common包
-    compile 'com.squareup.picasso:picasso:2.5.2'
+//    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     //sdk
     compile files('libs/jdeferred-core-1.2.4.jar')
     compile files('libs/org.apache.http.legacy.jar')
