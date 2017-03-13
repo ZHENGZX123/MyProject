@@ -14,24 +14,14 @@ import com.zk.myweex.activity.WXBaseActivity;
 
 import java.text.DecimalFormat;
 
-public class NetChangeBroadCast extends BroadcastReceiver {
+public class NetChangeBroadcast extends BroadcastReceiver {
 
-    private MyListener l;
-
-    public void setListener(MyListener l) {
-        this.l = l;
-    }
-
-    public interface MyListener {
-        public void onListener(String state);
-    }
-
-    State wifiState = null;
-    State mobileState = null;
+    private State wifiState = null;
+    private State mobileState = null;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("test", "NetChangeBroadCast onReceive");
+        Log.d("test", "NetChangeBroadcast onReceive");
         //获取手机的连接服务管理器，这里是连接管理器类
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         wifiState = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
@@ -49,7 +39,6 @@ public class NetChangeBroadCast extends BroadcastReceiver {
             msg.obj = "手机没有任何网络...";
         }
         WXBaseActivity.activity.mHandler.sendMessage(msg);
-
     }
 
     private static final int NETWORK_TYPE_UNAVAILABLE = -1;

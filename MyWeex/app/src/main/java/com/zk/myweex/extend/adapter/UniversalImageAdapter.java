@@ -203,81 +203,85 @@
  */
 package com.zk.myweex.extend.adapter;
 
-import android.net.Uri;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.taobao.weex.WXEnvironment;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.adapter.IWXImgLoaderAdapter;
 import com.taobao.weex.common.WXImageStrategy;
 import com.taobao.weex.dom.WXImageQuality;
+import com.zk.myweex.R;
 
-public class PicassoImageAdapter implements IWXImgLoaderAdapter {
+import java.lang.reflect.Field;
 
-    public PicassoImageAdapter() {
-    }
+/**
+ * Created by Administrator on 2017/2/22.
+ */
+
+public class UniversalImageAdapter implements IWXImgLoaderAdapter {
+
+//            "http://site.com/image.png" // from Web
+//            "file:///mnt/sdcard/image.png" // from SD card
+//            "file:///mnt/sdcard/video.mp4" // from SD card (video thumbnail)
+//            "content://media/external/images/media/13" // from content provider
+//            "content://media/external/video/media/13" // from content provider (video thumbnail)
+//            "assets://image.png" // from assets
+//            "drawable://" + R.drawable.img // from drawables (non-9patch images)
 
     @Override
-    public void setImage(final String url, final ImageView view,
-                         WXImageQuality quality, final WXImageStrategy strategy) {
-
-        Log.d("test", "picasso url = " + url);
-
+    public void setImage(final String temp, final ImageView view, WXImageQuality quality, WXImageStrategy strategy) {
         WXSDKManager.getInstance().postOnUiThread(new Runnable() {
-
             @Override
             public void run() {
-                if (view == null || view.getLayoutParams() == null) {
+                Log.d("test", "universal temp  = " + temp);
+                if (temp == null) {
                     return;
                 }
-                if (TextUtils.isEmpty(url)) {
-                    view.setImageBitmap(null);
+                if (view == null) {
                     return;
                 }
-                String temp = url;
-                if (url.startsWith("//")) {
-                    temp = "http:" + url;
+                String url = "";
+                if (temp.startsWith("//")) {
+                    url = "http:" + temp;
+                } else {
+                    url = temp;
                 }
-                if (view.getLayoutParams().width <= 0 || view.getLayoutParams().height <= 0) {
-                    return;
+                Log.d("test", "universal url  = " + url);
+
+                if (url.startsWith("drawable://") || url.startsWith("mipmap://")) {
+                    Class drawable = R.drawable.class;
+                    Field field = null;
+                    int r_id;
+                    try {
+                        field = drawable.getField(url.replace("drawable://", "").replace("mipmap://", ""));
+                        r_id = field.getInt(field.getName());
+//                        view.setImageResource(r_id);
+                        ImageLoader.getInstance().displayImage("drawable://" + r_id, view, getLoaderOptions());
+                    } catch (Exception e) {
+                        Log.e("ERROR", "PICTURE NOT??FOUND??");
+                    }
+                } else if (url.startsWith("http://") || url.startsWith("https://")) {
+                    ImageLoader.getInstance().displayImage(url, view, getLoaderOptions());
+                } else if (url.startsWith("file://")) {
+                    ImageLoader.getInstance().displayImage(url, view, getLoaderOptions());
+                } else if (url.startsWith("assets://")) {
+                    ImageLoader.getInstance().displayImage(url, view, getLoaderOptions());
                 }
-
-
-                if (!TextUtils.isEmpty(strategy.placeHolder)) {
-                    Picasso.Builder builder = new Picasso.Builder(WXEnvironment.getApplication());
-                    Picasso picasso = builder.build();
-                    picasso.load(Uri.parse(strategy.placeHolder)).into(view);
-
-                    view.setTag(strategy.placeHolder.hashCode(), picasso);
-                }
-
-                Picasso.with(WXEnvironment.getApplication())
-                        .load(temp)
-                        .transform(new BlurTransformation(strategy.blurRadius))
-                        .into(view, new Callback() {
-                            @Override
-                            public void onSuccess() {
-                                if (strategy.getImageListener() != null) {
-                                    strategy.getImageListener().onImageFinish(url, view, true, null);
-                                }
-
-                                if (!TextUtils.isEmpty(strategy.placeHolder)) {
-                                    ((Picasso) view.getTag(strategy.placeHolder.hashCode())).cancelRequest(view);
-                                }
-                            }
-
-                            @Override
-                            public void onError() {
-                                if (strategy.getImageListener() != null) {
-                                    strategy.getImageListener().onImageFinish(url, view, false, null);
-                                }
-                            }
-                        });
             }
         }, 0);
+    }
+
+    public DisplayImageOptions getLoaderOptions() {
+        DisplayImageOptions.Builder displayImageOptionsBuilder = new DisplayImageOptions.Builder();
+        // displayImageOptionsBuilder.showImageForEmptyUri(R.drawable.loading);
+        displayImageOptionsBuilder.cacheInMemory(false);
+        displayImageOptionsBuilder.cacheOnDisc(true);
+        // RoundedBitmapDisplayer displayer = new RoundedBitmapDisplayer(10);
+        // displayImageOptionsBuilder.displayer(displayer);
+        DisplayImageOptions defaultDisplayImageOptions = displayImageOptionsBuilder
+                .build();
+        return defaultDisplayImageOptions;
     }
 }

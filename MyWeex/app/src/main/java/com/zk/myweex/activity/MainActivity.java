@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.zk.myweex.R;
 import com.zk.myweex.utils.ServiceManager;
-import com.zk.myweex.utils.VersionManager;
+import com.zk.myweex.utils.VersionUpManager;
 
 
 public class MainActivity extends TabActivity {
@@ -45,7 +45,7 @@ public class MainActivity extends TabActivity {
             @Override
             public void run() {
                 try {
-                    VersionManager manager = new VersionManager();
+                    VersionUpManager manager = new VersionUpManager();
                     manager.init(getApplication());
                     manager.getLocalVersion();
                     manager.getRemoteVersion();

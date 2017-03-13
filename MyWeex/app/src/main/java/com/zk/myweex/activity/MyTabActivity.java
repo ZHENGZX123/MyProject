@@ -2,14 +2,12 @@ package com.zk.myweex.activity;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ViewGroup;
-
-import com.zk.myweex.R;
 
 /**
  * Created by Administrator on 2017/3/7.
  */
 
+//动态tab使用
 public class MyTabActivity extends WXBaseActivity {
 
     @Override
