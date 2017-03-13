@@ -235,7 +235,7 @@ public class UniversalImageAdapter implements IWXImgLoaderAdapter {
         WXSDKManager.getInstance().postOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.d("test", "universal temp  = " + temp);
+                Log.d("universal", "universal temp  = " + temp);
                 if (temp == null) {
                     return;
                 }
@@ -248,7 +248,7 @@ public class UniversalImageAdapter implements IWXImgLoaderAdapter {
                 } else {
                     url = temp;
                 }
-                Log.d("test", "universal url  = " + url);
+                Log.d("universal", "universal url  = " + url);
 
                 if (url.startsWith("drawable://") || url.startsWith("mipmap://")) {
                     Class drawable = R.drawable.class;

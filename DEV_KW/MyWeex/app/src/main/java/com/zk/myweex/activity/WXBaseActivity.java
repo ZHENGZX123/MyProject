@@ -438,7 +438,7 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
     @Override
     @CallSuper
     public void onException(WXSDKInstance instance, String errCode, String msg) {
-        Log.d("test", "base onException");
+        Log.d("test", "base onException : " + errCode + " " + msg);
         if (mWxAnalyzerDelegate != null) {
             mWxAnalyzerDelegate.onException(instance, errCode, msg);
         }
