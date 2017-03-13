@@ -24,6 +24,7 @@ import com.zk.myweex.extend.adapter.UniversalImageAdapter;
 import com.zk.myweex.extend.module.LoginModule;
 import com.zk.myweex.extend.module.MyHttpCache;
 import com.zk.myweex.extend.module.MyModule;
+import com.zk.myweex.extend.module.WXEventModule;
 import com.zk.myweex.mqttclient.MqttInstance;
 import com.zk.myweex.mqttclient.mq.Conf;
 import com.zk.myweex.utils.FileUtils;
@@ -106,6 +107,7 @@ public class WXApplication extends Application {
             WXSDKEngine.registerModule("my_module", MyModule.class);
             WXSDKEngine.registerModule("my_httpcache", MyHttpCache.class);
             WXSDKEngine.registerModule("login_module", LoginModule.class);
+            WXSDKEngine.registerModule("event", WXEventModule.class);
         } catch (WXException e) {
             e.printStackTrace();
         }
