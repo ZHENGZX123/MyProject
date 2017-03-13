@@ -22,6 +22,7 @@ import java.util.List;
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Service;
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 
 public class MainActivity2 extends TabActivity {
@@ -42,7 +43,7 @@ public class MainActivity2 extends TabActivity {
                     //第一次，初始化tab
                     int tabcount = Realm.getDefaultInstance().where(TabEntity.class).findAll().size();
                     if (tabcount == 0) {
-                        List<Service> services = new Service().find(new KWQuery().like("name", "tab%"));
+                        List<Service> services = new Service().find(new KWQuery().like("id", "tab%"));
                         for (Service s : services) {
                             Realm.getDefaultInstance().beginTransaction();
                             TabEntity tab = Realm.getDefaultInstance().createObject(TabEntity.class);
@@ -57,8 +58,8 @@ public class MainActivity2 extends TabActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            int tabcount = Realm.getDefaultInstance().where(TabEntity.class).findAll().size();
-                            initView(tabcount);
+                            RealmResults<TabEntity> tabs = Realm.getDefaultInstance().where(TabEntity.class).findAll();
+                            initView(tabs);
                         }
                     });
 
@@ -73,21 +74,26 @@ public class MainActivity2 extends TabActivity {
         }.start();
     }
 
-    private void initView(int tabcount) {
+    private void initView(RealmResults<TabEntity> tabs) {
+        if (tabs == null) {
+            return;
+        }
+        int tabcount = tabs.size();
         if (tabcount == 0) {
             return;
         }
         bottom = (LinearLayout) findViewById(R.id.bottom);
         bottom.setWeightSum(tabcount);
         tabhost = getTabHost();
-
         for (int i = 0; i < tabcount; i++) {
+            TabEntity tabEntity = tabs.get(i);
+
             final int ii = i;
             LayoutInflater inflater = LayoutInflater.from(this);
             LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.layout_tab, null);
             ImageView iv = (ImageView) ll.findViewById(R.id.iv);
             TextView tv = (TextView) ll.findViewById(R.id.tv);
-            tv.setText("tab" + ii);
+            tv.setText(tabEntity.name);//名字
 
             bottom.addView(ll, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
             lls.add(ll);
