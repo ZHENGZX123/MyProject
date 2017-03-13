@@ -14,7 +14,7 @@ import com.zk.myweex.activity.WXBaseActivity;
 
 import java.text.DecimalFormat;
 
-public class NetChangeBroadcast extends BroadcastReceiver {
+public class NetChangeBroadCast extends BroadcastReceiver {
 
     private State wifiState = null;
     private State mobileState = null;
