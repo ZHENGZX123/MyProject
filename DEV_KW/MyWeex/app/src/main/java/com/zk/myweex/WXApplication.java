@@ -20,7 +20,10 @@ import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.common.WXException;
 import com.zk.myweex.entity.HttpCache;
-import com.zk.myweex.extend.adapter.AsyncHttpAdapter;
+import com.zk.myweex.extend.adapter.GitHubApi;
+import com.zk.myweex.extend.adapter.ReadCookiesInterceptor;
+import com.zk.myweex.extend.adapter.RetrofitHttpAdapter;
+import com.zk.myweex.extend.adapter.SaveCookiesInterceptor;
 import com.zk.myweex.extend.adapter.UniversalImageAdapter;
 import com.zk.myweex.extend.module.LoginModule;
 import com.zk.myweex.extend.module.MyHttpCache;
@@ -39,6 +42,10 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
 import io.realm.RealmResults;
 import io.realm.RealmSchema;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * Created by Administrator on 2017/2/22.
@@ -57,14 +64,12 @@ public class WXApplication extends Application {
 
     public static String PATH_PATCH = "/mnt/sdcard/kiway/patch/";
 
-    public static WXApplication application;
+    public static String BASE_URL = "http://www.yuertong.com/";
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        application = this;
 
         if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
             if (new File(WXApplication.ROOT).exists()) {
@@ -105,9 +110,12 @@ public class WXApplication extends Application {
         //universal-image-loader初始化
         initImageCache();
 
+        //retrofit2.0初始化
+        initRetrofit();
+
         //初始化weex
         WXSDKEngine.initialize(this, new InitConfig.Builder()
-                .setHttpAdapter(new AsyncHttpAdapter())
+//                .setHttpAdapter(new RetrofitHttpAdapter(this))
                 .setImgAdapter(new UniversalImageAdapter()).build());
 
         //注册自定义组件
@@ -160,6 +168,27 @@ public class WXApplication extends Application {
                 }
             }
         });
+    }
+
+    public static GitHubApi repo;
+
+    public GitHubApi initRetrofit() {
+        if (repo == null) {
+            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new SaveCookiesInterceptor(this))
+                    .addInterceptor(new ReadCookiesInterceptor(this)).build();
+            //旧语法不再支持
+//        OkHttpClient client = new OkHttpClient();
+//        client.addInterceptor(new ReadCookiesInterceptor(this));
+//        client.interceptors().add(new SaveCookiesInterceptor(this));
+            Retrofit retrofit = new Retrofit.Builder()
+                    .client(client)
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            repo = retrofit.create(GitHubApi.class);
+        }
+        return repo;
     }
 
     //realm数据库migration
