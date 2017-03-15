@@ -20,6 +20,7 @@ import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.common.WXException;
 import com.zk.myweex.entity.HttpCache;
+import com.zk.myweex.extend.adapter.AsyncHttpAdapter;
 import com.zk.myweex.extend.adapter.UniversalImageAdapter;
 import com.zk.myweex.extend.module.LoginModule;
 import com.zk.myweex.extend.module.MyHttpCache;
@@ -56,10 +57,14 @@ public class WXApplication extends Application {
 
     public static String PATH_PATCH = "/mnt/sdcard/kiway/patch/";
 
+    public static WXApplication application;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        application = this;
 
         if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
             if (new File(WXApplication.ROOT).exists()) {
@@ -102,6 +107,7 @@ public class WXApplication extends Application {
 
         //初始化weex
         WXSDKEngine.initialize(this, new InitConfig.Builder()
+                .setHttpAdapter(new AsyncHttpAdapter())
                 .setImgAdapter(new UniversalImageAdapter()).build());
 
         //注册自定义组件

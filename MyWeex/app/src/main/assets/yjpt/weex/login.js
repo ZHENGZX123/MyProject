@@ -3743,9 +3743,9 @@
 	        },
 	        url: 'reg',
 	        forgetPwdUrl: 'forget-pwd',
-	        phoneNumber: '',
+	        phoneNumber: '15019622208',
 	        phoneNumberCheck: true,
-	        pwd: '',
+	        pwd: '123456',
 	        pwdCheck: false,
 	        imgUrl: Utils.ip + 'yjpt/code',
 	        loginFailTime: 0,
@@ -3792,6 +3792,9 @@
 	                okTitle: '好的'
 	            }, function () {});
 	        });
+
+
+
 	    },
 	    methods: {
 	        redirect: function redirect(url) {
