@@ -1,0 +1,231 @@
+<template>
+    <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="注册" title-color="white">
+            <div class="login_row">
+                <div class="row_right">
+                    <div class="login_icon">
+                        <image class="row_img1" src="{{phoneImg}}"></image>
+                    </div>
+                    <input type="number" class="row_inpt" placeholder="请输入手机号" id="phoneNum" value="{{phoneNum}}" oninput="numTypeIn" ></input>
+                </div>
+            </div>
+            <div class="login_row">
+                <div class="row_right">
+                    <div class="login_icon">
+                        <image class="row_img2" src="{{pwdImg}}"></image>
+                    </div>
+                    <input class="row_inpt" type="password" placeholder="请输入密码" value="{{pwd}}" oninput="pwdIn"></input>
+                </div>
+            </div>
+            <div class="login_row">
+                <div class="row_right">
+                    <div class="login_icon">
+                        <image class="row_img2" src="{{pwdImg}}"></image>
+                    </div>
+                    <input class="row_inpt" type="password" placeholder="请确认密码" value="{{pwd2}}" oninput="pwdDouble"></input>
+                </div>
+            </div>
+            <div class="login_row"> 
+                <div class="row_right">
+                    <div class="login_icon">
+                        <image class="row_img2" src="{{qrImg}}"></image>
+                    </div>
+                    <input class="row_inpt row2" placeholder="请输验证码" id="verCode" oninput="verCodeIn"  value="{{verCode}}" ></input>
+                    <text class="get_code" id="getCode" onclick="getVerCode">{{verCodeText}}</text>
+                </div>
+            </div>
+            <div class="login_row">
+                <text class="login_btn" onclick="regHandle">注册</text>
+            </div>           
+          <!--  <div class="reg_row" >
+                <text class="reg_btn" onclick="redirect(url)">立即登录</text>
+            </div>  -->
+   
+    </wxc-navpage>
+</template>
+<style>
+    .login_wrap{margin:20;}
+    .login_row{flex-direction: row;align-items: center;margin:30; margin-bottom: 10;}
+    .row_right{flex: 1;position: relative;flex-direction: row;align-items: center;}
+    .row_inpt{height: 84; padding-left:100;font-size: 34;color: #666666;font-family: Microsoft YaHei;border-width: 1; border-color: #00cc99; border-radius: 8; border-bottom-right-radius: 8; position: relative;z-index: 0;flex: 1;}    
+    .login_icon{position: absolute;left: 0;top: 0;z-index: 20;width: 80;height: 84;background-color: #dff0d8;  border-bottom-left-radius: 8; border-right-width: 1; border-right-color: #00cc99; display: flex; align-items: center; border-top-left-radius: 8;}
+    .row2{width: 400;}
+    .row_img1{width: 24;height: 38;margin-top: 22;}
+    .row_img2{width: 30;height: 30;margin-top: 26;}
+    .get_code{font-size: 34;color: #ffffff; background-color: #00cc99;text-align: center;padding: 19;font-family: Microsoft YaHei;border-radius: 8;margin-left: 15;width: 215;}
+    .login_btn{padding: 25; text-align: center; color: #ffffff; border-radius: 8; background-color: #00cc99; flex:1; font-family: Microsoft YaHei; font-size: 36; }
+    .reg_btn{width: 300; border-width: 1; border-color: #cccccc; color: #00cc99;border-radius: 8; padding: 25;font-family: Microsoft YaHei;text-align:center; font-size: 36;  position: fixed; bottom: 100;  left: 225;}
+    .reg_row{display:flex;}
+</style>
+
+<script>
+    require('weex-components');
+    var Utils = require('./javascript/Utils');
+    var modal = require('@weex-module/modal');
+    module.exports = {
+        data: {
+            navBarHeight:130,
+            dir: 'yjpt',
+            phoneNum:'13430893721',
+           // url:'',
+            pwd:'',
+            pwd2:'',
+            verCode:'',
+            phoneNumCheck:false,
+            pwdCheck:false, 
+            verCodeCheck:false,
+            verCodeText:'获取验证码' ,
+            pwdDoubleCheck:false,
+            sendingSMS:false, 
+        },
+        created : function(){
+            this.phoneImg = Utils.ip + 'yjpt/images/phone.png';
+            this.qrImg = Utils.ip + 'yjpt/images/ewm.png';
+            this.pwdImg = Utils.ip + 'yjpt/images/pwd.png';            
+        },
+        methods:{
+            numTypeIn :function(e){
+                this.phoneNum=e.value;
+                if((/^1[3|4|5|7|8]\d{9}$/.test(this.phoneNum))&&this.phoneNum!=""){
+                    this.phoneNumCheck=true; 
+                }
+            },
+            pwdIn :function(e){
+                this.pwd=e.value;
+                this.pwdCheck=/\S{6,}/.test(this.pwd) ? true : false;
+            },
+            pwdDouble : function(e){
+                this.pwd2=e.value;
+                if(/\S{6,}/.test(this.pwd2) && this.pwd2 == this.pwd){
+                    this.pwdDoubleCheck=true;
+                }else{
+                    this.pwdDoubleCheck=false;
+                }
+            },
+            verCodeIn: function(e){
+                this.verCode=e.value;
+                this.verCodeCheck=this.verCode==""? false :true;
+            },
+
+            /**=====================获取验证码================ **/
+            getVerCode : function(){
+                var self = this;
+                self.phoneNum=self.$el("phoneNum").attr.value;
+                var phone=self.phoneNum;
+                if(!(/^1[3|4|5|7|8]\d{9}$/.test(self.phoneNum))||self.phoneNum==""){
+                    modal.alert({
+                        message:'请输入正确的手机号码',
+                        okTitle:'好的'
+                    })
+                }else{
+                    if(self.sendingSMS==true) return;
+                    Utils.fetch({
+                        url: '/app/sms?phone='+self.phoneNum,
+                        method:'get',
+                        dataType:'json',
+                        success: function(data){
+
+                            var time=5;
+                            var timer;
+                            modal.alert({
+                                message:'验证码已发至您的手机，请注意查收',
+                                okTitle:'好的'
+                            },function(){
+                                var code = self;
+                                timer=setInterval(function(){
+                                    time --;
+                                    code.verCodeText=new String(time);
+                                    if(time==0){
+                                        code.verCodeText='重新获取';
+                                        clearInterval(timer);
+                                        self.sendingSMS = false;
+                                    }else{
+                                        self.sendingSMS = true;
+                                    }
+                                },1000);
+
+                            })
+
+                        }
+
+                    });
+
+                }
+            },
+             /*==================注册====================*/
+            regHandle : function(){
+               // console.log(this.pwdCheck);
+                if(this.phoneNumCheck==false  ){
+                    modal.alert({
+                        message:'请输入正确的手机号码',
+                        okTitle:'好的'
+                    },function(){});
+                    return;
+                }
+                if(this.pwdCheck==false){
+                    modal.alert({
+                        message:'请输入至少6位以上密码',
+                        okTitle:'好的'
+                    },function(){});
+                    return;
+                }
+                if(this.pwdDoubleCheck==false){
+                    modal.alert({
+                        message:'两次输入的密码不一致',
+                    },function(){});
+                    return;
+                }
+                if(this.verCodeCheck==false){
+                    modal.alert({
+                        message:'请输入验证码',
+                        okTitle:'好的'
+                    },function(){})
+                    return;
+                }
+                var self= this;
+                Utils.fetch({
+                    url:'/app/regist',
+                    data:'userName='+self.phoneNum+'&password='+self.pwd2+'&sms='+self.verCode+'&userType=1'+'&phone='+self.phoneNum+'&mobile='+self.phoneNum,
+                    method:'POST',
+                    dataType:'json',
+                    success:function(ret){
+                        
+                        if(ret.data.StatusCode==200){
+                            modal.alert({
+                                message:'注册成功，请完成登录',
+                                okTitle:'好的'
+                            },function(){
+                                setTimeout(function(){
+                                    var url=Utils.setOpenUrl(self.$getConfig(),'login');
+                                    Utils.navigate.push(self,url,'true');
+                                },600);
+                            });
+                        }else if(ret.data.StatusCode == 400 ){
+                            modal.alert({
+                                message:'验证码已过期，请重新获取',
+                                okTitle:'好的'
+                            },function(){});
+                        }else if(ret.data.StatusCode == 300 ){
+                            modal.alert({
+                                message:'该手机号已注册，是否用该号码登录？',
+                                okTitle:'好的'
+                            },function(){
+                                var url=Utils.setOpenUrl(self.$getConfig(),'login');
+                                Utils.navigate.push(self,url,'true');
+                            });
+                                   
+                        }else if(ret.data.StatusCode == 500 ){
+                            modal.alert({
+                                message:'系统错误，请稍后尝试',
+                                okTitle:'好的'
+                            },function(){});
+                        }
+                    }
+                      
+                })
+
+             }
+        }
+    }
+</script>
+
+

@@ -1,0 +1,111 @@
+ <template>
+  <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="修改姓名"
+    title-color="white" left-item-src="{{images.leftItemImg}}" right-item-title="确定" right-item-color='white'>
+        <scroller>
+            <div class='main_page'>
+                <input class='name_input'
+                    type="url"
+                    autofocus="false"
+                    value="{{childName}}" oninput='childNameIn'>
+                </input>
+            </div>            
+        </scroller>
+      <!--<wxc-loading if="{{loading}}"></wxc-loading>-->
+</wxc-navpage>  
+</template>
+<style>
+    .main_page{flex: 1;background-color: #fff;font-family: Microsoft YaHei;padding: 20;}   
+    .name_input{border-bottom-width: 1px;border-bottom-style: solid;border-bottom-color: #ddd;height:80;line-height:80;background-color: #fff;border-left-width: 1px;border-left-style: solid;border-left-color: #ddd;
+      border-top-width: 1px;border-top-style: solid;border-top-color: #ddd;padding: 20;
+      border-right-width: 1px;border-right-style: solid;border-right-color: #ddd;margin:15;font-size: 34;}
+    
+</style>
+<script>
+    require('weex-components');
+    var Utils = require('./javascript/Utils');
+    var modal = require('@weex-module/modal');
+    var storage = require('@weex-module/storage');
+    module.exports = {
+        data: {
+            loading:false,   
+            navBarHeight: 130,
+            dir:'yjpt',
+            images:{
+                leftItemImg:'yjpt/images/id_right_bg.png',
+                userImg:'yjpt/images/my_01.png',
+                rightItemImg:'yjpt/images/menu.png'
+            },
+            childName:'',
+            childId:''
+        },
+        created:function(){
+            Utils.changeImg(this.images,['leftItemImg','userImg','rightItemImg']);
+            this.$on('naviBar.leftItem.click',function(e){ 
+                // history.back();
+                Utils.navigate.pop(this,'true');
+            }); 
+
+            var self = this;
+            storage.getItem('childName',function(e){
+                self.childName = e.data;
+            });            
+            
+
+            var self = this;
+
+            storage.getItem('userProfile',function(e){
+                if(e.data){
+                    e.data = JSON.parse(e.data);
+                    self.childId = e.data.id;
+                    self.childName = e.data.realname;
+                }
+            });
+
+            /*修改宝贝姓名*/   
+            this.$on('naviBar.rightItem.click',function(e){
+                console.log(self.childName);
+                if(this.childName != ''){
+                    Utils.fetch({
+                        url:'/app/student/'+self.childId,
+                        data:'uname=' + self.childName,
+                        type:'json',
+                        method:'put',
+                        success:function(ret){
+                            ret.data = eval('('+ret.data+')');
+                            if(ret.data.StatusCode == '200'){
+                                modal.toast({
+                                    message:'修改成功',
+                                    duration:'1'
+                                });            
+
+                                setTimeout(function(){
+                                    var url = Utils.setOpenUrl(self.$getConfig(),'class-main-page');
+                                    Utils.navigate.push(self,url,'true');
+                                },1000);                    
+                            }else{
+                                modal.toast({
+                                    message:'操作失败，请稍后重试',
+                                    duration:'1'
+                                });
+                            }
+                        }
+                    });    
+                }else{
+                    modal.toast({
+                        message:'请输入姓名',
+                        duration:'1'
+                    });
+                }
+            });
+            
+        },
+        methods:{
+            redirect:function(url){
+                Utils.navigate.push(this,url,'true');;
+            },
+            childNameIn:function(e){
+                this.childName = e.value.replace(/\s/g,"");
+            }
+        }
+    }
+</script>

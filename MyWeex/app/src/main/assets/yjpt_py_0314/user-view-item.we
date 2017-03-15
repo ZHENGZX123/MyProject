@@ -1,0 +1,68 @@
+<template>
+	<div class="item" repeat="{{dataList}}" onclick="openlistPage(url,classId,childId)">
+		    <image class="pic_thumb" style=" border-radius: {{state}} " if="{{state}}"  src="{{pictureUrl}}"></image>
+        <div class="main">
+      			<div class="main_upper">
+      					<text class="main_upper_title">{{title}}</text>
+      				    <text class="operating" if="{{operatId && operatId>0}}" onclick="operatPage(operatUrl)">{{operating}}<text class="operatId" >{{operatId}}</text></text>
+      				    <text class="operating" if="{{noticeId && noticeId>0}}" onclick="noticePage(noticeUrl)">{{notice}}<text class="operatId">{{noticeId}}</text></text>
+      					 <text class="main_upper_time" >{{date}}</text>
+      			</div>
+      			<div class="main_lower">
+      					<text class="main_lower_content">{{news_content}}</text>
+      					<text if="{{size>0}}" class="main_lower_size" >{{size}}</text>
+      			</div>
+        </div>   
+    </div>
+</template>
+
+<style>
+  .item {
+    width: 750;  background-color:#fff;
+    border-bottom-width: 1;
+    border-bottom-color: #e7e7e7;
+    height: 150;
+    padding-top:20px; padding-bottom: 20px;
+    flex-direction: row;
+    display: flex; justify-content: center; justify-content: center;
+  }
+  .main{width:570; margin-right: 30;}
+  .pic_thumb { width: 110; height: 110; margin-right:25; margin-left: 25;}
+  .main_upper{height:55;  flex-direction: row;}
+  .main_upper_title{color:#000000;font-size: 36; line-height:50;}
+  .main_upper_time{flex: 1; text-align:right; color:#b8b8b8; font-size: 28; line-height: 45;}
+  .title_name { width:750; height: 80; color:#000000; line-height:80; font-size: 32;  text-indent:20; flex-direction: row; font-family:微软雅黑;}
+  .more{width:40; height:80; line-height:80; flex: 1;font-size: 28; text-align:right; color:#b8b8b8; padding-right:20;}
+  .operating{font-size:26; background-color:#00CC99; padding:6;height: 40;  letter-spacing:8; border-radius:3; color:#ffffff; margin: 15; margin-top: 8; }
+  .operatId{background-color:#F74C31; color:#ffffff; width:35; height: 35; left:40; border-radius:23; font-size:26; text-align:center; top:-22;}
+  .main_lower{height:55; flex-direction: row;}
+  .main_lower_content{flex: 1; margin-right: 30; line-height: 45; text-align: left; font-size: 32; color:#b8b8b8; font-family:微软雅黑; text-overflow: ellipsis; lines:1; }
+  .main_lower_size{ width:40; height:40; line-height:35; color:#ffffff; font-size:26; text-align: center; background-color:#F74C31;  border-radius:25; margin-top: 7;  }
+</style>
+
+<script>
+  require('weex-components');
+  var Utils = require('./javascript/Utils');
+  module.exports = {
+    data: {
+      dir: 'yjpt'
+    },
+    methods : {
+       state: function() {
+        return this.picState == '1' ? '55' : '5';
+      },
+      openlistPage : function(url){
+        Utils.navigate.push(this,url);
+        //this.$openURL(url);
+      },
+      operatPage : function(url){
+        //this.$openURL(url);
+         Utils.navigate.push(this,url);
+      },
+      noticePage : function(url){
+        //this.$openURL(url);
+         Utils.navigate.push(this,url);
+      }
+    } 
+  }
+</script>

@@ -8,7 +8,7 @@ import android.util.Log;
  */
 
 //动态tab使用
-public class MyTabActivity extends WXBaseActivity {
+public class MyTabActivity extends SubActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

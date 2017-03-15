@@ -1,0 +1,136 @@
+<template>
+    <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="性别" title-color="white" onclickleftitem="onclickleftitem" left-item-src="{{images.leftItemImg}}"  right-item-title="确定" right-item-color="white">
+       <scroller class="content">          
+          <div class="gender" repeat='gender' onclick="radioCheck($index)">
+              <text class="sex">{{sex}}</text>
+              <image class="blank_img" src='{{status}}'></image>
+          </div>
+      </scroller>
+    </wxc-navpage>
+</template>
+<style>
+    .content {
+    color: #353535;
+    background-color: #efeff4;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    } 
+    .content{background-color: #eeeeee;color: #333333;font-family: Microsoft YaHei;font-size: 16;}
+    .gender{flex-direction: row; padding: 30; align-items: center; background-color: #ffffff;border-bottom-width:1;  border-bottom-color:#dddddd;}
+    .gender_select{width: 1270;height: 35;text-align: right;}
+    .sex{font-size: 40; flex: 4;}
+    .blank_img{height: 50;width: 50;}
+
+</style>
+<script>
+  require('weex-components');
+  var Utils = require('./javascript/Utils');
+  var modal = require('@weex-module/modal');
+  var storage = require('@weex-module/storage');
+  module.exports = {
+      data: {
+          navBarHeight: 130,
+          cnt: 0,
+          show0: true,
+          show1: false,
+          show2: false,
+          displayRefresh: 'show',
+          displayLoading: 'show',
+          images:{
+            leftItemImg:'yjpt/images/id_right_bg.png',
+            blankRadio:'yjpt/images/blank_radio2.png',
+            selectRadio:'yjpt/images/select_radio2.png'
+          },
+          gender:[
+              {sex:'男',status:'',type:'1'},
+              {sex:'女',status:'',type:'2'}
+          ],
+          userSex:0
+      },
+      created : function(){
+            this.$on('naviBar.leftItem.click',function(e){ 
+                Utils.navigate.pop(this,'true');
+            });
+            var userId;
+            var self=this;          
+
+            //获取性别
+            storage.getItem('userId',function(e){
+                Utils.fetch({
+                    url:'/app/user?userId='+e.data,
+                    method:'get',
+                    dataType:'json',
+                    success:function(ret){
+
+                        var user = ret.data.data;                   
+                        self.userSex = user.gender;  
+
+                        //设置默认选中性别
+                        for(var i in self.gender){
+                            if(self.gender[i].type == self.userSex){
+                               self.gender[i].status = self.images.selectRadio;
+                            }else{
+                              self.gender[i].status = self.images.blankRadio;
+                            }
+                        }                              
+                    }
+                });
+            });
+
+            this.$on('naviBar.rightItem.click',function(e){                
+                Utils.fetch({
+                    url:'/app/user',
+                    data:'userId='+userId+'&gender='+ self.userSex,
+                    type:'json',
+                    method:'POST',
+                    success:function(ret){
+                      var _data=ret.data;
+                      var obj = eval("(" + _data + ")");
+                      if(obj.StatusCode == '200'){
+                        modal.toast({
+                          message:'修改成功',
+                          duration:'1'
+                        });
+
+                        setTimeout(function(){
+                            var url = Utils.setOpenUrl(self.$getConfig(),'index');
+                            Utils.navigate.push(self,url,'true');
+                        },1000);
+                      }else{
+                        modal.toast({
+                          message:'修改失败，请稍后重新修改',
+                          duration:'1'
+                        });
+                      }
+                    }
+                })
+        });
+
+            Utils.changeImg(this.images,['leftItemImg','blankRadio','selectRadio']);
+            for(var i in this.gender){
+                this.gender[i].status = this.images.blankRadio;
+                this.gender[0].status = this.images.selectRadio;
+            }
+      },
+      methods:{
+          radioCheck:function(index){
+            var self = this;
+            if(this.gender[index].status == this.images.blankRadio){
+                for(var i in this.gender){
+                    this.gender[i].status = this.images.blankRadio;
+                }
+                this.gender[index].status = this.images.selectRadio;
+            }
+            if(index == 0) {
+              self.userSex = '1'
+            }else{
+                self.userSex = '2';
+            }
+
+          }
+      }
+  };
+</script>

@@ -1,0 +1,115 @@
+<template>
+    <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="选择成员" title-color="white" onclickleftitem="onclickleftitem" left-item-src="{{images.leftItemImg}}" right-item-title='确定' right-item-color="#fff" onclickrightitem='onclickrightitem'>
+        <scroller class="content">
+            <div class="schools"  repeat='classMembers' if="classMembers.length > 0" onclick="selectClass($index)"  id="sb$index">
+                <text class="school_name">{{realname}}</text>
+                <image class="blank_img"  src='{{imgUrl}}'></image>
+            </div>
+            <div if="classMembers.length<=0">
+                <text style="padding:100;text-align: center;background-color: #fff;">暂无数据</text>
+            </div>
+        </scroller>
+   </wxc-navpage>  
+</template>
+<style>
+    .content { background-color: #f4f1f1; position: absolute; top: 0; left: 0; right: 0;  bottom: 0; }
+    .schools{flex-direction: row;padding: 30;align-items: center;background-color: #fff;border-bottom-width:1;border-bottom-style:solid;border-bottom-color:#e7e7e7;padding-top: 40;padding-bottom: 40;font-size: 34;padding-right: 60;}
+    .blank_img{height: 60;width: 60;}
+    .school_name{flex: 4;font-size: 34;}
+</style>
+<script>
+    require('weex-components');
+    var Utils = require('./javascript/Utils');
+    var modal = require('@weex-module/modal');
+    var storage = require('@weex-module/storage');
+    module.exports = {
+        data: {
+            navBarHeight:130,
+            classMembers:[],
+            images:{
+                leftItemImg:'yjpt/images/id_right_bg.png',
+                qrImg:'yjpt/images/qr_img.png',
+                arrowRight:'yjpt/images/arrow_right2.png',
+                blankRadio:'yjpt/images/checkbox_blank.png',
+                selectRadio:'yjpt/images/checkbox_checked.png'
+            }, 
+            classId:'',
+            showClass:0,
+            class:[],
+            userIds:[]
+        },
+        created(){
+            Utils.changeImg(this.images,['leftItemImg','qrImg']);
+            Utils.changeImg(this.images,['blankRadio','selectRadio']);
+
+            this.$on('naviBar.leftItem.click',function(e){ 
+                Utils.navigate.pop(this,'true');
+            });
+
+            var bundleUrl = this.$getConfig().bundleUrl;
+            var nativeBase;
+            var isAndroidAssets = bundleUrl.indexOf('file://assets/') >= 0;
+            var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;
+            if (isAndroidAssets) {
+              nativeBase = 'file://assets/yjpt/weex_jzd/';
+            }
+            else if (isiOSAssets) {
+                nativeBase = bundleUrl.substring(0, bundleUrl.lastIndexOf('/') + 1);
+            }
+            else {
+                var host = 'localhost:12580';
+                var matches = /\/\/([^\/]+?)\//.exec(this.$getConfig().bundleUrl);
+                if (matches && matches.length >= 2) {
+                    host = matches[1];
+                }
+                nativeBase = 'http://' + host + '/' + this.dir + '/weex_jzd/';
+            }
+            var h5Base = './index.html?page=./' + this.dir + '/weex_jzd/';
+            // in Native
+            var base = nativeBase;
+            if (typeof window === 'object') {
+                // in Browser or WebView
+                base = h5Base;
+            }
+
+            var self = this;                
+            storage.getItem('classMembers',function(e){
+                if(e.data != 'undefined'){
+                    self.classMembers = JSON.parse(e.data);
+                    console.log(self.classMembers);
+                }
+            });
+
+            storage.getItem('classId',function(e){
+                if(e.data){
+                    self.classId = e.data;
+                }
+            });
+
+            self.$on('naviBar.rightItem.click',function(){
+                self.userIds.splice(0,self.userIds.length);
+                for(var i in self.classMembers){
+                    if(self.classMembers[i].imgUrl == self.images.selectRadio){
+                        self.userIds.push(self.classMembers[i].id);
+                    }
+                }
+                
+                //将userIds、classId传给iOS
+                console.log(self.classId);
+                console.log(self.userIds);
+            });
+                
+        },
+        methods:{
+            selectClass:function(index){
+                var self = this;
+
+                if(self.classMembers[index].imgUrl == self.images.blankRadio){
+                    self.classMembers[index].imgUrl = self.images.selectRadio;
+                }else{                   
+                    self.classMembers[index].imgUrl = self.images.blankRadio;
+                }
+            }
+        }
+    }
+</script>

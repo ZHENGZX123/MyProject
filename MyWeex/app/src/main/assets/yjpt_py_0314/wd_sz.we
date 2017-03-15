@@ -1,0 +1,158 @@
+<template>
+   <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="设置"
+    title-color="white" onclickleftitem="onclickleftitem" left-item-src="{{headLeft}}" >
+    <scroller class="content">
+      <!-- <div class="mycake" onclick="">
+          <text class="name" >仅在WIFI网络下上传照片</text>
+          <switch checked="true">muted:</switch>
+      </div> -->
+      <div class="mycake">
+          <text class="name" >清除缓存</text>
+          <text class="rightli" style="font-size: 34; ">0.00M</text>
+      </div>
+     <!-- <div class="mycake">
+          <text class="name" >检查更新</text>
+          <text class="rightli" style="font-size: 34; ">当前版本{{edition}}</text>
+      </div>-->
+      <div class="mycake" onclick="updatePwdPage">
+          <text class="name" >修改密码</text>
+          <text class="rightli"><img class="play_btn" src="{{rightArrow}}"></text>
+      </div>
+      <div class="mycake" onclick="openserviceAPage">
+          <text class="name" >服务协议</text>
+          <text class="rightli" style=" background-color: #ccc; " ><img class="play_btn" src="{{rightArrow}}"></text>
+      </div>
+     <!--  <div  class="mycake" onclick="">
+          <text class="name" >关于</text>
+          <text class="rightli"><img class="play_btn" src="{{rightArrow}}"></text>
+      </div> -->
+      <div  class="mycake mycake1 mycake_li" style=" margin-top: 20; " onclick="exitPage">
+          <text class="name1" >退  出</text>
+      </div>
+
+   </scroller>
+      
+  </wxc-navpage>
+</template>
+<style>
+   .content {
+    color: #353535;
+    background-color: #efeff4;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  .mycake{flex-direction:row; width:750; height: 120; background-color: #ffffff; 
+    border-bottom-width: 1;
+    border-bottom-color: #e5e5e5;
+    display: flex;
+    align-items: center; 
+    justify-content: space-between; padding-left:30; padding-right:30; 
+     }
+  .mycake1{justify-content:center; }
+  .mycake_li{border-top-width: 1; border-top-color: #e5e5e5;}
+  .name{ font-size: 36;}
+  .name1{color: red; font-size: 42; }
+  .rightli{font-size: 45; color:#cccccc; margin-right: 20;}
+  .play_btn{width: 22;height: 32;}
+</style>
+<script>
+  require('weex-components');
+  var Utils = require('./javascript/Utils');
+  var modal = require('@weex-module/modal');
+  var storage = require('@weex-module/storage');
+  module.exports = {
+    data: {
+      navBarHeight: 130,
+      name:'小森林',
+      myPortraitUrl:'yjpt/images/IMG_df.png',
+      edition:'',
+      rightArrow:''
+    },
+    created : function(){
+      this.headLeft = Utils.ip + 'yjpt/images/id_right_bg.png';
+      this.rightArrow = Utils.ip + 'yjpt/images/arrows_right.png';
+      this.$on('naviBar.leftItem.click',function(e){ 
+            // history.back();
+            Utils.navigate.pop(this,'true');
+        }); 
+      this.myPortraitUrl=Utils.changeImg(this.myPortraitUrl);
+
+      var self=this;
+
+      //  Utils.fetch({ //鸟波儿粉丝联盟
+      //     url:'/version/getVersion',
+      //     method:'POST',
+      //     dataType:'json',
+      //     success:function(ret){
+      //       var retDate=ret.data;
+      //       if(retDate.result=='success'){ 
+      //         self.edition=retDate.iosyjptj;
+      //         storage.setItem('edition',retDate.iosyjptj,function(e){});
+      //       }
+      //     }
+      // })
+    },
+    methods : {
+      openserviceAPage : function(){
+       // this.$openURL(Utils.setOpenUrl(this.$getConfig(),'fwxy'));
+        var url=Utils.setOpenUrl(this.$getConfig(),'fwxy');
+        Utils.navigate.push(this,url,'true');
+      },
+      updatePwdPage :function(){
+          //this.$openURL(Utils.setOpenUrl(this.$getConfig(),'updata_Pwd'));
+          var url=Utils.setOpenUrl(this.$getConfig(),'update-pwd');
+          Utils.navigate.push(this,url,'true'); 
+      },
+      exitPage : function(){
+         var self= this;
+         modal.confirm({
+            message:'确定要退出吗？',
+            okTitle:'确定',
+            cancelTitle:'取消'
+         },function(res){
+            if(res == '确定'){
+
+                //删除所有storage
+                storage.getAllKeys(function(e){
+                    for(var i in e.data){
+                        storage.removeItem(e.data[i],function(e){});
+                    }
+                });
+
+                var url=Utils.setOpenUrl(self.$getConfig(),'login');
+                // Utils.navigate.push(self,url,'true'); 
+            }
+         });
+        // Utils.fetch({
+        //     url:'/logout/app',
+        //     method:'POST',
+        //     dataType:'json',
+        //     success:function(ret){
+        //       var retDate=ret.data;
+        //       console.log(retDate);
+        //       if(retDate.retcode=='1'){
+        //           modal.alert({
+        //               message:'成功退出!',
+        //               okTitle:'好的'
+        //           },function(){
+        //               setTimeout(function(){
+        //                   //self.$openURL(Utils.setOpenUrl(self.$getConfig(),'login'));
+        //                   var url=Utils.setOpenUrl(self.$getConfig(),'login');
+        //                   Utils.navigate.push(self,url,'true'); 
+        //               },600);
+        //           });
+                 
+        //       }
+
+        //     }
+        // })
+      }
+
+      
+    }
+
+  }
+</script>

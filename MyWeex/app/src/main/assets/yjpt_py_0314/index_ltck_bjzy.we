@@ -1,0 +1,100 @@
+<template>
+   <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="小(1)班"
+    title-color="white" onclickleftitem="onclickleftitem" left-item-src="{{headLeft}}"  right-title="取消" >
+    <scroller class="content">
+        <div repeat="{{myInfo}}" class="mycake1" >
+             <div src="{{src}}" onclick="openPage" ><image class=" pic_thumb" src="{{myPortraitUrl}}"></image></div>
+            <text class="myName">{{name}}</text>
+        </div>
+        <div class="mycake mycake_li" onclick="openNamePage" style="border-top: none;" >
+            <text class="name" >我的群名片</text>
+            <text class="rightName">小森林的家长 </text>
+            <text class="rightli" >></text>
+        </div>
+        <div class="mycake" style="border-top: none; ">
+            <text class="name" >群成员</text>
+            <text class="rightName" src="{{src}}" onclick="openIofoPage">20人</text>
+            <text class="rightli" >></text>
+        </div>
+        <div class="mycake mycake_li" style="margin-top:20;">
+            <text class="name" >消息免打扰</text>
+            <switch checked="true">muted:</switch>
+        </div>
+        <div  class="mycake">
+            <text class="name" >聊天记录</text>
+            <text class="rightli" >></text>
+        </div>
+        <div  class="mycake mycake_li" style="margin-top: 20; ">
+            <text class="name">清空聊天记录</text>
+            <text class="rightli" >></text>
+        </div>
+    </scroller>     
+  </wxc-navpage>
+</template>
+<style>
+   .content {
+    color: #353535;
+    background-color: #efeff4;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  .mycake1{ width:750;  background-color: #ffffff; padding-top:50; padding-bottom:35; align-items: center; }
+  .myName{font-size: 38; font-family:微软雅黑; padding: 10; text-align:center; }
+  .pic_thumb { width: 200; height: 200;  border-radius: 100; }
+  .rightName { flex: 2; padding-right: 20; text-align:right; font-family:微软雅黑;}
+
+   .mycake{flex-direction:row; width:750; height: 110; background-color: #ffffff; 
+    border-bottom-width: 1;
+    border-bottom-color: #e5e5e5;
+    display: flex;
+    align-items: center; 
+    justify-content: space-between; padding-left:30; padding-right:30; 
+     }
+  .mycake_li{
+    height: 110;
+    border-top-width: 1;
+    border-top-color: #e5e5e5;
+  }
+  .name{ font-size: 36;}
+  .rightli{font-size: 45; color:#cccccc;}
+
+</style>
+<script>
+  require('weex-components');
+  var Utils = require('./javascript/Utils');
+  module.exports = {
+    data: {
+      navBarHeight: 130,
+      myInfo:[{name:'原来',myPortraitUrl:'yjpt/images/Photo_bj.png',}]
+    },
+    created : function(){
+      this.headLeft = Utils.ip + 'yjpt/images/id_right_bg.png';
+      Utils.changeImg(this.myInfo,['myPortraitUrl']);
+      this.$on('naviBar.leftItem.click',function(e){
+          Utils.navigate.pop(this,'true');
+        });
+    },
+    methods : {
+      openPage : function(){
+        //this.$openURL(Utils.setOpenUrl(this.$getConfig(),'wd_bb'));
+          var url=Utils.setOpenUrl(this.$getConfig(),'wd_bb');
+          Utils.navigate.push(this,url,'true');
+      },
+      openIofoPage : function(){
+        //this.$openURL(Utils.setOpenUrl(this.$getConfig(),'index_ltck_bjzy_bjcy'));
+          var url=Utils.setOpenUrl(this.$getConfig(),'index_ltck_bjzy_bjcy');
+          Utils.navigate.push(this,url,'true');
+      },
+      openNamePage: function(){
+        //this.$openURL(Utils.setOpenUrl(this.$getConfig(),'name'));
+          var url=Utils.setOpenUrl(this.$getConfig(),'name');
+          Utils.navigate.push(this,url,'true');
+      }
+      
+    }
+
+  };
+</script>

@@ -1,0 +1,122 @@
+<template>
+    <div class="class_list"  style="position: absolute;z-index:999999999999999;left: 0;bottom: 0;right: 0;top: 0;background-color: rgba(0,0,0,.7);" >
+        <div onclick="confirm" style="flex-direction: row;padding-top:42;padding-bottom:42;padding-left:30;padding-right:5;align-items: center;background-color: #ebebeb;border-bottom-width:1;border-bottom-style:solid;border-bottom-color:#ddd;font-size: 34;position: absolute;left: 0;right: 0;font-size: 34;top:0;border-bottom-style: solid;border-bottom-width: 2;font-weight:bold;border-bottom-color: #dddddd;z-index: 9999999;">
+            <text style="flex: 3;text-align: left;">请选择班级</text>
+            <text style="flex: 1;text-align: right;padding: 30;padding-top: 6;padding-bottom: 6;" onclick='confirm'>确定</text>
+        </div>
+        <div style="position: absolute;left: 0;right: 0;top: 130;bottom: 0;">
+            <scroller>
+                <div class="schools"  repeat='classList' if="classList.length>0" onclick="selectClass($index)"  id="sb$index">
+                    <text class="school_name">{{name}} ({{grade_id}})</text>
+                    <image class="blank_img"  src='{{imgUrl}}'></image>
+                </div>
+
+                <div if="classList.length<=0">
+                    <text style="padding:100;text-align: center;background-color: #fff;">暂无数据</text>
+                </div>
+            </scroller>
+        </div>
+    </div>
+</template>
+<style>
+    .schools{flex-direction: row;padding: 30;align-items: center;background-color: #fff;border-bottom-width:1;border-bottom-style:solid;border-bottom-color:#ddd;padding-top: 40;padding-bottom: 40;font-size: 34;}
+    .blank_img{height: 60;width: 60;}
+    .school_name{flex: 4;font-size: 34;}
+</style>
+<script>
+    var Utils = require('./javascript/Utils');
+    var modal = require('@weex-module/modal');
+    var storage = require('@weex-module/storage');
+    module.exports = {
+        data: {
+            classList:[],
+            images:{
+                leftItemImg:'yjpt/images/id_right_bg.png',
+                qrImg:'yjpt/images/qr_img.png',
+                arrowRight:'yjpt/images/arrow_right2.png',
+                blankRadio:'yjpt/images/checkbox_blank.png',
+                selectRadio:'yjpt/images/checkbox_checked.png'
+            }, 
+            classIds:[
+
+            ],
+            showClass:0,
+            class:[]
+        },
+        created(){
+            Utils.changeImg(this.images,['leftItemImg','qrImg','arrowRight','blankRadio','selectRadio']);
+            this.$on('naviBar.leftItem.click',function(e){ 
+                Utils.navigate.pop(this,'true');
+            });
+
+            var bundleUrl = this.$getConfig().bundleUrl;
+            console.log('hit', bundleUrl);
+            var nativeBase;
+            var isAndroidAssets = bundleUrl.indexOf('file://assets/') >= 0;
+            var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;
+            if (isAndroidAssets) {
+              nativeBase = 'file://assets/yjpt/weex_jzd/';
+            }
+            else if (isiOSAssets) {
+                nativeBase = bundleUrl.substring(0, bundleUrl.lastIndexOf('/') + 1);
+            }
+            else {
+                var host = 'localhost:12580';
+                var matches = /\/\/([^\/]+?)\//.exec(this.$getConfig().bundleUrl);
+                if (matches && matches.length >= 2) {
+                    host = matches[1];
+                }
+                nativeBase = 'http://' + host + '/' + this.dir + '/weex_jzd/';
+            }
+            var h5Base = './index.html?page=./' + this.dir + '/weex_jzd/';
+            // in Native
+            var base = nativeBase;
+            if (typeof window === 'object') {
+                // in Browser or WebView
+                base = h5Base;
+            }
+
+            var self = this;                
+            storage.getItem('classList',function(e){
+                self.classList = JSON.parse(e.data);
+                self.showClass = 1;       
+            });
+                
+        },
+        methods:{
+            selectClass:function(index){
+                var self = this;
+
+                if(self.classList[index].imgUrl == self.images.blankRadio){
+                    self.classList[index].imgUrl = self.images.selectRadio;
+                }else{                    
+                    self.classList[index].imgUrl = self.images.blankRadio;
+                }
+            },
+            confirm:function(){
+                var self = this;
+
+                self.showClass = 0;
+                self.classIds.splice(0,self.classIds.length);
+                self.class.splice(0,self.class.length);
+                for(var i = 0;i<self.classList.length;i++){
+                    if(self.classList[i].imgUrl == self.images.selectRadio){
+                        self.classIds.push(self.classList[i].id);
+                        self.class.push(self.classList[i]);
+                    }
+                }
+
+                // console.log(self.class);
+
+
+                self.$dispatch('showClass', 0);
+
+                if(self.classIds.length>0){
+                    self.$dispatch('classIds', self.classIds);
+                    self.$dispatch('classNames', self.class);
+                }
+                    
+            }
+        }
+    }
+</script>

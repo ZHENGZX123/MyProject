@@ -1,0 +1,77 @@
+<template>
+   <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="设备管理"
+    title-color="white" onclickleftitem="onclickleftitem" left-item-src="{{headLeft}}" >
+    <scroller class="content">
+
+      <div class="mycake">
+          <text class="name" >开维比巴--118F</text>
+          <text class="rightli box_btn1" style="font-size: 34; ">已连接</text>
+      </div>
+      <div style=" height: 100; flex-direction: row; align-items: center; padding-left: 20px;  "><text style="font-size: 42; color: #444; ">附近的设备</text></div>
+      <div  repeat="{{deviceList}}">
+          <div class="mycake"  >
+              <text class="name" >{{deviceName}}</text>
+              <text class="rightli box_btn" style="font-size: 34; ">切换设备</text>
+          </div>
+      </div>
+   </scroller>
+      
+  </wxc-navpage>
+</template>
+<style>
+   .content {
+    color: #353535;
+    background-color: #efeff4;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  .mycake{flex-direction:row; width:750; height: 120; background-color: #ffffff; 
+    border-bottom-width: 1;
+    border-bottom-color: #e5e5e5;
+    display: flex;
+    align-items: center; 
+    justify-content: space-between; padding-left:30; padding-right:30; 
+     }
+  .mycake_li{border-top-width: 1; border-top-color: #e5e5e5;}
+  .name{ font-size: 38; color: #444;}
+  .rightli{font-size: 45; color:#cccccc;}
+  .box_btn{margin-left: 10;background-color: #ff9e6a;color: #fff;border-radius: 4;text-align: center;padding:15;font-size: 34;font-family: Microsoft YaHei;}
+  .box_btn1{margin-left: 10;background-color: #f4f1f1;color: #ff9e6a;border-radius: 4;text-align: center;padding:15;font-size: 34;font-family: Microsoft YaHei;}
+</style>
+<script>
+  require('weex-components');
+  var Utils = require('./javascript/Utils');
+  var modal = require('@weex-module/modal');
+  var storage = require('@weex-module/storage');
+  module.exports = {
+    data: {
+      navBarHeight: 130,
+      name:'小森林',
+      myPortraitUrl:'yjpt/images/IMG_df.png',
+      deviceList:[{deviceName:'开维比巴--118D',url:'wd_sbgl'},{deviceName:'开维比巴--118A',url:'wd_sz'}
+      ],
+      edition:''
+    },
+    created : function(){
+      var self = this;
+      for (var i in this.basicDataList) {
+        self.basicDataList[i].url = Utils.setOpenUrl(self.$getConfig(),self.basicDataList[i].url);
+      } 
+
+      this.headLeft = Utils.ip + 'yjpt/images/id_right_bg.png';
+      this.$on('naviBar.leftItem.click',function(e){ 
+            // history.back();
+            Utils.navigate.pop(this,'true');
+        }); 
+      
+    },
+    methods : {
+      
+   
+    }
+
+  }
+</script>
