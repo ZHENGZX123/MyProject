@@ -205,6 +205,7 @@
 package com.taobao.weex.http;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
@@ -337,13 +338,13 @@ public class WXStreamModule extends WXModule {
         int timeout = optionsObj.getIntValue("timeout");
 
         //读取cookie
-//        Map<String, String> all = (Map<String, String>) mWXSDKInstance.getContext().getSharedPreferences("kiway_weex", 0).getAll();
-//        for (String key : all.keySet()) {
-//            if (url.contains(key)) {
-//                String value = all.get(key);
-//                headers.put("Cookie", value);
-//            }
-//        }
+        Map<String, String> all = (Map<String, String>) mWXSDKInstance.getContext().getSharedPreferences("kiway_weex", 0).getAll();
+        for (String key : all.keySet()) {
+            if (url.contains(key)) {
+                String value = all.get(key);
+                headers.put("Cookie", value);
+            }
+        }
 
         if (method != null) method = method.toUpperCase();
         Options.Builder builder = new Options.Builder()
@@ -379,19 +380,19 @@ public class WXStreamModule extends WXModule {
 
                             //保存cookie
                             //JSESSIONID=2b1ccd02-4eb4-49d8-8760-f4e67c1e5bc7; Path=/yjpt; HttpOnly
-//                            try {
-//                                if (headers != null && headers.containsKey("Set-Cookie")) {
-//                                    String value = headers.get("Set-Cookie");
-//                                    String[] splits = value.split(";");
-//                                    String jsessionid = splits[0].trim();
-//                                    String path = splits[1].trim().replace("Path=", "");
-//                                    if (value.contains("JSESSIONID")) {
-//                                        mWXSDKInstance.getContext().getSharedPreferences("kiway_weex", 0).edit().putString(path, jsessionid).commit();
-//                                    }
-//                                }
-//                            } catch (Exception e) {
-//                                Log.d("test", "save cookie exception  e = " + e.toString());
-//                            }
+                            try {
+                                if (headers != null && headers.containsKey("Set-Cookie")) {
+                                    String value = headers.get("Set-Cookie");
+                                    String[] splits = value.split(";");
+                                    String jsessionid = splits[0].trim();
+                                    String path = splits[1].trim().replace("Path=", "");
+                                    if (value.contains("JSESSIONID")) {
+                                        mWXSDKInstance.getContext().getSharedPreferences("kiway_weex", 0).edit().putString(path, jsessionid).commit();
+                                    }
+                                }
+                            } catch (Exception e) {
+                                Log.d("test", "save cookie exception  e = " + e.toString());
+                            }
 
                             try {
                                 resp.put("data", parseData(respData, options.getType()));
