@@ -205,7 +205,6 @@
 package com.taobao.weex.http;
 
 import android.net.Uri;
-import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
@@ -378,21 +377,21 @@ public class WXStreamModule extends WXModule {
                         } else {
                             String respData = readAsString(response.originalData, headers != null ? getHeader(headers, "Content-Type") : "");
 
-                            //如果有cookie，保存下??
+                            //保存cookie
                             //JSESSIONID=2b1ccd02-4eb4-49d8-8760-f4e67c1e5bc7; Path=/yjpt; HttpOnly
-                            try {
-                                if (headers.containsKey("Set-Cookie")) {
-                                    String value = headers.get("Set-Cookie");
-                                    String[] splits = value.split(";");
-                                    String jsessionid = splits[0].trim();
-                                    String path = splits[1].trim().replace("Path=", "");
-                                    if (value.contains("JSESSIONID")) {
-                                        mWXSDKInstance.getContext().getSharedPreferences("kiway_weex", 0).edit().putString(path, jsessionid).commit();
-                                    }
-                                }
-                            } catch (Exception e) {
-                                Log.d("test", "save cookie exception");
-                            }
+//                            try {
+//                                if (headers != null && headers.containsKey("Set-Cookie")) {
+//                                    String value = headers.get("Set-Cookie");
+//                                    String[] splits = value.split(";");
+//                                    String jsessionid = splits[0].trim();
+//                                    String path = splits[1].trim().replace("Path=", "");
+//                                    if (value.contains("JSESSIONID")) {
+//                                        mWXSDKInstance.getContext().getSharedPreferences("kiway_weex", 0).edit().putString(path, jsessionid).commit();
+//                                    }
+//                                }
+//                            } catch (Exception e) {
+//                                Log.d("test", "save cookie exception  e = " + e.toString());
+//                            }
 
                             try {
                                 resp.put("data", parseData(respData, options.getType()));
