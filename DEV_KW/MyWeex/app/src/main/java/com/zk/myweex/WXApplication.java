@@ -79,9 +79,10 @@ public class WXApplication extends Application {
         MqttInstance.init(this);
 
         //realm初始化
+        //.migration(migration)
         Realm.init(this);
-        RealmConfiguration config = new RealmConfiguration.Builder().schemaVersion(0)
-                .migration(migration).build();
+        RealmConfiguration config = new RealmConfiguration.Builder().schemaVersion(0).deleteRealmIfMigrationNeeded()
+                .build();
         Realm.setDefaultConfiguration(config);
 
         //清掉时间差大于1天的数据
@@ -100,7 +101,8 @@ public class WXApplication extends Application {
         initImageCache();
 
         //初始化weex
-        WXSDKEngine.initialize(this, new InitConfig.Builder().setImgAdapter(new UniversalImageAdapter()).build());
+        WXSDKEngine.initialize(this, new InitConfig.Builder()
+                .setImgAdapter(new UniversalImageAdapter()).build());
 
         //注册自定义组件
         try {

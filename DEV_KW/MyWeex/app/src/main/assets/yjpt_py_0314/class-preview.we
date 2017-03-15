@@ -1,0 +1,52 @@
+<template>
+    <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="致家长的一封信" title-color="white" onclickleftitem="onclickleftitem" left-item-src="{{images.leftItemImg}}">
+            <div class="letter_wrap">
+                <text class="letter_title">{{letter.letterTitle}}</text>
+                <text class="letter_to">{{letter.letterTo}}：</text>
+                <text class="letter_content">{{letter.letterContent}}</text>
+                <image class="letter_qr" src="{{images.qrImg}}"></image>
+                <text class="scan_tips">扫码可加入班级</text>
+            </div>
+        <!--<wxc-loading if="{{loading}}"></wxc-loading>-->
+</wxc-navpage>  
+</template>
+<style>
+    .letter_wrap{padding: 20;background-color: #f4f1f1;flex: 1;}
+    .letter_title{font-size: 42;font-weight: bold;margin:20;text-align: center;color: #333; height: 80;}
+    .letter_content{text-indent: 2em;font-size: 38;text-align: justify;line-height: 50; color: #444;}
+    .letter_to{font-size: 38; height: 55px;}
+    .letter_qr{height: 300;width: 300;margin-left: 200;margin-top: 50;margin-bottom: 20;background-color: #fff;padding: 20;}
+    .scan_tips{font-size: 38;text-align: center;}
+</style>
+<script>
+    require('weex-components')
+   var Utils = require('./javascript/Utils');
+    module.exports = {
+        data: {
+            loading:false,   
+            navBarHeight: 130,           
+            images:{
+                leftItemImg:'yjpt/images/id_right_bg.png',
+                qrImg:'yjpt/images/qr_img.png'
+            },
+            letter:{
+                letterTitle:'致家长的一封信',
+                letterTo:'尊敬的家长朋友',
+                letterContent:'自2014年5月开始，“萤火虫露营”活动已经成功在天津“名洋湖庄园”举办了十多场，约一千多名儿童和家长在活动中感受到了萤火虫的神奇魅力。2015年，“萤火虫露营”活动将进一步升级，不但继续保留丰富多彩的活动，而且还增加了一些更有趣，更好玩的环节，届时，萤火虫的光亮和孩子的笑脸将再一次照耀夜空！夜！'
+            }
+        },
+        created:function(){
+            Utils.changeImg(this.images,['leftItemImg','qrImg']);
+            this.$on('naviBar.leftItem.click',function(e){ 
+                // history.back();
+                Utils.navigate.pop(this,'true');
+            }); 
+             
+        },
+        methods:{
+            redirect:function(url){
+                Utils.navigate.push(this,url,'true');
+            }
+        }
+    }
+</script>

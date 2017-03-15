@@ -1,0 +1,88 @@
+<template>
+   <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="{{userData.name}}" title-color="white" onclickleftitem="onclickleftitem" left-item-src="{{images.leftItemImg}}">
+        <div class="contact_wrap">
+            <div class="user_info">
+                <image class="user_img" src="{{userData.avatar}}"></image>
+                <div><text class="user_name">{{userData.name}}</text></div>
+                <text class="user_tel">{{userData.tel}}</text>
+            </div>
+            <!-- <text class="tel_btn">打电话</text> -->
+
+            <a href="tel:{{userData.tel}}">
+                <text if="userData.tel"  class="tel_btn" onclick='callPhone(userData.tel)'>呼叫</text>
+            </a>
+        </div>
+        <!--<wxc-loading if="{{loading}}"></wxc-loading>-->
+</wxc-navpage> 
+</template>
+<style>
+    .contact_wrap{flex: 1;padding: 20;}
+    .user_info{flex-direction: column;align-items: center; margin-top: 80; flex: 1;}
+    .user_name{font-size: 50;font-family: Microsoft YaHei;margin-top: 40; color: #444;}
+    .user_tel{text-align: center;font-size: 46;font-family: Microsoft YaHei;margin-top: 35; color: #444;}
+    .user_img{width: 300;height: 300;margin-right: 15;border-radius: 300;border-style: solid;border-color: #ddd;border-width: 1;}
+    .tel_btn{background-color: #ff9e6a;color: #fff;border-radius: 4;text-align: center;font-size: 42;font-family: Microsoft YaHei;position: fixed;bottom: 10;left:20;right: 20;padding: 30;}
+</style>
+<script>
+    require('weex-components');
+    var Utils = require('./javascript/Utils');
+    var modal = require('@weex-module/modal');
+    var storage = require('@weex-module/storage');
+    var event = require('@weex-module/event');
+    module.exports = {
+        data: {
+            loading:false,   
+            navBarHeight: 130,
+            dir:'examples',
+            previewUrl:'showcase/new-fashion/class-preview',
+            images:{
+                leftItemImg:'yjpt/images/id_right_bg.png',
+                userImg:'yjpt/images/Photo_05.png'
+            },
+            userData:{
+                name:'宋智孝',
+                tel:'15620149956',
+                avatar:''
+            }
+        },
+        created:function(){
+            this.$on('naviBar.leftItem.click',function(e){ 
+                // history.back();
+                Utils.navigate.pop(this,'true');
+            }); 
+
+            var self = this;
+            Utils.changeImg(self.images,['leftItemImg','userImg']);
+
+            //用户信息
+            storage.getItem('userProfile',function(e){
+                if(e.data){
+                    e.data = JSON.parse(e.data);
+                    self.userData.name = e.data.realname;
+                    self.userData.tel = e.data.mobile;
+                    if(e.data.avatar){
+                        self.userData.avatar = e.data.avatar;
+                    }
+
+                }
+            });
+        },
+        methods:{
+            redirect:function(url){
+                Utils.navigate.push(this,url,'true');
+            },
+            callPhone:function(phone){
+                if(event.CallPhone){
+                    event.CallPhone({
+                        phone:phone
+                    });
+                }else{
+                    modal.alert({
+                        message:'请在App中操作',
+                        okTitle:'好的'
+                    },function(){});
+                }
+            }
+        }
+    }
+</script>

@@ -1,0 +1,172 @@
+<template>
+    <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="致家长的一封信" title-color="white" onclickleftitem="onclickleftitem" left-item-src="{{images.leftItemImg}}">
+        <div class="print_wrap">
+            <div class="letter">
+                <text class="letter_desc">
+                    组织家长扫描《致家长的一封信》中的二维码，是帮助家长下载幼教平台并加入班级的重要方法，信的内容我们已经为您准备好。
+                </text>
+                <text class="letter_preview" onclick="redirect">预览</text>
+            </div>
+            <div class="letter_tips"><text style="font-size: 38;" >接下来，您只需要：</text></div>
+
+            <div class="steps_wrap">
+                <div class="steps">
+                    <image class="steps_img print" src="{{images.mailIcon}}"></image>
+                    <div class="steps_row">
+                        <text class="step_title">1.使用QQ邮箱接收</text>
+                        <div class="steps_inner">
+                            <input class='name_input' placeholder="请输入您的邮箱" value="{{email}}" oninput="emailIn"></input>
+                            <text class="confirm_btn" onclick="sendEmail">确定</text>
+                        </div>
+                        <text class="step_tips">系统会将《致家长的一封信》发送到您的QQ邮箱，请接收并下载。</text>
+                    </div>
+                </div>
+                <div class="steps">
+                    <image class="steps_img print" src="{{images.printIcon}}"></image>
+                    <div class="steps_row">
+                        <text class="step_title">2.打印并发送给家长</text>
+                        <text class="step_tips">将《致家长的一封信》打印好，可以在开家长会，家长早晚接送孩子时发送给家长。</text>
+                    </div>
+                </div>
+                <div class="steps">
+                    <image class="steps_img print" src="{{images.scanIcon}}"></image>
+                    <div class="steps_row">
+                        <text class="step_title">3.明确家长扫码</text>
+                        <text class="step_tips">明确告知家长扫描信中的二维码下载幼教平台，并加入班级。</text>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--<wxc-loading if="{{loading}}"></wxc-loading>-->
+</wxc-navpage>  
+</template>
+<style>
+    .print_wrap{flex: 1;background-color: #eee;}
+    .letter{flex-direction: column;align-items: flex-end;background-color: #fff;padding-bottom: 20;}
+    .letter_desc{font-size: 34; line-height: 40px; padding: 20;}
+    .letter_preview{font-size: 30;background-color: #ff9e6a;color: #fff;padding:20;width: 140;text-align: center;border-radius: 4;margin-right: 20;width: 180;}
+    .letter_tips{ height: 80; padding-left: 20; justify-content: center; }
+    .step_title{font-size: 34;}
+    .step_tips{font-size: 30;}
+
+    .steps{flex-direction: row;align-items: center;background-color: #fff;border-bottom-color: #ddd;border-bottom-width: 1;padding:20;padding-top: 30;padding-bottom: 30;}
+    .print{width: 80;height: 80;margin-right: 20;}
+    .steps_inner{flex-direction: row;align-items: center;display: flex;margin-top: 10;margin-bottom: 10;width: 610;}
+    .steps_row{flex-direction: column;align-items: flex-start;flex: 1;}
+    .name_input{height: 70;font-size: 30;border-width: 1;border-color: #ddd;flex: 3;border-radius: 4;padding-left: 10;}
+    .confirm_btn{flex: 1;text-align: center;background-color: #ff9e6a;color: #fff;border-radius: 4;padding:20;margin-left: 10;font-size: 30;}
+    .step_tips{flex: 1;font-size: 28;}
+    .steps_wrap{flex: 1;background-color: #fff;}
+</style>
+<script>
+    require('weex-components')
+    var Utils = require('./javascript/Utils');
+    var modal = require('@weex-module/modal');
+    var storage = require('@weex-module/storage');
+    module.exports = {
+        data: {
+            loading:false,   
+            navBarHeight: 130,
+            dir:'yjpt',
+            previewUrl:'class-preview',
+            images:{
+                leftItemImg:'yjpt/images/id_right_bg.png',
+                qrImg:'yjpt/images/qr_img.png',
+                mailIcon:'yjpt/images/pic_mail.png',
+                printIcon:'yjpt/images/pic_print.png',
+                scanIcon:'yjpt/images/pic_scan.png',
+            },
+            classData:{
+                className:'中二班',
+                schoolName:'深圳阳光幼儿园',
+                tips:'使用幼教平台扫描上方二维码加入班级'
+            },
+            email:''
+        },
+        created:function(){
+            Utils.changeImg(this.images,['leftItemImg','qrImg','mailIcon','printIcon','scanIcon']);
+            this.$on('naviBar.leftItem.click',function(e){ 
+                // history.back();
+                Utils.navigate.pop(this,'true');
+            });       
+
+            var bundleUrl = this.$getConfig().bundleUrl;
+            console.log('hit', bundleUrl);
+            var nativeBase;
+            var isAndroidAssets = bundleUrl.indexOf('file://assets/') >= 0;
+            var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;
+            if (isAndroidAssets) {
+              nativeBase = 'file://assets/';
+            }
+            else if (isiOSAssets) {
+                nativeBase = bundleUrl.substring(0, bundleUrl.lastIndexOf('/') + 1);
+            }
+            else {
+                var host = 'localhost:12580';
+                var matches = /\/\/([^\/]+?)\//.exec(this.$getConfig().bundleUrl);
+                if (matches && matches.length >= 2) {
+                    host = matches[1];
+                }
+                nativeBase = 'http://' + host + '/' + this.dir + '/weex/';
+            }
+            var h5Base = './index.html?page=./' + this.dir + '/weex/';
+            // in Native
+            var base = nativeBase;
+            if (typeof window === 'object') {
+                // in Browser or WebView
+                base = h5Base;
+            }
+
+            this.previewUrl = base + this.previewUrl + '.js';   
+
+        },
+        methods:{
+            redirect:function(){
+                var url=Utils.setOpenUrl(this.$getConfig(),'class-preview');
+                Utils.navigate.push(this,url,'true');  
+            },
+            emailIn:function(e){
+                this.email = e.value;
+            },
+            sendEmail:function(){
+                var self = this;
+                if(!(/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/).test(this.email)){
+                    modal.toast({
+                        message:'邮箱格式不正确，请重新输入！',
+                        duration:'1'
+                    });
+                    return;
+                }
+
+                storage.getItem('classInfo',function(e){
+                    if(e.data){
+                        e.data = JSON.parse(e.data);
+                        Utils.fetch({
+                            url:'/app/mail?classId='+e.data.id+'&receiver='+self.email,
+                            // data:'classId='+e.data.id+'&receiver='+self.email,
+                            type:'json',
+                            method:'GET',
+                            success:function(ret){
+                                ret.data = eval('('+ret.data+')');
+                                console.log(ret.data);
+                                if(ret.data.StatusCode == '200'){
+                                    modal.toast({
+                                        message:'邮件发送成功，请注意查收！',
+                                        duration:'1'
+                                    });
+                                }else{
+                                    modal.toast({
+                                        message:'发送失败，请稍后重试！',
+                                        duration:'1'
+                                    });
+                                }
+                            }
+                        });
+                    }
+                        
+                });
+                    
+            }
+        }
+    }
+</script>

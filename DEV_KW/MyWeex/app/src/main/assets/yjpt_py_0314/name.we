@@ -1,0 +1,132 @@
+<template>
+	<wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="姓名"
+    title-color="white" onclickleftitem="onclickleftitem" left-item-src="{{headLeft}}" right-item-title="确定" onclickrightitem="onclickrightitem" right-item-color="white">
+    	 <scroller class="content">
+	    	<div class="" >
+	    		<input type="text" placeholder="输入您的名字" value="{{name}}"  id="work_title" oninput="userNameIn" class="ssInput">
+	    	</div>
+			<div>
+				<text class="Prompt" id="spid">还可以输入&nbsp; {{countRemain}}&nbsp;个字</text>
+			</div>
+		</scroller>
+	</wxc-navpage>
+</template>
+<style>
+	.content {
+    color: #353535;
+    background-color: #efeff4;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    }
+	.ssInput{height: 100;  margin: 20;border-color: #ccc; border-width: 1; border-radius: 5; padding:10; padding-left: 30;  background-color: #fff; color: #666; font-size: 36; }
+	.Prompt{text-align: right; color: #666; padding-right: 22;}
+</style>
+<script>
+	require('weex-components');
+	var Utils = require('./javascript/Utils');
+	var modal = require('@weex-module/modal');
+	var storage = require('@weex-module/storage');
+	module.exports = {
+		data : {
+			navBarHeight: 130,
+			dir: 'yjpt',
+			name:'',
+			countRemain:10,
+          	numberCount:10,
+            userId:'',
+		},
+	    created : function(){
+	    	var userId,name;
+	    	var self=this;
+
+	    	this.headLeft = Utils.ip + 'yjpt/images/id_right_bg.png';
+	        this.$on('naviBar.leftItem.click',function(e){ 
+                // history.back();
+                Utils.navigate.pop(this,'true');
+            }); 
+
+            //获取用户ID
+            storage.getItem('userId',function(e){  //从缓存中取userId
+            	if(e.data != 'undefiend'){
+                    self.userId = e.data;
+            		userId = e.data;
+            	} 
+            });
+
+            //获取姓名
+            storage.getItem('userId',function(e){
+                Utils.fetch({
+                    url:'/app/user?userId='+e.data,
+                    method:'get',
+                    dataType:'json',
+                    success:function(ret){
+                        var user = ret.data.data;                   
+                          
+                          //姓名
+                        if(user.realname){
+                            self.name = user.realname;
+                        }      
+
+                        self.countRemain = self.countRemain - self.name.length;                                  
+                    }
+                });
+            });
+            
+            this.$on('naviBar.rightItem.click',function(e){
+		        //跳转到下一页
+       		    if(self.name == ''){
+           		  	modal.alert({
+                        message:'输入您的名字',
+                        okTitle:'好的'
+                    },function(){})
+                    return;
+       		    }
+
+				Utils.fetch({
+					url:'/app/user',
+					data:'userId='+userId+'&uname='+self.name,
+					type:'json',
+					method:'POST',
+					success:function(ret){
+						var _data=ret.data;
+						var obj = eval("(" + _data + ")");
+
+						if(obj.StatusCode == '200'){
+							modal.toast({
+								message:'修改成功',
+								duration:'1'
+							});
+                            setTimeout(function(){
+                                var url = Utils.setOpenUrl(self.$getConfig(),'index');
+                                Utils.navigate.push(self,url,'true'); 
+                            },1000);
+						}else{
+							modal.toast({
+								message:'修改失败，请稍后重新修改',
+								duration:'1'
+							});
+						}
+					}
+				})
+		    });
+	    },
+	    methods:{
+	          userNameIn:function(e){
+	              this.name = e.value;
+	              this.countRemain = this.numberCount - e.value.length;
+	              if(this.countRemain <= 0){
+	                  this.countRemain = 0;
+	                  this.name = e.value.substring(0,this.numberCount);
+	              }
+	          }
+
+	    }
+	}
+
+</script>
+
+
+

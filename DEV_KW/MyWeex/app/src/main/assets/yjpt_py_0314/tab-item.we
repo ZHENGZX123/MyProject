@@ -1,0 +1,103 @@
+<template>
+    <div class="select-container" >
+        <div class="content">
+            <content></content>
+        </div>
+        <div class="mask" id="mask" onclick="switchView"></div>
+        <div class="options" id="options">
+            <div repeat="{{status}}" class="cell" vid="{{id}}" onclick="onItemClick">
+                <image class="icon-curr-flag" src="{{flagSrc}}" ></image>
+                <text class="name {{id==statusId?'current': ''}}">{{name}}</text>
+            </div>
+        </div>
+    </div>
+</template>
+
+<style>
+    .select-container{
+        flex-direction: column;
+        position: relative;
+        z-index: 1000;
+    }
+    .content{
+        width: 750;
+        margin-top: 90;
+    }
+    .options {
+        flex-direction: row;
+        position: absolute;
+        top: 0;
+        width: 750;
+       /* transform-origin: center center;*/
+    }
+    .cell {
+        flex-direction: row; align-items:center; flex: 1;
+        justify-content: center;
+        height: 100;
+        border-bottom-width: 1;
+        border-style: solid;
+        border-color: #e7e7e7; 
+    }
+    .name {
+        color: #333;
+        font-size: 36;
+        flex: 1; text-align: center; 
+         border-bottom-width: 1;
+        border-style: solid;
+        border-color: #e7e7e7;  align-items: center; height: 100px; line-height: 65px;
+    }
+    .icon-curr-flag{
+        width: 32;
+        height: 32;
+    }
+    .current {
+        color: #00cc99;
+        border-bottom-width: 3;
+        border-style: solid;
+        border-color: #00cc99;  align-items: center; height: 100px; line-height: 65px;
+    }
+</style>
+
+
+<script>
+    var animation = require('@weex-module/animation');
+    require('weex-components');
+    var Utils = require('./javascript/Utils');
+
+    module.exports = {
+        data: {
+            statusId: '0', 
+            status: [
+                {id: '0', name: '小一班',flagSrc:''},
+                {id: '1', name: '小二班',flagSrc:''},
+                {id: '2', name: '大一班',flagSrc:''}
+            ],
+        },
+        created : function(){
+           Utils.changeImg(this.status,['flagSrc']);
+        },
+        computed: {
+            statusName: {
+                get: function(){
+                    var id = this.statusId;
+                     return this.status.filter(function(s){
+                        return s.id == id
+                    })[0].name;
+                }
+            }
+        },
+        methods: {
+            onItemClick: function(e) {
+                var vid = e.target.attr.vid;
+                this.updateStatus(vid);
+                this.$dispatch('statuschange', {
+                    id: this.statusId,
+                    name: this.statusName
+                })
+            },
+            updateStatus: function(id) { 
+                this.statusId = id; 
+            }
+        }
+    }
+</script>

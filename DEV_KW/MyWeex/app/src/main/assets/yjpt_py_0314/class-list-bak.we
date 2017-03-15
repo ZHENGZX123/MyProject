@@ -1,0 +1,612 @@
+<template>
+    <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="加入班级" title-color="white" onclickleftitem="onclickleftitem" left-item-src="{{images.leftItemImg}}">
+        <div class="create_wrap">
+            <div class="create_col" if='!isJoinClass' onclick="chooseCity">
+                <text class="school_type">地区</text>
+                <div class='school_wrap'>
+                    <text class='school_name'>{{countryId}}</text>
+                    <!-- <image class='arrow_right' src='{{images.arrowRight}}'></image> -->
+                </div>
+            </div>
+
+            <div class="create_col" onclick="chooseSchool"> <!--onclick="redirect(schoolsList)"-->
+                <text class="school_type">{{schoolData.schoolType}}</text>
+                <div class='school_wrap'>
+                    <text class='school_name'>{{schoolData.schoolName}}</text>
+                    <!-- <image class='arrow_right' src='{{images.arrowRight}}'></image> -->
+                </div>
+            </div>
+
+            <div class="create_col" onclick="chooseClass" style="z-index: 99999;position: relative;">
+                <text class="school_name" >{{classCopy}}</text>
+            </div>
+
+            <div style="margin-bottom: 30;" if="!isJoinClass">
+                <input class='name_input'
+                    type="url"
+                    value="{{schoolCode}}" placeholder="请输入邀请码" oninput="schoolCodeIn">
+                </input>
+            </div> 
+            <text  class="next_step" onclick="nextStep">下一步</text>
+            <class-list-data if="{{showClass==1}}" style="z-index: 999999;"></class-list-data>
+        </div>
+        <wxc-citypicker class="city_picker" if="{{isShowCity}}"></wxc-citypicker>
+        <div class="school_list" if="{{isShowSchools}}">
+            <div class="schools"  repeat='schoolList' onclick="radioCheck($index)"  id="sb$index">
+                <text class="school_name">{{name}}</text>
+                <image class="blank_img" if="{{isCheck}}" src='{{images.selectRadio}}'></image>
+                <image class="blank_img" if="{{!isCheck}}" src='{{images.blankRadio}}'></image>
+            </div>
+        </div>
+        <!--<wxc-loading if="{{loading}}"></wxc-loading>-->
+</wxc-navpage>  
+</template>
+<style>
+   .create_wrap{flex: 1;padding-top: 20;position: relative;z-index: 999;}
+   .create_col{background-color: #ebebeb;padding: 35;margin-bottom: 20;flex-direction: row;align-items: center;position: relative;z-index: 888;border-bottom-style: solid;border-bottom-color: #dddddd;border-bottom-width: 1;}
+   .school_type{flex: 3;font-size: 34;}
+   .school_name{font-size: 34;}
+   .class_name{font-size: 34;}
+   .school_wrap{flex-direction: row;}
+   .arrow_right{width:19;height: 32;margin-left: 15;margin-right: 10;}
+   .inpt{height: 80;border-width: 1;border-color: #ccc;padding: 20;font-size: 30;margin-top: 20;border-radius: 4;}
+   .col{padding: 20;}
+   .next_step{background-color: #ff9e6a;color: #fff;border-radius: 4;text-align: center;font-size: 34;margin:20;padding: 30;position: relative;z-index: 999;}
+   .select{flex: 1;font-size: 34;}
+   .select_options{position: fixed;left: 0;top: 0;right: 0;bottom: 0;background-color: rgba(0,0,0,.7);align-items: flex-end;display: flex;flex: 1;flex-direction: row;justify-content:center;}
+   .options_box{background-color: #fff;flex: 1;text-align: center;}
+   .options{border-bottom-width: 1;border-bottom-color: #ddd;border-bottom-style:solid;text-align: center;padding: 20;}
+
+
+    .create_col{background-color: #ebebeb;padding: 30;margin-bottom: 30;flex-direction: row;align-items: center;position: relative;}
+    .select_options{position: fixed;left: 0;top: 0;right: 0;bottom: 0;background-color: rgba(0,0,0,.7);align-items: flex-end;display: flex;flex: 1;flex-direction: row;justify-content:center;}
+    .options_box{background-color: #fff;flex: 1;text-align: center;}
+    .options{border-bottom-width: 1;border-bottom-color: #ddd;border-bottom-style:solid;text-align: center;padding: 30;font-size: 34;}
+    .arrow_right{width: 19;height: 32;}
+
+     .school_list{position: fixed;z-index: 99999;left: 0;top:130;right: 0;bottom: 0;background-color: #ffffff;}
+     .schools{flex-direction: row;padding: 30;align-items: center;background: #fff;border-bottom-width:1;border-bottom-style:solid;border-bottom-color:#ddd;padding-top: 40;padding-bottom: 40;font-size: 34;}
+    ./*gender_select*/{width: 1270;height: 35;text-align: right;}
+    .blank_img{height: 40;width: 40;}
+    .school_name{flex: 4;font-size: 34;}
+
+    .btnGray{background-color: #d2c7c1;color: #fff;border-radius: 4;text-align: center;font-size: 34;margin:20;padding: 30;}
+
+    .name_input{flex:3;border-width: 1;border-color: #dddddd;height: 100;line-height: 100;padding-left: 20;font-size: 34;background-color: #ffffff;border-left-style: none;border-right-style: none;color:#000000;}
+</style>
+<script>
+    require('weex-components');
+    var Utils = require('./javascript/Utils');
+    var storage = require('@weex-module/storage');
+    var modal = require('@weex-module/modal');
+    module.exports = {
+        data: {
+            loading:false,   
+            navBarHeight: 130,
+            showClass:0,
+            selectedClass:'未选择班级',
+            selectedGrade:'',
+            dir:'yjpt',
+            isGray:true,
+            schoolCode:'',
+            images:{
+                leftItemImg:'yjpt/images/id_right_bg.png',
+                qrImg:'yjpt/images/qr_img.png',
+                arrowRight:'yjpt/images/arrow_right2.png',
+                blankRadio:'yjpt/images/checkbox_blank.png',
+                selectRadio:'yjpt/images/checkbox_checked.png'
+            },     
+            images2:{
+                blankRadio:'yjpt/images/checkbox_blank.png',
+                selectRadio:'yjpt/images/checkbox_checked.png'
+            },       
+            schoolData:{
+                userId:'',
+                schoolId:'',
+                schoolType:'幼儿园',
+                schoolName:'请选择学校',
+                gradeId:'1',
+                className:''
+            },
+            allChecked:'',
+            multiList:[
+               {name:'选项1',imgUrl:''},
+               {name:'选项2',imgUrl:''},
+               {name:'选项3',imgUrl:''}
+            ],
+            classList:[
+
+            ],
+            url:'class-main-page',
+            loginUrl:'login',
+            schoolsList:'schools-list',
+            regionList:'region-list',
+            indexUrl:'index',
+            selectedValue:'小班',
+            isShow:false,
+            selectOptions:[
+                {classType:'小班'},
+                {classType:'中班'},
+                {classType:'大班'},
+                {classType:'大大班'},
+            ],
+            countryId:'请选择地区',
+            doneLoad:false,
+            address:'',
+            isShowCity:false,
+            isShowSchools:false,
+            hasLoaction:false,
+            location:'',
+            schoolList:[
+                // {id:10,name:"清华大学隔壁学校",county_id:"广东省*深圳市*南山区",address:"pgc"},
+                // {id:10,name:"清华大学隔壁学校2",county_id:"广东省*深圳市*南山区",address:"pgc"},
+                // {id:10,name:"清华大学隔壁学校1",county_id:"广东省*深圳市*南山区",address:"pgc"},
+                // {id:10,name:"清华大学隔壁学校2",county_id:"广东省*深圳市*南山区",address:"pgc"},
+                // {id:10,name:"清华大学隔壁学校s3",county_id:"广东省*深圳市*南山区",address:"pgc"}
+            ],
+            isCityEmpty:false,
+            schoolAddress:'',
+            classIds:[],
+            class:['请选择班级'],
+            classCopy:['请选择班级'],
+            isJoinClass:false,
+            joinedClass:[],
+        },
+        created:function(){
+
+            Utils.changeImg(this.images,['leftItemImg','qrImg','arrowRight','blankRadio','selectRadio']);
+            Utils.changeImg(this.images2,['blankRadio','selectRadio']);
+            this.$on('naviBar.leftItem.click',function(e){ 
+                Utils.navigate.pop(this,'true');
+            });
+
+            var bundleUrl = this.$getConfig().bundleUrl;
+            console.log('hit', bundleUrl);
+            var nativeBase;
+            var isAndroidAssets = bundleUrl.indexOf('file://assets/') >= 0;
+            var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;
+            if (isAndroidAssets) {
+              nativeBase = 'file://assets/yjpt/weex_jzd/';
+            }
+            else if (isiOSAssets) {
+                nativeBase = bundleUrl.substring(0, bundleUrl.lastIndexOf('/') + 1);
+            }
+            else {
+                var host = 'localhost:12580';
+                var matches = /\/\/([^\/]+?)\//.exec(this.$getConfig().bundleUrl);
+                if (matches && matches.length >= 2) {
+                    host = matches[1];
+                }
+                nativeBase = 'http://' + host + '/' + this.dir + '/weex/';
+            }
+            var h5Base = './index.html?page=./' + this.dir + '/weex/';
+            // in Native
+            var base = nativeBase;
+            if (typeof window === 'object') {
+                // in Browser or WebView
+                base = h5Base;
+            }
+            
+            this.url = base + this.url + '.js';
+            this.schoolsList = base + this.schoolsList + '.js';
+            this.loginUrl = base + this.loginUrl + '.js';
+            this.regionList = base + this.regionList + '.js';
+            this.indexUrl = base + this.indexUrl + '.js';
+
+            
+            var self = this;            
+            self.classCopy = self.class.join(',');
+            storage.getItem('schoolId',function(e){
+                self.schoolData.schoolId = e.data;
+            });
+
+            storage.getItem('school',function(e){
+                if(e.data != 'undefined'){
+                    self.schoolData.schoolName = e.data;
+                }
+            });
+
+            storage.getItem('userId',function(e){
+
+                self.schoolData.userId = e.data;
+
+                Utils.fetch({
+                    url:'/yjpclass/searchClass',
+                    data:'userId='+e.data,
+                    type:'json',
+                    method:'POST',
+                    success:function(ret){
+                        if(ret.data.retcode == '1'){
+                            if(ret.data.classList.length>0){
+                                self.isJoinClass = 1;
+                            }else{
+                                self.isJoinClass = 0;
+                                self.schoolData.schoolName = '请选择学校';
+                            }
+                        }
+                    }
+                }); 
+
+                Utils.fetch({
+                    url:'/userInfo/myInfo',
+                    data:'userId='+e.data,
+                    type:'json',
+                    method:'POST',
+                    success:function(ret){
+                        if(ret.data.retcode == '1'){
+                            // self.countryId = '广东省*深圳市*南山区';
+                            if(ret.data.userInfo.county_id == null || ret.data.userInfo.county_id == ''){
+                                self.isCityEmpty = true;
+                            }else{
+                                self.isCityEmpty = false;
+                            }
+                            if(ret.data.userInfo.county_id == null || ret.data.userInfo.county_id == 'undefined' ||　ret.data.userInfo.county_id == ''　){
+                                self.countryId  = '请选择地区';
+                            }else{
+                                self.countryId  = ret.data.userInfo.county_id;
+                            }
+                            // self.countryId = ret.data.userInfo.county_id == null? '请选择地区':ret.data.userInfo.county_id;
+                            
+                            if(self.countryId !='undefined'&& self.countryId.split("*").length<3 && self.countryId !='请选择地区'){
+                                self.schoolAddress = self.countryId.split('*')[0]+"*"+self.countryId.split('*')[0]+"*"+self.countryId.split('*')[1];
+                            }else{
+                                self.schoolAddress = self.countryId;
+                            }
+
+                            self.hasLoaction = true;
+
+                            //学校列表         
+                            if(self.schoolData.schoolName == ''){
+                                Utils.fetch({
+                                    url:'/school/searchByAddr',
+                                    data:'address='+self.schoolAddress,
+                                    type:'json',
+                                    method:'POST',
+                                    success:function(ret){
+                                        var data = ret.data;
+                                        if(data.setcode == '1'){
+                                            if(data.schools.length<=0){
+                                                //无数据
+                                                storage.removeItem('schoolAddress',function(){});
+                                                self.schoolData.schoolName = '请选择学校';
+
+                                            }else{
+                                                storage.getItem('schoolName', function(e) {
+                                                    if(e.data !='undefined'){
+                                                        self.schoolData.schoolName = e.data;
+                                                    }
+                                                });  
+                                                storage.setItem('schoolAddress',self.schoolAddress,function(){});
+                                            }
+                                                
+                                        }        
+                                    }
+                                });  
+                            }    
+                            
+                            self.countryId = self.countryId.replace(/\*/g,'');
+
+
+                        }else{
+                            self.hasLoaction = false;
+                            modal.toast({
+                                message:'创建班级失败，请稍后重试！',
+                                duration:'1'
+                            });
+                        }
+                    }
+                });                
+            });
+
+            storage.getItem('isJoinClass',function(e){
+                if(e.data != 'undefined'){
+                    self.isJoinClass = e.data;
+                }
+            });
+
+                
+            self.$on('address', function(e) {
+                self.countryId = e.detail;
+                self.location = e.detail;
+                self.countryId = self.countryId.replace(/\*/g,"");
+            });
+            self.$on('isShowCity',function(e){
+                self.isShowCity = e.detail;
+            });
+
+            self.$on('showClass', function(e) {
+                self.showClass = e.detail;
+            });
+            self.$on('classIds', function(e) {
+                self.classIds = e.detail;
+            });
+
+            self.$on('class', function(e) {
+                self.class = e.detail;
+                self.classCopy = self.class.join(',');
+            });
+            // for(var i=179;i<=207;i++){
+            //     Utils.fetch({
+            //         url:'/yjpclass/deleteClassTeacher',
+            //         data:'teacherId=54947'+'&classId='+i,
+            //         type:'json',
+            //         method:'POST',
+            //         success:function(ret){
+
+            //         }
+            //     });
+            // }
+
+
+                
+            
+        },
+        methods:{
+            redirect:function(url){                
+                Utils.navigate.push(this,url,'true'); 
+            },
+            toggleSelect:function(){
+                this.isShow = !this.isShow;
+            },                      
+            optionsSelect:function(index){
+                this.selectedValue = this.$el("options_"+index).attr.value;
+                this.isShow = !this.isShow;
+
+                if(this.selectedValue == '小班'){
+                    this.schoolData.gradeId = '4';
+                }else if(this.selectedValue == '中班'){
+                    this.schoolData.gradeId = '3';
+                }else if(this.selectedValue == '大班'){
+                    this.schoolData.gradeId = '2';
+                }else{
+                    this.schoolData.gradeId = '1';
+                }
+            },
+
+            nextStep:function(){
+                var self = this;                      
+                if(self.isJoinClass == 0){
+
+                    if(self.countryId == '请选择地区'){
+                        modal.toast({
+                            message:'请选择地区',
+                            duration:'1'
+                        });
+                        return;
+                    }
+
+                    if(self.schoolData.schoolName == '' || this.schoolData.schoolName == '请选择学校'){
+                        modal.toast({
+                            message:'请选择学校',
+                            duration:'1'
+                        });
+                        return;
+                    }
+
+                    if(self.classCopy.indexOf('请选择班级') >= 0){
+                        modal.toast({
+                            message:'请选择班级',
+                            duration:'1'
+                        });
+                        return;
+                    }
+
+                    if(self.schoolCode == 'undefined' || self.schoolCode == ''){
+                        modal.toast({
+                            message:'请输入学校邀请码',
+                            duration:'1'
+                        });
+                        return;
+                    }
+                }else{
+
+                    self.schoolCode = '';
+                    
+                    if(self.classCopy.indexOf('请选择班级')>=0){
+                        modal.toast({
+                            message:'请选择班级',
+                            duration:'1'
+                        });
+                        return;
+                    }
+                }  
+
+                Utils.fetch({
+                    url:'/yjpclass/joinclass/teacher',
+                    data:'inviteCode='+self.schoolCode+'&schoolId='+self.schoolData.schoolId+'&userId='+self.schoolData.userId+'&classIds='+self.classIds.join("#"),
+                    type:'json',
+                    method:'POST',
+                    success:function(ret){
+                        if(ret.data.retcode == '1'){
+                            storage.setItem('className',self.schoolData.className,function(){});
+                            storage.setItem('gradeId',self.schoolData.gradeId,function(){});
+                            storage.setItem('schoolId',self.schoolData.schoolId,function(){});
+
+                            storage.setItem('classId',ret.data.classId,function(){});
+
+                            modal.toast({
+                                message:'已成功加入班级',
+                                duration:'1'
+                            });
+
+                            
+                            setTimeout(function(){
+                                Utils.navigate.push(self,Utils.setOpenUrl(self.$getConfig(),'index'),'true');
+                            },1000);
+                        }else if(ret.data.retcode =='11'){
+                            //参数错误        
+                            modal.toast({
+                                message:'邀请码错误，请重新输入',
+                                duration:'1'
+                            });                    
+                        }else if(ret.data.retcode == '22'){
+                            modal.toast({
+                                message:'加入失败',
+                                duration:'1'
+                            });
+                        }else if(ret.data.retcode == '33'){
+                            //网络异常
+                            modal.toast({
+                                message:'已加入该班级，请勿重复加入',
+                                duration:'1'
+                            });
+                        }else{
+                            modal.toast({
+                                message:'网络故障，请稍后重试',
+                                duration:'1'
+                            });
+                        }
+                    }
+                });
+            },
+            chooseCity:function(){
+                var self = this;
+
+                if(self.isCityEmpty){
+                    self.isShowCity = true;
+                }else{
+                    self.isShowCity = false;
+                }                
+                self.address = self.location;
+            },
+            chooseSchool:function(){                
+                var self = this;  
+                if(self.isJoinClass == 'undefined' || self.isJoinClass == false){
+                    if(self.location){
+                        self.schoolAddress = self.location; 
+                        self.address = self.location;
+                        self.isShowSchools = !self.isShowSchools;
+                        Utils.fetch({
+                            url:'/school/searchByAddr',
+                            data:'address='+self.address,
+                            type:'json',
+                            method:'POST',
+                            success:function(ret){
+                                var data = ret.data;
+                                if(data.setcode == '1'){
+                                    if(data.schools.length<=0){
+                                        self.isShowSchools = false;
+                                    }
+                                    self.schoolList = JSON.parse(JSON.stringify(data.schools));
+                                }else{
+                                    modal.toast({
+                                        message:'网络故障，请稍后再试！',
+                                        duration:'1'
+                                    });
+                                }               
+                            }
+                        });
+                    }else{
+                        storage.getItem('address',function(e){
+                            self.address = e.data;
+                            self.isShowSchools = !self.isShowSchools;
+                            Utils.fetch({
+                                url:'/school/searchByAddr',
+                                data:'address='+self.address,
+                                type:'json',
+                                method:'POST',
+                                success:function(ret){
+                                    var data = ret.data;
+                                    if(data.setcode == '1'){
+                                        if(data.schools.length<=0){
+                                            self.isShowSchools = false;
+                                        }
+                                        self.schoolList = JSON.parse(JSON.stringify(data.schools));
+                                    }else{
+                                        modal.toast({
+                                            message:'网络故障，请稍后再试！',
+                                            duration:'1'
+                                        });
+                                    }               
+                                }
+                            }); 
+                        });
+                    }
+                }
+                    
+                
+            },
+            chooseClass:function(){
+                var self = this;
+                storage.getItem('joinedClass',function(e){
+                    if(e.data!='undefined' && e.data !=''){
+                        self.joinedClass = JSON.parse(e.data);
+                    }
+                });
+                
+                Utils.fetch({
+                    url:'/yjpclass/class/all',
+                    data:'schoolId='+self.schoolData.schoolId,
+                    type:'json',
+                    method:'POST',
+                    success:function(ret){
+                        var data = ret.data;
+                        if(data.retcode == '1'){
+                            self.classList = data.classList;
+                            for(var i=0;i<self.classList.length;i++){
+                                if(self.classList[i].grade_id == '4'){
+                                    self.classList[i].grade_id = '小班';
+                                }else if(self.classList[i].grade_id == '3'){
+                                    self.classList[i].grade_id = '中班';
+                                }else if(self.classList[i].grade_id == '2'){
+                                    self.classList[i].grade_id = '大班';
+                                }else{
+                                    self.classList[i].grade_id = '大大班';
+                                }   
+
+                                self.classList[i].imgUrl = self.images2.blankRadio;
+                            }
+
+                            if(self.joinedClass.length > 0){
+                                for(var i = 0;i<self.joinedClass.length;i++){
+                                    for(var j = 0 ;j<self.classList.length;j++){
+                                        if(self.joinedClass[i].id == self.classList[j].id){
+                                            self.classList.splice(j,1);
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            if(self.classCopy.indexOf('请选择班级')==-1){
+                                for(var i=0;i<self.class.length;i++){
+                                    for(var j=0;j<self.classList.length;j++){
+                                        if(self.class[i] == self.classList[j].class_name){
+                                            self.classList[j].imgUrl = self.images2.selectRadio;
+                                        }
+                                    }
+                                }
+                            }
+
+                            storage.setItem('classList',JSON.stringify(self.classList),function(){});
+                            self.showClass = 1;
+                        }else{
+                            modal.toast({
+                                message:'网络故障，请稍后再试！',
+                                duration:'1'
+                            });
+                        }               
+                    }
+                });
+            },
+            radioCheck:function(index){
+                var self =this;
+                for(var i=0;i<self.schoolList;i++){                               
+                    self.schoolList[i].isCheck = false; 
+                    self.schoolList[index].isCheck = true;               
+                }
+                storage.setItem('schoolName',this.schoolList[index].name);
+                storage.setItem('schoolId',this.schoolList[index].id);
+                self.schoolData.schoolName = self.schoolList[index].name;
+                self.schoolData.schoolId = self.schoolList[index].id;
+                self.isShowSchools = false;   
+            },
+            schoolCodeIn:function(e){
+                var self = this;
+                // self.schoolCode = '';
+                self.schoolCode = e.value;
+            },
+            
+
+        }
+    }
+</script>

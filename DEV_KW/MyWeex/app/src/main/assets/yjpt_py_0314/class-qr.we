@@ -1,0 +1,74 @@
+<template>
+    <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="班级二维码" title-color="white" onclickleftitem="onclickleftitem" left-item-src="{{images.leftItemImg}}">
+        <div class="qr_wrap">
+            <div class="qr_inner">
+                <text class="class_name">{{classInfo.name}}</text>
+                <!-- <text class="school_name">{{classInfo.schoolName}}</text> -->
+                <image class="qr_img" src="{{images.qrImg}}"></image>
+                <text class="qr_tips">{{tips}}</text>
+            </div>
+        </div>
+        <!--<wxc-loading if="{{loading}}"></wxc-loading>-->
+</wxc-navpage>  
+</template>
+<style>
+    .qr_wrap{flex: 1;background-color:rgba(0,0,0,.8);flex-direction: row;align-items: center;}
+    .qr_inner{background: #fff;padding: 20;flex-direction: column;background-color: #fff;margin:20;margin-left:25;border-radius: 4;}
+    .class_name{font-size: 30;margin-left: 10;margin-bottom: 10;}
+    .school_name{font-size: 30;margin-left: 10;}
+    .qr_img{width: 640;height: 640;margin-left: 10;margin-top: 30;}
+    .qr_tips{text-align: center;margin-top:30;margin-left:10;font-size: 30;align-items: center;width: 650;}
+</style>
+<script>
+    require('weex-components');
+    var Utils = require('./javascript/Utils');
+    var modal = require('@weex-module/modal');
+    var storage = require('@weex-module/storage');
+    var event = require('@weex-module/event');
+    module.exports = {
+        data: {
+            loading:false,   
+            navBarHeight: 130,
+            images:{
+                leftItemImg:'yjpt/images/id_right_bg.png',
+                qrImg:'yjpt/images/qr_img.png'
+            },
+            classInfo:{
+                className:'',
+                schoolName:'',
+                tips:'使用幼教平台扫描上方二维码加入班级'
+            },
+            tips:'使用幼教平台扫描上方二维码加入班级'
+        },
+        created:function(){
+            Utils.changeImg(this.images,['leftItemImg','qrImg']);
+            this.$on('naviBar.leftItem.click',function(e){ 
+                // history.back();
+                Utils.navigate.pop(this,'true');
+            });
+
+            var self = this;
+
+            storage.getItem('classInfo',function(e){
+                if(e != 'undefined'){
+                    self.classInfo = JSON.parse(e.data);
+                }
+            });
+
+            storage.getItem('classId',function(e){
+                if(e != 'undefined'){
+                    if(event.GetQRImg){
+                        event. GetQRImg ({
+                            classId:e.data
+                        },function(result){
+                            self.images.qrImg = result.path;
+                        }); 
+                    }
+                }
+            });
+
+            
+           
+        }
+    }
+</script>

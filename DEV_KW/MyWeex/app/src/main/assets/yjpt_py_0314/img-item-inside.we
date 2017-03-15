@@ -1,0 +1,42 @@
+<template>
+		<div class="item-inside" repeat="{{menuList}}" onclick="openTypePage(url)">
+        <image class="thumb-inside" src="{{pictureUrl}}"></image>
+        <text class="title-inside"  >{{title}}</text>
+    </div>
+</template>
+
+<style>
+  .item-inside {
+    width: 249;
+    padding-bottom: 15;
+    padding-top: 20;
+    align-items:center; display:flex; justify-content: center; 
+  }
+  .thumb-inside  {width: 135; height: 135; }
+  .title-inside { width: 210; height: 50; margin-top: 15; text-align:center; font-size: 34;  color:#666666; text-overflow: ellipsis; lines:1;}
+</style>
+
+<script>
+  require('weex-components');
+   var Utils =require('./javascript/Utils');
+
+  module.exports = {
+    data: {
+      dir: 'yjpt',
+    },
+    methods : {
+      openTypePage : function(url){
+        if(url.indexOf('index_zjpd') == -1){
+            Utils.navigate.push(this,url,'true');
+        }else{
+            this.$dispatch('isShowClass',true);
+        }
+        //this.$openURL(url);
+      },
+      chooseClass(){
+        console.log(123);
+      }
+     
+    } 
+  }
+</script>

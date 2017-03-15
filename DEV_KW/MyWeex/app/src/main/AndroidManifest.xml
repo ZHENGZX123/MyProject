@@ -52,22 +52,24 @@
         <activity android:name=".activity.BootActivity" />
         <activity android:name=".activity.LoadingActivity" />
         <activity android:name=".activity.MyTabActivity" />
-        <activity android:name=".activity.MainActivity"></activity>
-        <activity android:name=".activity.MainActivity2">
+        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.MainActivity2" />
+        <activity android:name=".activity.LoginActivity"></activity>
+        <activity android:name=".activity.WebViewActivity" />
+
+        <receiver android:name=".broadcast.NetChangeReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".activity.TestActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.LoginActivity"></activity>
-        <activity android:name=".activity.WebViewActivity"></activity>
-
-        <receiver android:name=".broadcast.NetChangeBroadCast">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

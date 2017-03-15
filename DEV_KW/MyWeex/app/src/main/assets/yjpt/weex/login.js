@@ -2250,7 +2250,7 @@
 	      console.log("url is not null");
 	      return;
 	    }
-	    var method = "GET";
+	    var method = "POST";
 	    var type = "text";
 	    var stream = __weex_require__('@weex-module/stream');
 	    var modal = __weex_require__('@weex-module/modal');
@@ -2264,6 +2264,11 @@
 	    //       },function(){
 	    //               // self.$openURL(Utils.setOpenUrl(self.$getConfig(),'login'));
 	    //       });
+
+	    modal.toast({
+        	              'message': 'requestUrl = '+requestUrl,
+        	              'duration': 1
+        	            });
 
 	    stream.fetch({
 	        headers : options.headers || headers,
@@ -3828,6 +3833,7 @@
 	            } else {
 	                reqData = 'userName=' + this.phoneNumber + '&password=' + this.pwd + '&code=' + this.code;
 	            }
+
 	            Utils.fetch({
 	                url: '/login/teacher',
 	                data: reqData,
@@ -3844,17 +3850,27 @@
 	                            'duration': 1
 	                        });
 	                        storage.setItem('userId', obj.userId, function () {});
+
 	                        Utils.fetch({
 	                            url: '/userInfo/myInfo',
 	                            data: 'userId=' + obj.userId,
 	                            type: 'json',
 	                            method: 'POST',
 	                            success: function success(ret) {
+                                modal.toast({message: 'username = '+ret,
+                                           duration: 2
+                                        });
 	                                storage.setItem('userName', ret.data.userInfo.realname, function () {});
 	                            }
 	                        });
 
 	                        setTimeout(function () {
+
+	                         modal.toast({message: 'login success',
+                                           duration: 2
+                                        });
+
+
 	                            //Utils.navigate.push(self, self.indexUrl, 'true');
 	                            __weex_require__('@weex-module/login_module').loginSuccess( function (res) {
                                 	       var modal = __weex_require__('@weex-module/modal');
@@ -3863,7 +3879,9 @@
                                                                 duration: 2
                                                               });
                                 	      });
+
 	                        }, 1000);
+
 	                    } else if (obj.retcode == '11') {
 	                        self.loginFailTime = obj.errorNum;
 	                        self.loading = false;

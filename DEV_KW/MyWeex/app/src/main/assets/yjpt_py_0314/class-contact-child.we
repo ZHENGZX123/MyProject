@@ -1,0 +1,301 @@
+ <template>
+  <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="宝贝详情"
+    title-color="white" left-item-src="{{images.leftItemImg}}" right-item-title="确定" right-item-src="{{images.rightItemImg}}">
+        <scroller>
+            <div class='main_page'>
+                <div class="user_info">
+                    <image class="user_img" src="{{childInfo.avatar}}"></image>
+                    <div class="info">
+                        <text class="user_name">{{childInfo.realname}}</text>
+                        <div class="info_bot">
+                            <div class="sex" if="childInfo.gender">
+                                <image class='sex_img' src='{{images.femaleImg}}' if="{{childInfo.gender=='1'}}"></image>
+                                <image class='sex_img' src='{{images.maleImg}}' if="{{childInfo.gender=='0'}}"></image>
+                                <text>{{childInfo.gender=='1'?'女':'男'}}</text>
+                            </div>
+                            <div class="birth" if='childInfo.birthday'>
+                                <image class='birth_img' src='{{images.birthImg}}'></image>
+                                <text class='birthday'>{{childInfo.birthday}}</text>
+                            </div>
+                        </div>
+                    </div>                        
+                </div>
+
+                <div class="contacts_list">
+                    <div class="parent_contact">
+                        <div class="contact">
+                            <text class="contact_title">联系人</text>
+                        </div> 
+                        <div class="contact_list" repeat="{{parentList}}" if='{{parentList.length > 0}}' onclick="redirectContact(parentUrl,$index)">
+                            <image class="head_img" if='named=="爸爸"' src="{{images.fatherImg}}"></image>
+                            <image class="head_img" if='named=="妈妈"' src="{{images.motherImg}}"></image>
+                            <image class="head_img" if='named=="其他"' src="{{images.otherImg}}"></image>
+                            <text class="user_name">{{named}}</text>
+                            <image class="arrow_right" src="{{src}}"></image>
+                        </div>
+                        <text class='no_parents' if="{{parentList.length <= 0}}">小朋友的家长还没有加入到班级中来哦，邀请他们扫码加入吧！</text>
+                    </div>
+                </div>
+                <div class="pop_menu" if="{{isShow}}">
+                    <div class="menu">
+                        <text class="menu_list" onclick="removeChild">删除宝宝</text>
+                        <text class="menu_list" onclick="renameChild(modifyName)">修改姓名</text>
+                    </div>
+                </div>
+            </div>            
+        </scroller>
+</wxc-navpage>  
+</template>
+<style>
+    .main_page{flex: 1;background-color: #fff;font-family: Microsoft YaHei;}   
+
+    .pop_menu{position: fixed;top: 120;z-index:99999;left: 0;right: 0;bottom: 0;/*background-color: rgba(0,0,0,.6);*/}
+    .menu{position: absolute;top: 20;right: 15;background-color: #222;border-radius: 4;flex-direction: column;width: 280;}
+    .menu_list{flex:1;font-size: 30;color: #fff;text-align: center;padding: 30;border-bottom-width: 1;border-bottom-color: #ccc;width: 280;font-family: Microsoft YaHei;}
+
+    .contact_wrap{flex: 1;padding: 20;}
+    .user_name{font-size: 30;font-family: Microsoft YaHei;/*border-bottom-style:solid;border-bottom-width:1;border-bottom-color:#eee;*/padding-bottom: 10;}
+    .user_img{width: 110;height: 110;margin-right: 15;border-radius: 100;border-color: #b8b8b8;border-width: 1;border-style: solid;}
+    .user_info{flex-direction: row;align-items: center;border-bottom-style:solid;border-bottom-width:1;border-bottom-color:#eee;padding-bottom: 30;padding: 20;}
+    .info_bot{flex-direction: row;}
+    .info{flex: 1;}
+    .sex{flex-direction: row;align-items: center;flex: 1;}
+    .birth{font-size: 28;flex-direction: row;align-items: center;}
+    .contacts_txt{font-size: 30;background: #ebebeb;padding: 20;}
+
+    .head_img{width: 80;height: 80;margin-right: 15;border-color: #eee;border-width: 1;border-style: solid;border-radius: 80;}
+    .arrow_right{width: 19;height: 32;margin-right: 30;}
+    .user_name{font-size: 36;flex: 1;}
+    .contact_list{flex-direction: row;align-items: center;background-color: #fff;padding-left: 30;padding-top: 20;padding-bottom: 20;border-bottom-color: #ddd;border-bottom-width: 1;}
+    .contact_title{font-size: 38;padding:20;padding-left: 30;}
+
+    .no_parents{font-size: 30;padding: 25;margin-top: 30;color:#333;}
+    .contact{flex-direction: row;background-color: #f4f1f1;width: 750;align-items: center;}
+    .del_txt{font-size: 26;color:#666;display: none;}
+
+    .sex_img{height: 30;width: 30;margin-right: 10;}
+    .birthday{font-size: 30;}
+    .sex_txt{font-size: 30;}
+    .birth_img{width: 31;height: 30;margin-right: 10;}
+
+</style>
+<script>
+    require('weex-components');
+    var Utils = require('./javascript/Utils');
+    var modal = require('@weex-module/modal');
+    var storage = require('@weex-module/storage');
+    module.exports = {
+        data: {
+            loading:false,   
+            navBarHeight: 130,
+            dir:'yjpt',
+            mainPage:'class-main-page',
+            modifyName:'modify-child-name',
+            parentUrl:'class-contact-parents',
+            images:{
+                leftItemImg:'yjpt/images/id_right_bg.png',
+                userImg:'yjpt/images/my_01.png',
+                rightItemImg:'yjpt/images/menu.png',
+                arrowRight:'yjpt/images/arrow_right2.png',
+                defaultPhoto:'yjpt/images/IMG_df.png',
+                femaleImg:'yjpt/images/female2.png',
+                maleImg:'yjpt/images/male.png',
+                birthImg:'yjpt/images/cake.png',
+                fatherImg:'yjpt/images/fatherImg.png',
+                motherImg:'yjpt/images/motherImg.png',
+                otherImg:'yjpt/images/IMG_df.png'
+            },
+            menuOpacity:'none',
+            isShow:false,
+            childInfo:{
+            },
+            parentList:[],
+            url:'class-contact-parents',
+            userId:'',
+            studentDetail:{}
+        },
+        created:function(){
+            Utils.changeImg(this.parentList,['photo','photo']);
+            Utils.changeImg(this.childInfo,['avatar']);
+            Utils.changeImg(this.images,['leftItemImg','userImg','rightItemImg','arrowRight','femaleImg','maleImg','birthImg','defaultPhoto','fatherImg','motherImg','otherImg']);
+            this.$on('naviBar.leftItem.click',function(e){ 
+                // history.back();
+                Utils.navigate.pop(this,'true');
+            }); 
+
+            this.$on('naviBar.rightItem.click',function(e){
+                this.menuOpacity = this.menuOpacity  == 'none' ? 'flex':'none';
+                this.isShow = this.isShow  == false ? true: false;
+            });
+
+            var bundleUrl = this.$getConfig().bundleUrl;
+            var nativeBase;
+            var isAndroidAssets = bundleUrl.indexOf('file://assets/') >= 0;
+            var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;
+            if (isAndroidAssets) {
+              nativeBase = 'file://assets/';
+            }
+            else if (isiOSAssets) {
+                nativeBase = bundleUrl.substring(0, bundleUrl.lastIndexOf('/') + 1);
+            }
+            else {
+                var host = 'localhost:12580';
+                var matches = /\/\/([^\/]+?)\//.exec(this.$getConfig().bundleUrl);
+                if (matches && matches.length >= 2) {
+                    host = matches[1];
+                }
+                nativeBase = 'http://' + host + '/' + this.dir + '/weex_jzd/';
+            }
+            var h5Base = './index.html?page=./' + this.dir + '/weex_jzd/';
+            // in Native
+            var base = nativeBase;
+            if (typeof window === 'object') {
+                // in Browser or WebView
+                base = h5Base;
+            }
+
+            this.url =base + this.url + '.js';
+            
+            this.modifyName = base + this.modifyName + '.js';
+            this.mainPage = base + this.mainPage + '.js';
+            this.parentUrl = base + this.parentUrl + '.js';
+
+            var self = this;
+
+            //获取学生信息、家长列表
+            storage.getItem('userProfile',function(e){
+                if(e.data){
+                    e.data = JSON.parse(e.data);
+                    console.log(e.data);
+                    self.childInfo = e.data;
+                    self.userId = e.data.id;
+                    
+
+                    if(self.childInfo.birthday){
+                        self.childInfo.birthday = self.childInfo.birthday.split("T")[0];
+                    }
+
+                    Utils.fetch({
+                        url:'/app/student/'+self.userId,
+                        data:'',
+                        method:'get',
+                        dataType:'json',
+                        success:function(res){
+                            if(res.data.StatusCode == '200'){
+                                self.studentDetail =  res.data.data;
+                                self.parentList = res.data.data.parents;
+                                for(var i in self.parentList){
+                                    if(!self.parentList[i].avatar){
+                                        if(self.parentList[i].named == '爸爸'){
+                                            self.parentList[i].avatar = self.images.fatherImg;
+                                        }else if(self.parentList[i].named == '妈妈'){
+                                            self.parentList[i].avatar = self.images.motherImg;
+                                        }else{
+                                            self.parentList[i].avatar = self.images.otherImg;
+                                        }
+                                    }
+                                }
+                            }else{
+                                modal.toast({
+                                    message:'获取联系人信息失败',
+                                    duration:'1'
+                                });
+                            }
+                        }
+                        
+                    });
+                }                
+            });
+
+            //班级信息
+            // storage.getItem('classInfo',function(e){
+            //     if(e.data){
+            //         e.data = JSON.parse(e.data);
+            //         self.classInfo = e.data;
+            //         self.classId = e.data.id;                    
+
+            //         //班级详情
+            //         Utils.fetch({
+            //             url:'/app/class/'+self.classId+'/detail',
+            //             method:'get',
+            //             dataType:'json',
+            //             success:function(res){
+            //                 var classDetail = res.data.data;             
+            //                 self.childInfo.realname = classDetail.studentList[0].user.realname;
+                           
+
+            //                 for(var i in self.children){
+            //                     if(!self.children[i].user.avatar){
+            //                         self.children[i].user.avatar = 'yjpt/images/photo_06.jpeg';
+            //                     }
+            //                 }
+            //                 Utils.changeImg(self.children,['avatar'],'user');
+            //             }
+            //         });
+            //     }
+            // }); 
+        },
+        methods:{
+            redirect:function(url){
+                Utils.navigate.push(this,url,'true');
+            },
+            removeChild(){
+                var self = this;
+                self.isShow = !self.isShow;
+                modal.confirm({
+                    message:'确定删除吗？',
+                    okTitle:'确定',
+                    cancelTitle:'取消'
+                },function(result){
+                    if(result == '确定'){
+                        console.log(self.studentDetail);
+                        Utils.fetch({
+                            url:'/app/class/'+self.studentDetail.class.id+'/student/'+self.studentDetail.student.id,
+                            data:'',
+                            method:'delete',
+                            dataType:'json',
+                            success:function(res){
+                                if(res.data.StatusCode == '200'){
+                                    modal.toast({
+                                        message:'删除成功',
+                                        duration:'1'
+                                    });
+                                    setTimeout(function(){
+                                        Utils.navigate.pop(self,'true');
+                                    },1000);
+                                }else if(res.data.StatusCode == '400'){
+
+                                }else{
+                                    modal.toast({
+                                        message:'删除失败，请稍后重试',
+                                        duration:'1'
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });  
+            },
+            redirectContact:function(url,index){
+                var self = this;           
+                storage.setItem('parentInfo',JSON.stringify(self.parentList[index]),function(){});     
+                Utils.navigate.push(this,url,'true');
+            },
+
+            /*默认头像*/
+            setDefaultPhoto:function(i,photo){
+                var self = this;
+                if(!photo){  
+                    self.parentList[i].photo = self.images.defaultPhoto;
+                }else{
+                    //头像路径转换
+                    self.parentList[i].photo = Utils.ip + self.dir + self.parentList[i].photo;
+                }
+            },
+            renameChild(url){
+                var self = this;
+                Utils.navigate.push(self,url,'true');
+            }
+        }
+    }
+</script>

@@ -1,0 +1,532 @@
+<template>
+    <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="我要上课"
+    title-color="white" onclickleftitem="onclickleftitem" left-item-src="{{images.leftItemImg}}" right-item-src='{{images.rightItemImg}}'> 
+         <div class="wra">         
+                 <!-- <embed class="contentes" style="visibility: {{visibility}};" repeat={{tabList}} src={{src}} type="weex"></embed> -->
+              <div class="tabbars">
+                  <div class="container" repeat={{tabList}} style="background-color: {{backgroundColor}};" onclick="selected(index)">
+                      <text class="tab-text" style="color: {{titleColor}}">{{title}}</text>
+                  </div> 
+              </div> 
+
+              <!--所有课程-->
+              <scroller class="content" if="{{courseType=='all'}}">
+                  <div class="course_wrap">
+                      <div class="indexS">
+                          <p class="ssLine">
+                              <img src="{{images.search}}" class="searchPic" > 
+                              <input type="text" name="" onfocus="clearAllTxt" oninput='searchAll' placeholder="请输入关键字" value="{{searchAllTxt}}"  class="secrchInput"  >
+                          </p>
+                      </div>
+                      <div class="course_list" repeat={{lessonList}} onclick="redirect(id,$index)">
+                          <div><image resize='cover' src={{icon}} class="course_img"></image></div>
+                          <div class="course_right"  >
+                              <text class="course_title" >{{name}}</text>
+                              <div class="Lesson" style=" ">
+                                  <text style=" color: #b8b8b8; ">{{count}}/{{section_count}}</text>
+                                  <img class="play_btn" src="{{images.rightArrow}}">
+                              </div>
+                              <div style=" flex-direction: row;">
+                                  <text class="classify" repeat="fields" style="margin-right: 10px;">{{fields[$index]}}</text>
+                              </div>
+                          </div>
+                      </div>                   
+                  </div>
+              </scroller>
+
+              <!--我的课程-->
+              <scroller class="content" if="{{courseType=='myCourse'}}">
+                  <div class="course_wrap" >
+                      <div class="indexS">
+                          <p class="ssLine">
+                              <img src="{{images.search}}" class="searchPic">
+                              <input type="text" name="" class="secrchInput" oninput='searchMyCourse' placeholder="请输入关键字" >
+                          </p>
+                      </div>
+                      <div class="course_list" repeat={{myCourse}} onclick='openUrl("1",id,sectionType?"teacher":null)'>
+                          <div><image src={{icon}} resize='cover' class="course_img"></image></div>
+                          <div class="course_right course_right2">
+                              <div class="right_row1">
+                                  <text class="course_title" >{{name}}</text>
+                                  <text class="right_btn2" onclick='openUrl("1",id,sectionType?"teacher":null)'>查看教案</text>
+                              </div>
+                              <div class="right_row2">
+                                  <text style="margin-right:15px;color: #fa7310;"  if="{{count>0}}">已上课</text>
+                                  <img class="play_btn2" onclick='openUrl("2",id,sectionType?"teacher":null)' src="{{images.playBtn}}">    
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </scroller>
+          </div>
+    </wxc-navpage>  
+</template>
+<style>
+    .content {color: #353535;background-color: #ffffff;position: absolute;top:230;left: 0;right: 0;bottom: 0;} 
+
+    .course_wrap{}
+    .indexS{background-color:#f4f1f1; padding: 20;  flex-direction: row;position: fixed;top:230;left:0;right:0;}
+    .ssLine{height: 90; border-width: 1; border-style: solid; border-color: #ccc; border-radius: 5; flex-direction: row; align-items: center; display: flex; justify-content: space-between; background-color: #fff;flex: 1;}
+    .searchPic{width: 50; height: 50; margin-left: 25;margin-right: 25; }
+    .secrchInput{flex:3;margin-right:25; height: 88; font-size: 34;padding-left: 15;color: #b8b8b8}
+
+
+    .date{color: #666666;}
+    .date_time{text-align: center;margin-top: 50;margin-bottom: 30;font-family: Microsoft YaHei;color: #333;position: fixed;top: 160;left:0;right: 0;/*border-bottom: 1px solid #00cc99;*/padding-bottom: 20;flex-direction: row;align-items: center;padding-left: 160;}
+    .date_arrow{width: 19;height: 32;margin-left:25;margin-right: 25;}
+    .wra { 
+        position:absolute; 
+        width: 750; 
+        top: 0; 
+        left: 0; 
+        right: 0; 
+        bottom: 0;
+        background-color:#f4f1f1; 
+    }
+    .contentes { 
+        position:absolute;
+        top: 10; 
+        left: 0; 
+        right: 0; 
+        bottom: 0;
+        background-color:#ffffff; margin-top: 88; 
+    }
+    .tabbars { 
+        flex-direction: row; 
+        position: fixed; 
+        left: 0; 
+        right: 0; 
+        top: 130; 
+        font-size: 12;
+        padding-right:15;padding-left:15;padding-top:20;padding-bottom: 20;
+        /*border-bottom-color: #00cc99;*/
+        /*border-bottom-style: solid;*/
+        /*border-bottom-width: 2;*/
+        background-color: #ffffff;
+        border-bottom-style: solid;
+        border-bottom-color: #f4f1f1;
+        border-bottom-width: 1;
+    }
+    .container {
+        flex: 1; 
+        flex-direction: column; 
+        align-items:center; 
+        justify-content:center; 
+        background:#ffffff;
+        font-family:微软雅黑;
+        text-align: center;
+        /*border:1px solid #00cc99;*/
+        align-items: center;
+        -webkit-box-align:center;
+        border:none;
+        /*border-top-left-radius: 10;
+        border-top-right-radius: 10;*/
+        padding-top: 10;
+        padding-bottom: 10;
+        /*border-bottom: 1px solid #00cc99;*/
+    }
+    .tab-text {
+        text-align: center;  
+        font-size: 36;
+    }
+
+
+    .course_img{width: 132;height: 178;border-style: solid;border-width: 1;border-color: #ddd;}
+    .course_left{position: relative;}
+    .course_type{position: absolute;left: 0;top: 0;padding: 5;background: #f63;color: #fff;font-size: 24;font-family: Microsoft YaHei;}
+    .course_list{flex-direction: row;align-items:center;border-bottom: 1px solid #ddd;padding: 25;position: relative;
+     border-bottom-style:solid;border-bottom-color:#ddd;border-bottom-width:1;}
+    .course_right{margin-left: 10;flex: 1;}
+    .course_time{font-size: 28;color: #b8b8b8;margin:10;font-family: Microsoft YaHei;}
+    .play_btn{position: absolute;width: 19;height: 35;right: 10;top: 25;}
+    .major_wrap{margin-top: 95;}
+    .my_course{margin-top: 95;}
+
+
+   .course_img{width: 132;height: 175;border-style: solid;border-width: 1;border-color: #ddd;}
+      .course_list{ width: 750;  background-color:#fff;
+      border-bottom-width: 1;
+      border-bottom-color: #e7e7e7;
+      border-bottom-style: solid;
+      padding:25;
+      flex-direction: row;
+      display: flex; align-items: center; justify-content:space-between;
+      }
+      .course_right{flex: 3; margin-left: 20;}
+      .course_title{color: #222;font-size: 36; line-height: 40; font-family: Microsoft YaHei;}
+      .Lesson{flex-direction: row; display: flex; align-items: center; justify-content: space-between; height: 60; }
+      .play_btn2{width: 65;height: 65;text-align: right;}
+      .classify{ border-color:#0c9; border-style: solid; border-width: 1; border-radius: 5px; padding: 12; padding-top:6; padding-bottom:6; color: #0c9;}
+      .major_wrap{margin-top: 95;}
+      .search_text{color: #b8b8b8;font-size: 34px;}
+
+      .course_right2{display: flex;flex-direction: row;justify-content: space-between;position: relative;}
+      .right_row1{flex: 3;}
+      .right_row2{flex: 2;display: flex;flex-direction: row;justify-content: space-between;align-items: center;margin-right: 25px;text-align: right;position: relative;}
+      .right_btn2{background-color: #fff;border-style: solid;border-color: #00cc99;border-width: 1px;color: #00cc99;width: 150px;padding: 8;text-align: center;border-radius: 2px;margin-top: 30px;}
+      .play_btn2{position: absolute;right: 0;top:35;}
+</style>
+<script>
+    require('weex-components');
+    var Utils = require('./javascript/Utils');
+    var modal = require('@weex-module/modal');
+    var storage = require('@weex-module/storage');
+    var event = require('@weex-module/event');
+    module.exports = {
+      data: {
+        loading:false,
+        currentTab:1,
+        navBarHeight: 130,
+        playStatus:'play',
+        dir: 'yjpt',
+        selectedColor:'#00cc99',
+        unselectedColor:'#666666',
+        selectedbackgroundColor: '#00cc99',
+        selectedDateColor:'#ffffff',
+        unselectedDateColor:'#666666',
+        unselectedbackgroundColor: '#ffffff',
+        url:'course-major-list2',
+        tabList: [
+            {
+                index: 0,
+                title: '所有课程',
+                titleColor: '#00cc99',
+                selectedColor:'#00cc99',
+                backgroundColor:'#ffffff',
+            },
+            {
+                index: 1,
+                title: '我的课程',
+                titleColor: '#666666',
+                selectedColor:'#00cc99',
+                backgroundColor:'#ffffff',
+            }
+        ],
+        
+        myCourse:[
+            {
+                id:1,
+                dir_type:1,
+                name:'我的课程' ,
+                preview:'',
+                no:'20160545',
+                grade_id:1,
+                type_id:78,
+            },
+        ],
+        images:{
+          leftItemImg:'yjpt/images/id_right_bg.png',
+          rightItemImg:'yjpt/images/schedule.png',
+          rightArrow:'yjpt/images/arrows_right.png',
+          search:'yjpt/images/search.png',
+          playBtn:'yjpt/images/videoPlay.png',
+          noImgs:'yjpt/images/no-imgs.png'
+        },
+        scheduleUrl:'schedule',
+        pageTitle:'',  
+        dirType:'1',  
+        gradeId:'',
+        courseType:'all',
+        searchAllTxt:'',
+
+        fieldList:[
+            {
+                id:'11',
+                label:'科学'
+            },
+            {
+              id:'12',
+              label:'语言'
+            }
+        ],
+
+        lessonList:[
+             {
+                field_id:'11#12',
+                fields:[
+                    '科学','语言'
+                ]
+             },
+             {
+                field_id:'11#',
+                fields:[
+                    '科学'
+                ]
+             },
+             {
+                field_id:'11',
+                fields:[
+                    '科学'
+                ]
+             }
+        ],
+        tempList:[],
+        noContainList:[],
+        jsessionid:''
+      },
+      created: function() {
+          var bundleUrl = this.$getConfig().bundleUrl;
+          var nativeBase;
+          var isAndroidAssets = bundleUrl.indexOf('file://assets/') >= 0;
+          var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 && bundleUrl.indexOf('WeexDemo.app') > 0;
+          if (isAndroidAssets) {
+            nativeBase = 'file://assets/yjpt/weex/';
+          }
+          else if (isiOSAssets) {
+            // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
+            // file:///Users/{user}/Library/Developer/CoreSimulator/Devices/{id}/data/Containers/Bundle/Application/{id}/WeexDemo.app/
+            nativeBase = bundleUrl.substring(0, bundleUrl.lastIndexOf('/') + 1);
+          }
+          else {
+            var host = 'localhost:12580';
+            var matches = /\/\/([^\/]+?)\//.exec(this.$getConfig().bundleUrl);
+            if (matches && matches.length >= 2) {
+                host = matches[1];
+            }
+            nativeBase = 'http://' + host + '/' + this.dir + '/weex/';
+          }
+          var h5Base = './' + this.dir + '/weex/';
+          // in Native
+          var base = nativeBase;
+          if (typeof window === 'object') {
+            // in Browser or WebView
+            base = h5Base;
+          }
+
+          for(var i = 0; i < this.tabList.length; i++) {
+              var tabList = this.tabList[i];
+              tabList.src = base + tabList.src;
+          }
+
+          this.$on('naviBar.leftItem.click',function(e){ 
+              // history.back();
+              Utils.navigate.pop(this,'true');
+          });        
+          
+          this.attendUrl = Utils.setOpenUrl(this.$getConfig(),this.attendUrl);
+          this.classUrl = Utils.setOpenUrl(this.$getConfig(),this.classUrl);
+          Utils.changeImg(this.images,['leftItemImg','rightItemImg']);
+          Utils.changeImg(this.images,['search','rightArrow']);
+          Utils.changeImg(this.images,['playBtn','noImgs']);
+
+          this.scheduleUrl = Utils.setOpenUrl(this.$getConfig(),this.scheduleUrl);
+
+          this.$on('naviBar.rightItem.click',function(){
+              this.redirect(this.scheduleUrl);
+          });
+
+          var self = this;
+
+          //所有课程
+          storage.getItem('classId',function(e){
+              if(e.data != 'undefined'){
+                  self.classId = e.data;
+                  //获取所有课程
+                  self.selected(0);  
+              }
+
+              //测试用：
+              // else{
+              //   self.classId = 39;
+              //   self.selected(0); 
+              // }                
+          });
+
+          storage.getItem('baseData',function(e){
+              if(e.data != 'undefined'){
+                  e.data = JSON.parse(e.data);
+                  self.fieldList = e.data.fieldList;
+              }
+          });
+
+          storage.getItem('jsessionid',function(e){
+              if(e.data != 'undefined'){
+                  self.jsessionid = e.data;
+              }
+          });
+      },
+      methods: {
+          ready: function (e) {
+              var vm = this;
+              vm.$on('tabBar.onClick',function(e){
+                  var detail= e.detail;
+              });
+          },
+          redirect:function(courseId,index){
+              var self = this;
+
+              var url;
+              if(self.courseType == 'all'){
+                  storage.setItem('courseInfo',JSON.stringify(self.lessonList[index]),function(){});
+                  url = Utils.setOpenUrl(this.$getConfig(),'CatalogTab');
+              }else if(self.courseType == 'myCourse'){   
+                  storage.setItem('courseInfo',JSON.stringify(self.myCourse[index]),function(){});      
+                  url = Utils.setOpenUrl(this.$getConfig(),'courseTab');
+              }
+
+              storage.setItem('classId',self.classId,function(){});
+              storage.setItem('courseId',courseId,function(){});
+
+
+              Utils.navigate.push(this,url,'true'); 
+          },
+          selected: function(index) {
+              var self = this;
+              
+              for(var i = 0; i < this.tabList.length; i++) {
+                var tabList = this.tabList[i];
+                if(i == index){
+                    tabList.titleColor=this.selectedColor;
+                    // tabList.backgroundColor = this.selectedbackgroundColor;
+                    tabList.dateColor = this.selectedDateColor;
+                }
+                else {
+                    tabList.titleColor = this.unselectedColor;
+                    // tabList.backgroundColor = this.unselectedbackgroundColor;
+                    tabList.dateColor = this.unselectedDateColor;
+                }
+              }
+              this.currentTab = parseInt(index+1);
+              //get courses
+              if(index == 0){
+                  //所有课程
+                  self.courseType = 'all',
+                  Utils.fetch({
+                      url:'/app/course?classId='+self.classId,
+                      method:'get',
+                      dataType:'json',
+                      success:function(res){
+                          if(res.data.StatusCode == '200'){
+                              self.lessonList = res.data.data;
+
+                              //field_id 对比基础信息中的 fieldList
+                              for(var i in self.lessonList){
+                                  self.lessonList[i].fieldIds =  [];
+                                  self.lessonList[i].fields =  []; //用该数组来绑定到页面中
+                                  self.lessonList[i].fieldIds = self.lessonList[i].field_id.split('#');
+
+                                  for(var j in self.lessonList[i].fieldIds){
+                                      for(var f in self.fieldList){
+                                          if(self.lessonList[i].fieldIds[j] == self.fieldList[f].id){
+                                              self.lessonList[i].fields.push(self.fieldList[f].label);
+                                          }
+                                      }
+                                  }
+                                  //default img
+                                  if(self.lessonList[i].icon == ''){
+                                      self.lessonList[i].icon = self.images.noImgs;
+                                  }
+                              }
+
+                            self.tempList = [].concat(JSON.parse(JSON.stringify(self.lessonList)));
+
+                              
+                          }else{
+                              modal.toast({
+                                  message:'获取课程失败，请稍后重试',
+                                  duration:'1'
+                              });
+                          }
+                      }
+                  });
+              }else{
+                  //我的课程
+                  self.courseType = 'myCourse';
+                  Utils.fetch({
+                      url:'/app/course/my_section?classId='+self.classId,
+                      method:'get',
+                      dataType:'json',
+                      success:function(res){
+                          if(res.data.StatusCode == '200'){
+
+                              for(var i in res.data.data.createSection){
+                                  res.data.data.createSection[i].sectionType = 'teacher';
+                              }
+
+                              self.myCourse = res.data.data.collectSection.concat(res.data.data.createSection);  
+                              for(var i in self.myCourse){
+                                  if(self.myCourse[i].icon == ''){
+                                      self.myCourse[i].icon = self.images.noImgs;
+                                  }                           
+                              }
+                              self.tempList = [].concat(JSON.parse(JSON.stringify(self.myCourse)));
+
+                              // console.log(self.myCourse);
+                          }else{
+                              modal.toast({
+                                  message:'获取课程失败，请稍后重试',
+                                  duration:'1'
+                              });
+                          }
+                      }
+                  });
+              }
+
+          },          
+          searchAll(e){
+              var self = this;
+
+              self.searchAllTxt = e.value;
+              self.noContainList = [];
+              self.lessonList = JSON.parse(JSON.stringify(self.tempList));
+
+
+              if(self.searchAllTxt !=''){
+                  for(var i=0;i < self.lessonList.length;i++){
+                      if(self.lessonList[i].name.indexOf(self.searchAllTxt) != -1){
+                          self.noContainList.push(self.lessonList[i]);
+                      }
+                  }
+                  self.lessonList = self.noContainList;
+              }else{
+                  self.lessonList = JSON.parse(JSON.stringify(self.tempList));
+              }
+                         
+          },
+
+          searchMyCourse(e){
+               var self = this;
+
+              self.searchAllTxt = e.value;
+              self.noContainList = [];
+              self.myCourse = JSON.parse(JSON.stringify(self.tempList));
+
+
+              if(self.searchAllTxt !=''){
+                  for(var i=0;i < self.myCourse.length;i++){
+                      if(self.myCourse[i].name.indexOf(self.searchAllTxt) != -1){
+                          self.noContainList.push(self.myCourse[i]);
+                      }
+                  }
+                  self.myCourse = self.noContainList;
+              }else{
+                  self.myCourse = JSON.parse(JSON.stringify(self.tempList));
+              }
+          },
+
+          clearAllTxt(e){
+              var self = this;              
+              // self.searchAllTxt = '';
+          },
+          openUrl:function(opType,sectionId,sectionType){
+              var self = this;
+
+              if(event.ControllBox){
+                  event.ControllBox({
+                      opType:opType, //1：查看教案，2：播放视频
+                      classId:self.classId,
+                      sectionType:sectionType,//null:标准课程 teacher:老师自建课程
+                      sectionId:sectionId,
+                      jsessionid:self.jsessionid
+                  });
+                      
+              }else{
+                  modal.toast({
+                      message:'请在手机App中操作',
+                      duration:'1'
+                  });
+              }
+          }
+      }
+    }
+</script>

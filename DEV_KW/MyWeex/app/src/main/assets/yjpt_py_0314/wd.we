@@ -1,0 +1,168 @@
+<template>
+   <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="我的"
+    title-color="white" onclickleftitem="onclickleftitem" left-item-src="{{headLeft}}" right-item-src="{{headRight}}">
+       <scroller class="content">
+            <!-- <arrow-item repeat="{{basicDataList}}"></arrow-item> -->
+            <div style="display: flex;flex-direction: row; padding-top:25;padding-bottom:25;background-color: #fff;font-size: 38px;justify-content: space-between;padding-right: 40;padding-left: 30;" onclick='redirect(mineUrl)'>
+                <text style="font-size: 38;line-height: 70;">我</text>
+                <div style="display: flex;flex-direction: row;justify-content: center;align-items: center;">
+                    <img style="height: 90;width: 90;margin-right:20;border-radius: 70;" src='{{images.mineImg}}'/>
+                    <img style="height: 35;width: 22;" src='{{images.arrows}}'/>
+                </div>
+            </div>
+
+            <div style=" height: 90; padding-left: 30; justify-content: center; ">
+                <text style="font-size: 38px; ">我的班级</text>
+            </div>        
+
+            <div class="item" repeat='{{myClass}}' onclick="gotoPage(myClass,$index)">
+                <div class="list" style=" flex:3;">
+                    <image class="pic_thumb1" style=" border-radius: {{stateOne}}; " src="{{images.classImg}}"></image>
+                    <text class="titleName" style='flex:3'>{{name}}</text>
+                    <image class="pic_thumb" src="{{images.arrows}}" style='width: 22px;height: 35px;'></image>
+                </div>
+            </div>
+            <div style=" padding-top:15px;"><br></div>    
+            <div class="item" repeat='{{basicDataList3}}' onclick="openPage(url)">
+                <div class="list" style=" flex:3;">
+                    <text class="titleName" style='flex:3'>{{titleName}}</text>
+                    <image class="pic_thumb" src="{{images.arrows}}" style='width: 22px;height: 35px;'></image>
+                </div>
+            </div>
+
+      </scroller>
+  </wxc-navpage>
+</template>
+<style>
+  .content { background-color: #f4f1f1; position: absolute; top: 0; left: 0; right: 0;  bottom: 0; }
+  .mycake{flex-direction:row; width:750; height: 120; background-color: #ffffff; 
+    border-bottom-width: 1;
+    border-bottom-color: #e5e5e5;
+    display: flex;
+    align-items: center; 
+    justify-content: space-between; padding-left:30; padding-right:30; 
+     }
+
+       .item {
+    width: 750;  background-color:#fff;
+    border-bottom-width: 1;
+    border-bottom-color: #e7e7e7;
+    border-bottom-style: solid;
+    padding:28;
+    flex-direction: row;
+    display: flex; align-items: center; justify-content:space-between;
+  }
+  .list{flex-direction: row; display: flex; align-items:center;justify-content:space-around;}
+  .titleName{font-size: 38; }
+  .content{color: #777; font-size: 34; }
+  .pic_thumb { width: 95; height: 95; margin-right:15; margin-left: 8;}
+  .pic_thumb1 { width: 60; height: 60; margin-right:15;}
+</style>
+<script>
+    require('weex-components');
+    var Utils = require('./javascript/Utils');
+    var modal = require('@weex-module/modal');
+    var storage = require('@weex-module/storage');
+    module.exports = {
+      data: {
+        navBarHeight: 130,
+        mineUrl:'wo',
+        basicDataList:[
+            {
+              titleName:'我',
+              pic_thumb:'yjpt/images/photo_06.jpeg',
+              src: 'yjpt/images/arrows_right.png',
+              url:'wo',
+              state:55
+            }
+        ],
+        images:{
+            classImg:'yjpt/images/ewm_icon.png',
+            arrows:'yjpt/images/arrows_right.png',
+            mineImg:'yjpt/images/photo_06.jpeg'
+        },
+        myClass:[],
+        basicDataList3:[
+            // {
+            //   titleName:'设备管理',
+            //   src:'yjpt/images/arrows_right.png',
+            //   url:'wd_sbgl'
+            // },
+            {
+              titleName:'设置',
+              src:'yjpt/images/arrows_right.png',
+              url:'wd_sz'
+            }
+        ],
+        userId:'',
+        classPage:'class-main-page'
+      },
+      created : function(){
+          Utils.changeImg(this.basicDataList,['pic_thumb','src']);
+
+
+          Utils.changeImg(this.myClass,['titlePicUrl','src']);
+          Utils.changeImg(this.basicDataList3,['src']);
+          Utils.changeImg(this.images,['classImg','arrows','mineImg']);
+
+
+          var self = this;
+
+          /**************************!!!!!!!!!!!!!!!!!!!!!! 不要用for in 循環**************************************/
+          for (var i=0;i< this.basicDataList.length;i++) { 
+            self.basicDataList[i].url = Utils.setOpenUrl(self.$getConfig(),self.basicDataList[i].url);
+          } 
+          for (var i=0;i<this.myClass.length;i++) {
+            self.myClass[i].url = Utils.setOpenUrl(self.$getConfig(),self.myClass[i].url);
+          } 
+          for (var i=0;i<this.basicDataList3.length;i++) {
+            self.basicDataList3[i].url = Utils.setOpenUrl(self.$getConfig(),self.basicDataList3[i].url);
+           
+          } 
+
+            
+
+          self.classPage = Utils.setOpenUrl(self.$getConfig(),self.classPage);
+          self.mineUrl = Utils.setOpenUrl(self.$getConfig(),self.mineUrl);
+
+          //获取我的班级          
+          Utils.fetch({
+              url:'/app/class',
+              method:'get',
+              dataType:'json',
+              success:function(ret){
+                  if(ret.data.StatusCode == '200'){
+                      self.myClass = ret.data.data;            
+                  }else{
+                      modal.toast({
+                          message:'获取班级失败',
+                          duration:'1'
+                      });
+                  }
+              }
+          });
+         
+      },
+      methods : {
+          gotoPage:function(myClass,index){
+              var self = this;
+              storage.setItem('classInfo',JSON.stringify(myClass[index]),function(){});              
+              Utils.navigate.push(self,self.classPage,'true');
+          },
+
+          openPage : function(url){
+              var self = this;
+              Utils.navigate.push(self,url,'true');
+          },
+          redirect(url){
+              console.log(url);
+              var self = this;
+              Utils.navigate.push(self,url,'true');
+          },
+          
+       
+      }
+
+
+    }
+</script>

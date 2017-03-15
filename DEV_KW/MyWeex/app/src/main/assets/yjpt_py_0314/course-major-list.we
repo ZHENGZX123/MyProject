@@ -1,0 +1,199 @@
+<template>
+    <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#00cc99" title="{{libraryName}}" title-color="white" onclickleftitem="onclickleftitem" left-item-src="{{images.leftItemImg}}">
+        <scroller>
+            <div class="course">
+                <div class="course_count">
+                    <text style="font-size: 34;padding: 25;border-bottom-width: 1;border-bottom-color: #ccc;border-bottom-style: solid;">共{{lessonList.length}}个课时</text>
+                </div>
+               <div class="course_list" repeat={{lessonList}} onclick="redirect(url,$index)">
+                    <div class="course_left">
+                        <image src={{preview}} class="course_img"></image>
+                        <!-- <text class="course_type"></text> -->
+                    </div>
+                    <div class="course_right">
+                        <text class="course_title">{{name}}</text>
+                        <text class="course_time">建议时长：{{require_time}}分钟</text>
+                        <text class="course_btn">查看教案</text>
+                        <image class="play_btn" src="{{images.rightArrow}}"></image>
+                    </div>
+               </div>
+               <div if='{{lessonList.length<=0}}'>
+                    <text style='font-size: 34;padding: 50;text-align: center;font-family: Microsoft YaHei;'>暂无课时安排</text>
+               </div>
+           </div>
+       </scroller>
+        <!--<wxc-loading if="{{loading}}"></wxc-loading>-->
+</wxc-navpage>  
+</template>
+<style>
+    .course_img{width: 132;height: 178;border-width: 1;border-style: solid;border-color: #ddd;}
+    .course_left{position: relative;}
+    .course_type{position: absolute;left: 0;top: 0;padding: 5;background: #f63;color: #fff;font-size: 24;font-family: Microsoft YaHei;}
+    .course_list{flex-direction: row;align-items:center;padding: 25;border-bottom-width:1;border-bottom-color:#ddd;border-bottom-style:solid;padding-top: 0;}
+    .course_right{margin-left: 10;position: relative;flex: 1;}
+    .course_time{font-size: 32;color: #b8b8b8;margin:10;font-family: Microsoft YaHei;}
+    .course_title{color: #222;margin:10;font-size: 34;font-family: Microsoft YaHei;}
+    .course_btn{color: #0c9;margin:10;font-size: 34;font-family: Microsoft YaHei;border-width:1;border-color:#0c9;border-style:solid;width: 180;text-align: center;padding: 8;border-radius: 4;}
+    .play_btn{position: absolute;width: 19;height: 32;border-radius: 100;right: 10;top: 70;}
+</style>
+<script>
+    require('weex-components');
+    var Utils = require('./javascript/Utils');
+    var modal = require('@weex-module/modal');
+    var storage = require('@weex-module/storage');
+    var event = require('@weex-module/event');
+    module.exports = {
+        data: {
+            loading:false,   
+            navBarHeight: 130,
+            dir:'yjpt',
+            courseList:[
+                {courseTitle:'抢松鼠的松果',courseImg:'../yjpt/images/64871195851344.jpg',courseTime:20,courseBtn:'查看教案',url:'major-class-detail'},
+                {courseTitle:'抢松鼠的松果2',courseImg:'../yjpt/images/11002812962201869.jpg',courseTime:30,courseBtn:'查看目标',url:'major-class-detail'}
+            ],
+            images:{
+                rightArrow:'yjpt/images/arrow_right2.png',
+                leftItemImg:'yjpt/images/id_right_bg.png'
+            },
+            gradeId:'',
+            lessonList:[],
+            libraryName:'',
+            url:'class-detail',
+            type:'',
+            classId:'',
+            jsessionid:'',
+        },
+        created : function(){
+            this.$on('naviBar.leftItem.click',function(e){ 
+                // history.back();
+                Utils.navigate.pop(this,'true');
+            });
+            // Utils.setOpenUrl(this.$getConfig(),this.courseList);
+            Utils.changeImg(this.images,['rightArrow','leftItemImg']);
+            Utils.changeImg(this.courseList,['courseImg']);
+
+            var bundleUrl = this.$getConfig().bundleUrl;
+            console.log('hit', bundleUrl);
+            var nativeBase;
+            var isAndroidAssets = bundleUrl.indexOf('file://assets/') >= 0;
+            var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;
+            if (isAndroidAssets) {
+                nativeBase = 'file://assets/yjpt/weex/';
+            }
+            else if (isiOSAssets) {
+                nativeBase = bundleUrl.substring(0, bundleUrl.lastIndexOf('/') + 1);
+            }
+            else {
+                var host = 'localhost:12580';
+                var matches = /\/\/([^\/]+?)\//.exec(this.$getConfig().bundleUrl);
+                if (matches && matches.length >= 2) {
+                  host = matches[1];
+                }
+                nativeBase = 'http://' + host + '/' + this.dir + '/weex/';
+            }
+            var h5Base = './index.html?page=./' + this.dir + '/weex/';
+            // in Native
+            var base = nativeBase;
+            if (typeof window === 'object') {
+                // in Browser or WebView
+                base = h5Base;
+            }
+
+            // for (var i in this.courseList) {
+            //     var myList = this.courseList[i];
+            //     if (myList.url) {
+            //         myList.url = base + myList.url + '.js';
+            //     }
+            // } 
+
+            this.url = Utils.setOpenUrl(this.$getConfig(),this.url);
+
+            var self = this;
+            storage.getItem('libraryName',function(e){
+                if(e.data != 'undefined'){
+                    self.libraryName = e.data;
+                }
+                    
+            });
+            storage.getItem('gradeId',function(e){
+                if(e.data != 'undefined'){
+                    self.gradeId = e.data;
+                }
+            });
+            storage.getItem('dirId',function(e){
+                if(e.data != 'undefined'){
+                    Utils.fetch({
+                        url:'/lesson/searchLessonByDir',
+                        data:'dirId='+e.data+'&gradeId='+self.gradeId,
+                        type:'json',
+                        method:'POST',
+                        success:function(ret){
+                            if (ret.data.retcode == '1') {
+                                self.lessonList = JSON.parse(JSON.stringify(ret.data.lessonList));
+                                for(var i=0;i<self.lessonList.length;i++){
+                                    self.setPhoto(i);
+                                }
+                            } 
+                        }
+                    });
+                }
+            });
+
+            storage.getItem('hasVideo',function(e){
+                if(e.data == 'true'){
+                    //我要上课
+                    // self.hasVideo = true;
+                    self.type = '1';
+                }else{
+                    //只看教案备课
+                    // self.hasVideo = false;
+                    self.type = '2';
+                }
+            });
+            storage.getItem('classId',function(e){
+                if(e.data != 'undefined'){
+                    self.classId = e.data;
+                }
+            });
+
+             storage.getItem('jsessionid',function(e){
+                if(e.data){
+                    self.jsessionid = e.data;
+                }
+            });
+        },
+        methods:{
+            redirect:function(url,index){
+                var self = this;
+                storage.setItem('lessionId',self.lessonList[index].id,function(){});                
+                
+                if(event.ControllBox){
+                    event.ControllBox({
+                        lessonId:self.lessonList[index].id,
+                        classId:self.classId,
+                        type:self.type,
+                        gradeId:self.gradeId,
+                        jsessionid:self.jsessionid
+                    });
+                }else{
+                    modal.alert({
+                        message:'请在App中操作',
+                        okTitle:'好的'
+                    },function(){
+
+                    });
+                } 
+                // Utils.navigate.push(self,url,'true');
+            },
+            setPhoto:function(index){
+                var self = this;
+                storage.getItem('jsessionid',function(e){
+                    if(e.data){
+                        self.lessonList[index].preview = Utils.ip+self.dir+self.lessonList[index].preview+'?jsessionid='+e.data;
+                    }
+                });
+            },
+        }
+    };
+</script>
+
