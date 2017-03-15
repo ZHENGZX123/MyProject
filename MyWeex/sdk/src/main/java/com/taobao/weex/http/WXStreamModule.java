@@ -442,7 +442,6 @@ public class WXStreamModule extends WXModule {
         }
     }
 
-
     static String readAsString(byte[] data, String cType) {
         String charset = "utf-8";
         if (cType != null) {
