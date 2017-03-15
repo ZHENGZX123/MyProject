@@ -224,191 +224,191 @@ import java.util.Map;
 
 public class WXEnvironment {
 
-  public static final String OS = "android";
-  public static final String SYS_VERSION = android.os.Build.VERSION.RELEASE;
-  public static final String SYS_MODEL = android.os.Build.MODEL;
-  public static final String ENVIRONMENT = "environment";
-  /*********************
-   * Global config
-   ***************************/
+    public static final String OS = "android";
+    public static final String SYS_VERSION = android.os.Build.VERSION.RELEASE;
+    public static final String SYS_MODEL = android.os.Build.MODEL;
+    public static final String ENVIRONMENT = "environment";
+    /*********************
+     * Global config
+     ***************************/
 
-  public static String JS_LIB_SDK_VERSION = BuildConfig.buildJavascriptFrameworkVersion;
+    public static String JS_LIB_SDK_VERSION = BuildConfig.buildJavascriptFrameworkVersion;
 
-  public static String WXSDK_VERSION = BuildConfig.buildVersion;
-  public static Application sApplication;
-  public static final String DEV_Id = getDevId();
-  @Deprecated
-  public static int sDefaultWidth = 750;
-  public volatile static boolean JsFrameworkInit = false;
+    public static String WXSDK_VERSION = BuildConfig.buildVersion;
+    public static Application sApplication;
+    public static final String DEV_Id = getDevId();
+    @Deprecated
+    public static int sDefaultWidth = 750;
+    public volatile static boolean JsFrameworkInit = false;
 
-  public static final String SETTING_EXCLUDE_X86SUPPORT = "env_exclude_x86";
+    public static final String SETTING_EXCLUDE_X86SUPPORT = "env_exclude_x86";
 
-  public static boolean SETTING_FORCE_VERTICAL_SCREEN = false;
-  /**
-   * Debug model
-   */
-  public static boolean sDebugMode = false;
-  public static String sDebugWsUrl = "";
-  public static boolean sDebugServerConnectable = true;
-  public static boolean sRemoteDebugMode = false;
-  public static String sRemoteDebugProxyUrl = "";
-  public static long sJSLibInitTime = 0;
+    public static boolean SETTING_FORCE_VERTICAL_SCREEN = false;
+    /**
+     * Debug model
+     */
+    public static boolean sDebugMode = false;
+    public static String sDebugWsUrl = "";
+    public static boolean sDebugServerConnectable = true;
+    public static boolean sRemoteDebugMode = false;
+    public static String sRemoteDebugProxyUrl = "";
+    public static long sJSLibInitTime = 0;
 
-  public static long sSDKInitStart = 0;// init start timestamp
-  public static long sSDKInitInvokeTime = 0;//time cost to invoke init method
-  public static long sSDKInitExecuteTime = 0;//time cost to execute init job
-  /** from init to sdk-ready **/
-  public static long sSDKInitTime =0;
+    public static long sSDKInitStart = 0;// init start timestamp
+    public static long sSDKInitInvokeTime = 0;//time cost to invoke init method
+    public static long sSDKInitExecuteTime = 0;//time cost to execute init job
+    /** from init to sdk-ready **/
+    public static long sSDKInitTime = 0;
 
-  public static LogLevel sLogLevel = LogLevel.DEBUG;
-  private static boolean isApkDebug = true;
-  public static boolean isPerf = false;
+    public static LogLevel sLogLevel = LogLevel.DEBUG;
+    private static boolean isApkDebug = true;
+    public static boolean isPerf = false;
 
-  public static boolean sShow3DLayer=true;
+    public static boolean sShow3DLayer = true;
 
-  private static Map<String, String> options = new HashMap<>();
+    private static Map<String, String> options = new HashMap<>();
 
-  /**
-   * dynamic
-   */
-  public static boolean sDynamicMode = false;
-  public static String sDynamicUrl = "";
+    /**
+     * dynamic
+     */
+    public static boolean sDynamicMode = false;
+    public static String sDynamicUrl = "";
 
-  /**
-   * Fetch system information.
-   * @return map contains system information.
-   */
-  public static Map<String, String> getConfig() {
-    Map<String, String> configs = new HashMap<>();
-    configs.put(WXConfig.os, OS);
-    configs.put(WXConfig.appVersion, getAppVersionName());
-    configs.put(WXConfig.devId, DEV_Id);
-    configs.put(WXConfig.sysVersion, SYS_VERSION);
-    configs.put(WXConfig.sysModel, SYS_MODEL);
-    configs.put(WXConfig.weexVersion, String.valueOf(WXSDK_VERSION));
-    configs.put(WXConfig.logLevel,sLogLevel.getName());
-    try {
-      options.put(WXConfig.scale, Float.toString(sApplication.getResources().getDisplayMetrics().density));
-    }catch (NullPointerException e){
-      //There is little chance of NullPointerException as sApplication may be null.
-      WXLogUtils.e("WXEnvironment scale Exception: ", e);
-    }
-    configs.putAll(options);
-    if(configs!=null&&configs.get(WXConfig.appName)==null && sApplication!=null){
-       configs.put(WXConfig.appName, sApplication.getPackageName());
-    }
-    return configs;
-  }
-
-  /**
-   * Get the version of the current app.
-   */
-  private static String getAppVersionName() {
-    String versionName = "";
-    PackageManager manager;
-    PackageInfo info = null;
-    try {
-      manager = sApplication.getPackageManager();
-      info = manager.getPackageInfo(sApplication.getPackageName(), 0);
-      versionName = info.versionName;
-    } catch (Exception e) {
-      WXLogUtils.e("WXEnvironment getAppVersionName Exception: ", e);
-    }
-    return versionName;
-  }
-
-  public static Map<String, String> getCustomOptions() {
-    return options;
-  }
-
-  public static void addCustomOptions(String key, String value) {
-    options.put(key, value);
-  }
-
-  @Deprecated
-  /**
-   * Use {@link #isHardwareSupport()} if you want to see whether current hardware support Weex.
-   */
-  public static boolean isSupport() {
-    boolean isInitialized = WXSDKEngine.isInitialized();
-    if(WXEnvironment.isApkDebugable()){
-      WXLogUtils.d("WXSDKEngine.isInitialized():" + isInitialized);
-    }
-    return isHardwareSupport() && isInitialized;
-  }
-
-  /**
-   * Tell whether Weex can run on current hardware.
-   * @return true if weex can run on current hardware, otherwise false.
-   */
-  public static boolean isHardwareSupport() {
-    boolean excludeX86 = "true".equals(options.get(SETTING_EXCLUDE_X86SUPPORT));
-    boolean isX86AndExcluded = WXSoInstallMgrSdk.isX86() && excludeX86;
-    boolean isCPUSupport = WXSoInstallMgrSdk.isCPUSupport() && !isX86AndExcluded;
-    if (WXEnvironment.isApkDebugable()) {
-      WXLogUtils.d("WXEnvironment.sSupport:" + isCPUSupport
-                   + "isX86AndExclueded: "+ isX86AndExcluded
-                   + " !WXUtils.isTabletDevice():" + !WXUtils.isTabletDevice());
-    }
-    return isCPUSupport && !WXUtils.isTabletDevice();
-  }
-
-  public static boolean isApkDebugable() {
-    if (sApplication == null) {
-      return false;
+    /**
+     * Fetch system information.
+     * @return map contains system information.
+     */
+    public static Map<String, String> getConfig() {
+        Map<String, String> configs = new HashMap<>();
+        configs.put(WXConfig.os, OS);
+        configs.put(WXConfig.appVersion, getAppVersionName());
+        configs.put(WXConfig.devId, DEV_Id);
+        configs.put(WXConfig.sysVersion, SYS_VERSION);
+        configs.put(WXConfig.sysModel, SYS_MODEL);
+        configs.put(WXConfig.weexVersion, String.valueOf(WXSDK_VERSION));
+        configs.put(WXConfig.logLevel, sLogLevel.getName());
+        try {
+            options.put(WXConfig.scale, Float.toString(sApplication.getResources().getDisplayMetrics().density));
+        } catch (NullPointerException e) {
+            //There is little chance of NullPointerException as sApplication may be null.
+            WXLogUtils.e("WXEnvironment scale Exception: ", e);
+        }
+        configs.putAll(options);
+        if (configs != null && configs.get(WXConfig.appName) == null && sApplication != null) {
+            configs.put(WXConfig.appName, sApplication.getPackageName());
+        }
+        return configs;
     }
 
-    if (isPerf) {
-      return false;
+    /**
+     * Get the version of the current app.
+     */
+    private static String getAppVersionName() {
+        String versionName = "";
+        PackageManager manager;
+        PackageInfo info = null;
+        try {
+            manager = sApplication.getPackageManager();
+            info = manager.getPackageInfo(sApplication.getPackageName(), 0);
+            versionName = info.versionName;
+        } catch (Exception e) {
+            WXLogUtils.e("WXEnvironment getAppVersionName Exception: ", e);
+        }
+        return versionName;
     }
 
-    if (!isApkDebug) {
-      return false;
+    public static Map<String, String> getCustomOptions() {
+        return options;
     }
-    try {
-      ApplicationInfo info = sApplication.getApplicationInfo();
-      isApkDebug = (info.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
-      return isApkDebug;
-    } catch (Exception e) {
-      /**
-       * Don't call WXLogUtils.e here,will cause stackoverflow
-       */
-      e.printStackTrace();
+
+    public static void addCustomOptions(String key, String value) {
+        options.put(key, value);
     }
-    return false;
-  }
 
-  public static boolean isPerf() {
-    return isPerf;
-  }
-
-  private static String getDevId() {
-    return sApplication == null ? "" : ((TelephonyManager) sApplication
-        .getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-  }
-
-  public static Application getApplication() {
-    return sApplication;
-  }
-
-  public void initMetrics() {
-    if (sApplication == null) {
-      return;
+    @Deprecated
+    /**
+     * Use {@link #isHardwareSupport()} if you want to see whether current hardware support Weex.
+     */
+    public static boolean isSupport() {
+        boolean isInitialized = WXSDKEngine.isInitialized();
+        if (WXEnvironment.isApkDebugable()) {
+            WXLogUtils.d("WXSDKEngine.isInitialized():" + isInitialized);
+        }
+        return isHardwareSupport() && isInitialized;
     }
-  }
 
-  public static String getDiskCacheDir(Context context) {
-    if (context == null) {
-      return null;
+    /**
+     * Tell whether Weex can run on current hardware.
+     * @return true if weex can run on current hardware, otherwise false.
+     */
+    public static boolean isHardwareSupport() {
+        boolean excludeX86 = "true".equals(options.get(SETTING_EXCLUDE_X86SUPPORT));
+        boolean isX86AndExcluded = WXSoInstallMgrSdk.isX86() && excludeX86;
+        boolean isCPUSupport = WXSoInstallMgrSdk.isCPUSupport() && !isX86AndExcluded;
+        if (WXEnvironment.isApkDebugable()) {
+            WXLogUtils.d("WXEnvironment.sSupport:" + isCPUSupport
+                    + "isX86AndExclueded: " + isX86AndExcluded
+                    + " !WXUtils.isTabletDevice():" + !WXUtils.isTabletDevice());
+        }
+        return isCPUSupport && !WXUtils.isTabletDevice();
     }
-    String cachePath;
-    if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-            || !Environment.isExternalStorageRemovable()) {
-      cachePath = context.getExternalCacheDir().getPath();
-    } else {
-      cachePath = context.getCacheDir().getPath();
+
+    public static boolean isApkDebugable() {
+        if (sApplication == null) {
+            return false;
+        }
+
+        if (isPerf) {
+            return false;
+        }
+
+        if (!isApkDebug) {
+            return false;
+        }
+        try {
+            ApplicationInfo info = sApplication.getApplicationInfo();
+            isApkDebug = (info.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+            return isApkDebug;
+        } catch (Exception e) {
+            /**
+             * Don't call WXLogUtils.e here,will cause stackoverflow
+             */
+            e.printStackTrace();
+        }
+        return false;
     }
-    return cachePath;
-  }
+
+    public static boolean isPerf() {
+        return isPerf;
+    }
+
+    private static String getDevId() {
+        return sApplication == null ? "" : ((TelephonyManager) sApplication
+                .getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+    }
+
+    public static Application getApplication() {
+        return sApplication;
+    }
+
+    public void initMetrics() {
+        if (sApplication == null) {
+            return;
+        }
+    }
+
+    public static String getDiskCacheDir(Context context) {
+        if (context == null) {
+            return null;
+        }
+        String cachePath;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+                || !Environment.isExternalStorageRemovable()) {
+            cachePath = context.getExternalCacheDir().getPath();
+        } else {
+            cachePath = context.getCacheDir().getPath();
+        }
+        return cachePath;
+    }
 
 }
