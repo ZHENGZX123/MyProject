@@ -228,7 +228,6 @@ import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.utils.AssertUtil;
 import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.ScreenUtil;
-import com.zk.myweex.utils.WXAnalyzerDelegate;
 
 import java.io.File;
 import java.util.HashMap;
@@ -248,7 +247,6 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
 
     public ViewGroup mContainer;
     public WXSDKInstance mInstance;
-    protected WXAnalyzerDelegate mWxAnalyzerDelegate;
     public static WXBaseActivity activity;
 
     public String currentZipName;
@@ -266,8 +264,6 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         createWeexInstance();
         mInstance.onActivityCreate();
 
-        mWxAnalyzerDelegate = new WXAnalyzerDelegate(this);
-        mWxAnalyzerDelegate.onCreate();
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
     }
 
@@ -354,9 +350,6 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         if (mInstance != null) {
             mInstance.onActivityStart();
         }
-        if (mWxAnalyzerDelegate != null) {
-            mWxAnalyzerDelegate.onStart();
-        }
     }
 
     @Override
@@ -365,9 +358,7 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         if (mInstance != null) {
             mInstance.onActivityResume();
         }
-        if (mWxAnalyzerDelegate != null) {
-            mWxAnalyzerDelegate.onResume();
-        }
+
     }
 
     @Override
@@ -375,9 +366,6 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         super.onPause();
         if (mInstance != null) {
             mInstance.onActivityPause();
-        }
-        if (mWxAnalyzerDelegate != null) {
-            mWxAnalyzerDelegate.onPause();
         }
     }
 
@@ -387,9 +375,6 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         if (mInstance != null) {
             mInstance.onActivityStop();
         }
-        if (mWxAnalyzerDelegate != null) {
-            mWxAnalyzerDelegate.onStop();
-        }
     }
 
     @Override
@@ -398,17 +383,11 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         if (mInstance != null) {
             mInstance.onActivityDestroy();
         }
-        if (mWxAnalyzerDelegate != null) {
-            mWxAnalyzerDelegate.onDestroy();
-        }
     }
 
     @Override
     public void onViewCreated(WXSDKInstance wxsdkInstance, View view) {
         View wrappedView = null;
-        if (mWxAnalyzerDelegate != null) {
-            wrappedView = mWxAnalyzerDelegate.onWeexViewCreated(wxsdkInstance, view);
-        }
         if (wrappedView != null) {
             view = wrappedView;
         }
@@ -428,24 +407,18 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
     @CallSuper
     public void onRenderSuccess(WXSDKInstance instance, int width, int height) {
         Log.d("test", "base onRenderSuccess");
-        if (mWxAnalyzerDelegate != null) {
-            mWxAnalyzerDelegate.onWeexRenderSuccess(instance);
-        }
     }
 
     @Override
     @CallSuper
     public void onException(WXSDKInstance instance, String errCode, String msg) {
         Log.d("test", "base onException : " + errCode + " " + msg);
-        if (mWxAnalyzerDelegate != null) {
-            mWxAnalyzerDelegate.onException(instance, errCode, msg);
-        }
     }
 
     @Override
     @CallSuper
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        return (mWxAnalyzerDelegate != null && mWxAnalyzerDelegate.onKeyUp(keyCode, event)) || super.onKeyUp(keyCode, event);
+        return super.onKeyUp(keyCode, event);
     }
 
     protected void toast(final String id) {
