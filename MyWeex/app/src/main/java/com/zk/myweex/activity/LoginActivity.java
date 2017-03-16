@@ -10,6 +10,6 @@ public class LoginActivity extends WXBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        renderPage(WXFileUtils.loadAsset("yjpt/weex/login.js", this), "file://assets/");
+        renderPage(WXFileUtils.loadAsset("yjpt/weex/login.js", this), "file://assets/", null);
     }
 }

@@ -251,6 +251,8 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
     protected WXAnalyzerDelegate mWxAnalyzerDelegate;
     public static WXBaseActivity activity;
 
+    public String currentZipName;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -308,11 +310,9 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         mInstance.registerRenderListener(this);
     }
 
-    protected void renderPage(String template, String source) {
-        renderPage(template, source, null);
-    }
-
-    protected void renderPage(String template, String source, String jsonInitData) {
+    //template是js的内容，source是bundleUrl
+    protected void renderPage(String template, String source, String zipName) {
+        this.currentZipName = zipName;
         AssertUtil.throwIfNull(mContainer, new RuntimeException("Can't render page, container is null"));
         Map<String, Object> options = new HashMap<>();
         options.put(WXSDKInstance.BUNDLE_URL, source);
@@ -321,17 +321,14 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
                 getPageName(),
                 template,
                 options,
-                jsonInitData,
+                null,
                 ScreenUtil.getDisplayWidth(this),
                 ScreenUtil.getDisplayHeight(this),
                 WXRenderStrategy.APPEND_ASYNC);
     }
 
-    protected void renderPageByURL(String url) {
-        renderPageByURL(url, null);
-    }
 
-    protected void renderPageByURL(String url, String jsonInitData) {
+    protected void renderPageByURL(String url) {
         AssertUtil.throwIfNull(mContainer, new RuntimeException("Can't render page, container is null"));
         Map<String, Object> options = new HashMap<>();
         options.put(WXSDKInstance.BUNDLE_URL, url);
@@ -340,11 +337,12 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
                 getPageName(),
                 url,
                 options,
-                jsonInitData,
+                null,
                 ScreenUtil.getDisplayWidth(this),
                 ScreenUtil.getDisplayHeight(this),
                 WXRenderStrategy.APPEND_ASYNC);
     }
+
 
     protected String getPageName() {
         return TAG;
@@ -538,7 +536,7 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         String bundleUrl = "file://" + WXApplication.PATH + zipName + "/" + baseUrl;
         Log.d("test", "path = " + path);
         Log.d("test", "bundleUrl = " + bundleUrl);
-        renderPage(WXFileUtils.readFileInZip(path), bundleUrl);
+        renderPage(WXFileUtils.readFileInZip(path), bundleUrl, zipName);
     }
 
 }

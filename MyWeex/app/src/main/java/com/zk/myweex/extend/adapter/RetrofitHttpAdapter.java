@@ -39,6 +39,7 @@ public class RetrofitHttpAdapter implements IWXHttpAdapter {
         String body = request.body;
         String bodys[] = body.split("&");
 
+        //body没有判断，会有异常哦
         HashMap<String, String> map = new HashMap();
         for (int i = 0; i < bodys.length; i++) {
             String temp = bodys[i];

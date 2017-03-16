@@ -22,10 +22,10 @@ import com.taobao.weex.common.WXException;
 import com.zk.myweex.entity.HttpCache;
 import com.zk.myweex.extend.adapter.GitHubApi;
 import com.zk.myweex.extend.adapter.ReadCookiesInterceptor;
-import com.zk.myweex.extend.adapter.RetrofitHttpAdapter;
 import com.zk.myweex.extend.adapter.SaveCookiesInterceptor;
 import com.zk.myweex.extend.adapter.UniversalImageAdapter;
 import com.zk.myweex.extend.module.LoginModule;
+import com.zk.myweex.extend.module.LogoutModule;
 import com.zk.myweex.extend.module.MyHttpCache;
 import com.zk.myweex.extend.module.MyModule;
 import com.zk.myweex.extend.module.WXEventModule;
@@ -67,6 +67,8 @@ public class WXApplication extends Application {
     public static String BASE_URL = "http://www.yuertong.com/";
 
 
+    public Activity currentActivity;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -96,7 +98,7 @@ public class WXApplication extends Application {
         Realm.setDefaultConfiguration(config);
 
         //清掉时间差大于1天的数据
-        long current = System.currentTimeMillis();
+        final long current = System.currentTimeMillis();
         long current_before_1day = current - 24 * 60 * 60 * 1000;
         final RealmResults<HttpCache> caches = Realm.getDefaultInstance().where(HttpCache.class).lessThan("requestTime", current_before_1day).findAll();
         Log.d("test", "temp.count = " + caches.size());
@@ -115,14 +117,15 @@ public class WXApplication extends Application {
 
         //初始化weex
         WXSDKEngine.initialize(this, new InitConfig.Builder()
-//                .setHttpAdapter(new RetrofitHttpAdapter(this))
-                .setImgAdapter(new UniversalImageAdapter()).build());
+//                .setHttpAdapter(new AsyncHttpAdapter(this))
+                .setImgAdapter(new UniversalImageAdapter(this)).build());
 
         //注册自定义组件
         try {
             WXSDKEngine.registerModule("my_module", MyModule.class);
             WXSDKEngine.registerModule("my_httpcache", MyHttpCache.class);
             WXSDKEngine.registerModule("login_module", LoginModule.class);
+            WXSDKEngine.registerModule("logout_module", LogoutModule.class);
             WXSDKEngine.registerModule("event", WXEventModule.class);
         } catch (WXException e) {
             e.printStackTrace();
@@ -131,36 +134,38 @@ public class WXApplication extends Application {
         registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle bundle) {
-
+                Log.d("lifecycle", "onActivityCreated = " + activity.getLocalClassName());
             }
 
             @Override
             public void onActivityStarted(Activity activity) {
-
+                Log.d("lifecycle", "onActivityStarted = " + activity.getLocalClassName());
             }
 
             @Override
             public void onActivityResumed(Activity activity) {
-
+                currentActivity = activity;
+                Log.d("lifecycle", "onActivityResumed = " + activity.getLocalClassName());
             }
 
             @Override
             public void onActivityPaused(Activity activity) {
-
+                Log.d("lifecycle", "onActivityPaused = " + activity.getLocalClassName());
             }
 
             @Override
             public void onActivityStopped(Activity activity) {
-
+                Log.d("lifecycle", "onActivityStopped = " + activity.getLocalClassName());
             }
 
             @Override
             public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
-
+                Log.d("lifecycle", "onActivitySaveInstanceState = " + activity.getLocalClassName());
             }
 
             @Override
             public void onActivityDestroyed(Activity activity) {
+                Log.d("lifecycle", "onActivityDestroyed = " + activity.getLocalClassName());
                 // The demo code of calling 'notifyTrimMemory()'
                 if (false) {
                     // We assume that the application is on an idle time.

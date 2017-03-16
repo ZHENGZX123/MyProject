@@ -203,6 +203,9 @@
  */
 package com.zk.myweex.extend.adapter;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -213,14 +216,27 @@ import com.taobao.weex.adapter.IWXImgLoaderAdapter;
 import com.taobao.weex.common.WXImageStrategy;
 import com.taobao.weex.dom.WXImageQuality;
 import com.zk.myweex.R;
+import com.zk.myweex.WXApplication;
+import com.zk.myweex.activity.WXBaseActivity;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 /**
  * Created by Administrator on 2017/2/22.
  */
 
 public class UniversalImageAdapter implements IWXImgLoaderAdapter {
+    private Context c;
+
+    public UniversalImageAdapter(Context context) {
+        this.c = context;
+    }
 
 //            "http://site.com/image.png" // from Web
 //            "file:///mnt/sdcard/image.png" // from SD card
@@ -249,7 +265,6 @@ public class UniversalImageAdapter implements IWXImgLoaderAdapter {
                     url = temp;
                 }
                 Log.d("universal", "universal url  = " + url);
-
                 if (url.startsWith("drawable://") || url.startsWith("mipmap://")) {
                     Class drawable = R.drawable.class;
                     Field field = null;
@@ -268,9 +283,47 @@ public class UniversalImageAdapter implements IWXImgLoaderAdapter {
                     ImageLoader.getInstance().displayImage(url, view, getLoaderOptions());
                 } else if (url.startsWith("assets://")) {
                     ImageLoader.getInstance().displayImage(url, view, getLoaderOptions());
+                } else {
+                    //其他的全部当作zip来处理好了
+                    displayZipImage(view, url);
                 }
             }
         }, 0);
+    }
+
+    private void displayZipImage(ImageView view, String url) {
+        //绝对路径好处理。
+        //相对路径怎么处理。
+        try {
+            int last = url.lastIndexOf("/");
+            String targetFile = url.substring(last + 1);
+            System.out.println("targetFile = " + targetFile);
+            WXBaseActivity currentActivity = (WXBaseActivity) ((WXApplication) this.c).currentActivity;
+            String zipPath = currentActivity.currentZipName;//来自哪个包
+            System.out.println("zipPath = " + zipPath);
+
+            ZipFile zf = new ZipFile(WXApplication.PATH + zipPath);
+            InputStream in = new BufferedInputStream(new FileInputStream(
+                    zipPath));
+            ZipInputStream zin = new ZipInputStream(in);
+            ZipEntry ze;
+            while ((ze = zin.getNextEntry()) != null) {
+                if (ze.isDirectory()) {
+                    System.out.println("directory = " + ze.getName());
+                } else {
+                    System.out.println("file = " + ze.getName());
+                    if (ze.getName().contains(targetFile)) {
+                        Bitmap result = new BitmapDrawable(zf.getInputStream(ze)).getBitmap();
+                        view.setImageBitmap(result);
+                        break;
+                    }
+                }
+            }
+            zin.closeEntry();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("e = " + e.toString());
+        }
     }
 
     public DisplayImageOptions getLoaderOptions() {

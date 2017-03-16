@@ -1,6 +1,5 @@
 package com.zk.myweex.activity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,7 +22,7 @@ public class BootActivity extends Activity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                startActivity(new Intent(BootActivity.this, LoadingActivity.class));
+                startActivity(new Intent(BootActivity.this, LoginActivity.class));//LoadingActivity
                 finish();
             }
         }.start();
