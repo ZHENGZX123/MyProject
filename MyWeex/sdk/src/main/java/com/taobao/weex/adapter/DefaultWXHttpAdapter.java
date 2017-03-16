@@ -215,6 +215,7 @@ import com.taobao.weex.common.WXResponse;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -345,12 +346,17 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
         int readCount = 0;
         byte[] data = new byte[2048];
 
-        while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
-            buffer.write(data, 0, nRead);
-            readCount += nRead;
-            if (listener != null) {
-                listener.onHttpResponseProgress(readCount);
+        try {
+            while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+                readCount += nRead;
+                if (listener != null) {
+                    listener.onHttpResponseProgress(readCount);
+                }
             }
+        } catch (EOFException e) {
+            //zhengkang fix here
+            return "{\"retcode\" : \"1\"}".getBytes();
         }
 
         buffer.flush();
