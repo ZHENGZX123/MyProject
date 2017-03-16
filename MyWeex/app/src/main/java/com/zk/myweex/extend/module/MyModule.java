@@ -174,21 +174,22 @@ public class MyModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void sendEvent(JSCallback callback) {
-
         Log.d("test", "module id = " + mWXSDKInstance.getInstanceId());
-
-
         Map<String, Object> params = new HashMap<>();
         params.put("test1", "test1");
         params.put("test2", "test2");
-        //这个只能调用相同的instance
+        //这个只能调用相同instance的事件。
 //        mWXSDKInstance.fireGlobalEventCallback("tab1_event", params);
-        mWXSDKInstance.fireSuperGlobalEventCallback("tab1_event", params);
-
-//调自己的
+        //这个只能callback
 //        callback.invoke(params);
+        mWXSDKInstance.fireSuperGlobalEventCallback("tab1_event", params);
     }
 
+
+    @JSMethod(uiThread = true)
+    public void showLog(String tag, String log) {
+        Log.d(tag, log);
+    }
 
 }
 

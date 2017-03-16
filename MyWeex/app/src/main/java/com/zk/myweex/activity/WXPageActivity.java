@@ -160,6 +160,7 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
     }
 
     private void loadWXfromService(final String url) {
+
         if (mInstance != null) {
             mInstance.destroy();
         }
