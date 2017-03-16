@@ -42,7 +42,7 @@ public class AsyncHttpAdapter implements IWXHttpAdapter {
         //偷懒的写法
         String url = request.url + "?" + request.body;
 
-        Map<String, String> all = (Map<String, String>) c.getSharedPreferences("kiway_weex", 0).getAll();
+        Map<String, String> all = (Map<String, String>) c.getSharedPreferences("kiway_cookie", 0).getAll();
         for (String key : all.keySet()) {
             if (url.contains(key)) {
                 String value = all.get(key);
@@ -70,7 +70,7 @@ public class AsyncHttpAdapter implements IWXHttpAdapter {
                             String jsessionid = splits[0].trim();
                             String path = splits[1].trim().replace("Path=", "");
                             if (value.contains("JSESSIONID")) {
-                                c.getSharedPreferences("kiway_weex", 0).edit().putString(path, jsessionid).commit();
+                                c.getSharedPreferences("kiway_cookie", 0).edit().putString(path, jsessionid).commit();
                             }
                         }
                     }

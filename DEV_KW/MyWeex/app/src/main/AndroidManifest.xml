@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.GET_TASKS"></uses-permission>
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -49,12 +50,20 @@
                 <data android:scheme="wxpage" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.BootActivity" />
+        <activity android:name=".activity.BootActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".activity.LoadingActivity" />
         <activity android:name=".activity.MyTabActivity" />
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.MainActivity2" />
-        <activity android:name=".activity.LoginActivity"></activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:launchMode="singleTask"></activity>
         <activity android:name=".activity.WebViewActivity" />
 
         <receiver android:name=".broadcast.NetChangeReceiver">
@@ -63,13 +72,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activity.TestActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".activity.TestActivity"></activity>
     </application>
 
 </manifest>

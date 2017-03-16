@@ -10,7 +10,8 @@ public class TestActivity extends WXBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        renderPage(WXFileUtils.loadAsset("yjpt/weex/login.js", this), "file://assets/");
-        renderPage(WXFileUtils.loadAsset("yjpt_py_0314/weex_jzd/login.js", this), "file://assets/");
+        renderPage(WXFileUtils.loadAsset("yjpt/weex/login.js", this), "file://assets/", null);
+
+//        renderPage(WXFileUtils.loadAsset("yjpt_py_0314/weex_jzd/login.js", this), "file://assets/");
     }
 }
