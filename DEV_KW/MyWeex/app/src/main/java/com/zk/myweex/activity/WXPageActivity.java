@@ -36,7 +36,6 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
 
     private static final String TAG = "WXPageActivity";
     public static final String WXPAGE = "wxpage";
-    public static Activity wxPageActivityInstance;
 
     private WXSDKInstance mInstance;
     private Uri mUri;
@@ -51,8 +50,6 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        setCurrentWxPageActivity(this);
         WXSDKEngine.setActivityNavBarSetter(new NavigatorAdapter());
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         mUri = getIntent().getData();
@@ -208,9 +205,6 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
             mInstance.onActivityDestroy();
         }
         mContainer = null;
-        if (wxPageActivityInstance == this) {
-            wxPageActivityInstance = null;
-        }
     }
 
 
@@ -225,14 +219,6 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
         if (mInstance != null) {
             mInstance.onActivityResume();
         }
-    }
-
-    public static Activity getCurrentWxPageActivity() {
-        return wxPageActivityInstance;
-    }
-
-    public static void setCurrentWxPageActivity(Activity activity) {
-        wxPageActivityInstance = activity;
     }
 
     @Override
