@@ -7,7 +7,7 @@ import android.widget.Toast;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
-import com.zk.myweex.activity.MainActivity;
+import com.zk.myweex.activity.MainActivity2;
 
 /**
  * Created by Administrator on 2017/3/10.
@@ -17,7 +17,7 @@ public class LoginModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void loginSuccess(JSCallback callback) {
-        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity.class));
+        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
         ((Activity) mWXSDKInstance.getContext()).finish();
         callback.invoke("loginSuccess is called");
     }

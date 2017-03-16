@@ -355,10 +355,10 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
     @Override
     public void onResume() {
         super.onResume();
+
         if (mInstance != null) {
             mInstance.onActivityResume();
         }
-
     }
 
     @Override
