@@ -84,15 +84,27 @@
 
 	module.exports = {
 	    data: function () {return {}},
-	    ready: function ready() {
+
+	    init: function init() {
+	    __weex_require__('@weex-module/my_module').showLog('test' , 'add event......');
 	        var globalEvent = __weex_require__('@weex-module/globalEvent');
-	        globalEvent.addEventListener("tab1_event", function (res) {
-	            var modal = __weex_require__('@weex-module/modal');
-	            modal.toast({
-	                'message': res,
-	                'duration': 1
-	            });
-	        });
+
+	        //该方法没用的：init在onresume之后；其他app的每一个wxbase的onresume都会调用。
+//            globalEvent.addEventListener("WXApplicationDidBecomeActiveEvent", function (res) {
+//            	            var modal = __weex_require__('@weex-module/modal');
+//            	            modal.toast({
+//            	                'message': 'event is call',
+//            	                'duration': 1
+//            	            });
+//            	        });
+            //自定义的广播可以
+            	        	        globalEvent.addEventListener("refresh", function (res) {
+                        	            var modal = __weex_require__('@weex-module/modal');
+                        	            modal.toast({
+                        	                'message': 'refresh ...',
+                        	                'duration': 1
+                        	            });
+                        	        });
 	    },
 	    methods: {}
 	};}
