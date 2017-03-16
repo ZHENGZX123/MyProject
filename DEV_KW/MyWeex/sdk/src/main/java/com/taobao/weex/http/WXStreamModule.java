@@ -338,7 +338,7 @@ public class WXStreamModule extends WXModule {
         int timeout = optionsObj.getIntValue("timeout");
 
         //读取cookie
-        Map<String, String> all = (Map<String, String>) mWXSDKInstance.getContext().getSharedPreferences("kiway_weex", 0).getAll();
+        Map<String, String> all = (Map<String, String>) mWXSDKInstance.getContext().getSharedPreferences("kiway_cookie", 0).getAll();
         for (String key : all.keySet()) {
             if (url.contains(key)) {
                 String value = all.get(key);
@@ -387,7 +387,7 @@ public class WXStreamModule extends WXModule {
                                     String jsessionid = splits[0].trim();
                                     String path = splits[1].trim().replace("Path=", "");
                                     if (value.contains("JSESSIONID")) {
-                                        mWXSDKInstance.getContext().getSharedPreferences("kiway_weex", 0).edit().putString(path, jsessionid).commit();
+                                        mWXSDKInstance.getContext().getSharedPreferences("kiway_cookie", 0).edit().putString(path, jsessionid).commit();
                                     }
                                 }
                             } catch (Exception e) {
