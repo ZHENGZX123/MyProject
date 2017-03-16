@@ -82,6 +82,10 @@ public class MainActivity2 extends TabActivity {
         if (tabcount == 0) {
             return;
         }
+
+//FIXME hardcode
+        tabcount = 3;
+
         bottom = (LinearLayout) findViewById(R.id.bottom);
         bottom.setWeightSum(tabcount);
         tabhost = getTabHost();
@@ -93,7 +97,16 @@ public class MainActivity2 extends TabActivity {
             LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.layout_tab, null);
             ImageView iv = (ImageView) ll.findViewById(R.id.iv);
             TextView tv = (TextView) ll.findViewById(R.id.tv);
-            tv.setText(tabEntity.name);//名字
+//            tv.setText(tabEntity.name);//名字
+
+            //FIXME hardcode
+            if (i == 0) {
+                tv.setText("首页");
+            } else if (i == 1) {
+                tv.setText("亲子圈");
+            } else if (i == 2) {
+                tv.setText("我的");
+            }
 
             bottom.addView(ll, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
             lls.add(ll);

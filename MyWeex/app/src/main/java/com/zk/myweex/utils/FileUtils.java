@@ -193,7 +193,7 @@ public class FileUtils {
     }
 
     public static void copyRawToSdcard(Context c) throws Throwable {
-        InputStream inStream = c.getResources().openRawResource(R.raw.tab0);
+        InputStream inStream = c.getResources().openRawResource(0);//R.raw.tab0
         File file = new File("/mnt/sdcard/tab0.zip");
         FileOutputStream fileOutputStream = new FileOutputStream(file);//存入SDCard
         byte[] buffer = new byte[1024];
