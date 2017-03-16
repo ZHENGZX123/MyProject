@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Environment;
 
 import com.taobao.weex.utils.WXLogUtils;
-import com.zk.myweex.R;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
