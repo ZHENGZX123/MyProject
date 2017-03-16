@@ -29,8 +29,6 @@ import com.zk.myweex.extend.module.LogoutModule;
 import com.zk.myweex.extend.module.MyHttpCache;
 import com.zk.myweex.extend.module.MyModule;
 import com.zk.myweex.extend.module.WXEventModule;
-import com.zk.myweex.mqttclient.MqttInstance;
-import com.zk.myweex.mqttclient.mq.Conf;
 import com.zk.myweex.utils.FileUtils;
 
 import java.io.File;
@@ -85,11 +83,6 @@ public class WXApplication extends Application {
         Configure.getInstance().setPort(4000);
         Configure.getInstance().setRoot("admin");
 
-        //初始化mqtt
-        Conf.getInstance().init(this);
-        //mqttSdk 初始化
-        MqttInstance.init(this);
-
         //realm初始化
         //.migration(migration)
         Realm.init(this);
@@ -124,7 +117,7 @@ public class WXApplication extends Application {
         try {
             WXSDKEngine.registerModule("my_module", MyModule.class);
             WXSDKEngine.registerModule("my_httpcache", MyHttpCache.class);
-            WXSDKEngine.registerModule("login_module", LoginModule.class);
+            WXSDKEngine.registerModule("SJevent", LoginModule.class);
             WXSDKEngine.registerModule("logout_module", LogoutModule.class);
             WXSDKEngine.registerModule("event", WXEventModule.class);
         } catch (WXException e) {

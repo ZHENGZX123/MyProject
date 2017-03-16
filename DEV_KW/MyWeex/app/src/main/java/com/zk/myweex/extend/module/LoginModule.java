@@ -16,10 +16,10 @@ import com.zk.myweex.activity.MainActivity2;
 public class LoginModule extends WXModule {
 
     @JSMethod(uiThread = true)
-    public void loginSuccess(JSCallback callback) {
+    public void loginSuccess(String url) {
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
         ((Activity) mWXSDKInstance.getContext()).finish();
-        callback.invoke("loginSuccess is called");
+//        callback.invoke("loginSuccess is called");
     }
 
     @JSMethod(uiThread = true)
