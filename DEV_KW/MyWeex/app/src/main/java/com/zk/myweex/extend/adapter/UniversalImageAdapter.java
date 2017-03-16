@@ -299,22 +299,24 @@ public class UniversalImageAdapter implements IWXImgLoaderAdapter {
             String targetFile = url.substring(last + 1);
             System.out.println("targetFile = " + targetFile);
             WXBaseActivity currentActivity = (WXBaseActivity) ((WXApplication) this.c).currentActivity;
-            String zipPath = currentActivity.currentZipName;//来自哪个包
+            String zipPath = WXApplication.PATH + currentActivity.currentZipName;//来自哪个包
             System.out.println("zipPath = " + zipPath);
 
-            ZipFile zf = new ZipFile(WXApplication.PATH + zipPath);
+            ZipFile zf = new ZipFile(zipPath);
             InputStream in = new BufferedInputStream(new FileInputStream(
                     zipPath));
             ZipInputStream zin = new ZipInputStream(in);
             ZipEntry ze;
+
             while ((ze = zin.getNextEntry()) != null) {
                 if (ze.isDirectory()) {
-                    System.out.println("directory = " + ze.getName());
                 } else {
-                    System.out.println("file = " + ze.getName());
                     if (ze.getName().contains(targetFile)) {
+                        System.out.println("1111111111");
                         Bitmap result = new BitmapDrawable(zf.getInputStream(ze)).getBitmap();
                         view.setImageBitmap(result);
+
+                        System.out.println("22222222222");
                         break;
                     }
                 }
