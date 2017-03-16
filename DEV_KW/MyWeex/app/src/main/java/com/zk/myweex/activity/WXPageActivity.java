@@ -27,7 +27,6 @@ import com.zk.myweex.https.WXHttpManager;
 import com.zk.myweex.https.WXHttpTask;
 import com.zk.myweex.https.WXRequestListener;
 import com.zk.myweex.utils.ScreenUtil;
-import com.zk.myweex.utils.WXAnalyzerDelegate;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -47,8 +46,6 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
     public void onCreateNestInstance(WXSDKInstance instance, NestedContainer container) {
         Log.d(TAG, "Nested Instance created.");
     }
-
-    private WXAnalyzerDelegate mWxAnalyzerDelegate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,16 +89,12 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
         }
         mInstance.onActivityCreate();
 
-        mWxAnalyzerDelegate = new WXAnalyzerDelegate(this);
-        mWxAnalyzerDelegate.onCreate();
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (mWxAnalyzerDelegate != null) {
-            mWxAnalyzerDelegate.onStart();
-        }
     }
 
     private void loadWXfromLocal(boolean reload) {
@@ -218,15 +211,12 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
         if (wxPageActivityInstance == this) {
             wxPageActivityInstance = null;
         }
-        if (mWxAnalyzerDelegate != null) {
-            mWxAnalyzerDelegate.onDestroy();
-        }
     }
 
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        return (mWxAnalyzerDelegate != null && mWxAnalyzerDelegate.onKeyUp(keyCode, event)) || super.onKeyUp(keyCode, event);
+        return super.onKeyUp(keyCode, event);
     }
 
     @Override
@@ -234,9 +224,6 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
         super.onResume();
         if (mInstance != null) {
             mInstance.onActivityResume();
-        }
-        if (mWxAnalyzerDelegate != null) {
-            mWxAnalyzerDelegate.onResume();
         }
     }
 
@@ -268,9 +255,6 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
     public void onViewCreated(WXSDKInstance instance, View view) {
         WXLogUtils.e("into--[onViewCreated]");
         View wrappedView = null;
-        if (mWxAnalyzerDelegate != null) {
-            wrappedView = mWxAnalyzerDelegate.onWeexViewCreated(instance, view);
-        }
         if (wrappedView != null) {
             view = wrappedView;
         }
@@ -285,9 +269,6 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
     @Override
     public void onRenderSuccess(WXSDKInstance instance, int width, int height) {
         super.onRenderSuccess(instance, width, height);
-        if (mWxAnalyzerDelegate != null) {
-            mWxAnalyzerDelegate.onWeexRenderSuccess(instance);
-        }
     }
 
     @Override
@@ -298,9 +279,6 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
     public void onException(WXSDKInstance instance, String errCode,
                             String msg) {
         super.onException(instance, errCode, msg);
-        if (mWxAnalyzerDelegate != null) {
-            mWxAnalyzerDelegate.onException(instance, errCode, msg);
-        }
         if (!TextUtils.isEmpty(errCode) && errCode.contains("|")) {
             String[] errCodeList = errCode.split("\\|");
             String code = errCodeList[1];
@@ -331,9 +309,6 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
         if (mInstance != null) {
             mInstance.onActivityPause();
         }
-        if (mWxAnalyzerDelegate != null) {
-            mWxAnalyzerDelegate.onPause();
-        }
     }
 
     @Override
@@ -341,9 +316,6 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
         super.onStop();
         if (mInstance != null) {
             mInstance.onActivityStop();
-        }
-        if (mWxAnalyzerDelegate != null) {
-            mWxAnalyzerDelegate.onStop();
         }
     }
 
