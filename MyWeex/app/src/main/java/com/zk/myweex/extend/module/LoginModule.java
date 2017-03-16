@@ -7,6 +7,11 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
@@ -17,6 +22,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Hashtable;
 
 /**
  * Created by Administrator on 2017/3/10.
@@ -48,7 +55,8 @@ public class LoginModule extends WXModule {
 
 
             Bitmap b = createQRImage("hello", 400, 400);
-            saveMyBitmap(b, "myweex");
+            saveMyBitmap(b, "myweex", callback);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,7 +110,7 @@ public class LoginModule extends WXModule {
         return null;
     }
 
-    public void saveMyBitmap(Bitmap mBitmap, String bitName) {
+    public void saveMyBitmap(Bitmap mBitmap, String bitName, JSCallback callback) {
         File f = new File(Environment.getExternalStorageDirectory() + "/"
                 + bitName + ".jpg");
         FileOutputStream fOut = null;
@@ -122,8 +130,10 @@ public class LoginModule extends WXModule {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        String filepath = f.getAbsolutePath();
 
-        filepath = f.getAbsolutePath();
+        Log.d("test", "filepath = " + filepath);
+        callback.invoke(filepath);
     }
 
 
