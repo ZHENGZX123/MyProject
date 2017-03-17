@@ -20,6 +20,7 @@ import com.lzy.imagepicker.view.CropImageView;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
+import com.zk.myweex.activity.EmptyActivity;
 import com.zk.myweex.activity.MainActivity2;
 
 import org.json.JSONException;
@@ -128,6 +129,13 @@ public class LoginModule extends WXModule {
     public void goChatView() {
         //跳到聊天页面。
     }
+
+    @JSMethod(uiThread = true)
+    public void goClass(String url) {
+        //我要上课
+        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), EmptyActivity.class));
+    }
+
 
     public Bitmap createQRImage(String url, final int width, final int height) {
         try {
