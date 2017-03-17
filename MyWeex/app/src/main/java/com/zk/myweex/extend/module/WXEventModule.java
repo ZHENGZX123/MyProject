@@ -96,8 +96,6 @@ public class WXEventModule extends WXModule {
         this.scanCallback = callback;
 
         ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), CaptureActivity.class), 999);
-
-
     }
 
     @JSMethod(uiThread = true)
