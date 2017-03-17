@@ -20,7 +20,6 @@ import com.lzy.imagepicker.view.CropImageView;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
-import com.zk.myweex.activity.EmptyActivity;
 import com.zk.myweex.activity.MainActivity2;
 
 import org.json.JSONObject;
@@ -124,13 +123,6 @@ public class LoginModule extends WXModule {
     @JSMethod(uiThread = true)
     public void goChatView() {
         //跳到聊天页面。
-    }
-
-    @JSMethod(uiThread = true)
-    public void goClass(String url) {
-        //我要上课，要什么参数。
-        Intent i = new Intent(mWXSDKInstance.getContext(), EmptyActivity.class);
-        mWXSDKInstance.getContext().startActivity(i);
     }
 
 

@@ -16,6 +16,7 @@ import com.lzy.imagepicker.view.CropImageView;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
+import com.zk.myweex.activity.EmptyActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -160,6 +161,14 @@ public class WXEventModule extends WXModule {
             //扫描二维码，扫描后的数据返回给js
             //callback(@{@"result":result,@"hCode":Hcode,@"SSID":ssid});
         }
+    }
+
+
+    @JSMethod(uiThread = true)
+    public void teaching(String url) {
+        //我要上课，要什么参数。
+        Intent i = new Intent(mWXSDKInstance.getContext(), EmptyActivity.class);
+        mWXSDKInstance.getContext().startActivity(i);
     }
 
 }
