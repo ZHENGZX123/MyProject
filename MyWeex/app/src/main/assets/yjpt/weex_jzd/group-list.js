@@ -2086,8 +2086,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2559,16 +2559,16 @@
 	      "classList": [
 	        "group_list"
 	      ],
-	      "repeat": function () {return this.classGroup},
-	      "shown": function () {return this.classGroup.length>0},
+	      "repeat": function () {return this.groupList},
+	      "shown": function () {return this.groupList.length>0},
 	      "events": {
-	        "click": function ($event) {this.classGroupChat(this.$index,$event)}
+	        "click": function ($event) {this.groupListChat(this.$index,$event)}
 	      },
 	      "children": [
 	        {
 	          "type": "image",
 	          "attr": {
-	            "src": function () {return this.images.mainGroup}
+	            "src": function () {return this.images.groupList}
 	          },
 	          "classList": [
 	            "pic_thumb"
@@ -2592,126 +2592,7 @@
 	                    "group_name"
 	                  ],
 	                  "attr": {
-	                    "value": function () {return (this.name) + '班群'}
-	                  }
-	                },
-	                {
-	                  "type": "text",
-	                  "classList": [
-	                    "group_time"
-	                  ],
-	                  "attr": {
-	                    "value": function () {return this.lastUpdateTime}
-	                  }
-	                }
-	              ]
-	            },
-	            {
-	              "type": "div",
-	              "classList": [
-	                "group"
-	              ],
-	              "children": [
-	                {
-	                  "type": "text",
-	                  "classList": [
-	                    "group_txt"
-	                  ],
-	                  "attr": {
-	                    "value": function () {return (this.lastMember) + '：' + (this.lastMsg)}
-	                  }
-	                },
-	                {
-	                  "type": "text",
-	                  "classList": [
-	                    "main_lower_size"
-	                  ],
-	                  "shown": function () {return this.hasNewMsg},
-	                  "attr": {
-	                    "value": function () {return this.msgNumber}
-	                  }
-	                }
-	              ]
-	            }
-	          ]
-	        }
-	      ]
-	    },
-	    {
-	      "type": "div",
-	      "classList": [
-	        "group_list"
-	      ],
-	      "repeat": function () {return this.otherGroup},
-	      "shown": function () {return this.otherGroup.length>0},
-	      "events": {
-	        "click": function ($event) {this.otherGroupChat(this.$index,$event)}
-	      },
-	      "children": [
-	        {
-	          "type": "image",
-	          "attr": {
-	            "src": function () {return this.images.otherGroup}
-	          },
-	          "classList": [
-	            "pic_thumb"
-	          ]
-	        },
-	        {
-	          "type": "div",
-	          "classList": [
-	            "group_cont"
-	          ],
-	          "children": [
-	            {
-	              "type": "div",
-	              "classList": [
-	                "group"
-	              ],
-	              "children": [
-	                {
-	                  "type": "text",
-	                  "classList": [
-	                    "group_name"
-	                  ],
-	                  "attr": {
-	                    "value": function () {return this.name}
-	                  }
-	                },
-	                {
-	                  "type": "text",
-	                  "classList": [
-	                    "group_time"
-	                  ],
-	                  "attr": {
-	                    "value": function () {return this.lastUpdateTime}
-	                  }
-	                }
-	              ]
-	            },
-	            {
-	              "type": "div",
-	              "classList": [
-	                "group"
-	              ],
-	              "children": [
-	                {
-	                  "type": "text",
-	                  "classList": [
-	                    "group_txt"
-	                  ],
-	                  "attr": {
-	                    "value": function () {return (this.lastMember) + '：' + (this.lastMsg)}
-	                  }
-	                },
-	                {
-	                  "type": "text",
-	                  "classList": [
-	                    "main_lower_size"
-	                  ],
-	                  "shown": function () {return this.hasNewMsg},
-	                  "attr": {
-	                    "value": function () {return this.msgNumber}
+	                    "value": function () {return this.ug_name}
 	                  }
 	                }
 	              ]
@@ -2796,30 +2677,26 @@
 	var Utils = __webpack_require__(129);
 	var storage = __weex_require__('@weex-module/storage');
 	var modal = __weex_require__('@weex-module/modal');
+	var SJevent = __weex_require__('@weex-module/SJevent');
 	module.exports = {
 	    data: function () {return {
 	        dir: 'yjpt',
 	        isShowMenu: false,
 	        images: {
 	            mainGroup: 'yjpt/images/Photo_04.png',
-	            otherGroup: 'yjpt/images/Photo_05.png'
+	            groupList: 'yjpt/images/Photo_05.png'
 	        },
 	        classGroup: [],
-	        otherGroup: []
+	        groupList: []
 	    }},
 	    created: function created() {
 	        var self = this;
-	        Utils.changeImg(this.images, ['mainGroup', 'otherGroup']);
+	        Utils.changeImg(this.images, ['mainGroup', 'groupList']);
 
-	        storage.getItem('classGroup', function (e) {
+	        storage.getItem('groupList', function (e) {
 	            if (e.data) {
-	                self.classGroup = JSON.parse(e.data);
-	            }
-	        });
-
-	        storage.getItem('otherGroup', function (e) {
-	            if (e.data) {
-	                self.otherGroup = JSON.parse(e.data);
+	                self.groupList = JSON.parse(e.data);
+	                console.log('groupList length:', self.groupList.length);
 	            }
 	        });
 	    },
@@ -2828,9 +2705,14 @@
 	            var self = this;
 	            console.log(self.classGroup[index]);
 	        },
-	        otherGroupChat: function otherGroupChat(index) {
+	        groupListChat: function groupListChat(index) {
 	            var self = this;
-	            console.log(self.otherGroup[index]);
+	            if (SJevent.goChatView) {
+	                SJevent.goChatView({
+	                    ug_id: self.groupList[index].ug_id,
+	                    ug_name: self.groupList[index].ug_name
+	                });
+	            }
 	        }
 	    }
 	};}

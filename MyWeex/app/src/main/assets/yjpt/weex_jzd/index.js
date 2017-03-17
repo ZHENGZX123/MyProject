@@ -2889,8 +2889,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -3402,11 +3402,6 @@
 	var storage = __weex_require__('@weex-module/storage');
 	var globalEvent = __weex_require__('@weex-module/globalEvent');
 
-	globalEvent.addEventListener("getGroupList", function (e) {
-	  modal.alert({
-	    message: 'getGroupList'
-	  }, function () {});
-	});
 	module.exports = {
 	  data: function () {return {
 	    dir: 'yjpt',

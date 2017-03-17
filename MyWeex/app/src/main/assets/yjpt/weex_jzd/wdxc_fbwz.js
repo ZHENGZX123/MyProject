@@ -44,9 +44,9 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __weex_template__ = __webpack_require__(302)
-	var __weex_style__ = __webpack_require__(303)
-	var __weex_script__ = __webpack_require__(304)
+	var __weex_template__ = __webpack_require__(301)
+	var __weex_style__ = __webpack_require__(302)
+	var __weex_script__ = __webpack_require__(303)
 
 	__weex_define__('@weex-component/feb9ccc90ed937a81698003f3d5de54f', [], function(__weex_require__, __weex_exports__, __weex_module__) {
 
@@ -2086,8 +2086,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2632,8 +2632,7 @@
 /* 298 */,
 /* 299 */,
 /* 300 */,
-/* 301 */,
-/* 302 */
+/* 301 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2786,7 +2785,7 @@
 	}
 
 /***/ },
-/* 303 */
+/* 302 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2885,7 +2884,7 @@
 	}
 
 /***/ },
-/* 304 */
+/* 303 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(module, exports, __weex_require__){'use strict';
@@ -2974,7 +2973,7 @@
 	            }
 
 	            var paramJson = {
-	                url: Utils.ip + 'yjpt/app/class/moments',
+	                url: Utils.ip + Utils.dir + 'app/class/moments',
 	                jsessionid: self.jsessionid,
 	                content: self.recordContent,
 
@@ -2998,7 +2997,8 @@
 	                        });
 	                        setTimeout(function () {
 	                            var url = Utils.setOpenUrl(self.$getConfig(), 'index');
-	                            Utils.navigate.push(self, url, 'true');
+
+	                            Utils.navigate.pop(self, 'true');
 	                        }, 500);
 	                    }
 	                });

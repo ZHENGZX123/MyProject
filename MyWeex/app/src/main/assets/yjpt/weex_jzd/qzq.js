@@ -44,9 +44,9 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __weex_template__ = __webpack_require__(269)
-	var __weex_style__ = __webpack_require__(270)
-	var __weex_script__ = __webpack_require__(271)
+	var __weex_template__ = __webpack_require__(268)
+	var __weex_style__ = __webpack_require__(269)
+	var __weex_script__ = __webpack_require__(270)
 
 	__weex_define__('@weex-component/c1dd327e243f778a7da6ecbe0f1a1247', [], function(__weex_require__, __weex_exports__, __weex_module__) {
 
@@ -2086,8 +2086,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2585,8 +2585,7 @@
 /* 265 */,
 /* 266 */,
 /* 267 */,
-/* 268 */,
-/* 269 */
+/* 268 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2957,7 +2956,7 @@
 	}
 
 /***/ },
-/* 270 */
+/* 269 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -3206,7 +3205,7 @@
 	}
 
 /***/ },
-/* 271 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(module, exports, __weex_require__){'use strict';
@@ -3338,7 +3337,7 @@
 	                if (e.data) {
 	                    self.myClass = JSON.parse(e.data);
 	                    self.myClass[0].borderWidth = '2px';
-	                    self.myClass[0].borderStyle = 'sollid';
+	                    self.myClass[0].borderStyle = 'solid';
 	                    self.myClass[0].borderColor = '#00cc99';
 	                    self.myClass[0].color = '#00cc99';
 
@@ -3398,12 +3397,12 @@
 	            for (var i in self.myClass) {
 	                if (i == index) {
 	                    self.myClass[index].borderWidth = '2px';
-	                    self.myClass[index].borderStyle = 'sollid';
+	                    self.myClass[index].borderStyle = 'solid';
 	                    self.myClass[index].borderColor = '#00cc99';
 	                    self.myClass[index].color = '#00cc99';
 	                } else {
 	                    self.myClass[i].borderWidth = '2px';
-	                    self.myClass[i].borderStyle = 'sollid';
+	                    self.myClass[i].borderStyle = 'solid';
 	                    self.myClass[i].borderColor = '#e7e7e7';
 	                    self.myClass[i].color = '#000000';
 	                }
