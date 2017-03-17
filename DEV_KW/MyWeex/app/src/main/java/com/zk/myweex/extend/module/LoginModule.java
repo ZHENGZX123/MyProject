@@ -22,6 +22,7 @@ import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
 import com.zk.myweex.activity.MainActivity2;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -59,10 +60,9 @@ public class LoginModule extends WXModule {
             String className = obj.getString("className");
             String schoolId = obj.getString("schoolId");
 
-
             Bitmap b = createQRImage("hello", 400, 400);
-            saveMyBitmap(b, "myweex", callback);
-
+            String filepath = saveMyBitmap(b, "myweex");
+            callback.invoke(filepath);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,18 +104,22 @@ public class LoginModule extends WXModule {
         }
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == 888 && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
             if (data == null) {
                 return;
             }
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             Log.d("test", "images count = " + images.size());
-            //这里还要上传图片。
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("path", images.get(0).path);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            //这里还要做上传图片。
 //                pickerCallback.invoke(images.get(0).path);
         }
     }
@@ -124,7 +128,6 @@ public class LoginModule extends WXModule {
     public void goChatView() {
         //跳到聊天页面。
     }
-
 
     public Bitmap createQRImage(String url, final int width, final int height) {
         try {
@@ -160,7 +163,7 @@ public class LoginModule extends WXModule {
         return null;
     }
 
-    public void saveMyBitmap(Bitmap mBitmap, String bitName, JSCallback callback) {
+    public String saveMyBitmap(Bitmap mBitmap, String bitName) {
         File f = new File(Environment.getExternalStorageDirectory() + "/"
                 + bitName + ".jpg");
         FileOutputStream fOut = null;
@@ -183,7 +186,8 @@ public class LoginModule extends WXModule {
         String filepath = f.getAbsolutePath();
 
         Log.d("test", "filepath = " + filepath);
-        callback.invoke(filepath);
+
+        return filepath;
     }
 
 
