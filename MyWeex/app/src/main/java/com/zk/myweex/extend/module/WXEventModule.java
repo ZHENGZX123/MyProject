@@ -63,7 +63,6 @@ public class WXEventModule extends WXModule {
     @JSMethod(uiThread = true)
     public void PostSigalImg(String url, JSCallback callback) {
         pickerCallback = callback;
-        //上传图片，怎么调用起来。。。
 
         ImagePicker imagePicker = ImagePicker.getInstance();
         imagePicker.setImageLoader(new GlideImageLoader());// 图片加载器
@@ -132,6 +131,8 @@ public class WXEventModule extends WXModule {
     @JSMethod()
     public void AddClass(String str, JSCallback callback) {
         //这个是做什么的？
+
+        //跳到一个页面去了，QRCode_ViewController
     }
 
 
