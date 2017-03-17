@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.dom.WXDomObject;
@@ -22,9 +23,9 @@ import com.zk.myweex.R;
 
 import java.util.ArrayList;
 
-public class KWListView extends WXComponent<MyListView> {
+public class KWListView extends WXComponent<ListView> {
 
-    private MyListView lv;
+    private ListView lv;
     private MyAdapter adapter;
     private ArrayList<Item> items = new ArrayList<>();
 
@@ -33,8 +34,8 @@ public class KWListView extends WXComponent<MyListView> {
     }
 
     @Override
-    protected MyListView initComponentHostView(@NonNull Context context) {
-        this.lv = new MyListView(context);
+    protected ListView initComponentHostView(@NonNull Context context) {
+        this.lv = new ListView(context);
         this.adapter = new MyAdapter();
         this.lv.setAdapter(this.adapter);
         this.lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
