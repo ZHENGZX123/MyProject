@@ -43,6 +43,8 @@ public class LoginModule extends WXModule {
     public void loginSuccess(String url) {
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
         ((Activity) mWXSDKInstance.getContext()).finish();
+
+
     }
 
     @JSMethod(uiThread = true)
