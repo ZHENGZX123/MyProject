@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.google.zxing.client.android.CaptureActivity;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
@@ -78,28 +80,6 @@ public class WXEventModule extends WXModule {
         ((Activity) mWXSDKInstance.getContext()).startActivityForResult(intent, 888);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 888 && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
-            if (data == null) {
-                return;
-            }
-            ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-            Log.d("test", "images count = " + images.size());
-            //这里要找孙熊改改
-//                callback(@{@"path":path,@"imgUrl":imgUrl});
-            JSONObject obj = new JSONObject();
-            try {
-                obj.put("path", "");
-                obj.put("imgUrl", "");
-                pickerCallback.invoke(obj);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     @JSMethod(uiThread = true)
     public void teachClass(String classId, JSCallback callback) {
         Log.d("test", "teachClass classid = " + classId);
@@ -107,12 +87,18 @@ public class WXEventModule extends WXModule {
         //判断当前SSID，相等就返回1。不等就设置wifi
     }
 
+
+    private JSCallback scanCallback;
+
+    //我要上课，扫描二维码
     @JSMethod(uiThread = true)
     public void QRScan(String classId, JSCallback callback) {
         Log.d("test", "QRScan classid = " + classId);
+        this.scanCallback = callback;
 
-        //扫描二维码，扫描后的数据返回给js
-        //callback(@{@"result":result,@"hCode":Hcode,@"SSID":ssid});
+        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), CaptureActivity.class), 999);
+
+
     }
 
     @JSMethod(uiThread = true)
@@ -139,7 +125,8 @@ public class WXEventModule extends WXModule {
 
     @JSMethod()
     public void Publish(String str, JSCallback callback) {
-        //这个是做什么的？
+        //这个是做什么的,调了一个http去做上传。。。
+
     }
 
     @JSMethod()
@@ -147,5 +134,37 @@ public class WXEventModule extends WXModule {
         //这个是做什么的？
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 888 && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
+            if (data == null) {
+                return;
+            }
+            ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+            Log.d("test", "images count = " + images.size());
+            //这里要找孙熊改改
+//                callback(@{@"path":path,@"imgUrl":imgUrl});
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("path", "");
+                obj.put("imgUrl", "");
+                pickerCallback.invoke(obj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else if (requestCode == 999) {
+            //扫描二维码返回
+            if (data == null) {
+                return;
+            }
+            String result = data.getStringExtra("result");
+            Toast.makeText(mWXSDKInstance.getContext(), "扫描到的是" + result, Toast.LENGTH_SHORT).show();
+
+            //扫描二维码，扫描后的数据返回给js
+            //callback(@{@"result":result,@"hCode":Hcode,@"SSID":ssid});
+        }
+    }
 
 }
