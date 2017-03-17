@@ -23,7 +23,6 @@ import com.taobao.weex.common.WXModule;
 import com.zk.myweex.activity.EmptyActivity;
 import com.zk.myweex.activity.MainActivity2;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -31,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 /**
@@ -85,7 +85,7 @@ public class LoginModule extends WXModule {
 
 
             pickerCallback = callback;
-            //上传图片，怎么调用起来。。。
+
 
             ImagePicker imagePicker = ImagePicker.getInstance();
             imagePicker.setImageLoader(new GlideImageLoader());// 图片加载器
@@ -114,12 +114,8 @@ public class LoginModule extends WXModule {
             }
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             Log.d("test", "images count = " + images.size());
-            JSONObject obj = new JSONObject();
-            try {
-                obj.put("path", images.get(0).path);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            HashMap map = new HashMap();
+            map.put("path", images.get(0).path);
             //这里还要做上传图片。
 //                pickerCallback.invoke(images.get(0).path);
         }
@@ -193,11 +189,7 @@ public class LoginModule extends WXModule {
             e.printStackTrace();
         }
         String filepath = f.getAbsolutePath();
-
         Log.d("test", "filepath = " + filepath);
-
         return filepath;
     }
-
-
 }
