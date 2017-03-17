@@ -132,8 +132,9 @@ public class LoginModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void goClass(String url) {
-        //我要上课
-        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), EmptyActivity.class));
+        //我要上课，要什么参数。
+        Intent i = new Intent(mWXSDKInstance.getContext(), EmptyActivity.class);
+        mWXSDKInstance.getContext().startActivity(i);
     }
 
 
