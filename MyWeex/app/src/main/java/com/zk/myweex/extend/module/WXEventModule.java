@@ -145,14 +145,10 @@ public class WXEventModule extends WXModule {
             Log.d("test", "images count = " + images.size());
             //这里要找孙熊改改
 //                callback(@{@"path":path,@"imgUrl":imgUrl});
-            JSONObject obj = new JSONObject();
-            try {
-                obj.put("path", "");
-                obj.put("imgUrl", "");
-                pickerCallback.invoke(obj);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            HashMap map = new HashMap();
+            map.put("path", "");
+            map.put("imgUrl", "");
+            pickerCallback.invoke(map);
         } else if (requestCode == 999) {
             //扫描二维码返回
             if (data == null) {
