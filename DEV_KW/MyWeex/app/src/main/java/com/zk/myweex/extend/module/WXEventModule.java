@@ -166,6 +166,7 @@ public class WXEventModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void teaching(String url) {
+        Log.d("test", "teaching url = " + url);
         //我要上课，要什么参数。
         Intent i = new Intent(mWXSDKInstance.getContext(), EmptyActivity.class);
         mWXSDKInstance.getContext().startActivity(i);
