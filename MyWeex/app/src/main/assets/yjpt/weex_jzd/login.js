@@ -2939,9 +2939,6 @@
 	                method: 'POST',
 	                dataType: 'json',
 	                success: function success(ret) {
-	                    modal.alert({
-
-	                    });
 	                    if (self.loginFailTime == 0) {
 	                        if (ret.headers['Set-Cookie']) {
 	                            var jsessionid = ret.headers['Set-Cookie'];
