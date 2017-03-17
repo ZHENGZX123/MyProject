@@ -24,7 +24,7 @@ import com.zk.myweex.extend.adapter.GitHubApi;
 import com.zk.myweex.extend.adapter.ReadCookiesInterceptor;
 import com.zk.myweex.extend.adapter.SaveCookiesInterceptor;
 import com.zk.myweex.extend.adapter.UniversalImageAdapter;
-import com.zk.myweex.extend.component.MyListView;
+import com.zk.myweex.extend.component.KWListView;
 import com.zk.myweex.extend.module.LoginModule;
 import com.zk.myweex.extend.module.LogoutModule;
 import com.zk.myweex.extend.module.MyHttpCache;
@@ -122,7 +122,7 @@ public class WXApplication extends Application {
             WXSDKEngine.registerModule("logout_module", LogoutModule.class);
             WXSDKEngine.registerModule("event", WXEventModule.class);
 
-            WXSDKEngine.registerComponent("chattable", MyListView.class);
+            WXSDKEngine.registerComponent("chattable", KWListView.class);
 
         } catch (WXException e) {
             e.printStackTrace();
