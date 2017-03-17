@@ -73,25 +73,35 @@ public class LoginModule extends WXModule {
     private JSCallback pickerCallback;
 
     @JSMethod(uiThread = true)
-    public void PostSigalImg(String url, JSCallback callback) {
-        Log.d("test", "PostSigalImg url = " + url);
+    public void PostSigalImg(String dic, JSCallback callback) {
+        Log.d("test", "PostSigalImg dic = " + dic);
 
-        pickerCallback = callback;
-        //上传图片，怎么调用起来。。。
-
-        ImagePicker imagePicker = ImagePicker.getInstance();
-        imagePicker.setImageLoader(new GlideImageLoader());// 图片加载器
-        imagePicker.setSelectLimit(9);// 设置可以选择几张
-        imagePicker.setMultiMode(true);// 是否为多选
-        imagePicker.setCrop(true);// 是否剪裁
-        imagePicker.setFocusWidth(1000);// 需要剪裁的宽
-        imagePicker.setFocusHeight(1000);// 需要剪裁的高
-        imagePicker.setStyle(CropImageView.Style.RECTANGLE);// 方形
-        imagePicker.setShowCamera(true);// 是否显示摄像
+        try {
+            JSONObject obj = new JSONObject(dic);
+            String userId = obj.getString("userId");
+            String url = obj.getString("url");
+            String jsessionid = obj.getString("jsessionid");
 
 
-        Intent intent = new Intent(mWXSDKInstance.getContext(), ImageGridActivity.class);
-        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(intent, 888);
+            pickerCallback = callback;
+            //上传图片，怎么调用起来。。。
+
+            ImagePicker imagePicker = ImagePicker.getInstance();
+            imagePicker.setImageLoader(new GlideImageLoader());// 图片加载器
+            imagePicker.setSelectLimit(9);// 设置可以选择几张
+            imagePicker.setMultiMode(true);// 是否为多选
+            imagePicker.setCrop(true);// 是否剪裁
+            imagePicker.setFocusWidth(1000);// 需要剪裁的宽
+            imagePicker.setFocusHeight(1000);// 需要剪裁的高
+            imagePicker.setStyle(CropImageView.Style.RECTANGLE);// 方形
+            imagePicker.setShowCamera(true);// 是否显示摄像
+
+            Intent intent = new Intent(mWXSDKInstance.getContext(), ImageGridActivity.class);
+            ((Activity) mWXSDKInstance.getContext()).startActivityForResult(intent, 888);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
