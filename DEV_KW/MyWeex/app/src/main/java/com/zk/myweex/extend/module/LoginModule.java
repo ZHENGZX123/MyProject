@@ -12,6 +12,11 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.lzy.imagepicker.ImagePicker;
+import com.lzy.imagepicker.bean.ImageItem;
+import com.lzy.imagepicker.loader.GlideImageLoader;
+import com.lzy.imagepicker.ui.ImageGridActivity;
+import com.lzy.imagepicker.view.CropImageView;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
@@ -23,6 +28,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
@@ -63,16 +69,50 @@ public class LoginModule extends WXModule {
         }
     }
 
+
+    private JSCallback pickerCallback;
+
     @JSMethod(uiThread = true)
     public void PostSigalImg(String url, JSCallback callback) {
         Log.d("test", "PostSigalImg url = " + url);
+
+        pickerCallback = callback;
         //上传图片，怎么调用起来。。。
 
+        ImagePicker imagePicker = ImagePicker.getInstance();
+        imagePicker.setImageLoader(new GlideImageLoader());// 图片加载器
+        imagePicker.setSelectLimit(9);// 设置可以选择几张
+        imagePicker.setMultiMode(true);// 是否为多选
+        imagePicker.setCrop(true);// 是否剪裁
+        imagePicker.setFocusWidth(1000);// 需要剪裁的宽
+        imagePicker.setFocusHeight(1000);// 需要剪裁的高
+        imagePicker.setStyle(CropImageView.Style.RECTANGLE);// 方形
+        imagePicker.setShowCamera(true);// 是否显示摄像
+
+
+        Intent intent = new Intent(mWXSDKInstance.getContext(), ImageGridActivity.class);
+        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(intent, 888);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 888 && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
+            if (data == null) {
+                return;
+            }
+            ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+            Log.d("test", "images count = " + images.size());
+            //这里还要上传图片。
+//                pickerCallback.invoke(images.get(0).path);
+        }
     }
 
     @JSMethod(uiThread = true)
     public void goChatView() {
-
+        //跳到聊天页面。
     }
 
 
