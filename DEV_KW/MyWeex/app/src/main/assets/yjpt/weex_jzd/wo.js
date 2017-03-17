@@ -3051,6 +3051,10 @@
 	                            okTitle: '好的'
 	                        }, function () {});
 	                    }
+	                }else{
+	                modal.toast({ message: 'e.data null',
+	                 duration: '1'
+                    });
 	                }
 	            });
 	        }

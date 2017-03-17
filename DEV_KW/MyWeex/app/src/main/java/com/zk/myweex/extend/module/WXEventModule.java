@@ -15,6 +15,9 @@ import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -85,7 +88,15 @@ public class WXEventModule extends WXModule {
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             Log.d("test", "images count = " + images.size());
             //这里要找孙熊改改
-//                pickerCallback.invoke(images.get(0).path);
+//                callback(@{@"path":path,@"imgUrl":imgUrl});
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("path", "");
+                obj.put("imgUrl", "");
+                pickerCallback.invoke(obj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -115,12 +126,15 @@ public class WXEventModule extends WXModule {
     @JSMethod(uiThread = true)
     public void CallPhone(String phone) {
         Log.d("test", "CallPhone phone = " + phone);
-
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_CALL);
-        intent.setData(Uri.parse("tel:" + phone));
-        mWXSDKInstance.getContext().startActivity(intent);
-
+        try {
+            JSONObject obj = new JSONObject(phone);
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_CALL);
+            intent.setData(Uri.parse("tel:" + obj.getString("phone")));
+            mWXSDKInstance.getContext().startActivity(intent);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @JSMethod()
