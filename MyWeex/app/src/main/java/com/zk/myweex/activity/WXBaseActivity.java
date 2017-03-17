@@ -203,6 +203,7 @@
  */
 package com.zk.myweex.activity;
 
+import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -511,4 +512,9 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         renderPage(WXFileUtils.readFileInZip(path), bundleUrl, zipName);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mInstance.onActivityResult(requestCode, resultCode, data);
+    }
 }
