@@ -42,6 +42,8 @@ public class KWListView extends WXComponent<ListView> {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d("test", "onItemClick");
+
+                //跳到聊天页面。。。
             }
         });
 
