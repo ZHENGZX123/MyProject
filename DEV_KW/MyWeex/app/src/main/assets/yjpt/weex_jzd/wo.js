@@ -44,9 +44,9 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __weex_template__ = __webpack_require__(308)
-	var __weex_style__ = __webpack_require__(309)
-	var __weex_script__ = __webpack_require__(310)
+	var __weex_template__ = __webpack_require__(307)
+	var __weex_style__ = __webpack_require__(308)
+	var __weex_script__ = __webpack_require__(309)
 
 	__weex_define__('@weex-component/ff55f55f95278e8f2113354ed38cc4a9', [], function(__weex_require__, __weex_exports__, __weex_module__) {
 
@@ -2086,8 +2086,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2638,8 +2638,7 @@
 /* 304 */,
 /* 305 */,
 /* 306 */,
-/* 307 */,
-/* 308 */
+/* 307 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2858,7 +2857,7 @@
 	}
 
 /***/ },
-/* 309 */
+/* 308 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2930,7 +2929,7 @@
 	}
 
 /***/ },
-/* 310 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(module, exports, __weex_require__){'use strict';
@@ -3051,10 +3050,6 @@
 	                            okTitle: '好的'
 	                        }, function () {});
 	                    }
-	                }else{
-	                modal.toast({ message: 'e.data null',
-	                 duration: '1'
-                    });
 	                }
 	            });
 	        }

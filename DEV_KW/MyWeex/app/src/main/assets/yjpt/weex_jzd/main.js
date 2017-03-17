@@ -45,10 +45,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(249)
-	__webpack_require__(256)
-	var __weex_template__ = __webpack_require__(257)
-	var __weex_style__ = __webpack_require__(258)
-	var __weex_script__ = __webpack_require__(259)
+	var __weex_template__ = __webpack_require__(256)
+	var __weex_style__ = __webpack_require__(257)
+	var __weex_script__ = __webpack_require__(258)
 
 	__weex_define__('@weex-component/1c1387baa494f5d6890223956afd6e71', [], function(__weex_require__, __weex_exports__, __weex_module__) {
 
@@ -2088,8 +2087,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2564,296 +2563,9 @@
 /* 228 */,
 /* 229 */,
 /* 230 */,
-/* 231 */
-/***/ function(module, exports) {
-
-	module.exports = {
-	  "type": "div",
-	  "children": [
-	    {
-	      "type": "div",
-	      "classList": [
-	        "group_list"
-	      ],
-	      "repeat": function () {return this.classGroup},
-	      "shown": function () {return this.classGroup.length>0},
-	      "events": {
-	        "click": function ($event) {this.classGroupChat(this.$index,$event)}
-	      },
-	      "children": [
-	        {
-	          "type": "image",
-	          "attr": {
-	            "src": function () {return this.images.mainGroup}
-	          },
-	          "classList": [
-	            "pic_thumb"
-	          ]
-	        },
-	        {
-	          "type": "div",
-	          "classList": [
-	            "group_cont"
-	          ],
-	          "children": [
-	            {
-	              "type": "div",
-	              "classList": [
-	                "group"
-	              ],
-	              "children": [
-	                {
-	                  "type": "text",
-	                  "classList": [
-	                    "group_name"
-	                  ],
-	                  "attr": {
-	                    "value": function () {return (this.name) + '班群'}
-	                  }
-	                },
-	                {
-	                  "type": "text",
-	                  "classList": [
-	                    "group_time"
-	                  ],
-	                  "attr": {
-	                    "value": function () {return this.lastUpdateTime}
-	                  }
-	                }
-	              ]
-	            },
-	            {
-	              "type": "div",
-	              "classList": [
-	                "group"
-	              ],
-	              "children": [
-	                {
-	                  "type": "text",
-	                  "classList": [
-	                    "group_txt"
-	                  ],
-	                  "attr": {
-	                    "value": function () {return (this.lastMember) + '：' + (this.lastMsg)}
-	                  }
-	                },
-	                {
-	                  "type": "text",
-	                  "classList": [
-	                    "main_lower_size"
-	                  ],
-	                  "shown": function () {return this.hasNewMsg},
-	                  "attr": {
-	                    "value": function () {return this.msgNumber}
-	                  }
-	                }
-	              ]
-	            }
-	          ]
-	        }
-	      ]
-	    },
-	    {
-	      "type": "div",
-	      "classList": [
-	        "group_list"
-	      ],
-	      "repeat": function () {return this.otherGroup},
-	      "shown": function () {return this.otherGroup.length>0},
-	      "events": {
-	        "click": function ($event) {this.otherGroupChat(this.$index,$event)}
-	      },
-	      "children": [
-	        {
-	          "type": "image",
-	          "attr": {
-	            "src": function () {return this.images.otherGroup}
-	          },
-	          "classList": [
-	            "pic_thumb"
-	          ]
-	        },
-	        {
-	          "type": "div",
-	          "classList": [
-	            "group_cont"
-	          ],
-	          "children": [
-	            {
-	              "type": "div",
-	              "classList": [
-	                "group"
-	              ],
-	              "children": [
-	                {
-	                  "type": "text",
-	                  "classList": [
-	                    "group_name"
-	                  ],
-	                  "attr": {
-	                    "value": function () {return this.name}
-	                  }
-	                },
-	                {
-	                  "type": "text",
-	                  "classList": [
-	                    "group_time"
-	                  ],
-	                  "attr": {
-	                    "value": function () {return this.lastUpdateTime}
-	                  }
-	                }
-	              ]
-	            },
-	            {
-	              "type": "div",
-	              "classList": [
-	                "group"
-	              ],
-	              "children": [
-	                {
-	                  "type": "text",
-	                  "classList": [
-	                    "group_txt"
-	                  ],
-	                  "attr": {
-	                    "value": function () {return (this.lastMember) + '：' + (this.lastMsg)}
-	                  }
-	                },
-	                {
-	                  "type": "text",
-	                  "classList": [
-	                    "main_lower_size"
-	                  ],
-	                  "shown": function () {return this.hasNewMsg},
-	                  "attr": {
-	                    "value": function () {return this.msgNumber}
-	                  }
-	                }
-	              ]
-	            }
-	          ]
-	        }
-	      ]
-	    }
-	  ]
-	}
-
-/***/ },
-/* 232 */
-/***/ function(module, exports) {
-
-	module.exports = {
-	  "group_list": {
-	    "borderBottomWidth": 1,
-	    "borderBottomStyle": "solid",
-	    "borderBottomColor": "#f4f1f1",
-	    "paddingTop": 15,
-	    "paddingBottom": 15,
-	    "display": "flex",
-	    "flexDirection": "row"
-	  },
-	  "pic_thumb": {
-	    "width": 110,
-	    "height": 110,
-	    "marginRight": 25,
-	    "marginLeft": 25
-	  },
-	  "group": {
-	    "display": "flex",
-	    "flexDirection": "row",
-	    "justifyContent": "space-between",
-	    "paddingRight": 25
-	  },
-	  "group_cont": {
-	    "flex": 3
-	  },
-	  "group_name": {
-	    "fontSize": 36,
-	    "lineHeight": 50,
-	    "width": 480
-	  },
-	  "group_txt": {
-	    "fontSize": 32,
-	    "color": "#b8b8b8",
-	    "lineHeight": 45,
-	    "textOverflow": "ellipsis",
-	    "lines": 1,
-	    "width": 500
-	  },
-	  "group_time": {
-	    "fontSize": 32,
-	    "color": "#b8b8b8",
-	    "lineHeight": 45,
-	    "textOverflow": "ellipsis",
-	    "lines": 1,
-	    "width": 500
-	  },
-	  "main_lower_size": {
-	    "width": 40,
-	    "height": 40,
-	    "lineHeight": 35,
-	    "color": "#ffffff",
-	    "fontSize": 26,
-	    "textAlign": "center",
-	    "backgroundColor": "#F74C31",
-	    "borderRadius": 25,
-	    "marginTop": 7
-	  }
-	}
-
-/***/ },
-/* 233 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(module, exports, __weex_require__){'use strict';
-
-	__webpack_require__(80);
-	var Utils = __webpack_require__(129);
-	var storage = __weex_require__('@weex-module/storage');
-	var modal = __weex_require__('@weex-module/modal');
-	module.exports = {
-	    data: function () {return {
-	        dir: 'yjpt',
-	        isShowMenu: false,
-	        images: {
-	            mainGroup: 'yjpt/images/Photo_04.png',
-	            otherGroup: 'yjpt/images/Photo_05.png'
-	        },
-	        classGroup: [],
-	        otherGroup: []
-	    }},
-	    created: function created() {
-	        var self = this;
-	        Utils.changeImg(this.images, ['mainGroup', 'otherGroup']);
-
-	        storage.getItem('classGroup', function (e) {
-	            if (e.data) {
-	                self.classGroup = JSON.parse(e.data);
-	            }
-	        });
-
-	        storage.getItem('otherGroup', function (e) {
-	            if (e.data) {
-	                self.otherGroup = JSON.parse(e.data);
-	            }
-	        });
-	    },
-	    methods: {
-	        classGroupChat: function classGroupChat(index) {
-	            var self = this;
-	            console.log(self.classGroup[index]);
-	        },
-	        otherGroupChat: function otherGroupChat(index) {
-	            var self = this;
-	            console.log(self.otherGroup[index]);
-	        }
-	    }
-	};}
-	/* generated by weex-loader */
-
-
-/***/ },
+/* 231 */,
+/* 232 */,
+/* 233 */,
 /* 234 */
 /***/ function(module, exports) {
 
@@ -2988,28 +2700,6 @@
 /* 254 */,
 /* 255 */,
 /* 256 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __weex_template__ = __webpack_require__(231)
-	var __weex_style__ = __webpack_require__(232)
-	var __weex_script__ = __webpack_require__(233)
-
-	__weex_define__('@weex-component/group-list', [], function(__weex_require__, __weex_exports__, __weex_module__) {
-
-	    __weex_script__(__weex_module__, __weex_exports__, __weex_require__)
-	    if (__weex_exports__.__esModule && __weex_exports__.default) {
-	      __weex_module__.exports = __weex_exports__.default
-	    }
-
-	    __weex_module__.exports.template = __weex_template__
-
-	    __weex_module__.exports.style = __weex_style__
-
-	})
-
-
-/***/ },
-/* 257 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -3118,12 +2808,7 @@
 	            "zIndex": 100,
 	            "position": "relative",
 	            "backgroundColor": "#ffffff"
-	          },
-	          "children": [
-	            {
-	              "type": "group-list"
-	            }
-	          ]
+	          }
 	        },
 	        {
 	          "type": "div",
@@ -3281,7 +2966,7 @@
 	}
 
 /***/ },
-/* 258 */
+/* 257 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -3427,7 +3112,7 @@
 	}
 
 /***/ },
-/* 259 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(module, exports, __weex_require__){'use strict';
@@ -3443,6 +3128,8 @@
 	var storage = __weex_require__('@weex-module/storage');
 	var modal = __weex_require__('@weex-module/modal');
 	var event = __weex_require__('@weex-module/event');
+	var globalEvent = __weex_require__('@weex-module/globalEvent');
+
 	module.exports = {
 	    data: function () {return {
 	        dir: 'yjpt',
@@ -3469,13 +3156,7 @@
 	            lastMember: 'pengyi',
 	            msgNumber: '1'
 	        }],
-	        otherGroup: [{
-	            name: '家长们',
-	            lastUpdateTime: '07/11',
-	            lastMsg: '你家孩子最近上课开小差你家孩子最近上课开小差',
-	            lastMember: 'pengyi',
-	            msgNumber: '1'
-	        }],
+	        groupList: [],
 	        isShowClass: '0',
 	        userId: '',
 	        requesToken: '',
@@ -3515,7 +3196,6 @@
 
 	        storage.getItem('userInfo', function (e) {
 	            e.data = JSON.parse(e.data);
-	            console.log('avatar:' + e.data.avatar);
 	            if (!e.data.avatar) {
 	                self.portrait = Utils.ip + 'yjpt/images/photo_06.jpeg';
 	            } else {
@@ -3524,31 +3204,15 @@
 	            self.userId = e.data.id;
 	        });
 
-	        Utils.fetch({
-	            url: '/app/class',
-	            method: 'get',
-	            dataType: 'json',
-	            success: function success(res) {
-	                if (res.data.StatusCode == '200') {
-	                    self.classGroup = res.data.data;
-	                    for (var i in res.data.data) {
-	                        res.data.data[i].imgUrl = self.images.radioBlank;
-	                        res.data.data[i].borderWidth = '2px';
-	                        res.data.data[i].borderStyle = 'solid';
-	                        res.data.data[i].borderColor = '#e7e7e7';
-	                        res.data.data[i].color = '#000000';
-	                    }
+	        globalEvent.addEventListener("sendUserInfoToJs", function (e) {
 
-	                    storage.setItem('myClass', (0, _stringify2.default)(res.data.data), function () {});
-
-	                    storage.setItem('classGroup', (0, _stringify2.default)(self.classGroup), function () {});
-	                }
-	            }
+	            modal.alert({
+	                message: e
+	            }, function () {});
 	        });
 
 	        self.$on('isShowClass', function (e) {
 	            self.isShowClass = e.detail;
-	            console.log(self.isShowClass);
 	        });
 	    },
 	    methods: {

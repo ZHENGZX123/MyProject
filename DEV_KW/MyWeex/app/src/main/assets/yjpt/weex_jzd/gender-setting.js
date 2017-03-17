@@ -2086,8 +2086,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2716,7 +2716,8 @@
 
 	                        setTimeout(function () {
 	                            var url = Utils.setOpenUrl(self.$getConfig(), 'index');
-	                            Utils.navigate.push(self, url, 'true');
+
+	                            Utils.navigate.pop(self, 'true');
 	                        }, 1000);
 	                    } else {
 	                        modal.toast({

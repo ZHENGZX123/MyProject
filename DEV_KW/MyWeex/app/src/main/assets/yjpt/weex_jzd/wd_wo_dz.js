@@ -44,9 +44,9 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __weex_template__ = __webpack_require__(299)
-	var __weex_style__ = __webpack_require__(300)
-	var __weex_script__ = __webpack_require__(301)
+	var __weex_template__ = __webpack_require__(298)
+	var __weex_style__ = __webpack_require__(299)
+	var __weex_script__ = __webpack_require__(300)
 
 	__weex_define__('@weex-component/7f0f43c954dfd9d7fe9d7e3f5ecc287e', [], function(__weex_require__, __weex_exports__, __weex_module__) {
 
@@ -2086,8 +2086,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2615,8 +2615,7 @@
 /* 295 */,
 /* 296 */,
 /* 297 */,
-/* 298 */,
-/* 299 */
+/* 298 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2662,7 +2661,7 @@
 	}
 
 /***/ },
-/* 300 */
+/* 299 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2695,7 +2694,7 @@
 	}
 
 /***/ },
-/* 301 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(module, exports, __weex_require__){'use strict';
