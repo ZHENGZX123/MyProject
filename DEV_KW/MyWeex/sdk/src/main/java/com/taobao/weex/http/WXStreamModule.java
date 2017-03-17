@@ -340,7 +340,7 @@ public class WXStreamModule extends WXModule {
         //读取cookie
         Map<String, String> all = (Map<String, String>) mWXSDKInstance.getContext().getSharedPreferences("kiway_cookie", 0).getAll();
         for (String key : all.keySet()) {
-            if (url.contains(key)) {
+            if (url.contains(key) && !url.contains("login")) {
                 String value = all.get(key);
                 headers.put("Cookie", value);
             }
