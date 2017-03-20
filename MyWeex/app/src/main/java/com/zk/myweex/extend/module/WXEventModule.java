@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import com.google.zxing.client.android.CaptureActivity;
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
@@ -156,17 +158,21 @@ public class WXEventModule extends WXModule {
             client.setTimeout(10000);
             client.addHeader("Cookie", "JSESSIONID=" + jsessionid);
 
+            RequestParams params = new RequestParams();
+            params.put("classes", classes);
+            params.put("content", content);
+            params.put("img_url", img_url);
 
-//            client.post(mWXSDKInstance.getContext(), url, params, new TextHttpResponseHandler() {
-//
-//                public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
-//                    Log.d("test", "onFailure = " + responseString);
-//                }
-//
-//                public void onSuccess(int statusCode, org.apache.http.Header[] headers, final String responseString) {
-//                    Log.d("test", "onSuccess = " + responseString);
-//                }
-//            });
+            client.post(mWXSDKInstance.getContext(), url, params, new TextHttpResponseHandler() {
+
+                public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
+                    Log.d("test", "onFailure = " + responseString);
+                }
+
+                public void onSuccess(int statusCode, org.apache.http.Header[] headers, final String responseString) {
+                    Log.d("test", "onSuccess = " + responseString);
+                }
+            });
 
 
         } catch (JSONException e) {
