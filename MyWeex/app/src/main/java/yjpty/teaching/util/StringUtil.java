@@ -35,4 +35,10 @@ public class StringUtil {
         }
         return string;
     }
+    /**
+     * 数据的格式化
+     */
+    public static String format(String format, Object... strings) {
+        return String.format(format, strings);
+    }
 }
