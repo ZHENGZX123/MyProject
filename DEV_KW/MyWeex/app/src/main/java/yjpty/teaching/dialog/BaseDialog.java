@@ -46,7 +46,13 @@ public class BaseDialog extends Dialog implements OnClickListener {
 		window.setGravity(Gravity.BOTTOM);
 	}
 
-
+	// 居中
+	protected void fullWindowCenter(Context context) {
+		layoutParams = getWindow().getAttributes();
+		Rect rect = new Rect();
+		View v = getWindow().getDecorView();
+		v.getWindowVisibleDisplayFrame(rect);
+	}
 
 
 }
