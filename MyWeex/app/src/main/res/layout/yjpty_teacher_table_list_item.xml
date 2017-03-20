@@ -23,6 +23,7 @@
                 android:layout_gravity="center_vertical"
                 android:contentDescription="@string/app_name"
                 android:scaleType="centerCrop"
+                fresco:placeholderImage="@drawable/yjpty_landi"
                 android:src="#e5e5e5"/>
 
             <ImageView
@@ -138,7 +139,7 @@
             android:textColor="#ff9966"
             android:textSize="@dimen/_12sp"/>
 
-        <uk.co.senab.photoview.widget.FilterImageView
+        <com.zk.myweex.widget.FilterImageView
             android:id="@+id/view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
