@@ -30,6 +30,10 @@ import com.google.zxing.NotFoundException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
+import com.zbar.lib.camera.CameraManager;
+import com.zbar.lib.decode.CaptureActivityHandler;
+import com.zbar.lib.decode.InactivityTimer;
+import com.zbar.lib.decode.RGBLuminanceSource;
 import com.zk.myweex.R;
 
 import org.json.JSONObject;
@@ -50,10 +54,6 @@ import yjpty.teaching.util.CRequest;
 import yjpty.teaching.util.IConstant;
 import yjpty.teaching.util.SharedPreferencesUtil;
 import yjpty.teaching.util.StringUtil;
-import yjpty.teaching.views.lib.camera.CameraManager;
-import yjpty.teaching.views.lib.decode.CaptureActivityHandler;
-import yjpty.teaching.views.lib.decode.InactivityTimer;
-import yjpty.teaching.views.lib.decode.RGBLuminanceSource;
 import yjpty.teaching.wifi.WifiAdmin;
 
 /**
