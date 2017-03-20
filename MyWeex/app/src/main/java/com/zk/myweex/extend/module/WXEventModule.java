@@ -19,7 +19,6 @@ import com.lzy.imagepicker.view.CropImageView;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
-import com.zk.myweex.activity.EmptyActivity;
 import com.zk.myweex.utils.UploadUtil;
 
 import org.json.JSONException;
@@ -28,6 +27,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import yjpty.teaching.acitivity.HeizInfoActivity;
 
 
 public class WXEventModule extends WXModule {
@@ -218,7 +219,8 @@ public class WXEventModule extends WXModule {
     public void teaching(String url) {
         Log.d("test", "teaching url = " + url);
         //我要上课，要什么参数。
-        Intent i = new Intent(mWXSDKInstance.getContext(), EmptyActivity.class);
+        Intent i = new Intent(mWXSDKInstance.getContext(), HeizInfoActivity.class);
+
         mWXSDKInstance.getContext().startActivity(i);
     }
 
