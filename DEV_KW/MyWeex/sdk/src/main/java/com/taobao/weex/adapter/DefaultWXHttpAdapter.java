@@ -207,7 +207,6 @@ package com.taobao.weex.adapter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.taobao.weex.common.WXRequest;
 import com.taobao.weex.common.WXResponse;
@@ -242,7 +241,6 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
 
     @Override
     public void sendRequest(final WXRequest request, final OnHttpListener listener) {
-        Log.d("test", "using default http adapter ...");
         if (listener != null) {
             listener.onHttpStart();
         }
