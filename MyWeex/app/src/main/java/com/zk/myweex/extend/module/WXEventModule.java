@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import yjpty.teaching.acitivity.HeizInfoActivity;
+import yjpty.teaching.http.BaseHttpRequest;
 
 
 public class WXEventModule extends WXModule {
@@ -217,6 +218,8 @@ public class WXEventModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void teaching(String url) {
+
+        BaseHttpRequest.JSESSIONID = url;
         Log.d("test", "teaching url = " + url);
         //我要上课，要什么参数。
         Intent i = new Intent(mWXSDKInstance.getContext(), HeizInfoActivity.class);
