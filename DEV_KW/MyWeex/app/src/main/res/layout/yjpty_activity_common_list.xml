@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/_f7f7f7"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/title_id"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40dp">
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"/>
+
+        <com.zk.myweex.widget.FilterImageView
+            android:id="@+id/previos"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/app_name"
+            android:paddingLeft="@dimen/_10dp"
+            android:paddingRight="@dimen/_20dp"
+            android:src="@drawable/yjpty_previous"/>
+
+        <com.zk.myweex.widget.FilterImageView
+            android:id="@+id/add"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/app_name"
+            android:padding="@dimen/_10dp"
+            android:src="@drawable/yjpty_ic_content_add"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/wifi_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:padding="@dimen/_7dp"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:text="@string/wxts"
+        android:textColor="@color/_00cc99"
+        android:textSize="@dimen/_14sp"
+        android:visibility="gone"/>
+
+    <ListView
+        android:id="@+id/boy_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@null"
+        android:fastScrollEnabled="false"
+        android:scrollbars="none">
+    </ListView>
+
+    <include layout="@layout/yjpty_no_data"/>
+</LinearLayout>
