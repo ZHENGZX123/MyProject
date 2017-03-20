@@ -43,12 +43,13 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
+import yjpty.teaching.App;
 
 /**
  * Created by Administrator on 2017/2/22.
  */
 
-public class WXApplication extends Application {
+public class WXApplication extends App {
 
 
     public static String ROOT = "/mnt/sdcard/kiway/";
