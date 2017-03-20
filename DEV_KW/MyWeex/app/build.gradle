@@ -83,4 +83,5 @@ dependencies {
     //ConverterFactory的String依赖包
     compile project(':zxing')
     compile project(':ImagePicker')
+    compile 'com.facebook.fresco:fresco:0.12.0'
 }
