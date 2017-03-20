@@ -13,7 +13,6 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -28,7 +27,6 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -106,6 +104,8 @@ public class BaseHttpRequest extends Thread {
      * 请求的类型 ost 2 get 3delete 4put
      */
 
+    public static String JSESSIONID = "";
+
     private int type;
 
     public boolean isRequesting() {
@@ -182,7 +182,7 @@ public class BaseHttpRequest extends Thread {
                         .toString()));
             }
         } else if (type == 2) {
-            System.out.print("初始化请求Get::::"+requestUrl);
+            System.out.print("初始化请求Get::::" + requestUrl);
             httpGet = new HttpGet(requestUrl);
         } else if (type == 3) {
             System.out.print("初始化请求HttpDelete::::");
@@ -244,7 +244,7 @@ public class BaseHttpRequest extends Thread {
             if (httpEntity != null) {
                 byte[] b = EntityUtils.toByteArray(httpEntity);
                 Logger.log(new String(b));
-                Log.e("dfasdfsdf",new String(b));
+                Log.e("dfasdfsdf", new String(b));
                 if (handler != null && isRequesting()) {
                     try {
                         Message message = new Message();
@@ -320,40 +320,40 @@ public class BaseHttpRequest extends Thread {
      */
     @SuppressWarnings("unchecked")
     public void saveCookies() throws JSONException {
-        cookieStore = ((AbstractHttpClient) httpClient).getCookieStore();
-        List<Cookie> cookies = cookieStore.getCookies();
-        try {
-            @SuppressWarnings("rawtypes")
-            Map appinfo = Global.apps.get(app);
-            List<Map<String, String>> jsonArray = null;
-            /*
-             * if (appinfo.containsKey("cookieStr")) { jsonArray =
-			 * (List<Map<String, String>>) appinfo .get("cookieStr"); } else {
-			 */
-            jsonArray = new ArrayList<Map<String, String>>();
-            for (Cookie cookie : cookies) {
-                Map<String, String> obj = new HashMap<String, String>();
-                obj.put("name", cookie.getName());
-                obj.put("value", cookie.getValue());
-                obj.put("path", cookie.getPath());
-                obj.put("domain", cookie.getDomain());
-                obj.put("expiryDate", cookie.getExpiryDate() == null ? "" : ""
-                        + cookie.getExpiryDate());
-                Log.d(cookie.getName(),
-                        cookie.getDomain() + "====" + cookie.getValue()
-                                + "====" + cookie.getPath() + "====="
-                                + cookie.getExpiryDate());
-                jsonArray.add(obj);
-                //App.getInstance().setCookie(cookie);// 将session保存到app
-                // }
-            }
-            // 持久化cookie
-            appinfo.put("cookieStr", jsonArray);
-            Global.apps.put(app, appinfo);
-            Logger.log("获取到cokie" + jsonArray);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        cookieStore = ((AbstractHttpClient) httpClient).getCookieStore();
+//        List<Cookie> cookies = cookieStore.getCookies();
+//        try {
+//            @SuppressWarnings("rawtypes")
+//            Map appinfo = Global.apps.get(app);
+//            List<Map<String, String>> jsonArray = null;
+//            /*
+//             * if (appinfo.containsKey("cookieStr")) { jsonArray =
+//			 * (List<Map<String, String>>) appinfo .get("cookieStr"); } else {
+//			 */
+//            jsonArray = new ArrayList<Map<String, String>>();
+//            for (Cookie cookie : cookies) {
+//                Map<String, String> obj = new HashMap<String, String>();
+//                obj.put("name", cookie.getName());
+//                obj.put("value", cookie.getValue());
+//                obj.put("path", cookie.getPath());
+//                obj.put("domain", cookie.getDomain());
+//                obj.put("expiryDate", cookie.getExpiryDate() == null ? "" : ""
+//                        + cookie.getExpiryDate());
+//                Log.d(cookie.getName(),
+//                        cookie.getDomain() + "====" + cookie.getValue()
+//                                + "====" + cookie.getPath() + "====="
+//                                + cookie.getExpiryDate());
+//                jsonArray.add(obj);
+//                //App.getInstance().setCookie(cookie);// 将session保存到app
+//                // }
+//            }
+//            // 持久化cookie
+//            appinfo.put("cookieStr", jsonArray);
+//            Global.apps.put(app, appinfo);
+//            Logger.log("获取到cokie" + jsonArray);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**
@@ -362,38 +362,24 @@ public class BaseHttpRequest extends Thread {
     @SuppressWarnings({"unchecked", "rawtypes"})
     private void addCookies() {
         try {
-            Map appinfo = Global.apps.get(app);
+            Log.e("test", "teaching url = " + JSESSIONID);
             cookieStore = ((AbstractHttpClient) this.httpClient)
                     .getCookieStore();
-            if (appinfo == null || !appinfo.containsKey("cookieStr")) {
-                return;
+            String name = "JSESSIONID";
+            String value =JSESSIONID;
+            String path = "/yjpts/";
+            String domain ="www.yuertong.com";
+            String expiryDate = "";
+            BasicClientCookie cookie = new BasicClientCookie(name, value);
+            cookie.setDomain(domain);
+            cookie.setPath(path);
+            if (expiryDate != null && !expiryDate.equals("")) {
+                SimpleDateFormat format = new SimpleDateFormat(
+                        "EEE MMM dd HH:mm:ss 'GMT' yyyy", Locale.US);
+                Date date = format.parse(expiryDate);
+                cookie.setExpiryDate(date);
             }
-            List<Map<String, String>> jsonArray = null;
-            try {
-                jsonArray = (List<Map<String, String>>) appinfo
-                        .get("cookieStr");
-            } catch (Exception e) {
-                appinfo.remove("cookieStr");
-                Global.apps.put(app, appinfo);
-            }
-            for (int i = 0; i < jsonArray.size(); i++) {
-                Map<String, String> obj = jsonArray.get(i);
-                String name = obj.get("name");
-                String value = obj.get("value");
-                String path = obj.get("path");
-                String domain = obj.get("domain");
-                String expiryDate = obj.get("expiryDate");
-                BasicClientCookie cookie = new BasicClientCookie(name, value);
-                cookie.setDomain(domain);
-                cookie.setPath(path);
-                if (expiryDate != null && !expiryDate.equals("")) {
-                    SimpleDateFormat format = new SimpleDateFormat(
-                            "EEE MMM dd HH:mm:ss 'GMT' yyyy", Locale.US);
-                    Date date = format.parse(expiryDate);
-                    cookie.setExpiryDate(date);
-                }
-                cookieStore.addCookie(cookie);
-            }
+            cookieStore.addCookie(cookie);
             cookieStore.clearExpired(new Date());
         } catch (Exception e) {
         }

@@ -5,6 +5,10 @@ public class IUrContant {
      * 基础地址
      */
    public static String BASE_URL = "http://www.yuertong.com/yjpts/";// 内网地址
+ /**
+  * 获取我的班级列表 get
+  */
+ public static final String GET_MY_CLASS_LIST = BASE_URL + "app/class";
     /**
      * 获取全部课程 get
      */
