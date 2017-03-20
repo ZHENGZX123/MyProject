@@ -163,7 +163,11 @@ public class WXEventModule extends WXModule {
             RequestParams params = new RequestParams();
             params.put("classes", classes);
             params.put("content", content);
-            params.put("img_url", img_url);
+            String temp = "";
+            for (int i = 0; i < img_url.length(); i++) {
+                temp = img_url.get(i).toString() + "#";
+            }
+            params.put("img_url", temp);
 
             client.post(mWXSDKInstance.getContext(), url, params, new TextHttpResponseHandler() {
 

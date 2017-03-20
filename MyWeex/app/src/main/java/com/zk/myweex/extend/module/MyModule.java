@@ -213,7 +213,6 @@ public class MyModule extends WXModule {
     @JSMethod(uiThread = true)
     public void logoutSuccess(String url) {
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
-
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
     }
 

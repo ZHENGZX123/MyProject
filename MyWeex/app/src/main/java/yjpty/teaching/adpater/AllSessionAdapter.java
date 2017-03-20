@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -12,7 +13,6 @@ import android.widget.Filter;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.taobao.weex.devtools.common.StringUtil;
 import com.zk.myweex.R;
 
 import java.util.ArrayList;
@@ -41,7 +41,10 @@ public class AllSessionAdapter extends ArrayAdapter<VideoCateMode> implements
         this.list = list;
         this.fragment = fragment;
         listData = new ArrayList<VideoCateMode>();
+        inflater = LayoutInflater.from(getContext());
     }
+
+    private LayoutInflater inflater;
 
     @Override
     public int getCount() {
@@ -53,6 +56,7 @@ public class AllSessionAdapter extends ArrayAdapter<VideoCateMode> implements
         View view = convertView;
         if (view == null) {
             view = ViewUtil.inflate(activity, R.layout.yjpty_session_db_list_item);
+//            view = inflater.inflate(R.layout.yjpty_session_db_list_item, null);
             holder = new SessionDbHolder();
             holder.videoImg = ViewUtil.findViewById(view, R.id.pic);
             holder.videoName = ViewUtil.findViewById(view, R.id.name);
@@ -93,7 +97,7 @@ public class AllSessionAdapter extends ArrayAdapter<VideoCateMode> implements
 
     @Override
     public void onClick(View v) {
-        int postion =Integer.parseInt(v.getTag(R.id.bundle_params).toString());
+        int postion = Integer.parseInt(v.getTag(R.id.bundle_params).toString());
         VideoCateMode model = list.get(postion);
         Bundle bundle = new Bundle();
         bundle.putSerializable(IConstant.BUNDLE_PARAMS, model);
