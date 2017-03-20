@@ -87,6 +87,7 @@ public class HeizInfoAdapter extends ArrayAdapter<HeziStautsModel> implements
         int position =Integer.parseInt(v.getTag(R.id.bundle_params).toString());
         HeziStautsModel model = list.get(position);
         Bundle bundle = new Bundle();
+        activity.app.setClassPosition(position);
         switch (model.getHeziType()) {
             case 1:
                 if (model.getHeziResoures(activity).indexOf(model.getString(activity)) < 0) {
