@@ -16,6 +16,7 @@ public class ZipPackage extends RealmObject {
     //包大小
     //更新日期
 
+    //增量更新
     public String patchs = "";
 
 }

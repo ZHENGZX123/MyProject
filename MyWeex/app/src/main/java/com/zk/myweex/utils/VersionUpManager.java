@@ -50,7 +50,7 @@ public class VersionUpManager {
             String name = f.getName();
             Log.d("version", "====================检测" + name + "的新版本===============================");
             ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", name).findFirst();
-            Service s = new Service().findOne(new KWQuery().equalTo("name", name.replace(".zip", "")));
+            Service s = new Service().findOne(new KWQuery().equalTo("id", name.replace(".zip", "")));
             Log.d("version", "s  = " + s.toString());
             Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
             Log.d("version", "p = " + p.toString());

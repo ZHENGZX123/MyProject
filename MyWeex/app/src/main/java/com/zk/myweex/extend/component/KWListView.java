@@ -46,7 +46,7 @@ public class KWListView extends WXComponent<ListView> {
                 Log.d("test", "onItemClick");
 
                 //跳到聊天页面。。。
-                getContext().startActivity(new Intent(getContext(), EmptyActivity.class));
+//                getContext().startActivity(new Intent(getContext(), EmptyActivity.class));
             }
         });
 
@@ -83,7 +83,6 @@ public class KWListView extends WXComponent<ListView> {
             } else {
                 holder = (ViewHolder) rowView.getTag();
             }
-
             return rowView;
         }
 

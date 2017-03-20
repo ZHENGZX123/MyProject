@@ -53,7 +53,7 @@ public class MyModule extends WXModule {
             loadJSBundle(zipName, zip.indexPath);
         } else {
             Log.d("test", "不存在，下载");
-            Service s = new Service().findOne(new KWQuery().equalTo("name", zipName.replace(".zip", "")));
+            Service s = new Service().findOne(new KWQuery().equalTo("id", zipName.replace(".zip", "")));
             Log.d("test", "s  = " + s.toString());
             //返回最新的全量包
             Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
