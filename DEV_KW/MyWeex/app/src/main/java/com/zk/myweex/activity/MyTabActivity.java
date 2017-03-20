@@ -18,7 +18,7 @@ public class MyTabActivity extends SubActivity {
         super.onCreate(savedInstanceState);
         int position = getIntent().getIntExtra("position", 0);
         TabEntity tab = Realm.getDefaultInstance().where(TabEntity.class).findAll().get(position);
-        load(tab.name + ".zip");
+        load(tab.id + ".zip");
     }
 
 
@@ -30,10 +30,8 @@ public class MyTabActivity extends SubActivity {
 //        if (mInstance != null) {
 //            destoryWeexInstance();
 //            createWeexInstance();
-//
 //            int position = getIntent().getIntExtra("position", 0);
 //            Log.d("test", "position = " + position);
-//
 //            TabEntity tab = Realm.getDefaultInstance().where(TabEntity.class).findAll().get(position);
 //            load(tab.name + ".zip");
 //        }

@@ -5,6 +5,7 @@ package com.zk.myweex.extend.component;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXVContainer;
 import com.zk.myweex.R;
+import com.zk.myweex.activity.EmptyActivity;
 
 import java.util.ArrayList;
 
@@ -44,17 +46,21 @@ public class KWListView extends WXComponent<ListView> {
                 Log.d("test", "onItemClick");
 
                 //跳到聊天页面。。。
+                getContext().startActivity(new Intent(getContext(), EmptyActivity.class));
             }
         });
 
+        initData();
+
+        return this.lv;
+    }
+
+    private void initData() {
         items.clear();
         for (int i = 0; i < 100; i++) {
             items.add(new Item());
         }
         adapter.notifyDataSetChanged();
-
-
-        return this.lv;
     }
 
     private class MyAdapter extends BaseAdapter {

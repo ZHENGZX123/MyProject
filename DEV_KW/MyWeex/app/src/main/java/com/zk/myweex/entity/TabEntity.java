@@ -10,7 +10,7 @@ public class TabEntity extends RealmObject {
 
 
     //TODO 新增id属性,name用来做显示用。  zip包名和id一致
-    public int sort;
+    public String id;
     public String name;
     public String image_default;
     public String image_selected;
