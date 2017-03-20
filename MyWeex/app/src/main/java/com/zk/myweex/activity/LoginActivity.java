@@ -1,6 +1,5 @@
 package com.zk.myweex.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.taobao.weex.utils.WXFileUtils;
@@ -12,8 +11,6 @@ public class LoginActivity extends WXBaseActivity {
         super.onCreate(savedInstanceState);
 
         renderPage(WXFileUtils.loadAsset("yjpt/weex_jzd/login.js", this), "file://assets/yjpt/weex_jzd/", null);
-
-
 
 
     }

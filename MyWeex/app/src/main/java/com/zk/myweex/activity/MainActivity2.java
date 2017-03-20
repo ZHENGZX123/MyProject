@@ -53,6 +53,17 @@ public class MainActivity2 extends TabActivity {
                             tab.image_selected = "";
                             Realm.getDefaultInstance().commitTransaction();
                         }
+                    } else {
+                        List<Service> services = new Service().find(new KWQuery().like("id", "tab%"));
+                        for (Service s : services) {
+                            Realm.getDefaultInstance().beginTransaction();
+                            TabEntity tab = Realm.getDefaultInstance().where(TabEntity.class).equalTo("id", s.get("id").toString()).findFirst();
+                            tab.id = s.get("id").toString();
+                            tab.name = s.get("name").toString();
+                            tab.image_default = "";
+                            tab.image_selected = "";
+                            Realm.getDefaultInstance().commitTransaction();
+                        }
                     }
 
                     runOnUiThread(new Runnable() {
@@ -97,16 +108,7 @@ public class MainActivity2 extends TabActivity {
             LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.layout_tab, null);
             ImageView iv = (ImageView) ll.findViewById(R.id.iv);
             TextView tv = (TextView) ll.findViewById(R.id.tv);
-//            tv.setText(tabEntity.name);//名字
-
-            //FIXME hardcode
-            if (i == 0) {
-                tv.setText("首页");
-            } else if (i == 1) {
-                tv.setText("亲子圈");
-            } else if (i == 2) {
-                tv.setText("我的");
-            }
+            tv.setText(tabEntity.name);//名字
 
             bottom.addView(ll, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
             lls.add(ll);
