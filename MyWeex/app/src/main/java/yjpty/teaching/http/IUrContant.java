@@ -29,5 +29,9 @@ public class IUrContant {
      * 获取基础数据 get
      */
     public static final String GET_CUSE_BASE = BASE_URL + "app/base";
+    /**
+     * 解除与绑定盒子
+     */
+    public static final String BANG_DING_HE_ZI_URL = BASE_URL + "app/class/{classId}/box";
 }
 
