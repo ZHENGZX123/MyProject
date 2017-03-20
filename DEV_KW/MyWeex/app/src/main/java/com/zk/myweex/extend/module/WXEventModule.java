@@ -147,7 +147,7 @@ public class WXEventModule extends WXModule {
             //这里要找孙熊改改
 //                callback(@{@"path":path,@"imgUrl":imgUrl});
             HashMap map = new HashMap();
-            map.put("path", "");
+            map.put("path", "file://");
             map.put("imgUrl", "");
             pickerCallback.invoke(map);
         } else if (requestCode == 999) {
