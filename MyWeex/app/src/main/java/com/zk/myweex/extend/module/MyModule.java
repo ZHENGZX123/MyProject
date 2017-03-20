@@ -137,7 +137,6 @@ public class MyModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void getGrid1(JSCallback callback) {
-
         JSONArray a = new JSONArray();
         JSONObject o1 = new JSONObject();
         o1.put("title", "function1");
