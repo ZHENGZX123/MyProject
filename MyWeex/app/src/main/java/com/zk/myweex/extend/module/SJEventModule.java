@@ -38,7 +38,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 
-public class MyModule extends WXModule {
+public class SJEventModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void loadFunction(final String zipName, final JSCallback callback) {

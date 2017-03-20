@@ -169,37 +169,4 @@ public class MainActivity2 extends TabActivity {
         });
     }
 
-//    public void setTab(int position) {
-//        switch (position) {
-//            case 0:
-//                ll1.performClick();
-//                break;
-//            case 1:
-//                ll2.performClick();
-//                break;
-//            case 2:
-//                ll3.performClick();
-//                break;
-//            case 3:
-//                ll4.performClick();
-//                break;
-//
-//
-//            default:
-//                break;
-//        }
-//    }
-
-//    @Override
-//    protected void onRestart() {
-//        int position = tabhost.getCurrentTab();
-//        if (position == 2 && !Utils.isLogin(this)) {
-//            position = 0;
-//        }
-//        if (position == 4 && !Utils.isLogin(this)) {
-//            position = 0;
-//        }
-//        setTab(position);
-//        super.onRestart();
-//    }
 }
