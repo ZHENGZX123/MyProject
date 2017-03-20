@@ -14,6 +14,7 @@ import com.lzy.imagepicker.view.CropImageView;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
+import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
 import com.zk.myweex.utils.Utils;
 
@@ -31,10 +32,17 @@ public class LoginModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void loginSuccess(String url) {
+        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
+
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
         ((Activity) mWXSDKInstance.getContext()).finish();
+    }
 
+    @JSMethod(uiThread = true)
+    public void logoutSuccess(String url) {
+        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
 
+        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
     }
 
     @JSMethod(uiThread = true)

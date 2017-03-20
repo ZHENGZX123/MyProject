@@ -26,7 +26,6 @@ import com.zk.myweex.extend.adapter.SaveCookiesInterceptor;
 import com.zk.myweex.extend.adapter.UniversalImageAdapter;
 import com.zk.myweex.extend.component.KWListView;
 import com.zk.myweex.extend.module.LoginModule;
-import com.zk.myweex.extend.module.LogoutModule;
 import com.zk.myweex.extend.module.MyHttpCache;
 import com.zk.myweex.extend.module.MyModule;
 import com.zk.myweex.extend.module.WXEventModule;
@@ -119,7 +118,6 @@ public class WXApplication extends Application {
             WXSDKEngine.registerModule("my_module", MyModule.class);
             WXSDKEngine.registerModule("my_httpcache", MyHttpCache.class);
             WXSDKEngine.registerModule("SJevent", LoginModule.class);
-            WXSDKEngine.registerModule("logout_module", LogoutModule.class);
             WXSDKEngine.registerModule("event", WXEventModule.class);
 
             WXSDKEngine.registerComponent("chattable", KWListView.class);

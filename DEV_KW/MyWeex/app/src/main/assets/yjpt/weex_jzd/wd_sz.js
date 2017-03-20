@@ -2833,6 +2833,7 @@
 	var Utils = __webpack_require__(129);
 	var modal = __weex_require__('@weex-module/modal');
 	var storage = __weex_require__('@weex-module/storage');
+		var SJevent = __weex_require__('@weex-module/SJevent');
 	module.exports = {
 	  data: function () {return {
 	    navBarHeight: 130,
@@ -2874,8 +2875,11 @@
 	              storage.removeItem(e.data[i], function (e) {});
 	            }
 	          });
-
+                if (SJevent.logoutSuccess) {
+                 SJevent.logoutSuccess(url);
+	               } else {
 	          var url = Utils.setOpenUrl(self.$getConfig(), 'login');
+	                 }
 	        }
 	      });
 	    }
