@@ -17,10 +17,12 @@ import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
 import com.zk.myweex.activity.EmptyActivity;
+import com.zk.myweex.utils.UploadUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -61,23 +63,37 @@ public class WXEventModule extends WXModule {
 
     private JSCallback pickerCallback;
 
+    String url;
+    String jsessionid;
+
     @JSMethod(uiThread = true)
-    public void PostSigalImg(String url, JSCallback callback) {
-        pickerCallback = callback;
+    public void PostSigalImg(String dic, JSCallback callback) {
+        Log.d("test", "dic = " + dic);
 
-        ImagePicker imagePicker = ImagePicker.getInstance();
-        imagePicker.setImageLoader(new GlideImageLoader());// 图片加载器
-        imagePicker.setSelectLimit(9);// 设置可以选择几张
-        imagePicker.setMultiMode(true);// 是否为多选
-        imagePicker.setCrop(true);// 是否剪裁
-        imagePicker.setFocusWidth(1000);// 需要剪裁的宽
-        imagePicker.setFocusHeight(1000);// 需要剪裁的高
-        imagePicker.setStyle(CropImageView.Style.RECTANGLE);// 方形
-        imagePicker.setShowCamera(true);// 是否显示摄像
+        try {
+            org.json.JSONObject obj = new org.json.JSONObject(dic);
+            url = obj.getString("url");
+            jsessionid = obj.getString("jsessionid");
+
+            pickerCallback = callback;
+
+            ImagePicker imagePicker = ImagePicker.getInstance();
+            imagePicker.setImageLoader(new GlideImageLoader());// 图片加载器
+            imagePicker.setSelectLimit(1);// 设置可以选择几张
+            imagePicker.setMultiMode(false);// 是否为多选
+            imagePicker.setCrop(true);// 是否剪裁
+            imagePicker.setFocusWidth(1000);// 需要剪裁的宽
+            imagePicker.setFocusHeight(1000);// 需要剪裁的高
+            imagePicker.setStyle(CropImageView.Style.RECTANGLE);// 方形
+            imagePicker.setShowCamera(true);// 是否显示摄像
 
 
-        Intent intent = new Intent(mWXSDKInstance.getContext(), ImageGridActivity.class);
-        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(intent, 888);
+            Intent intent = new Intent(mWXSDKInstance.getContext(), ImageGridActivity.class);
+            ((Activity) mWXSDKInstance.getContext()).startActivityForResult(intent, 888);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @JSMethod(uiThread = true)
@@ -124,6 +140,7 @@ public class WXEventModule extends WXModule {
     @JSMethod()
     public void Publish(String str, JSCallback callback) {
         //这个是做什么的,调了一个http去做上传。。。
+        Log.d("test", "publish str = " + str);
 
     }
 
@@ -145,11 +162,9 @@ public class WXEventModule extends WXModule {
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             Log.d("test", "images count = " + images.size());
             //这里要找孙熊改改
-//                callback(@{@"path":path,@"imgUrl":imgUrl});
-            HashMap map = new HashMap();
-            map.put("path", "file://");
-            map.put("imgUrl", "");
-            pickerCallback.invoke(map);
+
+            doUploadImage(images);
+
         } else if (requestCode == 999) {
             //扫描二维码返回
             if (data == null) {
@@ -170,6 +185,36 @@ public class WXEventModule extends WXModule {
         //我要上课，要什么参数。
         Intent i = new Intent(mWXSDKInstance.getContext(), EmptyActivity.class);
         mWXSDKInstance.getContext().startActivity(i);
+    }
+
+
+    private void doUploadImage(final ArrayList<ImageItem> images) {
+        new Thread() {
+            @Override
+            public void run() {
+                ImageItem ii = images.get(0);
+                File file = new File(ii.path);
+                String ret = UploadUtil.uploadFile(file, "http://192.168.8.114:8888/yjpt/course/file", "qzq", "JSESSIONID=" + jsessionid);
+                Log.d("test", "upload ret = " + ret);
+
+                if (!ret.contains("200")) {
+                    return;
+                }
+
+                try {
+                    String imgUrl = new JSONObject(ret).getJSONObject("data").getString("url");
+
+//                  callback(@{@"path":path,@"imgUrl":imgUrl});
+
+                    HashMap map = new HashMap();
+                    map.put("path", "file://" + ii.path);
+                    map.put("imgUrl", imgUrl);
+                    pickerCallback.invoke(map);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
 }
