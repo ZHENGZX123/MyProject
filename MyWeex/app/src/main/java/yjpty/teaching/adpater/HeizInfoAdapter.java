@@ -13,6 +13,7 @@ import com.zk.myweex.R;
 import java.util.List;
 
 import yjpty.teaching.acitivity.BaseActivity;
+import yjpty.teaching.acitivity.MipcaCaptureActivity;
 import yjpty.teaching.acitivity.TeachingPlansActivity;
 import yjpty.teaching.model.ClassModel;
 import yjpty.teaching.model.HeziStautsModel;
@@ -107,9 +108,9 @@ public class HeizInfoAdapter extends ArrayAdapter<HeziStautsModel> implements
                 activity.finish();
                 break;
             case 2:
-               // bundle.putInt(IConstant.BUNDLE_PARAMS, 1);
-               // activity.startActivity(MipcaCaptureActivity.class, bundle);
-               // activity.finish();
+                bundle.putInt(IConstant.BUNDLE_PARAMS, 1);
+                activity.startActivity(MipcaCaptureActivity.class, bundle);
+                activity.finish();
                 break;
         }
     }
