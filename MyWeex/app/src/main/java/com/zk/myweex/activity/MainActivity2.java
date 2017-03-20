@@ -47,8 +47,8 @@ public class MainActivity2 extends TabActivity {
                         for (Service s : services) {
                             Realm.getDefaultInstance().beginTransaction();
                             TabEntity tab = Realm.getDefaultInstance().createObject(TabEntity.class);
+                            tab.id = s.get("id").toString();
                             tab.name = s.get("name").toString();
-                            tab.sort = 0;//TODO
                             tab.image_default = "";
                             tab.image_selected = "";
                             Realm.getDefaultInstance().commitTransaction();
