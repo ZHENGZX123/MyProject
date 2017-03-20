@@ -361,6 +361,7 @@ public class WXStreamModule extends WXModule {
 
         extractHeaders(headers, builder);
         final Options options = builder.createOptions();
+
         sendRequest(options, new ResponseCallback() {
             @Override
             public void onResponse(WXResponse response, Map<String, String> headers) {
