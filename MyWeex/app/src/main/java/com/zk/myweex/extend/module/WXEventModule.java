@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.zxing.client.android.CaptureActivity;
+import com.loopj.android.http.AsyncHttpClient;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
@@ -142,6 +143,36 @@ public class WXEventModule extends WXModule {
         //这个是做什么的,调了一个http去做上传。。。
         Log.d("test", "publish str = " + str);
 
+        try {
+            JSONObject obj = new JSONObject(str);
+            String url = obj.getString("url");
+            String jsessionid = obj.getString("jsessionid");
+            String content = obj.getString("content");
+            org.json.JSONArray img_url = obj.getJSONArray("img_url");
+            String classes = obj.getString("classes");
+
+
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            client.addHeader("Cookie", "JSESSIONID=" + jsessionid);
+
+
+//            client.post(mWXSDKInstance.getContext(), url, params, new TextHttpResponseHandler() {
+//
+//                public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
+//                    Log.d("test", "onFailure = " + responseString);
+//                }
+//
+//                public void onSuccess(int statusCode, org.apache.http.Header[] headers, final String responseString) {
+//                    Log.d("test", "onSuccess = " + responseString);
+//                }
+//            });
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @JSMethod()
@@ -161,8 +192,6 @@ public class WXEventModule extends WXModule {
             }
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             Log.d("test", "images count = " + images.size());
-            //这里要找孙熊改改
-
             doUploadImage(images);
 
         } else if (requestCode == 999) {
@@ -209,6 +238,7 @@ public class WXEventModule extends WXModule {
                     HashMap map = new HashMap();
                     map.put("path", "file://" + ii.path);
                     map.put("imgUrl", imgUrl);
+
                     pickerCallback.invoke(map);
                 } catch (Exception e) {
                     e.printStackTrace();
