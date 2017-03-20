@@ -9,12 +9,18 @@ import android.widget.ListView;
 
 import com.zk.myweex.R;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
 import yjpty.teaching.adpater.HeizInfoAdapter;
+import yjpty.teaching.http.HttpResponseModel;
+import yjpty.teaching.http.IUrContant;
+import yjpty.teaching.model.ClassModel;
 import yjpty.teaching.model.HeziStautsModel;
 import yjpty.teaching.util.IConstant;
 import yjpty.teaching.util.ViewUtil;
@@ -70,7 +76,9 @@ public class HeizInfoActivity extends BaseActivity {
     @Override
     public void loadData() throws Exception {
         super.loadData();
-        //if (mCache.getAsJSONObject(IUrContant.GET_CUSE_BASE)==null)
+        if (mCache.getAsJSONObject(IUrContant.GET_CUSE_BASE)==null)
+            IConstant.HTTP_CONNECT_POOL.addRequest(IUrContant.GET_CUSE_BASE,null,activityHandler,2);
+        IConstant.HTTP_CONNECT_POOL.addRequest(IUrContant.GET_MY_CLASS_LIST, null, activityHandler, 2);
     }
 
     @Override
@@ -179,4 +187,35 @@ public class HeizInfoActivity extends BaseActivity {
 
         ;
     };
+
+    @Override
+    public void httpSuccess(HttpResponseModel message) throws Exception {
+        super.httpSuccess(message);
+        if (message.getUrl().equals(IUrContant.GET_CUSE_BASE)) {
+            JSONObject data = new JSONObject(new String(message.getResponse()));
+            if (data.optInt("StatusCode") == 200) {
+                mCache.put(IUrContant.GET_CUSE_BASE, data);
+            }
+        } else if (message.getUrl().equals(IUrContant.GET_MY_CLASS_LIST)) {
+            JSONObject data = new JSONObject(new String(message.getResponse()));
+            if (data.optInt("StatusCode") == 200) {
+                mCache.put(IUrContant.GET_MY_CLASS_LIST, data);
+                JSONArray array = data.optJSONArray("data");
+                if (array != null) {
+                    app.classModels.clear();
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject item = array.optJSONObject(i);
+                        ClassModel model = new ClassModel();
+                        model.setId(item.optString("id"));// 班级id
+                        model.setClassName(item.optString("name"));// 班级名字
+                        model.setHezi_code(item.optString("mac"));// 盒子编号
+                        model.setSchoolId(item.optString("schoolId"));// 学校id
+                        model.setYear(item.optString("gradeId"));// 年级
+                        app.classModels.add(model);
+                    }
+                }
+                setData();
+            }
+        }
+    }
 }
