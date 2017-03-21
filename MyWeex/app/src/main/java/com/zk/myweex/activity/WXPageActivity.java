@@ -23,10 +23,10 @@ import com.taobao.weex.common.WXRenderStrategy;
 import com.taobao.weex.ui.component.NestedContainer;
 import com.taobao.weex.utils.WXFileUtils;
 import com.taobao.weex.utils.WXLogUtils;
-import com.zk.myweex.WXApplication;
 import com.zk.myweex.https.WXHttpManager;
 import com.zk.myweex.https.WXHttpTask;
 import com.zk.myweex.https.WXRequestListener;
+import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.ScreenUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -87,7 +87,7 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
         }
         mInstance.onActivityCreate();
 
-        ((WXApplication) getApplication()).allActs.add(this);
+        ScreenManager.getScreenManager().pushActivity(this);
     }
 
     @Override
@@ -208,7 +208,7 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
         }
         mContainer = null;
 
-        ((WXApplication) getApplication()).allActs.remove(this);
+        ScreenManager.getScreenManager().popActivity(this);
     }
 
 
