@@ -29,7 +29,6 @@ import com.zk.myweex.extend.component.KWListView;
 import com.zk.myweex.extend.module.MyHttpCache;
 import com.zk.myweex.extend.module.SJEventModule;
 import com.zk.myweex.extend.module.WXEventModule;
-import com.zk.myweex.utils.FileUtils;
 
 import java.io.File;
 
@@ -71,13 +70,6 @@ public class WXApplication extends App {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
-            if (new File(WXApplication.ROOT).exists()) {
-                FileUtils.delFolder(WXApplication.ROOT);
-            }
-            getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", false).commit();
-        }
 
         //xizhou sdk init
         Configure.getInstance().setHost("192.168.8.215");
@@ -126,6 +118,7 @@ public class WXApplication extends App {
         } catch (WXException e) {
             e.printStackTrace();
         }
+
 
         //bugly
         CrashReport.initCrashReport(getApplicationContext(), "900028702", false);
