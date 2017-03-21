@@ -51,7 +51,7 @@ public class MainActivity2 extends TabActivity {
         mListener = new IPermission() {
             @Override
             public void onGranted() {
-
+                toast("权限被接受");
             }
 
             @Override
@@ -59,7 +59,8 @@ public class MainActivity2 extends TabActivity {
                 toast("权限被拒绝");
             }
         };
-        requestRunTimePermission(new String[]{Manifest.permission.CALL_PHONE, Manifest.permission.CAMERA}, mListener);
+        requestRunTimePermission(new String[]{Manifest.permission.CALL_PHONE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                mListener);
 
         new Thread() {
             @Override
@@ -230,7 +231,9 @@ public class MainActivity2 extends TabActivity {
                 permissionList.add(permission);
             }
         }
-        ActivityCompat.requestPermissions(this, permissionList.toArray(new String[permissionList.size()]), REQUEST_CODE);
+        if (permissionList.size() > 0) {
+            ActivityCompat.requestPermissions(this, permissionList.toArray(new String[permissionList.size()]), REQUEST_CODE);
+        }
     }
 
 
