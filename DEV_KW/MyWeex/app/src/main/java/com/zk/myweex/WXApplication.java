@@ -67,7 +67,6 @@ public class WXApplication extends App {
 
     public Activity currentActivity;
 
-    public ArrayList<Activity> allActs = new ArrayList<>();
 
     @Override
     public void onCreate() {

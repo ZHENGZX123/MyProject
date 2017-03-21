@@ -23,6 +23,7 @@ import com.zk.myweex.activity.MainActivity2;
 import com.zk.myweex.activity.WXPageActivity;
 import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.utils.HttpDownload;
+import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.UploadUtil;
 import com.zk.myweex.utils.Utils;
 
@@ -214,8 +215,9 @@ public class SJEventModule extends WXModule {
     public void logoutSuccess(String url) {
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
 
-        ((WXApplication) mWXSDKInstance.getContext()).allActs.clear();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
+
+        ScreenManager.getScreenManager().popAllActivityExceptOne(LoginActivity.class);
     }
 
 

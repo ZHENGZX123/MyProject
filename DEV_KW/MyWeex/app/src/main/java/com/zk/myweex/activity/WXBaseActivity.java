@@ -225,6 +225,7 @@ import com.zk.myweex.WXApplication;
 import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.utils.AssertUtil;
 import com.zk.myweex.utils.HttpDownload;
+import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.ScreenUtil;
 
 import java.io.File;
@@ -261,7 +262,7 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
 
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
 
-        ((WXApplication) getApplication()).allActs.add(this);
+        ScreenManager.getScreenManager().pushActivity(this);
     }
 
 
@@ -367,7 +368,7 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         if (mInstance != null) {
             mInstance.onActivityDestroy();
         }
-        ((WXApplication) getApplication()).allActs.remove(this);
+        ScreenManager.getScreenManager().popActivity(this);
     }
 
     @Override
