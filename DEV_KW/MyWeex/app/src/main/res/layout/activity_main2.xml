@@ -3,10 +3,26 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
+    <RelativeLayout
+        android:id="@+id/rl_nonet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="断网了。。。。"
+            android:textColor="#ff0000" />
+
+    </RelativeLayout>
+
     <TabHost
         android:id="@android:id/tabhost"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_below="@+id/rl_nonet"
         android:fitsSystemWindows="true">
 
         <LinearLayout

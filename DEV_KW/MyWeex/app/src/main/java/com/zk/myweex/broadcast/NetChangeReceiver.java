@@ -10,7 +10,7 @@ import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.zk.myweex.activity.WXBaseActivity;
+import com.zk.myweex.activity.MainActivity2;
 
 import java.text.DecimalFormat;
 
@@ -38,7 +38,7 @@ public class NetChangeReceiver extends BroadcastReceiver {
             msg.arg1 = 0;
             msg.obj = "手机没有任何网络...";
         }
-        WXBaseActivity.activity.mHandler.sendMessage(msg);
+        MainActivity2.main.mHandler.sendMessage(msg);
     }
 
     private static final int NETWORK_TYPE_UNAVAILABLE = -1;

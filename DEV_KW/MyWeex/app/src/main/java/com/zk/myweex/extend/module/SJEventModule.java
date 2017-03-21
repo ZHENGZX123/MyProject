@@ -214,8 +214,10 @@ public class SJEventModule extends WXModule {
     public void logoutSuccess(String url) {
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
 
+        ((WXApplication) mWXSDKInstance.getContext()).allActs.clear();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
     }
+
 
     @JSMethod(uiThread = true)
     public void makeQRCode(String dic, JSCallback callback) {

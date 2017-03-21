@@ -4,8 +4,6 @@ import android.os.Bundle;
 
 import com.zk.myweex.entity.TabEntity;
 
-import java.util.HashMap;
-
 import io.realm.Realm;
 
 /**
@@ -23,11 +21,10 @@ public class MyTabActivity extends SubActivity {
         load(tab.id + ".zip");
     }
 
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        mInstance.fireGlobalEventCallback("refresh", new HashMap<String, Object>());
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//
+//        mInstance.fireGlobalEventCallback("refresh", new HashMap<String, Object>());
+//    }
 }
