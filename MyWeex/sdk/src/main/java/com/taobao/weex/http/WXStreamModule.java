@@ -372,6 +372,8 @@ public class WXStreamModule extends WXModule {
                         resp.put(STATUS_TEXT, Status.ERR_CONNECT_FAILED);
                     } else {
                         int code = Integer.parseInt(response.statusCode);
+                        Log.d("test", "stream module code = " + code);
+
                         resp.put(STATUS, code);
                         resp.put("ok", (code >= 200 && code <= 299));
                         if (response.originalData == null) {
