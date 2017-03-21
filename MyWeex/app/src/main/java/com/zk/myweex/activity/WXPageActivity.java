@@ -23,6 +23,7 @@ import com.taobao.weex.common.WXRenderStrategy;
 import com.taobao.weex.ui.component.NestedContainer;
 import com.taobao.weex.utils.WXFileUtils;
 import com.taobao.weex.utils.WXLogUtils;
+import com.zk.myweex.WXApplication;
 import com.zk.myweex.https.WXHttpManager;
 import com.zk.myweex.https.WXHttpTask;
 import com.zk.myweex.https.WXRequestListener;
@@ -86,7 +87,7 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
         }
         mInstance.onActivityCreate();
 
-
+        ((WXApplication) getApplication()).allActs.add(this);
     }
 
     @Override
@@ -206,6 +207,8 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
             mInstance.onActivityDestroy();
         }
         mContainer = null;
+
+        ((WXApplication) getApplication()).allActs.remove(this);
     }
 
 

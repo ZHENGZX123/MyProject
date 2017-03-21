@@ -31,6 +31,7 @@ import com.zk.myweex.extend.module.WXEventModule;
 import com.zk.myweex.utils.FileUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import cn.kiway.baas.sdk.Configure;
 import io.realm.DynamicRealm;
@@ -64,8 +65,9 @@ public class WXApplication extends App {
 
     public static String BASE_URL = "http://www.yuertong.com/";
 
-
     public Activity currentActivity;
+
+    public ArrayList<Activity> allActs = new ArrayList<>();
 
     @Override
     public void onCreate() {

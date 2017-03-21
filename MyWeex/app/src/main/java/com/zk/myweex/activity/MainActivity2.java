@@ -3,11 +3,14 @@ package com.zk.myweex.activity;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,11 +33,14 @@ public class MainActivity2 extends TabActivity {
     private TabHost tabhost;
     private LinearLayout bottom;
     private ArrayList<LinearLayout> lls = new ArrayList<>();
+    public static MainActivity2 main;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+
+        main = this;
 
         new Thread() {
             @Override
@@ -42,8 +48,8 @@ public class MainActivity2 extends TabActivity {
                 try {
                     //第一次，初始化tab
                     int tabcount = Realm.getDefaultInstance().where(TabEntity.class).findAll().size();
+                    List<Service> services = new Service().find(new KWQuery().like("id", "tab%"));
                     if (tabcount == 0) {
-                        List<Service> services = new Service().find(new KWQuery().like("id", "tab%"));
                         for (Service s : services) {
                             Realm.getDefaultInstance().beginTransaction();
                             TabEntity tab = Realm.getDefaultInstance().createObject(TabEntity.class);
@@ -54,7 +60,6 @@ public class MainActivity2 extends TabActivity {
                             Realm.getDefaultInstance().commitTransaction();
                         }
                     } else {
-                        List<Service> services = new Service().find(new KWQuery().like("id", "tab%"));
                         for (Service s : services) {
                             Realm.getDefaultInstance().beginTransaction();
                             TabEntity tab = Realm.getDefaultInstance().where(TabEntity.class).equalTo("id", s.get("id").toString()).findFirst();
@@ -168,5 +173,19 @@ public class MainActivity2 extends TabActivity {
             }
         });
     }
+
+
+    public Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
+            int arg1 = msg.arg1;
+            if (arg1 == 0) {
+                rl_nonet.setVisibility(View.VISIBLE);
+            } else {
+                rl_nonet.setVisibility(View.GONE);
+            }
+        }
+    };
 
 }
