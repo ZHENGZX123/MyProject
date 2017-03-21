@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,10 +46,11 @@ public class MainActivity2 extends TabActivity {
         new Thread() {
             @Override
             public void run() {
+
                 try {
-                    //第一次，初始化tab
                     int tabcount = Realm.getDefaultInstance().where(TabEntity.class).findAll().size();
                     List<Service> services = new Service().find(new KWQuery().like("id", "tab%"));
+                    //第一次，初始化tab
                     if (tabcount == 0) {
                         for (Service s : services) {
                             Realm.getDefaultInstance().beginTransaction();
@@ -71,13 +73,6 @@ public class MainActivity2 extends TabActivity {
                         }
                     }
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            RealmResults<TabEntity> tabs = Realm.getDefaultInstance().where(TabEntity.class).findAll();
-                            initView(tabs);
-                        }
-                    });
 
                     VersionUpManager manager = new VersionUpManager();
                     manager.init(getApplication());
@@ -85,6 +80,15 @@ public class MainActivity2 extends TabActivity {
                     manager.getRemoteVersion();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Log.d("test", "no net ... ");
+                } finally {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            RealmResults<TabEntity> tabs = Realm.getDefaultInstance().where(TabEntity.class).findAll();
+                            initView(tabs);
+                        }
+                    });
                 }
             }
         }.start();
