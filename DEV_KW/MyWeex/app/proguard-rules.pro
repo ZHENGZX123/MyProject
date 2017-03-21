@@ -31,3 +31,7 @@
 -keep class com.taobao.weex.module.**{*;}
 -keep public class * extends com.taobao.weex.common.WXModule{*;}
 -keep public class com.taobao.weex.WXDebugTool{*;}
+
+##bugly
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}

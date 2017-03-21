@@ -19,6 +19,7 @@ import com.taobao.weex.InitConfig;
 import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.common.WXException;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.zk.myweex.entity.HttpCache;
 import com.zk.myweex.extend.adapter.GitHubApi;
 import com.zk.myweex.extend.adapter.ReadCookiesInterceptor;
@@ -31,7 +32,6 @@ import com.zk.myweex.extend.module.WXEventModule;
 import com.zk.myweex.utils.FileUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import cn.kiway.baas.sdk.Configure;
 import io.realm.DynamicRealm;
@@ -126,6 +126,9 @@ public class WXApplication extends App {
         } catch (WXException e) {
             e.printStackTrace();
         }
+
+        //bugly
+        CrashReport.initCrashReport(getApplicationContext(), "900028702", false);
 
         registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
             @Override
