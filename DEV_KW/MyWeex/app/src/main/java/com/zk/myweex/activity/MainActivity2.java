@@ -48,20 +48,13 @@ public class MainActivity2 extends TabActivity {
 
         main = this;
 
-        mListener = new IPermission() {
-            @Override
-            public void onGranted() {
-                toast("权限被接受");
-            }
-
-            @Override
-            public void onDenied(List<String> deniedPermissions) {
-                toast("权限被拒绝");
-            }
-        };
         requestRunTimePermission(new String[]{Manifest.permission.CALL_PHONE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 mListener);
 
+
+    }
+
+    private void getDataFromServer() {
         new Thread() {
             @Override
             public void run() {
@@ -212,7 +205,18 @@ public class MainActivity2 extends TabActivity {
     };
 
     private final int REQUEST_CODE = 1;
-    private IPermission mListener;
+    private IPermission mListener = new IPermission() {
+        @Override
+        public void onGranted() {
+            toast("所有权限被接受");
+            getDataFromServer();
+        }
+
+        @Override
+        public void onDenied(List<String> deniedPermissions) {
+            toast("有权限被拒绝");
+        }
+    };
 
     interface IPermission {
         //权限被允许时的回调
@@ -233,6 +237,8 @@ public class MainActivity2 extends TabActivity {
         }
         if (permissionList.size() > 0) {
             ActivityCompat.requestPermissions(this, permissionList.toArray(new String[permissionList.size()]), REQUEST_CODE);
+        } else {
+            getDataFromServer();
         }
     }
 
