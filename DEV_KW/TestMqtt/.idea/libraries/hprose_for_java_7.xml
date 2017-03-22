@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="hprose_for_java_7">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/libs/hprose_for_java_7.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
