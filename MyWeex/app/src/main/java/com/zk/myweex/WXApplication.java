@@ -27,7 +27,7 @@ import com.zk.myweex.extend.adapter.GitHubApi;
 import com.zk.myweex.extend.adapter.ReadCookiesInterceptor;
 import com.zk.myweex.extend.adapter.SaveCookiesInterceptor;
 import com.zk.myweex.extend.adapter.UniversalImageAdapter;
-import com.zk.myweex.extend.component.KWListView;
+import com.zk.myweex.extend.component.GroupListView;
 import com.zk.myweex.extend.module.MyHttpCache;
 import com.zk.myweex.extend.module.SJEventModule;
 import com.zk.myweex.extend.module.WXEventModule;
@@ -115,7 +115,7 @@ public class WXApplication extends App {
             WXSDKEngine.registerModule("SJevent", SJEventModule.class);
             WXSDKEngine.registerModule("event", WXEventModule.class);
 
-            WXSDKEngine.registerComponent("chattable", KWListView.class);
+            WXSDKEngine.registerComponent("chattable", GroupListView.class);
 
         } catch (WXException e) {
             e.printStackTrace();
