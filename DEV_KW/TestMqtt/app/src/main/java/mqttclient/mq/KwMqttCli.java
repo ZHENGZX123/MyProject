@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class KwMqttCli implements MqttCallback {
-    //public final static KwMqttCli INSTANCE = new KwMqttCli(Settings.INSTANCE.clientid());
     private MqttClient client = null;
     private MqttConnectOptions options;
     private String clientid;
@@ -24,23 +23,10 @@ public class KwMqttCli implements MqttCallback {
     private String passwd;
     private int recode = 0;
     private String remsg = "";
-    private TopicProcessService loginerrcbk = new LoginErrorCbk();
+    private TopicProcessService loginerrcbk;
     private Set<String> cbkwildcard = new HashSet<String>();
     private Map<String, TopicProcessService> cbks = new HashMap<String, TopicProcessService>();
 
-    public KwMqttCli(int i) {
-        clientid = Conf.getInstance().getId() + i;
-        username = Conf.getInstance().getuserName();
-        passwd = Conf.getInstance().getPasswd();
-        init(clientid);
-    }
-
-    public KwMqttCli(int i, String u, String p) {
-        clientid = Conf.getInstance().getId() + i;
-        username = u;
-        passwd = p;
-        init(clientid);
-    }
 
     public KwMqttCli(int i, String u, String p, TopicProcessService lcbk) {
         clientid = Conf.getInstance().getId() + i;
@@ -50,12 +36,6 @@ public class KwMqttCli implements MqttCallback {
         loginerrcbk = lcbk;
     }
 
-    public KwMqttCli(String id) {
-        clientid = id;
-        username = Conf.getInstance().getuserName();
-        passwd = Conf.getInstance().getPasswd();
-        init(clientid);
-    }
 
     public TopicProcessService getLoginerrCbk() {
         return loginerrcbk;
@@ -69,13 +49,6 @@ public class KwMqttCli implements MqttCallback {
         return username;
     }
 
-    public int getRecode() {
-        return recode;
-    }
-
-    public String getRemsg() {
-        return remsg;
-    }
 
     private void init(String clientid) {
         if (client == null)
@@ -199,7 +172,6 @@ public class KwMqttCli implements MqttCallback {
             default:
                 System.out.println("" + imtk.getMessageId() + "    " + imtk.getResponse().getType());
         }
-
     }
 
     @Override
@@ -220,7 +192,6 @@ public class KwMqttCli implements MqttCallback {
             }
             if (nofind) RegTopicProcSrv.INSTANCE.process(topic, message, time);
         }
-
     }
 
 }
