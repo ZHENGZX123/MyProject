@@ -2105,12 +2105,12 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+//	    dir : 'yjpt',
+	  	 dir : 'yjpts',
 	    // ip : 'http://192.168.8.206:8180/',
-	     ip : 'http://192.168.8.114:8888/',
+//	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
-	    // ip : 'http://www.yuertong.com/',   //本地不用
+	     ip : 'http://www.yuertong.com/',   //本地不用
 
 	    setOpenUrl : function(context,arr){
 	      var bundleUrl = context.bundleUrl;
@@ -2872,9 +2872,7 @@
 	    data: function () {return {
 	        navBarHeight: 130,
 	        dir: 'yjpt',
-
 	        telphone: '13510530146',
-
 	        pwd: '123456',
 	        verCode: '',
 	        telphoneCheck: true,
