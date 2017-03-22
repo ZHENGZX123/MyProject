@@ -67,9 +67,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 Intent intentService = new Intent(this, PushService.class);
                 intentService.putExtra(USERNAME, userName);
                 intentService.putExtra(PWD,passWord);
+                startService(intentService);
 
                 saveLoginInfo(userName, passWord);
-                startService(intentService);
 
                 break;
             default:

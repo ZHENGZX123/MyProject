@@ -167,7 +167,7 @@ public class WXEventModule extends WXModule {
             for (int i = 0; i < img_url.length(); i++) {
                 temp = img_url.get(i).toString() + "#";
             }
-            temp.substring(0, temp.length() - 1);
+            temp = temp.substring(0, temp.length() - 1);
             params.put("img_url", temp);
 
             client.post(mWXSDKInstance.getContext(), url, params, new TextHttpResponseHandler() {
@@ -178,6 +178,10 @@ public class WXEventModule extends WXModule {
 
                 public void onSuccess(int statusCode, org.apache.http.Header[] headers, final String responseString) {
                     Log.d("test", "onSuccess = " + responseString);
+                    if (responseString.contains("200")) {
+                        toast("发表成功");
+                        ((Activity) mWXSDKInstance.getContext()).finish();
+                    }
                 }
             });
 
