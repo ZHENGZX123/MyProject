@@ -2323,7 +2323,9 @@
 	        "right-text"
 	      ],
 	      "style": {
-	        "color": function () {return this.rightItemColor}
+	        "color": "#ffffff",
+	        "padding": 60,
+	        "paddingRight": 20
 	      },
 	      "attr": {
 	        "naviItemPosition": "right",
@@ -2335,18 +2337,26 @@
 	      }
 	    },
 	    {
-	      "type": "image",
+	      "type": "div",
 	      "classList": [
 	        "right-image"
 	      ],
-	      "attr": {
-	        "naviItemPosition": "right",
-	        "src": function () {return this.rightItemSrc}
-	      },
-	      "shown": function () {return this.rightItemSrc},
 	      "events": {
 	        "click": "onclickrightitem"
-	      }
+	      },
+	      "children": [
+	        {
+	          "type": "image",
+	          "classList": [
+	            "right-image2"
+	          ],
+	          "attr": {
+	            "naviItemPosition": "right",
+	            "src": function () {return this.rightItemSrc}
+	          },
+	          "shown": function () {return this.rightItemSrc}
+	        }
+	      ]
 	    },
 	    {
 	      "type": "text",
@@ -2418,12 +2428,12 @@
 	  },
 	  "right-text": {
 	    "position": "absolute",
-	    "bottom": 0,
-	    "right": 32,
+	    "bottom": -30,
+	    "right": 0,
 	    "textAlign": "right",
 	    "fontSize": 32,
 	    "fontFamily": "'Open Sans', sans-serif",
-	    "padding": 30
+	    "padding": 60
 	  },
 	  "left-text": {
 	    "position": "absolute",
@@ -2445,18 +2455,27 @@
 	  "left-image": {
 	    "position": "absolute",
 	    "bottom": 20,
-	    "left": 28,
+	    "left": 20,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
 	  },
-	  "right-image": {
+	  "right-image2": {
 	    "position": "absolute",
 	    "bottom": 20,
 	    "right": 28,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
+	  },
+	  "right-image": {
+	    "position": "absolute",
+	    "bottom": 0,
+	    "right": 0,
+	    "paddingTop": 60,
+	    "paddingBottom": 60,
+	    "paddingRight": 20,
+	    "paddingLeft": 90
 	  }
 	}
 
@@ -2889,8 +2908,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    // dir : 'yjpts',
-	  	dir : 'yjpt',
+	    dir : 'yjpt',
+	  	// dir : 'yjpts',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2904,7 +2923,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	        nativeBase = bundleUrl;
+	          nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -3928,8 +3947,6 @@
 	  },
 	  "binding": {
 	    "color": "#8b568d",
-	    "height": 80,
-	    "lineHeight": 80,
 	    "flex": 3,
 	    "paddingLeft": 20,
 	    "fontSize": 32
@@ -4137,6 +4154,7 @@
 	        storage.getItem('classInfo', function (e) {
 	            if (e.data) {
 	                e.data = JSON.parse(e.data);
+	                console.log('classInfo:', e.data);
 	                self.classInfo = e.data;
 	                self.classId = e.data.id;
 
@@ -4215,7 +4233,7 @@
 	        redirectqrUrl: function redirectqrUrl(url, classId) {
 	            var self = this;
 	            storage.setItem('classInfo', (0, _stringify2.default)(self.classInfo), function () {});
-
+	            self.isShow = !self.isShow;
 	            Utils.navigate.push(self, url, 'true');
 	        },
 	        redirectContact: function redirectContact(url, user, index) {
@@ -4270,7 +4288,7 @@
 	                                    for (var i in self.children) {
 	                                        if (self.children[i]) {
 	                                            if (!self.children[i].avatar) {
-	                                                self.children[i].avatar = Utils.ip + 'yjpt/images/photo_06.jpeg';
+	                                                self.children[i].avatar = Utils.ip + Utils.dir + '/' + 'yjpt/images/photo_06.jpeg';
 	                                            } else {
 	                                                self.children[i].avatar = Utils.ip + self.children[i].avatar;
 	                                            }
@@ -4295,11 +4313,12 @@
 	        },
 	        redirect: function redirect(url) {
 	            var self = this;
+	            self.isShow = !self.isShow;
 	            Utils.navigate.push(self, url, 'true');
 	        },
 	        quitClass: function quitClass() {
 	            var self = this;
-
+	            self.isShow = !self.isShow;
 	            modal.confirm({
 	                message: '确定要退出该班级吗？',
 	                okTitle: '确定',

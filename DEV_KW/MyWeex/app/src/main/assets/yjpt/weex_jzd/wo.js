@@ -1520,7 +1520,9 @@
 	        "right-text"
 	      ],
 	      "style": {
-	        "color": function () {return this.rightItemColor}
+	        "color": "#ffffff",
+	        "padding": 60,
+	        "paddingRight": 20
 	      },
 	      "attr": {
 	        "naviItemPosition": "right",
@@ -1532,18 +1534,26 @@
 	      }
 	    },
 	    {
-	      "type": "image",
+	      "type": "div",
 	      "classList": [
 	        "right-image"
 	      ],
-	      "attr": {
-	        "naviItemPosition": "right",
-	        "src": function () {return this.rightItemSrc}
-	      },
-	      "shown": function () {return this.rightItemSrc},
 	      "events": {
 	        "click": "onclickrightitem"
-	      }
+	      },
+	      "children": [
+	        {
+	          "type": "image",
+	          "classList": [
+	            "right-image2"
+	          ],
+	          "attr": {
+	            "naviItemPosition": "right",
+	            "src": function () {return this.rightItemSrc}
+	          },
+	          "shown": function () {return this.rightItemSrc}
+	        }
+	      ]
 	    },
 	    {
 	      "type": "text",
@@ -1615,12 +1625,12 @@
 	  },
 	  "right-text": {
 	    "position": "absolute",
-	    "bottom": 0,
-	    "right": 32,
+	    "bottom": -30,
+	    "right": 0,
 	    "textAlign": "right",
 	    "fontSize": 32,
 	    "fontFamily": "'Open Sans', sans-serif",
-	    "padding": 30
+	    "padding": 60
 	  },
 	  "left-text": {
 	    "position": "absolute",
@@ -1642,18 +1652,27 @@
 	  "left-image": {
 	    "position": "absolute",
 	    "bottom": 20,
-	    "left": 28,
+	    "left": 20,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
 	  },
-	  "right-image": {
+	  "right-image2": {
 	    "position": "absolute",
 	    "bottom": 20,
 	    "right": 28,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
+	  },
+	  "right-image": {
+	    "position": "absolute",
+	    "bottom": 0,
+	    "right": 0,
+	    "paddingTop": 60,
+	    "paddingBottom": 60,
+	    "paddingRight": 20,
+	    "paddingLeft": 90
 	  }
 	}
 
@@ -2086,8 +2105,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    // dir : 'yjpts',
-	  	dir : 'yjpt',
+	    dir : 'yjpt',
+	  	// dir : 'yjpts',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2101,7 +2120,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	        nativeBase = bundleUrl;
+	          nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -3001,6 +3020,27 @@
 	                }
 	            });
 	        });
+
+	        var Stack = new BroadcastChannel('nameModify');
+	        Stack.onmessage = function (event) {
+	            self.name = event.data;
+	        };
+
+	        var gender = new BroadcastChannel('genderModify');
+	        gender.onmessage = function (e) {
+	            if (e.data == '1') {
+	                self.gender = '男';
+	            } else if (e.data == '2') {
+	                self.gender = '女';
+	            } else {
+	                self.gender = '未知';
+	            }
+	        };
+
+	        var city = new BroadcastChannel('cityPicker');
+	        city.onmessage = function (e) {
+	            self.address = e.data;
+	        };
 	    },
 	    methods: {
 	        openNamePage: function openNamePage() {
@@ -3024,7 +3064,7 @@
 	                    if (SJevent.PostSigalImg) {
 	                        var paramJson = {
 	                            userId: self.userId,
-	                            url: Utils.ip + Utils.dir + 'course/file',
+	                            url: Utils.ip + Utils.dir + '/course/file',
 	                            jsessionid: e.data
 	                        };
 	                        paramJson = (0, _stringify2.default)(paramJson);
@@ -3037,11 +3077,8 @@
 	                                }, function () {});
 	                            } else {
 	                                var path = res.path;
-	                                modal.alert({
-	                                    message: res.path
-	                                }, function () {});
 
-	                                self.myPortraitUrl = path;
+	                                self.myPortraitUrl = res.path;
 	                            }
 	                        });
 	                    } else {

@@ -1520,7 +1520,9 @@
 	        "right-text"
 	      ],
 	      "style": {
-	        "color": function () {return this.rightItemColor}
+	        "color": "#ffffff",
+	        "padding": 60,
+	        "paddingRight": 20
 	      },
 	      "attr": {
 	        "naviItemPosition": "right",
@@ -1532,18 +1534,26 @@
 	      }
 	    },
 	    {
-	      "type": "image",
+	      "type": "div",
 	      "classList": [
 	        "right-image"
 	      ],
-	      "attr": {
-	        "naviItemPosition": "right",
-	        "src": function () {return this.rightItemSrc}
-	      },
-	      "shown": function () {return this.rightItemSrc},
 	      "events": {
 	        "click": "onclickrightitem"
-	      }
+	      },
+	      "children": [
+	        {
+	          "type": "image",
+	          "classList": [
+	            "right-image2"
+	          ],
+	          "attr": {
+	            "naviItemPosition": "right",
+	            "src": function () {return this.rightItemSrc}
+	          },
+	          "shown": function () {return this.rightItemSrc}
+	        }
+	      ]
 	    },
 	    {
 	      "type": "text",
@@ -1615,12 +1625,12 @@
 	  },
 	  "right-text": {
 	    "position": "absolute",
-	    "bottom": 0,
-	    "right": 32,
+	    "bottom": -30,
+	    "right": 0,
 	    "textAlign": "right",
 	    "fontSize": 32,
 	    "fontFamily": "'Open Sans', sans-serif",
-	    "padding": 30
+	    "padding": 60
 	  },
 	  "left-text": {
 	    "position": "absolute",
@@ -1642,18 +1652,27 @@
 	  "left-image": {
 	    "position": "absolute",
 	    "bottom": 20,
-	    "left": 28,
+	    "left": 20,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
 	  },
-	  "right-image": {
+	  "right-image2": {
 	    "position": "absolute",
 	    "bottom": 20,
 	    "right": 28,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
+	  },
+	  "right-image": {
+	    "position": "absolute",
+	    "bottom": 0,
+	    "right": 0,
+	    "paddingTop": 60,
+	    "paddingBottom": 60,
+	    "paddingRight": 20,
+	    "paddingLeft": 90
 	  }
 	}
 
@@ -2086,8 +2105,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    // dir : 'yjpts',
-	  	dir : 'yjpt',
+	    dir : 'yjpt',
+	  	// dir : 'yjpts',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2101,7 +2120,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	        nativeBase = bundleUrl;
+	          nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -2505,7 +2524,7 @@
 	    "dataRole": "none",
 	    "height": function () {return this.navBarHeight},
 	    "backgroundColor": "#00cc99",
-	    "title": function () {return this.userData.user.realname},
+	    "title": function () {return this.userData.realname?this.userData.realname:this.userData.named},
 	    "titleColor": "white",
 	    "leftItemSrc": function () {return this.images.leftItemImg}
 	  },
@@ -2531,7 +2550,7 @@
 	                "user_img"
 	              ],
 	              "attr": {
-	                "src": function () {return this.userData.user.avatar}
+	                "src": function () {return this.userData.avatar}
 	              }
 	            },
 	            {
@@ -2540,7 +2559,7 @@
 	                "user_name"
 	              ],
 	              "attr": {
-	                "value": function () {return this.userData.user.realname}
+	                "value": function () {return this.userData.realname}
 	              }
 	            },
 	            {
@@ -2549,7 +2568,7 @@
 	                "user_tel"
 	              ],
 	              "attr": {
-	                "value": function () {return this.userData.user.phone}
+	                "value": function () {return this.userData.phone}
 	              }
 	            }
 	          ]
@@ -2559,9 +2578,9 @@
 	          "classList": [
 	            "tel_btn"
 	          ],
-	          "shown": function () {return this.userData.user.phone},
+	          "shown": function () {return this.userData.mobile},
 	          "events": {
-	            "click": function ($event) {this.callPhone(this.userData.user.phone,$event)}
+	            "click": function ($event) {this.callPhone(this.userData.mobile,$event)}
 	          },
 	          "attr": {
 	            "value": "呼叫"
@@ -2644,11 +2663,7 @@
 	            leftItemImg: 'yjpt/images/id_right_bg.png',
 	            userImg: 'yjpt/images/my_01.png'
 	        },
-	        userData: {
-	            user: {
-	                realname: 'sb'
-	            }
-	        }
+	        userData: {}
 	    }},
 	    created: function created() {
 
@@ -2661,11 +2676,11 @@
 	        storage.getItem('parentInfo', function (e) {
 	            if (e.data) {
 	                e.data = JSON.parse(e.data);
+	                console.log(e.data);
 	                self.userData = e.data;
 	            }
 	        });
 	        Utils.changeImg(this.images, ['leftItemImg', 'userImg']);
-	        Utils.changeImg(this.userData, ['photo']);
 	    },
 	    methods: {
 	        redirect: function redirect(url) {

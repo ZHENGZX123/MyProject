@@ -2180,11 +2180,11 @@
 	                          osubOjb = subObj[k];
 	                          subObj[imgNameArr[j]] = Utils.ip +Utils.dir+ '/'+osubOjb;
 	                      }
-
+	                        
 	                    }
 	                  }
 	                  obj[imgNameArr[j]] = Utils.ip +Utils.dir+ '/'+ obj[imgNameArr[j]];
-
+	                  
 	              }
 	            }
 	          }else if(Object.prototype.toString.call(arr) === '[object String]'){
@@ -2203,7 +2203,7 @@
 
 	    navigate : {
 	      /***
-	      * 打开一个新页面
+	      * 打开一个新页面 
 	      * @params obj 当前页面作业域(传参数时为this)
 	      * @params url 页面的地址
 	      * @params animate 是否显示动画；值为'true'/'false'
@@ -2215,7 +2215,7 @@
 	          'url': url,
 	          'animated' : animate,
 	        }
-	        var vm = obj;
+	        var vm = obj;    
 	        /*navigator.push(params,function(e){
 	          if(typeof callback == 'function')
 	               callback();
@@ -2226,7 +2226,7 @@
 	        });
 	      },
 	      /***
-	      * 关闭当前页面
+	      * 关闭当前页面 
 	      * @params obj 当前页面作业域(传参数时为this)
 	      * @params animate 是否显示动画；值为'true'/'false'
 	      * @params callback 回调函数
@@ -2257,7 +2257,7 @@
 	          'url': url,
 	          'animated' : animate,
 	        }
-	        var vm = obj;
+	        var vm = obj;   
 	        /*navigator.present(params,function(e){
 	            if(typeof callback == 'function')
 	              callback();
@@ -2271,7 +2271,7 @@
 
 	    // Utils.navigate = {
 	    // 	/***
-	    // 	* 打开一个新页面
+	    // 	* 打开一个新页面 
 	    //   * @params obj 当前页面作业域(传参数时为this)
 	    // 	* @params url 页面的地址
 	    // 	* @params animate 是否显示动画；值为'true'/'false'
@@ -2282,14 +2282,14 @@
 	    // 			'url': url,
 	    // 			'animated' : animate,
 	    // 		}
-	    //     var vm = obj;
+	    //     var vm = obj;    
 	    //     vm.$call('navigator','push',params, function () {
 	    //       if(typeof callback == 'function')
 	    //          callback();
 	    //     });
 	    // 	},
 	    // 	/***
-	    // 	* 关闭当前页面
+	    // 	* 关闭当前页面 
 	    //   * @params obj 当前页面作业域(传参数时为this)
 	    // 	* @params animate 是否显示动画；值为'true'/'false'
 	    // 	* @params callback 回调函数
@@ -2316,7 +2316,7 @@
 	    //       'url': url,
 	    //       'animated' : animate,
 	    //     }
-	    //     var vm = obj;
+	    //     var vm = obj;    
 	    //     vm.$call('navigator','present',params, function () {
 	    //       if(typeof callback == 'function')
 	    //          callback();
@@ -2392,7 +2392,7 @@
 	              //console.log("response----"+JSON.stringify(response));
 	              if(!response.ok || response.ok == 0){
 	                modal.toast({
-	                  'message': '网络故障，请稍后再试！',
+	                  'message': '网络故障，请稍后再试！', 
 	                  'duration': 1
 	                });
 	              }else{
@@ -2446,8 +2446,8 @@
 	      var hourC =diffValue/hour;
 	      var minC =diffValue/minute;
 	      if(monthC>12){
-	         var s2 = new Date(v);
-	         result = s2.getFullYear()+"年" + (s2.getMonth()+1)+"月"+s2.getDate()+"日";
+	         var s2 = new Date(v);              
+	         result = s2.getFullYear()+"年" + (s2.getMonth()+1)+"月"+s2.getDate()+"日"; 
 	      }else if(monthC>=1){
 	         result= parseInt(monthC) + "个月前";
 	      }else if(weekC>=1){
@@ -2872,6 +2872,7 @@
 	    data: function () {return {
 	        navBarHeight: 130,
 	        dir: 'yjpt',
+
 	        telphone: '13510530146',
 
 	        pwd: '123456',

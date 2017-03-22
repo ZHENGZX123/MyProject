@@ -1520,7 +1520,9 @@
 	        "right-text"
 	      ],
 	      "style": {
-	        "color": function () {return this.rightItemColor}
+	        "color": "#ffffff",
+	        "padding": 60,
+	        "paddingRight": 20
 	      },
 	      "attr": {
 	        "naviItemPosition": "right",
@@ -1532,18 +1534,26 @@
 	      }
 	    },
 	    {
-	      "type": "image",
+	      "type": "div",
 	      "classList": [
 	        "right-image"
 	      ],
-	      "attr": {
-	        "naviItemPosition": "right",
-	        "src": function () {return this.rightItemSrc}
-	      },
-	      "shown": function () {return this.rightItemSrc},
 	      "events": {
 	        "click": "onclickrightitem"
-	      }
+	      },
+	      "children": [
+	        {
+	          "type": "image",
+	          "classList": [
+	            "right-image2"
+	          ],
+	          "attr": {
+	            "naviItemPosition": "right",
+	            "src": function () {return this.rightItemSrc}
+	          },
+	          "shown": function () {return this.rightItemSrc}
+	        }
+	      ]
 	    },
 	    {
 	      "type": "text",
@@ -1615,12 +1625,12 @@
 	  },
 	  "right-text": {
 	    "position": "absolute",
-	    "bottom": 0,
-	    "right": 32,
+	    "bottom": -30,
+	    "right": 0,
 	    "textAlign": "right",
 	    "fontSize": 32,
 	    "fontFamily": "'Open Sans', sans-serif",
-	    "padding": 30
+	    "padding": 60
 	  },
 	  "left-text": {
 	    "position": "absolute",
@@ -1642,18 +1652,27 @@
 	  "left-image": {
 	    "position": "absolute",
 	    "bottom": 20,
-	    "left": 28,
+	    "left": 20,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
 	  },
-	  "right-image": {
+	  "right-image2": {
 	    "position": "absolute",
 	    "bottom": 20,
 	    "right": 28,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
+	  },
+	  "right-image": {
+	    "position": "absolute",
+	    "bottom": 0,
+	    "right": 0,
+	    "paddingTop": 60,
+	    "paddingBottom": 60,
+	    "paddingRight": 20,
+	    "paddingLeft": 90
 	  }
 	}
 
@@ -2086,8 +2105,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    // dir : 'yjpts',
-	  	dir : 'yjpt',
+	    dir : 'yjpt',
+	  	// dir : 'yjpts',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2101,7 +2120,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	        nativeBase = bundleUrl;
+	          nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -2824,7 +2843,6 @@
 
 
 	            storage.setItem('gradeId', gradeId, function () {});
-	            console.log(gradeId);
 
 	            if (event.QRScan) {
 	                event.QRScan({
@@ -2834,29 +2852,29 @@
 	                        var ssid = res.ssid;
 	                        storage.setItem("SSID", ssid, function () {});
 
-	                        Utils.fetch({
-	                            url: '/app/class/' + classId + '/box',
-	                            data: 'mac=' + res.hCode,
-	                            method: 'POST',
-	                            dataType: 'json',
-	                            success: function success(ret) {
-	                                if (ret.data.StatusCode == '200') {
-	                                    event.teachClass(classId, function (ret) {
-	                                        if (ret.result == '1') {
+	                        event.teachClass(classId, function (ret) {
+	                            if (ret.result == '1') {
+	                                Utils.fetch({
+	                                    url: '/app/class/' + classId + '/box',
+	                                    data: 'mac=' + res.hCode,
+	                                    method: 'POST',
+	                                    dataType: 'json',
+	                                    success: function success(res) {
+	                                        if (res.data.StatusCode == '200') {
 	                                            var url = Utils.setOpenUrl(self.$getConfig(), 'class-calendar');
 	                                            Utils.navigate.push(self, url, 'true');
 	                                        } else {
 	                                            modal.toast({
-	                                                message: '请链接至盒子wifi',
-	                                                duration: '2'
+	                                                message: '绑定失败，请稍后重试'
 	                                            });
 	                                        }
-	                                    });
-	                                } else {
-	                                    modal.toast({
-	                                        message: '绑定失败，请稍后重试'
-	                                    });
-	                                }
+	                                    }
+	                                });
+	                            } else {
+	                                modal.toast({
+	                                    message: '请链接至盒子wifi',
+	                                    duration: '2'
+	                                });
 	                            }
 	                        });
 	                    }

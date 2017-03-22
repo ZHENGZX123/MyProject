@@ -2323,7 +2323,9 @@
 	        "right-text"
 	      ],
 	      "style": {
-	        "color": function () {return this.rightItemColor}
+	        "color": "#ffffff",
+	        "padding": 60,
+	        "paddingRight": 20
 	      },
 	      "attr": {
 	        "naviItemPosition": "right",
@@ -2335,18 +2337,26 @@
 	      }
 	    },
 	    {
-	      "type": "image",
+	      "type": "div",
 	      "classList": [
 	        "right-image"
 	      ],
-	      "attr": {
-	        "naviItemPosition": "right",
-	        "src": function () {return this.rightItemSrc}
-	      },
-	      "shown": function () {return this.rightItemSrc},
 	      "events": {
 	        "click": "onclickrightitem"
-	      }
+	      },
+	      "children": [
+	        {
+	          "type": "image",
+	          "classList": [
+	            "right-image2"
+	          ],
+	          "attr": {
+	            "naviItemPosition": "right",
+	            "src": function () {return this.rightItemSrc}
+	          },
+	          "shown": function () {return this.rightItemSrc}
+	        }
+	      ]
 	    },
 	    {
 	      "type": "text",
@@ -2418,12 +2428,12 @@
 	  },
 	  "right-text": {
 	    "position": "absolute",
-	    "bottom": 0,
-	    "right": 32,
+	    "bottom": -30,
+	    "right": 0,
 	    "textAlign": "right",
 	    "fontSize": 32,
 	    "fontFamily": "'Open Sans', sans-serif",
-	    "padding": 30
+	    "padding": 60
 	  },
 	  "left-text": {
 	    "position": "absolute",
@@ -2445,18 +2455,27 @@
 	  "left-image": {
 	    "position": "absolute",
 	    "bottom": 20,
-	    "left": 28,
+	    "left": 20,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
 	  },
-	  "right-image": {
+	  "right-image2": {
 	    "position": "absolute",
 	    "bottom": 20,
 	    "right": 28,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
+	  },
+	  "right-image": {
+	    "position": "absolute",
+	    "bottom": 0,
+	    "right": 0,
+	    "paddingTop": 60,
+	    "paddingBottom": 60,
+	    "paddingRight": 20,
+	    "paddingLeft": 90
 	  }
 	}
 
@@ -2889,8 +2908,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    // dir : 'yjpts',
-	  	dir : 'yjpt',
+	    dir : 'yjpt',
+	  	// dir : 'yjpts',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2904,7 +2923,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	        nativeBase = bundleUrl;
+	          nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -3504,7 +3523,7 @@
 	                          "classList": [
 	                            "head_img"
 	                          ],
-	                          "shown": function () {return this.named=='其他'},
+	                          "shown": function () {return this.named=='亲戚'},
 	                          "attr": {
 	                            "src": function () {return this.images.otherImg}
 	                          }
@@ -3620,7 +3639,7 @@
 	  },
 	  "menu_list": {
 	    "flex": 1,
-	    "fontSize": 30,
+	    "fontSize": 36,
 	    "color": "#ffffff",
 	    "textAlign": "center",
 	    "padding": 30,
@@ -3838,7 +3857,6 @@
 	        storage.getItem('userProfile', function (e) {
 	            if (e.data) {
 	                e.data = JSON.parse(e.data);
-	                console.log(e.data);
 	                self.childInfo = e.data;
 	                self.userId = e.data.id;
 
@@ -3855,14 +3873,19 @@
 	                        if (res.data.StatusCode == '200') {
 	                            self.studentDetail = res.data.data;
 	                            self.parentList = res.data.data.parents;
+
+	                            self.childInfo.realname = res.data.data.student.realname;
 	                            for (var i in self.parentList) {
 	                                if (!self.parentList[i].avatar) {
-	                                    if (self.parentList[i].named == '爸爸') {
+	                                    if (self.parentList[i].through.relation == '1') {
 	                                        self.parentList[i].avatar = self.images.fatherImg;
-	                                    } else if (self.parentList[i].named == '妈妈') {
+	                                        self.parentList[i].named = '爸爸';
+	                                    } else if (self.parentList[i].through.relation == '2') {
 	                                        self.parentList[i].avatar = self.images.motherImg;
+	                                        self.parentList[i].named = '妈妈';
 	                                    } else {
 	                                        self.parentList[i].avatar = self.images.otherImg;
+	                                        self.parentList[i].named = '亲戚';
 	                                    }
 	                                }
 	                            }
@@ -3877,6 +3900,11 @@
 	                });
 	            }
 	        });
+
+	        var childName = new BroadcastChannel('childNameModify');
+	        childName.onmessage = function (e) {
+	            self.childInfo.realname = e.data;
+	        };
 	    },
 	    methods: {
 	        redirect: function redirect(url) {
@@ -3891,7 +3919,6 @@
 	                cancelTitle: '取消'
 	            }, function (result) {
 	                if (result == '确定') {
-	                    console.log(self.studentDetail);
 	                    Utils.fetch({
 	                        url: '/app/class/' + self.studentDetail.class.id + '/student/' + self.studentDetail.student.id,
 	                        data: '',
@@ -3934,6 +3961,7 @@
 	        },
 	        renameChild: function renameChild(url) {
 	            var self = this;
+	            self.isShow = !self.isShow;
 	            Utils.navigate.push(self, url, 'true');
 	        }
 	    }

@@ -1521,7 +1521,9 @@
 	        "right-text"
 	      ],
 	      "style": {
-	        "color": function () {return this.rightItemColor}
+	        "color": "#ffffff",
+	        "padding": 60,
+	        "paddingRight": 20
 	      },
 	      "attr": {
 	        "naviItemPosition": "right",
@@ -1533,18 +1535,26 @@
 	      }
 	    },
 	    {
-	      "type": "image",
+	      "type": "div",
 	      "classList": [
 	        "right-image"
 	      ],
-	      "attr": {
-	        "naviItemPosition": "right",
-	        "src": function () {return this.rightItemSrc}
-	      },
-	      "shown": function () {return this.rightItemSrc},
 	      "events": {
 	        "click": "onclickrightitem"
-	      }
+	      },
+	      "children": [
+	        {
+	          "type": "image",
+	          "classList": [
+	            "right-image2"
+	          ],
+	          "attr": {
+	            "naviItemPosition": "right",
+	            "src": function () {return this.rightItemSrc}
+	          },
+	          "shown": function () {return this.rightItemSrc}
+	        }
+	      ]
 	    },
 	    {
 	      "type": "text",
@@ -1616,12 +1626,12 @@
 	  },
 	  "right-text": {
 	    "position": "absolute",
-	    "bottom": 0,
-	    "right": 32,
+	    "bottom": -30,
+	    "right": 0,
 	    "textAlign": "right",
 	    "fontSize": 32,
 	    "fontFamily": "'Open Sans', sans-serif",
-	    "padding": 30
+	    "padding": 60
 	  },
 	  "left-text": {
 	    "position": "absolute",
@@ -1643,18 +1653,27 @@
 	  "left-image": {
 	    "position": "absolute",
 	    "bottom": 20,
-	    "left": 28,
+	    "left": 20,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
 	  },
-	  "right-image": {
+	  "right-image2": {
 	    "position": "absolute",
 	    "bottom": 20,
 	    "right": 28,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
+	  },
+	  "right-image": {
+	    "position": "absolute",
+	    "bottom": 0,
+	    "right": 0,
+	    "paddingTop": 60,
+	    "paddingBottom": 60,
+	    "paddingRight": 20,
+	    "paddingLeft": 90
 	  }
 	}
 
@@ -2087,8 +2106,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    // dir : 'yjpts',
-	  	dir : 'yjpt',
+	    dir : 'yjpt',
+	  	// dir : 'yjpts',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2102,7 +2121,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	        nativeBase = bundleUrl;
+	          nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -2703,256 +2722,214 @@
 /***/ function(module, exports) {
 
 	module.exports = {
-	  "type": "scroller",
-	  "classList": [
-	    "content"
-	  ],
+	  "type": "div",
+	  "style": {
+	    "backgroundColor": "#f4f1f1"
+	  },
 	  "children": [
 	    {
-	      "type": "div",
+	      "type": "image",
 	      "style": {
-	        "backgroundColor": "#f4f1f1"
+	        "width": 750,
+	        "height": 480
+	      },
+	      "attr": {
+	        "src": function () {return this.lb}
+	      }
+	    },
+	    {
+	      "type": "div",
+	      "classList": [
+	        "item"
+	      ],
+	      "style": {
+	        "backgroundColor": "#ffffff"
 	      },
 	      "children": [
 	        {
-	          "type": "image",
+	          "type": "img-item-inside",
+	          "attr": {
+	            "menuList": function () {return this.menuList}
+	          }
+	        }
+	      ]
+	    },
+	    {
+	      "type": "div",
+	      "classList": [
+	        "nav_title"
+	      ],
+	      "children": [
+	        {
+	          "type": "text",
+	          "classList": [
+	            "title_name"
+	          ],
+	          "attr": {
+	            "value": "班级群"
+	          }
+	        }
+	      ]
+	    },
+	    {
+	      "type": "div",
+	      "style": {
+	        "marginBottom": 20,
+	        "zIndex": 100,
+	        "position": "relative",
+	        "backgroundColor": "#ffffff"
+	      },
+	      "children": [
+	        {
+	          "type": "chattable",
 	          "style": {
 	            "width": 750,
 	            "height": 480
-	          },
-	          "attr": {
-	            "src": function () {return this.lb}
 	          }
+	        }
+	      ]
+	    },
+	    {
+	      "type": "div",
+	      "style": {
+	        "position": "fixed",
+	        "right": 10,
+	        "top": 30
+	      },
+	      "children": [
+	        {
+	          "type": "div",
+	          "style": {
+	            "paddingLeft": 50,
+	            "paddingRight": 10,
+	            "paddingTop": 30,
+	            "paddingBottom": 30
+	          },
+	          "events": {
+	            "click": "toggleMenu"
+	          },
+	          "children": [
+	            {
+	              "type": "image",
+	              "attr": {
+	                "src": function () {return this.picAdd}
+	              },
+	              "classList": [
+	                "more"
+	              ]
+	            }
+	          ]
 	        },
 	        {
 	          "type": "div",
 	          "classList": [
-	            "dwPic"
+	            "pop_menu"
 	          ],
+	          "shown": function () {return this.isShowMenu},
+	          "style": {
+	            "zIndex": 999999
+	          },
 	          "children": [
 	            {
 	              "type": "div",
-	              "children": [
-	                {
-	                  "type": "image",
-	                  "style": {
-	                    "width": 247,
-	                    "height": 247
-	                  },
-	                  "attr": {
-	                    "src": function () {return this.bjUrl}
-	                  }
-	                }
-	              ]
-	            },
-	            {
-	              "type": "div",
 	              "classList": [
-	                "pic_bj"
+	                "menu"
 	              ],
 	              "children": [
 	                {
-	                  "type": "image",
+	                  "type": "text",
 	                  "classList": [
-	                    "pic_Photo"
+	                    "menu_list"
 	                  ],
-	                  "attr": {
-	                    "src": function () {return this.portrait}
-	                  },
 	                  "events": {
-	                    "click": function ($event) {this.goProfile(this.myUrl,$event)}
-	                  }
-	                }
-	              ]
-	            }
-	          ]
-	        },
-	        {
-	          "type": "div",
-	          "classList": [
-	            "item"
-	          ],
-	          "style": {
-	            "backgroundColor": "#ffffff"
-	          },
-	          "children": [
-	            {
-	              "type": "img-item-inside",
-	              "attr": {
-	                "menuList": function () {return this.menuList}
-	              }
-	            }
-	          ]
-	        },
-	        {
-	          "type": "div",
-	          "classList": [
-	            "nav_title"
-	          ],
-	          "children": [
-	            {
-	              "type": "text",
-	              "classList": [
-	                "title_name"
-	              ],
-	              "attr": {
-	                "value": "班级群"
-	              }
-	            }
-	          ]
-	        },
-	        {
-	          "type": "div",
-	          "style": {
-	            "marginBottom": 20,
-	            "zIndex": 100,
-	            "position": "relative",
-	            "backgroundColor": "#ffffff"
-	          }
-	        },
-	        {
-	          "type": "div",
-	          "style": {
-	            "position": "fixed",
-	            "right": 10,
-	            "top": 30
-	          },
-	          "children": [
-	            {
-	              "type": "div",
-	              "style": {
-	                "paddingLeft": 50,
-	                "paddingRight": 10,
-	                "paddingTop": 30,
-	                "paddingBottom": 30
-	              },
-	              "events": {
-	                "click": "toggleMenu"
-	              },
-	              "children": [
-	                {
-	                  "type": "image",
-	                  "attr": {
-	                    "src": function () {return this.picAdd}
+	                    "click": function ($event) {this.createGroup(this.chooseClass,$event)}
 	                  },
-	                  "classList": [
-	                    "more"
-	                  ]
-	                }
-	              ]
-	            },
-	            {
-	              "type": "div",
-	              "classList": [
-	                "pop_menu"
-	              ],
-	              "shown": function () {return this.isShowMenu},
-	              "style": {
-	                "zIndex": 999999
-	              },
-	              "children": [
-	                {
-	                  "type": "div",
-	                  "classList": [
-	                    "menu"
-	                  ],
-	                  "children": [
-	                    {
-	                      "type": "text",
-	                      "classList": [
-	                        "menu_list"
-	                      ],
-	                      "events": {
-	                        "click": function ($event) {this.createGroup(this.chooseClass,$event)}
-	                      },
-	                      "attr": {
-	                        "value": "发起群聊"
-	                      }
-	                    },
-	                    {
-	                      "type": "text",
-	                      "classList": [
-	                        "menu_list"
-	                      ],
-	                      "events": {
-	                        "click": function ($event) {this.joinClass($event)}
-	                      },
-	                      "attr": {
-	                        "value": "扫码加班"
-	                      }
-	                    }
-	                  ]
-	                }
-	              ]
-	            }
-	          ]
-	        },
-	        {
-	          "type": "div",
-	          "classList": [
-	            "class_list"
-	          ],
-	          "shown": function () {return this.isShowClass=='1'},
-	          "children": [
-	            {
-	              "type": "div",
-	              "classList": [
-	                "list_wrap"
-	              ],
-	              "children": [
-	                {
-	                  "type": "div",
-	                  "classList": [
-	                    "list_title"
-	                  ],
-	                  "children": [
-	                    {
-	                      "type": "text",
-	                      "classList": [
-	                        "title"
-	                      ],
-	                      "attr": {
-	                        "value": "请选择班级"
-	                      }
-	                    },
-	                    {
-	                      "type": "text",
-	                      "classList": [
-	                        "title"
-	                      ],
-	                      "events": {
-	                        "click": "toggleClass"
-	                      },
-	                      "attr": {
-	                        "value": "取消"
-	                      }
-	                    }
-	                  ]
+	                  "attr": {
+	                    "value": "发起群聊"
+	                  }
 	                },
 	                {
-	                  "type": "list",
-	                  "style": {
-	                    "height": 400
+	                  "type": "text",
+	                  "classList": [
+	                    "menu_list"
+	                  ],
+	                  "events": {
+	                    "click": function ($event) {this.joinClass($event)}
 	                  },
+	                  "attr": {
+	                    "value": "扫码加班"
+	                  }
+	                }
+	              ]
+	            }
+	          ]
+	        }
+	      ]
+	    },
+	    {
+	      "type": "div",
+	      "classList": [
+	        "class_list"
+	      ],
+	      "shown": function () {return this.isShowClass=='1'},
+	      "children": [
+	        {
+	          "type": "div",
+	          "classList": [
+	            "list_wrap"
+	          ],
+	          "children": [
+	            {
+	              "type": "div",
+	              "classList": [
+	                "list_title"
+	              ],
+	              "children": [
+	                {
+	                  "type": "text",
+	                  "classList": [
+	                    "title"
+	                  ],
+	                  "attr": {
+	                    "value": "请选择班级"
+	                  }
+	                },
+	                {
+	                  "type": "text",
+	                  "classList": [
+	                    "title"
+	                  ],
+	                  "events": {
+	                    "click": "toggleClass"
+	                  },
+	                  "attr": {
+	                    "value": "取消"
+	                  }
+	                }
+	              ]
+	            },
+	            {
+	              "type": "list",
+	              "style": {
+	                "height": 400
+	              },
+	              "children": [
+	                {
+	                  "type": "cell",
+	                  "append": "tree",
 	                  "children": [
 	                    {
-	                      "type": "cell",
-	                      "append": "tree",
-	                      "children": [
-	                        {
-	                          "type": "text",
-	                          "classList": [
-	                            "list_txt"
-	                          ],
-	                          "repeat": function () {return this.classGroup},
-	                          "events": {
-	                            "click": function ($event) {this.gotoPage(this.id,$event)}
-	                          },
-	                          "attr": {
-	                            "value": function () {return this.name}
-	                          }
-	                        }
-	                      ]
+	                      "type": "text",
+	                      "classList": [
+	                        "list_txt"
+	                      ],
+	                      "repeat": function () {return this.classGroup},
+	                      "events": {
+	                        "click": function ($event) {this.gotoPage(this.id,$event)}
+	                      },
+	                      "attr": {
+	                        "value": function () {return this.name}
+	                      }
 	                    }
 	                  ]
 	                }
@@ -3072,8 +3049,7 @@
 	    "justifyContent": "space-between",
 	    "paddingRight": 20,
 	    "zIndex": 999,
-	    "overflow": "visible",
-	    "position": "relative"
+	    "overflow": "visible"
 	  },
 	  "title_name": {
 	    "color": "#000000",
@@ -3160,7 +3136,8 @@
 	        isShowClass: '0',
 	        userId: '',
 	        requesToken: '',
-	        earlyEduUrl: 'early-edu'
+	        earlyEduUrl: 'early-edu',
+	        test: ''
 	    }},
 	    created: function created() {
 	        this.lb = Utils.ip + Utils.dir + '/' + 'yjpt/images/banner.png';
@@ -3204,11 +3181,19 @@
 	            self.userId = e.data.id;
 	        });
 
-	        globalEvent.addEventListener("sendUserInfoToJs", function (e) {
+	        Utils.fetch({
+	            url: '/app/class',
+	            method: 'get',
+	            dataType: 'json',
+	            success: function success(ret) {
+	                if (ret.data.StatusCode == '200') {
+	                    self.classGroup = ret.data.data;
+	                }
+	            }
+	        });
 
-	            modal.alert({
-	                message: e
-	            }, function () {});
+	        storage.getItem('groupList', function (e) {
+	            self.test = e.data;
 	        });
 
 	        self.$on('isShowClass', function (e) {

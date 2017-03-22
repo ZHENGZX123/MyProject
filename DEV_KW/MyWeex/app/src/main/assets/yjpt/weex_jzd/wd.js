@@ -1520,7 +1520,9 @@
 	        "right-text"
 	      ],
 	      "style": {
-	        "color": function () {return this.rightItemColor}
+	        "color": "#ffffff",
+	        "padding": 60,
+	        "paddingRight": 20
 	      },
 	      "attr": {
 	        "naviItemPosition": "right",
@@ -1532,18 +1534,26 @@
 	      }
 	    },
 	    {
-	      "type": "image",
+	      "type": "div",
 	      "classList": [
 	        "right-image"
 	      ],
-	      "attr": {
-	        "naviItemPosition": "right",
-	        "src": function () {return this.rightItemSrc}
-	      },
-	      "shown": function () {return this.rightItemSrc},
 	      "events": {
 	        "click": "onclickrightitem"
-	      }
+	      },
+	      "children": [
+	        {
+	          "type": "image",
+	          "classList": [
+	            "right-image2"
+	          ],
+	          "attr": {
+	            "naviItemPosition": "right",
+	            "src": function () {return this.rightItemSrc}
+	          },
+	          "shown": function () {return this.rightItemSrc}
+	        }
+	      ]
 	    },
 	    {
 	      "type": "text",
@@ -1615,12 +1625,12 @@
 	  },
 	  "right-text": {
 	    "position": "absolute",
-	    "bottom": 0,
-	    "right": 32,
+	    "bottom": -30,
+	    "right": 0,
 	    "textAlign": "right",
 	    "fontSize": 32,
 	    "fontFamily": "'Open Sans', sans-serif",
-	    "padding": 30
+	    "padding": 60
 	  },
 	  "left-text": {
 	    "position": "absolute",
@@ -1642,18 +1652,27 @@
 	  "left-image": {
 	    "position": "absolute",
 	    "bottom": 20,
-	    "left": 28,
+	    "left": 20,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
 	  },
-	  "right-image": {
+	  "right-image2": {
 	    "position": "absolute",
 	    "bottom": 20,
 	    "right": 28,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
+	  },
+	  "right-image": {
+	    "position": "absolute",
+	    "bottom": 0,
+	    "right": 0,
+	    "paddingTop": 60,
+	    "paddingBottom": 60,
+	    "paddingRight": 20,
+	    "paddingLeft": 90
 	  }
 	}
 
@@ -2086,8 +2105,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    // dir : 'yjpts',
-	  	dir : 'yjpt',
+	    dir : 'yjpt',
+	  	// dir : 'yjpts',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2101,7 +2120,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	        nativeBase = bundleUrl;
+	          nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -2927,6 +2946,7 @@
 	    data: function () {return {
 	        navBarHeight: 130,
 	        mineUrl: 'wo',
+	        doneRefresh: 'none',
 	        basicDataList: [{
 	            titleName: '我',
 	            pic_thumb: 'yjpt/images/photo_06.jpeg',
@@ -2988,6 +3008,7 @@
 
 	        storage.getItem('userId', function (e) {
 	            self.userId = e.data;
+
 	            Utils.fetch({
 	                url: '/app/user?userId=' + e.data,
 	                method: 'get',
@@ -3017,6 +3038,28 @@
 	            console.log(url);
 	            var self = this;
 	            Utils.navigate.push(self, url, 'true');
+	        },
+	        handleRefresh: function handleRefresh() {
+	            var self = this;
+	            self.doneRefresh = 'flex';
+
+	            Utils.fetch({
+	                url: '/app/class',
+	                method: 'get',
+	                dataType: 'json',
+	                success: function success(ret) {
+	                    if (ret.data.StatusCode == '200') {
+	                        self.myClass = ret.data.data;
+	                        self.doneRefresh = 'none';
+	                    } else {
+	                        self.doneRefresh = 'none';
+	                        modal.toast({
+	                            message: '获取班级失败',
+	                            duration: '1'
+	                        });
+	                    }
+	                }
+	            });
 	        }
 	    }
 

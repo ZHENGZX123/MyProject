@@ -1520,7 +1520,9 @@
 	        "right-text"
 	      ],
 	      "style": {
-	        "color": function () {return this.rightItemColor}
+	        "color": "#ffffff",
+	        "padding": 60,
+	        "paddingRight": 20
 	      },
 	      "attr": {
 	        "naviItemPosition": "right",
@@ -1532,18 +1534,26 @@
 	      }
 	    },
 	    {
-	      "type": "image",
+	      "type": "div",
 	      "classList": [
 	        "right-image"
 	      ],
-	      "attr": {
-	        "naviItemPosition": "right",
-	        "src": function () {return this.rightItemSrc}
-	      },
-	      "shown": function () {return this.rightItemSrc},
 	      "events": {
 	        "click": "onclickrightitem"
-	      }
+	      },
+	      "children": [
+	        {
+	          "type": "image",
+	          "classList": [
+	            "right-image2"
+	          ],
+	          "attr": {
+	            "naviItemPosition": "right",
+	            "src": function () {return this.rightItemSrc}
+	          },
+	          "shown": function () {return this.rightItemSrc}
+	        }
+	      ]
 	    },
 	    {
 	      "type": "text",
@@ -1615,12 +1625,12 @@
 	  },
 	  "right-text": {
 	    "position": "absolute",
-	    "bottom": 0,
-	    "right": 32,
+	    "bottom": -30,
+	    "right": 0,
 	    "textAlign": "right",
 	    "fontSize": 32,
 	    "fontFamily": "'Open Sans', sans-serif",
-	    "padding": 30
+	    "padding": 60
 	  },
 	  "left-text": {
 	    "position": "absolute",
@@ -1642,18 +1652,27 @@
 	  "left-image": {
 	    "position": "absolute",
 	    "bottom": 20,
-	    "left": 28,
+	    "left": 20,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
 	  },
-	  "right-image": {
+	  "right-image2": {
 	    "position": "absolute",
 	    "bottom": 20,
 	    "right": 28,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
+	  },
+	  "right-image": {
+	    "position": "absolute",
+	    "bottom": 0,
+	    "right": 0,
+	    "paddingTop": 60,
+	    "paddingBottom": 60,
+	    "paddingRight": 20,
+	    "paddingLeft": 90
 	  }
 	}
 
@@ -2086,8 +2105,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    // dir : 'yjpts',
-	  	dir : 'yjpt',
+	    dir : 'yjpt',
+	  	// dir : 'yjpts',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2101,7 +2120,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	        nativeBase = bundleUrl;
+	          nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -2669,7 +2688,8 @@
 	            selectRadio: 'yjpt/images/select_radio2.png'
 	        },
 	        gender: [{ sex: '男', status: '', type: '1' }, { sex: '女', status: '', type: '2' }],
-	        userSex: 0
+	        userSex: 0,
+	        userId: ''
 	    }},
 	    created: function created() {
 	        this.$on('naviBar.leftItem.click', function (e) {
@@ -2679,6 +2699,7 @@
 	        var self = this;
 
 	        storage.getItem('userId', function (e) {
+	            self.userId = e.data;
 	            Utils.fetch({
 	                url: '/app/user?userId=' + e.data,
 	                method: 'get',
@@ -2702,7 +2723,7 @@
 	        this.$on('naviBar.rightItem.click', function (e) {
 	            Utils.fetch({
 	                url: '/app/user',
-	                data: 'userId=' + userId + '&gender=' + self.userSex,
+	                data: 'userId=' + self.userId + '&gender=' + self.userSex,
 	                type: 'json',
 	                method: 'POST',
 	                success: function success(ret) {
@@ -2714,9 +2735,10 @@
 	                            duration: '1'
 	                        });
 
-	                        setTimeout(function () {
-	                            var url = Utils.setOpenUrl(self.$getConfig(), 'index');
+	                        var gender = new BroadcastChannel('genderModify');
+	                        gender.postMessage(self.userSex);
 
+	                        setTimeout(function () {
 	                            Utils.navigate.pop(self, 'true');
 	                        }, 1000);
 	                    } else {

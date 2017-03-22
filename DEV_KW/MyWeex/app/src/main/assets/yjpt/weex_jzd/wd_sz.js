@@ -1520,7 +1520,9 @@
 	        "right-text"
 	      ],
 	      "style": {
-	        "color": function () {return this.rightItemColor}
+	        "color": "#ffffff",
+	        "padding": 60,
+	        "paddingRight": 20
 	      },
 	      "attr": {
 	        "naviItemPosition": "right",
@@ -1532,18 +1534,26 @@
 	      }
 	    },
 	    {
-	      "type": "image",
+	      "type": "div",
 	      "classList": [
 	        "right-image"
 	      ],
-	      "attr": {
-	        "naviItemPosition": "right",
-	        "src": function () {return this.rightItemSrc}
-	      },
-	      "shown": function () {return this.rightItemSrc},
 	      "events": {
 	        "click": "onclickrightitem"
-	      }
+	      },
+	      "children": [
+	        {
+	          "type": "image",
+	          "classList": [
+	            "right-image2"
+	          ],
+	          "attr": {
+	            "naviItemPosition": "right",
+	            "src": function () {return this.rightItemSrc}
+	          },
+	          "shown": function () {return this.rightItemSrc}
+	        }
+	      ]
 	    },
 	    {
 	      "type": "text",
@@ -1615,12 +1625,12 @@
 	  },
 	  "right-text": {
 	    "position": "absolute",
-	    "bottom": 0,
-	    "right": 32,
+	    "bottom": -30,
+	    "right": 0,
 	    "textAlign": "right",
 	    "fontSize": 32,
 	    "fontFamily": "'Open Sans', sans-serif",
-	    "padding": 30
+	    "padding": 60
 	  },
 	  "left-text": {
 	    "position": "absolute",
@@ -1642,18 +1652,27 @@
 	  "left-image": {
 	    "position": "absolute",
 	    "bottom": 20,
-	    "left": 28,
+	    "left": 20,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
 	  },
-	  "right-image": {
+	  "right-image2": {
 	    "position": "absolute",
 	    "bottom": 20,
 	    "right": 28,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
+	  },
+	  "right-image": {
+	    "position": "absolute",
+	    "bottom": 0,
+	    "right": 0,
+	    "paddingTop": 60,
+	    "paddingBottom": 60,
+	    "paddingRight": 20,
+	    "paddingLeft": 90
 	  }
 	}
 
@@ -2086,8 +2105,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    // dir : 'yjpts',
-	  	dir : 'yjpt',
+	    dir : 'yjpt',
+	  	// dir : 'yjpts',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2101,7 +2120,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	        nativeBase = bundleUrl;
+	          nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -2833,7 +2852,8 @@
 	var Utils = __webpack_require__(129);
 	var modal = __weex_require__('@weex-module/modal');
 	var storage = __weex_require__('@weex-module/storage');
-		var SJevent = __weex_require__('@weex-module/SJevent');
+	var SJevent = __weex_require__('@weex-module/SJevent');
+
 	module.exports = {
 	  data: function () {return {
 	    navBarHeight: 130,
@@ -2843,8 +2863,8 @@
 	    rightArrow: ''
 	  }},
 	  created: function created() {
-	    this.headLeft = Utils.ip + 'yjpt/images/id_right_bg.png';
-	    this.rightArrow = Utils.ip + 'yjpt/images/arrows_right.png';
+	    this.headLeft = Utils.ip + Utils.dir + '/' + 'yjpt/images/id_right_bg.png';
+	    this.rightArrow = Utils.ip + Utils.dir + '/' + 'yjpt/images/arrows_right.png';
 	    this.$on('naviBar.leftItem.click', function (e) {
 	      Utils.navigate.pop(this, 'true');
 	    });
@@ -2870,20 +2890,13 @@
 	        cancelTitle: '取消'
 	      }, function (res) {
 	        if (res == '确定') {
-	          storage.getAllKeys(function (e) {
-	            for (var i in e.data) {
-	              storage.removeItem(e.data[i], function (e) {});
-	            }
-	          });
-                if (SJevent.logoutSuccess) {
-                 SJevent.logoutSuccess(url);
-	               } else {
-	          var url = Utils.setOpenUrl(self.$getConfig(), 'login');
-	                 }
+	          if (SJevent.logoutSuccess) {
+	            var url = Utils.setOpenUrl(self.$getConfig(), 'login');
+	            SJevent.logoutSuccess(url);
+	          }
 	        }
 	      });
 	    }
-
 	  }
 
 	};}
