@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">TestMqtt</string>
+
+
+    <string name="mqttserver.tcp.host">www.yuertong.com</string>
+    <string name="mqttserver.tcp.port">1883</string>
+    <string name="mqttclient.connect.id">KwIMC</string>
+    <string name="mqttclient.connect.username">admin</string>
+    <string name="mqttclient.connect.passwd">password</string>
+    <string name="mqttclient.subscribe.topics">pahodemo,$SYS</string>
+
+    
+</resources>
