@@ -1,7 +1,6 @@
 package com.zk.myweex.extend.module;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -100,10 +99,6 @@ public class MyHttpCache extends WXModule {
         } else {
             callback.invoke(temp.result);
         }
-    }
-
-    private void toast(String txt) {
-        Toast.makeText(mWXSDKInstance.getContext(), txt, Toast.LENGTH_SHORT).show();
     }
 
 }

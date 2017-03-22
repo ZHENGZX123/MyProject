@@ -7,8 +7,6 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
@@ -27,6 +25,9 @@ import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.UploadUtil;
 import com.zk.myweex.utils.Utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,8 +36,12 @@ import java.util.Map;
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Package;
 import cn.kiway.baas.sdk.model.service.Service;
+import cn.kwim.mqttcilent.mqttclient.PushService;
 import io.realm.Realm;
 import io.realm.RealmResults;
+
+import static cn.kwim.mqttcilent.LoginActivity.PWD;
+import static cn.kwim.mqttcilent.LoginActivity.USERNAME;
 
 
 public class SJEventModule extends WXModule {
@@ -127,54 +132,6 @@ public class SJEventModule extends WXModule {
         mWXSDKInstance.getContext().startActivity(intent);
     }
 
-
-    @JSMethod(uiThread = true)
-    public void getGrid1(JSCallback callback) {
-        JSONArray a = new JSONArray();
-        JSONObject o1 = new JSONObject();
-        o1.put("title", "function1");
-        o1.put("src", "https://img.alicdn.com/tps/i2/TB1CpD7IXXXXXbSXXXXUAkPJpXX-87-87.png");
-        o1.put("path", "function1/index.js");
-        JSONObject o2 = new JSONObject();
-        o2.put("title", "function2");
-        o2.put("src", "https://img.alicdn.com/tps/i2/TB1CpD7IXXXXXbSXXXXUAkPJpXX-87-87.png");
-        o2.put("path", "function2/index.js");
-        JSONObject o3 = new JSONObject();
-        o3.put("title", "function3");
-        o3.put("src", "https://img.alicdn.com/tps/i2/TB1CpD7IXXXXXbSXXXXUAkPJpXX-87-87.png");
-        o3.put("path", "function3/index.js");
-        a.add(o1);
-        a.add(o2);
-        a.add(o3);
-        Log.d("test", "a.toString() = " + a.toString());
-        callback.invoke(a.toString());
-
-        //根据tab名字，查找本机已经下载的function包
-    }
-
-    @JSMethod(uiThread = true)
-    public void getGrid2(String zipName, JSCallback callback) {
-        JSONArray a = new JSONArray();
-        JSONObject o1 = new JSONObject();
-        o1.put("title", "function4");
-        o1.put("src", "https://img.alicdn.com/tps/i2/TB1CpD7IXXXXXbSXXXXUAkPJpXX-87-87.png");
-        o1.put("path", "function4/index.js");
-        JSONObject o2 = new JSONObject();
-        o2.put("title", "function5");
-        o2.put("src", "https://img.alicdn.com/tps/i2/TB1CpD7IXXXXXbSXXXXUAkPJpXX-87-87.png");
-        o2.put("path", "function5/index.js");
-        JSONObject o3 = new JSONObject();
-        o3.put("title", "function6");
-        o3.put("src", "https://img.alicdn.com/tps/i2/TB1CpD7IXXXXXbSXXXXUAkPJpXX-87-87.png");
-        o3.put("path", "function6/index.js");
-        a.add(o1);
-        a.add(o2);
-        a.add(o3);
-        Log.d("test", "a.toString() = " + a.toString());
-        callback.invoke(a.toString());
-    }
-
-
     @JSMethod(uiThread = true)
     public void sendEvent(JSCallback callback) {
         Log.d("test", "module id = " + mWXSDKInstance.getInstanceId());
@@ -200,11 +157,21 @@ public class SJEventModule extends WXModule {
         Log.d("test", "loginSuccess url = " + url);
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
 
+        //{"pageUrl":"file://assets/yjpt/weex_jzd/index.js","userPwd":"123456","userName":"13510530146","jsessionid":"7BAB1B417FDF277FDA96692AC2AFF535","userType":"1"}
 
-//        Intent intentService = new Intent(this, PushService.class);
-//        intentService.putExtra(USERNAME, userName);
-//        intentService.putExtra(PWD,passWord);
-//        startService(intentService);
+
+        try {
+            String userName = new JSONObject(url).getString("userName");
+            String userPwd = new JSONObject(url).getString("userPwd");
+
+            Intent intentService = new Intent(mWXSDKInstance.getContext(), PushService.class);
+            intentService.putExtra(USERNAME, userName);
+            intentService.putExtra(PWD, userPwd);
+            mWXSDKInstance.getContext().startService(intentService);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
         ((Activity) mWXSDKInstance.getContext()).finish();
