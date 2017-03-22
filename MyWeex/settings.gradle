@@ -1,3 +1,3 @@
-include ':app', ':sdk', ':ImagePicker', ':IM',':zxing'
+include ':app', ':sdk', ':ImagePicker',':zxing'
 
 
