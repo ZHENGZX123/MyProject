@@ -21,9 +21,9 @@ import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXVContainer;
 import com.zk.myweex.R;
-import com.zk.myweex.activity.EmptyActivity;
 
 import java.util.ArrayList;
+
 
 public class KWListView extends WXComponent<ListView> {
 
@@ -45,8 +45,8 @@ public class KWListView extends WXComponent<ListView> {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d("test", "onItemClick");
 
-                //跳到聊天页面。。。
-//                getContext().startActivity(new Intent(getContext(), EmptyActivity.class));
+
+//                getContext().startActivity(new Intent(getContext(), SplashActivity.class));
             }
         });
 
