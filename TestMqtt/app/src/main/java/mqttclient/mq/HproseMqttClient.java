@@ -13,12 +13,10 @@ import hprose.common.HproseContext;
 import hprose.common.HproseFilter;
 import hprose.common.InvokeSettings;
 import hprose.io.ByteBufferStream;
-import hprose.io.HproseMode;
 import hprose.util.concurrent.Promise;
 import hprose.util.concurrent.Timer;
 
 interface ILoginHprose {
-    //public String addsessionuser(String user,String passwd,String clientid);
     public String addsessionuser(String user, String passwd, String clientid, String utype);
 }
 
@@ -72,9 +70,6 @@ public class HproseMqttClient extends HproseClient {
     private String topicName;
     private String token = "";
 
-    public String getToken() {
-        return this.token;
-    }
 
     final class Request {
         public final ByteBuffer buffer;
@@ -85,41 +80,6 @@ public class HproseMqttClient extends HproseClient {
             this.buffer = buffer;
             this.timeout = timeout;
         }
-    }
-
-    public HproseMqttClient() {
-        super();
-        cli = new KwMqttCli(100000000 + new Random().nextInt(100000000));
-        topicName = "mqttRpcs";
-        this.setFilter(new ClientSessionFilter());
-    }
-
-    public HproseMqttClient(String topicname) {
-        super();
-        cli = new KwMqttCli(100000000 + new Random().nextInt(100000000));
-        topicName = topicname;
-        this.setFilter(new ClientSessionFilter());
-    }
-
-    public HproseMqttClient(String topicname, String username, String passwd) {
-        super();
-        cli = new KwMqttCli(100000000 + new Random().nextInt(100000000), username, passwd);
-        topicName = topicname;
-        cli.subscribe(topicname + "/" + username + "/#");
-        this.setFilter(new ClientSessionFilter());
-        ILoginHprose login = this.useService(ILoginHprose.class);
-        this.token = login.addsessionuser(username, passwd, "", cli.getId());
-    }
-
-    public HproseMqttClient(String topicname, String username, String passwd, TopicProcessService lcbk) {
-        super();
-        cli = new KwMqttCli(100000000 + new Random().nextInt(100000000), username, passwd, lcbk);
-        topicName = topicname;
-        cli.subscribe(topicname + "/" + username + "/#");
-        this.setFilter(new ClientSessionFilter());
-        ILoginHprose login = this.useService(ILoginHprose.class);
-        this.token = login.addsessionuser(username, passwd, "", cli.getId());
-        if (this.token.equals("")) cli.getLoginerrCbk().process(topicName, null, "401");
     }
 
     public HproseMqttClient(String topicname, String username, String passwd, String utype, TopicProcessService lcbk) {
@@ -133,14 +93,6 @@ public class HproseMqttClient extends HproseClient {
         if (this.token.equals("")) cli.getLoginerrCbk().process(topicName, null, "401");
     }
 
-    public HproseMqttClient(HproseMode mode) {
-        super(mode);
-        this.setFilter(new ClientSessionFilter());
-    }
-
-    public void registerNotice(TopicProcessService cbk) {
-        RegTopicProcSrv.INSTANCE.subscribe(topicName + "/" + cli.getUserName() + "/notice", cbk);
-    }
 
     public void register(String tag, TopicProcessService cbk) {
         RegTopicProcSrv.INSTANCE.subscribe(topicName + "/" + cli.getUserName() + "/" + tag, cbk);
@@ -150,14 +102,6 @@ public class HproseMqttClient extends HproseClient {
         return cli.getId();
     }
 
-
-    public int getRecode() {
-        return cli.getRecode();
-    }
-
-    public String getRemsg() {
-        return cli.getRemsg();
-    }
 
     @Override
     public final void close() {

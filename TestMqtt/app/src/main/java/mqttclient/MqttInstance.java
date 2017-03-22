@@ -37,6 +37,7 @@ public class MqttInstance {
     }
 
     private MqttInstance() {
+        
     }
 
     //如果登陆不成功 请再次登陆
