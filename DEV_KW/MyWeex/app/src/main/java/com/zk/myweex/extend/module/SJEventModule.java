@@ -36,12 +36,8 @@ import java.util.Map;
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Package;
 import cn.kiway.baas.sdk.model.service.Service;
-import cn.kwim.mqttcilent.mqttclient.PushService;
 import io.realm.Realm;
 import io.realm.RealmResults;
-
-import static cn.kwim.mqttcilent.LoginActivity.PWD;
-import static cn.kwim.mqttcilent.LoginActivity.USERNAME;
 
 
 public class SJEventModule extends WXModule {
@@ -163,12 +159,8 @@ public class SJEventModule extends WXModule {
         try {
             String userName = new JSONObject(url).getString("userName");
             String userPwd = new JSONObject(url).getString("userPwd");
-
-            Intent intentService = new Intent(mWXSDKInstance.getContext(), PushService.class);
-            intentService.putExtra(USERNAME, userName);
-            intentService.putExtra(PWD, userPwd);
-            mWXSDKInstance.getContext().startService(intentService);
-
+            mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("userName", userName).commit();
+            mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("userPwd", userPwd).commit();
         } catch (JSONException e) {
             e.printStackTrace();
         }

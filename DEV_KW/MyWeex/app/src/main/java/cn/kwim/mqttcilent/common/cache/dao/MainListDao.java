@@ -45,9 +45,9 @@ public class MainListDao extends Dao {
                 mainList.setMsg(map.get("ug_notice").toString());
                 mainList.setLogo(map.get("ug_icon").toString());
                 mainList.setUg_type(map.get("ug_type").toString());
-                if(map.get("ug_classid")!=null){
-                    mainList.setClassId(map.get("ug_classid").toString().replace(".0",""));
-                }else{
+                if (map.get("ug_classid") != null) {
+                    mainList.setClassId(map.get("ug_classid").toString().replace(".0", ""));
+                } else {
                     mainList.setClassId("-1");
                 }
                 mainList.setSendName(" ");
@@ -67,7 +67,7 @@ public class MainListDao extends Dao {
      * 保存一个班级群
      */
     public static void saveGroupList(String json) {
-        Log.i("123456",json);
+        Log.i("123456", json);
         MainList mainList = new MainList();
         Converse converse = new Gson().fromJson(json, Converse.class);
         if (converse.getStatusCode().equals("200")) {
@@ -76,9 +76,9 @@ public class MainListDao extends Dao {
             mainList.setUserId(Global.getInstance().getUserId() + "");
             mainList.setId(map.get("groupid").toString().replace(".0", ""));
             mainList.setName(map.get("groupname").toString());
-            if(map.get("ug_classid")!=null){
-                mainList.setClassId(map.get("ug_classid").toString().replace(".0",""));
-            }else{
+            if (map.get("ug_classid") != null) {
+                mainList.setClassId(map.get("ug_classid").toString().replace(".0", ""));
+            } else {
                 mainList.setClassId("-1");
             }
             mainList.setUg_type("1");
@@ -106,29 +106,31 @@ public class MainListDao extends Dao {
             RealmResults<MainList> results = realm.where(MainList.class).equalTo("userId", Global.getInstance()
                     .getUserId())
                     .findAll().sort("time", Sort.DESCENDING);
+            Log.d("test", results.toString());
             return results;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
 
-        // Log.i("获得群列表", results.toString());
     }
+
     /**
      * 获得群
      */
-    public static RealmResults<MainList> getMainZeroList(){
+    public static RealmResults<MainList> getMainZeroList() {
         try {
             Realm realm = getRealm();
-            RealmResults<MainList> results = realm.where(MainList.class).equalTo("userId","-178")
+            RealmResults<MainList> results = realm.where(MainList.class).equalTo("userId", "-178")
                     .findAll();
             return results;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
         // Log.i("获得群列表", results.toString());
     }
+
     /**
      * 获得班级群列表
      */
@@ -155,7 +157,7 @@ public class MainListDao extends Dao {
         groupList.setMsg(content);
         groupList.setMsgType(msgType);
         groupList.setSendName(name);
-       groupList.setTime(System.currentTimeMillis()+"");
+        groupList.setTime(System.currentTimeMillis() + "");
         realm.copyToRealmOrUpdate(groupList);
         realm.commitTransaction();
     }
@@ -190,13 +192,14 @@ public class MainListDao extends Dao {
         return groupList.getName();
 
     }
+
     /**
      * 删除班级群
      */
-    public static void deleteClassGroup(String classId){
+    public static void deleteClassGroup(String classId) {
         try {
             Realm realm = getRealm();
-            final RealmResults<MainList> result= realm.where(MainList.class).equalTo("classId",classId).equalTo("userId", Global.getInstance().getUserId()+"").findAll();
+            final RealmResults<MainList> result = realm.where(MainList.class).equalTo("classId", classId).equalTo("userId", Global.getInstance().getUserId() + "").findAll();
             // final RealmResults<User> users = getUsers();
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
@@ -204,23 +207,24 @@ public class MainListDao extends Dao {
                     result.deleteFromRealm(0); //删除班级群
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
         }
     }
+
     /**
      * 删除班级群
      */
-    public static void deleteGroup(String groupId){
+    public static void deleteGroup(String groupId) {
         try {
             Realm realm = getRealm();
-            final RealmResults<MainList> result= realm.where(MainList.class).equalTo("Id",groupId).findAll();
+            final RealmResults<MainList> result = realm.where(MainList.class).equalTo("Id", groupId).findAll();
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
                     result.deleteFromRealm(0); //删除讨论组
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

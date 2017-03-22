@@ -1,7 +1,6 @@
 package cn.kwim.mqttcilent.mqttclient;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
@@ -72,18 +71,19 @@ public class MqttInstance {
 
     /**
      * 获得连接回掉
-     * @return  如果返回值为null
+     *
+     * @return 如果返回值为null
      * 则表示链接失败或则登陆失败 查看conMqtt方法{@link java.lang.reflect.Method conMqtt}
      */
 
-    public PushInterface getPushInterface(){
+    public PushInterface getPushInterface() {
         try {
-            if(client.useService(PushInterface.class)==null){
+            if (client.useService(PushInterface.class) == null) {
                 return null;
-            }else{
-                return type?client.useService(PushInterface.class):null;
+            } else {
+                return type ? client.useService(PushInterface.class) : null;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -96,14 +96,13 @@ public class MqttInstance {
      */
     public HproseMqttClient getHproseMqttClient() {
         if (client != null) {
-
             return client;
         } else {
             return null;
         }
     }
 
-    interface LoginImlisener {
+    public interface LoginImlisener {
         void isLogin();
     }
 
