@@ -1520,7 +1520,9 @@
 	        "right-text"
 	      ],
 	      "style": {
-	        "color": function () {return this.rightItemColor}
+	        "color": "#ffffff",
+	        "padding": 60,
+	        "paddingRight": 20
 	      },
 	      "attr": {
 	        "naviItemPosition": "right",
@@ -1532,18 +1534,26 @@
 	      }
 	    },
 	    {
-	      "type": "image",
+	      "type": "div",
 	      "classList": [
 	        "right-image"
 	      ],
-	      "attr": {
-	        "naviItemPosition": "right",
-	        "src": function () {return this.rightItemSrc}
-	      },
-	      "shown": function () {return this.rightItemSrc},
 	      "events": {
 	        "click": "onclickrightitem"
-	      }
+	      },
+	      "children": [
+	        {
+	          "type": "image",
+	          "classList": [
+	            "right-image2"
+	          ],
+	          "attr": {
+	            "naviItemPosition": "right",
+	            "src": function () {return this.rightItemSrc}
+	          },
+	          "shown": function () {return this.rightItemSrc}
+	        }
+	      ]
 	    },
 	    {
 	      "type": "text",
@@ -1615,12 +1625,12 @@
 	  },
 	  "right-text": {
 	    "position": "absolute",
-	    "bottom": 0,
-	    "right": 32,
+	    "bottom": -30,
+	    "right": 0,
 	    "textAlign": "right",
 	    "fontSize": 32,
 	    "fontFamily": "'Open Sans', sans-serif",
-	    "padding": 30
+	    "padding": 60
 	  },
 	  "left-text": {
 	    "position": "absolute",
@@ -1642,18 +1652,27 @@
 	  "left-image": {
 	    "position": "absolute",
 	    "bottom": 20,
-	    "left": 28,
+	    "left": 20,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
 	  },
-	  "right-image": {
+	  "right-image2": {
 	    "position": "absolute",
 	    "bottom": 20,
 	    "right": 28,
 	    "width": 50,
 	    "height": 50,
 	    "padding": 20
+	  },
+	  "right-image": {
+	    "position": "absolute",
+	    "bottom": 0,
+	    "right": 0,
+	    "paddingTop": 60,
+	    "paddingBottom": 60,
+	    "paddingRight": 20,
+	    "paddingLeft": 90
 	  }
 	}
 
@@ -2086,13 +2105,12 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-
 	    dir : 'yjpt',
-//	  	 dir : 'yjpts',
+	  	// dir : 'yjpts',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
-//	     ip : 'http://www.yuertong.com/',   //本地不用
+	    // ip : 'http://www.yuertong.com/',   //本地不用
 
 	    setOpenUrl : function(context,arr){
 	      var bundleUrl = context.bundleUrl;
@@ -2102,7 +2120,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	        nativeBase = bundleUrl;
+	          nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -2162,11 +2180,11 @@
 	                          osubOjb = subObj[k];
 	                          subObj[imgNameArr[j]] = Utils.ip +Utils.dir+ '/'+osubOjb;
 	                      }
-	                        
+
 	                    }
 	                  }
 	                  obj[imgNameArr[j]] = Utils.ip +Utils.dir+ '/'+ obj[imgNameArr[j]];
-	                  
+
 	              }
 	            }
 	          }else if(Object.prototype.toString.call(arr) === '[object String]'){
@@ -2185,7 +2203,7 @@
 
 	    navigate : {
 	      /***
-	      * 打开一个新页面 
+	      * 打开一个新页面
 	      * @params obj 当前页面作业域(传参数时为this)
 	      * @params url 页面的地址
 	      * @params animate 是否显示动画；值为'true'/'false'
@@ -2197,7 +2215,7 @@
 	          'url': url,
 	          'animated' : animate,
 	        }
-	        var vm = obj;    
+	        var vm = obj;
 	        /*navigator.push(params,function(e){
 	          if(typeof callback == 'function')
 	               callback();
@@ -2208,7 +2226,7 @@
 	        });
 	      },
 	      /***
-	      * 关闭当前页面 
+	      * 关闭当前页面
 	      * @params obj 当前页面作业域(传参数时为this)
 	      * @params animate 是否显示动画；值为'true'/'false'
 	      * @params callback 回调函数
@@ -2239,7 +2257,7 @@
 	          'url': url,
 	          'animated' : animate,
 	        }
-	        var vm = obj;   
+	        var vm = obj;
 	        /*navigator.present(params,function(e){
 	            if(typeof callback == 'function')
 	              callback();
@@ -2253,7 +2271,7 @@
 
 	    // Utils.navigate = {
 	    // 	/***
-	    // 	* 打开一个新页面 
+	    // 	* 打开一个新页面
 	    //   * @params obj 当前页面作业域(传参数时为this)
 	    // 	* @params url 页面的地址
 	    // 	* @params animate 是否显示动画；值为'true'/'false'
@@ -2264,14 +2282,14 @@
 	    // 			'url': url,
 	    // 			'animated' : animate,
 	    // 		}
-	    //     var vm = obj;    
+	    //     var vm = obj;
 	    //     vm.$call('navigator','push',params, function () {
 	    //       if(typeof callback == 'function')
 	    //          callback();
 	    //     });
 	    // 	},
 	    // 	/***
-	    // 	* 关闭当前页面 
+	    // 	* 关闭当前页面
 	    //   * @params obj 当前页面作业域(传参数时为this)
 	    // 	* @params animate 是否显示动画；值为'true'/'false'
 	    // 	* @params callback 回调函数
@@ -2298,7 +2316,7 @@
 	    //       'url': url,
 	    //       'animated' : animate,
 	    //     }
-	    //     var vm = obj;    
+	    //     var vm = obj;
 	    //     vm.$call('navigator','present',params, function () {
 	    //       if(typeof callback == 'function')
 	    //          callback();
@@ -2374,7 +2392,7 @@
 	              //console.log("response----"+JSON.stringify(response));
 	              if(!response.ok || response.ok == 0){
 	                modal.toast({
-	                  'message': '网络故障，请稍后再试！', 
+	                  'message': '网络故障，请稍后再试！',
 	                  'duration': 1
 	                });
 	              }else{
@@ -2428,8 +2446,8 @@
 	      var hourC =diffValue/hour;
 	      var minC =diffValue/minute;
 	      if(monthC>12){
-	         var s2 = new Date(v);              
-	         result = s2.getFullYear()+"年" + (s2.getMonth()+1)+"月"+s2.getDate()+"日"; 
+	         var s2 = new Date(v);
+	         result = s2.getFullYear()+"年" + (s2.getMonth()+1)+"月"+s2.getDate()+"日";
 	      }else if(monthC>=1){
 	         result= parseInt(monthC) + "个月前";
 	      }else if(weekC>=1){
@@ -2849,6 +2867,7 @@
 	var event = __weex_require__('@weex-module/event');
 	var SJevent = __weex_require__('@weex-module/SJevent');
 	var progress = __weex_require__('@weex-module/MBProgressHUD');
+	var globalEvent = __weex_require__('@weex-module/globalEvent');
 	module.exports = {
 	    data: function () {return {
 	        navBarHeight: 130,
@@ -2895,15 +2914,11 @@
 	        var bundleUrl = this.$getConfig().bundleUrl;
 	        bundleUrl = new String(bundleUrl);
 	        var nativeBase;
-	        var isAndroidAssets = bundleUrl.indexOf('file://assets/') >= 0;
+	        var isAndroidAssets = bundleUrl.indexOf('file:///mnt/sdcard/') >= 0;
 
 	        var isiOSAssets = bundleUrl.indexOf('file:///') >= 0;
 
-            if(isAndroidAssets){
-                nativeBase = bundleUrl;
-            }else if(isiOSAssets){
-	            nativeBase = bundleUrl.substring(0, bundleUrl.lastIndexOf('/') + 1);
-            }
+	        nativeBase = bundleUrl.substring(0, bundleUrl.lastIndexOf('/') + 1);
 	    },
 	    methods: {
 	        redirect: function redirect(url) {
@@ -2940,11 +2955,12 @@
 	                method: 'POST',
 	                dataType: 'json',
 	                success: function success(ret) {
+	                    var JSESSIONID;
 	                    if (self.loginFailTime == 0) {
 	                        if (ret.headers['Set-Cookie']) {
 	                            var jsessionid = ret.headers['Set-Cookie'];
 	                            if (jsessionid.indexOf("JSESSIONID") != -1) {
-	                                var JSESSIONID = jsessionid.substring(jsessionid.indexOf('=') + 1, jsessionid.indexOf(';'));
+	                                JSESSIONID = jsessionid.substring(jsessionid.indexOf('=') + 1, jsessionid.indexOf(';'));
 	                                storage.setItem('jsessionid', JSESSIONID, function (e) {});
 	                                self.jsessionid = JSESSIONID;
 	                            }
@@ -2969,11 +2985,31 @@
 	                                        'duration': 1
 	                                    });
 
+	                                    Utils.fetch({
+	                                        url: '/app/base',
+	                                        data: '',
+	                                        method: 'get',
+	                                        dataType: 'json',
+	                                        success: function success(ret) {
+	                                            var baseData = ret.data.data;
+	                                            storage.setItem('baseData', (0, _stringify2.default)(baseData), function () {});
+	                                        }
+	                                    });
+
 	                                    var retdata = ret.data.data;
 	                                    storage.setItem('userInfo', (0, _stringify2.default)(retdata), function () {});
 
 	                                    if (!ret.data.data.realname) {
-	                                        SJevent.loginSuccess('name-default');
+	                                        var index = Utils.setOpenUrl(self.$getConfig(), 'name-default');
+	                                        if (SJevent.loginSuccess) {
+	                                            SJevent.loginSuccess({
+	                                                pageUrl: index,
+	                                                userName: self.telphone,
+	                                                userPwd: self.pwd,
+	                                                userType: '1',
+	                                                jsessionid: JSESSIONID
+	                                            }, function (res) {});
+	                                        }
 	                                    } else {
 	                                        Utils.fetch({
 	                                            url: '/app/class',
@@ -3004,7 +3040,15 @@
 	                                                        var url = Utils.setOpenUrl(self.$getConfig(), 'index');
 
 	                                                        if (SJevent.loginSuccess) {
-	                                                            SJevent.loginSuccess(url);
+	                                                            SJevent.loginSuccess({
+	                                                                pageUrl: url,
+	                                                                userName: self.telphone,
+	                                                                userPwd: self.pwd,
+	                                                                userType: '1',
+	                                                                jsessionid: JSESSIONID
+	                                                            }, function (res) {
+	                                                                storage.setItem('groupList', res, function () {});
+	                                                            });
 	                                                        } else {
 	                                                            setTimeout(function () {
 	                                                                Utils.navigate.push(self, url, 'true');
@@ -3017,7 +3061,19 @@
 	                                                        storage.setItem('myClass', (0, _stringify2.default)(arr), function () {});
 
 	                                                        var url = Utils.setOpenUrl(self.$getConfig(), 'class-list-default');
-	                                                        SJevent.loginSuccess(url);
+
+
+	                                                        if (SJevent.loginSuccess) {
+	                                                            SJevent.loginSuccess({
+	                                                                pageUrl: url,
+	                                                                userName: self.telphone,
+	                                                                userPwd: self.pwd,
+	                                                                userType: '1',
+	                                                                jsessionid: JSESSIONID
+	                                                            }, function (res) {
+	                                                                storage.setItem('groupList', res, function () {});
+	                                                            });
+	                                                        }
 	                                                    }
 	                                                }
 	                                            }
@@ -3031,30 +3087,9 @@
 	                                }
 	                            }
 	                        });
-
-	                        Utils.fetch({
-	                            url: '/app/base',
-	                            data: '',
-	                            method: 'get',
-	                            dataType: 'json',
-	                            success: function success(ret) {
-	                                var baseData = ret.data.data;
-	                                storage.setItem('baseData', (0, _stringify2.default)(baseData), function () {});
-	                            }
-	                        });
-	                    } else if (obj.StatusCode == '404') {
-	                        modal.alert({
-	                            message: '账户或密码错误，请重新输入',
-	                            okTitle: '好的'
-	                        }, function () {
-	                            self.loginFailTime++;
-	                        });
 	                    } else {
-	                        modal.alert({
-	                            message: '系统异常，请稍后重试',
-	                            okTitle: '好的'
-	                        }, function () {
-	                            self.loginFailTime++;
+	                        modal.toast({
+	                            message: '登录失败，请稍后重试'
 	                        });
 	                    }
 	                }
