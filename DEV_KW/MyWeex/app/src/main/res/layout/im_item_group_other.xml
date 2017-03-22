@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <RelativeLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginRight="15dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:background="@drawable/im_notice_shape"
+        >
+        <TextView
+            android:id="@+id/name"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="17sp" 
+            android:padding="5dp"
+            android:textColor="#00ccff"
+            android:text="小星星"
+            />
+        <TextView
+            android:id="@+id/subject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            android:padding="5dp"
+            android:textColor="#00ccff"
+            android:layout_alignParentRight="true"
+            android:text="语文" 
+            android:visibility="gone"
+            />
+        <TextView 
+            android:id="@+id/content"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_below="@id/name"
+            android:textColor="#444"
+            android:text="测试信息...."
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="8dp"
+            
+            />
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="0.8dp"
+            android:background="#dedfe0"
+            android:layout_below="@id/content"
+            />
+        <TextView
+            android:id="@+id/time"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:layout_below="@id/view"
+            android:text="昨天 09：23"
+            android:textSize="10sp"
+            android:textColor="#b8b8b8"
+            android:layout_marginTop="3dp"
+            android:padding="2dp"
+            />
+        
+    </RelativeLayout>
+    
+
+</RelativeLayout>

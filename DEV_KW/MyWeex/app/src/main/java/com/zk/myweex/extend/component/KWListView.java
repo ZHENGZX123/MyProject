@@ -24,6 +24,8 @@ import com.zk.myweex.R;
 
 import java.util.ArrayList;
 
+import cn.kwim.mqttcilent.SplashActivity;
+
 
 public class KWListView extends WXComponent<ListView> {
 
@@ -46,7 +48,7 @@ public class KWListView extends WXComponent<ListView> {
                 Log.d("test", "onItemClick");
 
 
-//                getContext().startActivity(new Intent(getContext(), SplashActivity.class));
+                getContext().startActivity(new Intent(getContext(), SplashActivity.class));
             }
         });
 
