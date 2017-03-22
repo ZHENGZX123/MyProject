@@ -73,6 +73,7 @@ dependencies {
     compile 'com.taobao.android:weex_inspector:0.10.0.3@aar'
     compile project(':sdk')
     //原common包
+
     //    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     //sdk
@@ -95,4 +96,6 @@ dependencies {
     compile 'com.tencent.bugly:crashreport:latest.release'
     compile project(':zxing')
     compile 'com.android.support:multidex:1.0.1'
+    compile files('libs/org.eclipse.paho.client.mqttv3-1.0.2.jar')
+    compile files('libs/hprose_for_java_7.jar')
 }

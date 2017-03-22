@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eeeff3"
+    android:orientation="vertical" >
+    <!--<Toolbar-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="46dp"></Toolbar>-->
+    <!--<android.support.v7.widget.Toolbar-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/height_top_bar"-->
+        <!--android:background="@color/_12b7f5">-->
+        <RelativeLayout
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_top_bar"
+            android:layout_alignParentTop="true"
+            android:background="@color/_12b7f5"
+            >
+
+            <cn.kwim.mqttcilent.common.views.FilterImageView
+                android:id="@+id/iv_back"
+                android:layout_width="40dip"
+                android:layout_height="35dip"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="5dp"
+                android:paddingTop="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/yjpty_previous" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="成员资料"
+                android:textColor="#ffffff"
+                android:textSize="20sp" />
+        </RelativeLayout>
+    <!--</android.support.v7.widget.Toolbar>-->
+
+    <cn.kwim.mqttcilent.common.views.sort.ClearEditText
+        android:id="@+id/filter_edit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginTop="5dip"
+        android:background="@drawable/im_search_bar_edit_selector"
+        android:drawableLeft="@drawable/im_search_bar_icon_normal"
+        android:hint="请输入关键字"
+        android:paddingBottom="5dip"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
+        android:paddingTop="5dip"
+        android:singleLine="true"
+        android:textColor="#111111"
+        android:textCursorDrawable="@null"
+        android:textSize="15.0dip" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="#ff0000" >
+        </ListView>
+
+        <TextView
+            android:id="@+id/dialog"
+            android:layout_width="80.0dip"
+            android:layout_height="80.0dip"
+            android:layout_gravity="center"
+            android:background="#ff0000"
+            android:gravity="center"
+            android:textColor="#ffffffff"
+            android:textSize="30.0dip"
+            android:visibility="invisible" />
+
+        <cn.kwim.mqttcilent.common.views.sort.SideBar
+            android:id="@+id/sidebar"
+            android:layout_width="30.0dip"
+            android:layout_height="fill_parent"
+            android:layout_gravity="right|center" />
+    </FrameLayout>
+
+</LinearLayout>

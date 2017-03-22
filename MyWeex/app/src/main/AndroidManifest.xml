@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.zk.myweex">
 
-    <uses-sdk tools:overrideLibrary="io.realm"/>
+    <uses-sdk tools:overrideLibrary="io.realm" />
 
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -39,6 +39,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup,android:icon,android:label,android:name">
+
         <activity
             android:name=".activity.WXPageActivity"
             android:label="@string/app_name"
@@ -121,6 +122,47 @@
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
             </intent-filter>
         </receiver>
+
+        <!-- IM -->
+        <activity android:name="cn.kwim.mqttcilent.BaseActivity" />
+        <activity android:name="cn.kwim.mqttcilent.KiwayMainActivity" />
+        <activity android:name="cn.kwim.mqttcilent.app_ui.home_school.group.GroupInformationActivity" />
+        <activity android:name="cn.kwim.mqttcilent.common.views.preview.PicturePreviewActivity" />
+        <activity
+            android:name="cn.kwim.mqttcilent.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme" />
+
+        <service
+            android:name="cn.kwim.mqttcilent.mqttclient.PushService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name="cn.kwim.mqttcilent.app_ui.home_school.ChatActivity" />
+        <activity
+            android:name="cn.kwim.mqttcilent.app_ui.home_school.group.GroupMemberActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity android:name="cn.kwim.mqttcilent.app_ui.home_school.friend.FriendListActivity" />
+        <activity android:name="cn.kwim.mqttcilent.app_ui.home_school.group.GroupOtherActivity" />
+        <activity android:name="cn.kwim.mqttcilent.app_ui.home_school.friend.AddFriendOrGroupActivity"></activity>
+
+        <activity android:name="cn.kwim.mqttcilent.SplashActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="cn.kwim.mqttcilent.app_ui.home_school.group.CreatePersonGroupActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="sensor" />
+        <activity
+            android:name="cn.kwim.mqttcilent.app_ui.home_school.group.SelectClassGroupActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="sensor" />
+
     </application>
 
 </manifest>
