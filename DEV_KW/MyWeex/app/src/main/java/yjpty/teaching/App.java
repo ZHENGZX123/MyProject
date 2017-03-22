@@ -109,6 +109,7 @@ public class App extends Application{
 
     @Override
     public void onCreate() {
+        super.onCreate();
         DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(this).setMaxCacheSize(2 * 1024 * 2014)
                 .setBaseDirectoryName(IConstant.DOWNLOAD_PHOTO_FLODER)
                 .setBaseDirectoryPathSupplier(new Supplier<File>() {

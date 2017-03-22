@@ -205,7 +205,14 @@ public class SJEventModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void loginSuccess(String url) {
+        Log.d("test", "loginSuccess url = " + url);
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
+
+
+//        Intent intentService = new Intent(this, PushService.class);
+//        intentService.putExtra(USERNAME, userName);
+//        intentService.putExtra(PWD,passWord);
+//        startService(intentService);
 
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
         ((Activity) mWXSDKInstance.getContext()).finish();
