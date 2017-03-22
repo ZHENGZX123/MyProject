@@ -2,6 +2,7 @@ package com.zk.webviewdemo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,6 +16,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+
+import java.io.File;
 
 public class WebViewActivity extends AppCompatActivity {
 
@@ -47,10 +53,9 @@ public class WebViewActivity extends AppCompatActivity {
         settings.setUseWideViewPort(true);
         wv.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 
-        String url = getSharedPreferences("webview", 0).getString("url", "http://www.kiway.cn");
+        String url = getSharedPreferences("webview", 0).getString("url", "http://192.168.8.6:8280/weex/yqyd_xs.zip/yqyd/index/index.html");
         et.setText(url);
-        wv.loadUrl(url);
-
+        clickGo(null);
 
         //覆盖WebView默认使用第三方或系统默认浏览器打开网页的行为，使网页用WebView打开
         wv.setWebViewClient(new WebViewClient() {
@@ -83,7 +88,6 @@ public class WebViewActivity extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        // TODO Auto-generated method stub
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (wv.canGoBack()) {
                 wv.goBack();//返回上一页面
@@ -109,7 +113,94 @@ public class WebViewActivity extends AppCompatActivity {
             Toast.makeText(this, "请以http或https开头", Toast.LENGTH_SHORT).show();
             return;
         }
-        wv.loadUrl(url);
         rl.setVisibility(View.GONE);
+
+        if (url.contains("zip")) {
+            downloadFile(url);
+        } else {
+            wv.loadUrl(url);
+        }
+    }
+
+    private void downloadFile(final String url) {
+
+
+        new Thread() {
+            @Override
+            public void run() {
+                final String root = "/mnt/sdcard/webview/";
+                if (!new File(root).exists()) {
+                    new File(root).mkdirs();
+                }
+
+                //http://192.168.31.6/a/test.zip/aaa/ddd.html
+                int index = url.indexOf("zip") + 3;
+                String zipUrl = url.substring(0, index);
+
+
+                final String fileName = new File(zipUrl).getName();
+
+                final String route = url.replace(zipUrl, "");
+
+                final String filePath = root + fileName;
+                if (new File(filePath).exists()) {
+                    //如果已存在，直接读取
+                    load(filePath, route);
+                } else {
+                    int ret = new HttpDownload().downFile(zipUrl, root, fileName);
+                    Log.d("test", "download ret = " + ret);
+                    if (ret != 0) {
+                        toast("下载失败，请稍后再试");
+                        return;
+                    }
+                    //下载完成后解压
+                    unZip(filePath);
+                    //加载路径下的index.html
+                    load(filePath, route);
+                }
+            }
+        }.start();
+    }
+
+    private void unZip(String filePath) {
+        try {
+
+
+            ZipFile zFile = new ZipFile(filePath); // 首先创建ZipFile指向磁盘上的.zip文件
+            zFile.setFileNameCharset("GBK"); // 设置文件名编码，在GBK系统中需要设置
+            if (!zFile.isValidZipFile()) { // 验证.zip文件是否合法，包括文件是否存在、是否为zip文件、是否被损坏等
+                throw new ZipException();
+            }
+            File destDir = new File(filePath.replace(".zip", "")); // 解压目录
+            if (destDir.isDirectory() && !destDir.exists()) {
+                destDir.mkdir();
+            }
+//            if (zFile.isEncrypted()) {
+//                zFile.setPassword(passwd.toCharArray()); // 设置密码
+//            }
+            zFile.extractAll(destDir.getAbsolutePath()); // 将文件抽出到解压目录(解压)
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void load(final String filePath, final String route) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                wv.loadUrl(("file://" + filePath + route).replace(".zip", ""));
+            }
+        });
+    }
+
+
+    private void toast(final String txt) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(WebViewActivity.this, txt, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
