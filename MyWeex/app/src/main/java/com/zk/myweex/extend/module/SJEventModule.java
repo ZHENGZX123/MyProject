@@ -127,14 +127,6 @@ public class SJEventModule extends WXModule {
         mWXSDKInstance.getContext().startActivity(intent);
     }
 
-    private void toast(final String txt) {
-        ((Activity) mWXSDKInstance.getContext()).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(mWXSDKInstance.getContext(), txt, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     @JSMethod(uiThread = true)
     public void getGrid1(JSCallback callback) {
