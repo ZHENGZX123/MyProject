@@ -2,9 +2,7 @@ package com.zk.myweex;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -22,12 +20,11 @@ import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.common.WXException;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.zk.myweex.entity.HttpCache;
 import com.zk.myweex.extend.adapter.GitHubApi;
 import com.zk.myweex.extend.adapter.ReadCookiesInterceptor;
 import com.zk.myweex.extend.adapter.SaveCookiesInterceptor;
 import com.zk.myweex.extend.adapter.UniversalImageAdapter;
-import com.zk.myweex.extend.component.GroupListView;
+import com.zk.myweex.extend.component.KWListView;
 import com.zk.myweex.extend.module.MyHttpCache;
 import com.zk.myweex.extend.module.SJEventModule;
 import com.zk.myweex.extend.module.WXEventModule;
@@ -35,9 +32,9 @@ import com.zk.myweex.extend.module.WXEventModule;
 import java.io.File;
 
 import cn.kiway.baas.sdk.Configure;
+import cn.kiway.entity.HttpCache;
 import io.realm.DynamicRealm;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
 import io.realm.RealmResults;
 import io.realm.RealmSchema;
@@ -79,11 +76,10 @@ public class WXApplication extends App {
         Configure.getInstance().setRoot("admin");
 
         //realm初始化
-        //.migration(migration)
-        Realm.init(this);
-        RealmConfiguration config = new RealmConfiguration.Builder().schemaVersion(0).deleteRealmIfMigrationNeeded()
-                .build();
-        Realm.setDefaultConfiguration(config);
+//        Realm.init(this);
+//        RealmConfiguration config = new RealmConfiguration.Builder().schemaVersion(0).deleteRealmIfMigrationNeeded()
+//                .build();
+//        Realm.setDefaultConfiguration(config);
 
         //清掉时间差大于1天的数据
         final long current = System.currentTimeMillis();
@@ -115,7 +111,7 @@ public class WXApplication extends App {
             WXSDKEngine.registerModule("SJevent", SJEventModule.class);
             WXSDKEngine.registerModule("event", WXEventModule.class);
 
-            WXSDKEngine.registerComponent("chattable", GroupListView.class);
+            WXSDKEngine.registerComponent("chattable", KWListView.class);
 
         } catch (WXException e) {
             e.printStackTrace();
@@ -260,11 +256,5 @@ public class WXApplication extends App {
                         new BaseImageDownloader(this, 5 * 1000, 30 * 1000)) // connectTimeout
                 /* .writeDebugLogs() */.build(); // Remove for release app
         ImageLoader.getInstance().init(config);
-    }
-
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
     }
 }

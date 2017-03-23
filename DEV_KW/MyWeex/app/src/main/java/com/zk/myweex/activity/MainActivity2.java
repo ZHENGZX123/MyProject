@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.zk.myweex.R;
 import com.zk.myweex.WXApplication;
-import com.zk.myweex.entity.TabEntity;
 import com.zk.myweex.utils.FileUtils;
 import com.zk.myweex.utils.VersionUpManager;
 
@@ -28,6 +27,7 @@ import java.util.List;
 
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Service;
+import cn.kiway.entity.TabEntity;
 import io.realm.Realm;
 import io.realm.RealmResults;
 

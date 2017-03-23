@@ -21,7 +21,7 @@ import yjpty.teaching.util.IConstant;
  * Created by Administrator on 2017/3/17.
  */
 
-public class App extends KwApplication {
+public class App extends KwApplication{
     public HandlerClient client;
     public List<ClassModel> classModels = new ArrayList<ClassModel>();
     /**
