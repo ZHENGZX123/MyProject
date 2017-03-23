@@ -19,7 +19,6 @@ import com.zk.myweex.WXApplication;
 import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
 import com.zk.myweex.activity.WXPageActivity;
-import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.UploadUtil;
@@ -36,6 +35,7 @@ import java.util.Map;
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Package;
 import cn.kiway.baas.sdk.model.service.Service;
+import cn.kiway.entity.ZipPackage;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
