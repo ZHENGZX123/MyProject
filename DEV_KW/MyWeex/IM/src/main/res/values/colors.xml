@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <!-- commonDialog 颜色 -->
+    <color name="transparent">#00000000</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="gray">#FFCCCCCC</color>
+    <color name="red">#FFFF0000</color>
+    <color name="bluegreen">#FF218F9C</color>
+    <color name="notic_bgcolor">#FFCFEDF0</color>
+    <color name="alertdialog_line">#c6c6c6</color>
+    <color name="actionsheet_blue">#037BFF</color>
+    <color name="actionsheet_red">#FD4A2E</color>
+    <color name="actionsheet_gray">#8F8F8F</color>
+
+    <color name="common_top_bar_black">#22292c</color>
+    <!-- 幼教园丁-->
+    <color name="_ffffff">#ffffff</color>
+    <color name="_cfcfcf">#cfcfcf</color>
+    <color name="_333333">#333333</color>
+
+    <color name="_12b7f5">#12b7f5</color>
+    <!-- 主背景颜色-->
+    <color name="_00cc99">#00cc99</color>
+    <color name="_0d9774">#0d9774</color>
+    <color name="_2000cc99">#2000cc99</color>
+
+    <color name="province_line_border">#333333</color>
+    <color name="press_color">#ddaaaaaa</color>
+    <color name="_e5e5e5">#e5e5e5</color>
+    <color name="_ff9966">#ff9966</color>
+    <color name="viewfinder_mask">#60000000</color>
+    <color name="_f7f7f7">#f7f7f7</color>
+    <color name="_666666">#666666</color>
+    <color name="_f41100">#f41100</color>
+    <color name="_ff3300">#ff3300</color>
+    <color name="_30b896">#30b896</color>
+    <color name="_111111">#111111</color>
+
+    <color name="_ff8844">#ff8844</color>
+    <color name="_f3f3f3">#f3f3f3</color>
+    <color name="_50000000">#50000000</color>
+
+
+</resources>
