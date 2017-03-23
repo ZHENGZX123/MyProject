@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <RelativeLayout
+            android:id="@+id/top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_top_bar"
+            android:layout_alignParentTop="true"
+            android:background="@color/common_top_bar_black"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/curapp_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:text="@string/app_name"
+                android:textColor="#ffffff"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/curapp_center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="100dp"
+                android:text=""
+                android:width="120dp" />
+
+
+            <ImageView
+                android:id="@+id/friend_list"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="76dp"
+                android:clickable="true"
+                android:src="@drawable/im_main_activity_add" />
+            <ImageView
+                android:id="@+id/iv_add"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="38dp"
+                android:clickable="true"
+                android:src="@drawable/im_main_activity_add" />
+
+            <ImageView
+                android:id="@+id/iv_more"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/im_actionbar_more_icon" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/view"
+            android:background="#999999"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@+id/ll_bottom_tab"
+            />
+        <LinearLayout
+            android:id="@+id/ll_bottom_tab"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_alignParentBottom="true"
+            android:background="#ffffff"
+            android:baselineAligned="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <RelativeLayout
+                android:id="@+id/rl_home_school"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0" >
+
+                <ImageView
+                    android:id="@+id/iv_home_school"
+                    android:layout_width="35dip"
+                    android:layout_height="35dip"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/im_tab_index_pressed" />
+
+                <TextView
+                    android:id="@+id/tv_home_school"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_home_school"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/_home_school"
+                    android:textColor="#111111"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_study"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0" >
+
+                <ImageView
+                    android:id="@+id/iv_study"
+                    android:layout_width="35dip"
+                    android:layout_height="35dip"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/im_tab_txl_normal" />
+
+                <TextView
+                    android:id="@+id/tv_study"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/iv_study"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/_study"
+                    android:textColor="#111111"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_server"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0" >
+
+                <ImageView
+                    android:id="@+id/iv_server"
+                    android:layout_width="35dip"
+                    android:layout_height="35dip"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/im_tab_wd_normal" />
+
+                <TextView
+                    android:id="@+id/tv_server"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/iv_server"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/_server"
+                    android:textColor="#111111"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rl_me"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0" >
+
+                <ImageView
+                    android:id="@+id/iv_me"
+                    android:layout_width="35dip"
+                    android:layout_height="35dip"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/im_tab_sz_normal" />
+
+                <TextView
+                    android:id="@+id/tv_me"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/iv_me"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/_me"
+                    android:textColor="#111111"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@id/top_bar"
+            android:background="@color/actionsheet_gray" />
+
+        <LinearLayout
+            android:id="@+id/content_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/view"
+            android:layout_below="@+id/top_bar"
+            android:orientation="vertical" >
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>
