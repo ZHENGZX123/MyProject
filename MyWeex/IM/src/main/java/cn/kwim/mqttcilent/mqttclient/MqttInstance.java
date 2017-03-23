@@ -103,7 +103,7 @@ public class MqttInstance {
         }
     }
 
-    interface LoginImlisener {
+    public interface LoginImlisener {
         void isLogin();
     }
 
