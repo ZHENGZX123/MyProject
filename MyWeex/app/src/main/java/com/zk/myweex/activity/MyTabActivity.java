@@ -2,8 +2,7 @@ package com.zk.myweex.activity;
 
 import android.os.Bundle;
 
-import com.zk.myweex.entity.TabEntity;
-
+import cn.kiway.entity.TabEntity;
 import io.realm.Realm;
 
 /**

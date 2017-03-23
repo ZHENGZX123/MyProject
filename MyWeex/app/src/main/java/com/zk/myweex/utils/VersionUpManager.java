@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.zk.myweex.WXApplication;
-import com.zk.myweex.entity.ZipPackage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,6 +12,7 @@ import java.util.List;
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Package;
 import cn.kiway.baas.sdk.model.service.Service;
+import cn.kiway.entity.ZipPackage;
 import io.realm.Realm;
 
 /**

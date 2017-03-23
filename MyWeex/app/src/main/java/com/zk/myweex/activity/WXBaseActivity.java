@@ -222,7 +222,6 @@ import com.taobao.weex.common.WXRenderStrategy;
 import com.taobao.weex.utils.WXFileUtils;
 import com.zk.myweex.R;
 import com.zk.myweex.WXApplication;
-import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.utils.AssertUtil;
 import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.ScreenManager;
@@ -235,6 +234,7 @@ import java.util.Map;
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Package;
 import cn.kiway.baas.sdk.model.service.Service;
+import cn.kiway.entity.ZipPackage;
 import io.realm.Realm;
 
 /**

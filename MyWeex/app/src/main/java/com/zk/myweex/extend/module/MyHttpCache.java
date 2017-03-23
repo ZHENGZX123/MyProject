@@ -7,12 +7,12 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
-import com.zk.myweex.entity.HttpCache;
 import com.zk.myweex.utils.NetworkUtil;
 
 import org.apache.http.entity.StringEntity;
 import org.json.JSONObject;
 
+import cn.kiway.entity.HttpCache;
 import io.realm.Realm;
 
 
@@ -100,5 +100,6 @@ public class MyHttpCache extends WXModule {
             callback.invoke(temp.result);
         }
     }
+
 
 }
