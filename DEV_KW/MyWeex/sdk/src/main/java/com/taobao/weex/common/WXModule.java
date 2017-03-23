@@ -204,9 +204,11 @@
  */
 package com.taobao.weex.common;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.Menu;
+import android.widget.Toast;
 
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.WXSDKManager;
@@ -224,100 +226,120 @@ import java.util.Map;
  */
 public abstract class WXModule implements IWXObject {
 
-  public static final String ACTION_ACTIVITY_RESULT = "actionActivityResult";
-  public static final String ACTION_REQUEST_PERMISSIONS_RESULT = "actionRequestPermissionsResult";
-  public static final String REQUEST_CODE = "requestCode";
-  public static final String RESULT_CODE = "resultCode";
-  public static final String PERMISSIONS = "permissions";
-  public static final String GRANT_RESULTS = "grantResults";
+    public static final String ACTION_ACTIVITY_RESULT = "actionActivityResult";
+    public static final String ACTION_REQUEST_PERMISSIONS_RESULT = "actionRequestPermissionsResult";
+    public static final String REQUEST_CODE = "requestCode";
+    public static final String RESULT_CODE = "resultCode";
+    public static final String PERMISSIONS = "permissions";
+    public static final String GRANT_RESULTS = "grantResults";
 
 
-  public WXSDKInstance mWXSDKInstance;
-  private String mModuleName;
+    public WXSDKInstance mWXSDKInstance;
+    private String mModuleName;
 
 
-  protected final WXComponent findComponent(String ref){
-    if(mWXSDKInstance != null && ref != null){
-      return WXSDKManager.getInstance()
-          .getWXRenderManager()
-          .getWXComponent(mWXSDKInstance.getInstanceId(), ref);
+    protected final WXComponent findComponent(String ref) {
+        if (mWXSDKInstance != null && ref != null) {
+            return WXSDKManager.getInstance()
+                    .getWXRenderManager()
+                    .getWXComponent(mWXSDKInstance.getInstanceId(), ref);
+        }
+        return null;
     }
-    return null;
-  }
 
-  /** hook the Activity life cycle to Instance module**/
-  public void onActivityResult(int requestCode, int resultCode, Intent data){}
+    /** hook the Activity life cycle to Instance module**/
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    }
 
-  public void onActivityCreate(){}
+    public void onActivityCreate() {
+    }
 
-  public void onActivityStart(){}
+    public void onActivityStart() {
+    }
 
-  public void onActivityPause(){}
+    public void onActivityPause() {
+    }
 
-  public void onActivityResume(){}
+    public void onActivityResume() {
+    }
 
-  public void onActivityStop(){}
+    public void onActivityStop() {
+    }
 
-  public void onActivityDestroy(){}
+    public void onActivityDestroy() {
+    }
 
-  public boolean onActivityBack() {return false;}
+    public boolean onActivityBack() {
+        return false;
+    }
 
-  public boolean onCreateOptionsMenu(Menu menu){return false;}
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return false;
+    }
 
-  public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {}
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    }
 
     /** end **/
 
-  private Map<String, List<String>> mEvents = new HashMap<>();
-  private Map<String, Boolean> mKeepAlives = new HashMap<>();
+    private Map<String, List<String>> mEvents = new HashMap<>();
+    private Map<String, Boolean> mKeepAlives = new HashMap<>();
 
 
-
-  @JSMethod
-  public void addEventListener(String eventName, String callback, Map<String, Object> options) {
-    if (TextUtils.isEmpty(eventName) || TextUtils.isEmpty(callback)) {
-      return;
+    @JSMethod
+    public void addEventListener(String eventName, String callback, Map<String, Object> options) {
+        if (TextUtils.isEmpty(eventName) || TextUtils.isEmpty(callback)) {
+            return;
+        }
+        boolean isOnce = false;
+        if (options != null && options.size() > 0 && options.containsKey("once")) {
+            Object temp = options.get("once");
+            if (WXUtils.getBoolean(temp, false)) {
+                isOnce = true;
+            }
+        }
+        mKeepAlives.put(callback, isOnce);
+        if (mEvents.get(eventName) == null) {
+            mEvents.put(eventName, new ArrayList<String>());
+        }
+        mEvents.get(eventName).add(callback);
     }
-    boolean isOnce = false;
-    if (options != null && options.size() > 0 && options.containsKey("once")) {
-      Object temp = options.get("once");
-      if (WXUtils.getBoolean(temp,false)) {
-        isOnce = true;
-      }
+
+    @JSMethod
+    public void removeAllEventListeners(String eventName) {
+        if (mEvents.containsKey(eventName)) {
+            List<String> callbacks = mEvents.remove(eventName);
+            for (String callback : callbacks) {
+                mKeepAlives.remove(callback);
+            }
+        }
     }
-    mKeepAlives.put(callback, isOnce);
-    if(mEvents.get(eventName)==null){
-      mEvents.put(eventName,new ArrayList<String>());
+
+    /**
+     * Check whether the EventName has been registered
+     */
+    public List<String> getEventCallbacks(String eventName) {
+        return mEvents.get(eventName);
     }
-    mEvents.get(eventName).add(callback);
-  }
 
-  @JSMethod
-  public void removeAllEventListeners(String eventName) {
-    if (mEvents.containsKey(eventName)) {
-      List<String> callbacks = mEvents.remove(eventName);
-      for(String callback:callbacks){
-        mKeepAlives.remove(callback);
-      }
+    public boolean isOnce(String callback) {
+        return mKeepAlives.get(callback);
     }
-  }
 
-  /**
-   * Check whether the EventName has been registered
-   */
-  public List<String> getEventCallbacks(String eventName) {
-    return mEvents.get(eventName);
-  }
+    public String getModuleName() {
+        return mModuleName;
+    }
 
-  public boolean isOnce(String callback){
-    return mKeepAlives.get(callback);
-  }
+    public void setModuleName(String moduleName) {
+        mModuleName = moduleName;
+    }
 
-  public String getModuleName() {
-    return mModuleName;
-  }
-
-  public void setModuleName(String moduleName) {
-    mModuleName = moduleName;
-  }
+    public void toast(final String txt) {
+        ((Activity) mWXSDKInstance.getContext()).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(mWXSDKInstance.getContext(), txt, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }
