@@ -16,6 +16,9 @@ import mqttclient.mq.TopicProcessService;
 
 public class MainActivity extends AppCompatActivity {
 
+    private HproseMqttClient client;
+    private PushInterface pushInterface;
+
     public interface RegisterType {
         String MESSAGE = "message";
         String RECALLMESSAGE = "recallMessage";
@@ -45,21 +48,21 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                 });
-                HproseMqttClient client = MqttInstance.getInstance().getHproseMqttClient();
+                client = MqttInstance.getInstance().getHproseMqttClient();
                 if (!MqttInstance.getInstance().getType()) {
                     //登录失败
                     Log.d("test", "登录失败");
                 } else {
                     Log.d("test", "登录成功");
-                    PushInterface pushInterface = MqttInstance.getInstance().getPushInterface();
+                    pushInterface = MqttInstance.getInstance().getPushInterface();
                     if (pushInterface != null) {
                         //1.获取个人信息
                         String userInfo = pushInterface.getUserInfo();
                         Log.d("test", "userInfo = " + userInfo);
 
-                        //2.获取群组信息
-                        String groupInfo = pushInterface.getGroupList();
-                        Log.d("test", "groupInfo = " + groupInfo);
+                        //2.获取群组信息 ug_id=108=开维小一1班
+                        String grouplist = pushInterface.getGroupList();
+                        Log.d("test", "grouplist = " + grouplist);
 
                         //3.获取实时聊天信息
                         client.register(RegisterType.MESSAGE, new TopicProcessService() {
@@ -76,9 +79,35 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d("test", "process2 message =" + message);
                             }
                         });
+
+                        //5. 获取群信息。。。其实和2是一样的
+                        String groupinfo = pushInterface.getGroupInfo("108");
+                        Log.d("test", "group 108 info = " + groupinfo);
+
+                        //6. 获取群成员
+                        String menberlist = pushInterface.groupMemberList("108");
+                        Log.d("test", "menberlist = " + menberlist);
+
+
+                        //7. 获取自己的好友列表
+                        String friendlist = pushInterface.getFriendList();
+                        Log.d("test", "friendlist = " + friendlist);
+
+                        //8.根据uid获取具体用户。参数是uid。有些id是11，有些id是长串
+                        String friendinfo = pushInterface.getFriendInfo("a5a7c79009e011e7a51073e14c3043f0");
+                        Log.d("test", "friendinfo = " + friendinfo);
+
+                        //9. 模糊查用户,参数是nickname。返回是nickname包含"敏"字的人
+                        String searchFriend = pushInterface.searchFriend("敏");
+                        Log.d("test", "searchFriend = " + searchFriend);
+
                     }
                 }
             }
         }.start();
+    }
+
+    public void clickAddFriend(View view) {
+        pushInterface.addFriend("id", "你好，我想和你做朋友");
     }
 }

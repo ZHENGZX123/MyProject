@@ -73,6 +73,7 @@ public class HproseMqttClient extends HproseClient {
 
     final class Request {
         public final ByteBuffer buffer;
+
         public final Promise<ByteBuffer> result = new Promise<ByteBuffer>();
         public final int timeout;
 
@@ -93,7 +94,6 @@ public class HproseMqttClient extends HproseClient {
         if (this.token.equals("")) cli.getLoginerrCbk().process(topicName, null, "401");
     }
 
-
     public void register(String tag, TopicProcessService cbk) {
         RegTopicProcSrv.INSTANCE.subscribe(topicName + "/" + cli.getUserName() + "/" + tag, cbk);
     }
@@ -102,7 +102,6 @@ public class HproseMqttClient extends HproseClient {
         return cli.getId();
     }
 
-
     @Override
     public final void close() {
         cli.close();
@@ -110,8 +109,7 @@ public class HproseMqttClient extends HproseClient {
     }
 
     @Override
-    protected Promise<ByteBuffer> sendAndReceive(ByteBuffer buffer,
-                                                 ClientContext context) {
+    protected Promise<ByteBuffer> sendAndReceive(ByteBuffer buffer, ClientContext context) {
         final InvokeSettings settings = context.getSettings();
         final int id = nextId.incrementAndGet() & 0x7fffffff;
         int timeout = settings.getTimeout();

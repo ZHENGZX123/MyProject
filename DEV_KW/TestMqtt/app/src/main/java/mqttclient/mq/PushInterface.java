@@ -41,25 +41,25 @@ public interface PushInterface {
     /**********************
      * 好友处理
      *************************************/
-    //获取好友列表
+    //获取自己的好友列表
     public String getFriendList();
 
-    //查询好友（可用http来代替避免增加Im查询负担）
+    //查询好友（可用http来代替避免增加Im查询负担）(应该是查询用户)
     public String getFriendInfo(String friendid);
 
-    //模糊查好友
+    //模糊查好友（应该是查用户）
     public String searchFriend(String uname);
 
     //删除好友
     public String deleteFriend(String friendid);
 
-    //根据好友Id请求添加好友
+    //根据好友Id请求
     public String addFriend(String friendid, String remark);
 
-    //确认是否添加好友
+    //确认是否
     public String confirmAddFriend(String friendid, String type);
 
-    //获取添加好友申请
+    //获取申请
     public String getAddFriendApply();
 
     //修改好友信息
