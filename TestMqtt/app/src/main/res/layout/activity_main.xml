@@ -15,5 +15,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="clickStart"
-        android:text="start" />
+        android:text="开始---查询" />
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="clickAddFriend"
+        android:text="添加好友" />
 </LinearLayout>

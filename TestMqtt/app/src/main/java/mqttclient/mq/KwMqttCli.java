@@ -27,7 +27,6 @@ public class KwMqttCli implements MqttCallback {
     private Set<String> cbkwildcard = new HashSet<String>();
     private Map<String, TopicProcessService> cbks = new HashMap<String, TopicProcessService>();
 
-
     public KwMqttCli(int i, String u, String p, TopicProcessService lcbk) {
         clientid = Conf.getInstance().getId() + i;
         username = u;
@@ -35,7 +34,6 @@ public class KwMqttCli implements MqttCallback {
         init(clientid);
         loginerrcbk = lcbk;
     }
-
 
     public TopicProcessService getLoginerrCbk() {
         return loginerrcbk;
