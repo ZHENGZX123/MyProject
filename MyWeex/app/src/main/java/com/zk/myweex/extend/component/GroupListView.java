@@ -92,8 +92,6 @@ public class GroupListView extends WXComponent<ListView> {
                         PushInterface pushInterface = MqttInstance.getInstance().getPushInterface();
                         //登陆成功后必须先执行此方法
                         getUserInfo(pushInterface);
-
-
                         if (pushInterface != null) {
                             MainListDao.saveGroupList(pushInterface.getGroupList(), DaoType.SESSTIONTYPE.GROUP);
                             client.register(RegisterType.MESSAGE, new TopicProcessService() {
