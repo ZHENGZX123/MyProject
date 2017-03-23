@@ -36,6 +36,7 @@ import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Package;
 import cn.kiway.baas.sdk.model.service.Service;
 import cn.kiway.entity.ZipPackage;
+import cn.kwim.mqttcilent.mqttclient.MqttInstance;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -173,8 +174,10 @@ public class SJEventModule extends WXModule {
     public void logoutSuccess(String url) {
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
 
-        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
+        //这里还要退出mqtt。
+        MqttInstance.getInstance().getPushInterface().logout();
 
+        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
         ScreenManager.getScreenManager().popAllActivityExceptOne(LoginActivity.class);
     }
 
