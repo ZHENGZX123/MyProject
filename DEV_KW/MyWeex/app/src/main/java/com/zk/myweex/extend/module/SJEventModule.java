@@ -159,8 +159,6 @@ public class SJEventModule extends WXModule {
             mWXSDKInstance.getContext().startActivity(i);
             return;
         }
-
-
         Log.d("test", "loginSuccess url = " + url);
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
         try {
