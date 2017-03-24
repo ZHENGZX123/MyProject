@@ -104,7 +104,6 @@ public class WXEventModule extends WXModule {
     @JSMethod(uiThread = true)
     public void teachClass(String classId, JSCallback callback) {
         Log.d("test", "teachClass classid = " + classId);
-
         //判断当前SSID，相等就返回1。不等就设置wifi
     }
 

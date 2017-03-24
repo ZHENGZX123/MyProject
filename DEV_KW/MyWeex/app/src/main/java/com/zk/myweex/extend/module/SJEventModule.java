@@ -153,7 +153,6 @@ public class SJEventModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void loginSuccess(String url) {
-
         if (false) {
             BaseHttpRequest.JSESSIONID = url;
             Intent i = new Intent(mWXSDKInstance.getContext(), HeizInfoActivity.class);
@@ -179,11 +178,13 @@ public class SJEventModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void logoutSuccess(String url) {
+        try {
+            //这里还要退出mqtt。
+            MqttInstance.getInstance().getPushInterface().logout();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
-
-        //这里还要退出mqtt。
-        MqttInstance.getInstance().getPushInterface().logout();
-
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
         ScreenManager.getScreenManager().popAllActivityExceptOne(LoginActivity.class);
     }
