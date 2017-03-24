@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string name="app_name">MyWeex</string>
+<!--幼教园丁-->
+    <string name="fasongwifi">绑定Wifi网络</string>
+    <string name="wifiname">Wifi名字</string>
+    <string name="wifips">Wifi密码</string>
+    <string name="wifity">加密类型</string>
+    <string name="darkscreen">屏幕变暗</string>
+    <string name="brightenscreen">屏幕变亮</string>
+    <string name="next">下一页</string>
+    <string name="last">上一页</string>
+    <string name="pause">暂停</string>
+    <string name="send_wifi">绑定wifi</string>
+    <string name="no_send_wifi">不绑定wifi</string>
+    <string name="wxts">温馨提示：1：请先确保与盒子在同个wifi环境下。2:请确保盒子的资源与所要上课的班级对应。3：换取卡资源后，如盒子上方显示资源不对时,请重启盒子</string>
+    <string name="qsrwmm">请输入密码</string>
+    <string name="bztx">不绑定</string>
+    <string name="network_no_k">网络名字不能为空</string>
+    <string name="run_yz_ps">开始验证密码</string>
+    <string name="password">请输入密码</string>
+    <string name="ps_error">密码错误</string>
+    <string name="mysj">没有相关内容</string>
+    <string name="connect_box">连接盒子</string>
+    <string name="go_class">我要上课</string>
+    <string name="zhuke">主课</string>
+    <string name="weike">微课</string>
+    <string name="open">展开</string>
+    <string name="close">收起</string>
+    <string name="resume">继续</string>
+    <string name="sure_exit">确定退出么?</string>
+    <string name="teacher_gold">教学目标</string>
+    <string name="teacher_really">教学准备</string>
+    <string name="see_golde">查看教案</string>
+    <string name="first_video">已经是第一个了</string>
+    <string name="last_video">这是最后一个了</string>
+    <string name="video">控制电视声音的大小</string>
+    <string name="exit_session">确定退出上课</string>
+    <string name="exit_this_session">确定退出本节课 </string>
+    <string name="ip">192.168.43.1</string>
+    <string name="s_class">小班</string>
+    <string name="m_class">中班</string>
+    <string name="h_class">大班</string>
+    <string name="l_class">大大班</string>
+    <string name="now_exit">正在退出</string>
+    <string name="jmle_error">加密类型错误</string>
+    <string name="send_wifi_info">发送Wifi信息</string>
+    <string name="lzs">连接断开，正在尝试连接，请稍后再试</string>
+    <string name="yljdjyw">已连接到局域网</string>
+    <string name="zzljwl">正在连接网络</string>
+    <string name="fasongchengg">发送成功</string>
+    <string name="fasongshibai">发送失败</string>
+    <string name="conntecting">连接中，请稍后</string>
+    <string name="open_wifi">开放/无加密</string>
+    <string name="WEP">WEP</string>
+    <string name="WPA">WPA/WPA2 PSK</string>
+    <string name="dj_session">点击上课</string>
+    <string name="scan_session">扫码上课</string>
+    <string name="no_resource">没有资源文件</string>
+    <string name="box_no_resource">盒子没有资源,无法上课</string>
+    <string name="box_phone_diffent">盒子资源为%s,与所选班级不对应，无法上课</string>
+    <string name="kcml">课程目录</string>
+    <string name="kcjj">课程简介</string>
+    <string name="session_plans">所有课程</string>
+    <string name="session_db">我的课程</string>
+    <string name="teacher_detail">老师详情</string>
+    <string name="cancle">取消</string>
+    <string name="sure">确定</string>
+    <string name="sessioning">努力上课中</string>
+    <string name="ser_bi">服务繁忙,请重试</string>
+    <string name="download">玩命加载中</string>
+    <string name="jxjy">教学建议</string>
+    <string name="ajlm">早教栏目</string>
+    <string name="kcln">课程理念</string>
+    <string name="qsrgjz">请输入关键字</string>
+    <string name="no_session">没有相关课程</string>
+</resources>
+
