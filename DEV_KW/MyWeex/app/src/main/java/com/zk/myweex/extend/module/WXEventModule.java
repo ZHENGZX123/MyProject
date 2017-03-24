@@ -195,7 +195,6 @@ public class WXEventModule extends WXModule {
     @JSMethod()
     public void AddClass(String str, JSCallback callback) {
         //这个是做什么的？
-
         //跳到一个页面去了，QRCode_ViewController
     }
 
@@ -227,12 +226,9 @@ public class WXEventModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void teaching(String url) {
-
-        BaseHttpRequest.JSESSIONID = url;
         Log.d("test", "teaching url = " + url);
-        //我要上课，要什么参数。
+        BaseHttpRequest.JSESSIONID = url;
         Intent i = new Intent(mWXSDKInstance.getContext(), HeizInfoActivity.class);
-
         mWXSDKInstance.getContext().startActivity(i);
     }
 

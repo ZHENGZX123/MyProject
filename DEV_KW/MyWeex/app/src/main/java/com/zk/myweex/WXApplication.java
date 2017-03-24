@@ -2,7 +2,9 @@ package com.zk.myweex;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -256,5 +258,11 @@ public class WXApplication extends App {
                         new BaseImageDownloader(this, 5 * 1000, 30 * 1000)) // connectTimeout
                 /* .writeDebugLogs() */.build(); // Remove for release app
         ImageLoader.getInstance().init(config);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 }
