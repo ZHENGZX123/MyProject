@@ -143,7 +143,6 @@ public class WXEventModule extends WXModule {
 
     @JSMethod()
     public void Publish(String str, JSCallback callback) {
-        //这个是做什么的,调了一个http去做上传。。。
         Log.d("test", "publish str = " + str);
 
         try {
@@ -152,6 +151,10 @@ public class WXEventModule extends WXModule {
             String jsessionid = obj.getString("jsessionid");
             String content = obj.getString("content");
             org.json.JSONArray img_url = obj.getJSONArray("img_url");
+            if (img_url.length() == 0) {
+                toast("请先上传图片");
+                return;
+            }
             String classes = obj.getString("classes");
 
 
@@ -193,8 +196,12 @@ public class WXEventModule extends WXModule {
 
     @JSMethod()
     public void AddClass(String str, JSCallback callback) {
-        //这个是做什么的？
-        //跳到一个页面去了，QRCode_ViewController
+        //跳去扫码，然后呢？
+    }
+
+    @JSMethod()
+    public void CreateGroup(String str, JSCallback callback) {
+        //跳去扫码，然后呢？
     }
 
 
