@@ -39,6 +39,8 @@ import cn.kiway.entity.ZipPackage;
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import yjpty.teaching.acitivity.HeizInfoActivity;
+import yjpty.teaching.http.BaseHttpRequest;
 
 
 public class SJEventModule extends WXModule {
@@ -151,12 +153,17 @@ public class SJEventModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void loginSuccess(String url) {
+
+        if (false) {
+            BaseHttpRequest.JSESSIONID = url;
+            Intent i = new Intent(mWXSDKInstance.getContext(), HeizInfoActivity.class);
+            mWXSDKInstance.getContext().startActivity(i);
+            return;
+        }
+
+
         Log.d("test", "loginSuccess url = " + url);
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
-
-        //{"pageUrl":"file://assets/yjpt/weex_jzd/index.js","userPwd":"123456","userName":"13510530146","jsessionid":"7BAB1B417FDF277FDA96692AC2AFF535","userType":"1"}
-
-
         try {
             String userName = new JSONObject(url).getString("userName");
             String userPwd = new JSONObject(url).getString("userPwd");

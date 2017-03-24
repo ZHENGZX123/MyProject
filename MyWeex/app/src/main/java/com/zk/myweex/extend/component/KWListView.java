@@ -5,7 +5,6 @@ package com.zk.myweex.extend.component;
  */
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +20,6 @@ import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXVContainer;
 import com.zk.myweex.R;
-import com.zk.myweex.activity.EmptyActivity;
 
 import java.util.ArrayList;
 
