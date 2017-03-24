@@ -380,6 +380,7 @@ public class WXStreamModule extends WXModule {
                             resp.put("data", null);
                         } else {
                             String respData = readAsString(response.originalData, headers != null ? getHeader(headers, "Content-Type") : "");
+                            Log.d("test", "headers = " + headers);
 
                             //保存cookie
                             //JSESSIONID=2b1ccd02-4eb4-49d8-8760-f4e67c1e5bc7; Path=/yjpt; HttpOnly
