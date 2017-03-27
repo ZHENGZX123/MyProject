@@ -191,8 +191,6 @@ public class WXEventModule extends WXModule {
 
     @JSMethod()
     public void AddClass(String str, JSCallback callback) {
-        //跳去扫码，然后呢？   ios的代码是QRCode_ViewController
-//        callback(@{@"result":result,@"classId":classId,@"schoolId":schoolId,@"classname":className}
         Log.d("test", "addclass str = " + str);
         this.scanCallback = callback;
         ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), CaptureActivity.class), 9999);
@@ -227,11 +225,20 @@ public class WXEventModule extends WXModule {
             String result = data.getStringExtra("result");
             Toast.makeText(mWXSDKInstance.getContext(), "扫描到的是" + result, Toast.LENGTH_SHORT).show();
             //扫描二维码，扫描后的数据返回给js
-
-            //要小郑帮忙
-//            HashMap map = new HashMap();
-//            map.put("result" , result);
-
+            //http://192.168.8.206:8180/yjpt/?&ref=class&classid=57&schoolId=129&classname=
+            String[] splits = result.split("&");
+            if (splits.length < 5) {
+                return;
+            }
+            String classId = splits[2].split("=")[1];
+            String schoolId = splits[2].split("=")[1];
+            String classname = splits[2].split("=")[1];
+            HashMap map = new HashMap();
+            map.put("result", "1");
+            map.put("classId", classId);
+            map.put("schoolId", schoolId);
+            map.put("classname", classname);
+            this.scanCallback.invoke(map);
             //this.scanCallback callback(@{@"result":result,@"classId":classId,@"schoolId":schoolId,@"classname":className}
         }
     }
