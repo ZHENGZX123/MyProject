@@ -37,7 +37,7 @@ dependencies {
     compile 'com.android.support:design:23.2.1'
     compile 'com.android.support:support-annotations:23.2.1'
     compile 'com.facebook.fresco:fresco:0.12.0'
-    compile project(':zxing')
+//    compile project(':zxing')
     compile project(':IM')
 
 }

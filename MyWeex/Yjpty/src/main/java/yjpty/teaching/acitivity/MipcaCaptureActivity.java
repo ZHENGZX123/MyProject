@@ -148,8 +148,10 @@ public class MipcaCaptureActivity extends BaseActivity implements
         mQrLineView.setAnimation(mAnimation);
         findViewById(R.id.for_photos).setOnClickListener(this);
         dialog = new NewVersionDialog(this, this);
-        if (bundle.getInt(IConstant.BUNDLE_PARAMS) == 1) // 1为上课动作
-            findViewById(R.id.for_photos).setVisibility(View.GONE);
+        if (bundle!=null) {
+            if (bundle.getInt(IConstant.BUNDLE_PARAMS) == 1) // 1为上课动作
+                findViewById(R.id.for_photos).setVisibility(View.GONE);
+        }
     }
 
     boolean flag = true;
@@ -209,7 +211,7 @@ public class MipcaCaptureActivity extends BaseActivity implements
                             } else {
                                 Message m = mHandler.obtainMessage();
                                 m.what = PARSE_BARCODE_FAIL;
-                                m.obj ="二维码错误";
+                                m.obj = "二维码错误";
                                 mHandler.sendMessage(m);
                             }
                         }
@@ -429,6 +431,11 @@ public class MipcaCaptureActivity extends BaseActivity implements
             } else {
                 scan();
             }
+        } else {
+            Intent i = new Intent();
+            i.putExtra("result", result);
+            setResult(RESULT_OK, i);
+            finish();
         }
     }
 
