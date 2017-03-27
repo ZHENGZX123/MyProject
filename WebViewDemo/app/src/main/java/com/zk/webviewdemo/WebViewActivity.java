@@ -1,6 +1,9 @@
 package com.zk.webviewdemo;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -30,6 +33,7 @@ public class WebViewActivity extends AppCompatActivity {
     private RelativeLayout rl;
     private TextView title;
     private ProgressBar pb;
+    private ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,9 @@ public class WebViewActivity extends AppCompatActivity {
         rl = (RelativeLayout) findViewById(R.id.rl);
         title = (TextView) findViewById(R.id.title);
         pb = (ProgressBar) findViewById(R.id.pb);
+        pd = new ProgressDialog(this);
+        pd.setMessage("正在下载，请稍等");
+        pd.setCancelable(false);
 
 
         WebSettings settings = wv.getSettings();
@@ -55,7 +62,7 @@ public class WebViewActivity extends AppCompatActivity {
 
         String url = getSharedPreferences("webview", 0).getString("url", "http://192.168.8.6:8280/weex/yqyd_xs.zip/yqyd/index/index.html");
         et.setText(url);
-        clickGo(null);
+//        clickGo(null);
 
         //覆盖WebView默认使用第三方或系统默认浏览器打开网页的行为，使网页用WebView打开
         wv.setWebViewClient(new WebViewClient() {
@@ -116,6 +123,7 @@ public class WebViewActivity extends AppCompatActivity {
         rl.setVisibility(View.GONE);
 
         if (url.contains("zip")) {
+            //询问是否替换
             downloadFile(url);
         } else {
             wv.loadUrl(url);
@@ -123,66 +131,96 @@ public class WebViewActivity extends AppCompatActivity {
     }
 
     private void downloadFile(final String url) {
-
-
         new Thread() {
             @Override
             public void run() {
+                showPD();
+
                 final String root = "/mnt/sdcard/webview/";
                 if (!new File(root).exists()) {
                     new File(root).mkdirs();
                 }
-
                 //http://192.168.31.6/a/test.zip/aaa/ddd.html
                 int index = url.indexOf("zip") + 3;
-                String zipUrl = url.substring(0, index);
-
-
+                final String zipUrl = url.substring(0, index);
                 final String fileName = new File(zipUrl).getName();
-
                 final String route = url.replace(zipUrl, "");
-
                 final String filePath = root + fileName;
                 if (new File(filePath).exists()) {
-                    //如果已存在，直接读取
-                    load(filePath, route);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(WebViewActivity.this);
+                            builder.setMessage("包已存在，是否替换旧的包？");
+                            builder.setTitle("提示");
+                            builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+                                            new File(filePath).delete();
+                                            FileUtils.delFolder(filePath.replace(".zip", ""));
+                                            try {
+                                                doDownload(zipUrl, root, fileName, filePath, route);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                                dismissPD();
+                                            }
+                                        }
+                                    }.start();
+                                }
+                            });
+                            builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    load(filePath, route);
+                                }
+                            });
+                            builder.create().show();
+                        }
+                    });
                 } else {
-                    int ret = new HttpDownload().downFile(zipUrl, root, fileName);
-                    Log.d("test", "download ret = " + ret);
-                    if (ret != 0) {
-                        toast("下载失败，请稍后再试");
-                        return;
+                    try {
+                        doDownload(zipUrl, root, fileName, filePath, route);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        dismissPD();
                     }
-                    //下载完成后解压
-                    unZip(filePath);
-                    //加载路径下的index.html
-                    load(filePath, route);
                 }
             }
         }.start();
     }
 
-    private void unZip(String filePath) {
-        try {
+    private void doDownload(String zipUrl, String root, String fileName, String filePath, String route) throws Exception {
+        int ret = new HttpDownload().downFile(zipUrl, root, fileName);
+        Log.d("test", "download ret = " + ret);
+        if (ret != 0) {
+            toast("下载失败，请稍后再试");
+            throw new Exception();
+        }
+        //下载完成后解压
+        unZip(filePath);
+        //加载路径下的index.html
+        load(filePath, route);
+    }
 
-
-            ZipFile zFile = new ZipFile(filePath); // 首先创建ZipFile指向磁盘上的.zip文件
-            zFile.setFileNameCharset("GBK"); // 设置文件名编码，在GBK系统中需要设置
-            if (!zFile.isValidZipFile()) { // 验证.zip文件是否合法，包括文件是否存在、是否为zip文件、是否被损坏等
-                throw new ZipException();
-            }
-            File destDir = new File(filePath.replace(".zip", "")); // 解压目录
-            if (destDir.isDirectory() && !destDir.exists()) {
-                destDir.mkdir();
-            }
+    private void unZip(String filePath) throws Exception {
+        ZipFile zFile = new ZipFile(filePath); // 首先创建ZipFile指向磁盘上的.zip文件
+        zFile.setFileNameCharset("GBK"); // 设置文件名编码，在GBK系统中需要设置
+        if (!zFile.isValidZipFile()) { // 验证.zip文件是否合法，包括文件是否存在、是否为zip文件、是否被损坏等
+            throw new ZipException();
+        }
+        File destDir = new File(filePath.replace(".zip", "")); // 解压目录
+        if (destDir.isDirectory() && !destDir.exists()) {
+            destDir.mkdir();
+        }
 //            if (zFile.isEncrypted()) {
 //                zFile.setPassword(passwd.toCharArray()); // 设置密码
 //            }
-            zFile.extractAll(destDir.getAbsolutePath()); // 将文件抽出到解压目录(解压)
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        zFile.extractAll(destDir.getAbsolutePath()); // 将文件抽出到解压目录(解压)
     }
 
     private void load(final String filePath, final String route) {
@@ -190,6 +228,26 @@ public class WebViewActivity extends AppCompatActivity {
             @Override
             public void run() {
                 wv.loadUrl(("file://" + filePath + route).replace(".zip", ""));
+                dismissPD();
+            }
+        });
+    }
+
+    private void showPD() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pd.show();
+            }
+        });
+    }
+
+
+    private void dismissPD() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pd.dismiss();
             }
         });
     }
