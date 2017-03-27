@@ -221,150 +221,152 @@ import java.util.zip.ZipInputStream;
 
 public class WXFileUtils {
 
-  /**
-   * Load file in asset directory.
-   * @param path FilePath
-   * @param context Weex Context
-   * @return the Content of the file
-   */
-  public static String loadAsset(String path, Context context) {
-    if (context == null || TextUtils.isEmpty(path)) {
-      return null;
-    }
-    InputStream inputStream = null;
-    BufferedReader bufferedReader = null;
-    try {
-      inputStream = context.getAssets().open(path);
-      StringBuilder builder = new StringBuilder(inputStream.available() + 10);
-      bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-      char[] data = new char[4096];
-      int len = -1;
-      while ((len = bufferedReader.read(data)) > 0) {
-        builder.append(data, 0, len);
-      }
-
-      return builder.toString();
-    } catch (IOException e) {
-      e.printStackTrace();
-      WXLogUtils.e("", e);
-    } finally {
-      try {
-        if (bufferedReader != null)
-          bufferedReader.close();
-      } catch (IOException e) {
-        WXLogUtils.e("WXFileUtils loadAsset: ", e);
-      }
-      try {
-        if (inputStream != null)
-          inputStream.close();
-      } catch (IOException e) {
-        WXLogUtils.e("WXFileUtils loadAsset: ", e);
-      }
-    }
-
-    return "";
-  }
-
-  public static String readSDCardFile(String path, Context context) {
-    if (path == null || context == null) {
-      return null;
-    }
-    StringBuilder builder;
-    try {
-      File f = new File(path);
-
-      InputStream in = new FileInputStream(f);
-
-      builder = new StringBuilder(in.available() + 10);
-
-      BufferedReader localBufferedReader = new BufferedReader(new InputStreamReader(in));
-      char[] data = new char[2048];
-      int len = -1;
-      while ((len = localBufferedReader.read(data)) > 0) {
-        builder.append(data, 0, len);
-      }
-      localBufferedReader.close();
-      if (in != null) {
-        try {
-          in.close();
-        } catch (IOException e) {
-          WXLogUtils.e("WXFileUtils loadAsset: ", e.toString());
+    /**
+     * Load file in asset directory.
+     *
+     * @param path    FilePath
+     * @param context Weex Context
+     * @return the Content of the file
+     */
+    public static String loadAsset(String path, Context context) {
+        if (context == null || TextUtils.isEmpty(path)) {
+            return null;
         }
-      }
-      return builder.toString();
+        InputStream inputStream = null;
+        BufferedReader bufferedReader = null;
+        try {
+            inputStream = context.getAssets().open(path);
+            StringBuilder builder = new StringBuilder(inputStream.available() + 10);
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            char[] data = new char[4096];
+            int len = -1;
+            while ((len = bufferedReader.read(data)) > 0) {
+                builder.append(data, 0, len);
+            }
 
-    } catch (IOException e) {
-      e.printStackTrace();
-      WXLogUtils.e("", e.toString());
+            return builder.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            WXLogUtils.e("", e);
+        } finally {
+            try {
+                if (bufferedReader != null)
+                    bufferedReader.close();
+            } catch (IOException e) {
+                WXLogUtils.e("WXFileUtils loadAsset: ", e);
+            }
+            try {
+                if (inputStream != null)
+                    inputStream.close();
+            } catch (IOException e) {
+                WXLogUtils.e("WXFileUtils loadAsset: ", e);
+            }
+        }
+
+        return "";
     }
 
-    return "";
-  }
+    public static String readSDCardFile(String path, Context context) {
+        if (path == null || context == null) {
+            return null;
+        }
+        StringBuilder builder;
+        try {
+            File f = new File(path);
 
-  //传进来的是js文件的路径
-  public static String readFileInZip(String file) {
-    int index = file.indexOf("zip");
-    String zipPath = file.substring(0, index + 3);
-    System.out.println(zipPath);
+            InputStream in = new FileInputStream(f);
 
-    String targetFile = file.replace(zipPath, "");
-    System.out.println(targetFile);
+            builder = new StringBuilder(in.available() + 10);
 
-    try {
-      ZipFile zf = new ZipFile(zipPath);
-      System.out.println(zf.size());
-      InputStream in = new BufferedInputStream(new FileInputStream(
-              zipPath));
-      ZipInputStream zin = new ZipInputStream(in);
-
-      ZipEntry ze;
-      StringBuilder sb = new StringBuilder();
-      while ((ze = zin.getNextEntry()) != null) {
-        if (ze.isDirectory()) {
-          System.out.println("directory = " + ze.getName());
-        } else {
-          System.out.println("file = " + ze.getName());
-          if (targetFile.contains(ze.getName())) {
-            BufferedReader localBufferedReader = new BufferedReader(
-                    new InputStreamReader(zf.getInputStream(ze)));
+            BufferedReader localBufferedReader = new BufferedReader(new InputStreamReader(in));
             char[] data = new char[2048];
             int len = -1;
             while ((len = localBufferedReader.read(data)) > 0) {
-              sb.append(data, 0, len);
+                builder.append(data, 0, len);
             }
-          }
-        }
-      }
-      zin.closeEntry();
-      System.out.println("sb = " + sb.toString());
-      return sb.toString();
-    } catch (Exception e) {
-      e.printStackTrace();
-      System.out.println("e = " + e.toString());
-      return "";
-    }
-  }
+            localBufferedReader.close();
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    WXLogUtils.e("WXFileUtils loadAsset: ", e.toString());
+                }
+            }
+            return builder.toString();
 
-  public static boolean saveFile(String path, byte[] content, Context context) {
-    if (TextUtils.isEmpty(path) || content == null || context == null) {
-      return false;
-    }
-    FileOutputStream outStream = null;
-    try {
-      outStream = new FileOutputStream(path);
-      outStream.write(content);
-      return true;
-    } catch (Exception e) {
-      WXLogUtils.e("WXFileUtils saveFile: " + WXLogUtils.getStackTrace(e));
-    } finally {
-      if (outStream != null) {
-        try {
-          outStream.close();
         } catch (IOException e) {
-          e.printStackTrace();
+            e.printStackTrace();
+            WXLogUtils.e("", e.toString());
         }
-      }
+
+        return "";
     }
-    return false;
-  }
+
+    //传进来的是js文件的路�?
+    public static String readFileInZip(String file) {
+        int index = file.indexOf("zip");
+        String zipPath = file.substring(0, index + 3);
+        System.out.println(zipPath);
+
+        String targetFile = file.replace(zipPath, "");
+        System.out.println(targetFile);
+
+        try {
+            ZipFile zf = new ZipFile(zipPath);
+            System.out.println(zf.size());
+            InputStream in = new BufferedInputStream(new FileInputStream(
+                    zipPath));
+            ZipInputStream zin = new ZipInputStream(in);
+
+            ZipEntry ze;
+            StringBuilder sb = new StringBuilder();
+            while ((ze = zin.getNextEntry()) != null) {
+                if (ze.isDirectory()) {
+                    System.out.println("directory = " + ze.getName());
+                } else {
+                    System.out.println("file = " + ze.getName());
+                    if (targetFile.contains(ze.getName())) {
+                        BufferedReader localBufferedReader = new BufferedReader(
+                                new InputStreamReader(zf.getInputStream(ze)));
+                        char[] data = new char[2048];
+                        int len = -1;
+                        while ((len = localBufferedReader.read(data)) > 0) {
+                            sb.append(data, 0, len);
+                        }
+                        break;
+                    }
+                }
+            }
+            zin.closeEntry();
+            System.out.println("sb = " + sb.toString());
+            return sb.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("e = " + e.toString());
+            return "";
+        }
+    }
+
+    public static boolean saveFile(String path, byte[] content, Context context) {
+        if (TextUtils.isEmpty(path) || content == null || context == null) {
+            return false;
+        }
+        FileOutputStream outStream = null;
+        try {
+            outStream = new FileOutputStream(path);
+            outStream.write(content);
+            return true;
+        } catch (Exception e) {
+            WXLogUtils.e("WXFileUtils saveFile: " + WXLogUtils.getStackTrace(e));
+        } finally {
+            if (outStream != null) {
+                try {
+                    outStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false;
+    }
 }
