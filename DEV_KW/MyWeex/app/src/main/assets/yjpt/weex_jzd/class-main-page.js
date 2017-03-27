@@ -4409,6 +4409,15 @@
 	                event.QRScan({
 	                    classId: classId
 	                }, function (result) {
+
+
+	     var modal = __weex_require__('@weex-module/modal');
+              modal.alert({
+                  message:result,
+                  okTitle:'好的'
+               },function(){
+          });
+
 	                    if (result == '1') {
 	                        Utils.fetch({
 	                            url: '/app/class/' + classId + '/box',
@@ -4441,6 +4450,13 @@
 	                                }
 	                            }
 	                        });
+	                    }else{
+	                        var modal = __weex_require__('@weex-module/modal');
+                                          modal.alert({
+                                              message:result,
+                                              okTitle:' != 1'
+                                           },function(){
+                                      });
 	                    }
 	                });
 	            } else {
