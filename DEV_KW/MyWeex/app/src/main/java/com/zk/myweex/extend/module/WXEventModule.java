@@ -122,7 +122,6 @@ public class WXEventModule extends WXModule {
     @JSMethod(uiThread = true)
     public void ControllBox(String dic) {
         Log.d("test", "ControllBox dic = " + dic);
-
         //跳到另一个控制页面
     }
 
@@ -144,7 +143,6 @@ public class WXEventModule extends WXModule {
     @JSMethod()
     public void Publish(String str, JSCallback callback) {
         Log.d("test", "publish str = " + str);
-
         try {
             JSONObject obj = new JSONObject(str);
             String url = obj.getString("url");
@@ -156,7 +154,6 @@ public class WXEventModule extends WXModule {
                 return;
             }
             String classes = obj.getString("classes");
-
 
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
@@ -186,8 +183,6 @@ public class WXEventModule extends WXModule {
                     }
                 }
             });
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -196,14 +191,12 @@ public class WXEventModule extends WXModule {
 
     @JSMethod()
     public void AddClass(String str, JSCallback callback) {
-        //跳去扫码，然后呢？
+        //跳去扫码，然后呢？   ios的代码是QRCode_ViewController
+//        callback(@{@"result":result,@"classId":classId,@"schoolId":schoolId,@"classname":className}
+        Log.d("test", "addclass str = " + str);
+        this.scanCallback = callback;
+        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), CaptureActivity.class), 9999);
     }
-
-    @JSMethod()
-    public void CreateGroup(String str, JSCallback callback) {
-        //跳去扫码，然后呢？
-    }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -225,7 +218,21 @@ public class WXEventModule extends WXModule {
             Toast.makeText(mWXSDKInstance.getContext(), "扫描到的是" + result, Toast.LENGTH_SHORT).show();
 
             //扫描二维码，扫描后的数据返回给js
-            //callback(@{@"result":result,@"hCode":Hcode,@"SSID":ssid});
+            // this.scanCallback callback(@{@"result":result,@"hCode":Hcode,@"SSID":ssid});
+        } else if (requestCode == 9999) {
+            //扫描二维码返回
+            if (data == null) {
+                return;
+            }
+            String result = data.getStringExtra("result");
+            Toast.makeText(mWXSDKInstance.getContext(), "扫描到的是" + result, Toast.LENGTH_SHORT).show();
+            //扫描二维码，扫描后的数据返回给js
+
+            //要小郑帮忙
+//            HashMap map = new HashMap();
+//            map.put("result" , result);
+
+            //this.scanCallback callback(@{@"result":result,@"classId":classId,@"schoolId":schoolId,@"classname":className}
         }
     }
 
