@@ -52,15 +52,17 @@ public class MainActivity2 extends TabActivity {
             }
             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", false).commit();
         }
-
+        Log.d("test", "4");
         getDataFromServer();
     }
 
     private void getDataFromServer() {
+        Log.d("test", "getDataFromServer");
         new Thread() {
             @Override
             public void run() {
                 try {
+                    Log.d("test", "3");
                     int tabcount = Realm.getDefaultInstance().where(TabEntity.class).findAll().size();
                     List<Service> services = new Service().find(new KWQuery().like("id", "tab%"));
                     //第一次，初始化tab
@@ -86,11 +88,12 @@ public class MainActivity2 extends TabActivity {
                         }
                     }
 
-
+                    Log.d("test", "1");
                     VersionUpManager manager = new VersionUpManager();
                     manager.init(getApplication());
                     manager.getLocalVersion();
                     manager.getRemoteVersion();
+                    Log.d("test", "2");
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.d("test", "no net ... ");
@@ -99,6 +102,7 @@ public class MainActivity2 extends TabActivity {
                         @Override
                         public void run() {
                             RealmResults<TabEntity> tabs = Realm.getDefaultInstance().where(TabEntity.class).findAll();
+                            Log.d("test", "main initView");
                             initView(tabs);
                         }
                     });
@@ -157,6 +161,7 @@ public class MainActivity2 extends TabActivity {
     }
 
     private void refreshUI(int position) {
+        Log.d("test", "refreshUI = " + position);
         for (int i = 0; i < lls.size(); i++) {
             LinearLayout ll = lls.get(i);
             ImageView iv = (ImageView) ll.findViewById(R.id.iv);

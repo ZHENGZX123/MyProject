@@ -47,6 +47,7 @@ public class GroupListView extends WXComponent<ListView> {
 
     @Override
     protected ListView initComponentHostView(@NonNull Context context) {
+        Log.d("test", "ListView initComponentHostView");
         this.lv = new ListView(context);
         this.adapter = new HomeSchoolAdapter(getContext());
         this.lv.setAdapter(this.adapter);
@@ -156,6 +157,9 @@ public class GroupListView extends WXComponent<ListView> {
     private void getUserInfo(PushInterface pushInterface) {
         try {
             String userInfo = pushInterface.getUserInfo();
+            if (userInfo == null || userInfo.equals("")) {
+                return;
+            }
             Log.i("个人信息", userInfo + "sssssssss");
             Converse converse = new Gson().fromJson(userInfo, Converse.class);
             if (converse.getStatusCode().equals("200")) {

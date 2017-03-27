@@ -60,13 +60,7 @@
         <activity android:name=".activity.MainActivity2" />
         <activity
             android:name=".activity.LoginActivity"
-            android:launchMode="singleTask">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:launchMode="singleTask"></activity>
 
         <receiver android:name=".broadcast.NetChangeReceiver">
             <intent-filter>
@@ -74,6 +68,13 @@
             </intent-filter>
         </receiver>
 
+        <activity android:name=".activity.WelcomeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
