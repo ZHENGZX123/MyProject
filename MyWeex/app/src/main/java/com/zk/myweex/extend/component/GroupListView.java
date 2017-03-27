@@ -61,7 +61,7 @@ public class GroupListView extends WXComponent<ListView> {
         RealmChangeListener<Realm> realmListener = new RealmChangeListener<Realm>() {
             @Override
             public void onChange(Realm element) {
-                Log.d("test", "refresh333");
+                Log.d("mqtt", "refresh333");
                 refreshUI();
             }
         };
@@ -78,16 +78,16 @@ public class GroupListView extends WXComponent<ListView> {
                 MqttInstance.getInstance().conMqtt(userName, userPwd, new MqttInstance.LoginImlisener() {
                     @Override
                     public void isLogin() {
-                        Log.d("test", "isLogin");
+                        Log.d("mqtt", "isLogin");
                         return;
                     }
                 });
                 HproseMqttClient client = MqttInstance.getInstance().getHproseMqttClient();
                 if (!MqttInstance.getInstance().getType()) {
                     //登录失败
-                    Log.d("test", "登录失败");
+                    Log.d("mqtt", "登录失败");
                 } else {
-                    Log.d("test", "登录成功");
+                    Log.d("mqtt", "登录成功");
                     try {
                         PushInterface pushInterface = MqttInstance.getInstance().getPushInterface();
                         //登陆成功后必须先执行此方法
@@ -97,7 +97,7 @@ public class GroupListView extends WXComponent<ListView> {
                             client.register(RegisterType.MESSAGE, new TopicProcessService() {
                                 @Override
                                 public void process(String topic, MqttMessage message, String time) {
-                                    Log.d("test", "process1 message =" + message);//接到聊天消息。。。。
+                                    Log.d("mqtt", "process1 message =" + message);//接到聊天消息。。。。
                                     MessageDao.saveRecMessage(message.toString());
                                     Map map = new Gson().fromJson(message.toString(), Map.class);
                                     String id = map.get("recvid").toString().replace(".0", "");
@@ -108,7 +108,7 @@ public class GroupListView extends WXComponent<ListView> {
                                     int num = MessageDao.unreadCount(id, sendtype);
                                     MainListDao.updateGroupList(num + "", Dao.getKey(id), content, type, name);
 
-                                    Log.d("test", "refreshUI111");
+                                    Log.d("mqtt", "refreshUI111");
                                     refreshUI();
                                 }
                             });
@@ -116,7 +116,7 @@ public class GroupListView extends WXComponent<ListView> {
                             client.register(RegisterType.RECALLMESSAGE, new TopicProcessService() {
                                 @Override
                                 public void process(String topic, MqttMessage message, String time) {
-                                    Log.d("test", "process2 message =" + message);
+                                    Log.d("mqtt", "process2 message =" + message);
                                     Map map = new Gson().fromJson(message.toString(), Map.class);
                                     String msgId = map.get("msgid").toString().replace(".0", "");
                                     MessageDao.recallMsg(msgId);
@@ -126,7 +126,7 @@ public class GroupListView extends WXComponent<ListView> {
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
-                        Log.d("test", "refreshUI222");
+                        Log.d("mqtt", "refreshUI222");
                         refreshUI();
                     }
                 }
