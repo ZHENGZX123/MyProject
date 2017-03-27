@@ -216,7 +216,7 @@ public class WXEventModule extends WXModule {
             Toast.makeText(mWXSDKInstance.getContext(), "扫描到的是" + result, Toast.LENGTH_SHORT).show();
             if (result.endsWith("false")) {
                 Log.d("test", "公网");
-                String SSID = result.split("&")[2].split("=")[1];
+                String SSID = result.split("&")[2]   ;//.split("=")[1];
                 String Hcode = result.split("&")[4].split("=")[1];
 //                self.Scan("1", Hcode, ssid);
                 //扫描二维码，扫描后的数据返回给js
