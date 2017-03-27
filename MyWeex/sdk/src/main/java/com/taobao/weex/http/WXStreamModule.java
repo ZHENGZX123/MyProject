@@ -332,6 +332,7 @@ public class WXStreamModule extends WXModule {
         }
         String method = optionsObj.getString("method");
         String url = optionsObj.getString("url");
+        Log.d("test", "stream url = " + url);
         JSONObject headers = optionsObj.getJSONObject("headers");
         String body = optionsObj.getString("body");
         String type = optionsObj.getString("type");
@@ -372,8 +373,7 @@ public class WXStreamModule extends WXModule {
                         resp.put(STATUS_TEXT, Status.ERR_CONNECT_FAILED);
                     } else {
                         int code = Integer.parseInt(response.statusCode);
-                        Log.d("test", "http code = " + code);
-
+                        Log.d("stream", "http code = " + code);
                         resp.put(STATUS, code);
                         resp.put("ok", (code >= 200 && code <= 299));
                         if (response.originalData == null) {
@@ -381,7 +381,7 @@ public class WXStreamModule extends WXModule {
                         } else {
                             String respData = readAsString(response.originalData, headers != null ? getHeader(headers, "Content-Type") : "");
                             Log.d("test", "headers = " + headers);
-
+                            Log.d("stream", "http data = " + respData);
                             //保存cookie
                             //JSESSIONID=2b1ccd02-4eb4-49d8-8760-f4e67c1e5bc7; Path=/yjpt; HttpOnly
                             try {
@@ -397,7 +397,6 @@ public class WXStreamModule extends WXModule {
                             } catch (Exception e) {
                                 Log.d("test", "save cookie exception  e = " + e.toString());
                             }
-
                             try {
                                 resp.put("data", parseData(respData, options.getType()));
                             } catch (JSONException exception) {
