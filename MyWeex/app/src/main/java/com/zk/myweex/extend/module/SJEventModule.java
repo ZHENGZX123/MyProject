@@ -153,7 +153,7 @@ public class SJEventModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void loginSuccess(String url) {
-        if (true) {
+        if (false) {
             try {
                 BaseHttpRequest.JSESSIONID = new JSONObject(url).getString("jsessionid");
                 Intent i = new Intent(mWXSDKInstance.getContext(), HeizInfoActivity.class);

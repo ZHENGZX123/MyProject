@@ -177,10 +177,10 @@
     <orderEntry type="library" exported="" name="appcompat-v7-25.0.1" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-25.0.1" level="project" />
     <orderEntry type="library" exported="" name="realm-android-library-3.0.0" level="project" />
-    <orderEntry type="module" module-name="zxing" exported="" />
     <orderEntry type="module" module-name="Yjpty" exported="" />
     <orderEntry type="module" module-name="sdk" exported="" />
     <orderEntry type="module" module-name="ImagePicker" exported="" />
+    <orderEntry type="library" exported="" name="core" level="project" />
     <orderEntry type="library" exported="" name="gson-2.2.4" level="project" />
     <orderEntry type="library" exported="" name="okio-1.6.0" level="project" />
     <orderEntry type="library" exported="" name="org.eclipse.paho.client.mqttv3-1.0.2" level="project" />

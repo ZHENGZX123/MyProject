@@ -91,7 +91,7 @@ dependencies {
 
     compile 'com.android.support:multidex:1.0.1'
 
-    compile project(':zxing')
+//    compile project(':zxing')
     compile project(':ImagePicker')
     //fresco
     compile 'com.facebook.fresco:fresco:0.12.0'
