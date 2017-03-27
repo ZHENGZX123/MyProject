@@ -23,7 +23,6 @@ public class MyTabActivity extends SubActivity {
 //    @Override
 //    public void onResume() {
 //        super.onResume();
-//
 //        mInstance.fireGlobalEventCallback("refresh", new HashMap<String, Object>());
 //    }
 }
