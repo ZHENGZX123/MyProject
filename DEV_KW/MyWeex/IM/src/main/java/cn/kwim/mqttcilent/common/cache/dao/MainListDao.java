@@ -101,10 +101,15 @@ public class MainListDao extends Dao {
      * 获得群
      */
     public static RealmResults<MainList> getMainList() {
+        String userId = Global.getInstance()
+                .getUserId();
+        Log.d("test", "userId = " + userId);
+        if (userId == null) {
+            return null;
+        }
         try {
             Realm realm = getRealm();
-            RealmResults<MainList> results = realm.where(MainList.class).equalTo("userId", Global.getInstance()
-                    .getUserId())
+            RealmResults<MainList> results = realm.where(MainList.class).equalTo("userId", userId)
                     .findAll().sort("time", Sort.DESCENDING);
             Log.d("test", results.toString());
             return results;
