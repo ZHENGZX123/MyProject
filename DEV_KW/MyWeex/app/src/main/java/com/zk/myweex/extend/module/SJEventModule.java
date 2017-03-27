@@ -153,16 +153,6 @@ public class SJEventModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void loginSuccess(String url) {
-        if (false) {
-            try {
-                BaseHttpRequest.JSESSIONID = new JSONObject(url).getString("jsessionid");
-                Intent i = new Intent(mWXSDKInstance.getContext(), HeizInfoActivity.class);
-                mWXSDKInstance.getContext().startActivity(i);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return;
-        }
         Log.d("test", "loginSuccess url = " + url);
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
         try {
