@@ -1,6 +1,7 @@
 package com.zk.myweex.extend.module;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -115,7 +116,6 @@ public class WXEventModule extends WXModule {
     public void QRScan(String classId, JSCallback callback) {
         Log.d("test", "QRScan classid = " + classId);
         this.scanCallback = callback;
-
         ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), CaptureActivity.class), 999);
     }
 
@@ -214,9 +214,30 @@ public class WXEventModule extends WXModule {
             }
             String result = data.getStringExtra("result");
             Toast.makeText(mWXSDKInstance.getContext(), "扫描到的是" + result, Toast.LENGTH_SHORT).show();
+            if (result.endsWith("false")) {
+                Log.d("test", "公网");
+                String SSID = result.split("&")[2].split("=")[1];
+                String Hcode = result.split("&")[4].split("=")[1];
+//                self.Scan("1", Hcode, ssid);
+                //扫描二维码，扫描后的数据返回给js
+                HashMap map = new HashMap();
+                map.put("result", "1");
+                map.put("hCode", Hcode);
+                map.put("SSID", SSID);
+                this.scanCallback.invoke(map);
+                // this.scanCallback callback(@{@"result":result,@"hCode":Hcode,@"SSID":ssid});
+            } else {
+                Log.d("test", "请连接公网 弹出Alert。");
+                final AlertDialog.Builder normalDialog =
+                        new AlertDialog.Builder(mWXSDKInstance.getContext());
+                normalDialog.setTitle("提示");
+                normalDialog.setMessage("请连接公网?");
+                normalDialog.setPositiveButton("确定", null);
+                // 显示
+                normalDialog.show();
+            }
 
-            //扫描二维码，扫描后的数据返回给js
-            // this.scanCallback callback(@{@"result":result,@"hCode":Hcode,@"SSID":ssid});
+
         } else if (requestCode == 9999) {
             //扫描二维码返回
             if (data == null) {
@@ -239,10 +260,9 @@ public class WXEventModule extends WXModule {
             map.put("schoolId", schoolId);
             map.put("classname", classname);
             this.scanCallback.invoke(map);
-            //this.scanCallback callback(@{@"result":result,@"classId":classId,@"schoolId":schoolId,@"classname":className}
+            //this.scanCallback callback(@{@"result":`result,@"classId":classId,@"schoolId":schoolId,@"classname":className}
         }
     }
-
 
     @JSMethod(uiThread = true)
     public void teaching(String url) {

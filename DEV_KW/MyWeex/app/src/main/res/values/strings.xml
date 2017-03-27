@@ -2,8 +2,8 @@
 <resources>
 
 
-    <string name="app_name">MyWeex</string>
-<!--幼教园丁-->
+    <string name="app_name">幼教园丁</string>
+    <!--幼教园丁-->
     <string name="fasongwifi">绑定Wifi网络</string>
     <string name="wifiname">Wifi名字</string>
     <string name="wifips">Wifi密码</string>
