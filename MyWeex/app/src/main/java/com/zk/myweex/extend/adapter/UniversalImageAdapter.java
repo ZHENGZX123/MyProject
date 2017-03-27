@@ -215,7 +215,7 @@ import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.adapter.IWXImgLoaderAdapter;
 import com.taobao.weex.common.WXImageStrategy;
 import com.taobao.weex.dom.WXImageQuality;
-import com.zk.myweex.R;
+import com.kiway.yjpt.Teacher.R;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.activity.WXBaseActivity;
 

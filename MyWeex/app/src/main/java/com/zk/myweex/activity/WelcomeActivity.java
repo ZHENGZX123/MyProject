@@ -3,8 +3,7 @@ package com.zk.myweex.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.zk.myweex.R;
+import com.kiway.yjpt.Teacher.R;
 
 public class WelcomeActivity extends Activity {
 

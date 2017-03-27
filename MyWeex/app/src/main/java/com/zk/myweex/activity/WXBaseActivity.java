@@ -216,11 +216,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.kiway.yjpt.Teacher.R;
 import com.taobao.weex.IWXRenderListener;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.common.WXRenderStrategy;
 import com.taobao.weex.utils.WXFileUtils;
-import com.zk.myweex.R;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.utils.AssertUtil;
 import com.zk.myweex.utils.HttpDownload;
