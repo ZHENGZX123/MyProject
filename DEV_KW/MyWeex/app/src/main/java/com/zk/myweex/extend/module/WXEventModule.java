@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.zxing.client.android.CaptureActivity;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -30,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import yjpty.teaching.acitivity.HeizInfoActivity;
+import yjpty.teaching.acitivity.MipcaCaptureActivity;
 import yjpty.teaching.http.BaseHttpRequest;
 
 
@@ -116,7 +116,7 @@ public class WXEventModule extends WXModule {
     public void QRScan(String classId, JSCallback callback) {
         Log.d("test", "QRScan classid = " + classId);
         this.scanCallback = callback;
-        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), CaptureActivity.class), 999);
+        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), MipcaCaptureActivity.class), 999);
     }
 
     @JSMethod(uiThread = true)
@@ -193,7 +193,7 @@ public class WXEventModule extends WXModule {
     public void AddClass(String str, JSCallback callback) {
         Log.d("test", "addclass str = " + str);
         this.scanCallback = callback;
-        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), CaptureActivity.class), 9999);
+        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), MipcaCaptureActivity.class), 9999);
     }
 
     @Override
