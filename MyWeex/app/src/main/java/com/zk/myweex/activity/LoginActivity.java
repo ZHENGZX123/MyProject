@@ -1,7 +1,6 @@
 package com.zk.myweex.activity;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,14 +17,7 @@ public class LoginActivity extends WXBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         renderPage(WXFileUtils.loadAsset("yjpt/weex_jzd/login.js", this), "file://assets/yjpt/weex_jzd/", null);
-
-        if (getSharedPreferences("kiway", 0).getBoolean("login", false)) {
-            startActivity(new Intent(this, MainActivity2.class));
-            finish();
-        }
     }
 
     @Override
