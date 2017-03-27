@@ -40,19 +40,16 @@ public class HomeSchoolAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-
         return list != null ? list.size() : 0;
     }
 
     @Override
     public Object getItem(int position) {
-
         return list.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-
         return position;
     }
 
