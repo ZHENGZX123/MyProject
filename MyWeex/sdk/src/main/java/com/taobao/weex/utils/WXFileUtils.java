@@ -302,7 +302,7 @@ public class WXFileUtils {
         return "";
     }
 
-    //传进来的是js文件的路�?
+    //传进来的是js文件的路径
     public static String readFileInZip(String file) {
         int index = file.indexOf("zip");
         String zipPath = file.substring(0, index + 3);
