@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.kiway.yjpt.Parent">
+    package="com.kiway.yjpt.Teacher">
 
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -29,7 +29,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
 
-    <!--微信支付 -->
+    <!--΢��֧�� -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -67,7 +67,7 @@
         <activity android:name="com.zk.myweex.activity.MainActivity2" />
         <activity
             android:name="com.zk.myweex.activity.LoginActivity"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask" />
 
         <receiver android:name="com.zk.myweex.broadcast.NetChangeReceiver">
             <intent-filter>
@@ -84,6 +84,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name="com.zk.myweex.activity.TestActivity" />
 
         <activity android:name="com.kiway.yjpt.Parent.wxapi.WXPayEntryActivity"></activity>
 

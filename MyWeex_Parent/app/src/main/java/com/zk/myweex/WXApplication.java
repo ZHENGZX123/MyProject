@@ -28,19 +28,12 @@ import com.zk.myweex.extend.adapter.SaveCookiesInterceptor;
 import com.zk.myweex.extend.adapter.UniversalImageAdapter;
 import com.zk.myweex.extend.component.GroupListView;
 import com.zk.myweex.extend.module.ChatEventModule;
-import com.zk.myweex.extend.module.MyHttpCache;
 import com.zk.myweex.extend.module.SJEventModule;
 import com.zk.myweex.extend.module.WXEventModule;
 
 import java.io.File;
 
 import cn.kiway.baas.sdk.Configure;
-import cn.kiway.entity.HttpCache;
-import io.realm.DynamicRealm;
-import io.realm.Realm;
-import io.realm.RealmMigration;
-import io.realm.RealmResults;
-import io.realm.RealmSchema;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -78,24 +71,6 @@ public class WXApplication extends App {
         Configure.getInstance().setPort(4000);
         Configure.getInstance().setRoot("admin");
 
-        //realm初始化
-//        Realm.init(this);
-//        RealmConfiguration config = new RealmConfiguration.Builder().schemaVersion(0).deleteRealmIfMigrationNeeded()
-//                .build();
-//        Realm.setDefaultConfiguration(config);
-
-        //清掉时间差大于1天的数据
-        final long current = System.currentTimeMillis();
-        long current_before_1day = current - 24 * 60 * 60 * 1000;
-        final RealmResults<HttpCache> caches = Realm.getDefaultInstance().where(HttpCache.class).lessThan("requestTime", current_before_1day).findAll();
-        Log.d("test", "temp.count = " + caches.size());
-        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                caches.deleteAllFromRealm();
-            }
-        });
-
         //universal-image-loader初始化
         initImageCache();
 
@@ -109,15 +84,11 @@ public class WXApplication extends App {
 
         //注册自定义组件
         try {
-            WXSDKEngine.registerModule("my_httpcache", MyHttpCache.class);
-
             WXSDKEngine.registerModule("SJevent", SJEventModule.class);
             WXSDKEngine.registerModule("event", WXEventModule.class);
             WXSDKEngine.registerModule("ChatEvent", ChatEventModule.class);
 
-
             WXSDKEngine.registerComponent("chattable", GroupListView.class);
-
         } catch (WXException e) {
             e.printStackTrace();
         }
@@ -190,32 +161,6 @@ public class WXApplication extends App {
         }
         return repo;
     }
-
-    //realm数据库migration
-    RealmMigration migration = new RealmMigration() {
-        @Override
-        public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
-            Log.d("test", "db old = " + oldVersion + " , new = " + newVersion);
-            RealmSchema schema = realm.getSchema();
-            if (oldVersion == 0) {
-//                schema.get("HttpCache").addField("add1", String.class);
-//                oldVersion++;
-            }
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (other == null) {
-                return false;
-            }
-            return getClass() == other.getClass();
-        }
-
-        @Override
-        public int hashCode() {
-            return getClass().hashCode();
-        }
-    };
 
     private void initImageCache() {
         DisplayMetrics displayMetrics = getApplicationContext().getResources()
