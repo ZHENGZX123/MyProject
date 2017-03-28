@@ -39,8 +39,6 @@ import cn.kiway.entity.ZipPackage;
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
 import io.realm.Realm;
 import io.realm.RealmResults;
-import yjpty.teaching.acitivity.HeizInfoActivity;
-import yjpty.teaching.http.BaseHttpRequest;
 
 
 public class SJEventModule extends WXModule {
@@ -170,6 +168,7 @@ public class SJEventModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void logoutSuccess(String url) {
+        Log.d("test", "logoutSuccess");
         try {
             //这里还要退出mqtt。
             MqttInstance.getInstance().getPushInterface().logout();
