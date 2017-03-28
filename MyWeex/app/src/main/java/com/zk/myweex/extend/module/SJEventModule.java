@@ -3,9 +3,7 @@ package com.zk.myweex.extend.module;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
@@ -15,11 +13,8 @@ import com.lzy.imagepicker.view.CropImageView;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
-import com.zk.myweex.WXApplication;
 import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
-import com.zk.myweex.activity.WXPageActivity;
-import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.UploadUtil;
 import com.zk.myweex.utils.Utils;
@@ -32,102 +27,96 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import cn.kiway.baas.sdk.KWQuery;
-import cn.kiway.baas.sdk.model.service.Package;
-import cn.kiway.baas.sdk.model.service.Service;
-import cn.kiway.entity.ZipPackage;
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 
 public class SJEventModule extends WXModule {
 
-    @JSMethod(uiThread = true)
-    public void loadFunction(final String zipName, final JSCallback callback) {
-        Toast.makeText(mWXSDKInstance.getContext(), " loadJSBundle js :" + zipName, Toast.LENGTH_SHORT).show();
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    load(zipName, callback);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
-
-    private void load(final String zipName, final JSCallback callback) throws Exception {
-        Log.d("test", "load name = " + zipName);
-        String path = WXApplication.PATH + zipName;
-        if (new File(path).exists()) {
-            Log.d("test", "存在，直接加载");
-            ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
-            loadJSBundle(zipName, zip.indexPath);
-        } else {
-            Log.d("test", "不存在，下载");
-            Service s = new Service().findOne(new KWQuery().equalTo("id", zipName.replace(".zip", "")));
-            Log.d("test", "s  = " + s.toString());
-            //返回最新的全量包
-            Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
-            Log.d("test", "p = " + p.toString());
-            String baseUrl = s.get("baseUrl").toString();
-            String downloadUrl = p.get("url").toString();
-            String version = p.get("version").toString();
-            downloadJSBundle(zipName, downloadUrl, version, baseUrl);
-        }
-    }
-
-    @JSMethod(uiThread = true)
-    public void deleteFunction(String zipName, JSCallback callback) {
-        String path = "file://" + WXApplication.PATH + zipName;
-        Log.d("test", "path = " + path);
-        if (new File(path).exists()) {
-            Log.d("test", "存在，删除");
-            new File(path).delete();
-            final RealmResults<ZipPackage> results = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findAll();
-            Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    results.clear();
-                }
-            });
-            callback.invoke("delete success");
-        } else {
-            Log.d("test", "不存在，不用管");
-        }
-    }
-
-    //首次下载
-    public void downloadJSBundle(final String zipName, final String downloadUrl, final String version, final String baseUrl) {
-        //1.访问接口，参数是zipName，返回是 name， 下载地址 ， 版本号
-        HttpDownload httpDownload = new HttpDownload();
-        int ret = httpDownload.downFile(downloadUrl, WXApplication.PATH, zipName);
-        Log.d("test", "下载返回值 ret = " + ret);
-        if (ret != 0) {
-            toast("下载失败，请稍后再试");
-            return;
-        }
-        Log.d("test", "下载成功，保存版本号");
-
-        Realm.getDefaultInstance().beginTransaction();
-        ZipPackage zip = Realm.getDefaultInstance().createObject(ZipPackage.class);
-        zip.name = zipName;
-        zip.indexPath = baseUrl;
-        zip.version = version;
-        Realm.getDefaultInstance().commitTransaction();
-        Log.d("test", "下载成功，加载本地sdcard");
-        loadJSBundle(zipName, baseUrl);
-    }
-
-    public void loadJSBundle(String zipName, String baseUrl) {
-        String path = WXApplication.PATH + zipName + "/" + baseUrl;
-        Log.d("test", "loadJSBundle path = " + path);
-        Intent intent = new Intent(mWXSDKInstance.getContext(), WXPageActivity.class);
-        intent.setData(Uri.parse(path));
-        mWXSDKInstance.getContext().startActivity(intent);
-    }
+//    @JSMethod(uiThread = true)
+//    public void loadFunction(final String zipName, final JSCallback callback) {
+//        Toast.makeText(mWXSDKInstance.getContext(), " loadJSBundle js :" + zipName, Toast.LENGTH_SHORT).show();
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                try {
+//                    load(zipName, callback);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }.start();
+//    }
+//
+//    private void load(final String zipName, final JSCallback callback) throws Exception {
+//        Log.d("test", "load name = " + zipName);
+//        String path = WXApplication.PATH + zipName;
+//        if (new File(path).exists()) {
+//            Log.d("test", "存在，直接加载");
+//            ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
+//            loadJSBundle(zipName, zip.indexPath);
+//        } else {
+//            Log.d("test", "不存在，下载");
+//            Service s = new Service().findOne(new KWQuery().equalTo("id", zipName.replace(".zip", "")));
+//            Log.d("test", "s  = " + s.toString());
+//            //返回最新的全量包
+//            Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
+//            Log.d("test", "p = " + p.toString());
+//            String baseUrl = s.get("baseUrl").toString();
+//            String downloadUrl = p.get("url").toString();
+//            String version = p.get("version").toString();
+//            downloadJSBundle(zipName, downloadUrl, version, baseUrl);
+//        }
+//    }
+//
+//    @JSMethod(uiThread = true)
+//    public void deleteFunction(String zipName, JSCallback callback) {
+//        String path = "file://" + WXApplication.PATH + zipName;
+//        Log.d("test", "path = " + path);
+//        if (new File(path).exists()) {
+//            Log.d("test", "存在，删除");
+//            new File(path).delete();
+//            final RealmResults<ZipPackage> results = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findAll();
+//            Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+//                @Override
+//                public void execute(Realm realm) {
+//                    results.clear();
+//                }
+//            });
+//            callback.invoke("delete success");
+//        } else {
+//            Log.d("test", "不存在，不用管");
+//        }
+//    }
+//
+//    //首次下载
+//    public void downloadJSBundle(final String zipName, final String downloadUrl, final String version, final String baseUrl) {
+//        //1.访问接口，参数是zipName，返回是 name， 下载地址 ， 版本号
+//        HttpDownload httpDownload = new HttpDownload();
+//        int ret = httpDownload.downFile(downloadUrl, WXApplication.PATH, zipName);
+//        Log.d("test", "下载返回值 ret = " + ret);
+//        if (ret != 0) {
+//            toast("下载失败，请稍后再试");
+//            return;
+//        }
+//        Log.d("test", "下载成功，保存版本号");
+//
+//        Realm.getDefaultInstance().beginTransaction();
+//        ZipPackage zip = Realm.getDefaultInstance().createObject(ZipPackage.class);
+//        zip.name = zipName;
+//        zip.indexPath = baseUrl;
+//        zip.version = version;
+//        Realm.getDefaultInstance().commitTransaction();
+//        Log.d("test", "下载成功，加载本地sdcard");
+//        loadJSBundle(zipName, baseUrl);
+//    }
+//
+//    public void loadJSBundle(String zipName, String baseUrl) {
+//        String path = WXApplication.PATH + zipName + "/" + baseUrl;
+//        Log.d("test", "loadJSBundle path = " + path);
+//        Intent intent = new Intent(mWXSDKInstance.getContext(), WXPageActivity.class);
+//        intent.setData(Uri.parse(path));
+//        mWXSDKInstance.getContext().startActivity(intent);
+//    }
 
     @JSMethod(uiThread = true)
     public void sendEvent(JSCallback callback) {
