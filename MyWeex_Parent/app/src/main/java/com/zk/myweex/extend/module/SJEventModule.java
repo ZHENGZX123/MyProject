@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.kiway.yjpt.Parent.wxapi.Constants;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
@@ -15,15 +18,21 @@ import com.lzy.imagepicker.view.CropImageView;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
+import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
 import com.zk.myweex.activity.WXPageActivity;
 import com.zk.myweex.utils.HttpDownload;
+import com.zk.myweex.utils.NetworkUtil;
 import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.UploadUtil;
 import com.zk.myweex.utils.Utils;
 
+import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -152,6 +161,10 @@ public class SJEventModule extends WXModule {
     @JSMethod(uiThread = true)
     public void loginSuccess(String url) {
         Log.d("test", "loginSuccess url = " + url);
+//        if (true) {
+//            pay_weixin("1");
+//            return;
+//        }
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
         try {
             String userName = new JSONObject(url).getString("userName");
@@ -265,6 +278,68 @@ public class SJEventModule extends WXModule {
                 Log.d("test", "upload ret = " + ret);
             }
         }.start();
+    }
+
+
+    public void pay_weixin(String money) {
+        // 测试用
+        money = "1";
+        try {
+            if (!NetworkUtil.isNetworkAvailable(mWXSDKInstance.getContext())) {
+                toast("没有网络");
+                return;
+            }
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            JSONObject jsonObject = new JSONObject();
+            StringEntity stringEntity = new StringEntity(jsonObject.toString(),
+                    "utf-8");
+            client.post(mWXSDKInstance.getContext(),
+                    "http://120.25.237.116:8080/WJCServlet/servlet/WeixinPay",
+                    stringEntity, "application/json",
+                    new TextHttpResponseHandler() {
+
+                        @Override
+                        public void onSuccess(int arg0, Header[] arg1,
+                                              String ret) {
+                            Log.d("test", "weixin param= " + ret);
+                            try {
+                                JSONObject json = new JSONObject(ret)
+                                        .getJSONObject("result");
+
+                                PayReq req = new PayReq();
+                                req.appId = json.getString("appid");
+                                req.partnerId = json.getString("partnerId");
+                                req.prepayId = json.getString("prepayId");
+                                req.nonceStr = json.getString("nonceStr");
+                                req.timeStamp = json.getString("timeStamp");
+                                req.packageValue = "Sign=WXPay";
+                                req.sign = json.getString("sign");
+                                req.extData = "app data"; // optional
+                                String out_trade_no = json
+                                        .getString("out_trade_no");
+
+                                IWXAPI api = WXAPIFactory
+                                        .createWXAPI(mWXSDKInstance.getContext(),
+                                                Constants.APP_ID);
+                                api.sendReq(req);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int arg0, Header[] arg1,
+                                              String arg2, Throwable arg3) {
+                            Log.d("test", "onFailure = " + arg2);
+                            toast("请求失败，请稍后再试");
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("test", "exception = " + e.toString());
+            toast("请求失败，请稍后再试");
+        }
     }
 
 }
