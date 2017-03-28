@@ -42,16 +42,13 @@ public class MainActivity2 extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
         main = this;
-
         if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
             if (new File(WXApplication.ROOT).exists()) {
                 FileUtils.delFolder(WXApplication.ROOT);
             }
             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", false).commit();
         }
-        Log.d("test", "4");
         getDataFromServer();
     }
 
@@ -61,11 +58,10 @@ public class MainActivity2 extends TabActivity {
             @Override
             public void run() {
                 try {
-                    Log.d("test", "3");
                     int tabcount = new MyDBHelper(getApplicationContext()).getAllTabEntity().size();
-                    List<Service> services = new Service().find(new KWQuery().like("id", "tab%"));
                     //第一次，初始化tab
                     if (tabcount == 0) {
+                        List<Service> services = new Service().find(new KWQuery().like("id", "tab%"));
                         for (Service s : services) {
                             //插入数据库
                             TabEntity tab = new TabEntity();
@@ -75,22 +71,11 @@ public class MainActivity2 extends TabActivity {
                             tab.image_selected = "";
                             new MyDBHelper(getApplicationContext()).addTabEntity(tab);
                         }
-                    } else {
-                        for (Service s : services) {
-                            TabEntity tab = new TabEntity();
-                            tab.idStr = s.get("id").toString();
-                            tab.name = s.get("name").toString();
-                            tab.image_default = "";
-                            tab.image_selected = "";
-                            //修改，稍后在写
-                        }
                     }
-                    Log.d("test", "1");
                     VersionUpManager manager = new VersionUpManager();
                     manager.init(getApplication());
                     manager.getLocalVersion();
                     manager.getRemoteVersion();
-                    Log.d("test", "2");
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.d("test", "no net ... ");
