@@ -216,7 +216,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.kiway.yjpt.Teacher.R;
+import com.kiway.yjpt.Parent.R;
 import com.taobao.weex.IWXRenderListener;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.common.WXRenderStrategy;
@@ -503,4 +503,6 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         super.onActivityResult(requestCode, resultCode, data);
         mInstance.onActivityResult(requestCode, resultCode, data);
     }
+
+
 }

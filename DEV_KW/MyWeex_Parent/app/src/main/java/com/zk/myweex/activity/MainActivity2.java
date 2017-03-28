@@ -16,7 +16,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kiway.yjpt.Teacher.R;
+import com.kiway.yjpt.Parent.R;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.utils.FileUtils;
 import com.zk.myweex.utils.VersionUpManager;
