@@ -2063,7 +2063,7 @@
 	  data: function () {return {
 	    tabItems: [],
 	    selectedIndex: 0,
-	    selectedColor: '#ff0000',
+	    selectedColor: '#00cc99',
 	    unselectedColor: '#000000'
 	  }},
 	  created: function created() {
@@ -2105,8 +2105,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2120,7 +2120,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	          nativeBase = bundleUrl;
+	        nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -2524,7 +2524,7 @@
 	    "dataRole": "none",
 	    "height": function () {return this.navBarHeight},
 	    "backgroundColor": "#00cc99",
-	    "title": function () {return this.userData.realname?this.userData.realname:this.userData.named},
+	    "title": function () {return this.userData.user.realname},
 	    "titleColor": "white",
 	    "leftItemSrc": function () {return this.images.leftItemImg}
 	  },
@@ -2550,7 +2550,7 @@
 	                "user_img"
 	              ],
 	              "attr": {
-	                "src": function () {return this.userData.avatar}
+	                "src": function () {return this.userData.user.avatar}
 	              }
 	            },
 	            {
@@ -2559,7 +2559,7 @@
 	                "user_name"
 	              ],
 	              "attr": {
-	                "value": function () {return this.userData.realname}
+	                "value": function () {return this.userData.user.realname}
 	              }
 	            },
 	            {
@@ -2568,7 +2568,7 @@
 	                "user_tel"
 	              ],
 	              "attr": {
-	                "value": function () {return this.userData.phone}
+	                "value": function () {return this.userData.user.phone}
 	              }
 	            }
 	          ]
@@ -2578,9 +2578,9 @@
 	          "classList": [
 	            "tel_btn"
 	          ],
-	          "shown": function () {return this.userData.mobile},
+	          "shown": function () {return this.userData.user.phone},
 	          "events": {
-	            "click": function ($event) {this.callPhone(this.userData.mobile,$event)}
+	            "click": function ($event) {this.callPhone(this.userData.user.phone,$event)}
 	          },
 	          "attr": {
 	            "value": "呼叫"
@@ -2663,7 +2663,11 @@
 	            leftItemImg: 'yjpt/images/id_right_bg.png',
 	            userImg: 'yjpt/images/my_01.png'
 	        },
-	        userData: {}
+	        userData: {
+	            user: {
+	                realname: 'sb'
+	            }
+	        }
 	    }},
 	    created: function created() {
 
@@ -2676,11 +2680,11 @@
 	        storage.getItem('parentInfo', function (e) {
 	            if (e.data) {
 	                e.data = JSON.parse(e.data);
-	                console.log(e.data);
 	                self.userData = e.data;
 	            }
 	        });
 	        Utils.changeImg(this.images, ['leftItemImg', 'userImg']);
+	        Utils.changeImg(this.userData, ['photo']);
 	    },
 	    methods: {
 	        redirect: function redirect(url) {

@@ -2866,7 +2866,7 @@
 	  data: function () {return {
 	    tabItems: [],
 	    selectedIndex: 0,
-	    selectedColor: '#ff0000',
+	    selectedColor: '#00cc99',
 	    unselectedColor: '#000000'
 	  }},
 	  created: function created() {
@@ -2908,8 +2908,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2923,7 +2923,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	          nativeBase = bundleUrl;
+	        nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -3947,6 +3947,8 @@
 	  },
 	  "binding": {
 	    "color": "#8b568d",
+	    "height": 80,
+	    "lineHeight": 80,
 	    "flex": 3,
 	    "paddingLeft": 20,
 	    "fontSize": 32
@@ -3985,13 +3987,12 @@
 	    "right": 0
 	  },
 	  "menu": {
-	    "position": "absolute",
-	    "top": 20,
-	    "right": 15,
 	    "backgroundColor": "#222222",
 	    "borderRadius": 4,
 	    "flexDirection": "column",
-	    "width": 280
+	    "width": 280,
+	    "marginRight": 20,
+	    "marginTop": 15
 	  },
 	  "menu_list": {
 	    "flex": 1,
@@ -4154,7 +4155,6 @@
 	        storage.getItem('classInfo', function (e) {
 	            if (e.data) {
 	                e.data = JSON.parse(e.data);
-	                console.log('classInfo:', e.data);
 	                self.classInfo = e.data;
 	                self.classId = e.data.id;
 
@@ -4233,7 +4233,7 @@
 	        redirectqrUrl: function redirectqrUrl(url, classId) {
 	            var self = this;
 	            storage.setItem('classInfo', (0, _stringify2.default)(self.classInfo), function () {});
-	            self.isShow = !self.isShow;
+
 	            Utils.navigate.push(self, url, 'true');
 	        },
 	        redirectContact: function redirectContact(url, user, index) {
@@ -4288,7 +4288,7 @@
 	                                    for (var i in self.children) {
 	                                        if (self.children[i]) {
 	                                            if (!self.children[i].avatar) {
-	                                                self.children[i].avatar = Utils.ip + Utils.dir + '/' + 'yjpt/images/photo_06.jpeg';
+	                                                self.children[i].avatar = Utils.ip + 'yjpt/images/photo_06.jpeg';
 	                                            } else {
 	                                                self.children[i].avatar = Utils.ip + self.children[i].avatar;
 	                                            }
@@ -4313,12 +4313,11 @@
 	        },
 	        redirect: function redirect(url) {
 	            var self = this;
-	            self.isShow = !self.isShow;
 	            Utils.navigate.push(self, url, 'true');
 	        },
 	        quitClass: function quitClass() {
 	            var self = this;
-	            self.isShow = !self.isShow;
+
 	            modal.confirm({
 	                message: '确定要退出该班级吗？',
 	                okTitle: '确定',
@@ -4409,15 +4408,6 @@
 	                event.QRScan({
 	                    classId: classId
 	                }, function (result) {
-
-
-	     var modal = __weex_require__('@weex-module/modal');
-              modal.alert({
-                  message:result,
-                  okTitle:'好的'
-               },function(){
-          });
-
 	                    if (result == '1') {
 	                        Utils.fetch({
 	                            url: '/app/class/' + classId + '/box',
@@ -4450,13 +4440,6 @@
 	                                }
 	                            }
 	                        });
-	                    }else{
-	                        var modal = __weex_require__('@weex-module/modal');
-                                          modal.alert({
-                                              message:result,
-                                              okTitle:' != 1'
-                                           },function(){
-                                      });
 	                    }
 	                });
 	            } else {

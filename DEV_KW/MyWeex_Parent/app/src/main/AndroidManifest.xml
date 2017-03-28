@@ -50,10 +50,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
-                <action android:name="com.kiway.android.intent.action.WEEX" />
+                <action android:name="com.kiway.android.intent.action.WEEX.parent" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="com.kiway.android.intent.category.WEEX" />
+                <category android:name="com.kiway.android.intent.category.WEEX.parent" />
 
                 <action android:name="android.intent.action.VIEW" />
 

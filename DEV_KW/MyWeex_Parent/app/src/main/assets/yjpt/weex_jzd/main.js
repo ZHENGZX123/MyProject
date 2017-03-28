@@ -3060,6 +3060,28 @@
 	    "zIndex": 99999,
 	    "right": 0
 	  },
+	  "menu": {
+	    "backgroundColor": "rgba(255,255,255,0.7)",
+	    "borderRadius": 4,
+	    "flexDirection": "column",
+	    "width": 280,
+	    "marginTop": 60,
+	    "marginRight": 20
+	  },
+	  "menu_list": {
+	    "flex": 1,
+	    "fontSize": 34,
+	    "color": "#333333",
+	    "textAlign": "center",
+	    "paddingTop": 40,
+	    "paddingBottom": 40,
+	    "paddingLeft": 30,
+	    "paddingRight": 30,
+	    "borderBottomWidth": 1,
+	    "borderBottomColor": "#cccccc",
+	    "width": 280,
+	    "fontFamily": "Microsoft YaHei"
+	  },
 	  "item_img": {
 	    "flexDirection": "row",
 	    "flexWrap": "wrap"
@@ -3206,11 +3228,15 @@
 	            self.userId = e.data.id;
 	        });
 
-	        globalEvent.addEventListener("sendUserInfoToJs", function (e) {
-
-	            modal.alert({
-	                message: e
-	            }, function () {});
+	        Utils.fetch({
+	            url: '/app/class',
+	            method: 'get',
+	            dataType: 'json',
+	            success: function success(ret) {
+	                if (ret.data.StatusCode == '200') {
+	                    self.classGroup = ret.data.data;
+	                }
+	            }
 	        });
 
 	        self.$on('isShowClass', function (e) {
@@ -3236,9 +3262,6 @@
 	        toggleMenu: function toggleMenu() {
 	            var self = this;
 
-	            modal.toast({
-	                message: 'isShowMenu:' + self.isShowMenu
-	            });
 	            if (self.isShowMenu == 1) {
 	                self.isShowMenu = 0;
 	            } else {

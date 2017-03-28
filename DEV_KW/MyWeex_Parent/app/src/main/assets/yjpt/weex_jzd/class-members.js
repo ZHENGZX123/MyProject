@@ -2866,7 +2866,7 @@
 	  data: function () {return {
 	    tabItems: [],
 	    selectedIndex: 0,
-	    selectedColor: '#ff0000',
+	    selectedColor: '#00cc99',
 	    unselectedColor: '#000000'
 	  }},
 	  created: function created() {
@@ -2908,8 +2908,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2923,7 +2923,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	          nativeBase = bundleUrl;
+	        nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -3414,112 +3414,6 @@
 	              }
 	            }
 	          ]
-	        },
-	        {
-	          "type": "div",
-	          "shown": function () {return this.showGroupName==1},
-	          "style": {
-	            "position": "fixed",
-	            "left": 0,
-	            "right": 0,
-	            "top": 0,
-	            "bottom": 0,
-	            "backgroundColor": "rgba(0,0,0,0.7)"
-	          },
-	          "children": [
-	            {
-	              "type": "div",
-	              "classList": [
-	                "group_name_wrap"
-	              ],
-	              "style": {
-	                "position": "absolute",
-	                "backgroundColor": "#f4f1f1",
-	                "left": 20,
-	                "right": 20,
-	                "top": 200
-	              },
-	              "children": [
-	                {
-	                  "type": "text",
-	                  "style": {
-	                    "textAlign": "center",
-	                    "backgroundColor": "#ffffff",
-	                    "padding": 40,
-	                    "fontSize": 36,
-	                    "borderBottomWidth": 1,
-	                    "borderBottomColor": "#cccccc",
-	                    "borderBottomStyle": "solid",
-	                    "color": "#333333"
-	                  },
-	                  "attr": {
-	                    "value": "请输入群名称"
-	                  }
-	                },
-	                {
-	                  "type": "input",
-	                  "attr": {
-	                    "type": "text",
-	                    "value": function () {return this.groupName},
-	                    "autofocus": function () {return this.getFocus}
-	                  },
-	                  "classList": [
-	                    "ssInput"
-	                  ],
-	                  "events": {
-	                    "input": "nameInput"
-	                  }
-	                },
-	                {
-	                  "type": "div",
-	                  "style": {
-	                    "display": "flex",
-	                    "flexDirection": "row",
-	                    "alignItems": "center",
-	                    "borderTopWidth": 1,
-	                    "borderTopColor": "#dddddd",
-	                    "borderTopStyle": "solid"
-	                  },
-	                  "children": [
-	                    {
-	                      "type": "text",
-	                      "style": {
-	                        "textAlign": "center",
-	                        "backgroundColor": "#ffffff",
-	                        "padding": 40,
-	                        "fontSize": 36,
-	                        "flex": 1,
-	                        "color": "#999999"
-	                      },
-	                      "events": {
-	                        "click": "cancleCreat"
-	                      },
-	                      "attr": {
-	                        "value": "取消"
-	                      }
-	                    },
-	                    {
-	                      "type": "text",
-	                      "style": {
-	                        "textAlign": "center",
-	                        "backgroundColor": "#00cc99",
-	                        "padding": 40,
-	                        "fontSize": 36,
-	                        "color": "#ffffff",
-	                        "flex": 1
-	                      },
-	                      "events": {
-	                        "click": "groupNameConfirm"
-	                      },
-	                      "attr": {
-	                        "value": "确定"
-	                      }
-	                    }
-	                  ]
-	                }
-	              ]
-	            }
-	          ]
 	        }
 	      ]
 	    }
@@ -3531,18 +3425,6 @@
 /***/ function(module, exports) {
 
 	module.exports = {
-	  "ssInput": {
-	    "height": 120,
-	    "margin": 10,
-	    "borderColor": "#cccccc",
-	    "borderWidth": 1,
-	    "borderRadius": 5,
-	    "padding": 10,
-	    "paddingLeft": 30,
-	    "backgroundColor": "#ffffff",
-	    "color": "#666666",
-	    "fontSize": 36
-	  },
 	  "content": {
 	    "backgroundColor": "#f4f1f1",
 	    "position": "absolute",
@@ -3590,7 +3472,6 @@
 	var Utils = __webpack_require__(129);
 	var modal = __weex_require__('@weex-module/modal');
 	var storage = __weex_require__('@weex-module/storage');
-	var ChatEvent = __weex_require__('@weex-module/ChatEvent');
 	module.exports = {
 	    data: function () {return {
 	        navBarHeight: 130,
@@ -3604,13 +3485,8 @@
 	        },
 	        classId: '',
 	        showClass: 0,
-	        showGroupName: 0,
 	        class: [],
-	        userIds: [],
-	        groupName: '',
-	        getFocus: false,
-
-	        groupData: {}
+	        userIds: []
 	    }},
 	    created: function created() {
 	        Utils.changeImg(this.images, ['leftItemImg', 'qrImg']);
@@ -3647,6 +3523,7 @@
 	        storage.getItem('classMembers', function (e) {
 	            if (e.data != 'undefined') {
 	                self.classMembers = JSON.parse(e.data);
+	                console.log(self.classMembers);
 	            }
 	        });
 
@@ -3657,31 +3534,15 @@
 	        });
 
 	        self.$on('naviBar.rightItem.click', function () {
-	            self.groupData.classId = self.classId;
-	            self.groupData.groupList = [];
-
-	            var blank = [];
-
+	            self.userIds.splice(0, self.userIds.length);
 	            for (var i in self.classMembers) {
 	                if (self.classMembers[i].imgUrl == self.images.selectRadio) {
-	                    var user = {};
-	                    user.uid = self.classMembers[i].id;
-	                    user.nickname = self.classMembers[i].realname;
-	                    self.groupData.groupList.push(user);
-	                } else {
-	                    blank.push('not-select');
+	                    self.userIds.push(self.classMembers[i].id);
 	                }
 	            }
 
-	            if (blank.length == self.classMembers.length) {
-	                modal.toast({
-	                    message: '请选择成员'
-	                });
-	                return;
-	            }
-
-	            self.showGroupName = 1;
-	            self.getFocus = true;
+	            console.log(self.classId);
+	            console.log(self.userIds);
 	        });
 	    },
 
@@ -3694,41 +3555,7 @@
 	            } else {
 	                self.classMembers[index].imgUrl = self.images.blankRadio;
 	            }
-	        },
-	        nameInput: function nameInput(e) {
-	            var self = this;
-	            self.groupName = e.value;
-	        },
-	        groupNameConfirm: function groupNameConfirm() {
-	            var self = this;
-	            if (self.groupName == '') {
-	                modal.toast({
-	                    message: '请输入群名称'
-	                });
-	                return;
-	            }
-
-	            self.showGroupName = 0;
-	            self.groupData.groupName = self.groupName;
-
-	            if (ChatEvent.creatGroup) {
-	                ChatEvent.creatGroup(self.groupData, function (res) {
-	                    if (res == '1') {
-	                        var url = Utils.setOpenUrl(self.$getConfig(), 'index');
-	                        Utils.navigate.push(self, url, 'true');
-	                    } else {
-	                        modal.toast({
-	                            message: '创建失败，请稍后重试'
-	                        });
-	                    }
-	                });
-	            }
-	        },
-	        cancleCreat: function cancleCreat() {
-	            var self = this;
-	            self.showGroupName = 0;
-	        },
-	        inputFocus: function inputFocus() {}
+	        }
 	    }
 	};}
 	/* generated by weex-loader */

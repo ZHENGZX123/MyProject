@@ -2063,7 +2063,7 @@
 	  data: function () {return {
 	    tabItems: [],
 	    selectedIndex: 0,
-	    selectedColor: '#ff0000',
+	    selectedColor: '#00cc99',
 	    unselectedColor: '#000000'
 	  }},
 	  created: function created() {
@@ -2105,8 +2105,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2120,7 +2120,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	          nativeBase = bundleUrl;
+	        nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -2873,6 +2873,7 @@
 	var Utils = __webpack_require__(129);
 	var modal = __weex_require__('@weex-module/modal');
 	var storage = __weex_require__('@weex-module/storage');
+	var SJevent = __weex_require__('@weex-module/SJevent');
 	module.exports = {
 	    data: function () {return {
 	        navBarHeight: 130,
@@ -2890,10 +2891,10 @@
 	    }},
 	    created: function created() {
 	        var self = this;
-	        this.headLeft = Utils.ip + 'yjpt/images/id_right_bg.png';
-	        this.phoneImg = Utils.ip + 'yjpt/images/phone.png';
-	        this.qrImg = Utils.ip + 'yjpt/images/ewm.png';
-	        this.pwdImg = Utils.ip + 'yjpt/images/pwd.png';
+	        this.headLeft = Utils.ip + Utils.dir + '/' + 'yjpt/images/id_right_bg.png';
+	        this.phoneImg = Utils.ip + Utils.dir + '/' + 'yjpt/images/phone.png';
+	        this.qrImg = Utils.ip + Utils.dir + '/' + 'yjpt/images/ewm.png';
+	        this.pwdImg = Utils.ip + Utils.dir + '/' + 'yjpt/images/pwd.png';
 	        this.$on('naviBar.leftItem.click', function (e) {
 	            Utils.navigate.pop(this, 'true');
 	        });
@@ -2972,7 +2973,15 @@
 	                            duration: '1'
 	                        });
 	                        setTimeout(function () {
-	                            var url = Utils.setOpenUrl(self.$getConfig(), 'login');
+	                            if (SJevent.logoutSuccess) {
+	                                var url = Utils.setOpenUrl(self.$getConfig(), 'login');
+	                                SJevent.logoutSuccess(url);
+	                            } else {
+	                                modal.toast({
+	                                    message: '请在App中操作',
+	                                    duration: '0.5'
+	                                });
+	                            }
 	                        }, 600);
 	                    } else {
 	                        modal.toast({

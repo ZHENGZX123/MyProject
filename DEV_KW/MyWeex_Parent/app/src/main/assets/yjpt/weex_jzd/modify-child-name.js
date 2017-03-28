@@ -2063,7 +2063,7 @@
 	  data: function () {return {
 	    tabItems: [],
 	    selectedIndex: 0,
-	    selectedColor: '#ff0000',
+	    selectedColor: '#00cc99',
 	    unselectedColor: '#000000'
 	  }},
 	  created: function created() {
@@ -2105,8 +2105,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2120,7 +2120,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	          nativeBase = bundleUrl;
+	        nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -2627,7 +2627,7 @@
 	              ],
 	              "attr": {
 	                "type": "url",
-	                "autofocus": "ture",
+	                "autofocus": "false",
 	                "value": function () {return this.childName}
 	              },
 	              "events": {
@@ -2715,17 +2715,6 @@
 	                e.data = JSON.parse(e.data);
 	                self.childId = e.data.id;
 	                self.childName = e.data.realname;
-
-	                Utils.fetch({
-	                    url: '/app/student/' + self.childId,
-	                    dataType: 'json',
-	                    method: 'get',
-	                    success: function success(ret) {
-	                        if (ret.data.StatusCode == '200') {
-	                            self.childName = ret.data.data.student.realname;
-	                        }
-	                    }
-	                });
 	            }
 	        });
 
@@ -2735,7 +2724,7 @@
 	                Utils.fetch({
 	                    url: '/app/student/' + self.childId,
 	                    data: 'uname=' + self.childName,
-	                    dataType: 'json',
+	                    type: 'json',
 	                    method: 'put',
 	                    success: function success(ret) {
 	                        ret.data = eval('(' + ret.data + ')');
@@ -2745,13 +2734,9 @@
 	                                duration: '1'
 	                            });
 
-	                            var childNameModify = new BroadcastChannel('childNameModify');
-	                            childNameModify.postMessage(self.childName);
-
-	                            storage.setItem('childName', self.childName, function () {});
-
 	                            setTimeout(function () {
-	                                Utils.navigate.pop(self, 'true');
+	                                var url = Utils.setOpenUrl(self.$getConfig(), 'class-main-page');
+	                                Utils.navigate.push(self, url, 'true');
 	                            }, 1000);
 	                        } else {
 	                            modal.toast({
