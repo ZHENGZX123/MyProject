@@ -243,7 +243,7 @@ public class WXFileUtils {
             while ((len = bufferedReader.read(data)) > 0) {
                 builder.append(data, 0, len);
             }
-
+            System.out.println("sb = " + builder.toString());
             return builder.toString();
         } catch (IOException e) {
             e.printStackTrace();
@@ -302,7 +302,6 @@ public class WXFileUtils {
         return "";
     }
 
-    //传进来的是js文件的路径
     public static String readFileInZip(String file) {
         int index = file.indexOf("zip");
         String zipPath = file.substring(0, index + 3);
