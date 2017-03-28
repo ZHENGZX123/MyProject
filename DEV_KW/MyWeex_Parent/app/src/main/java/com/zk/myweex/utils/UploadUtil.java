@@ -86,7 +86,7 @@ public class UploadUtil {
                         sb1.append((char) ss);
                     }
                     result = sb1.toString();
-                    Log.d("test", "result = " + result);
+                    Log.d("test", "upload result = " + result);
                 }
             }
         } catch (MalformedURLException e) {
