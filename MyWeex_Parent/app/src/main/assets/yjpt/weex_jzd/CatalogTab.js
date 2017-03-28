@@ -3252,7 +3252,7 @@
 	  data: function () {return {
 	    tabItems: [],
 	    selectedIndex: 0,
-	    selectedColor: '#ff0000',
+	    selectedColor: '#00cc99',
 	    unselectedColor: '#000000'
 	  }},
 	  created: function created() {
@@ -3294,8 +3294,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -3309,7 +3309,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	          nativeBase = bundleUrl;
+	        nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/

@@ -2063,7 +2063,7 @@
 	  data: function () {return {
 	    tabItems: [],
 	    selectedIndex: 0,
-	    selectedColor: '#ff0000',
+	    selectedColor: '#00cc99',
 	    unselectedColor: '#000000'
 	  }},
 	  created: function created() {
@@ -2105,8 +2105,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2120,7 +2120,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	          nativeBase = bundleUrl;
+	        nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -2843,6 +2843,7 @@
 
 
 	            storage.setItem('gradeId', gradeId, function () {});
+	            console.log(gradeId);
 
 	            if (event.QRScan) {
 	                event.QRScan({
@@ -2852,29 +2853,29 @@
 	                        var ssid = res.ssid;
 	                        storage.setItem("SSID", ssid, function () {});
 
-	                        event.teachClass(classId, function (ret) {
-	                            if (ret.result == '1') {
-	                                Utils.fetch({
-	                                    url: '/app/class/' + classId + '/box',
-	                                    data: 'mac=' + res.hCode,
-	                                    method: 'POST',
-	                                    dataType: 'json',
-	                                    success: function success(res) {
-	                                        if (res.data.StatusCode == '200') {
+	                        Utils.fetch({
+	                            url: '/app/class/' + classId + '/box',
+	                            data: 'mac=' + res.hCode,
+	                            method: 'POST',
+	                            dataType: 'json',
+	                            success: function success(ret) {
+	                                if (ret.data.StatusCode == '200') {
+	                                    event.teachClass(classId, function (ret) {
+	                                        if (ret.result == '1') {
 	                                            var url = Utils.setOpenUrl(self.$getConfig(), 'class-calendar');
 	                                            Utils.navigate.push(self, url, 'true');
 	                                        } else {
 	                                            modal.toast({
-	                                                message: '绑定失败，请稍后重试'
+	                                                message: '请链接至盒子wifi',
+	                                                duration: '2'
 	                                            });
 	                                        }
-	                                    }
-	                                });
-	                            } else {
-	                                modal.toast({
-	                                    message: '请链接至盒子wifi',
-	                                    duration: '2'
-	                                });
+	                                    });
+	                                } else {
+	                                    modal.toast({
+	                                        message: '绑定失败，请稍后重试'
+	                                    });
+	                                }
 	                            }
 	                        });
 	                    }
