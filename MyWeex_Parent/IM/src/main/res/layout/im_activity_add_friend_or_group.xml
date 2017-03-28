@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_add_friend"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ededed"
+   >
+    <RelativeLayout
+        android:id="@+id/rl_headers"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_top_bar"
+        android:layout_alignParentTop="true"
+        android:background="#12b7f5" >
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="40dip"
+            android:layout_height="35dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/im_top_bar_back" />
+
+        <TextView
+            android:id="@+id/title1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:maxEms="8"
+            android:text="添加"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/search"
+        android:layout_below="@id/rl_headers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <cn.kwim.mqttcilent.common.views.ClearEditText
+            android:id="@+id/filter_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/im_search_bar_edit_selector"
+            android:cursorVisible="true"
+            android:drawableLeft="@drawable/im_search_bar_icon_normal"
+            android:hint="请输入查询"
+            android:textColorHint="#999999"
+            android:layout_toLeftOf="@+id/bt_search"
+            android:paddingBottom="5dip"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip"
+            android:paddingTop="5dip"
+            android:textCursorDrawable="@null"
+            android:textSize="15.0dip"
+            android:layout_marginRight="10dip"
+            android:layout_marginTop="10dip"
+            android:layout_marginBottom="10dip"
+            android:layout_marginLeft="15dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+        <Button
+            android:id="@+id/bt_search"
+            android:layout_width="55dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="10dip"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="15dp"
+            android:textColor="#666666"
+            android:textSize="14dip"
+            android:background="@drawable/im_addselector_unpress"
+            android:text="搜索"/>
+
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/ll_select"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search"
+        android:layout_marginTop="5dp"
+        android:weightSum="2">
+        <Button
+            android:id="@+id/new_friend"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="45dp"
+            android:text="新朋友"
+            android:textColor="#ffffff"
+            android:background="@drawable/im_addselector_press"
+            android:selectAllOnFocus="true"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/group"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginRight="45dp"
+            android:layout_marginLeft="45dp"
+            android:text="群"
+            android:textColor="#666666"
+            android:selectAllOnFocus="false"
+            android:background="@drawable/im_addselector_unpress"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lists"
+        android:layout_below="@+id/ll_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+    </ListView>
+
+
+</RelativeLayout>
