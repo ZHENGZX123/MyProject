@@ -222,8 +222,10 @@ import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.common.WXRenderStrategy;
 import com.taobao.weex.utils.WXFileUtils;
 import com.zk.myweex.WXApplication;
+import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.utils.AssertUtil;
 import com.zk.myweex.utils.HttpDownload;
+import com.zk.myweex.utils.MyDBHelper;
 import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.ScreenUtil;
 
@@ -234,8 +236,6 @@ import java.util.Map;
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Package;
 import cn.kiway.baas.sdk.model.service.Service;
-import cn.kiway.entity.ZipPackage;
-import io.realm.Realm;
 
 /**
  * Created by sospartan on 5/30/16.
@@ -437,7 +437,7 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
                     String path = WXApplication.PATH + name;
                     if (new File(path).exists()) {
                         Log.d("test", "存在，直接加载");
-                        ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
+                        ZipPackage zip = new MyDBHelper(getApplicationContext()).getAllZipPackageByName(zipName);
                         loadJSBundle(zipName, zip.indexPath);
                     } else {
                         Log.d("test", "不存在，下载");
@@ -471,12 +471,13 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         }
         Log.d("test", "下载成功，保存版本号");
 
-        Realm.getDefaultInstance().beginTransaction();
-        ZipPackage zip = Realm.getDefaultInstance().createObject(ZipPackage.class);
+        ZipPackage zip = new ZipPackage();
         zip.name = zipName;
         zip.indexPath = baseUrl;
         zip.version = version;
-        Realm.getDefaultInstance().commitTransaction();
+        zip.patchs = "";
+        new MyDBHelper(getApplicationContext()).addZipPackage(zip);
+
         Log.d("test", "下载成功，加载本地sdcard");
         loadJSBundle(zipName, baseUrl);
     }

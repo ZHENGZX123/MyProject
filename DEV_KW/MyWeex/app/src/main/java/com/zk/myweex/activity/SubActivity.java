@@ -19,7 +19,6 @@ public class SubActivity extends WXBaseActivity {
                     mTimer = null;
                 }
                 finish();
-                android.os.Process.killProcess(android.os.Process.myPid());
             } else {
                 toast("再按一次退出");
                 mCanQuit = true;
