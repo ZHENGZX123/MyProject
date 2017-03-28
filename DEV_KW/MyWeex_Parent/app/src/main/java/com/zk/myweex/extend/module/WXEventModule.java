@@ -158,6 +158,7 @@ public class WXEventModule extends WXModule {
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
             client.addHeader("Cookie", "JSESSIONID=" + jsessionid);
+
             RequestParams params = new RequestParams();
             params.put("classes", classes);
             params.put("content", content);
@@ -167,6 +168,7 @@ public class WXEventModule extends WXModule {
             }
             temp = temp.substring(0, temp.length() - 1);
             params.put("img_url", temp);
+
             client.post(mWXSDKInstance.getContext(), url, params, new TextHttpResponseHandler() {
 
                 public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {

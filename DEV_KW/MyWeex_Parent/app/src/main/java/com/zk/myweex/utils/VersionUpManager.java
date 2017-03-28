@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.zk.myweex.WXApplication;
+import com.zk.myweex.entity.ZipPackage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,7 +13,6 @@ import java.util.List;
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Package;
 import cn.kiway.baas.sdk.model.service.Service;
-import cn.kiway.entity.ZipPackage;
 import io.realm.Realm;
 
 /**
@@ -49,7 +49,7 @@ public class VersionUpManager {
         for (File f : files) {
             String name = f.getName();
             Log.d("version", "====================检测" + name + "的新版本===============================");
-            ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", name).findFirst();
+            ZipPackage zip = new MyDBHelper(context).getAllZipPackageByName(name);
             Service s = new Service().findOne(new KWQuery().equalTo("id", name.replace(".zip", "")));
             Log.d("version", "s  = " + s.toString());
             Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
@@ -145,13 +145,9 @@ public class VersionUpManager {
         boolean move2 = newFile.renameTo(new File(WXApplication.PATH + zipName));
         //3.保存版本号
 
-        final ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
-        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                zip.version = version;
-            }
-        });
+
+        new MyDBHelper(context).updateZipPackageVersion(version, zipName);
+
     }
 
     private void comparePackage(String currentPackage, String newPackage) {

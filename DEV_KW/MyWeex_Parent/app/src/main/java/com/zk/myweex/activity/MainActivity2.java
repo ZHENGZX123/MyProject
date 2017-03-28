@@ -16,9 +16,11 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kiway.yjpt.Parent.R;
+import com.kiway.yjpt.Teacher.R;
 import com.zk.myweex.WXApplication;
+import com.zk.myweex.entity.TabEntity;
 import com.zk.myweex.utils.FileUtils;
+import com.zk.myweex.utils.MyDBHelper;
 import com.zk.myweex.utils.VersionUpManager;
 
 import java.io.File;
@@ -27,9 +29,6 @@ import java.util.List;
 
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Service;
-import cn.kiway.entity.TabEntity;
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 
 public class MainActivity2 extends TabActivity {
@@ -63,31 +62,29 @@ public class MainActivity2 extends TabActivity {
             public void run() {
                 try {
                     Log.d("test", "3");
-                    int tabcount = Realm.getDefaultInstance().where(TabEntity.class).findAll().size();
+                    int tabcount = new MyDBHelper(getApplicationContext()).getAllTabEntity().size();
                     List<Service> services = new Service().find(new KWQuery().like("id", "tab%"));
                     //第一次，初始化tab
                     if (tabcount == 0) {
                         for (Service s : services) {
-                            Realm.getDefaultInstance().beginTransaction();
-                            TabEntity tab = Realm.getDefaultInstance().createObject(TabEntity.class);
-                            tab.id = s.get("id").toString();
+                            //插入数据库
+                            TabEntity tab = new TabEntity();
+                            tab.idStr = s.get("id").toString();
                             tab.name = s.get("name").toString();
                             tab.image_default = "";
                             tab.image_selected = "";
-                            Realm.getDefaultInstance().commitTransaction();
+                            new MyDBHelper(getApplicationContext()).addTabEntity(tab);
                         }
                     } else {
                         for (Service s : services) {
-                            Realm.getDefaultInstance().beginTransaction();
-                            TabEntity tab = Realm.getDefaultInstance().where(TabEntity.class).equalTo("id", s.get("id").toString()).findFirst();
-                            tab.id = s.get("id").toString();
+                            TabEntity tab = new TabEntity();
+                            tab.idStr = s.get("id").toString();
                             tab.name = s.get("name").toString();
                             tab.image_default = "";
                             tab.image_selected = "";
-                            Realm.getDefaultInstance().commitTransaction();
+                            //修改，稍后在写
                         }
                     }
-
                     Log.d("test", "1");
                     VersionUpManager manager = new VersionUpManager();
                     manager.init(getApplication());
@@ -101,7 +98,7 @@ public class MainActivity2 extends TabActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            RealmResults<TabEntity> tabs = Realm.getDefaultInstance().where(TabEntity.class).findAll();
+                            ArrayList<TabEntity> tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
                             Log.d("test", "main initView");
                             initView(tabs);
                         }
@@ -111,7 +108,7 @@ public class MainActivity2 extends TabActivity {
         }.start();
     }
 
-    private void initView(RealmResults<TabEntity> tabs) {
+    private void initView(ArrayList<TabEntity> tabs) {
         if (tabs == null) {
             return;
         }
