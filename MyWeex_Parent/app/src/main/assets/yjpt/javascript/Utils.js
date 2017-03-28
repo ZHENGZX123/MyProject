@@ -1,10 +1,9 @@
 var Utils = {
-    // dir : 'yjpts',
-  	dir : 'yjpt',
+  	dir : 'yjpts',
     // ip : 'http://192.168.8.206:8180/',
-     ip : 'http://192.168.8.114:8888/',
-    // ip : 'http://127.0.0.1:8888/',
-    // ip : 'http://www.yuertong.com/',   //本地不用
+    // ip : 'http://192.168.8.114:8088/',
+    // ip : 'http://127.0.0.1:8088/',
+    ip : 'http://www.yuertong.com/',
 
     setOpenUrl : function(context,arr){
       var bundleUrl = context.bundleUrl;
@@ -13,8 +12,9 @@ var Utils = {
       var isAndroidAssets = bundleUrl.indexOf('file:///mnt/sdcard/') >= 0;
 
       var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
+      
       if (isAndroidAssets) {
-        nativeBase = bundleUrl;
+        nativeBase = 'file://assets/';
       }
       else if (isiOSAssets) {
         // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -72,12 +72,12 @@ var Utils = {
                     for(var k in subObj){
                       if(k==imgNameArr[j]){
                           osubOjb = subObj[k];
-                          subObj[imgNameArr[j]] = Utils.ip +Utils.dir+ '/'+osubOjb;
+                          subObj[imgNameArr[j]] = Utils.ip +Utils.dir+'/'+ osubOjb;
                       }
                         
                     }
                   }
-                  obj[imgNameArr[j]] = Utils.ip +Utils.dir+ '/'+ obj[imgNameArr[j]];
+                  obj[imgNameArr[j]] = Utils.ip +Utils.dir+'/'+ obj[imgNameArr[j]];
                   
               }
             }
@@ -89,7 +89,7 @@ var Utils = {
                 return;
               }
               for(var i in imgNameArr){
-                arr[imgNameArr[i]] = Utils.ip + Utils.dir +  '/'+arr[imgNameArr[i]] ;
+                arr[imgNameArr[i]] = Utils.ip+Utils.dir+'/' + arr[imgNameArr[i]] ;
               }
           }
         return arr;
@@ -259,13 +259,6 @@ var Utils = {
         var headers = {'Content-Type' : 'application/x-www-form-urlencoded'};
        // var requestUrl = Utils.ip + 'yjpts';
         var requestUrl = Utils.ip + Utils.dir;
-        // var requestUrl = 'http://192.168.8.19:8080/yjpts';
-        // modal.alert({
-        //           message:JSON.stringify(options),
-        //           okTitle:'好的'
-        //       },function(){
-        //               // self.$openURL(Utils.setOpenUrl(self.$getConfig(),'login'));
-        //       });
 
         stream.fetch({
             headers : options.headers || headers,
@@ -274,16 +267,6 @@ var Utils = {
             type : options.dataType || type,
             body : options.data
         }, function(response) {
-              // modal.alert({
-              //     message:JSON.stringify(response),
-              //     okTitle:'好的'
-              // },function(){
-              //         // self.$openURL(Utils.setOpenUrl(self.$getConfig(),'login'));
-              // });
-                //      self.$openURL(Utils.setOpenUrl(self.$getConfig(),'login'));
-
-              //debugger
-              //console.log("response----"+JSON.stringify(response));
               if(!response.ok || response.ok == 0){
                 modal.toast({
                   'message': '网络故障，请稍后再试！', 
@@ -294,9 +277,9 @@ var Utils = {
                   var data = {
                     status : response.status,
                     headers : response.headers,
-                   // data : eval("(" + response.data + ")")  // 用于手机 端
                     data :response.data //  用于PC端
-                  }
+                  }                     
+                 
                   options.success(data);
                 }
               }

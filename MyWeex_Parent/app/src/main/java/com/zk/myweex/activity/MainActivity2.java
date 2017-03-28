@@ -61,7 +61,7 @@ public class MainActivity2 extends TabActivity {
                     int tabcount = new MyDBHelper(getApplicationContext()).getAllTabEntity().size();
                     //第一次，初始化tab
                     if (tabcount == 0) {
-                        List<Service> services = new Service().find(new KWQuery().like("id", "tab%"));
+                        List<Service> services = new Service().find(new KWQuery().like("id", "ParentTab%"));
                         for (Service s : services) {
                             //插入数据库
                             TabEntity tab = new TabEntity();

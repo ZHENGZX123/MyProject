@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.kiway.yjpt.Parent.wxapi.Constants;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
@@ -13,19 +16,24 @@ import com.lzy.imagepicker.view.CropImageView;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
+import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
+import com.zk.myweex.utils.NetworkUtil;
 import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.UploadUtil;
 import com.zk.myweex.utils.Utils;
 
+import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
 
@@ -117,19 +125,19 @@ public class SJEventModule extends WXModule {
 //        intent.setData(Uri.parse(path));
 //        mWXSDKInstance.getContext().startActivity(intent);
 //    }
-
-    @JSMethod(uiThread = true)
-    public void sendEvent(JSCallback callback) {
-        Log.d("test", "module id = " + mWXSDKInstance.getInstanceId());
-        Map<String, Object> params = new HashMap<>();
-        params.put("test1", "test1");
-        params.put("test2", "test2");
-        //这个只能调用相同instance的事件。
-//        mWXSDKInstance.fireGlobalEventCallback("tab1_event", params);
-        //这个只能callback
-//        callback.invoke(params);
-        mWXSDKInstance.fireSuperGlobalEventCallback("tab1_event", params);
-    }
+//
+//    @JSMethod(uiThread = true)
+//    public void sendEvent(JSCallback callback) {
+//        Log.d("test", "module id = " + mWXSDKInstance.getInstanceId());
+//        Map<String, Object> params = new HashMap<>();
+//        params.put("test1", "test1");
+//        params.put("test2", "test2");
+//        //这个只能调用相同instance的事件。
+////        mWXSDKInstance.fireGlobalEventCallback("tab1_event", params);
+//        //这个只能callback
+////        callback.invoke(params);
+//        mWXSDKInstance.fireSuperGlobalEventCallback("tab1_event", params);
+//    }
 
 
     @JSMethod(uiThread = true)
@@ -254,6 +262,72 @@ public class SJEventModule extends WXModule {
                 Log.d("test", "upload ret = " + ret);
             }
         }.start();
+    }
+
+    @JSMethod(uiThread = true)
+    public void WeChatPay(String url) {
+        Log.d("test", "url = " + url);
+        // 测试用
+        String money = "1";
+
+//        {"total":0.06,"remark":"智慧课堂","attach":{"childId":"ffc7337009f211e7b048299dbf864a63","classId":"bc6f1550093611e7bc6713374ff06eb4","schoolId":"344da9f107cb11e7bbb321aab2798d9f","payUserId":"43f8d7f00d3c11e7a588051dfb74031a"},"outTradeNo":"20170328173719695","url":"file:///mnt/sdcard/kiway/weex/ParentTab0.zip/yjpt/weex_jzd/catalog-list.js"}
+        try {
+            if (!NetworkUtil.isNetworkAvailable(mWXSDKInstance.getContext())) {
+                toast("没有网络");
+                return;
+            }
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            JSONObject jsonObject = new JSONObject();
+            StringEntity stringEntity = new StringEntity(jsonObject.toString(),
+                    "utf-8");
+            client.post(mWXSDKInstance.getContext(),
+                    "http://120.25.237.116:8080/WJCServlet/servlet/WeixinPay",
+                    stringEntity, "application/json",
+                    new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int arg0, Header[] arg1,
+                                              String ret) {
+                            Log.d("test", "weixin param= " + ret);
+                            try {
+                                JSONObject json = new JSONObject(ret)
+                                        .getJSONObject("result");
+
+                                PayReq req = new PayReq();
+                                req.appId = json.getString("appid");
+                                req.partnerId = json.getString("partnerId");
+                                req.prepayId = json.getString("prepayId");
+                                req.nonceStr = json.getString("nonceStr");
+                                req.timeStamp = json.getString("timeStamp");
+                                req.packageValue = "Sign=WXPay";
+                                req.sign = json.getString("sign");
+                                req.extData = "app data"; // optional
+                                String out_trade_no = json
+                                        .getString("out_trade_no");
+
+                                IWXAPI api = WXAPIFactory
+                                        .createWXAPI(mWXSDKInstance.getContext(),
+                                                Constants.APP_ID);
+                                api.sendReq(req);
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int arg0, Header[] arg1,
+                                              String arg2, Throwable arg3) {
+                            Log.d("test", "onFailure = " + arg2);
+                            toast("请求失败，请稍后再试");
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("test", "exception = " + e.toString());
+            toast("请求失败，请稍后再试");
+        }
     }
 
 }
