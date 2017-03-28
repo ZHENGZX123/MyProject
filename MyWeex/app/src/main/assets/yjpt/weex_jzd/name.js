@@ -2063,7 +2063,7 @@
 	  data: function () {return {
 	    tabItems: [],
 	    selectedIndex: 0,
-	    selectedColor: '#ff0000',
+	    selectedColor: '#00cc99',
 	    unselectedColor: '#000000'
 	  }},
 	  created: function created() {
@@ -2105,8 +2105,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2120,7 +2120,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	          nativeBase = bundleUrl;
+	        nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -2709,98 +2709,98 @@
 	var modal = __weex_require__('@weex-module/modal');
 	var storage = __weex_require__('@weex-module/storage');
 	module.exports = {
-		data: function () {return {
-			navBarHeight: 130,
-			dir: 'yjpt',
-			name: '',
-			countRemain: 10,
-			numberCount: 10,
-			userId: ''
-		}},
-		created: function created() {
-			var userId, name;
-			var self = this;
+	    data: function () {return {
+	        navBarHeight: 130,
+	        dir: 'yjpt',
+	        name: '',
+	        countRemain: 10,
+	        numberCount: 10,
+	        userId: ''
+	    }},
+	    created: function created() {
+	        var userId, name;
+	        var self = this;
 
-			this.headLeft = Utils.ip + Utils.dir + '/' + 'yjpt/images/id_right_bg.png';
-			this.$on('naviBar.leftItem.click', function (e) {
-				Utils.navigate.pop(this, 'true');
-			});
+	        this.headLeft = Utils.ip + Utils.dir + '/' + 'yjpt/images/id_right_bg.png';
+	        this.$on('naviBar.leftItem.click', function (e) {
+	            Utils.navigate.pop(this, 'true');
+	        });
 
-			storage.getItem('userId', function (e) {
-				if (e.data != 'undefiend') {
-					self.userId = e.data;
-					userId = e.data;
-				}
-			});
+	        storage.getItem('userId', function (e) {
+	            if (e.data != 'undefiend') {
+	                self.userId = e.data;
+	                userId = e.data;
+	            }
+	        });
 
-			storage.getItem('userId', function (e) {
-				Utils.fetch({
-					url: '/app/user?userId=' + e.data,
-					method: 'get',
-					dataType: 'json',
-					success: function success(ret) {
-						var user = ret.data.data;
+	        storage.getItem('userId', function (e) {
+	            Utils.fetch({
+	                url: '/app/user?userId=' + e.data,
+	                method: 'get',
+	                dataType: 'json',
+	                success: function success(ret) {
+	                    var user = ret.data.data;
 
-						if (user.realname) {
-							self.name = user.realname;
-						}
+	                    if (user.realname) {
+	                        self.name = user.realname;
+	                    }
 
-						self.countRemain = self.countRemain - self.name.length;
-					}
-				});
-			});
+	                    self.countRemain = self.countRemain - self.name.length;
+	                }
+	            });
+	        });
 
-			this.$on('naviBar.rightItem.click', function (e) {
-				if (self.name == '') {
-					modal.alert({
-						message: '输入您的名字',
-						okTitle: '好的'
-					}, function () {});
-					return;
-				}
+	        this.$on('naviBar.rightItem.click', function (e) {
+	            if (self.name == '') {
+	                modal.alert({
+	                    message: '输入您的名字',
+	                    okTitle: '好的'
+	                }, function () {});
+	                return;
+	            }
 
-				Utils.fetch({
-					url: '/app/user',
-					data: 'userId=' + userId + '&uname=' + self.name,
-					type: 'json',
-					method: 'POST',
-					success: function success(ret) {
-						var _data = ret.data;
-						var obj = eval("(" + _data + ")");
+	            Utils.fetch({
+	                url: '/app/user',
+	                data: 'userId=' + userId + '&uname=' + self.name,
+	                type: 'json',
+	                method: 'POST',
+	                success: function success(ret) {
+	                    var _data = ret.data;
+	                    var obj = eval("(" + _data + ")");
 
-						if (obj.StatusCode == '200') {
-							modal.toast({
-								message: '修改成功',
-								duration: '1'
-							});
+	                    if (obj.StatusCode == '200') {
+	                        modal.toast({
+	                            message: '修改成功',
+	                            duration: '1'
+	                        });
 
-							var Hulk = new BroadcastChannel('nameModify');
-							Hulk.postMessage(self.name);
+	                        var Hulk = new BroadcastChannel('nameModify');
+	                        Hulk.postMessage(self.name);
 
-							setTimeout(function () {
-								Utils.navigate.pop(self, 'true');
-							}, 1000);
-						} else {
-							modal.toast({
-								message: '修改失败，请稍后重新修改',
-								duration: '1'
-							});
-						}
-					}
-				});
-			});
-		},
-		methods: {
-			userNameIn: function userNameIn(e) {
-				this.name = e.value;
-				this.countRemain = this.numberCount - e.value.length;
-				if (this.countRemain <= 0) {
-					this.countRemain = 0;
-					this.name = e.value.substring(0, this.numberCount);
-				}
-			}
+	                        setTimeout(function () {
+	                            Utils.navigate.pop(self, 'true');
+	                        }, 1000);
+	                    } else {
+	                        modal.toast({
+	                            message: '修改失败，请稍后重新修改',
+	                            duration: '1'
+	                        });
+	                    }
+	                }
+	            });
+	        });
+	    },
+	    methods: {
+	        userNameIn: function userNameIn(e) {
+	            this.name = e.value;
+	            this.countRemain = this.numberCount - e.value.length;
+	            if (this.countRemain <= 0) {
+	                this.countRemain = 0;
+	                this.name = e.value.substring(0, this.numberCount);
+	            }
+	        }
 
-		}
+	    }
 	};}
 	/* generated by weex-loader */
 

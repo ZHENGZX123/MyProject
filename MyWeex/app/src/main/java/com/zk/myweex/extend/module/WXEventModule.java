@@ -35,8 +35,8 @@ import yjpty.teaching.http.BaseHttpRequest;
 
 public class WXEventModule extends WXModule {
 
-    private static final String WEEX_CATEGORY = "com.kiway.android.intent.category.WEEX";
-    private static final String WEEX_ACTION = "com.kiway.android.intent.action.WEEX";
+    private static final String WEEX_CATEGORY = "com.kiway.android.intent.category.WEEX.teacher";
+    private static final String WEEX_ACTION = "com.kiway.android.intent.action.WEEX.teacher";
 
 
     @JSMethod(uiThread = true)

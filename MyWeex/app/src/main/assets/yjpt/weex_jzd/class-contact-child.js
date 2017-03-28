@@ -2866,7 +2866,7 @@
 	  data: function () {return {
 	    tabItems: [],
 	    selectedIndex: 0,
-	    selectedColor: '#ff0000',
+	    selectedColor: '#00cc99',
 	    unselectedColor: '#000000'
 	  }},
 	  created: function created() {
@@ -2908,8 +2908,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2923,7 +2923,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	          nativeBase = bundleUrl;
+	        nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -3523,7 +3523,7 @@
 	                          "classList": [
 	                            "head_img"
 	                          ],
-	                          "shown": function () {return this.named=='亲戚'},
+	                          "shown": function () {return this.named=='其他'},
 	                          "attr": {
 	                            "src": function () {return this.images.otherImg}
 	                          }
@@ -3639,7 +3639,7 @@
 	  },
 	  "menu_list": {
 	    "flex": 1,
-	    "fontSize": 36,
+	    "fontSize": 30,
 	    "color": "#ffffff",
 	    "textAlign": "center",
 	    "padding": 30,
@@ -3857,6 +3857,7 @@
 	        storage.getItem('userProfile', function (e) {
 	            if (e.data) {
 	                e.data = JSON.parse(e.data);
+	                console.log(e.data);
 	                self.childInfo = e.data;
 	                self.userId = e.data.id;
 
@@ -3873,19 +3874,14 @@
 	                        if (res.data.StatusCode == '200') {
 	                            self.studentDetail = res.data.data;
 	                            self.parentList = res.data.data.parents;
-
-	                            self.childInfo.realname = res.data.data.student.realname;
 	                            for (var i in self.parentList) {
 	                                if (!self.parentList[i].avatar) {
-	                                    if (self.parentList[i].through.relation == '1') {
+	                                    if (self.parentList[i].named == '爸爸') {
 	                                        self.parentList[i].avatar = self.images.fatherImg;
-	                                        self.parentList[i].named = '爸爸';
-	                                    } else if (self.parentList[i].through.relation == '2') {
+	                                    } else if (self.parentList[i].named == '妈妈') {
 	                                        self.parentList[i].avatar = self.images.motherImg;
-	                                        self.parentList[i].named = '妈妈';
 	                                    } else {
 	                                        self.parentList[i].avatar = self.images.otherImg;
-	                                        self.parentList[i].named = '亲戚';
 	                                    }
 	                                }
 	                            }
@@ -3900,11 +3896,6 @@
 	                });
 	            }
 	        });
-
-	        var childName = new BroadcastChannel('childNameModify');
-	        childName.onmessage = function (e) {
-	            self.childInfo.realname = e.data;
-	        };
 	    },
 	    methods: {
 	        redirect: function redirect(url) {
@@ -3919,6 +3910,7 @@
 	                cancelTitle: '取消'
 	            }, function (result) {
 	                if (result == '确定') {
+	                    console.log(self.studentDetail);
 	                    Utils.fetch({
 	                        url: '/app/class/' + self.studentDetail.class.id + '/student/' + self.studentDetail.student.id,
 	                        data: '',
@@ -3961,7 +3953,6 @@
 	        },
 	        renameChild: function renameChild(url) {
 	            var self = this;
-	            self.isShow = !self.isShow;
 	            Utils.navigate.push(self, url, 'true');
 	        }
 	    }

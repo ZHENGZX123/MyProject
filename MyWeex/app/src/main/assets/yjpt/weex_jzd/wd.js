@@ -2063,7 +2063,7 @@
 	  data: function () {return {
 	    tabItems: [],
 	    selectedIndex: 0,
-	    selectedColor: '#ff0000',
+	    selectedColor: '#00cc99',
 	    unselectedColor: '#000000'
 	  }},
 	  created: function created() {
@@ -2105,8 +2105,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2120,7 +2120,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	          nativeBase = bundleUrl;
+	        nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -2946,7 +2946,6 @@
 	    data: function () {return {
 	        navBarHeight: 130,
 	        mineUrl: 'wo',
-	        doneRefresh: 'none',
 	        basicDataList: [{
 	            titleName: '我',
 	            pic_thumb: 'yjpt/images/photo_06.jpeg',
@@ -3008,7 +3007,6 @@
 
 	        storage.getItem('userId', function (e) {
 	            self.userId = e.data;
-
 	            Utils.fetch({
 	                url: '/app/user?userId=' + e.data,
 	                method: 'get',
@@ -3038,28 +3036,6 @@
 	            console.log(url);
 	            var self = this;
 	            Utils.navigate.push(self, url, 'true');
-	        },
-	        handleRefresh: function handleRefresh() {
-	            var self = this;
-	            self.doneRefresh = 'flex';
-
-	            Utils.fetch({
-	                url: '/app/class',
-	                method: 'get',
-	                dataType: 'json',
-	                success: function success(ret) {
-	                    if (ret.data.StatusCode == '200') {
-	                        self.myClass = ret.data.data;
-	                        self.doneRefresh = 'none';
-	                    } else {
-	                        self.doneRefresh = 'none';
-	                        modal.toast({
-	                            message: '获取班级失败',
-	                            duration: '1'
-	                        });
-	                    }
-	                }
-	            });
 	        }
 	    }
 

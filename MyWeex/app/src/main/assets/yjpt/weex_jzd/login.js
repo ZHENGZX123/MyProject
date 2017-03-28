@@ -2063,7 +2063,7 @@
 	  data: function () {return {
 	    tabItems: [],
 	    selectedIndex: 0,
-	    selectedColor: '#ff0000',
+	    selectedColor: '#00cc99',
 	    unselectedColor: '#000000'
 	  }},
 	  created: function created() {
@@ -2105,12 +2105,12 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-//	  	 dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
-//	     ip : 'http://www.yuertong.com/',   //本地不用
+	    // ip : 'http://www.yuertong.com/',   //本地不用
 
 	    setOpenUrl : function(context,arr){
 	      var bundleUrl = context.bundleUrl;
@@ -2120,7 +2120,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	          nativeBase = bundleUrl;
+	        nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -2873,6 +2873,7 @@
 	        navBarHeight: 130,
 	        dir: 'yjpt',
 	        telphone: '13510530146',
+
 	        pwd: '123456',
 	        verCode: '',
 	        telphoneCheck: true,
@@ -2913,7 +2914,7 @@
 	        var bundleUrl = this.$getConfig().bundleUrl;
 	        bundleUrl = new String(bundleUrl);
 	        var nativeBase;
-	        var isAndroidAssets = bundleUrl.indexOf('file:///mnt/sdcard/') >= 0;
+	        var isAndroidAssets = bundleUrl.indexOf('file://assets/') >= 0;
 
 	        var isiOSAssets = bundleUrl.indexOf('file:///') >= 0;
 
@@ -2954,12 +2955,11 @@
 	                method: 'POST',
 	                dataType: 'json',
 	                success: function success(ret) {
-	                    var JSESSIONID;
 	                    if (self.loginFailTime == 0) {
 	                        if (ret.headers['Set-Cookie']) {
 	                            var jsessionid = ret.headers['Set-Cookie'];
 	                            if (jsessionid.indexOf("JSESSIONID") != -1) {
-	                                JSESSIONID = jsessionid.substring(jsessionid.indexOf('=') + 1, jsessionid.indexOf(';'));
+	                                var JSESSIONID = jsessionid.substring(jsessionid.indexOf('=') + 1, jsessionid.indexOf(';'));
 	                                storage.setItem('jsessionid', JSESSIONID, function (e) {});
 	                                self.jsessionid = JSESSIONID;
 	                            }
@@ -2984,31 +2984,16 @@
 	                                        'duration': 1
 	                                    });
 
-	                                    Utils.fetch({
-	                                        url: '/app/base',
-	                                        data: '',
-	                                        method: 'get',
-	                                        dataType: 'json',
-	                                        success: function success(ret) {
-	                                            var baseData = ret.data.data;
-	                                            storage.setItem('baseData', (0, _stringify2.default)(baseData), function () {});
-	                                        }
-	                                    });
-
 	                                    var retdata = ret.data.data;
 	                                    storage.setItem('userInfo', (0, _stringify2.default)(retdata), function () {});
 
 	                                    if (!ret.data.data.realname) {
-	                                        var index = Utils.setOpenUrl(self.$getConfig(), 'name-default');
-	                                        if (SJevent.loginSuccess) {
-	                                            SJevent.loginSuccess({
-	                                                pageUrl: index,
-	                                                userName: self.telphone,
-	                                                userPwd: self.pwd,
-	                                                userType: '1',
-	                                                jsessionid: JSESSIONID
-	                                            }, function (res) {});
-	                                        }
+	                                        SJevent.loginSuccess({
+	                                            pageUrl: 'name-default',
+	                                            userName: self.telphone,
+	                                            userPwd: self.pwd,
+	                                            userType: '1'
+	                                        }, function (res) {});
 	                                    } else {
 	                                        Utils.fetch({
 	                                            url: '/app/class',
@@ -3043,10 +3028,11 @@
 	                                                                pageUrl: url,
 	                                                                userName: self.telphone,
 	                                                                userPwd: self.pwd,
-	                                                                userType: '1',
-	                                                                jsessionid: JSESSIONID
+	                                                                userType: '1'
 	                                                            }, function (res) {
-	                                                                storage.setItem('groupList', res, function () {});
+	                                                                modal.alert({
+	                                                                    message: res
+	                                                                }, function () {});
 	                                                            });
 	                                                        } else {
 	                                                            setTimeout(function () {
@@ -3062,17 +3048,16 @@
 	                                                        var url = Utils.setOpenUrl(self.$getConfig(), 'class-list-default');
 
 
-	                                                        if (SJevent.loginSuccess) {
-	                                                            SJevent.loginSuccess({
-	                                                                pageUrl: url,
-	                                                                userName: self.telphone,
-	                                                                userPwd: self.pwd,
-	                                                                userType: '1',
-	                                                                jsessionid: JSESSIONID
-	                                                            }, function (res) {
-	                                                                storage.setItem('groupList', res, function () {});
-	                                                            });
-	                                                        }
+	                                                        SJevent.loginSuccess({
+	                                                            pageUrl: url,
+	                                                            userName: self.telphone,
+	                                                            userPwd: self.pwd,
+	                                                            userType: '1'
+	                                                        }, function (res) {
+	                                                            modal.alert({
+	                                                                message: res
+	                                                            }, function () {});
+	                                                        });
 	                                                    }
 	                                                }
 	                                            }
@@ -3086,9 +3071,30 @@
 	                                }
 	                            }
 	                        });
+
+	                        Utils.fetch({
+	                            url: '/app/base',
+	                            data: '',
+	                            method: 'get',
+	                            dataType: 'json',
+	                            success: function success(ret) {
+	                                var baseData = ret.data.data;
+	                                storage.setItem('baseData', (0, _stringify2.default)(baseData), function () {});
+	                            }
+	                        });
+	                    } else if (obj.StatusCode == '404') {
+	                        modal.alert({
+	                            message: '账户或密码错误，请重新输入',
+	                            okTitle: '好的'
+	                        }, function () {
+	                            self.loginFailTime++;
+	                        });
 	                    } else {
-	                        modal.toast({
-	                            message: '登录失败，请稍后重试'
+	                        modal.alert({
+	                            message: '系统异常，请稍后重试',
+	                            okTitle: '好的'
+	                        }, function () {
+	                            self.loginFailTime++;
 	                        });
 	                    }
 	                }
