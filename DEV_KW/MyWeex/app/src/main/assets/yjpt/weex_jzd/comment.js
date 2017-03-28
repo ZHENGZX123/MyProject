@@ -2063,7 +2063,7 @@
 	  data: function () {return {
 	    tabItems: [],
 	    selectedIndex: 0,
-	    selectedColor: '#ff0000',
+	    selectedColor: '#00cc99',
 	    unselectedColor: '#000000'
 	  }},
 	  created: function created() {
@@ -2105,8 +2105,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2120,7 +2120,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	          nativeBase = bundleUrl;
+	        nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -2469,8 +2469,22 @@
 /* 130 */,
 /* 131 */,
 /* 132 */,
-/* 133 */,
-/* 134 */,
+/* 133 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(134), __esModule: true };
+
+/***/ },
+/* 134 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var core  = __webpack_require__(23)
+	  , $JSON = core.JSON || (core.JSON = {stringify: JSON.stringify});
+	module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
+	  return $JSON.stringify.apply($JSON, arguments);
+	};
+
+/***/ },
 /* 135 */,
 /* 136 */,
 /* 137 */,
@@ -2584,7 +2598,6 @@
 	            {
 	              "type": "textarea",
 	              "attr": {
-	                "autofocus": "true",
 	                "placeholder": "这一刻我想说…",
 	                "value": function () {return this.recordContent}
 	              },
@@ -2691,6 +2704,12 @@
 
 	module.exports = function(module, exports, __weex_require__){'use strict';
 
+	var _stringify = __webpack_require__(133);
+
+	var _stringify2 = _interopRequireDefault(_stringify);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	__webpack_require__(80);
 	var Utils = __webpack_require__(129);
 	var modal = __weex_require__('@weex-module/modal');
@@ -2711,7 +2730,9 @@
 	        },
 	        radioList: [{ name: '小一班', imgUrl: '' }, { name: '小二班', imgUrl: '' }],
 	        postId: '',
-	        indexUrl: 'index'
+	        indexUrl: 'index',
+	        userId: '',
+	        userName: ''
 	    }},
 	    created: function created() {
 	        this.headLeft = Utils.ip + Utils.dir + '/' + 'yjpt/images/id_right_bg.png';
@@ -2728,6 +2749,19 @@
 
 	        self.indexUrl = Utils.setOpenUrl(self.$getConfig(), self.indexUrl);
 
+	        storage.getItem('userId', function (e) {
+	            self.userId = e.data;
+	            Utils.fetch({
+	                url: '/app/user?userId=' + e.data,
+	                method: 'get',
+	                dataType: 'json',
+	                success: function success(ret) {
+	                    var user = ret.data.data;
+	                    self.userName = ret.data.data.realname;
+	                }
+	            });
+	        });
+
 	        self.$on('naviBar.rightItem.click', function (e) {
 	            if (self.recordContent != '') {
 	                Utils.fetch({
@@ -2742,9 +2776,18 @@
 	                                duration: '1'
 	                            });
 
+	                            var obj = {};
+	                            obj.postId = self.postId;
+	                            obj.replyTime = '刚刚';
+	                            obj.userName = self.userName;
+	                            obj.content = self.recordContent;
+
+	                            var comment = new BroadcastChannel('commentPost');
+	                            comment.postMessage((0, _stringify2.default)(obj));
+
 	                            setTimeout(function () {
-	                                Utils.navigate.push(self, self.indexUrl, 'true');
-	                            }, 1000);
+	                                Utils.navigate.pop(self, 'true');
+	                            }, 500);
 	                        } else {
 	                            modal.toast({
 	                                message: '发送失败，请稍后重试',

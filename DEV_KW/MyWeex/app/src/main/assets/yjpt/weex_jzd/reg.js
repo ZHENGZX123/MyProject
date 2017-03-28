@@ -2063,7 +2063,7 @@
 	  data: function () {return {
 	    tabItems: [],
 	    selectedIndex: 0,
-	    selectedColor: '#ff0000',
+	    selectedColor: '#00cc99',
 	    unselectedColor: '#000000'
 	  }},
 	  created: function created() {
@@ -2105,8 +2105,8 @@
 /***/ function(module, exports) {
 
 	var Utils = {
-	    dir : 'yjpt',
-	  	// dir : 'yjpts',
+	    // dir : 'yjpts',
+	  	dir : 'yjpt',
 	    // ip : 'http://192.168.8.206:8180/',
 	     ip : 'http://192.168.8.114:8888/',
 	    // ip : 'http://127.0.0.1:8888/',
@@ -2120,7 +2120,7 @@
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
-	          nativeBase = bundleUrl;
+	        nativeBase = bundleUrl;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -2617,7 +2617,11 @@
 	    "height": function () {return this.navBarHeight},
 	    "backgroundColor": "#00cc99",
 	    "title": "注册",
-	    "titleColor": "white"
+	    "titleColor": "white",
+	    "leftItemSrc": function () {return this.headLeft}
+	  },
+	  "events": {
+	    "clickleftitem": "onclickleftitem"
 	  },
 	  "children": [
 	    {
@@ -2974,9 +2978,14 @@
 	        sendingSMS: false
 	    }},
 	    created: function created() {
-	        this.phoneImg = Utils.ip + 'yjpt/images/phone.png';
-	        this.qrImg = Utils.ip + 'yjpt/images/ewm.png';
-	        this.pwdImg = Utils.ip + 'yjpt/images/pwd.png';
+	        this.phoneImg = Utils.ip + Utils.dir + '/' + 'yjpt/images/phone.png';
+	        this.qrImg = Utils.ip + Utils.dir + '/' + 'yjpt/images/ewm.png';
+	        this.pwdImg = Utils.ip + Utils.dir + '/' + 'yjpt/images/pwd.png';
+
+	        this.headLeft = Utils.ip + Utils.dir + '/' + 'yjpt/images/id_right_bg.png';
+	        this.$on('naviBar.leftItem.click', function (e) {
+	            Utils.navigate.pop(this, 'true');
+	        });
 	    },
 	    methods: {
 	        numTypeIn: function numTypeIn(e) {
@@ -3085,10 +3094,7 @@
 	                            message: '注册成功，请完成登录',
 	                            okTitle: '好的'
 	                        }, function () {
-	                            setTimeout(function () {
-	                                var url = Utils.setOpenUrl(self.$getConfig(), 'login');
-	                                Utils.navigate.push(self, url, 'true');
-	                            }, 600);
+	                            Utils.navigate.pop(self, 'true');
 	                        });
 	                    } else if (ret.data.StatusCode == 400) {
 	                        modal.alert({
@@ -3100,8 +3106,8 @@
 	                            message: '该手机号已注册，是否用该号码登录？',
 	                            okTitle: '好的'
 	                        }, function () {
-	                            var url = Utils.setOpenUrl(self.$getConfig(), 'login');
-	                            Utils.navigate.push(self, url, 'true');
+
+	                            Utils.navigate.pop(self, 'true');
 	                        });
 	                    } else if (ret.data.StatusCode == 500) {
 	                        modal.alert({
