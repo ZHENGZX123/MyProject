@@ -60,7 +60,7 @@
         <activity android:name="com.zk.myweex.activity.MainActivity2" />
         <activity
             android:name="com.zk.myweex.activity.LoginActivity"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask" />
 
         <receiver android:name="com.zk.myweex.broadcast.NetChangeReceiver">
             <intent-filter>
@@ -77,6 +77,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.zk.myweex.activity.TestActivity"></activity>
     </application>
 
 </manifest>
