@@ -250,7 +250,7 @@ public class SJEventModule extends WXModule {
                 ImageItem ii = images.get(0);
 
                 File file = new File(ii.path);
-                String ret = UploadUtil.uploadFile(file, "http://192.168.8.114:8888/yjpt/course/file", "icon", "JSESSIONID=" + jsessionid);
+                String ret = UploadUtil.uploadFile(file, url, "icon", "JSESSIONID=" + jsessionid);
                 Log.d("test", "upload ret = " + ret);
             }
         }.start();

@@ -11,7 +11,7 @@ public class TestActivity extends WXBaseActivity {
         super.onCreate(savedInstanceState);
 
 
-        renderPage(WXFileUtils.loadAsset("weex/app.weex.js", this), "", "");
+        renderPage(WXFileUtils.loadAsset("weex/index.weex.js", this), "", "");
     }
 
 }

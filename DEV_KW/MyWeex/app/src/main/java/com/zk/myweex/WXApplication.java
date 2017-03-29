@@ -47,15 +47,15 @@ import yjpty.teaching.App;
 public class WXApplication extends App {
 
 
-    public static String ROOT = "/mnt/sdcard/kiway/";
+    public static String ROOT = "/mnt/sdcard/kiway/teacher/";
 
-    public static String PATH = "/mnt/sdcard/kiway/weex/";
+    public static String PATH = ROOT + "weex/";
 
-    public static String PATH_TMP = "/mnt/sdcard/kiway/tmp/";
+    public static String PATH_TMP = ROOT + "tmp/";
 
-    public static String PATH_BACKUP = "/mnt/sdcard/kiway/backup/";
+    public static String PATH_BACKUP = ROOT + "backup/";
 
-    public static String PATH_PATCH = "/mnt/sdcard/kiway/patch/";
+    public static String PATH_PATCH = ROOT + "patch/";
 
     public static String BASE_URL = "http://www.yuertong.com/";
 

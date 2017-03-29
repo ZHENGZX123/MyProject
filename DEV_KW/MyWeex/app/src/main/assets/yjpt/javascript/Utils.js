@@ -1,10 +1,10 @@
 var Utils = {
-    // dir : 'yjpts',
-  	dir : 'yjpt',
+    // dir : 'yjpt', 
+  	dir : 'yjpts', 
     // ip : 'http://192.168.8.206:8180/',
-     ip : 'http://192.168.8.114:8888/',
+     // ip : 'http://192.168.8.114:8888/', 
     // ip : 'http://127.0.0.1:8888/',
-    // ip : 'http://www.yuertong.com/',   //本地不用
+    ip : 'http://www.yuertong.com/' ,   //本地不用
 
     setOpenUrl : function(context,arr){
       var bundleUrl = context.bundleUrl;
@@ -14,7 +14,7 @@ var Utils = {
 
       var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
       if (isAndroidAssets) {
-        nativeBase = bundleUrl;
+          nativeBase = bundleUrl;
       }
       else if (isiOSAssets) {
         // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
@@ -285,10 +285,10 @@ var Utils = {
               //debugger
               //console.log("response----"+JSON.stringify(response));
               if(!response.ok || response.ok == 0){
-                modal.toast({
-                  'message': '网络故障，请稍后再试！', 
-                  'duration': 1
-                });
+                // modal.toast({
+                //   'message': '网络故障，请稍后再试！', 
+                //   'duration': 1
+                // });
               }else{
                 if(options.success && typeof options.success == 'function'){
                   var data = {
