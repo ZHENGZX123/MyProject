@@ -3,6 +3,7 @@ package com.zk.myweex.extend.module;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
+import com.zk.myweex.activity.WXPageActivity;
 import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.UploadUtil;
 import com.zk.myweex.utils.Utils;
@@ -278,6 +280,12 @@ public class SJEventModule extends WXModule implements HttpHandler {
         } else if (requestCode == 8888) {
             //微信支付成功
             Log.d("test", "8888");
+
+//            url
+            Intent intent = new Intent(mWXSDKInstance.getContext(), WXPageActivity.class);
+            intent.setData(Uri.parse(url));
+            mWXSDKInstance.getContext().startActivity(intent);
+
         }
     }
 
@@ -295,13 +303,10 @@ public class SJEventModule extends WXModule implements HttpHandler {
     }
 
     @JSMethod(uiThread = true)
-    public void WeChatPay(String url) {
-
+    public void WeChatPay(String param) {
+        Log.d("test", "param = " + param);
         BaseHttpRequest.JSESSIONID = mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).getString("jsessionid", "");
-
         msgApi = WXAPIFactory.createWXAPI(mWXSDKInstance.getContext(), null);
-        Log.d("test", "url = " + url);
-
         req = new PayReq();
         msgApi.registerApp(Constants.APP_ID);
         Activity a = ((Activity) mWXSDKInstance.getContext());
@@ -315,7 +320,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
         }
         JSONObject data = null;
         try {
-            data = new JSONObject(url);
+            data = new JSONObject(param);
             Map<String, String> map = new HashMap<String, String>();
             map.put("attach", data.getString("attach"));
             map.put("total", data.getString("total"));
@@ -323,6 +328,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
             map.put("remark", data.getString("remark"));
             IConstant.HTTP_CONNECT_POOL.addRequest(IUrContant.GET_WEI_PRIDUCT_URL, map, activityHandler, true, 1);
 
+            url = data.getString("url");
 
             // 测试用
 //{"total":0.06,"remark":"智慧课堂","attach":{"childId":"ffc7337009f211e7b048299dbf864a63","classId":"bc6f1550093611e7bc6713374ff06eb4","schoolId":"344da9f107cb11e7bbb321aab2798d9f","payUserId":"43f8d7f00d3c11e7a588051dfb74031a"},"outTradeNo":"20170328173719695","url":"file:///mnt/sdcard/kiway/weex/ParentTab0.zip/yjpt/weex_jzd/catalog-list.js"}

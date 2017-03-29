@@ -1,4 +1,4 @@
-package com.pay.wxapi;
+package cn.kiway.Yjptj.wxapi;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -44,24 +44,22 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
     @Override
     public void onResp(BaseResp resp) {
         int reqCode = resp.getType();
+        Log.d("test", "onResp reqCode = " + reqCode);
         switch (reqCode) {
             case ConstantsAPI.COMMAND_PAY_BY_WX:
                 int code = resp.errCode;
                 switch (code) {
                     case 0:
-                        try {
-                            //支付成功后的代码
-                            Log.d("test", "支付成功");
-                            Intent i = new Intent();
-                            setResult(8888, i);
-                            finish();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        //支付成功后的代码
+                        Log.d("test", "支付成功");
+                        setResult(8888);
+                        finish();
                         break;
                     case -1:
                     case -2:
+                        Log.d("test", "支付错误");
                         Toast.makeText(this, "支付错误", Toast.LENGTH_SHORT).show();
+                        setResult(8888);
                         finish();
                         break;
                 }

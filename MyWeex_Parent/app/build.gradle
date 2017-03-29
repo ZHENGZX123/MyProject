@@ -22,17 +22,10 @@ android {
             abiFilters "x86"
             abiFilters "armeabi"
         }
-//        jackOptions {
-//            enabled true
-//        }
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "x86", "arm64_v8a"
         }
     }
-//    compileOptions {
-//        sourceCompatibility JavaVersion.VERSION_1_8
-//        targetCompatibility JavaVersion.VERSION_1_8
-//    }
     buildTypes {
         release {
             minifyEnabled false
