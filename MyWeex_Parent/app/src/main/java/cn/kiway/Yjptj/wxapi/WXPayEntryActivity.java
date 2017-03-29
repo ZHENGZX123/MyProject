@@ -14,6 +14,8 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import static com.zk.myweex.WXApplication.callback;
+
 
 /**
  * 微信支付回调
@@ -49,19 +51,20 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
             case ConstantsAPI.COMMAND_PAY_BY_WX:
                 int code = resp.errCode;
                 switch (code) {
-                    case 0:
-                        //支付成功后的代码
+                    case 0: {
                         Log.d("test", "支付成功");
-                        setResult(8888);
+                        callback.invoke("1");
                         finish();
-                        break;
+                    }
+                    break;
                     case -1:
-                    case -2:
+                    case -2: {
                         Log.d("test", "支付错误");
+                        callback.invoke("0");
                         Toast.makeText(this, "支付错误", Toast.LENGTH_SHORT).show();
-                        setResult(8888);
                         finish();
-                        break;
+                    }
+                    break;
                 }
                 break;
             case ConstantsAPI.COMMAND_SENDAUTH:

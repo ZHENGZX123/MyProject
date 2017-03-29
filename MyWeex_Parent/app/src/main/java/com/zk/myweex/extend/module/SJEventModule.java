@@ -3,7 +3,6 @@ package com.zk.myweex.extend.module;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,23 +19,19 @@ import com.tencent.mm.opensdk.constants.Build;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.zk.myweex.WXApplication;
 import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
-import com.zk.myweex.activity.WXPageActivity;
 import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.UploadUtil;
 import com.zk.myweex.utils.Utils;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
@@ -245,7 +240,6 @@ public class SJEventModule extends WXModule implements HttpHandler {
 
             pickerCallback = callback;
 
-
             ImagePicker imagePicker = ImagePicker.getInstance();
             imagePicker.setImageLoader(new GlideImageLoader());// 图片加载器
             imagePicker.setSelectLimit(1);// 设置可以选择几张
@@ -277,15 +271,6 @@ public class SJEventModule extends WXModule implements HttpHandler {
             map.put("path", "file://" + images.get(0).path);
             pickerCallback.invoke(map);
             doUploadImage(images);
-        } else if (requestCode == 8888) {
-            //微信支付成功
-            Log.d("test", "8888");
-
-//            url
-            Intent intent = new Intent(mWXSDKInstance.getContext(), WXPageActivity.class);
-            intent.setData(Uri.parse(url));
-            mWXSDKInstance.getContext().startActivity(intent);
-
         }
     }
 
@@ -303,8 +288,10 @@ public class SJEventModule extends WXModule implements HttpHandler {
     }
 
     @JSMethod(uiThread = true)
-    public void WeChatPay(String param) {
+    public void WeChatPay(String param, JSCallback callback) {
         Log.d("test", "param = " + param);
+        //{"total":0.06,"remark":"智慧课堂","attach":{"childId":"ffc7337009f211e7b048299dbf864a63","classId":"bc6f1550093611e7bc6713374ff06eb4","schoolId":"344da9f107cb11e7bbb321aab2798d9f","payUserId":"43f8d7f00d3c11e7a588051dfb74031a"},"outTradeNo":"20170328173719695","url":"file:///mnt/sdcard/kiway/weex/ParentTab0.zip/yjpt/weex_jzd/catalog-list.js"}
+
         BaseHttpRequest.JSESSIONID = mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).getString("jsessionid", "");
         msgApi = WXAPIFactory.createWXAPI(mWXSDKInstance.getContext(), null);
         req = new PayReq();
@@ -328,11 +315,8 @@ public class SJEventModule extends WXModule implements HttpHandler {
             map.put("remark", data.getString("remark"));
             IConstant.HTTP_CONNECT_POOL.addRequest(IUrContant.GET_WEI_PRIDUCT_URL, map, activityHandler, true, 1);
 
-            url = data.getString("url");
-
+            WXApplication.callback = callback;
             // 测试用
-//{"total":0.06,"remark":"智慧课堂","attach":{"childId":"ffc7337009f211e7b048299dbf864a63","classId":"bc6f1550093611e7bc6713374ff06eb4","schoolId":"344da9f107cb11e7bbb321aab2798d9f","payUserId":"43f8d7f00d3c11e7a588051dfb74031a"},"outTradeNo":"20170328173719695","url":"file:///mnt/sdcard/kiway/weex/ParentTab0.zip/yjpt/weex_jzd/catalog-list.js"}
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -340,7 +324,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
 
     @Override
     public void httpErr(HttpResponseModel message) throws Exception {
-
+        toast("请求失败，请稍后再试");
     }
 
     @Override
@@ -354,13 +338,6 @@ public class SJEventModule extends WXModule implements HttpHandler {
             req.nonceStr = da.optString("nonceStr");
             req.timeStamp = da.optString("timeStamp");
             req.extData = "app data"; // optional
-            List<NameValuePair> signParams = new LinkedList<NameValuePair>();
-            signParams.add(new BasicNameValuePair("appid", req.appId));
-            signParams.add(new BasicNameValuePair("noncestr", req.nonceStr));
-            signParams.add(new BasicNameValuePair("package", req.packageValue));
-            signParams.add(new BasicNameValuePair("partnerid", req.partnerId));
-            signParams.add(new BasicNameValuePair("prepayid", req.prepayId));
-            signParams.add(new BasicNameValuePair("timestamp", req.timeStamp));
             req.sign = da.optString("signSecond");
             msgApi.sendReq(req);
         }
@@ -369,6 +346,13 @@ public class SJEventModule extends WXModule implements HttpHandler {
     @Override
     public void HttpError(HttpResponseModel message) throws Exception {
 
+    }
+
+
+    @JSMethod(uiThread = true)
+    public void backToMain() {
+        Log.d("test", "backToMain is called");
+        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
     }
 }
 

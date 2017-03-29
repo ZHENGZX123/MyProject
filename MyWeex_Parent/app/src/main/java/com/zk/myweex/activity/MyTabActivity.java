@@ -12,12 +12,25 @@ import com.zk.myweex.utils.MyDBHelper;
 //动态tab使用
 public class MyTabActivity extends SubActivity {
 
+    boolean success;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int position = getIntent().getIntExtra("position", 0);
-        TabEntity tab = new MyDBHelper(getApplicationContext()).getAllTabEntity().get(position);
-        load(tab.idStr + ".zip");
+        new Thread() {
+            @Override
+            public void run() {
+                int position = getIntent().getIntExtra("position", 0);
+                TabEntity tab = new MyDBHelper(getApplicationContext()).getAllTabEntity().get(position);
+                try {
+                    load(tab.idStr + ".zip");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+
     }
 
 }
