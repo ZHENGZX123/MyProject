@@ -2077,7 +2077,7 @@
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      
 	      if (isAndroidAssets) {
-	        nativeBase = 'file://assets/';
+	        nativeBase = nativeBase;
 	      }
 	      else if (isiOSAssets) {
 	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
