@@ -9,6 +9,8 @@ import com.taobao.weex.common.WXModule;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 import cn.kwim.mqttcilent.common.cache.dao.DaoType;
 import cn.kwim.mqttcilent.common.cache.dao.MainListDao;
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
@@ -47,10 +49,9 @@ public class ChatEventModule extends WXModule {
                     MainListDao.saveGroupList(MqttInstance.getInstance().getPushInterface().getGroupList(), DaoType.SESSTIONTYPE.GROUP);
 
                     //发起群聊成功，返回1
-//        callback(@{@"result":@"1"});
-//                    HashMap map = new HashMap();
-//                    map.put("result", "1");
-                    callback.invoke("1");
+                    HashMap map = new HashMap();
+                    map.put("result", "1");
+                    callback.invoke(map);
                 }
             }.start();
 
