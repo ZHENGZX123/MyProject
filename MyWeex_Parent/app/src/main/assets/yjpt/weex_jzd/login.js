@@ -2072,7 +2072,7 @@
 	      var bundleUrl = context.bundleUrl;
 	      bundleUrl = new String(bundleUrl);
 	      var nativeBase;
-	      var isAndroidAssets = bundleUrl.indexOf('file:///mnt/sdcard/') >= 0;
+	      var isAndroidAssets = bundleUrl.indexOf('file://assets/') >= 0;
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      
