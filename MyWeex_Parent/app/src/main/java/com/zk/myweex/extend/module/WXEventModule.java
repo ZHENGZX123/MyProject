@@ -243,24 +243,29 @@ public class WXEventModule extends WXModule {
             if (data == null) {
                 return;
             }
-            String result = data.getStringExtra("result");
-            Toast.makeText(mWXSDKInstance.getContext(), "扫描到的是" + result, Toast.LENGTH_SHORT).show();
-            //扫描二维码，扫描后的数据返回给js
-            //http://192.168.8.206:8180/yjpt/?&ref=class&classid=57&schoolId=129&classname=
-            String[] splits = result.split("&");
-            if (splits.length < 5) {
-                return;
+            try {
+                String result = data.getStringExtra("result");
+                Toast.makeText(mWXSDKInstance.getContext(), "扫描到的是" + result, Toast.LENGTH_SHORT).show();
+                Log.d("test", "result = " + result);
+                //扫描二维码，扫描后的数据返回给js
+                //http://192.168.8.206:8180/yjpt/?&ref=class&classid=57&schoolId=129&classname=
+                String[] splits = result.split("&");
+                if (splits.length < 5) {
+                    return;
+                }
+                String classId = splits[2].split("=")[1];
+                String schoolId = splits[2].split("=")[1];
+                String classname = splits[2].split("=")[1];
+                HashMap map = new HashMap();
+                map.put("result", "1");
+                map.put("classId", classId);
+                map.put("schoolId", schoolId);
+                map.put("className", classname);
+                this.scanCallback.invoke(map);
+                //this.scanCallback callback(@{@"result":`result,@"classId":classId,@"schoolId":schoolId,@"className":className}
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            String classId = splits[2].split("=")[1];
-            String schoolId = splits[2].split("=")[1];
-            String classname = splits[2].split("=")[1];
-            HashMap map = new HashMap();
-            map.put("result", "1");
-            map.put("classId", classId);
-            map.put("schoolId", schoolId);
-            map.put("classname", classname);
-            this.scanCallback.invoke(map);
-            //this.scanCallback callback(@{@"result":`result,@"classId":classId,@"schoolId":schoolId,@"classname":className}
         }
     }
 
