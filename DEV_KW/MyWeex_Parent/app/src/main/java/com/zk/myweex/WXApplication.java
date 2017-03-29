@@ -20,6 +20,7 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.taobao.weex.InitConfig;
 import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXException;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.zk.myweex.extend.adapter.GitHubApi;
@@ -58,6 +59,8 @@ public class WXApplication extends App {
     public static String PATH_PATCH = "/mnt/sdcard/kiway/patch/";
 
     public static String BASE_URL = "http://www.yuertong.com/";
+
+    public static JSCallback callback;
 
     public Activity currentActivity;
 

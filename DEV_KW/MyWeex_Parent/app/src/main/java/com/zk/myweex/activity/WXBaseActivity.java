@@ -427,47 +427,39 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         });
     }
 
-    public void load(final String name) {
+    public void load(final String name) throws Exception {
         Log.d("test", "load name = " + name);
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    String zipName = name;
-                    String path = WXApplication.PATH + name;
-                    if (new File(path).exists()) {
-                        Log.d("test", "存在，直接加载");
-                        ZipPackage zip = new MyDBHelper(getApplicationContext()).getAllZipPackageByName(zipName);
-                        loadJSBundle(zipName, zip.indexPath);
-                    } else {
-                        Log.d("test", "不存在，下载");
-                        Service s = new Service().findOne(new KWQuery().equalTo("id", name.replace(".zip", "")));
-                        Log.d("test", "s  = " + s.toString());
-                        //返回最新的全量包
-                        Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
-                        Log.d("test", "p = " + p.toString());
-                        String baseUrl = s.get("baseUrl").toString();
-                        String downloadUrl = p.get("url").toString();
-                        String version = p.get("version").toString();
-                        downloadJSBundle(zipName, downloadUrl, version, baseUrl);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
+
+        String zipName = name;
+        String path = WXApplication.PATH + name;
+        if (new File(path).exists()) {
+            Log.d("test", "存在，直接加载");
+            ZipPackage zip = new MyDBHelper(getApplicationContext()).getAllZipPackageByName(zipName);
+            loadJSBundle(zipName, zip.indexPath);
+        } else {
+            Log.d("test", "不存在，下载");
+            Service s = new Service().findOne(new KWQuery().equalTo("id", name.replace(".zip", "")));
+            Log.d("test", "s  = " + s.toString());
+            //返回最新的全量包
+            Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
+            Log.d("test", "p = " + p.toString());
+            String baseUrl = s.get("baseUrl").toString();
+            String downloadUrl = p.get("url").toString();
+            String version = p.get("version").toString();
+            downloadJSBundle(zipName, downloadUrl, version, baseUrl);
+        }
+
     }
 
     //首次下载
-    public void downloadJSBundle(final String zipName, final String downloadUrl, final String version, final String baseUrl) {
+    public void downloadJSBundle(final String zipName, final String downloadUrl, final String version, final String baseUrl) throws Exception {
         //1.访问接口，参数是zipName，返回是 name， 下载地址 ， 版本号
-
         HttpDownload httpDownload = new HttpDownload();
         int ret = httpDownload.downFile(downloadUrl, WXApplication.PATH, zipName);
         Log.d("test", "下载返回值 ret = " + ret);
         if (ret != 0) {
             toast("下载失败，请稍后再试");
-            return;
+            throw new Exception();
         }
         Log.d("test", "下载成功，保存版本号");
 
@@ -483,9 +475,7 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
     }
 
     public void loadJSBundle(String zipName, String baseUrl) {
-
         String path = WXApplication.PATH + zipName + "/" + baseUrl;//path要指到具体js
-
         //baseUrl要去掉xxx.js
         if (baseUrl.contains("/")) {
             int position = baseUrl.lastIndexOf("/") + 1;

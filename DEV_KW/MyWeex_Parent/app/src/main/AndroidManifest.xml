@@ -64,7 +64,11 @@
             </intent-filter>
         </activity>
         <activity android:name="com.zk.myweex.activity.MyTabActivity" />
-        <activity android:name="com.zk.myweex.activity.MainActivity2" />
+        <activity
+            android:name="com.zk.myweex.activity.MainActivity2"
+            android:launchMode="singleTask"></activity>
+
+
         <activity
             android:name="com.zk.myweex.activity.LoginActivity"
             android:launchMode="singleTask" />
