@@ -236,8 +236,6 @@ public class WXEventModule extends WXModule {
                 // 显示
                 normalDialog.show();
             }
-
-
         } else if (requestCode == 9999) {
             //扫描二维码返回
             if (data == null) {
@@ -284,7 +282,7 @@ public class WXEventModule extends WXModule {
             public void run() {
                 ImageItem ii = images.get(0);
                 File file = new File(ii.path);
-                String ret = UploadUtil.uploadFile(file, "http://192.168.8.206:8180/yjpt/course/file", "qzq", "JSESSIONID=" + jsessionid);
+                String ret = UploadUtil.uploadFile(file, url, "qzq", "JSESSIONID=" + jsessionid);
                 Log.d("test", "upload ret = " + ret);
 
                 if (!ret.contains("200")) {

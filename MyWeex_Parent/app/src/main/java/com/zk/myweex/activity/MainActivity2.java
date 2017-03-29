@@ -66,7 +66,7 @@ public class MainActivity2 extends TabActivity {
                             //插入数据库
                             TabEntity tab = new TabEntity();
                             tab.idStr = s.get("id").toString();
-                            tab.name = s.get("name").toString();
+                            tab.name = s.get("name").toString().replace("1", "");
                             tab.image_default = "";
                             tab.image_selected = "";
                             new MyDBHelper(getApplicationContext()).addTabEntity(tab);
