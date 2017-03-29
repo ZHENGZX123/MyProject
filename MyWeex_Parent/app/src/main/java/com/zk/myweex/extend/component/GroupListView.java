@@ -49,9 +49,10 @@ public class GroupListView extends WXComponent<ListView> {
     protected ListView initComponentHostView(@NonNull Context context) {
         Log.d("test", "ListView initComponentHostView");
         this.lv = new ListView(context);
+        this.lv.setFocusable(false);
+        this.lv.setFocusableInTouchMode(false);
         this.adapter = new HomeSchoolAdapter(getContext());
         this.lv.setAdapter(this.adapter);
-
         initData();
         addListener();
         return this.lv;
