@@ -274,8 +274,10 @@ public class SJEventModule extends WXModule implements HttpHandler {
             HashMap map = new HashMap();
             map.put("path", "file://" + images.get(0).path);
             pickerCallback.invoke(map);
-
             doUploadImage(images);
+        } else if (requestCode == 8888) {
+            //微信支付成功
+            Log.d("test", "8888");
         }
     }
 
