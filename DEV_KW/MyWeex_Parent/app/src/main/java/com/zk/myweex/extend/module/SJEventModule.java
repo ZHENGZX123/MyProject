@@ -4,33 +4,62 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.view.CropImageView;
+import com.pay.util.Constants;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
+import com.tencent.mm.opensdk.constants.Build;
+import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
 import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.UploadUtil;
 import com.zk.myweex.utils.Utils;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
+import yjpty.teaching.http.BaseHttpHandler;
+import yjpty.teaching.http.BaseHttpRequest;
+import yjpty.teaching.http.HttpHandler;
+import yjpty.teaching.http.HttpResponseModel;
+import yjpty.teaching.http.IUrContant;
+import yjpty.teaching.util.IConstant;
 
 
-public class SJEventModule extends WXModule {
-
+public class SJEventModule extends WXModule implements HttpHandler {
+    /**
+     * 微信API
+     */
+    private IWXAPI msgApi;
+    /**
+     * 请求回调
+     */
+    protected BaseHttpHandler activityHandler = new BaseHttpHandler(this) {
+    };
+    /**
+     * 微信支付请求
+     */
+    private PayReq req;
 //    @JSMethod(uiThread = true)
 //    public void loadFunction(final String zipName, final JSCallback callback) {
 //        Toast.makeText(mWXSDKInstance.getContext(), " loadJSBundle js :" + zipName, Toast.LENGTH_SHORT).show();
@@ -140,12 +169,20 @@ public class SJEventModule extends WXModule {
     @JSMethod(uiThread = true)
     public void loginSuccess(String url) {
         Log.d("test", "loginSuccess url = " + url);
+
+//        {"pageUrl":"http://assets/yjpts/weex_jzd/index.js","userPwd":"111111","userName":"13430893721","jsessionid":"6B1C6F0669567E562130F2618D6E603C","userType":"2"}
+
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
         try {
             String userName = new JSONObject(url).getString("userName");
             String userPwd = new JSONObject(url).getString("userPwd");
+            String jsessionid = new JSONObject(url).getString("jsessionid");
+
             mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("userName", userName).commit();
             mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("userPwd", userPwd).commit();
+            mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("jsessionid", jsessionid).commit();
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -257,10 +294,73 @@ public class SJEventModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void WeChatPay(String url) {
+
+        BaseHttpRequest.JSESSIONID = mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).getString("jsessionid", "");
+
+        msgApi = WXAPIFactory.createWXAPI(mWXSDKInstance.getContext(), null);
         Log.d("test", "url = " + url);
-        // 测试用
+
+        req = new PayReq();
+        msgApi.registerApp(Constants.APP_ID);
+        Activity a = ((Activity) mWXSDKInstance.getContext());
+        if (!msgApi.isWXAppInstalled() || msgApi.isWXAppSupportAPI()) {
+            Toast.makeText(a, "没有安装微信", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (msgApi.getWXAppSupportAPI() < Build.PAY_SUPPORTED_SDK_INT) {
+            Toast.makeText(a, "微信版本过低，不支持支付", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        JSONObject data = null;
+        try {
+            data = new JSONObject(url);
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("attach", data.getString("attach"));
+            map.put("total", data.getString("total"));
+            map.put("outTradeNo", data.getString("outTradeNo"));
+            map.put("remark", data.getString("remark"));
+            IConstant.HTTP_CONNECT_POOL.addRequest(IUrContant.GET_WEI_PRIDUCT_URL, map, activityHandler, true, 1);
+
+
+            // 测试用
 //{"total":0.06,"remark":"智慧课堂","attach":{"childId":"ffc7337009f211e7b048299dbf864a63","classId":"bc6f1550093611e7bc6713374ff06eb4","schoolId":"344da9f107cb11e7bbb321aab2798d9f","payUserId":"43f8d7f00d3c11e7a588051dfb74031a"},"outTradeNo":"20170328173719695","url":"file:///mnt/sdcard/kiway/weex/ParentTab0.zip/yjpt/weex_jzd/catalog-list.js"}
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
+    @Override
+    public void httpErr(HttpResponseModel message) throws Exception {
+
+    }
+
+    @Override
+    public void httpSuccess(HttpResponseModel message) throws Exception {
+        if (message.getUrl().equals(IUrContant.GET_WEI_PRIDUCT_URL)) {
+            JSONObject da = new JSONObject(new String(message.getResponse()));
+            req.appId = Constants.APP_ID;
+            req.partnerId = Constants.MCH_ID;
+            req.prepayId = da.optString("prepayId");
+            req.packageValue = "Sign=WXPay";
+            req.nonceStr = da.optString("nonceStr");
+            req.timeStamp = da.optString("timeStamp");
+            req.extData = "app data"; // optional
+            List<NameValuePair> signParams = new LinkedList<NameValuePair>();
+            signParams.add(new BasicNameValuePair("appid", req.appId));
+            signParams.add(new BasicNameValuePair("noncestr", req.nonceStr));
+            signParams.add(new BasicNameValuePair("package", req.packageValue));
+            signParams.add(new BasicNameValuePair("partnerid", req.partnerId));
+            signParams.add(new BasicNameValuePair("prepayid", req.prepayId));
+            signParams.add(new BasicNameValuePair("timestamp", req.timeStamp));
+            req.sign = da.optString("signSecond");
+            msgApi.sendReq(req);
+        }
+    }
+
+    @Override
+    public void HttpError(HttpResponseModel message) throws Exception {
+
+    }
 }
 
