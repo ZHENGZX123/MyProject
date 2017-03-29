@@ -256,5 +256,11 @@ public class SJEventModule extends WXModule {
         }.start();
     }
 
+    @JSMethod(uiThread = true)
+    public void backToMain() {
+        Log.d("test", "backToMain is called");
+        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
+    }
+
 }
 
