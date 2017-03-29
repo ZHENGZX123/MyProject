@@ -54,6 +54,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
                             Log.d("test", "支付成功");
                             Intent i = new Intent();
                             setResult(8888, i);
+                            finish();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
