@@ -2073,7 +2073,7 @@
 	      var bundleUrl = context.bundleUrl;
 	      bundleUrl = new String(bundleUrl);
 	      var nativeBase;
-	      var isAndroidAssets = bundleUrl.indexOf('file://assets/') >= 0;
+	      var isAndroidAssets = bundleUrl.indexOf('file:///mnt/sdcard/') >= 0;
 
 	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 ;//&& bundleUrl.indexOf('WeexDemo.app') > 0;
 	      if (isAndroidAssets) {
@@ -2872,8 +2872,10 @@
 	    data: function () {return {
 	        navBarHeight: 130,
 	        dir: 'yjpt',
-	        telphone: '18626318013',
-	        pwd: '123456',
+
+	        telphone: '',
+
+	        pwd: '',
 	        verCode: '',
 	        telphoneCheck: true,
 	        pwdCheck: false,
@@ -2913,7 +2915,7 @@
 	        var bundleUrl = this.$getConfig().bundleUrl;
 	        bundleUrl = new String(bundleUrl);
 	        var nativeBase;
-	        var isAndroidAssets = bundleUrl.indexOf('file://assets/') >= 0;
+	        var isAndroidAssets = bundleUrl.indexOf('file:///mnt/sdcard/') >= 0;
 
 	        var isiOSAssets = bundleUrl.indexOf('file:///') >= 0;
 
@@ -3018,6 +3020,9 @@
 	                                            dataType: 'json',
 	                                            success: function success(res) {
 	                                                if (res.data.StatusCode == '200') {
+	                                                    modal.alert({
+	                                                        message: 'classLength:' + res.data.data.length
+	                                                    }, function () {});
 	                                                    if (res.data.data.length > 0) {
 	                                                        self.isJoinClass = 'yes';
 	                                                        self.mySchoolId = res.data.data[0].schoolId;
@@ -3056,6 +3061,9 @@
 	                                                            }, 1000);
 	                                                        }
 	                                                    } else {
+	                                                        modal.alert({
+	                                                            message: 'classLength:' + res.data.data.length
+	                                                        }, function () {});
 	                                                        self.isJoinClass = 'no';
 	                                                        var arr = [];
 	                                                        storage.setItem('isJoinClass', self.isJoinClass, function () {});

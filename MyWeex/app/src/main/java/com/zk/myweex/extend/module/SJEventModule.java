@@ -151,6 +151,8 @@ public class SJEventModule extends WXModule {
             e.printStackTrace();
         }
 
+
+
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
         ((Activity) mWXSDKInstance.getContext()).finish();
     }
@@ -179,8 +181,9 @@ public class SJEventModule extends WXModule {
             String classId = obj.getString("classId");
             String className = obj.getString("className");
             String schoolId = obj.getString("schoolId");
+            String code = "http://www.yuertong.com/yjpts/?&ref=class&classid=" + classId + "&schoolId=" + schoolId + "&classname=" + className;
 
-            Bitmap b = Utils.createQRImage("hello", 400, 400);
+            Bitmap b = Utils.createQRImage(code, 400, 400);
             String filepath = Utils.saveMyBitmap(b, "myweex");
             callback.invoke("file://" + filepath);
 
