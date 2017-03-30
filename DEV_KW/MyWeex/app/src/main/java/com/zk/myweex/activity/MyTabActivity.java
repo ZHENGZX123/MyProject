@@ -1,7 +1,11 @@
 package com.zk.myweex.activity;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
+import com.kiway.yjpt.Teacher.R;
 import com.zk.myweex.entity.TabEntity;
 import com.zk.myweex.utils.MyDBHelper;
 
@@ -12,12 +16,70 @@ import com.zk.myweex.utils.MyDBHelper;
 //动态tab使用
 public class MyTabActivity extends SubActivity {
 
+    //0未加载 1加载中 2已加载
+    private int status = 0;
+    private ProgressBar pb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int position = getIntent().getIntExtra("position", 0);
-        TabEntity tab = new MyDBHelper(getApplicationContext()).getAllTabEntity().get(position);
-        load(tab.idStr + ".zip");
+        Log.d("test", "onCreate");
+
+        pb = (ProgressBar) findViewById(R.id.pb);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("test", "onStart");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("test", "onResume");
+        initView();
+    }
+
+    private void initView() {
+        if (status == 1 || status == 2) {
+            return;
+        }
+        new Thread() {
+            @Override
+            public void run() {
+                showPB();
+                try {
+                    status = 1;
+                    int position = getIntent().getIntExtra("position", 0);
+                    TabEntity tab = new MyDBHelper(getApplicationContext()).getAllTabEntity().get(position);
+                    load(tab.idStr + ".zip");
+                    status = 2;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    status = 0;
+                } finally {
+                    hidePB();
+                }
+            }
+        }.start();
+    }
+
+    private void showPB() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pb.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void hidePB() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pb.setVisibility(View.GONE);
+            }
+        });
+    }
 }
