@@ -45,9 +45,9 @@ public class ChatEventModule extends WXModule {
                 public void run() {
                     String names = "";
                     names = "{'name':'" + groupName + "','icon':'','notice':'','intro':'','type':'','ispublic':'','isvalidate':'','maxnum':'1000'}";
-                    MqttInstance.getInstance().getPushInterface().creatGroup(names, j);
+                    String ret = MqttInstance.getInstance().getPushInterface().creatGroup(names, j);
+                    Log.d("test", "ret = " + ret);
                     MainListDao.saveGroupList(MqttInstance.getInstance().getPushInterface().getGroupList(), DaoType.SESSTIONTYPE.GROUP);
-
                     //发起群聊成功，返回1
                     HashMap map = new HashMap();
                     map.put("result", "1");
