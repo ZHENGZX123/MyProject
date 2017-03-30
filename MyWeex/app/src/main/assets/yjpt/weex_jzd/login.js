@@ -2872,7 +2872,7 @@
 	    data: function () {return {
 	        navBarHeight: 130,
 	        dir: 'yjpt',
-	        telphone: '13510530146',
+	        telphone: '18626318013',
 	        pwd: '123456',
 	        verCode: '',
 	        telphoneCheck: true,
