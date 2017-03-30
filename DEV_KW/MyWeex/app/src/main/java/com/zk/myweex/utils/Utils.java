@@ -1,7 +1,6 @@
 package com.zk.myweex.utils;
 
 import android.graphics.Bitmap;
-import android.os.Environment;
 import android.util.Log;
 
 import com.google.zxing.BarcodeFormat;
@@ -57,8 +56,10 @@ public class Utils {
     }
 
     public static String saveMyBitmap(Bitmap mBitmap, String bitName) {
-        File f = new File(Environment.getExternalStorageDirectory() + "/"
-                + bitName + ".jpg");
+        File f = new File("/mnt/sdcard/" + bitName + ".jpg");
+        if (f.exists()) {
+            f.delete();
+        }
         FileOutputStream fOut = null;
         try {
             fOut = new FileOutputStream(f);

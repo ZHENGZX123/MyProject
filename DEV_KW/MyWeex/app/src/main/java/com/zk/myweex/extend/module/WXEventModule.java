@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import java.util.HashMap;
 import yjpty.teaching.acitivity.HeizInfoActivity;
 import yjpty.teaching.acitivity.MipcaCaptureActivity;
 import yjpty.teaching.http.BaseHttpRequest;
+import yjpty.teaching.util.IConstant;
 
 
 public class WXEventModule extends WXModule {
@@ -116,7 +118,11 @@ public class WXEventModule extends WXModule {
     public void QRScan(String classId, JSCallback callback) {
         Log.d("test", "QRScan classid = " + classId);
         this.scanCallback = callback;
-        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), MipcaCaptureActivity.class), 999);
+        Intent intent=new Intent(mWXSDKInstance.getContext(), MipcaCaptureActivity.class);
+        Bundle bundle=new Bundle();
+        bundle.putInt(IConstant.BUNDLE_PARAMS,3);
+        intent.putExtras(bundle);
+        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(intent, 999);
     }
 
     @JSMethod(uiThread = true)
@@ -250,14 +256,17 @@ public class WXEventModule extends WXModule {
                 return;
             }
             String classId = splits[2].split("=")[1];
-            String schoolId = splits[2].split("=")[1];
-            String classname = splits[2].split("=")[1];
+            String schoolId = splits[3].split("=")[1];
+            String classname = splits[4].split("=")[1];
             HashMap map = new HashMap();
             map.put("result", "1");
             map.put("classId", classId);
             map.put("schoolId", schoolId);
-            map.put("classname", classname);
+            map.put("className", classname);
             this.scanCallback.invoke(map);
+
+            Log.d("test", "classId = " + classId);
+            Log.d("test", "schoolId = " + schoolId);
             //this.scanCallback callback(@{@"result":`result,@"classId":classId,@"schoolId":schoolId,@"classname":className}
         }
     }

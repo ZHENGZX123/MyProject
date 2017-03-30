@@ -23,16 +23,9 @@ public class MyTabActivity extends SubActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("test", "onCreate");
-
         pb = (ProgressBar) findViewById(R.id.pb);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.d("test", "onStart");
-    }
 
     @Override
     public void onResume() {
@@ -58,6 +51,7 @@ public class MyTabActivity extends SubActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     status = 0;
+                    toast("加载失败，请稍后再试");
                 } finally {
                     hidePB();
                 }
