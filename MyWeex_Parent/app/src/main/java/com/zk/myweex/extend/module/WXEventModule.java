@@ -252,8 +252,8 @@ public class WXEventModule extends WXModule {
                     return;
                 }
                 String classId = splits[2].split("=")[1];
-                String schoolId = splits[2].split("=")[1];
-                String classname = splits[2].split("=")[1];
+                String schoolId = splits[3].split("=")[1];
+                String classname = splits[4].split("=")[1];
                 HashMap map = new HashMap();
                 map.put("result", "1");
                 map.put("classId", classId);
