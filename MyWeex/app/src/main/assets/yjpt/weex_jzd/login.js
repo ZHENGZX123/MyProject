@@ -2872,10 +2872,8 @@
 	    data: function () {return {
 	        navBarHeight: 130,
 	        dir: 'yjpt',
-
-	        telphone: '',
-
-	        pwd: '',
+	        telphone: '13510530146',
+	        pwd: '123456',
 	        verCode: '',
 	        telphoneCheck: true,
 	        pwdCheck: false,
