@@ -118,9 +118,9 @@ public class WXEventModule extends WXModule {
     public void QRScan(String classId, JSCallback callback) {
         Log.d("test", "QRScan classid = " + classId);
         this.scanCallback = callback;
-        Intent intent=new Intent(mWXSDKInstance.getContext(), MipcaCaptureActivity.class);
-        Bundle bundle=new Bundle();
-        bundle.putInt(IConstant.BUNDLE_PARAMS,3);
+        Intent intent = new Intent(mWXSDKInstance.getContext(), MipcaCaptureActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(IConstant.BUNDLE_PARAMS, 3);
         intent.putExtras(bundle);
         ((Activity) mWXSDKInstance.getContext()).startActivityForResult(intent, 999);
     }
@@ -277,6 +277,10 @@ public class WXEventModule extends WXModule {
         BaseHttpRequest.JSESSIONID = url;
         Intent i = new Intent(mWXSDKInstance.getContext(), HeizInfoActivity.class);
         mWXSDKInstance.getContext().startActivity(i);
+
+//        Intent intent = new Intent(mWXSDKInstance.getContext(), MainActivity.class);
+//        intent.putExtra(PHOTO_POSITION, 0);
+//        mWXSDKInstance.getContext().startActivity(intent);
     }
 
 
