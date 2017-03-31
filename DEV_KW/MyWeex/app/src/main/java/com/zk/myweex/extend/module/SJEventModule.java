@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import com.crazy.wang.photoscan.PhotoviewActivity;
-import com.crazy.wang.photoscan.model.Images;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
@@ -30,8 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
-
-import static com.crazy.wang.photoscan.MainActivity.PHOTO_POSITION;
 
 
 public class SJEventModule extends WXModule {
@@ -187,16 +183,16 @@ public class SJEventModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void showPhoto(String param1, String param2) {
-        try {
-            Log.d("test", "showPhoto param1 = " + param1);
-            Log.d("test", "showPhoto param2 = " + param2);
-            Images.imageThumbUrls = param1.replace("[", "").replace("]", "").replace("\"", "").split(",");
-            Intent intent = new Intent(mWXSDKInstance.getContext(), PhotoviewActivity.class);
-            intent.putExtra(PHOTO_POSITION, Integer.parseInt(param2));
-            mWXSDKInstance.getContext().startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Log.d("test", "showPhoto param1 = " + param1);
+//            Log.d("test", "showPhoto param2 = " + param2);
+//            Images.imageThumbUrls = param1.replace("[", "").replace("]", "").replace("\"", "").split(",");
+//            Intent intent = new Intent(mWXSDKInstance.getContext(), PhotoviewActivity.class);
+//            intent.putExtra(PHOTO_POSITION, Integer.parseInt(param2));
+//            mWXSDKInstance.getContext().startActivity(intent);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
 }
