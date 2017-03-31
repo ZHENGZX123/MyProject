@@ -27,7 +27,7 @@ public class MainListDao extends Dao {
      */
     public static void saveGroupList(String json, String sendType) {
         Realm realm = getRealm();
-        Log.i("TAGsaveGroupList", json);
+        Log.d("test", "grouplist = " + json);
         realm.beginTransaction();
         Converse converse = new Gson().fromJson(json, Converse.class);
         if (converse == null) {
