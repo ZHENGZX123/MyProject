@@ -79,6 +79,7 @@ public class MainActivity2 extends TabActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.d("test", "no net ... ");
+                    toast("没有网络，请稍后再试");
                 } finally {
                     runOnUiThread(new Runnable() {
                         @Override
