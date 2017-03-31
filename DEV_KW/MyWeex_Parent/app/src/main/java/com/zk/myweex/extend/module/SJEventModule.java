@@ -35,12 +35,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
+import uk.co.senab.photoview.sample.ViewPagerActivity;
 import yjpty.teaching.http.BaseHttpHandler;
 import yjpty.teaching.http.BaseHttpRequest;
 import yjpty.teaching.http.HttpHandler;
 import yjpty.teaching.http.HttpResponseModel;
 import yjpty.teaching.http.IUrContant;
 import yjpty.teaching.util.IConstant;
+
 
 
 public class SJEventModule extends WXModule implements HttpHandler {
@@ -86,6 +88,15 @@ public class SJEventModule extends WXModule implements HttpHandler {
 
     @JSMethod(uiThread = true)
     public void logoutSuccess(String url) {
+        doLogout();
+    }
+
+    @JSMethod(uiThread = true)
+    public void logoutSuccess() {
+        doLogout();
+    }
+
+    private void doLogout() {
         Log.d("test", "logoutSuccess");
         try {
             //这里还要退出mqtt。
@@ -247,6 +258,20 @@ public class SJEventModule extends WXModule implements HttpHandler {
     public void backToMain() {
         Log.d("test", "backToMain is called");
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
+    }
+
+    @JSMethod(uiThread = true)
+    public void showPhoto(String param1, String param2) {
+        try {
+            Log.d("test", "showPhoto param1 = " + param1);
+            Log.d("test", "showPhoto param2 = " + param2);
+            ViewPagerActivity.sDrawables = param1.replace("[", "").replace("]", "").replace("\"", "").split(",");
+            Intent intent = new Intent(mWXSDKInstance.getContext(), ViewPagerActivity.class);
+            intent.putExtra("position", Integer.parseInt(param2));
+            mWXSDKInstance.getContext().startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 
