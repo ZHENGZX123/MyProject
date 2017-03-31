@@ -37,49 +37,53 @@ public class VersionUpManager {
         }
     }
 
-    public void getRemoteVersion() throws Exception {
-        File root = new File(WXApplication.PATH);
-        File[] files = root.listFiles();
-        if (files == null) {
-            return;
-        }
-        if (files.length == 0) {
-            return;
-        }
-        for (File f : files) {
-            String name = f.getName();
-            Log.d("version", "====================检测" + name + "的新版本===============================");
-            ZipPackage zip = new MyDBHelper(context).getAllZipPackageByName(name);
-            Service s = new Service().findOne(new KWQuery().equalTo("id", name.replace(".zip", "")));
-            Log.d("version", "s  = " + s.toString());
-            Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
-            Log.d("version", "p = " + p.toString());
-            String currentVersion = zip.version;
-            String remoteVersion = p.get("version").toString();
-            if (remoteVersion.compareTo(currentVersion) > 0) {
-                Log.d("version", "有新版本");
-                String downloadUrl = p.get("url").toString();
-                String version = p.get("version").toString();
-                downloadFull(downloadUrl, name, version);
-            } else {
-                //如果版本号一样，检查增量包
-                List<Package> patchs = new Package().find(new KWQuery().equalTo("serviceId", s.getId()).equalTo("version", currentVersion).equalTo("updateType", "patch").equalTo("platform", "android"));
-                if (patchs.size() == 0) {
-                    Log.d("version", "没有新版本");
+    public void getRemoteVersion() {
+        try {
+            File root = new File(WXApplication.PATH);
+            File[] files = root.listFiles();
+            if (files == null) {
+                return;
+            }
+            if (files.length == 0) {
+                return;
+            }
+            for (File f : files) {
+                String name = f.getName();
+                Log.d("version", "====================检测" + name + "的新版本===============================");
+                ZipPackage zip = new MyDBHelper(context).getAllZipPackageByName(name);
+                Service s = new Service().findOne(new KWQuery().equalTo("id", name.replace(".zip", "")));
+                Log.d("version", "s  = " + s.toString());
+                Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
+                Log.d("version", "p = " + p.toString());
+                String currentVersion = zip.version;
+                String remoteVersion = p.get("version").toString();
+                if (remoteVersion.compareTo(currentVersion) > 0) {
+                    Log.d("version", "有新版本");
+                    String downloadUrl = p.get("url").toString();
+                    String version = p.get("version").toString();
+                    downloadFull(downloadUrl, name, version);
                 } else {
-                    Log.d("version", "有增量包，要比较一下");
-                    for (Package patch : patchs) {
-                        Log.d("version", "patch = " + patch);
-                        //按顺序比较，打入增量包
-                        if (zip.patchs.contains(patch.getId())) {
-                            Log.d("version", "该增量包已经打过了。。。");
-                        } else {
-                            Log.d("version", "没有打过增量包,去打");
-                            downloadPatch(name, zip, patch);
+                    //如果版本号一样，检查增量包
+                    List<Package> patchs = new Package().find(new KWQuery().equalTo("serviceId", s.getId()).equalTo("version", currentVersion).equalTo("updateType", "patch").equalTo("platform", "android"));
+                    if (patchs.size() == 0) {
+                        Log.d("version", "没有新版本");
+                    } else {
+                        Log.d("version", "有增量包，要比较一下");
+                        for (Package patch : patchs) {
+                            Log.d("version", "patch = " + patch);
+                            //按顺序比较，打入增量包
+                            if (zip.patchs.contains(patch.getId())) {
+                                Log.d("version", "该增量包已经打过了。。。");
+                            } else {
+                                Log.d("version", "没有打过增量包,去打");
+                                downloadPatch(name, zip, patch);
+                            }
                         }
                     }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
