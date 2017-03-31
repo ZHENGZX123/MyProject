@@ -45,12 +45,10 @@ public class SJEventModule extends WXModule {
         mWXSDKInstance.fireSuperGlobalEventCallback("tab1_event", params);
     }
 
-
     @JSMethod(uiThread = true)
     public void showLog(String tag, String log) {
         Log.d(tag, log);
     }
-
 
     @JSMethod(uiThread = true)
     public void loginSuccess(String url) {
@@ -175,6 +173,14 @@ public class SJEventModule extends WXModule {
     @JSMethod(uiThread = true)
     public void backToMain() {
         Log.d("test", "backToMain is called");
+        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
+    }
+
+
+    @JSMethod(uiThread = true)
+    public void showPhoto(String url) {
+        Log.d("test", "showPhoto url = " + url);
+
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
     }
 
