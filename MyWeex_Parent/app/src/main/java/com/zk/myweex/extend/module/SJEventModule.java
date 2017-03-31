@@ -57,105 +57,6 @@ public class SJEventModule extends WXModule implements HttpHandler {
      * 微信支付请求
      */
     private PayReq req;
-//    @JSMethod(uiThread = true)
-//    public void loadFunction(final String zipName, final JSCallback callback) {
-//        Toast.makeText(mWXSDKInstance.getContext(), " loadJSBundle js :" + zipName, Toast.LENGTH_SHORT).show();
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                try {
-//                    load(zipName, callback);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }.start();
-//    }
-//
-//    private void load(final String zipName, final JSCallback callback) throws Exception {
-//        Log.d("test", "load name = " + zipName);
-//        String path = WXApplication.PATH + zipName;
-//        if (new File(path).exists()) {
-//            Log.d("test", "存在，直接加载");
-//            ZipPackage zip = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findFirst();
-//            loadJSBundle(zipName, zip.indexPath);
-//        } else {
-//            Log.d("test", "不存在，下载");
-//            Service s = new Service().findOne(new KWQuery().equalTo("id", zipName.replace(".zip", "")));
-//            Log.d("test", "s  = " + s.toString());
-//            //返回最新的全量包
-//            Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
-//            Log.d("test", "p = " + p.toString());
-//            String baseUrl = s.get("baseUrl").toString();
-//            String downloadUrl = p.get("url").toString();
-//            String version = p.get("version").toString();
-//            downloadJSBundle(zipName, downloadUrl, version, baseUrl);
-//        }
-//    }
-//
-//    @JSMethod(uiThread = true)
-//    public void deleteFunction(String zipName, JSCallback callback) {
-//        String path = "file://" + WXApplication.PATH + zipName;
-//        Log.d("test", "path = " + path);
-//        if (new File(path).exists()) {
-//            Log.d("test", "存在，删除");
-//            new File(path).delete();
-//            final RealmResults<ZipPackage> results = Realm.getDefaultInstance().where(ZipPackage.class).equalTo("name", zipName).findAll();
-//            Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-//                @Override
-//                public void execute(Realm realm) {
-//                    results.clear();
-//                }
-//            });
-//            callback.invoke("delete success");
-//        } else {
-//            Log.d("test", "不存在，不用管");
-//        }
-//    }
-//
-//    //首次下载
-//    public void downloadJSBundle(final String zipName, final String downloadUrl, final String version, final String baseUrl) {
-//        //1.访问接口，参数是zipName，返回是 name， 下载地址 ， 版本号
-//        HttpDownload httpDownload = new HttpDownload();
-//        int ret = httpDownload.downFile(downloadUrl, WXApplication.PATH, zipName);
-//        Log.d("test", "下载返回值 ret = " + ret);
-//        if (ret != 0) {
-//            toast("下载失败，请稍后再试");
-//            return;
-//        }
-//        Log.d("test", "下载成功，保存版本号");
-//
-//        Realm.getDefaultInstance().beginTransaction();
-//        ZipPackage zip = Realm.getDefaultInstance().createObject(ZipPackage.class);
-//        zip.name = zipName;
-//        zip.indexPath = baseUrl;
-//        zip.version = version;
-//        Realm.getDefaultInstance().commitTransaction();
-//        Log.d("test", "下载成功，加载本地sdcard");
-//        loadJSBundle(zipName, baseUrl);
-//    }
-//
-//    public void loadJSBundle(String zipName, String baseUrl) {
-//        String path = WXApplication.PATH + zipName + "/" + baseUrl;
-//        Log.d("test", "loadJSBundle path = " + path);
-//        Intent intent = new Intent(mWXSDKInstance.getContext(), WXPageActivity.class);
-//        intent.setData(Uri.parse(path));
-//        mWXSDKInstance.getContext().startActivity(intent);
-//    }
-//
-//    @JSMethod(uiThread = true)
-//    public void sendEvent(JSCallback callback) {
-//        Log.d("test", "module id = " + mWXSDKInstance.getInstanceId());
-//        Map<String, Object> params = new HashMap<>();
-//        params.put("test1", "test1");
-//        params.put("test2", "test2");
-//        //这个只能调用相同instance的事件。
-////        mWXSDKInstance.fireGlobalEventCallback("tab1_event", params);
-//        //这个只能callback
-////        callback.invoke(params);
-//        mWXSDKInstance.fireSuperGlobalEventCallback("tab1_event", params);
-//    }
-
 
     @JSMethod(uiThread = true)
     public void showLog(String tag, String log) {
@@ -166,9 +67,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
     @JSMethod(uiThread = true)
     public void loginSuccess(String url) {
         Log.d("test", "loginSuccess url = " + url);
-
 //        {"pageUrl":"http://assets/yjpts/weex_jzd/index.js","userPwd":"111111","userName":"13430893721","jsessionid":"6B1C6F0669567E562130F2618D6E603C","userType":"2"}
-
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
         try {
             String userName = new JSONObject(url).getString("userName");
@@ -178,12 +77,9 @@ public class SJEventModule extends WXModule implements HttpHandler {
             mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("userName", userName).commit();
             mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("userPwd", userPwd).commit();
             mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("jsessionid", jsessionid).commit();
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
         ((Activity) mWXSDKInstance.getContext()).finish();
     }
@@ -221,7 +117,6 @@ public class SJEventModule extends WXModule implements HttpHandler {
             e.printStackTrace();
         }
     }
-
 
     private JSCallback pickerCallback;
     String userId;
@@ -345,7 +240,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
 
     @Override
     public void HttpError(HttpResponseModel message) throws Exception {
-
+        toast("请求失败，请稍后再试");
     }
 
     @JSMethod(uiThread = true)
