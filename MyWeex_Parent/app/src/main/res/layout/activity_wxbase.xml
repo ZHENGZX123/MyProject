@@ -18,11 +18,11 @@
         android:visibility="gone" />
 
     <Button
-        android:onClick="clickReload"
         android:id="@+id/reload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_centerInParent="true"
+        android:onClick="clickReload"
         android:text="重新加载"
         android:visibility="gone" />
 
