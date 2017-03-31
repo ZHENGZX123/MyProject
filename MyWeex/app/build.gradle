@@ -97,5 +97,4 @@ dependencies {
     //    compile project(':IM')
     //teaching
     compile project(':Yjpty')
-    compile project(':photoscan')
 }
