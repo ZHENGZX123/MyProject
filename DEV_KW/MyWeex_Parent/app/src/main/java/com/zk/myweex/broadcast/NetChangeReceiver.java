@@ -23,22 +23,26 @@ public class NetChangeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d("test", "NetChangeBroadcast onReceive");
         //获取手机的连接服务管理器，这里是连接管理器类
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        wifiState = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
-        mobileState = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
-        Message msg = new Message();
-        if (wifiState != null && mobileState != null && State.CONNECTED != wifiState && State.CONNECTED == mobileState) {
+        try {
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            wifiState = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
+            mobileState = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
+            Message msg = new Message();
+            if (wifiState != null && mobileState != null && State.CONNECTED != wifiState && State.CONNECTED == mobileState) {
 //            String type = getCurrentNetworkType(context);
-            msg.arg1 = 1;
-            msg.obj = "GPRS网络连接！";
-        } else if (wifiState != null && mobileState != null && State.CONNECTED == wifiState && State.CONNECTED != mobileState) {
-            msg.arg1 = 2;
-            msg.obj = "WIFI连接！";
-        } else if (wifiState != null && mobileState != null && State.CONNECTED != wifiState && State.CONNECTED != mobileState) {
-            msg.arg1 = 0;
-            msg.obj = "手机没有任何网络...";
+                msg.arg1 = 1;
+                msg.obj = "GPRS网络连接！";
+            } else if (wifiState != null && mobileState != null && State.CONNECTED == wifiState && State.CONNECTED != mobileState) {
+                msg.arg1 = 2;
+                msg.obj = "WIFI连接！";
+            } else if (wifiState != null && mobileState != null && State.CONNECTED != wifiState && State.CONNECTED != mobileState) {
+                msg.arg1 = 0;
+                msg.obj = "手机没有任何网络...";
+            }
+            MainActivity2.main.mHandler.sendMessage(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        MainActivity2.main.mHandler.sendMessage(msg);
     }
 
     private static final int NETWORK_TYPE_UNAVAILABLE = -1;

@@ -36,25 +36,20 @@ android {
             signingConfig signingConfigs.kiway
         }
     }
-    //过滤掉不支持的平台
-    packagingOptions {
-        exclude "lib/arm64-v8a/librealm-jni.so"
-        exclude "lib/mips/librealm-jni.so"
-        exclude "lib/x86/librealm-jni.so"
-        exclude "lib/x86_64/librealm-jni.so"
-    }
-    splits {
-        abi {
-            enable true
-            reset()
-            include 'armeabi', 'armeabi-v7a'
-        }
-    }
     sourceSets {
         main {
             //jni库的调用会到资源文件夹下libs里面找so文件
             jniLibs.srcDirs = ['libs']
         }
+    }
+    lintOptions {
+        abortOnError false
+    }
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
+    testOptions {
+        reportDir = "$project.buildDir/test/report"
     }
 }
 dependencies {
