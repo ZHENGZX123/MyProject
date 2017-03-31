@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.crazy.wang.photoscan.MainActivity;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
@@ -28,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
+
+import static com.crazy.wang.photoscan.MainActivity.PHOTO_POSITION;
 
 
 public class SJEventModule extends WXModule {
@@ -70,6 +73,15 @@ public class SJEventModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void logoutSuccess(String url) {
+        doLogout();
+    }
+
+    @JSMethod(uiThread = true)
+    public void logoutSuccess() {
+        doLogout();
+    }
+
+    private void doLogout() {
         Log.d("test", "logoutSuccess");
         try {
             //这里还要退出mqtt。
@@ -103,7 +115,6 @@ public class SJEventModule extends WXModule {
         }
     }
 
-
     private JSCallback pickerCallback;
     String userId;
     String url;
@@ -112,15 +123,12 @@ public class SJEventModule extends WXModule {
     @JSMethod(uiThread = true)
     public void PostSigalImg(String dic, JSCallback callback) {
         Log.d("test", "PostSigalImg dic = " + dic);
-
         try {
             org.json.JSONObject obj = new org.json.JSONObject(dic);
             userId = obj.getString("userId");
             url = obj.getString("url");
             jsessionid = obj.getString("jsessionid");
-
             pickerCallback = callback;
-
 
             ImagePicker imagePicker = ImagePicker.getInstance();
             imagePicker.setImageLoader(new GlideImageLoader());// 图片加载器
@@ -180,8 +188,9 @@ public class SJEventModule extends WXModule {
     @JSMethod(uiThread = true)
     public void showPhoto(String url) {
         Log.d("test", "showPhoto url = " + url);
-
-        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
+        Intent intent = new Intent(mWXSDKInstance.getContext(), MainActivity.class);
+        intent.putExtra(PHOTO_POSITION, 0);
+        mWXSDKInstance.getContext().startActivity(intent);
     }
 
 }
