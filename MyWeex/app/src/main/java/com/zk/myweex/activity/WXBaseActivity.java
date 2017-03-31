@@ -429,13 +429,11 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
 
     public void load(final String name) throws Exception {
         Log.d("test", "load name = " + name);
-
-
         String zipName = name;
         String path = WXApplication.PATH + name;
-        if (new File(path).exists()) {
+        ZipPackage zip = new MyDBHelper(getApplicationContext()).getAllZipPackageByName(zipName);
+        if (new File(path).exists() && zip != null) {
             Log.d("test", "存在，直接加载");
-            ZipPackage zip = new MyDBHelper(getApplicationContext()).getAllZipPackageByName(zipName);
             loadJSBundle(zipName, zip.indexPath);
         } else {
             Log.d("test", "不存在，下载");

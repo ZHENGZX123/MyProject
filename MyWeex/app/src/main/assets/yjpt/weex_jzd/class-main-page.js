@@ -3362,7 +3362,7 @@
 	    "backgroundColor": "#00cc99",
 	    "title": "班级主页",
 	    "titleColor": "white",
-	    "leftItemSrc": function () {return this.images.leftItemImg},
+	    "leftItemSrc": "https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1490868984&di=bf38ce3bb1be42e5ce7fcdb067fa24c5&src=http://pic67.nipic.com/file/20150518/9448607_142733894001_2.jpg",
 	    "rightItemTitle": "确定",
 	    "rightItemSrc": function () {return this.images.rightItemImg}
 	  },

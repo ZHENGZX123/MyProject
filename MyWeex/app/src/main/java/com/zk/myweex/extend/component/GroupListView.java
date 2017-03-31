@@ -126,6 +126,8 @@ public class GroupListView extends WXComponent<ListView> {
                                     MessageDao.recallMsg(msgId);
                                 }
                             });
+                        } else {
+                            Log.d("test", "pushInterface null");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -159,6 +161,7 @@ public class GroupListView extends WXComponent<ListView> {
 
     private void getUserInfo(String userInfo) {
         try {
+            Log.d("test", "userInfo = " + userInfo);
             if (userInfo == null || userInfo.equals("")) {
                 return;
             }
