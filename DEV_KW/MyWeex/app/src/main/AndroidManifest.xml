@@ -79,7 +79,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.zk.myweex.activity.TestActivity"></activity>
+        <activity android:name="com.zk.myweex.activity.TestActivity" />
     </application>
 
 </manifest>
