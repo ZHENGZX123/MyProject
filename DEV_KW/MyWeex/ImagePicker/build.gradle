@@ -17,6 +17,7 @@ android {
 
 dependencies {
     compile 'com.android.support:support-v4:18.+'
-    compile files('libs/uk-co-senab-photoview.jar')
     compile files('libs/glide-3.6.1.jar')
+//    compile files('libs/uk-co-senab-photoview.jar')
+    compile 'com.github.chrisbanes.photoview:library:1.2.3'
 }
