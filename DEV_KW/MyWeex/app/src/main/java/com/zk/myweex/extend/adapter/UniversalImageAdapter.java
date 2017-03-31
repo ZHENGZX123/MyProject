@@ -312,11 +312,10 @@ public class UniversalImageAdapter implements IWXImgLoaderAdapter {
                 if (ze.isDirectory()) {
                 } else {
                     if (ze.getName().contains(targetFile)) {
-                        System.out.println("1111111111");
+                        Log.d("universal", "find it");
                         Bitmap result = new BitmapDrawable(zf.getInputStream(ze)).getBitmap();
                         view.setImageBitmap(result);
-
-                        System.out.println("22222222222");
+                        Log.d("universal", "ok");
                         break;
                     }
                 }
