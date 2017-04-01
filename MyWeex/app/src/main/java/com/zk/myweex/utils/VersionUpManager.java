@@ -25,16 +25,6 @@ public class VersionUpManager {
 
     public void init(Context c) {
         this.context = c;
-
-        if (!new File(WXApplication.PATH).exists()) {
-            new File(WXApplication.PATH).mkdirs();
-        }
-        if (!new File(WXApplication.PATH_BACKUP).exists()) {
-            new File(WXApplication.PATH_BACKUP).mkdirs();
-        }
-        if (!new File(WXApplication.PATH_TMP).exists()) {
-            new File(WXApplication.PATH_TMP).mkdirs();
-        }
     }
 
     public void getRemoteVersion() {

@@ -135,10 +135,10 @@ public class ZipUtil {
     // 测试Zip类
     public static void main(String[] args) throws Exception {
         ZipUtil zip = new ZipUtil();
-        // zip.doZip("f:\\tab0");
-        // zip.unZip("f:\\tab0.zip");
-        zip.doZip("f:/tab0");
-        // zip.unZip("f:/tab0.zip");
+        // zip.doZip("f:\\yjpt");
+        // zip.unZip("f:\\yjpt.zip");
+        zip.doZip("f:/yjpt");
+        // zip.unZip("f:/yjpt.zip");
     }
 
     public static ArrayList<String> readZip(String zipPath) {
