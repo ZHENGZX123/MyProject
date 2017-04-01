@@ -67,7 +67,7 @@ public class WXApplication extends App {
         super.onCreate();
 
         //xizhou sdk init
-        Configure.getInstance().setHost("192.168.8.215");
+        Configure.getInstance().setHost("202.104.136.9");//192.168.8.215
         Configure.getInstance().setPort(4000);
         Configure.getInstance().setRoot("admin");
 

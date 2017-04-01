@@ -447,7 +447,6 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
             String version = p.get("version").toString();
             downloadJSBundle(zipName, downloadUrl, version, baseUrl);
         }
-
     }
 
     //首次下载
