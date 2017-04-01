@@ -4,17 +4,19 @@
     android:layout_height="fill_parent">
 
     <RelativeLayout
+        android:onClick="clickNetwork"
         android:id="@+id/rl_nonet"
+        android:background="#fec7de"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="断网了。。。。"
-            android:textColor="#ff0000" />
+            android:text="无法连接服务器，请检查你的网络设置"
+            android:textColor="#666666" />
 
     </RelativeLayout>
 

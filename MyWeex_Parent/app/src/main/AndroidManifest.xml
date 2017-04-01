@@ -97,6 +97,8 @@
             android:exported="true"
             android:launchMode="singleTop" />
 
+        <activity android:name="com.zk.myweex.activity.NoNetActivity"></activity>
+
     </application>
 
 </manifest>

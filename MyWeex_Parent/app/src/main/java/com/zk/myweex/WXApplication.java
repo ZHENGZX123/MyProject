@@ -70,7 +70,7 @@ public class WXApplication extends App {
         super.onCreate();
 
         //xizhou sdk init
-        Configure.getInstance().setHost("192.168.8.215");
+        Configure.getInstance().setHost("http://zip.kiway.cn");
         Configure.getInstance().setPort(4000);
         Configure.getInstance().setRoot("admin");
 
