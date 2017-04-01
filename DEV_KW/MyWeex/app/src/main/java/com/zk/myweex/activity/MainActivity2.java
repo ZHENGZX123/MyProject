@@ -66,10 +66,9 @@ public class MainActivity2 extends TabActivity {
                             new MyDBHelper(getApplicationContext()).addTabEntity(tab);
                         }
                     }
-                    VersionUpManager manager = new VersionUpManager();
-                    manager.init(getApplication());
-                    manager.getLocalVersion();
-                    manager.getRemoteVersion();
+
+                    checkZipVersion();
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.d("test", "no net ... ");
@@ -129,6 +128,18 @@ public class MainActivity2 extends TabActivity {
                         }
                     });
                 }
+            }
+        }.start();
+    }
+
+    private void checkZipVersion() {
+        new Thread() {
+            @Override
+            public void run() {
+                VersionUpManager manager = new VersionUpManager();
+                manager.init(getApplication());
+                manager.getLocalVersion();
+                manager.getRemoteVersion();
             }
         }.start();
     }
