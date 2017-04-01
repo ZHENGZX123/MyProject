@@ -44,7 +44,6 @@ import yjpty.teaching.http.IUrContant;
 import yjpty.teaching.util.IConstant;
 
 
-
 public class SJEventModule extends WXModule implements HttpHandler {
     /**
      * 微信API
@@ -83,7 +82,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
             e.printStackTrace();
         }
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
-        ((Activity) mWXSDKInstance.getContext()).finish();
+        ScreenManager.getScreenManager().popAllActivityExceptOne(MainActivity2.class);
     }
 
     @JSMethod(uiThread = true)
