@@ -98,7 +98,6 @@ public class WXApplication extends App {
             e.printStackTrace();
         }
 
-
         //bugly
         CrashReport.initCrashReport(getApplicationContext(), "900028702", false);
 
