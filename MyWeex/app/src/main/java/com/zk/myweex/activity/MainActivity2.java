@@ -20,6 +20,7 @@ import com.kiway.yjpt.Teacher.R;
 import com.zk.myweex.entity.TabEntity;
 import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.utils.MyDBHelper;
+import com.zk.myweex.utils.Utils;
 import com.zk.myweex.utils.VersionUpManager;
 
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class MainActivity2 extends TabActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         main = this;
+        Utils.checkNetWork(this);
         getDataFromServer();
     }
 
@@ -224,5 +226,8 @@ public class MainActivity2 extends TabActivity {
         }
     };
 
+    public void clickNetwork(View view) {
+        startActivity(new Intent(this, NoNetActivity.class));
+    }
 
 }
