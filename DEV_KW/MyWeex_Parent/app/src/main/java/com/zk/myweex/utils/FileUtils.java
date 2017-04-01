@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 
 import com.taobao.weex.utils.WXLogUtils;
+import com.zk.myweex.WXApplication;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -191,21 +192,28 @@ public class FileUtils {
         return flag;
     }
 
-    public static void copyRawToSdcard(Context c) throws Throwable {
-        InputStream inStream = c.getResources().openRawResource(0);//R.raw.tab0
-        File file = new File("/mnt/sdcard/tab0.zip");
-        FileOutputStream fileOutputStream = new FileOutputStream(file);//存入SDCard
-        byte[] buffer = new byte[1024];
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        int len = 0;
-        while ((len = inStream.read(buffer)) != -1) {
-            outStream.write(buffer, 0, len);
+    public static void copyRawToSdcard(Context c, int id, String name) {
+        InputStream inStream = c.getResources().openRawResource(id);//R.raw.tab0
+        File file = new File(WXApplication.PATH + name);
+        FileOutputStream fileOutputStream = null;//存入SDCard
+        try {
+            fileOutputStream = new FileOutputStream(file);
+
+            byte[] buffer = new byte[1024];
+            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+            int len = 0;
+            while ((len = inStream.read(buffer)) != -1) {
+                outStream.write(buffer, 0, len);
+            }
+            byte[] bs = outStream.toByteArray();
+            fileOutputStream.write(bs);
+            outStream.close();
+            inStream.close();
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        byte[] bs = outStream.toByteArray();
-        fileOutputStream.write(bs);
-        outStream.close();
-        inStream.close();
-        fileOutputStream.flush();
-        fileOutputStream.close();
     }
 }
+

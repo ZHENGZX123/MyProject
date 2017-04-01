@@ -16,13 +16,11 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.zk.myweex.WXApplication;
 import com.zk.myweex.entity.TabEntity;
-import com.zk.myweex.utils.FileUtils;
+import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.utils.MyDBHelper;
 import com.zk.myweex.utils.VersionUpManager;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,12 +41,6 @@ public class MainActivity2 extends TabActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         main = this;
-        if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
-            if (new File(WXApplication.ROOT).exists()) {
-                FileUtils.delFolder(WXApplication.ROOT);
-            }
-            getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", false).commit();
-        }
         getDataFromServer();
     }
 
@@ -66,7 +58,7 @@ public class MainActivity2 extends TabActivity {
                             //插入数据库
                             TabEntity tab = new TabEntity();
                             tab.idStr = s.get("id").toString();
-                            tab.name = s.get("name").toString().replace("1", "");
+                            tab.name = s.get("name").toString();
                             tab.image_default = "";
                             tab.image_selected = "";
                             new MyDBHelper(getApplicationContext()).addTabEntity(tab);
@@ -85,7 +77,53 @@ public class MainActivity2 extends TabActivity {
                         public void run() {
                             ArrayList<TabEntity> tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
                             Log.d("test", "main initView");
-                            initView(tabs);
+                            if (tabs.size() == 0) {
+                                //第一次加载不成功的情况
+                                ArrayList<TabEntity> temp = new ArrayList<>();
+                                TabEntity tab0 = new TabEntity();
+                                tab0.name = "首页";
+                                tab0.idStr = "ParentTab0";
+                                TabEntity tab1 = new TabEntity();
+                                tab1.name = "亲子圈";
+                                tab1.idStr = "ParentTab1";
+                                TabEntity tab2 = new TabEntity();
+                                tab2.name = "我的";
+                                tab2.idStr = "ParentTab2";
+                                temp.add(tab0);
+                                temp.add(tab1);
+                                temp.add(tab2);
+                                //插入数据库。。
+                                new MyDBHelper(getApplicationContext()).addTabEntity(tab0);
+                                new MyDBHelper(getApplicationContext()).addTabEntity(tab1);
+                                new MyDBHelper(getApplicationContext()).addTabEntity(tab2);
+
+                                ZipPackage zip0 = new ZipPackage();
+                                zip0.name = "ParentTab0.zip";
+                                zip0.indexPath = "yjpt/weex_jzd/main.js";
+                                zip0.version = "1.0.0";
+                                zip0.patchs = "";
+                                new MyDBHelper(getApplicationContext()).addZipPackage(zip0);
+
+                                ZipPackage zip1 = new ZipPackage();
+                                zip1.name = "ParentTab1.zip";
+                                zip1.indexPath = "yjpt/weex_jzd/qzq.js";
+                                zip1.version = "1.0.0";
+                                zip1.patchs = "";
+                                new MyDBHelper(getApplicationContext()).addZipPackage(zip1);
+
+                                ZipPackage zip2 = new ZipPackage();
+                                zip2.name = "ParentTab2.zip";
+                                zip2.indexPath = "yjpt/weex_jzd/wd.js";
+                                zip2.version = "1.0.0";
+                                zip2.patchs = "";
+                                new MyDBHelper(getApplicationContext()).addZipPackage(zip2);
+
+                                tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
+                                initView(tabs);
+                            } else {
+                                //第一次加载成功
+                                initView(tabs);
+                            }
                         }
                     });
                 }
@@ -101,26 +139,21 @@ public class MainActivity2 extends TabActivity {
         if (tabcount == 0) {
             return;
         }
-
 //FIXME hardcode
         tabcount = 3;
-
         bottom = (LinearLayout) findViewById(R.id.bottom);
         bottom.setWeightSum(tabcount);
         tabhost = getTabHost();
         for (int i = 0; i < tabcount; i++) {
             TabEntity tabEntity = tabs.get(i);
-
             final int ii = i;
             LayoutInflater inflater = LayoutInflater.from(this);
             LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.layout_tab, null);
             ImageView iv = (ImageView) ll.findViewById(R.id.iv);
             TextView tv = (TextView) ll.findViewById(R.id.tv);
             tv.setText(tabEntity.name);//名字
-
             bottom.addView(ll, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
             lls.add(ll);
-
             Intent tab = new Intent(this, MyTabActivity.class);
             tab.putExtra("position", ii);
             tabhost.addTab(tabhost
@@ -138,7 +171,6 @@ public class MainActivity2 extends TabActivity {
                 }
             });
         }
-
         refreshUI(0);
     }
 
