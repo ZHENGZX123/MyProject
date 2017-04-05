@@ -11,17 +11,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.zk.testmqtt.MainActivity">
 
-    <LinearLayout
+    <com.zk.testmqtt.FlowLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="clickStart"
-            android:text="开始---查询" />
 
         <Button
             android:layout_width="wrap_content"
@@ -39,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="sendMessageIngroup"
-            android:text="群聊sendMessage"
+            android:text="群聊252测试群"
             android:textAllCaps="false" />
 
 
@@ -60,9 +54,22 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="updateGroupData"
+            android:text="修改组消息" />
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:onClick="addFriend"
             android:text="添加好友" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="confirmAddFriend"
+            android:text="别人加我好友，我要确认是否加好友" />
 
-    </LinearLayout>
+
+    </com.zk.testmqtt.FlowLinearLayout>
 </ScrollView>
