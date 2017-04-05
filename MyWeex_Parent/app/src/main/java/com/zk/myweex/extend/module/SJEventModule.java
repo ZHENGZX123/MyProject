@@ -266,7 +266,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
             Log.d("test", "showPhoto param2 = " + param2);
             ViewPagerActivity.sDrawables = param1.replace("[", "").replace("]", "").replace("\"", "").split(",");
             Intent intent = new Intent(mWXSDKInstance.getContext(), ViewPagerActivity.class);
-            intent.putExtra("position", Integer.parseInt(param2));
+            intent.putExtra("position", Integer.parseInt(param2));//0 , 1
             mWXSDKInstance.getContext().startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();

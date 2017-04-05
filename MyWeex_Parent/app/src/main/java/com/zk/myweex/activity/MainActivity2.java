@@ -164,7 +164,7 @@ public class MainActivity2 extends TabActivity {
             LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.layout_tab, null);
             ImageView iv = (ImageView) ll.findViewById(R.id.iv);
             TextView tv = (TextView) ll.findViewById(R.id.tv);
-            tv.setText(tabEntity.name);//名字
+            tv.setText(tabEntity.name.replace("1", ""));//名字
             bottom.addView(ll, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
             lls.add(ll);
             Intent tab = new Intent(this, MyTabActivity.class);
