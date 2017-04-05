@@ -5,11 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.alibaba.weex.extend.view.RoundedImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.component.WXComponent;
@@ -84,6 +87,49 @@ public class MyRoundedImageView extends WXComponent<RoundedImageView> {
         }
     }
 
+
+    @WXComponentProp(name = "url1")
+    public void setUrl1(String url1) {
+        Log.d("test", "url1 = " + url1);
+        final RoundedImageView iv = ((RoundedImageView) getHostView());
+        iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        iv.setCornerRadius(50.0f);
+
+        ImageLoader.getInstance().loadImage(url1, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                Log.d("test", "url1 failure");
+                Log.d("test", "url2 = " + url2);
+                ImageLoader.getInstance().displayImage(url2, iv, getLoaderOptions());
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                Log.d("test", "url1 complete");
+                iv.setImageBitmap(loadedImage);
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+
+            }
+        });
+
+        ImageLoader.getInstance().displayImage(url1, iv, getLoaderOptions());
+    }
+
+    private String url2;
+
+    @WXComponentProp(name = "url2")
+    public void setUrl2(String url2) {
+        Log.d("test", "url2 = " + url2);
+        this.url2 = url2;
+    }
 
     public static String readFileInZip(String file) {
         int index = file.indexOf("zip");

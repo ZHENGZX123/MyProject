@@ -40,15 +40,12 @@ public class MyListView extends WXComponent<ListView> {
         this.ListView = new ListView(context);
         this.adapter = new MyAdapter();
         this.ListView.setAdapter(this.adapter);
-
-
         this.ListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d("test", "onItemClick");
             }
         });
-
         return this.ListView;
     }
 

@@ -64,12 +64,11 @@
 	    {
 	      "type": "my_roundedimageview",
 	      "attr": {
+	        "url1": "dsafdsafdsafsdfd",
+	        "url2": "http://avatar.csdn.net/3/9/8/1_mengzuixilou.jpg"
 //	      "url" : 'file:///mnt/sdcard/test.jpg'
-	         "url" : 'file:///mnt/sdcard/test.zip/test/test.jpg'
-//	        "url": "http://avatar.csdn.net/3/9/8/1_mengzuixilou.jpg"
-
+//	      "url" : 'file:///mnt/sdcard/test.zip/test/test.jpg'
 	      },
-
 	      "style": {
 	        "width": 500,
 	        "height": 500
