@@ -53,6 +53,7 @@ public class GroupListView extends WXComponent<ListView> {
         this.lv.setFocusableInTouchMode(false);
         this.adapter = new HomeSchoolAdapter(getContext());
         this.lv.setAdapter(this.adapter);
+
         initData();
         addListener();
         return this.lv;
@@ -92,9 +93,10 @@ public class GroupListView extends WXComponent<ListView> {
                     Log.d("mqtt", "登录成功");
                     try {
                         PushInterface pushInterface = MqttInstance.getInstance().getPushInterface();
-                        //登陆成功后必须先执行此方法
-                        getUserInfo(pushInterface);
                         if (pushInterface != null) {
+                            //1.userinfo
+                            getUserInfo(pushInterface.getUserInfo());
+                            //2.grouplist
                             MainListDao.saveGroupList(pushInterface.getGroupList(), DaoType.SESSTIONTYPE.GROUP);
                             client.register(RegisterType.MESSAGE, new TopicProcessService() {
                                 @Override
@@ -124,6 +126,8 @@ public class GroupListView extends WXComponent<ListView> {
                                     MessageDao.recallMsg(msgId);
                                 }
                             });
+                        } else {
+                            Log.d("test", "pushInterface null");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -155,9 +159,9 @@ public class GroupListView extends WXComponent<ListView> {
     }
 
 
-    private void getUserInfo(PushInterface pushInterface) {
+    private void getUserInfo(String userInfo) {
         try {
-            String userInfo = pushInterface.getUserInfo();
+            Log.d("test", "userInfo = " + userInfo);
             if (userInfo == null || userInfo.equals("")) {
                 return;
             }
