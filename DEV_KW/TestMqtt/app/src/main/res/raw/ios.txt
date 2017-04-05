@@ -1,0 +1,196 @@
+//
+//  HproseMsgDelegate.h
+//  ChatView
+//
+//  Created by Steven on 17/3/6.
+//  Copyright © 2017年 Steven. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@protocol HproseMsgDelegate <NSObject>
+
+/*获取用户信息*/
+-(NSString *)getUserInfo;
+/*获取群组信息*/
+-(NSString *)getGroupList;
+/*获取群成员参数*/
+-(NSString *)groupMemberList:(NSString *)groupid;
+
+/* 发送信息给服务器*/
+-(NSString *)sendMessage:(NSString *)recvid andMsgContent:(NSString *)msgcontent andMsgType:(NSString *)msgtype;
+/*msgcontent
+ 普通信息	{'type':'text','msg':'信息内容'}
+ 文件信息	{'type':'file','msg':'.././../../../aaa.txt','ext':'jpg','size':'100kb'} //ext文件后缀文件类型 size文件大小
+ 图片信息	{'type':'image','msg':'.././../../../aaa.jpg','ext':'jpg'} //ext文件后缀文件类型
+ 音频信息	{'type':'voice','msg':'.././../../../aaa.mp3','ext':'mp3','time':'20','filename': '文件名.mp3'} //ext文件后缀文件类型 time音频时长(秒)  filename文件名
+ 视频信息	{'type':'video','msg':'.././../../../aaa.mp4','ext':'mp4','thumbimg':'.././../../../aaa.jpg','time':'20','size':'100kb','filename': '文件名.mp3'} //ext文件后缀文件类型 thumbimg视频封面 time视频时长(秒)  size文件大小 filename文件名
+ 位置信息	{'type':'location','msg':'位置名称','x':'23.13637','y':'113.272301','scale':'16','label':'广东省广州市越秀区小北路200号(越秀公园东门对面)'} //纬度,经度,缩放级别,位置
+ 链接	{'type':'image','msg':'http://www.baidu.com','title':'百度','description':'详细描述'} //title链接标题description链接描述
+ 音乐	{'type':'music','msg':'http://www.baidu.com/aa.mp3','title':'百度','description':'详细描述','musicimg':'音乐图片地址'} //title音乐标题description音乐描述musicimg音乐图片
+ 推送通知	{'type':'push','msg':'信息内容'}
+ 作业信息	{'type':'homework','msg':'作业内容'}
+ 通知信息	{'type':'notice','msg':'通知内容'}
+ 活动信息	{'type':'activity','msg':'活动内容','isvote':'1'} //isvote是否要投票:1是0否
+ @用户	{'type':'touser','msg':'信息内容','to':'@uid,@uid'} //to@对象 多个@对象逗号分开
+ 撤回信息 {'type':'recallmsg','msg':'消息ID'}
+ 扩展类型	{'type':'ext',..................................}  //扩展类型 里面的属性可以自己定义
+ 
+ */
+/*撤回已发送信息*/
+-(NSString *)recallMessagee:(NSString *)msgid;
+/*
+ *public String recallMessagee(String msgid);
+ 结果{"StatusCode":"200","data":{'status':'fail','errinfo':'信息时间已经超过两分钟,不能撤回!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'该信息不说自己所发,不能撤回!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'信息不存在!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'请求失败,系统错误!'}}
+ {"StatusCode":"200","data":{'msgid':'85','status':'success','errinfo':'信息撤回成功!'}}
+
+ */
+/*获取未读信息数量*/
+-(NSString *)getUnReadCount;
+/*{"StatusCode":"200","data":[{"time" :"2017-01-11 12:12:01","tuid" :1,"nickname" :"小李","flogo" :"http://sp.sz-edu.net:88/userfiles/logo/02.jpg","cou" :2,"fuid" :2,"msg" :"{\"msg\":\"个\",\"type\":\"text\"}","sendtype" :"2"}, {"time" :"2017-01-10 10:46:18","tuid" :1,"nickname" :"小李","flogo" :"http://sp.sz-edu.net:88/userfiles/logo/02.jpg","cou" :1,"fuid" :2,"msg" :"{\"msg\":\"测试信息22\",\"type\":\"text\"}","sendtype" :"1"}]}
+ */
+/*获取未读信息*/
+-(NSString *)getUnReadMsg:(NSString *)type andObjid:(NSString *)objid;
+/*
+ *{"StatusCode":"200","data":[{"id" :39,"time" :"2017-01-10 11:36:01","tuid" :1,"nickname" :"小李","msgtype" :"text","fuid" :2,"flogo" :"","msg" :"{\"msg\":\"让人\",\"type\":\"text\"}","sendtype" :"2"}, {"id" :29,"time" :"2017-01-10 10:46:18","tuid" :1,"nickname" :"小李","msgtype" :"text","fuid" :2,"flogo" :"","msg" :"{\"msg\":\"测试信息22\",\"type\":\"text\"}","sendtype" :"1"}]}
+ */
+/*修改消息状态*/
+-(NSString *)updateMsgStatus:(NSString *)msgid;
+/*
+ *结果{"StatusCode":"200","data":{'status':'fail','errinfo':'该条信息未发送给自己,修改状态失败!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'该条信息是自己所发,自己无需修改状态!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'信息不存在!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'参数格式错误!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'请求失败,系统错误!'}}
+ {"StatusCode":"200","data":{'status':'success','errinfo':'更新成功!'}}
+ 
+ 
+ */
+/*查看消息读取状态*/
+-(NSString *)getMsgReadStatus:(NSString *)msgid;
+/*
+ *返回数据字段:  logo接收者头像 tuid接收者id  status消息状态(0未接收成功/1接收成功未读/2接收成功已读) nickname接收者昵称 time状态改变世界
+ {"StatusCode":"200","data":[{"logo" :"http://sp.sz-edu.net:88/userfiles/logo/02.jpg","tuid" :2,"status" :"1","nickname" :"小李","time" :"2017-01-10 11:36:01"}, {"logo" :"http://sp.sz-edu.net:88/userfiles/logo/03.jpg","tuid" :3,"status" :"0","nickname" :"小朱"}, {"logo" :"http://sp.sz-edu.net:88/userfiles/logo/04.jpg","tuid" :4,"status" :"0","nickname" :"小明"}, {"logo" :"http://sp.sz-edu.net:88/userfiles/logo/05.jpg","tuid" :5,"status" :"0","nickname" :"小铭"}, {"logo" :"http://sp.sz-edu.net:88/userfiles/logo/06.jpg","tuid" :6,"status" :"0","nickname" :"小赵"}, {"logo" :"http://sp.sz-edu.net:88/userfiles/logo/07.jpg","tuid" :7,"status" :"0","nickname" :"小钱"}, {"logo" :"http://sp.sz-edu.net:88/userfiles/logo/08.jpg","tuid" :8,"status" :"0","nickname" :"小周"}, {"logo" :"http://sp.sz-edu.net:88/userfiles/logo/09.jpg","tuid" :9,"status" :"0","nickname" :"小吴"}]}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'该条信息非自己所发不能查看其状态!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'信息不存在!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'参数格式错误!'}}
+ 
+ 
+ */
+/*获取会话列表*/
+-(NSString *)getRequestSession;
+/*
+ *参数:id会话id, sessiontype会话类型(1单聊会话,2群聊会话,3应用会话), sessionobjid会话对象id(好友id,群id,应用id), objname会话对象名称, objlogo会话对象图标,
+ senduname信息发送者名称(用于群会话), senduid信息发送者id, optime会话最新时间, content会话最新内容, istop是否置顶, toptime置顶时间
+ {"StatusCode":"200","data":[{"istop" :"1","content" :"{\"msg\":\"大家好11\",\"type\":\"text\"}","optime" :"2017-01-12 15:56:17","id" :5,"sessionobjid" :1,"objlogo" :"http://sp.sz-edu.net:88/userfiles/logo/group01.jpg","senduid" :1,"sessiontype" :"2","toptime" :"2017-01-12 15:58:39","senduname" :"小黄","objname" :"群聊1"}, {"istop" :"0","content" :"{\"msg\":\"测试信息1oo\",\"type\":\"homework\"}","optime" :"2017-01-12 16:13:03","id" :1,"sessionobjid" :2,"objlogo" :"http://sp.sz-edu.net:88/userfiles/logo/02.jpg","senduid" :0,"sessiontype" :"1","senduname" :"","objname" :"小李"}, {"istop" :"0","content" :"{\"msg\":\"大家好55\",\"type\":\"text\"}","optime" :"2017-01-12 15:56:46","id" :9,"sessionobjid" :12,"objlogo" :"http://sp.sz-edu.net:88/userfiles/logo/group06.jpg","senduid" :1,"sessiontype" :"2","senduname" :"小黄","objname" :"群名称"}, {"istop" :"0","content" :"{\"msg\":\"大家好44\",\"type\":\"text\"}","optime" :"2017-01-12 15:56:45","id" :8,"sessionobjid" :5,"objlogo" :"http://sp.sz-edu.net:88/userfiles/logo/group05.jpg","senduid" :1,"sessiontype" :"2","senduname" :"小黄","objname" :"群聊5"}, {"istop" :"0","content" :"{\"msg\":\"大家好22\",\"type\":\"text\"}","optime" :"2017-01-12 15:56:20","id" :6,"sessionobjid" :2,"objlogo" :"http://sp.sz-edu.net:88/userfiles/logo/group02.jpg","senduid" :1,"sessiontype" :"2","senduname" :"小黄","objname" :"群聊2"}, {"istop" :"0","content" :"{\"msg\":\"大家好33\",\"type\":\"text\"}","optime" :"2017-01-12 15:56:07","id" :7,"sessionobjid" :4,"objlogo" :"http://sp.sz-edu.net:88/userfiles/logo/group04.jpg","senduid" :1,"sessiontype" :"2","senduname" :"小黄","objname" :"群聊4"}, {"istop" :"0","content" :"{\"msg\":\"推送信息\",\"type\":\"text\"}","optime" :"2017-01-12 15:18:25","id" :4,"sessionobjid" :1,"objlogo" :"http://sp.sz-edu.net:88/userfiles/logo/xtkt.png","senduid" :0,"sessiontype" :"3","senduname" :"","objname" :"协同课堂"}, {"istop" :"0","content" :"{\"msg\":\"测试信息22\",\"type\":\"homework\"}","optime" :"2017-01-12 14:41:47","id" :3,"sessionobjid" :3,"objlogo" :"http://sp.sz-edu.net:88/userfiles/logo/group03.jpg","senduid" :4,"sessiontype" :"2","senduname" :"小明","objname" :"群聊3"}, {"istop" :"0","content" :"{\"msg\":\"测试信息11\",\"type\":\"homework\"}","optime" :"2017-01-12 14:41:14","id" :2,"sessionobjid" :3,"objlogo" :"http://sp.sz-edu.net:88/userfiles/logo/03.jpg","senduid" :0,"sessiontype" :"1","senduname" :"","objname" :"小朱"}]}
+ */
+/*添加会话(会话类型,会话对象id,信息发送者id,最新消息内容)  该接口在服务端保存信息的时候自动添加会话 客户端不用处理*/
+-(NSString *)addRequestSession:(NSString *)sessiontype andSessionobjid:(NSString *)sessionobjid andRecvuid:(NSString *)recvuid andMsg:(NSString *)msg;
+/*会话设置 /取消置顶/删除会话(toptype:1置顶2取消置顶3删除会话)*/
+-(NSString *)setRequestSessionTop:(NSString *)sessionid andToptype:(NSString *)toptype;
+/*获取好友列表*/
+-(NSString *)getFriendList;
+/*查询好友*/
+-(NSString *)getFriendInfo:(NSString *)friendid;
+/*模糊查好友(好友名称或者手机号码)*/
+-(NSString *)searchFriend:(NSString *)uname;
+/*
+ *{"StatusCode":"200","data":[{"uid" :"1","logo" :"","flags" :"","remark" :"","nickname" :"小黄","signature" :""}, {"uid" :"2","logo" :"","flags" :"","remark" :"","nickname" :"小李","signature" :""}, {"uid" :"3","logo" :"","flags" :"","remark" :"","nickname" :"小朱","signature" :""}, {"uid" :"4","logo" :"","flags" :"","remark" :"","nickname" :"小明","signature" :""}, {"uid" :"5","logo" :"","flags" :"","remark" :"","nickname" :"小铭","signature" :""}, {"uid" :"6","logo" :"","flags" :"","remark" :"","nickname" :"小赵","signature" :""}, {"uid" :"7","logo" :"","flags" :"","remark" :"","nickname" :"小钱","signature" :""}, {"uid" :"8","logo" :"","flags" :"","remark" :"","nickname" :"小周","signature" :""}, {"uid" :"9","logo" :"","flags" :"","remark" :"","nickname" :"小吴","signature" :""}]}
+ */
+
+/*删除好友*/
+-(NSString *)deleteFriend:(NSString *)friendId;
+/*
+ *结果{"StatusCode":"200","data":{'status':'fail','errinfo':'对方非自己的好友删除失败!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'请求失败,系统错误!'}}
+ {"StatusCode":"200","data":{'status':'success','errinfo':'删除好友成功!'}}
+ 
+ 
+ 
+ */
+/*根据好友Id请求添加好友*/
+-(NSString *)addFriend:(NSString *)friendid andRemark:(NSString *)remark;
+/*
+ *结果{"StatusCode":"200","data":{'status':'fail','errinfo':'添加失败,该用户已经是自己的好友!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'请求失败,要添加的好友用户不存在!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'请求失败,系统错误!'}
+ {"StatusCode":"200","data":{'status':'success','errinfo':'已发送申请,等待等待对方确认!'}}
+ 
+ 
+ */
+
+/*确认是否添加好友(好友用户id,操作类型 1确定2拒绝)*/
+-(NSString *)confirmAddFriend:(NSString *)friendid andType:(NSString *)type;
+/*
+ *结果{"StatusCode":"200","data":{'status':'fail','errinfo':'确认失败,该用户已经是自己的好友!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'未发送申请,操作失败!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'参数格式错误!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'请求失败,系统错误!'}}
+ {"StatusCode":"200","data":{'status':'success','errinfo':'添加好友确认成功!/已拒绝对方添加好友!'}}  type 1/2
+ */
+
+/*获取添加好友申请*/
+-(NSString *)getAddFriendApply;
+/*
+ *{"StatusCode":"200","data":[{"createtime" :"2017-01-10 12:12:14","friendid" :1,"friendnick" :"李晟敏","flogo":"","flags":"","remark":""}]}
+ */
+
+/*发起群聊*/
+-(NSString *)creatGroup:(NSString *)groupinfo andfriendlist:(NSString *)friendlist;
+/*//发起群聊(群信息,成员列表)    群信息:(群名称必填 其他项选填 不填使用默认值)   成员列表|：可以不填
+ 群名称,群图标,群公告,群简介,群类型(0普通群,1为班级群默认0),是否公开(0否,1是默认0),加群是否需要验证(0否,1是默认0),最大成员数(群内成员默认最大1000)
+ groupinfo 群信息json格式{'name':'群名称','icon':'','notice':'','intro':'','type':'','ispublic':'','isvalidate':'','maxnum':'1000'}
+ friendlist 成员列表json格式 [{'uid':'234','nickname':'小明'},{'uid':'235','nickname':'小李'}]  //用户id  用户昵称
+ public String creatGroup(String groupinfo,String friendlist);
+ 结果{"StatusCode":"200","data":{'status':'fail','errinfo':'群信息格式错误!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'请求失败,系统错误!!'}}
+ {"StatusCode":"200","data":{'status':'success','errinfo':'建群成功!','groupid':'15','ucount':'2'}}
+ *
+ */
+
+/*模糊查群(群名称)*/
+-(NSString *)searchGroup:(NSString *)groupName;
+/*{"StatusCode":"200","data":[{"ug_name" :"群聊1","ug_status" :"1","ug_type" :"0","ug_maxnum" :1000,"ug_notice" :"测试通知1","ug_ispublic" :"0","ug_adminid" :1,"ug_intro" :"测试描述1","ug_isvalidate" :"0","ug_createtime" :"2016-12-27 14:48:48","ug_id" :1,"ug_icon" :""}, {"ug_name" :"群聊2","ug_status" :"1","ug_type" :"0","ug_maxnum" :1000,"ug_notice" :"测试通知2","ug_ispublic" :"0","ug_adminid" :1,"ug_intro" :"测试描述2","ug_isvalidate" :"0","ug_createtime" :"2016-12-27 14:48:48","ug_id" :2,"ug_icon" :""}, {"ug_name" :"群聊3","ug_status" :"1","ug_type" :"0","ug_maxnum" :1000,"ug_notice" :"测试通知3","ug_ispublic" :"0","ug_adminid" :1,"ug_intro" :"测试描述3","ug_isvalidate" :"0","ug_createtime" :"2016-12-27 14:48:48","ug_id" :3,"ug_icon" :""}, {"ug_name" :"群聊4","ug_status" :"1","ug_type" :"0","ug_maxnum" :1000,"ug_notice" :"测试通知4","ug_ispublic" :"0","ug_adminid" :1,"ug_intro" :"测试描述4","ug_isvalidate" :"0","ug_createtime" :"2016-12-27 14:48:48","ug_id" :4,"ug_icon" :""}, {"ug_name" :"群聊5","ug_status" :"1","ug_type" :"0","ug_maxnum" :1000,"ug_notice" :"测试通知5","ug_ispublic" :"0","ug_adminid" :1,"ug_intro" :"测试描述5","ug_isvalidate" :"0","ug_createtime" :"2016-12-27 14:48:48","ug_id" :5,"ug_icon" :""}, {"ug_name" :"群名称","ug_status" :"1","ug_type" :"0","ug_maxnum" :1000,"ug_notice" :"","ug_ispublic" :"0","ug_adminid" :1,"ug_intro" :"","ug_isvalidate" :"0","ug_createtime" :"2017-01-06 10:46:50","ug_id" :12,"ug_icon" :""}, {"ug_name" :"群名称17110","ug_status" :"1","ug_type" :"0","ug_maxnum" :1000,"ug_notice" :"","ug_ispublic" :"0","ug_adminid" :1,"ug_intro" :"","ug_isvalidate" :"0","ug_createtime" :"2017-01-10 16:56:06","ug_id" :18,"ug_icon" :""}]}
+  */
+-(NSString *)addGroup:(NSString *)groupid andRemark:(NSString *)addGroup;
+/*结果{"StatusCode":"200","data":{'status':'fail','errinfo':'加群失败,用户已经在该群!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'请求失败,系统错误!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'群不存在!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'参数格式错误!'}}
+ {"StatusCode":"200","data":{'status':'success','errinfo':'添加群成功!/已发送加群申请,等待管理员审核!'}}     需要验证/不需要验证
+ *
+ */
+-(NSString *)groupCreatorConfirm:(NSString *)groupid andUserid:(NSString *)userid andType:(NSString *)type;
+/*结果{"StatusCode":"200","data":{'status':'fail','errinfo':'参数格式错误!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'群不存在!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'未发送加群申请,操作失败!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'操作失败,用户已经在该群!'}}
+ {"StatusCode":"200","data":{'status':'success','errinfo':'加群确认成功!'}}
+ 
+ 
+ */
+-(NSString *)delGroup:(NSString *)groupid;
+/*结果{"StatusCode":"200","data":{'status':'fail','errinfo':'请求失败,系统错误!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'群不存在!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'参数格式错误!'}}
+ {"StatusCode":"200","data":{'status':'fail','errinfo':'用户不在该群,退出失败!'}}
+ {"StatusCode":"200","data":{'status':'success','errinfo':'成功退出该群!'}}
+ 
+ 
+ */
+/*获取添加进群申请*/
+-(NSString *)getAddGroupApply;
+/*{"StatusCode":"200","data":[{"uid" :5,"time" :"2016-12-27 14:53:52","nick" :"小铭","logo":"","gname" :"群聊1","gid" :1,"icon":""}, {"uid" :6,"time" :"2016-12-27 14:53:52","nick" :"小赵","logo":"","gname" :"群聊1","gid" :1,"icon":""}, {"uid" :7,"time" :"2016-12-27 14:53:52","nick" :"小钱","logo":"","gname" :"群聊2","gid" :2,"icon":""}, {"uid" :2,"time" :"2017-01-10 16:57:52","nick" :"22222","logo":"","remark" :"我是***","gname" :"群名称17110","gid" :18,"icon":""}]}
+ 
+ 
+ */
+/*发送修改群消息   (群id,群名称必填 其他项选填)*/
+
+-(NSString *)updateGroupData:(NSString *)groupInfo;
+/*群主解散群(群id)*/
+
+-(NSString *)dissolutionGroup:(NSString *)groupId;
+@end

@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import mqttclient.MqttInstance;
@@ -37,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
         Conf.getInstance().init(this);
         //mqttSdk 初始化
         MqttInstance.init(this);
+
+
+        clickStart(null);
     }
 
 
@@ -44,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread() {
             @Override
             public void run() {
-                MqttInstance.getInstance().conMqtt("13510530146", "123456", new MqttInstance.LoginImlisener() {
+                MqttInstance.getInstance().conMqtt("18626318013", "123456", new MqttInstance.LoginImlisener() {
                     @Override
                     public void LoginFailure() {
                         Log.d("test", "登陆失败回调。。。");
@@ -67,15 +71,22 @@ public class MainActivity extends AppCompatActivity {
                         String userInfo = pushInterface.getUserInfo();
                         Log.d("test", "userInfo = " + userInfo);
 
-                        //2.获取群组信息 252 测试
+                        //2.获取群组信息（普通群+班级群） 253=测试
                         String grouplist = pushInterface.getGroupList();
                         JSONArray groups = new JSONObject(grouplist).getJSONArray("data");
                         Log.d("test", "group count = " + groups.length());
                         Log.d("test", "grouplist = " + grouplist);
 
                         for (int i = 0; i < groups.length(); i++) {
-                            Log.d("test", "groupname = " + groups.getJSONObject(i).getString("ug_name") + " , groupid = " + groups.getJSONObject(i).getString("ug_id"));
+                            JSONObject g = groups.getJSONObject(i);
+                            Log.d("test", "groupname = " + g.getString("ug_name") + " , groupid = " + g.getString("ug_id")
+                                    + " , grouptype = " + g.getString("ug_type") + " , ispublic = " + g.getString("ug_ispublic")
+                                    + " , isvalidate = " + g.get("ug_isvalidate"));
                         }
+
+                        //2班级群组的信息 ,从班级群可以创建讨论组，也可以从好友列表创建讨论组
+                        String getClassGroupList = pushInterface.getClassGroupList();
+                        Log.d("test", "getClassGroupList = " + getClassGroupList);
 
                         //3.获取实时聊天信息
                         client.register(RegisterType.MESSAGE, new TopicProcessService() {
@@ -93,12 +104,12 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
 
-                        //5. 获取群信息。。。其实和2是一样的
-//                        String groupinfo = pushInterface.getGroupInfo("252");
-//                        Log.d("test", "group 252 info = " + groupinfo);
+                        //5. 根据群id获取群信息，其实和2一样
+//                        String groupinfo = pushInterface.getGroupInfo("253");
+//                        Log.d("test", "group 253 info = " + groupinfo);
 
                         //6. 获取群成员
-                        String menberlist = pushInterface.groupMemberList("252");
+                        String menberlist = pushInterface.groupMemberList("253");
                         Log.d("test", "menberlist = " + menberlist);
 
                         //7. 获取自己的好友列表
@@ -113,6 +124,16 @@ public class MainActivity extends AppCompatActivity {
                         String searchFriend = pushInterface.searchFriend("敏");
                         Log.d("test", "searchFriend = " + searchFriend);
 
+                        //10. 别人加我为好友!  我加别人的呢？好像没有这个接口
+                        String getAddFriendApply = pushInterface.getAddFriendApply();
+                        Log.d("test", "getAddFriendApply = " + getAddFriendApply);
+
+
+                        //11. 根据群名字，模糊查群。  包括班级群和讨论组。
+                        //讨论组ug_classid=0 ，
+                        String searchGroup = pushInterface.searchGroup("谷歌");//11
+                        Log.d("test", "searchGroup = " + searchGroup);
+
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -124,14 +145,15 @@ public class MainActivity extends AppCompatActivity {
 
     //群聊
     public void sendMessageIngroup(View view) {
-        // 252 测试
-        String key = MqttInstance.getInstance().getPushInterface().sendMessage("252", "{\"msg\":\"" +
+        // 253 测试
+        String key = MqttInstance.getInstance().getPushInterface().sendMessage("253", "{\"msg\":\"" +
                 "hello" + "\",\"type\":\"text\"}", "2");
         Log.d("test", "key = " + key);
     }
 
     //未读消息，是指离线后未收到的消息。并不包括 在线但尚未阅读的消息
     public void getUnReadMsg(View view) {
+        //参数是什么意思
         Log.d("test", "getUnReadMsg = " + pushInterface.getUnReadMsg("0", null));
     }
 
@@ -146,14 +168,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void creatGroup(View view) {
-        toast("还没做");
-//        String names = "{'name':'testtest','icon':'','notice':'','intro':'','type':'','ispublic':'','isvalidate':'','maxnum':'1000'}";
-//        pushInterface.creatGroup(names, list);
+        String groupinfo = "{'name':'testtest','icon':'','notice':'','intro':'','type':'0','ispublic':'1','isvalidate':'0','maxnum':'1000'}";
+        String friendlist = "[{'uid':'be8b70b0142e11e78969177444a6fd3d','nickname':'郑康'}]";
+        Log.d("test", "creatGroup = " + pushInterface.creatGroup(groupinfo, friendlist));
     }
 
+
+    public void updateGroupData(View view) {
+        //type可以改吗
+        JSONObject data = new JSONObject();
+        try {
+            data.put("groupid", "253");//testtest
+            data.put("name", "test_test");
+            data.put("icon", "");
+            data.put("notice", "");
+            data.put("intro", "");
+            data.put("ispublic", "1");
+            data.put("isvalidate", "0");
+            data.put("maxnum", "1000");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.d("test", "updateGroupData = " + MqttInstance.getInstance().getPushInterface().updateGroupData(data.toString()));
+    }
+
+    // 13510530146 = 38bc2850092311e7bbb321aab2798d9f
+    // 18626318013 = be8b70b0142e11e78969177444a6fd3d
     public void addFriend(View view) {
-        toast("还没做");
-//        pushInterface.addFriend("id", "你好，我想和你做朋友");
+        String addFriend = pushInterface.addFriend("be8b70b0142e11e78969177444a6fd3d", "你好，我想和你做朋友");
+        Log.d("test", "addFriend = " + addFriend);
+    }
+
+    public void confirmAddFriend(View view) {
+        //等getAddFriendApply的bug搞定了再说
+        Log.d("test", "confirmAddFriend = " + pushInterface.confirmAddFriend("id", "1"));
     }
 
     public void toast(final String txt) {
