@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONObject;
 
 import mqttclient.MqttInstance;
 import mqttclient.mq.Conf;
@@ -43,25 +44,30 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 MqttInstance.getInstance().conMqtt("13510530146", "123456", new MqttInstance.LoginImlisener() {
                     @Override
-                    public void isLogin() {
-                        Log.d("test", "isLogin");
+                    public void LoginFailure() {
+                        Log.d("test", "登陆失败回调。。。");
                         return;
                     }
                 });
                 client = MqttInstance.getInstance().getHproseMqttClient();
-                if (!MqttInstance.getInstance().getType()) {
+                if (!MqttInstance.getInstance().isConnected()) {
                     //登录失败
                     Log.d("test", "登录失败");
                 } else {
                     Log.d("test", "登录成功");
                     pushInterface = MqttInstance.getInstance().getPushInterface();
-                    if (pushInterface != null) {
+                    try {
+                        if (pushInterface == null) {
+                            Log.d("test", "rpc error");
+                        }
+
                         //1.获取个人信息
                         String userInfo = pushInterface.getUserInfo();
                         Log.d("test", "userInfo = " + userInfo);
 
                         //2.获取群组信息 ug_id=108=开维小一1班
                         String grouplist = pushInterface.getGroupList();
+                        Log.d("test", "group count = " + new JSONObject(grouplist).getJSONArray("data").length());
                         Log.d("test", "grouplist = " + grouplist);
 
                         //3.获取实时聊天信息
@@ -81,8 +87,8 @@ public class MainActivity extends AppCompatActivity {
                         });
 
                         //5. 获取群信息。。。其实和2是一样的
-                        String groupinfo = pushInterface.getGroupInfo("108");
-                        Log.d("test", "group 108 info = " + groupinfo);
+//                        String groupinfo = pushInterface.getGroupInfo("108");
+//                        Log.d("test", "group 108 info = " + groupinfo);
 
                         //6. 获取群成员
                         String menberlist = pushInterface.groupMemberList("108");
@@ -101,13 +107,21 @@ public class MainActivity extends AppCompatActivity {
                         String searchFriend = pushInterface.searchFriend("敏");
                         Log.d("test", "searchFriend = " + searchFriend);
 
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
         }.start();
     }
 
-    public void clickAddFriend(View view) {
+    public void creatGroup(View view) {
+//        String names = "{'name':'testtest','icon':'','notice':'','intro':'','type':'','ispublic':'','isvalidate':'','maxnum':'1000'}";
+//        pushInterface.creatGroup(names, list);
+    }
+
+    public void addFriend(View view) {
         pushInterface.addFriend("id", "你好，我想和你做朋友");
     }
 }

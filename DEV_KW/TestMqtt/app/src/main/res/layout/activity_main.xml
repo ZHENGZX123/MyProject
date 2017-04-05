@@ -17,10 +17,30 @@
         android:onClick="clickStart"
         android:text="开始---查询" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="dissolutionGroup"
+        android:text="解散群" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="clickAddFriend"
+        android:onClick="delGroup"
+        android:text="退出群" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="creatGroup"
+        android:text="创建一个组，发起群聊" />
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="addFriend"
         android:text="添加好友" />
+
+
 </LinearLayout>

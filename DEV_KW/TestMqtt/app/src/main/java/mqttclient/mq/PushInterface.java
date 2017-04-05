@@ -71,8 +71,8 @@ public interface PushInterface {
     /**********************
      * 群处理
      *************************************/
-    //发起群聊
-    public String creatGroup(String groupinfo, String friendlist);
+    //发起群聊,选了几个用户之后，就可以创建一个组了。
+    public String creatGroup(String groupinfo, String userlist);
 
     //获取群成员参数
     public String groupMemberList(String groupid);
