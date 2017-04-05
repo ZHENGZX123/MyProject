@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:text="http://192.168.8.114:8088/index.html?page=./yjpt/weex_jzd/login.js" />
+        android:text="http://192.168.8.114:8088/yjpt/weex_jzd/login.js" />
 
 
     <Button

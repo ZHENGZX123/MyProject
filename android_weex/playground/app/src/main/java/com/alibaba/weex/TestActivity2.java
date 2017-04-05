@@ -12,6 +12,7 @@ public class TestActivity2 extends AbstractWeexActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test2);
+        getSupportActionBar().hide();
         setContainer((ViewGroup) findViewById(R.id.index_container));
         renderPageByURL(getIntent().getStringExtra("url"));
     }
