@@ -437,6 +437,7 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
             Log.d("test", "存在，直接加载");
             loadJSBundle(zipName, zip.indexPath);
         } else {
+            // 这一段代码几乎没什么作用咯。。。
             Log.d("test", "不存在，下载");
             Service s = new Service().findOne(new KWQuery().equalTo("id", name.replace(".zip", "")));
             Log.d("test", "s  = " + s.toString());
