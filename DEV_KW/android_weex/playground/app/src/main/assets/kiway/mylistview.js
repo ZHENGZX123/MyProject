@@ -62,10 +62,9 @@
 	  "type": "div",
 	  "children": [
 	    {
-	      "type": "my_listview",
+	      "type": "chattable",
 	      "attr": {
-//	        "url": "http://www.kiway.cn"
-	        "data":"data"
+	        //"data":"data"
 	      },
 	      "style": {
           	        "width": 800,

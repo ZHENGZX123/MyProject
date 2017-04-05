@@ -13,7 +13,6 @@ import android.widget.CompoundButton;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.component.WXComponent;
-import com.taobao.weex.ui.component.WXComponentProp;
 import com.taobao.weex.ui.component.WXVContainer;
 
 import java.util.HashMap;
@@ -47,15 +46,15 @@ public class MyCheckBox extends WXComponent<CheckBox> {
         return cb;
     }
 
-    @WXComponentProp(name = "setchecked")
-    public void setChecked(boolean c) {
-        ((CheckBox) getHostView()).setChecked(c);
-    }
-
-    @WXComponentProp(name = "settext")
-    public void setChecked(String s) {
-        ((CheckBox) getHostView()).setText(s);
-    }
+//    @WXComponentProp(name = "setchecked")
+//    public void setChecked(boolean c) {
+//        ((CheckBox) getHostView()).setChecked(c);
+//    }
+//
+//    @WXComponentProp(name = "settext")
+//    public void setChecked(String s) {
+//        ((CheckBox) getHostView()).setText(s);
+//    }
 
 
 }
