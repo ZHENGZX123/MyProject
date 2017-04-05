@@ -16,7 +16,7 @@ import mqttclient.mq.TopicProcessService;
 public class MqttInstance {
     private static Context contexts;
     private static MqttInstance instance;
-    private boolean type = true;
+    private boolean connected = true;
 
     private HproseMqttClient client;
 
@@ -32,31 +32,30 @@ public class MqttInstance {
     }
 
 
-    public boolean getType() {
-        return type;
+    public boolean isConnected() {
+        return connected;
     }
 
     private MqttInstance() {
-        
+
     }
 
     //如果登陆不成功 请再次登陆
     public void conMqtt(String name, String pwd, final LoginImlisener loginImlisener) {
         try {
-            type = true;
+            connected = true;
             client = new HproseMqttClient("yjpt", name, pwd, "1",
                     new TopicProcessService() {
                         @Override
                         public void process(String topic, MqttMessage message, String time) {
-                            type = false;
+                            connected = false;
                             System.out.println("登录失败111111111");
                             System.out.println(topic);
                             System.out.println(time);
-                            loginImlisener.isLogin();
+                            loginImlisener.LoginFailure();
                             return;
                         }
                     });
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -75,7 +74,7 @@ public class MqttInstance {
             if (client.useService(PushInterface.class) == null) {
                 return null;
             } else {
-                return type ? client.useService(PushInterface.class) : null;
+                return connected ? client.useService(PushInterface.class) : null;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,7 +95,7 @@ public class MqttInstance {
     }
 
     public interface LoginImlisener {
-        void isLogin();
+        void LoginFailure();
     }
 
 }
