@@ -277,10 +277,6 @@ public class WXEventModule extends WXModule {
         BaseHttpRequest.JSESSIONID = url;
         Intent i = new Intent(mWXSDKInstance.getContext(), HeizInfoActivity.class);
         mWXSDKInstance.getContext().startActivity(i);
-
-//        Intent intent = new Intent(mWXSDKInstance.getContext(), MainActivity.class);
-//        intent.putExtra(PHOTO_POSITION, 0);
-//        mWXSDKInstance.getContext().startActivity(intent);
     }
 
 
