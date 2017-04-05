@@ -346,6 +346,39 @@ public class WXFileUtils {
         }
     }
 
+    public static String findLoginJS(String path) {
+        File file = new File(path);
+        File[] lists = file.listFiles();
+        for (int i = 0; i < lists.length; i++) {
+            if (!lists[i].getName().endsWith("zip")) {
+                continue;
+            }
+            try {
+                ZipFile zf = new ZipFile(lists[i]);
+                InputStream in = new BufferedInputStream(new FileInputStream(
+                        lists[i]));
+                ZipInputStream zin = new ZipInputStream(in);
+                ZipEntry ze;
+
+                while ((ze = zin.getNextEntry()) != null) {
+                    if (ze.isDirectory()) {
+                        System.out.println("directory = " + ze.getName());
+                    } else {
+                        System.out.println("file = " + ze.getName());
+                        if (ze.getName().contains("login.js")) {
+                            return lists[i].getAbsolutePath() + "/" + ze.getName();
+                        }
+                    }
+                }
+                zin.closeEntry();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "";
+            }
+        }
+        return "";
+    }
+
     public static boolean saveFile(String path, byte[] content, Context context) {
         if (TextUtils.isEmpty(path) || content == null || context == null) {
             return false;

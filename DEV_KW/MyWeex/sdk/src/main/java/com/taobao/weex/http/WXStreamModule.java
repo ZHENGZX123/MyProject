@@ -292,34 +292,41 @@ public class WXStreamModule extends WXModule {
 
     /**
      * @param optionsStr       request options include:
-     *                         method: GET 、POST、PUT、DELETE、HEAD、PATCH
-     *                         headers：object，请求header
-     *                         url:
-     *                         body: "Any body that you want to add to your request"
-     *                         type: json、text、jsonp（native实现时等价与json??
+     * method: GET 、POST、PUT、DELETE、HEAD、PATCH
+     * headers：object，请求header
+     * url:
+     * body: "Any body that you want to add to your request"
+     * type: json、text、jsonp（native实现时等价与json??
      * @param callback         finished callback,response object:
-     *                         status：status code
-     *                         ok：boolean 是否成功，等价于status200??299
-     *                         statusText：状态消息，用于定位具体错误原因
-     *                         data: 响应数据，当请求option中type为json，时data为object，否则data为string类型
-     *                         headers: object 响应??
+     * status：status code
+     * ok：boolean 是否成功，等价于status200??299
+     * statusText：状态消息，用于定位具体错误原因
+     * data: 响应数据，当请求option中type为json，时data为object，否则data为string类型
+     * headers: object 响应??
      * @param progressCallback in progress callback,for download progress and request state,response object:
-     *                         readyState: number 请求1 OPENED，开始连接；2 HEADERS_RECEIVED??3 LOADING
-     *                         status：status code
-     *                         length：当前获取的字节数，总长度从headersContent-Length」获??
-     *                         statusText：状态消息，用于定位具体错误原因
-     *                         headers: object 响应??
+     * readyState: number 请求1 OPENED，开始连接；2 HEADERS_RECEIVED??3 LOADING
+     * status：status code
+     * length：当前获取的字节数，总长度从headersContent-Length」获??
+     * statusText：状态消息，用于定位具体错误原因
+     * headers: object 响应??
      */
+
+//    private boolean refetch = false;
+//
+//    @JSMethod(uiThread = false)
+//    public void refetch(String optionsStr, final JSCallback callback, JSCallback progressCallback) {
+//        refetch = true;
+//        fetch(optionsStr, callback, progressCallback);
+//    }
+
     @JSMethod(uiThread = false)
     public void fetch(String optionsStr, final JSCallback callback, JSCallback progressCallback) {
-
         JSONObject optionsObj = null;
         try {
             optionsObj = JSON.parseObject(optionsStr);
         } catch (JSONException e) {
             WXLogUtils.e("", e);
         }
-
         boolean invaildOption = optionsObj == null || optionsObj.getString("url") == null;
         if (invaildOption) {
             if (callback != null) {
@@ -363,6 +370,10 @@ public class WXStreamModule extends WXModule {
         extractHeaders(headers, builder);
         final Options options = builder.createOptions();
 
+
+        //判断url和param，如果一致的话，直接返回缓存
+
+
         sendRequest(options, new ResponseCallback() {
             @Override
             public void onResponse(WXResponse response, Map<String, String> headers) {
@@ -382,6 +393,7 @@ public class WXStreamModule extends WXModule {
                             String respData = readAsString(response.originalData, headers != null ? getHeader(headers, "Content-Type") : "");
                             Log.d("stream", "headers = " + headers);
                             Log.d("stream", "http data = " + respData);
+
                             //保存cookie
                             //JSESSIONID=2b1ccd02-4eb4-49d8-8760-f4e67c1e5bc7; Path=/yjpt; HttpOnly
                             try {
