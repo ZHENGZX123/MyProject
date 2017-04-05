@@ -265,7 +265,6 @@ public class UniversalImageAdapter implements IWXImgLoaderAdapter {
                 } else {
                     url = temp;
                 }
-                Log.d("universal", "universal url  = " + url);
                 if (url.startsWith("drawable://") || url.startsWith("mipmap://")) {
                     Class drawable = R.drawable.class;
                     Field field = null;
@@ -313,11 +312,8 @@ public class UniversalImageAdapter implements IWXImgLoaderAdapter {
                 if (ze.isDirectory()) {
                 } else {
                     if (ze.getName().contains(targetFile)) {
-                        System.out.println("1111111111");
                         Bitmap result = new BitmapDrawable(zf.getInputStream(ze)).getBitmap();
                         view.setImageBitmap(result);
-
-                        System.out.println("22222222222");
                         break;
                     }
                 }

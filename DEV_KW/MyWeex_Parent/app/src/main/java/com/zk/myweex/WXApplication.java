@@ -99,7 +99,7 @@ public class WXApplication extends App {
         }
 
         //bugly
-        CrashReport.initCrashReport(getApplicationContext(), "900028702", false);
+        CrashReport.initCrashReport(getApplicationContext(), "e58c1950de", false);
 
         registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
             @Override
