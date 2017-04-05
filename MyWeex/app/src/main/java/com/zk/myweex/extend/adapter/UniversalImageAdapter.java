@@ -251,7 +251,6 @@ public class UniversalImageAdapter implements IWXImgLoaderAdapter {
         WXSDKManager.getInstance().postOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.d("universal", "universal temp  = " + temp);
                 if (temp == null) {
                     return;
                 }
@@ -312,10 +311,8 @@ public class UniversalImageAdapter implements IWXImgLoaderAdapter {
                 if (ze.isDirectory()) {
                 } else {
                     if (ze.getName().contains(targetFile)) {
-                        Log.d("universal", "find it");
                         Bitmap result = new BitmapDrawable(zf.getInputStream(ze)).getBitmap();
                         view.setImageBitmap(result);
-                        Log.d("universal", "ok");
                         break;
                     }
                 }
