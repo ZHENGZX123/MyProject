@@ -1,17 +1,20 @@
 package com.zk.myweex.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.taobao.weex.utils.WXFileUtils;
+import com.zk.myweex.WXApplication;
 
 public class LoginActivity extends WXBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //isfirst
-        renderPage(WXFileUtils.readFileInZip("/mnt/sdcard/kiway/teacher/weex/tab0.zip/yjpt/weex_jzd/login.js"),
-                "file:///mnt/sdcard/kiway/teacher/weex/tab0.zip/yjpt/weex_jzd/",
+        String loginPath = WXFileUtils.findLoginJS(WXApplication.PATH);
+        Log.d("test", "loginPath = " + loginPath);
+        renderPage(WXFileUtils.readFileInZip(loginPath),
+                "file://" + loginPath.replace("login.js", ""),
                 "tab0.zip");
     }
 

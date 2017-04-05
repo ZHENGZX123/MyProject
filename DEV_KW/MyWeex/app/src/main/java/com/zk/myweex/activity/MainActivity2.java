@@ -67,8 +67,8 @@ public class MainActivity2 extends TabActivity {
                         }
                     }
 
+                    
                     checkZipVersion();
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.d("test", "no net ... ");
