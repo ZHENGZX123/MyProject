@@ -14,7 +14,7 @@ public interface PushInterface {
     //获取当前用户信息
     public String getUserInfo();
 
-    //发送消息（不管单聊，群聊）
+    //发送消息（不管单聊，群聊，具体怎么用呢）
     public String sendMessage(String recvid, String msgcontent, String msgtype);
 
     //撤回信息
@@ -26,13 +26,13 @@ public interface PushInterface {
     //获取未读信息列表
     public String getUnReadMsg(String type, String objid);
 
-    //修改消息状态(修改用户对应该条信息状态为已读)
+    //修改消息状态(修改用户对应该条信息状态为已读)  好像不需要？？？调用上面的接口，未读信息列表就清空了。
     public String updateMsgStatus(String msgid);
 
     //查看消息读取状态
     public String getMsgReadStatus(String msgid);
 
-    //获取会话列表
+    //获取会话列表，会话的概念是什么？
     public String getRequestSession();
 
     //会话设置 /取消置顶/删除会话(toptype:1置顶2取消置顶3删除会话)
@@ -44,10 +44,10 @@ public interface PushInterface {
     //获取自己的好友列表
     public String getFriendList();
 
-    //查询好友（可用http来代替避免增加Im查询负担）(应该是查询用户)
+    //查询好友（可用http来代替避免增加Im查询负担）(应该是 根据用户id查询用户)
     public String getFriendInfo(String friendid);
 
-    //模糊查好友（应该是查用户）
+    //模糊查好友（应该是 根据用户名字查用户）
     public String searchFriend(String uname);
 
     //删除好友

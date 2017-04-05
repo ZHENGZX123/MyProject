@@ -49,7 +49,7 @@ public class MqttInstance {
                         @Override
                         public void process(String topic, MqttMessage message, String time) {
                             connected = false;
-                            System.out.println("登录失败111111111");
+                            System.out.println("登录失败回调");
                             System.out.println(topic);
                             System.out.println(time);
                             loginImlisener.LoginFailure();

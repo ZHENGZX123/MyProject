@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import mqttclient.MqttInstance;
@@ -65,10 +67,15 @@ public class MainActivity extends AppCompatActivity {
                         String userInfo = pushInterface.getUserInfo();
                         Log.d("test", "userInfo = " + userInfo);
 
-                        //2.获取群组信息 ug_id=108=开维小一1班
+                        //2.获取群组信息 252 测试
                         String grouplist = pushInterface.getGroupList();
-                        Log.d("test", "group count = " + new JSONObject(grouplist).getJSONArray("data").length());
+                        JSONArray groups = new JSONObject(grouplist).getJSONArray("data");
+                        Log.d("test", "group count = " + groups.length());
                         Log.d("test", "grouplist = " + grouplist);
+
+                        for (int i = 0; i < groups.length(); i++) {
+                            Log.d("test", "groupname = " + groups.getJSONObject(i).getString("ug_name") + " , groupid = " + groups.getJSONObject(i).getString("ug_id"));
+                        }
 
                         //3.获取实时聊天信息
                         client.register(RegisterType.MESSAGE, new TopicProcessService() {
@@ -87,13 +94,12 @@ public class MainActivity extends AppCompatActivity {
                         });
 
                         //5. 获取群信息。。。其实和2是一样的
-//                        String groupinfo = pushInterface.getGroupInfo("108");
-//                        Log.d("test", "group 108 info = " + groupinfo);
+//                        String groupinfo = pushInterface.getGroupInfo("252");
+//                        Log.d("test", "group 252 info = " + groupinfo);
 
                         //6. 获取群成员
-                        String menberlist = pushInterface.groupMemberList("108");
+                        String menberlist = pushInterface.groupMemberList("252");
                         Log.d("test", "menberlist = " + menberlist);
-
 
                         //7. 获取自己的好友列表
                         String friendlist = pushInterface.getFriendList();
@@ -116,12 +122,54 @@ public class MainActivity extends AppCompatActivity {
         }.start();
     }
 
+    //群聊
+    public void sendMessageIngroup(View view) {
+        // 252 测试
+        String key = MqttInstance.getInstance().getPushInterface().sendMessage("252", "{\"msg\":\"" +
+                "hello" + "\",\"type\":\"text\"}", "2");
+        Log.d("test", "key = " + key);
+    }
+
+    //未读消息，是指离线后未收到的消息。并不包括 在线但尚未阅读的消息
+    public void getUnReadMsg(View view) {
+        Log.d("test", "getUnReadMsg = " + pushInterface.getUnReadMsg("0", null));
+    }
+
+
+    //不是群主的话能不能解散群
+    public void dissolutionGroup(View view) {
+        Log.d("test", "dissolutionGroup " + pushInterface.dissolutionGroup("124"));
+    }
+
+    public void delGroup(View view) {
+        Log.d("test", "delGroup " + pushInterface.delGroup("124"));
+    }
+
     public void creatGroup(View view) {
+        toast("还没做");
 //        String names = "{'name':'testtest','icon':'','notice':'','intro':'','type':'','ispublic':'','isvalidate':'','maxnum':'1000'}";
 //        pushInterface.creatGroup(names, list);
     }
 
     public void addFriend(View view) {
-        pushInterface.addFriend("id", "你好，我想和你做朋友");
+        toast("还没做");
+//        pushInterface.addFriend("id", "你好，我想和你做朋友");
+    }
+
+    public void toast(final String txt) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, txt, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (pushInterface != null) {
+            pushInterface.logout();
+        }
     }
 }
