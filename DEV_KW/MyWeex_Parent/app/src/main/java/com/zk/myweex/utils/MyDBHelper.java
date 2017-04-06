@@ -133,6 +133,18 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.update(TABLE_ZIPPACKAGE, cv, "name=?", args);
     }
 
+    public void updateTabEntity(TabEntity tab) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("name", tab.name);
+        cv.put("image_default", tab.image_default);
+        cv.put("image_selected", tab.image_selected);
+
+        String[] args = {tab.idStr};
+        db.update(TABLE_TABENTITY, cv, "idstr=?", args);
+    }
+
     public void closeDB() {
         if (db != null) {
             db.close();
