@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zk.myweex.entity.TabEntity;
 import com.zk.myweex.utils.MyDBHelper;
+import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.Utils;
 import com.zk.myweex.utils.VersionUpManager;
 
@@ -43,6 +44,7 @@ public class MainActivity2 extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        ScreenManager.getScreenManager().pushActivity(this);
         main = this;
         Utils.checkNetWork(this);
         getDataFromServer();
@@ -144,7 +146,6 @@ public class MainActivity2 extends TabActivity {
 
     private void refreshUI(int position, ArrayList<TabEntity> tabs) {
         Log.d("test", "refreshUI = " + position);
-
         for (int i = 0; i < lls.size(); i++) {
             LinearLayout ll = lls.get(i);
             ImageView iv = (ImageView) ll.findViewById(R.id.iv);
@@ -198,8 +199,13 @@ public class MainActivity2 extends TabActivity {
         startActivity(new Intent(this, NoNetActivity.class));
     }
 
-    public void setCurrentTab(int a) {
-        tabhost.setCurrentTab(a);
+    public void setCurrentTab(int tab) {
+        tabhost.setCurrentTab(tab);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ScreenManager.getScreenManager().popActivity(this);
+    }
 }
