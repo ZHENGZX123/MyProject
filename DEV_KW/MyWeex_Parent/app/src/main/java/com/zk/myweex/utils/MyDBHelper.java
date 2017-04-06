@@ -132,4 +132,10 @@ public class MyDBHelper extends SQLiteOpenHelper {
         String[] args = {zipName};
         db.update(TABLE_ZIPPACKAGE, cv, "name=?", args);
     }
+
+    public void closeDB() {
+        if (db != null) {
+            db.close();
+        }
+    }
 }
