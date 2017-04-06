@@ -288,6 +288,9 @@ public class WXEventModule extends WXModule {
                 String ret = UploadUtil.uploadFile(file, url, "qzq", "JSESSIONID=" + jsessionid);
                 Log.d("test", "upload ret = " + ret);
 
+                if (ret == null) {
+                    return;
+                }
                 if (!ret.contains("200")) {
                     return;
                 }

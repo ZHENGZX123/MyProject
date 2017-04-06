@@ -9,7 +9,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.zk.myweex.WXApplication;
+import com.zk.myweex.entity.TabEntity;
+import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.utils.FileUtils;
+import com.zk.myweex.utils.MyDBHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -71,7 +74,7 @@ public class WelcomeActivity extends WXBaseActivity {
         if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", false).commit();
 
-            //mkdirs
+            //1.mkdirs
             if (new File(WXApplication.ROOT).exists()) {
                 FileUtils.delFolder(WXApplication.ROOT);
             }
@@ -84,10 +87,43 @@ public class WelcomeActivity extends WXBaseActivity {
             if (!new File(WXApplication.PATH_TMP).exists()) {
                 new File(WXApplication.PATH_TMP).mkdirs();
             }
-            //拷贝。。。
+            //2.拷贝。。。
             FileUtils.copyRawToSdcard(this, R.raw.yjpt, "ParentTab0.zip");
             FileUtils.copyRawToSdcard(this, R.raw.yjpt, "ParentTab1.zip");
             FileUtils.copyRawToSdcard(this, R.raw.yjpt, "ParentTab2.zip");
+
+            //3.插入数据库
+            TabEntity tab0 = new TabEntity();
+            tab0.name = "首页";
+            tab0.idStr = "ParentTab0";
+            TabEntity tab1 = new TabEntity();
+            tab1.name = "亲子圈";
+            tab1.idStr = "ParentTab1";
+            TabEntity tab2 = new TabEntity();
+            tab2.name = "我的";
+            tab2.idStr = "ParentTab2";
+            new MyDBHelper(getApplicationContext()).addTabEntity(tab0);
+            new MyDBHelper(getApplicationContext()).addTabEntity(tab1);
+            new MyDBHelper(getApplicationContext()).addTabEntity(tab2);
+
+            ZipPackage zip0 = new ZipPackage();
+            zip0.name = "ParentTab0.zip";
+            zip0.indexPath = "yjpt/weex_jzd/main.js";
+            zip0.version = "1.0.0";
+            zip0.patchs = "";
+            ZipPackage zip1 = new ZipPackage();
+            zip1.name = "ParentTab1.zip";
+            zip1.indexPath = "yjpt/weex_jzd/qzq.js";
+            zip1.version = "1.0.0";
+            zip1.patchs = "";
+            ZipPackage zip2 = new ZipPackage();
+            zip2.name = "ParentTab2.zip";
+            zip2.indexPath = "yjpt/weex_jzd/wd.js";
+            zip2.version = "1.0.0";
+            zip2.patchs = "";
+            new MyDBHelper(getApplicationContext()).addZipPackage(zip0);
+            new MyDBHelper(getApplicationContext()).addZipPackage(zip1);
+            new MyDBHelper(getApplicationContext()).addZipPackage(zip2);
         }
     }
 

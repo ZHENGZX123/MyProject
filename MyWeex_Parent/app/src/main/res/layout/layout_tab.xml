@@ -15,7 +15,7 @@
             android:id="@+id/iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/tab12" />
+            android:src="@drawable/tab11" />
 
         <TextView
             android:id="@+id/tv"
