@@ -17,8 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kiway.yjpt.Teacher.R;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zk.myweex.entity.TabEntity;
-import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.utils.MyDBHelper;
 import com.zk.myweex.utils.Utils;
 import com.zk.myweex.utils.VersionUpManager;
@@ -52,22 +53,20 @@ public class MainActivity2 extends TabActivity {
             @Override
             public void run() {
                 try {
-                    int tabcount = new MyDBHelper(getApplicationContext()).getAllTabEntity().size();
-                    //第一次，初始化tab
-                    if (tabcount == 0) {
-                        List<Service> services = new Service().find(new KWQuery().like("id", "tab%"));
-                        for (Service s : services) {
-                            //插入数据库
-                            TabEntity tab = new TabEntity();
-                            tab.idStr = s.get("id").toString();
-                            tab.name = s.get("name").toString();
-                            tab.image_default = "";
-                            tab.image_selected = "";
-                            new MyDBHelper(getApplicationContext()).addTabEntity(tab);
+                    List<Service> services = new Service().find(new KWQuery().like("id", "tab%"));
+                    Log.d("test", "services count  = " + services.size());
+                    for (Service s : services) {
+                        Log.d("test", "service  = " + s.toString());
+                        TabEntity tab = new TabEntity();
+                        tab.idStr = s.get("id").toString();
+                        tab.name = s.get("name").toString();
+                        try {
+                            tab.image_default = s.get("icon").toString();
+                            tab.image_selected = s.get("iconActive").toString();
+                        } catch (Exception e) {
                         }
+                        new MyDBHelper(getApplicationContext()).updateTabEntity(tab);
                     }
-
-
                     checkZipVersion();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -78,53 +77,8 @@ public class MainActivity2 extends TabActivity {
                         public void run() {
                             ArrayList<TabEntity> tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
                             Log.d("test", "main initView");
-                            if (tabs.size() == 0) {
-                                //第一次加载不成功的情况
-                                ArrayList<TabEntity> temp = new ArrayList<>();
-                                TabEntity tab0 = new TabEntity();
-                                tab0.name = "首页";
-                                tab0.idStr = "tab0";
-                                TabEntity tab1 = new TabEntity();
-                                tab1.name = "亲子圈";
-                                tab1.idStr = "tab1";
-                                TabEntity tab2 = new TabEntity();
-                                tab2.name = "我的";
-                                tab2.idStr = "tab2";
-                                temp.add(tab0);
-                                temp.add(tab1);
-                                temp.add(tab2);
-                                //插入数据库。。
-                                new MyDBHelper(getApplicationContext()).addTabEntity(tab0);
-                                new MyDBHelper(getApplicationContext()).addTabEntity(tab1);
-                                new MyDBHelper(getApplicationContext()).addTabEntity(tab2);
-
-                                ZipPackage zip0 = new ZipPackage();
-                                zip0.name = "tab0.zip";
-                                zip0.indexPath = "yjpt/weex_jzd/main.js";
-                                zip0.version = "1.0.0";
-                                zip0.patchs = "";
-                                new MyDBHelper(getApplicationContext()).addZipPackage(zip0);
-
-                                ZipPackage zip1 = new ZipPackage();
-                                zip1.name = "tab1.zip";
-                                zip1.indexPath = "yjpt/weex_jzd/qzq.js";
-                                zip1.version = "1.0.0";
-                                zip1.patchs = "";
-                                new MyDBHelper(getApplicationContext()).addZipPackage(zip1);
-
-                                ZipPackage zip2 = new ZipPackage();
-                                zip2.name = "tab2.zip";
-                                zip2.indexPath = "yjpt/weex_jzd/wd.js";
-                                zip2.version = "1.0.0";
-                                zip2.patchs = "";
-                                new MyDBHelper(getApplicationContext()).addZipPackage(zip2);
-
-                                tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
-                                initView(tabs);
-                            } else {
-                                //第一次加载成功
-                                initView(tabs);
-                            }
+                            tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
+                            initView(tabs);
                         }
                     });
                 }
@@ -144,7 +98,7 @@ public class MainActivity2 extends TabActivity {
         }.start();
     }
 
-    private void initView(ArrayList<TabEntity> tabs) {
+    private void initView(final ArrayList<TabEntity> tabs) {
         if (tabs == null) {
             return;
         }
@@ -156,13 +110,11 @@ public class MainActivity2 extends TabActivity {
         bottom.setWeightSum(tabcount);
         tabhost = getTabHost();
         for (int i = 0; i < tabcount; i++) {
-            TabEntity tabEntity = tabs.get(i);
             final int ii = i;
             LayoutInflater inflater = LayoutInflater.from(this);
             LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.layout_tab, null);
             ImageView iv = (ImageView) ll.findViewById(R.id.iv);
             TextView tv = (TextView) ll.findViewById(R.id.tv);
-            tv.setText(tabEntity.name);//名字
             bottom.addView(ll, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
             lls.add(ll);
             Intent tab = new Intent(this, MyTabActivity.class);
@@ -178,25 +130,28 @@ public class MainActivity2 extends TabActivity {
                 public void onClick(View arg0) {
                     tabhost.setCurrentTab(ii);
 
-                    refreshUI(ii);
+                    refreshUI(ii, tabs);
                 }
             });
         }
-        refreshUI(0);
+        refreshUI(0, tabs);
     }
 
-    private void refreshUI(int position) {
+    private void refreshUI(int position, ArrayList<TabEntity> tabs) {
         Log.d("test", "refreshUI = " + position);
+
         for (int i = 0; i < lls.size(); i++) {
             LinearLayout ll = lls.get(i);
             ImageView iv = (ImageView) ll.findViewById(R.id.iv);
             TextView tv = (TextView) ll.findViewById(R.id.tv);
+            tv.setText(tabs.get(i).name);
+
             if (i == position) {
                 tv.setTextColor(getResources().getColor(R.color.orange));
-//                iv.setBackgroundResource(R.drawable.tab12);
+                ImageLoader.getInstance().displayImage(tabs.get(i).image_selected, iv, getLoaderOptions());
             } else {
                 tv.setTextColor(getResources().getColor(R.color.lightblack));
-//                iv.setBackgroundResource(R.drawable.tab12);
+                ImageLoader.getInstance().displayImage(tabs.get(i).image_default, iv, getLoaderOptions());
             }
         }
     }
@@ -242,5 +197,17 @@ public class MainActivity2 extends TabActivity {
 
     public void setCurrentTab(int a) {
         tabhost.setCurrentTab(a);
+    }
+
+    public DisplayImageOptions getLoaderOptions() {
+        DisplayImageOptions.Builder displayImageOptionsBuilder = new DisplayImageOptions.Builder();
+        // displayImageOptionsBuilder.showImageForEmptyUri(R.drawable.loading);
+        displayImageOptionsBuilder.cacheInMemory(false);
+        displayImageOptionsBuilder.cacheOnDisc(true);
+        // RoundedBitmapDisplayer displayer = new RoundedBitmapDisplayer(10);
+        // displayImageOptionsBuilder.displayer(displayer);
+        DisplayImageOptions defaultDisplayImageOptions = displayImageOptionsBuilder
+                .build();
+        return defaultDisplayImageOptions;
     }
 }
