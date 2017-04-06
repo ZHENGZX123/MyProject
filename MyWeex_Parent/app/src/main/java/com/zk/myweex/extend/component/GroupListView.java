@@ -51,7 +51,7 @@ public class GroupListView extends WXComponent<ListView> {
 
     @Override
     protected ListView initComponentHostView(@NonNull Context context) {
-        Log.d("test", "ListView initComponentHostView");
+        Log.d("mqtt", "ListView initComponentHostView");
         this.lv = new ListView(context);
         this.lv.setFocusable(false);
         this.lv.setFocusableInTouchMode(false);
@@ -78,11 +78,11 @@ public class GroupListView extends WXComponent<ListView> {
         new Thread() {
             @Override
             public void run() {
+
                 refreshUI();
 
                 String userName = getContext().getSharedPreferences("kiway", 0).getString("userName", "");
                 String userPwd = getContext().getSharedPreferences("kiway", 0).getString("userPwd", "");
-
                 MqttInstance.getInstance().conMqtt(userName, userPwd, new MqttInstance.LoginImlisener() {
                     @Override
                     public void isLogin() {
@@ -96,7 +96,7 @@ public class GroupListView extends WXComponent<ListView> {
                     Log.d("mqtt", "登录失败");
                 } else {
                     Log.d("mqtt", "登录成功");
-                    refreshUI();
+
                     try {
                         PushInterface pushInterface = MqttInstance.getInstance().getPushInterface();
                         if (pushInterface != null) {
@@ -149,7 +149,7 @@ public class GroupListView extends WXComponent<ListView> {
 
     private void getGroupInfo(String groupList) {
         Log.d("mqtt", "groupList = " + groupList);
-        if (groupList == null) {
+        if (groupList == null || groupList.equals("")) {
             return;
         }
         MainListDao.saveGroupList(groupList, DaoType.SESSTIONTYPE.GROUP);
@@ -167,9 +167,12 @@ public class GroupListView extends WXComponent<ListView> {
                         int width = ScreenUtil.getDisplayWidth((AppCompatActivity) getContext());
                         int height = ScreenUtil.getDisplayHeight((AppCompatActivity) getContext()) - getComponentSize().top;
                         GroupListView.this.setHostLayoutParams(getHostView(), width, height, 0, 0, 0, 0);
+                    } else {
+                        Log.d("mqtt", "list is null");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Log.d("mqtt", "e = " + e.toString());
                 }
             }
         });
@@ -184,7 +187,7 @@ public class GroupListView extends WXComponent<ListView> {
 
     private void getUserInfo(String userInfo) {
         try {
-            Log.d("test", "userInfo = " + userInfo);
+            Log.d("mqtt", "userInfo = " + userInfo);
             if (userInfo == null || userInfo.equals("")) {
                 return;
             }

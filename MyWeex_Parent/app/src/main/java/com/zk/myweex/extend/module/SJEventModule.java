@@ -19,7 +19,6 @@ import com.tencent.mm.opensdk.constants.Build;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
-import com.zk.myweex.WXApplication;
 import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
 import com.zk.myweex.utils.ScreenManager;
@@ -35,6 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
+import cn.kwim.mqttcilent.mqttclient.mq.PushInterface;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 import yjpty.teaching.http.BaseHttpHandler;
 import yjpty.teaching.http.BaseHttpRequest;
@@ -97,12 +97,15 @@ public class SJEventModule extends WXModule implements HttpHandler {
 
     private void doLogout() {
         Log.d("test", "logoutSuccess");
-        try {
-            //这里还要退出mqtt。
-            MqttInstance.getInstance().getPushInterface().logout();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                PushInterface pushInterface = MqttInstance.getInstance().getPushInterface();
+                if (pushInterface != null) {
+                    pushInterface.logout();
+                }
+            }
+        }.start();
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
         ScreenManager.getScreenManager().popAllActivityExceptOne(LoginActivity.class);
@@ -220,7 +223,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
             map.put("remark", data.getString("remark"));
             IConstant.HTTP_CONNECT_POOL.addRequest(IUrContant.GET_WEI_PRIDUCT_URL, map, activityHandler, true, 1);
 
-            WXApplication.callback = callback;
+            callback = callback;
             // 测试用
         } catch (JSONException e) {
             e.printStackTrace();
