@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
+import cn.kwim.mqttcilent.mqttclient.mq.PushInterface;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 
@@ -79,12 +80,17 @@ public class SJEventModule extends WXModule {
 
     private void doLogout() {
         Log.d("test", "logoutSuccess");
-        try {
-            //这里还要退出mqtt。
-            MqttInstance.getInstance().getPushInterface().logout();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        new Thread() {
+            @Override
+            public void run() {
+                PushInterface pushInterface = MqttInstance.getInstance().getPushInterface();
+                if (pushInterface != null) {
+                    pushInterface.logout();
+                }
+            }
+        }.start();
+
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
         ScreenManager.getScreenManager().popAllActivityExceptOne(LoginActivity.class);
