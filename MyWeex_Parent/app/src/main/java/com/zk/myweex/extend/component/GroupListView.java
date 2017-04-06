@@ -7,6 +7,7 @@ package com.zk.myweex.extend.component;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -15,6 +16,7 @@ import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXVContainer;
+import com.zk.myweex.utils.ScreenUtil;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
@@ -28,12 +30,14 @@ import cn.kwim.mqttcilent.common.cache.dao.DaoType;
 import cn.kwim.mqttcilent.common.cache.dao.MainListDao;
 import cn.kwim.mqttcilent.common.cache.dao.MessageDao;
 import cn.kwim.mqttcilent.common.cache.javabean.Converse;
+import cn.kwim.mqttcilent.common.cache.javabean.MainList;
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
 import cn.kwim.mqttcilent.mqttclient.mq.HproseMqttClient;
 import cn.kwim.mqttcilent.mqttclient.mq.PushInterface;
 import cn.kwim.mqttcilent.mqttclient.mq.TopicProcessService;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 
 
 public class GroupListView extends WXComponent<ListView> {
@@ -147,7 +151,16 @@ public class GroupListView extends WXComponent<ListView> {
             @Override
             public void run() {
                 //获取到数据之后，刷新列表
-                adapter.setList(MainListDao.getMainList());
+                RealmResults<MainList> list = MainListDao.getMainList();
+                if (list != null) {
+                    adapter.setList(list);
+                    int width = ScreenUtil.getDisplayWidth((AppCompatActivity) getContext());
+                    int height = ScreenUtil.getDisplayHeight((AppCompatActivity) getContext()) - getComponentSize().top;
+                    Log.d("test", "count = " + list.size());
+                    Log.d("test", "width = " + width);
+                    Log.d("test", "height = " + height);
+                    GroupListView.this.setHostLayoutParams(getHostView(), width, height, 0, 0, 0, 0);
+                }
             }
         });
     }
