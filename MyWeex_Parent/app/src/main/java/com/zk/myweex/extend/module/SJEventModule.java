@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
-import cn.kwim.mqttcilent.mqttclient.mq.PushInterface;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 import yjpty.teaching.http.BaseHttpHandler;
 import yjpty.teaching.http.BaseHttpRequest;
@@ -100,9 +99,10 @@ public class SJEventModule extends WXModule implements HttpHandler {
         new Thread() {
             @Override
             public void run() {
-                PushInterface pushInterface = MqttInstance.getInstance().getPushInterface();
-                if (pushInterface != null) {
-                    pushInterface.logout();
+                try {
+                    MqttInstance.getInstance().getPushInterface().logout();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }.start();
