@@ -152,8 +152,6 @@ public class MainActivity2 extends TabActivity {
         if (tabcount == 0) {
             return;
         }
-//FIXME hardcode
-        tabcount = 3;
         bottom = (LinearLayout) findViewById(R.id.bottom);
         bottom.setWeightSum(tabcount);
         tabhost = getTabHost();
@@ -241,5 +239,8 @@ public class MainActivity2 extends TabActivity {
         startActivity(new Intent(this, NoNetActivity.class));
     }
 
+    public void setCurrentTab(int a) {
+        tabhost.setCurrentTab(a);
+    }
 
 }
