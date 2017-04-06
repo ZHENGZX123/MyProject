@@ -20,6 +20,7 @@ import com.lzy.imagepicker.view.CropImageView;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
+import com.zk.myweex.activity.MainActivity2;
 import com.zk.myweex.utils.UploadUtil;
 
 import org.json.JSONException;
@@ -147,7 +148,7 @@ public class WXEventModule extends WXModule {
     }
 
     @JSMethod()
-    public void Publish(String str, JSCallback callback) {
+    public void Publish(String str, final JSCallback callback) {
         Log.d("test", "publish str = " + str);
         try {
             JSONObject obj = new JSONObject(str);
@@ -185,7 +186,9 @@ public class WXEventModule extends WXModule {
                     Log.d("test", "onSuccess = " + responseString);
                     if (responseString.contains("200")) {
                         toast("发表成功");
-                        ((Activity) mWXSDKInstance.getContext()).finish();
+                        callback.invoke("1");
+                        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
+                        MainActivity2.main.setCurrentTab(1);
                     }
                 }
             });
