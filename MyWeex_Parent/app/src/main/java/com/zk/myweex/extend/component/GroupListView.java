@@ -68,7 +68,6 @@ public class GroupListView extends WXComponent<ListView> {
         RealmChangeListener<Realm> realmListener = new RealmChangeListener<Realm>() {
             @Override
             public void onChange(Realm element) {
-                Log.d("mqtt", "refresh333");
                 refreshUI();
             }
         };
@@ -79,6 +78,8 @@ public class GroupListView extends WXComponent<ListView> {
         new Thread() {
             @Override
             public void run() {
+                refreshUI();
+
                 String userName = getContext().getSharedPreferences("kiway", 0).getString("userName", "");
                 String userPwd = getContext().getSharedPreferences("kiway", 0).getString("userPwd", "");
 
@@ -95,13 +96,17 @@ public class GroupListView extends WXComponent<ListView> {
                     Log.d("mqtt", "登录失败");
                 } else {
                     Log.d("mqtt", "登录成功");
+                    refreshUI();
                     try {
                         PushInterface pushInterface = MqttInstance.getInstance().getPushInterface();
                         if (pushInterface != null) {
                             //1.userinfo
                             getUserInfo(pushInterface.getUserInfo());
                             //2.grouplist
-                            MainListDao.saveGroupList(pushInterface.getGroupList(), DaoType.SESSTIONTYPE.GROUP);
+                            getGroupInfo(pushInterface.getGroupList());
+                            refreshUI();
+
+                            //3.注册回调
                             client.register(RegisterType.MESSAGE, new TopicProcessService() {
                                 @Override
                                 public void process(String topic, MqttMessage message, String time) {
@@ -116,7 +121,6 @@ public class GroupListView extends WXComponent<ListView> {
                                     int num = MessageDao.unreadCount(id, sendtype);
                                     MainListDao.updateGroupList(num + "", Dao.getKey(id), content, type, name);
 
-                                    Log.d("mqtt", "refreshUI111");
                                     refreshUI();
                                 }
                             });
@@ -131,19 +135,24 @@ public class GroupListView extends WXComponent<ListView> {
                                 }
                             });
                         } else {
-                            Log.d("test", "pushInterface null");
+                            Log.d("mqtt", "pushInterface null");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                    } finally {
-                        Log.d("mqtt", "refreshUI222");
-                        refreshUI();
                     }
                 }
             }
 
 
         }.start();
+    }
+
+    private void getGroupInfo(String groupList) {
+        Log.d("mqtt", "groupList = " + groupList);
+        if (groupList == null) {
+            return;
+        }
+        MainListDao.saveGroupList(groupList, DaoType.SESSTIONTYPE.GROUP);
     }
 
     private void refreshUI() {
@@ -179,7 +188,6 @@ public class GroupListView extends WXComponent<ListView> {
             if (userInfo == null || userInfo.equals("")) {
                 return;
             }
-            Log.i("个人信息", userInfo + "sssssssss");
             Converse converse = new Gson().fromJson(userInfo, Converse.class);
             if (converse.getStatusCode().equals("200")) {
                 Map map = (Map) converse.getData();
