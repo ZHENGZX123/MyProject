@@ -17,10 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kiway.yjpt.Teacher.R;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zk.myweex.entity.TabEntity;
 import com.zk.myweex.utils.MyDBHelper;
+import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.Utils;
 import com.zk.myweex.utils.VersionUpManager;
 
@@ -29,6 +29,8 @@ import java.util.List;
 
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Service;
+
+import static uk.co.senab.photoview.sample.ViewPagerActivity.getLoaderOptions;
 
 
 public class MainActivity2 extends TabActivity {
@@ -42,6 +44,7 @@ public class MainActivity2 extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        ScreenManager.getScreenManager().pushActivity(this);
         main = this;
         Utils.checkNetWork(this);
         getDataFromServer();
@@ -195,19 +198,13 @@ public class MainActivity2 extends TabActivity {
     }
 
 
-    public void setCurrentTab(int a) {
-        tabhost.setCurrentTab(a);
+    public void setCurrentTab(int tab) {
+        tabhost.setCurrentTab(tab);
     }
 
-    public DisplayImageOptions getLoaderOptions() {
-        DisplayImageOptions.Builder displayImageOptionsBuilder = new DisplayImageOptions.Builder();
-        // displayImageOptionsBuilder.showImageForEmptyUri(R.drawable.loading);
-        displayImageOptionsBuilder.cacheInMemory(false);
-        displayImageOptionsBuilder.cacheOnDisc(true);
-        // RoundedBitmapDisplayer displayer = new RoundedBitmapDisplayer(10);
-        // displayImageOptionsBuilder.displayer(displayer);
-        DisplayImageOptions defaultDisplayImageOptions = displayImageOptionsBuilder
-                .build();
-        return defaultDisplayImageOptions;
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ScreenManager.getScreenManager().popActivity(this);
     }
 }
