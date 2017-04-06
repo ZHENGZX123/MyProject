@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
-import cn.kwim.mqttcilent.mqttclient.mq.PushInterface;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 
@@ -84,9 +83,10 @@ public class SJEventModule extends WXModule {
         new Thread() {
             @Override
             public void run() {
-                PushInterface pushInterface = MqttInstance.getInstance().getPushInterface();
-                if (pushInterface != null) {
-                    pushInterface.logout();
+                try {
+                    MqttInstance.getInstance().getPushInterface().logout();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }.start();
