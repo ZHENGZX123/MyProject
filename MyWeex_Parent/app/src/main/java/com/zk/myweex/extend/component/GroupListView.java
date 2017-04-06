@@ -151,15 +151,16 @@ public class GroupListView extends WXComponent<ListView> {
             @Override
             public void run() {
                 //获取到数据之后，刷新列表
-                RealmResults<MainList> list = MainListDao.getMainList();
-                if (list != null) {
-                    adapter.setList(list);
-                    int width = ScreenUtil.getDisplayWidth((AppCompatActivity) getContext());
-                    int height = ScreenUtil.getDisplayHeight((AppCompatActivity) getContext()) - getComponentSize().top;
-                    Log.d("test", "count = " + list.size());
-                    Log.d("test", "width = " + width);
-                    Log.d("test", "height = " + height);
-                    GroupListView.this.setHostLayoutParams(getHostView(), width, height, 0, 0, 0, 0);
+                try {
+                    RealmResults<MainList> list = MainListDao.getMainList();
+                    if (list != null) {
+                        adapter.setList(list);
+                        int width = ScreenUtil.getDisplayWidth((AppCompatActivity) getContext());
+                        int height = ScreenUtil.getDisplayHeight((AppCompatActivity) getContext()) - getComponentSize().top;
+                        GroupListView.this.setHostLayoutParams(getHostView(), width, height, 0, 0, 0, 0);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });

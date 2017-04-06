@@ -149,7 +149,7 @@ public class MainActivity2 extends TabActivity {
             LinearLayout ll = lls.get(i);
             ImageView iv = (ImageView) ll.findViewById(R.id.iv);
             TextView tv = (TextView) ll.findViewById(R.id.tv);
-            tv.setText(tabs.get(i).name);
+            tv.setText(tabs.get(i).name.replace("1", ""));
 
             if (i == position) {
                 tv.setTextColor(getResources().getColor(R.color.orange));
