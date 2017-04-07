@@ -219,6 +219,8 @@ import com.taobao.weex.bridge.WXBridgeManager;
 import com.taobao.weex.common.WXModule;
 import com.taobao.weex.common.WXRequest;
 import com.taobao.weex.common.WXResponse;
+import com.taobao.weex.utils.HTTPCache;
+import com.taobao.weex.utils.WXDBHelper;
 import com.taobao.weex.utils.WXLogUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -251,7 +253,7 @@ public class WXStreamModule extends WXModule {
      *
      * @param params   {method:POST/GET/PUT/DELETE/HEAD/PATCH,url:http://xxx,header:{key:value},
      *                 body:{key:value}}
-     * @param callback formate：handler(err, response)
+     * @param callback formate��handler(err, response)
      */
     @Deprecated
     @JSMethod(uiThread = false)
@@ -290,36 +292,15 @@ public class WXStreamModule extends WXModule {
         }, null);
     }
 
-    /**
-     * @param optionsStr       request options include:
-     *                         method: GET 、POST、PUT、DELETE、HEAD、PATCH
-     *                         headers：object，请求header
-     *                         url:
-     *                         body: "Any body that you want to add to your request"
-     *                         type: json、text、jsonp（native实现时等价与json??
-     * @param callback         finished callback,response object:
-     *                         status：status code
-     *                         ok：boolean 是否成功，等价于status200??299
-     *                         statusText：状态消息，用于定位具体错误原因
-     *                         data: 响应数据，当请求option中type为json，时data为object，否则data为string类型
-     *                         headers: object 响应??
-     * @param progressCallback in progress callback,for download progress and request state,response object:
-     *                         readyState: number 请求1 OPENED，开始连接；2 HEADERS_RECEIVED??3 LOADING
-     *                         status：status code
-     *                         length：当前获取的字节数，总长度从headersContent-Length」获??
-     *                         statusText：状态消息，用于定位具体错误原因
-     *                         headers: object 响应??
-     */
     @JSMethod(uiThread = false)
-    public void fetch(String optionsStr, final JSCallback callback, JSCallback progressCallback) {
-
+    public void fetch(final String optionsStr, final JSCallback callback, final JSCallback progressCallback) {
+        Log.d("stream", "stream optionsStr = " + optionsStr);
         JSONObject optionsObj = null;
         try {
             optionsObj = JSON.parseObject(optionsStr);
         } catch (JSONException e) {
             WXLogUtils.e("", e);
         }
-
         boolean invaildOption = optionsObj == null || optionsObj.getString("url") == null;
         if (invaildOption) {
             if (callback != null) {
@@ -330,24 +311,16 @@ public class WXStreamModule extends WXModule {
             }
             return;
         }
-        String method = optionsObj.getString("method");
-        String url = optionsObj.getString("url");
+        final String url = optionsObj.getString("url");
+        final String method = optionsObj.getString("method").toUpperCase();
         Log.d("stream", "stream url = " + url);
         JSONObject headers = optionsObj.getJSONObject("headers");
         String body = optionsObj.getString("body");
         String type = optionsObj.getString("type");
         int timeout = optionsObj.getIntValue("timeout");
 
-        //读取cookie
-        Map<String, String> all = (Map<String, String>) mWXSDKInstance.getContext().getSharedPreferences("kiway_cookie", 0).getAll();
-        for (String key : all.keySet()) {
-            if (url.contains(key) && !url.contains("login")) {
-                String value = all.get(key);
-                headers.put("Cookie", value);
-            }
-        }
+        readCookie(url, headers);
 
-        if (method != null) method = method.toUpperCase();
         Options.Builder builder = new Options.Builder()
                 .setMethod(!"GET".equals(method)
                         && !"POST".equals(method)
@@ -361,42 +334,36 @@ public class WXStreamModule extends WXModule {
                 .setTimeout(timeout);
 
         extractHeaders(headers, builder);
+
         final Options options = builder.createOptions();
 
+        Log.d("stream", "caches count = " + new WXDBHelper(mWXSDKInstance.getContext()).getAllHTTPCache().size());
+
+        final String finalMethod = method;
         sendRequest(options, new ResponseCallback() {
             @Override
             public void onResponse(WXResponse response, Map<String, String> headers) {
                 if (callback != null) {
+                    int code = 0;
+                    String respData = "";
                     Map<String, Object> resp = new HashMap<>();
                     if (response == null || "-1".equals(response.statusCode)) {
                         resp.put(STATUS, -1);
                         resp.put(STATUS_TEXT, Status.ERR_CONNECT_FAILED);
                     } else {
-                        int code = Integer.parseInt(response.statusCode);
+                        code = Integer.parseInt(response.statusCode);
                         Log.d("stream", "http code = " + code);
                         resp.put(STATUS, code);
                         resp.put("ok", (code >= 200 && code <= 299));
                         if (response.originalData == null) {
                             resp.put("data", null);
                         } else {
-                            String respData = readAsString(response.originalData, headers != null ? getHeader(headers, "Content-Type") : "");
+                            respData = readAsString(response.originalData, headers != null ? getHeader(headers, "Content-Type") : "");
                             Log.d("stream", "headers = " + headers);
                             Log.d("stream", "http data = " + respData);
-                            //保存cookie
-                            //JSESSIONID=2b1ccd02-4eb4-49d8-8760-f4e67c1e5bc7; Path=/yjpt; HttpOnly
-                            try {
-                                if (headers != null && headers.containsKey("Set-Cookie")) {
-                                    String value = headers.get("Set-Cookie");
-                                    String[] splits = value.split(";");
-                                    String jsessionid = splits[0].trim();
-                                    String path = splits[1].trim().replace("Path=", "");
-                                    if (value.contains("JSESSIONID")) {
-                                        mWXSDKInstance.getContext().getSharedPreferences("kiway_cookie", 0).edit().putString(path, jsessionid).commit();
-                                    }
-                                }
-                            } catch (Exception e) {
-                                Log.d("stream", "save cookie exception  e = " + e.toString());
-                            }
+
+                            //save cookie
+                            saveCookie(headers);
                             try {
                                 resp.put("data", parseData(respData, options.getType()));
                             } catch (JSONException exception) {
@@ -408,10 +375,93 @@ public class WXStreamModule extends WXModule {
                         resp.put(STATUS_TEXT, Status.getStatusText(response.statusCode));
                     }
                     resp.put("headers", headers);
-                    callback.invoke(resp);
+
+                    if (response == null || "-1".equals(response.statusCode)) {
+                        String cache = getCacheFromDB(optionsStr);
+                        Log.d("stream", "use cache = " + cache);
+                        if (cache == null) {
+                            callback.invoke(resp);
+                            return;
+                        }
+                        resp.put("ok", true);
+                        resp.put(STATUS, 200);
+                        resp.put(STATUS_TEXT, "OK");
+                        resp.put("data", JSONObject.parse(cache));
+                        callback.invoke(resp);
+                    } else {
+                        Log.d("stream", "use http");
+                        callback.invoke(resp);
+                        if (url.contains("sms")) {
+                            return;
+                        }
+                        if (!method.equalsIgnoreCase("get")) {
+                            return;
+                        }
+                        if (code != 200) {
+                            return;
+                        }
+                        saveCacheToDB(optionsStr, respData);
+                    }
                 }
             }
         }, progressCallback);
+    }
+
+
+    private void saveCookie(Map<String, String> headers) {
+        //JSESSIONID=2b1ccd02-4eb4-49d8-8760-f4e67c1e5bc7; Path=/yjpt; HttpOnly
+        try {
+            if (headers != null && headers.containsKey("Set-Cookie")) {
+                String value = headers.get("Set-Cookie");
+                String[] splits = value.split(";");
+                String jsessionid = splits[0].trim();
+                String path = splits[1].trim().replace("Path=", "");
+                if (value.contains("JSESSIONID")) {
+                    mWXSDKInstance.getContext().getSharedPreferences("kiway_cookie", 0).edit().putString(path, jsessionid).commit();
+                }
+            }
+        } catch (Exception e) {
+            Log.d("stream", "save cookie exception  e = " + e.toString());
+        }
+    }
+
+    private void readCookie(String url, JSONObject headers) {
+        Map<String, String> all = (Map<String, String>) mWXSDKInstance.getContext().getSharedPreferences("kiway_cookie", 0).getAll();
+        for (String key : all.keySet()) {
+            //Login donot need set cookie
+            if (url.contains(key) && !url.contains("login")) {
+                String value = all.get(key);
+                headers.put("Cookie", value);
+            }
+        }
+    }
+
+    private void saveCacheToDB(String optionsStr, String respData) {
+        HTTPCache a = new WXDBHelper(mWXSDKInstance.getContext()).getHttpCacheByRequest(optionsStr);
+        // if existed , update
+        if (a == null) {
+            a = new HTTPCache();
+            a.request = optionsStr;
+            a.response = respData;
+            a.requesttime = "" + System.currentTimeMillis();
+            new WXDBHelper(mWXSDKInstance.getContext()).addHTTPCache(a);
+        } else {
+            new WXDBHelper(mWXSDKInstance.getContext()).updateHTTPCache(a);
+        }
+    }
+
+    private String getCacheFromDB(String optionsStr) {
+        HTTPCache cache = new WXDBHelper(mWXSDKInstance.getContext()).getHttpCacheByRequest(optionsStr);
+        if (cache == null) {
+            return null;
+        }
+        long current = System.currentTimeMillis();
+        long requesttime = Long.parseLong(cache.requesttime);
+        long between = current - requesttime;
+        if (between > 4 * 60 * 60 * 1000) {
+            return null;
+        }
+        return cache.response;
     }
 
     Object parseData(String data, Options.Type type) throws JSONException {
@@ -497,7 +547,7 @@ public class WXStreamModule extends WXModule {
         if (adapter != null) {
             adapter.sendRequest(wxRequest, new StreamHttpListener(callback, progressCallback));
         } else {
-            WXLogUtils.e("WXStreamModule", "No HttpAdapter found,request failed.");
+            WXLogUtils.e("mqtt", "No HttpAdapter found,request failed.");
         }
     }
 
@@ -520,7 +570,7 @@ public class WXStreamModule extends WXModule {
         @Override
         public void onHttpStart() {
             if (mProgressCallback != null) {
-                mResponse.put("readyState", 1);//readyState: number 1 OPENED，开始连接；2 HEADERS_RECEIVED 3 LOADING
+                mResponse.put("readyState", 1);//readyState: number 1 OPENED 2 HEADERS_RECEIVED 3 LOADING
                 mResponse.put("length", 0);
                 mProgressCallback.invokeAndKeepAlive(mResponse);
             }
@@ -565,10 +615,6 @@ public class WXStreamModule extends WXModule {
             //compatible with old sendhttp
             if (mCallback != null) {
                 mCallback.onResponse(response, mRespHeaders);
-            }
-
-            if (WXEnvironment.isApkDebugable()) {
-                WXLogUtils.d("WXStreamModule", response != null && response.originalData != null ? new String(response.originalData) : "response data is NUll!");
             }
         }
     }

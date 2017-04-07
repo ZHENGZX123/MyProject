@@ -204,201 +204,114 @@
  */
 package com.taobao.weex.utils;
 
+import android.content.ContentValues;
 import android.content.Context;
-import android.text.TextUtils;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
+import java.util.ArrayList;
 
-public class WXFileUtils {
+public class WXDBHelper extends SQLiteOpenHelper {
+    public static final String DB_NAME = "sdk.db";
 
-    /**
-     * Load file in asset directory.
-     *
-     * @param path    FilePath
-     * @param context Weex Context
-     * @return the Content of the file
-     */
-    public static String loadAsset(String path, Context context) {
-        if (context == null || TextUtils.isEmpty(path)) {
-            return null;
-        }
-        InputStream inputStream = null;
-        BufferedReader bufferedReader = null;
-        try {
-            inputStream = context.getAssets().open(path);
-            StringBuilder builder = new StringBuilder(inputStream.available() + 10);
-            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            char[] data = new char[4096];
-            int len = -1;
-            while ((len = bufferedReader.read(data)) > 0) {
-                builder.append(data, 0, len);
-            }
+    private static final String TABLE_HTTPCACHE = "HTTPCache";
+    private static final String CREATE_TABLE_HTTPCACHE = " create table  IF NOT EXISTS "
+            + TABLE_HTTPCACHE
+            + "   (id integer primary key autoincrement,  request  text,  response  text ,  requesttime text ) ";
 
-            return builder.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            WXLogUtils.e("", e);
-        } finally {
-            try {
-                if (bufferedReader != null)
-                    bufferedReader.close();
-            } catch (IOException e) {
-                WXLogUtils.e("WXFileUtils loadAsset: ", e);
-            }
-            try {
-                if (inputStream != null)
-                    inputStream.close();
-            } catch (IOException e) {
-                WXLogUtils.e("WXFileUtils loadAsset: ", e);
-            }
-        }
 
-        return "";
+    private SQLiteDatabase db;
+
+    public WXDBHelper(Context c) {
+        super(c, DB_NAME, null, 1);
     }
 
-    public static String readSDCardFile(String path, Context context) {
-        if (path == null || context == null) {
-            return null;
-        }
-        StringBuilder builder;
-        try {
-            File f = new File(path);
-
-            InputStream in = new FileInputStream(f);
-
-            builder = new StringBuilder(in.available() + 10);
-
-            BufferedReader localBufferedReader = new BufferedReader(new InputStreamReader(in));
-            char[] data = new char[2048];
-            int len = -1;
-            while ((len = localBufferedReader.read(data)) > 0) {
-                builder.append(data, 0, len);
-            }
-            localBufferedReader.close();
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    WXLogUtils.e("WXFileUtils loadAsset: ", e.toString());
-                }
-            }
-            return builder.toString();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            WXLogUtils.e("", e.toString());
-        }
-
-        return "";
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        this.db = db;
+        db.execSQL(CREATE_TABLE_HTTPCACHE);
     }
 
-    public static String readFileInZip(String file) {
-        int index = file.indexOf("zip");
-        String zipPath = file.substring(0, index + 3);
-        System.out.println(zipPath);
-
-        String targetFile = file.replace(zipPath, "");
-        System.out.println(targetFile);
-
-        try {
-            ZipFile zf = new ZipFile(zipPath);
-            System.out.println(zf.size());
-            InputStream in = new BufferedInputStream(new FileInputStream(
-                    zipPath));
-            ZipInputStream zin = new ZipInputStream(in);
-
-            ZipEntry ze;
-            StringBuilder sb = new StringBuilder();
-            while ((ze = zin.getNextEntry()) != null) {
-                if (ze.isDirectory()) {
-                    System.out.println("directory = " + ze.getName());
-                } else {
-                    System.out.println("file = " + ze.getName());
-                    if (targetFile.contains(ze.getName())) {
-                        BufferedReader localBufferedReader = new BufferedReader(
-                                new InputStreamReader(zf.getInputStream(ze)));
-                        char[] data = new char[2048];
-                        int len = -1;
-                        while ((len = localBufferedReader.read(data)) > 0) {
-                            sb.append(data, 0, len);
-                        }
-                        break;
-                    }
-                }
-            }
-            zin.closeEntry();
-            System.out.println("sb = " + sb.toString());
-            return sb.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("e = " + e.toString());
-            return "";
-        }
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int arg1, int arg2) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_HTTPCACHE);
+        db.execSQL(CREATE_TABLE_HTTPCACHE);
     }
 
-    public static String findLoginJS(String path) {
-        File file = new File(path);
-        File[] lists = file.listFiles();
-        for (int i = 0; i < lists.length; i++) {
-            if (!lists[i].getName().endsWith("zip")) {
-                continue;
-            }
-            try {
-                ZipFile zf = new ZipFile(lists[i]);
-                InputStream in = new BufferedInputStream(new FileInputStream(
-                        lists[i]));
-                ZipInputStream zin = new ZipInputStream(in);
-                ZipEntry ze;
+    public ArrayList<HTTPCache> getAllHTTPCache() {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_HTTPCACHE, null, null, null, null, null, null);
+        ArrayList<HTTPCache> temp = new ArrayList<HTTPCache>();
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            String id = cur.getString(cur.getColumnIndex("id"));
+            String request = cur.getString(cur.getColumnIndex("request"));
+            String response = cur.getString(cur.getColumnIndex("response"));
+            String requesttime = cur.getString(cur.getColumnIndex("requesttime"));
 
-                while ((ze = zin.getNextEntry()) != null) {
-                    if (ze.isDirectory()) {
-                        System.out.println("directory = " + ze.getName());
-                    } else {
-                        System.out.println("file = " + ze.getName());
-                        if (ze.getName().contains("login.js")) {
-                            return lists[i].getAbsolutePath() + "/" + ze.getName();
-                        }
-                    }
-                }
-                zin.closeEntry();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "";
-            }
+            HTTPCache a = new HTTPCache();
+            a.id = id;
+            a.request = request;
+            a.response = response;
+            a.requesttime = requesttime;
+            temp.add(a);
         }
-        return "";
+        cur.close();
+        db.close();
+        return temp;
     }
 
-    public static boolean saveFile(String path, byte[] content, Context context) {
-        if (TextUtils.isEmpty(path) || content == null || context == null) {
-            return false;
+    public HTTPCache getHttpCacheByRequest(String request) {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_HTTPCACHE, null, "request=?", new String[]{request}, null, null, null);
+        HTTPCache a = null;
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            String id = cur.getString(cur.getColumnIndex("id"));
+            request = cur.getString(cur.getColumnIndex("request"));
+            String response = cur.getString(cur.getColumnIndex("response"));
+            String requesttime = cur.getString(cur.getColumnIndex("requesttime"));
+
+            a = new HTTPCache();
+            a.id = id;
+            a.request = request;
+            a.response = response;
+            a.requesttime = requesttime;
         }
-        FileOutputStream outStream = null;
-        try {
-            outStream = new FileOutputStream(path);
-            outStream.write(content);
-            return true;
-        } catch (Exception e) {
-            WXLogUtils.e("WXFileUtils saveFile: " + WXLogUtils.getStackTrace(e));
-        } finally {
-            if (outStream != null) {
-                try {
-                    outStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        cur.close();
+        db.close();
+        return a;
+    }
+
+    public void addHTTPCache(HTTPCache a) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id", a.id);
+        values.put("request", a.request);
+        values.put("response", a.response);
+        values.put("requesttime", a.requesttime);
+        db.insert(TABLE_HTTPCACHE, null, values);
+        db.close();
+    }
+
+    public void updateHTTPCache(HTTPCache tab) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("request", tab.request);
+        cv.put("response", tab.response);
+        cv.put("requesttime", tab.requesttime);
+
+        String[] args = {tab.id};
+        db.update(TABLE_HTTPCACHE, cv, "id=?", args);
+        db.close();
+    }
+
+    public void closeDB() {
+        if (db != null) {
+            db.close();
         }
-        return false;
     }
 }
