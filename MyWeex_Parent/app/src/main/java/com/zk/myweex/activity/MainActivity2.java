@@ -47,19 +47,26 @@ public class MainActivity2 extends TabActivity {
         ScreenManager.getScreenManager().pushActivity(this);
         main = this;
         Utils.checkNetWork(this);
-        getDataFromServer();
+
+        checkRemoteService();
+        checkZipVersion();
+
+        ArrayList<TabEntity> tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
+        Log.d("test", "main initView");
+        tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
+        initView(tabs);
     }
 
-    private void getDataFromServer() {
-        Log.d("test", "getDataFromServer");
+    private void checkRemoteService() {
         new Thread() {
             @Override
             public void run() {
+                List<Service> services = null;
                 try {
-                    List<Service> services = new Service().find(new KWQuery().like("id", "ParentTab%"));
+                    services = new Service().find(new KWQuery().like("id", "ParentTab%"));
+                    Log.d("test", "services count  = " + services.size());
                     for (Service s : services) {
-                        Log.d("test", "s = " + s.toString());
-                        //修改service的值
+                        Log.d("test", "service  = " + s.toString());
                         TabEntity tab = new TabEntity();
                         tab.idStr = s.get("id").toString();
                         tab.name = s.get("name").toString();
@@ -70,27 +77,11 @@ public class MainActivity2 extends TabActivity {
                         }
                         new MyDBHelper(getApplicationContext()).updateTabEntity(tab);
                     }
-
-                    checkZipVersion();
-
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.d("test", "no net ... ");
-                } finally {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ArrayList<TabEntity> tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
-                            Log.d("test", "main initView");
-                            initView(tabs);
-
-                        }
-                    });
                 }
             }
-        }.
-
-                start();
+        }.start();
     }
 
     private void checkZipVersion() {
