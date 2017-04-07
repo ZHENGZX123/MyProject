@@ -412,14 +412,13 @@ public class WXStreamModule extends WXModule {
                     invoke(callback, resp);
                 } else {
                     Log.d("stream", "use http");
+                    invoke(callback, resp);
                     if (url.contains("praise")) {
                         //check offline task db , if exsit , delete it
                         Log.d("stream", "delete offline task");
                         new WXDBHelper(mWXSDKInstance.getContext()).deleteOfflineTask(optionsStr);
-                        invoke(callback, resp);
                         return;
                     }
-                    invoke(callback, resp);
                     if (url.contains("sms")) {
                         return;
                     }
