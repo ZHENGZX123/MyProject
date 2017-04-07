@@ -138,10 +138,7 @@ public class VersionUpManager {
         File newFile = new File(WXApplication.PATH_TMP + zipName);
         boolean move2 = newFile.renameTo(new File(WXApplication.PATH + zipName));
         //3.保存版本号
-
-
         new MyDBHelper(context).updateZipPackageVersion(version, zipName);
-
     }
 
     private void comparePackage(String currentPackage, String newPackage) {

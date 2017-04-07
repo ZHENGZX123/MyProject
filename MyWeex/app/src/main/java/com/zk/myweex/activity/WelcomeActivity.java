@@ -109,17 +109,17 @@ public class WelcomeActivity extends WXBaseActivity {
             ZipPackage zip0 = new ZipPackage();
             zip0.name = "tab0.zip";
             zip0.indexPath = "yjpt/weex_jzd/main.js";
-            zip0.version = "1.0.0";
+            zip0.version = "2.0.0";
             zip0.patchs = "";
             ZipPackage zip1 = new ZipPackage();
             zip1.name = "tab1.zip";
             zip1.indexPath = "yjpt/weex_jzd/qzq.js";
-            zip1.version = "1.0.0";
+            zip1.version = "2.0.0";
             zip1.patchs = "";
             ZipPackage zip2 = new ZipPackage();
             zip2.name = "tab2.zip";
             zip2.indexPath = "yjpt/weex_jzd/wd.js";
-            zip2.version = "1.0.0";
+            zip2.version = "2.0.0";
             zip2.patchs = "";
 
             new MyDBHelper(getApplicationContext()).addZipPackage(zip0);
