@@ -18,6 +18,10 @@ import android.widget.Toast;
 
 import com.kiway.yjpt.Teacher.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.taobao.weex.WXSDKInstance;
+import com.taobao.weex.http.WXStreamModule;
+import com.taobao.weex.utils.OfflineTask;
+import com.taobao.weex.utils.WXDBHelper;
 import com.zk.myweex.entity.TabEntity;
 import com.zk.myweex.utils.MyDBHelper;
 import com.zk.myweex.utils.ScreenManager;
@@ -26,6 +30,7 @@ import com.zk.myweex.utils.VersionUpManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Service;
@@ -40,6 +45,7 @@ public class MainActivity2 extends TabActivity {
     private ArrayList<LinearLayout> lls = new ArrayList<>();
     public static MainActivity2 main;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,16 +53,23 @@ public class MainActivity2 extends TabActivity {
         ScreenManager.getScreenManager().pushActivity(this);
         main = this;
         Utils.checkNetWork(this);
-        getDataFromServer();
+
+        checkRemoteService();
+        checkZipVersion();
+
+        ArrayList<TabEntity> tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
+        Log.d("test", "main initView");
+        tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
+        initView(tabs);
     }
 
-    private void getDataFromServer() {
-        Log.d("test", "getDataFromServer");
+    private void checkRemoteService() {
         new Thread() {
             @Override
             public void run() {
+                List<Service> services = null;
                 try {
-                    List<Service> services = new Service().find(new KWQuery().like("id", "tab%"));
+                    services = new Service().find(new KWQuery().like("id", "tab%"));
                     Log.d("test", "services count  = " + services.size());
                     for (Service s : services) {
                         Log.d("test", "service  = " + s.toString());
@@ -70,20 +83,8 @@ public class MainActivity2 extends TabActivity {
                         }
                         new MyDBHelper(getApplicationContext()).updateTabEntity(tab);
                     }
-                    checkZipVersion();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.d("test", "no net ... ");
-                } finally {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ArrayList<TabEntity> tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
-                            Log.d("test", "main initView");
-                            tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
-                            initView(tabs);
-                        }
-                    });
                 }
             }
         }.start();
@@ -189,6 +190,22 @@ public class MainActivity2 extends TabActivity {
                 rl_nonet.setVisibility(View.VISIBLE);
             } else {
                 rl_nonet.setVisibility(View.GONE);
+
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        ArrayList<OfflineTask> tasks = new WXDBHelper(getApplicationContext()).getAllOfflineTask();
+                        int count = tasks.size();
+                        Log.d("stream", "tasks count = " + count);
+                        for (OfflineTask task : tasks) {
+                            Log.d("stream", "dotask = " + task.id);
+                            WXStreamModule stream = new WXStreamModule();
+                            stream.mWXSDKInstance = new WXSDKInstance(getApplicationContext());
+                            stream.fetch(task.request, null, null);
+                        }
+                    }
+                }.start();
             }
         }
     };
