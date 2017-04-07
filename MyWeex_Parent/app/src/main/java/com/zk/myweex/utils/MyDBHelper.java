@@ -65,6 +65,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             temp.add(a);
         }
         cur.close();
+        db.close();
         return temp;
     }
 
@@ -78,6 +79,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         values.put("image_default", a.image_default);
         values.put("image_selected", a.image_selected);
         db.insert(TABLE_TABENTITY, null, values);
+        db.close();
     }
 
     public ArrayList<ZipPackage> getAllZipPackages() {
@@ -98,6 +100,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             temp.add(a);
         }
         cur.close();
+        db.close();
         return temp;
     }
 
@@ -111,6 +114,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         values.put("version", a.version);
         values.put("patchs", a.patchs);
         db.insert(TABLE_ZIPPACKAGE, null, values);
+        db.close();
     }
 
 
@@ -131,6 +135,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         cv.put("version", version);
         String[] args = {zipName};
         db.update(TABLE_ZIPPACKAGE, cv, "name=?", args);
+        db.close();
     }
 
     public void updateTabEntity(TabEntity tab) {
@@ -143,6 +148,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         String[] args = {tab.idStr};
         db.update(TABLE_TABENTITY, cv, "idstr=?", args);
+        db.close();
     }
 
     public void closeDB() {
