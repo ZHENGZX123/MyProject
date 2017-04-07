@@ -220,6 +220,11 @@ public class WXDBHelper extends SQLiteOpenHelper {
             + TABLE_HTTPCACHE
             + "   (id integer primary key autoincrement,  request  text,  response  text ,  requesttime text ) ";
 
+    private static final String TABLE_OFFLINETASK = "OfflineTask";
+    private static final String CREATE_TABLE_OFFLINETASK = " create table  IF NOT EXISTS "
+            + TABLE_OFFLINETASK
+            + "   (id integer primary key autoincrement,  request  text,    requesttime text ) ";
+
 
     private SQLiteDatabase db;
 
@@ -231,12 +236,16 @@ public class WXDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         this.db = db;
         db.execSQL(CREATE_TABLE_HTTPCACHE);
+        db.execSQL(CREATE_TABLE_OFFLINETASK);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int arg1, int arg2) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_HTTPCACHE);
         db.execSQL(CREATE_TABLE_HTTPCACHE);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_OFFLINETASK);
+        db.execSQL(CREATE_TABLE_OFFLINETASK);
     }
 
     public ArrayList<HTTPCache> getAllHTTPCache() {
@@ -308,6 +317,78 @@ public class WXDBHelper extends SQLiteOpenHelper {
         db.update(TABLE_HTTPCACHE, cv, "id=?", args);
         db.close();
     }
+
+    public ArrayList<OfflineTask> getAllOfflineTask() {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_OFFLINETASK, null, null, null, null, null, null);
+        ArrayList<OfflineTask> temp = new ArrayList<OfflineTask>();
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            String id = cur.getString(cur.getColumnIndex("id"));
+            String request = cur.getString(cur.getColumnIndex("request"));
+            String requesttime = cur.getString(cur.getColumnIndex("requesttime"));
+
+            OfflineTask a = new OfflineTask();
+            a.id = id;
+            a.request = request;
+            a.requesttime = requesttime;
+            temp.add(a);
+        }
+        cur.close();
+        db.close();
+        return temp;
+    }
+
+    public OfflineTask getOfflineTaskByRequest(String request) {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_OFFLINETASK, null, "request=?", new String[]{request}, null, null, null);
+        OfflineTask a = null;
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            String id = cur.getString(cur.getColumnIndex("id"));
+            request = cur.getString(cur.getColumnIndex("request"));
+            String requesttime = cur.getString(cur.getColumnIndex("requesttime"));
+
+            a = new OfflineTask();
+            a.id = id;
+            a.request = request;
+            a.requesttime = requesttime;
+        }
+        cur.close();
+        db.close();
+        return a;
+    }
+
+    public void addOfflineTask(OfflineTask a) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id", a.id);
+        values.put("request", a.request);
+        values.put("requesttime", a.requesttime);
+        db.insert(TABLE_OFFLINETASK, null, values);
+        db.close();
+    }
+
+    public void deleteOfflineTask(String request) {
+        if (db == null)
+            db = getWritableDatabase();
+        db.delete(TABLE_OFFLINETASK, "request=?", new String[]{request});
+        db.close();
+    }
+
+    public void updateOfflineTask(OfflineTask tab) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("request", tab.request);
+        cv.put("requesttime", tab.requesttime);
+
+        String[] args = {tab.id};
+        db.update(TABLE_OFFLINETASK, cv, "id=?", args);
+        db.close();
+    }
+
 
     public void closeDB() {
         if (db != null) {
