@@ -376,7 +376,7 @@ public class WXStreamModule extends WXModule {
                 }
                 resp.put("headers", headers);
                 if (response == null || "-1".equals(response.statusCode)) {
-                    if (url.contains("praise")) {
+                    if (url.contains("praise") || url.contains("reply")) {
                         //1.invoke fake
                         Log.d("stream", "praise invoke fake , add task");
                         resp.put("ok", true);
@@ -413,9 +413,8 @@ public class WXStreamModule extends WXModule {
                 } else {
                     Log.d("stream", "use http");
                     invoke(callback, resp);
-                    if (url.contains("praise")) {
+                    if (url.contains("praise") || url.contains("reply")) {
                         //check offline task db , if exsit , delete it
-                        Log.d("stream", "delete offline task");
                         new WXDBHelper(mWXSDKInstance.getContext()).deleteOfflineTask(optionsStr);
                         return;
                     }
@@ -473,6 +472,7 @@ public class WXStreamModule extends WXModule {
     }
 
     private void saveCacheToDB(String optionsStr, String respData) {
+        Log.d("stream", "saveCacheToDB");
         HTTPCache a = new WXDBHelper(mWXSDKInstance.getContext()).getHttpCacheByRequest(optionsStr);
         // if existed , update
         if (a == null) {
@@ -482,6 +482,8 @@ public class WXStreamModule extends WXModule {
             a.requesttime = "" + System.currentTimeMillis();
             new WXDBHelper(mWXSDKInstance.getContext()).addHTTPCache(a);
         } else {
+            a.response = respData;
+            a.requesttime = "" + System.currentTimeMillis();
             new WXDBHelper(mWXSDKInstance.getContext()).updateHTTPCache(a);
         }
     }
