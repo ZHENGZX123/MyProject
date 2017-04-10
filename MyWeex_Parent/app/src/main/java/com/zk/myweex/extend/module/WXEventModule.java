@@ -159,7 +159,6 @@ public class WXEventModule extends WXModule {
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
             client.addHeader("Cookie", "JSESSIONID=" + jsessionid);
-
             RequestParams params = new RequestParams();
             params.put("classes", classes);
             params.put("content", content);
@@ -169,7 +168,6 @@ public class WXEventModule extends WXModule {
             }
             temp = temp.substring(0, temp.length() - 1);
             params.put("img_url", temp);
-
             client.post(mWXSDKInstance.getContext(), url, params, new TextHttpResponseHandler() {
 
                 public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
@@ -189,7 +187,6 @@ public class WXEventModule extends WXModule {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     @JSMethod()
@@ -209,7 +206,6 @@ public class WXEventModule extends WXModule {
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             Log.d("test", "images count = " + images.size());
             doUploadImage(images);
-
         } else if (requestCode == 999) {
             //扫描二维码返回
             if (data == null) {
@@ -278,32 +274,38 @@ public class WXEventModule extends WXModule {
         mWXSDKInstance.getContext().startActivity(i);
     }
 
+    private ArrayList<String> temps = new ArrayList<>();
 
     private void doUploadImage(final ArrayList<ImageItem> images) {
         new Thread() {
             @Override
             public void run() {
                 ImageItem ii = images.get(0);
+
+//                if (!NetworkUtil.isNetworkAvailable(mWXSDKInstance.getContext())) {
+//                    String temp = ii.path;
+//                    temps.add(temp);
+//                    HashMap map = new HashMap();
+//                    map.put("path", "file://" + ii.path);
+//                    map.put("imgUrl", "file://" + ii.path);
+//                    pickerCallback.invoke(map);
+//                    return;
+//                }
+
                 File file = new File(ii.path);
                 String ret = UploadUtil.uploadFile(file, url, "qzq", "JSESSIONID=" + jsessionid);
                 Log.d("test", "upload ret = " + ret);
-
                 if (ret == null) {
                     return;
                 }
                 if (!ret.contains("200")) {
                     return;
                 }
-
                 try {
                     String imgUrl = new JSONObject(ret).getJSONObject("data").getString("url");
-
-//                  callback(@{@"path":path,@"imgUrl":imgUrl});
-
                     HashMap map = new HashMap();
                     map.put("path", "file://" + ii.path);
                     map.put("imgUrl", imgUrl);
-
                     pickerCallback.invoke(map);
                 } catch (Exception e) {
                     e.printStackTrace();
