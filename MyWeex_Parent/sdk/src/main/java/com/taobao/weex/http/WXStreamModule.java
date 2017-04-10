@@ -220,6 +220,7 @@ import com.taobao.weex.common.WXModule;
 import com.taobao.weex.common.WXRequest;
 import com.taobao.weex.common.WXResponse;
 import com.taobao.weex.utils.HTTPCache;
+import com.taobao.weex.utils.OfflineTask;
 import com.taobao.weex.utils.WXDBHelper;
 import com.taobao.weex.utils.WXLogUtils;
 
@@ -337,74 +338,108 @@ public class WXStreamModule extends WXModule {
 
         final Options options = builder.createOptions();
 
-        Log.d("stream", "caches count = " + new WXDBHelper(mWXSDKInstance.getContext()).getAllHTTPCache().size());
-
         final String finalMethod = method;
         sendRequest(options, new ResponseCallback() {
             @Override
             public void onResponse(WXResponse response, Map<String, String> headers) {
-                if (callback != null) {
-                    int code = 0;
-                    String respData = "";
-                    Map<String, Object> resp = new HashMap<>();
-                    if (response == null || "-1".equals(response.statusCode)) {
-                        resp.put(STATUS, -1);
-                        resp.put(STATUS_TEXT, Status.ERR_CONNECT_FAILED);
+
+                int code = 0;
+                String respData = "";
+                Map<String, Object> resp = new HashMap<>();
+                if (response == null || "-1".equals(response.statusCode)) {
+                    resp.put(STATUS, -1);
+                    resp.put(STATUS_TEXT, Status.ERR_CONNECT_FAILED);
+                } else {
+                    code = Integer.parseInt(response.statusCode);
+                    Log.d("stream", "http code = " + code);
+                    resp.put(STATUS, code);
+                    resp.put("ok", (code >= 200 && code <= 299));
+                    if (response.originalData == null) {
+                        resp.put("data", null);
                     } else {
-                        code = Integer.parseInt(response.statusCode);
-                        Log.d("stream", "http code = " + code);
-                        resp.put(STATUS, code);
-                        resp.put("ok", (code >= 200 && code <= 299));
-                        if (response.originalData == null) {
-                            resp.put("data", null);
-                        } else {
-                            respData = readAsString(response.originalData, headers != null ? getHeader(headers, "Content-Type") : "");
-                            Log.d("stream", "headers = " + headers);
-                            Log.d("stream", "http data = " + respData);
+                        respData = readAsString(response.originalData, headers != null ? getHeader(headers, "Content-Type") : "");
+                        Log.d("stream", "headers = " + headers);
+                        Log.d("stream", "http data = " + respData);
 
-                            //save cookie
-                            saveCookie(headers);
-                            try {
-                                resp.put("data", parseData(respData, options.getType()));
-                            } catch (JSONException exception) {
-                                WXLogUtils.e("", exception);
-                                resp.put("ok", false);
-                                resp.put("data", "{'err':'Data parse failed!'}");
-                            }
+                        //save cookie
+                        saveCookie(headers);
+
+                        try {
+                            resp.put("data", parseData(respData, options.getType()));
+                        } catch (JSONException exception) {
+                            WXLogUtils.e("", exception);
+                            resp.put("ok", false);
+                            resp.put("data", "{'err':'Data parse failed!'}");
                         }
-                        resp.put(STATUS_TEXT, Status.getStatusText(response.statusCode));
                     }
-                    resp.put("headers", headers);
-
-                    if (response == null || "-1".equals(response.statusCode)) {
-                        String cache = getCacheFromDB(optionsStr);
-                        Log.d("stream", "use cache = " + cache);
-                        if (cache == null) {
-                            callback.invoke(resp);
-                            return;
-                        }
+                    resp.put(STATUS_TEXT, Status.getStatusText(response.statusCode));
+                }
+                resp.put("headers", headers);
+                if (response == null || "-1".equals(response.statusCode)) {
+                    if (url.contains("praise") || url.contains("reply")) {
+                        //1.invoke fake
+                        Log.d("stream", "praise invoke fake , add task");
                         resp.put("ok", true);
                         resp.put(STATUS, 200);
                         resp.put(STATUS_TEXT, "OK");
-                        resp.put("data", JSONObject.parse(cache));
-                        callback.invoke(resp);
-                    } else {
-                        Log.d("stream", "use http");
-                        callback.invoke(resp);
-                        if (url.contains("sms")) {
-                            return;
+                        resp.put("data", JSONObject.parse("{\"StatusCode\":\"200\"}"));
+                        invoke(callback, resp);
+                        //2.add offline task
+                        OfflineTask task = new WXDBHelper(mWXSDKInstance.getContext()).getOfflineTaskByRequest(optionsStr);
+                        if (task == null) {
+                            task = new OfflineTask();
+                            task.request = optionsStr;
+                            task.requesttime = "" + System.currentTimeMillis();
+                            new WXDBHelper(mWXSDKInstance.getContext()).addOfflineTask(task);
+                        } else {
+                            task.requesttime = "" + System.currentTimeMillis();
+                            new WXDBHelper(mWXSDKInstance.getContext()).updateOfflineTask(task);
                         }
-                        if (!method.equalsIgnoreCase("get")) {
-                            return;
-                        }
-                        if (code != 200) {
-                            return;
-                        }
-                        saveCacheToDB(optionsStr, respData);
+                        return;
                     }
+
+                    //其他的只能去缓存
+                    String cache = getCacheFromDB(optionsStr);
+                    Log.d("stream", "use cache = " + cache);
+                    if (cache == null) {
+                        invoke(callback, resp);
+                        return;
+                    }
+                    resp.put("ok", true);
+                    resp.put(STATUS, 200);
+                    resp.put(STATUS_TEXT, "OK");
+                    resp.put("data", JSONObject.parse(cache));
+                    invoke(callback, resp);
+                } else {
+                    Log.d("stream", "use http");
+                    invoke(callback, resp);
+                    if (url.contains("praise") || url.contains("reply")) {
+                        //check offline task db , if exsit , delete it
+                        new WXDBHelper(mWXSDKInstance.getContext()).deleteOfflineTask(optionsStr);
+                        return;
+                    }
+                    if (url.contains("sms")) {
+                        return;
+                    }
+                    if (!method.equalsIgnoreCase("get")) {
+                        return;
+                    }
+                    if (code != 200) {
+                        return;
+                    }
+                    saveCacheToDB(optionsStr, respData);
                 }
+
+
             }
         }, progressCallback);
+    }
+
+    private void invoke(JSCallback callback, Map<String, Object> resp) {
+        if (callback == null) {
+            return;
+        }
+        callback.invoke(resp);
     }
 
 
@@ -437,6 +472,7 @@ public class WXStreamModule extends WXModule {
     }
 
     private void saveCacheToDB(String optionsStr, String respData) {
+        Log.d("stream", "saveCacheToDB");
         HTTPCache a = new WXDBHelper(mWXSDKInstance.getContext()).getHttpCacheByRequest(optionsStr);
         // if existed , update
         if (a == null) {
@@ -446,6 +482,8 @@ public class WXStreamModule extends WXModule {
             a.requesttime = "" + System.currentTimeMillis();
             new WXDBHelper(mWXSDKInstance.getContext()).addHTTPCache(a);
         } else {
+            a.response = respData;
+            a.requesttime = "" + System.currentTimeMillis();
             new WXDBHelper(mWXSDKInstance.getContext()).updateHTTPCache(a);
         }
     }
