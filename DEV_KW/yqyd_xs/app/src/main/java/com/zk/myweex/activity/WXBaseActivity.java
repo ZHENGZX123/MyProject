@@ -232,7 +232,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import cn.kiway.Yjptj.R;
+import cn.kiway.yiqiyuedu.R;
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Package;
 import cn.kiway.baas.sdk.model.service.Service;

@@ -30,7 +30,7 @@ import com.zk.myweex.utils.VersionUpManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.kiway.Yjptj.R;
+import cn.kiway.yiqiyuedu.R;
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Service;
 
