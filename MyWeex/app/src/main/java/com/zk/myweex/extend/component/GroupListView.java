@@ -98,7 +98,6 @@ public class GroupListView extends WXComponent<ListView> {
                     Log.d("mqtt", "登录失败");
                 } else {
                     Log.d("mqtt", "登录成功");
-
                     try {
                         PushInterface pushInterface = MqttInstance.getInstance().getPushInterface();
                         if (pushInterface != null) {
@@ -160,6 +159,8 @@ public class GroupListView extends WXComponent<ListView> {
             public void run() {
                 //获取到数据之后，刷新列表
                 try {
+                    Global.getInstance().setUserId(SharedPreferencesUtil.getString(getContext(), Global.GL_UID));
+
                     RealmResults<MainList> list = MainListDao.getMainList();
                     if (list != null) {
                         adapter.setList(list);
@@ -171,7 +172,6 @@ public class GroupListView extends WXComponent<ListView> {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.d("mqtt", "e = " + e.toString());
                 }
             }
         });
@@ -197,12 +197,16 @@ public class GroupListView extends WXComponent<ListView> {
                 Global.getInstance().setUserId(map.get("uid").toString().replace(".0", ""));
                 Global.getInstance().setGender(map.get("gender").toString());
                 Global.getInstance().setNickName(map.get("nickname").toString());
+
                 SharedPreferencesUtil.save(getContext(), Global.GL_NICKNAME,// 保存用户名与密码
                         map.get("nickname").toString());
                 SharedPreferencesUtil.save(getContext(), Global.GL_LOGO,
                         map.get("logo").toString());
                 SharedPreferencesUtil.save(getContext(), Global.GL_GENDER,
                         map.get("gender").toString());
+                SharedPreferencesUtil.save(getContext(), Global.GL_UID,// 保存用户名与密码
+                        map.get("uid").toString());
+
             }
         } catch (Exception e) {
             e.printStackTrace();
