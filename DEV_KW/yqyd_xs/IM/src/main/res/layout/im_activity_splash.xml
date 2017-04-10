@@ -1,0 +1,86 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    >
+
+    <Button
+        android:id="@+id/bt1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="启动mqtt"
+        android:layout_centerHorizontal="true"
+        />
+    <Button
+        android:id="@+id/bt2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="获得mac地址"
+        android:layout_below="@+id/bt1"
+        android:layout_centerHorizontal="true"
+        />
+    <Button
+        android:id="@+id/bt3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="创建realm数据库"
+        android:layout_below="@+id/bt2"
+        android:layout_centerHorizontal="true"
+        />
+    <Button
+        android:id="@+id/bt4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查询realm数据库"
+        android:layout_below="@+id/bt3"
+        android:layout_centerHorizontal="true"
+        />
+    <Button
+        android:id="@+id/bt5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="跳到登录页"
+        android:layout_below="@+id/bt4"
+        android:layout_centerHorizontal="true"
+        />
+
+    <cn.kwim.mqttcilent.common.views.ProgressImageView
+        android:id="@+id/iv_chatcontent"
+        android:layout_width="100dip"
+        android:layout_height="120dip"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="@dimen/margin_chat_activity"
+        android:src="@mipmap/ic_launcher"
+        android:visibility="gone"
+       />
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:tabGravity="fill"
+        app:tabIndicatorHeight="0dp"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="#FF4081"
+        app:tabTextColor="#000"
+        android:visibility="gone">
+
+
+    </android.support.design.widget.TabLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        >
+
+
+    </android.support.v4.view.ViewPager>
+
+</RelativeLayout>
