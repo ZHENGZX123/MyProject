@@ -6,6 +6,7 @@ package com.zk.myweex.extend.component;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -53,6 +54,7 @@ public class GroupListView extends WXComponent<ListView> {
     protected ListView initComponentHostView(@NonNull Context context) {
         Log.d("mqtt", "ListView initComponentHostView");
         this.lv = new ListView(context);
+        this.lv.setBackgroundColor(Color.WHITE);
         this.lv.setFocusable(false);
         this.lv.setFocusableInTouchMode(false);
         this.adapter = new HomeSchoolAdapter(getContext());
