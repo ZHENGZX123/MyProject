@@ -179,8 +179,12 @@ public class SJEventModule extends WXModule {
                     return;
                 }
                 HashMap map = new HashMap();
-                map.put("path", "file://" + images.get(0).path);
-                pickerCallback.invoke(map);
+                try {
+                    map.put("path", new JSONObject(ret).getJSONObject("data").getString("url"));//"file://" + images.get(0).path
+                    pickerCallback.invoke(map);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }.start();
     }

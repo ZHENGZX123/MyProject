@@ -151,9 +151,6 @@ public class GroupListView extends WXComponent<ListView> {
 
     private void getGroupInfo(String groupList) {
         Log.d("mqtt", "groupList = " + groupList);
-        if (groupList == null || groupList.equals("")) {
-            return;
-        }
         MainListDao.saveGroupList(groupList, DaoType.SESSTIONTYPE.GROUP);
     }
 

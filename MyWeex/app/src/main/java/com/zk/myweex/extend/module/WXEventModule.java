@@ -300,13 +300,9 @@ public class WXEventModule extends WXModule {
                 }
                 try {
                     String imgUrl = new JSONObject(ret).getJSONObject("data").getString("url");
-
-//                  callback(@{@"path":path,@"imgUrl":imgUrl});
-
                     HashMap map = new HashMap();
                     map.put("path", "file://" + ii.path);
                     map.put("imgUrl", imgUrl);
-
                     pickerCallback.invoke(map);
                 } catch (Exception e) {
                     e.printStackTrace();
