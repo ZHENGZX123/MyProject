@@ -30,7 +30,6 @@ import com.zk.myweex.utils.VersionUpManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Service;
@@ -191,7 +190,6 @@ public class MainActivity2 extends TabActivity {
             } else {
                 rl_nonet.setVisibility(View.GONE);
 
-
                 new Thread() {
                     @Override
                     public void run() {
@@ -199,7 +197,7 @@ public class MainActivity2 extends TabActivity {
                         int count = tasks.size();
                         Log.d("stream", "tasks count = " + count);
                         for (OfflineTask task : tasks) {
-                            Log.d("stream", "dotask = " + task.id);
+                            Log.d("stream", "dotask , task.id = " + task.id);
                             WXStreamModule stream = new WXStreamModule();
                             stream.mWXSDKInstance = new WXSDKInstance(getApplicationContext());
                             stream.fetch(task.request, null, null);
