@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -20,7 +19,10 @@ import com.lzy.imagepicker.view.CropImageView;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
+import com.taobao.weex.utils.OfflineTask;
+import com.taobao.weex.utils.WXDBHelper;
 import com.zk.myweex.activity.MainActivity2;
+import com.zk.myweex.utils.NetworkUtil;
 import com.zk.myweex.utils.UploadUtil;
 
 import org.json.JSONException;
@@ -33,13 +35,12 @@ import java.util.HashMap;
 import yjpty.teaching.acitivity.HeizInfoActivity;
 import yjpty.teaching.acitivity.MipcaCaptureActivity;
 import yjpty.teaching.http.BaseHttpRequest;
-import yjpty.teaching.util.IConstant;
 
 
 public class WXEventModule extends WXModule {
 
-    private static final String WEEX_CATEGORY = "com.kiway.android.intent.category.WEEX.teacher";
-    private static final String WEEX_ACTION = "com.kiway.android.intent.action.WEEX.teacher";
+    private static final String WEEX_CATEGORY = "com.kiway.android.intent.category.WEEX.parent";
+    private static final String WEEX_ACTION = "com.kiway.android.intent.action.WEEX.parent";
 
 
     @JSMethod(uiThread = true)
@@ -119,11 +120,7 @@ public class WXEventModule extends WXModule {
     public void QRScan(String classId, JSCallback callback) {
         Log.d("test", "QRScan classid = " + classId);
         this.scanCallback = callback;
-        Intent intent = new Intent(mWXSDKInstance.getContext(), MipcaCaptureActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt(IConstant.BUNDLE_PARAMS, 3);
-        intent.putExtras(bundle);
-        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(intent, 999);
+        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), MipcaCaptureActivity.class), 999);
     }
 
     @JSMethod(uiThread = true)
@@ -150,6 +147,7 @@ public class WXEventModule extends WXModule {
     @JSMethod()
     public void Publish(String str, final JSCallback callback) {
         Log.d("test", "publish str = " + str);
+
         try {
             JSONObject obj = new JSONObject(str);
             String url = obj.getString("url");
@@ -162,20 +160,29 @@ public class WXEventModule extends WXModule {
             }
             String classes = obj.getString("classes");
 
+            if (!NetworkUtil.isNetworkAvailable(mWXSDKInstance.getContext())) {
+                OfflineTask task = new OfflineTask();
+                task.request = str;
+                task.requesttime = System.currentTimeMillis() + "";
+                new WXDBHelper(mWXSDKInstance.getContext()).addOfflineTask(task);
+                toast("您当前没有网络，已为您添加到离线任务，下次有网络的时候自动发表到亲子圈");
+                mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
+                MainActivity2.main.setCurrentTab(1);
+                return;
+            }
+
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
             client.addHeader("Cookie", "JSESSIONID=" + jsessionid);
-
             RequestParams params = new RequestParams();
             params.put("classes", classes);
             params.put("content", content);
             String temp = "";
             for (int i = 0; i < img_url.length(); i++) {
-                temp = img_url.get(i).toString() + "#";
+                temp += img_url.get(i).toString() + "#";
             }
             temp = temp.substring(0, temp.length() - 1);
             params.put("img_url", temp);
-
             client.post(mWXSDKInstance.getContext(), url, params, new TextHttpResponseHandler() {
 
                 public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
@@ -195,7 +202,6 @@ public class WXEventModule extends WXModule {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     @JSMethod()
@@ -215,7 +221,6 @@ public class WXEventModule extends WXModule {
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             Log.d("test", "images count = " + images.size());
             doUploadImage(images);
-
         } else if (requestCode == 999) {
             //扫描二维码返回
             if (data == null) {
@@ -250,28 +255,29 @@ public class WXEventModule extends WXModule {
             if (data == null) {
                 return;
             }
-            String result = data.getStringExtra("result");
-            Toast.makeText(mWXSDKInstance.getContext(), "扫描到的是" + result, Toast.LENGTH_SHORT).show();
-            Log.d("test", "result = " + result);
-            //扫描二维码，扫描后的数据返回给js
-            //http://192.168.8.206:8180/yjpt/?&ref=class&classid=57&schoolId=129&classname=
-            String[] splits = result.split("&");
-            if (splits.length < 5) {
-                return;
+            try {
+                String result = data.getStringExtra("result");
+                Toast.makeText(mWXSDKInstance.getContext(), "扫描到的是" + result, Toast.LENGTH_SHORT).show();
+                Log.d("test", "result = " + result);
+                //扫描二维码，扫描后的数据返回给js
+                //http://192.168.8.206:8180/yjpt/?&ref=class&classid=57&schoolId=129&classname=
+                String[] splits = result.split("&");
+                if (splits.length < 5) {
+                    return;
+                }
+                String classId = splits[2].split("=")[1];
+                String schoolId = splits[3].split("=")[1];
+                String classname = splits[4].split("=")[1];
+                HashMap map = new HashMap();
+                map.put("result", "1");
+                map.put("classId", classId);
+                map.put("schoolId", schoolId);
+                map.put("className", classname);
+                this.scanCallback.invoke(map);
+                //this.scanCallback callback(@{@"result":`result,@"classId":classId,@"schoolId":schoolId,@"className":className}
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            String classId = splits[2].split("=")[1];
-            String schoolId = splits[3].split("=")[1];
-            String classname = splits[4].split("=")[1];
-            HashMap map = new HashMap();
-            map.put("result", "1");
-            map.put("classId", classId);
-            map.put("schoolId", schoolId);
-            map.put("className", classname);
-            this.scanCallback.invoke(map);
-
-            Log.d("test", "classId = " + classId);
-            Log.d("test", "schoolId = " + schoolId);
-            //this.scanCallback callback(@{@"result":`result,@"classId":classId,@"schoolId":schoolId,@"classname":className}
         }
     }
 
@@ -289,6 +295,15 @@ public class WXEventModule extends WXModule {
             @Override
             public void run() {
                 ImageItem ii = images.get(0);
+
+                if (!NetworkUtil.isNetworkAvailable(mWXSDKInstance.getContext())) {
+                    HashMap map = new HashMap();
+                    map.put("path", "file://" + ii.path);
+                    map.put("imgUrl", "file://" + ii.path);
+                    pickerCallback.invoke(map);
+                    return;
+                }
+
                 File file = new File(ii.path);
                 String ret = UploadUtil.uploadFile(file, url, "qzq", "JSESSIONID=" + jsessionid);
                 Log.d("test", "upload ret = " + ret);

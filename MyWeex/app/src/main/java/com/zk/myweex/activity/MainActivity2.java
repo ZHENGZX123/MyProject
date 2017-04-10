@@ -17,6 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kiway.yjpt.Teacher.R;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.http.WXStreamModule;
@@ -25,9 +28,14 @@ import com.taobao.weex.utils.WXDBHelper;
 import com.zk.myweex.entity.TabEntity;
 import com.zk.myweex.utils.MyDBHelper;
 import com.zk.myweex.utils.ScreenManager;
+import com.zk.myweex.utils.UploadUtil;
 import com.zk.myweex.utils.Utils;
 import com.zk.myweex.utils.VersionUpManager;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -198,15 +206,87 @@ public class MainActivity2 extends TabActivity {
                         Log.d("stream", "tasks count = " + count);
                         for (OfflineTask task : tasks) {
                             Log.d("stream", "dotask , task.id = " + task.id);
-                            WXStreamModule stream = new WXStreamModule();
-                            stream.mWXSDKInstance = new WXSDKInstance(getApplicationContext());
-                            stream.fetch(task.request, null, null);
+                            if (task.request.contains("classes")) {
+                                doQzqTask(task);
+                            } else {
+                                WXStreamModule stream = new WXStreamModule();
+                                stream.mWXSDKInstance = new WXSDKInstance(getApplicationContext());
+                                stream.fetch(task.request, null, null);
+                            }
                         }
                     }
                 }.start();
             }
         }
     };
+
+    private void doQzqTask(final OfflineTask task) {
+        Log.d("stream", "doQzqTask = " + task.request);
+        //1.上传图片
+        //2.成功后保存成数组，替换原数组
+        //3.调用提交接口
+        try {
+            JSONObject obj = new JSONObject(task.request);
+            String url = obj.getString("url");
+            String jsessionid = obj.getString("jsessionid");
+            String content = obj.getString("content");
+            JSONArray img_url = obj.getJSONArray("img_url");
+            String classes = obj.getString("classes");
+            Log.d("stream", "before upload img_url = " + img_url.toString());
+            int count = img_url.length();
+            for (int i = 0; i < count; i++) {
+                String filepagh = img_url.getString(i);
+                File file = new File(filepagh.replace("file://", ""));
+                String ret = UploadUtil.uploadFile(file, "http://www.yuertong.com/yjpts/course/file", "qzq", "JSESSIONID=" + jsessionid);
+                Log.d("stream", "upload ret = " + ret);
+                if (ret != null && ret.contains("200")) {
+                    String imgUrl = new JSONObject(ret).getJSONObject("data").getString("url");
+                    img_url.put(i, imgUrl);
+                }
+            }
+            Log.d("stream", "after upload img_url = " + img_url.toString());
+            //3.检查有没有上传失败的，只要有一个失败，就不用管了。。。
+            boolean success = true;
+            for (int i = 0; i < count; i++) {
+                String filepagh = img_url.getString(i);
+                if (filepagh.startsWith("file")) {
+                    success = false;
+                }
+            }
+            Log.d("stream", "success = " + success);
+            if (!success) {
+                return;
+            }
+            //call publish
+            SyncHttpClient client = new SyncHttpClient();
+            client.setTimeout(10000);
+            client.addHeader("Cookie", "JSESSIONID=" + jsessionid);
+            RequestParams params = new RequestParams();
+            params.put("classes", classes);
+            params.put("content", content);
+            String temp = "";
+            for (int i = 0; i < img_url.length(); i++) {
+                temp += img_url.get(i).toString() + "#";
+            }
+            temp = temp.substring(0, temp.length() - 1);
+            params.put("img_url", temp);
+            client.post(getApplicationContext(), url, params, new TextHttpResponseHandler() {
+
+                public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
+                    Log.d("stream", "onFailure = " + responseString);
+                }
+
+                public void onSuccess(int statusCode, org.apache.http.Header[] headers, final String responseString) {
+                    Log.d("stream", "onSuccess = " + responseString);
+                    if (responseString != null && responseString.contains("200")) {
+                        new WXDBHelper(getApplicationContext()).deleteOfflineTask(task.request);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void clickNetwork(View view) {
         startActivity(new Intent(this, NoNetActivity.class));
