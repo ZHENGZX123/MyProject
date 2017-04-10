@@ -2,7 +2,7 @@ package com.zk.myweex.activity;
 
 import android.os.Bundle;
 
-import cn.kiway.Yjptj.R;
+import cn.kiway.yiqiyuedu.R;
 
 
 public class NoNetActivity extends WXBaseActivity {

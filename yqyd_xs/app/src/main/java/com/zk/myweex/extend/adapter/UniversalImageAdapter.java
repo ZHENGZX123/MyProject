@@ -226,7 +226,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import cn.kiway.Yjptj.R;
+import cn.kiway.yiqiyuedu.R;
 
 /**
  * Created by Administrator on 2017/2/22.
