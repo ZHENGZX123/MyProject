@@ -376,7 +376,7 @@ public class WXStreamModule extends WXModule {
                 }
                 resp.put("headers", headers);
                 if (response == null || "-1".equals(response.statusCode)) {
-                    if (url.contains("praise") || url.contains("reply")) {
+                    if (url.contains("praise") || url.contains("reply") || (url.contains("moments") && method.equalsIgnoreCase("delete"))) {
                         //1.invoke fake
                         Log.d("stream", "praise invoke fake , add task");
                         resp.put("ok", true);
@@ -413,7 +413,7 @@ public class WXStreamModule extends WXModule {
                 } else {
                     Log.d("stream", "use http");
                     invoke(callback, resp);
-                    if (url.contains("praise") || url.contains("reply")) {
+                    if (url.contains("praise") || url.contains("reply") || (url.contains("moments") && method.equalsIgnoreCase("delete"))) {
                         //check offline task db , if exsit , delete it
                         new WXDBHelper(mWXSDKInstance.getContext()).deleteOfflineTask(optionsStr);
                         return;
