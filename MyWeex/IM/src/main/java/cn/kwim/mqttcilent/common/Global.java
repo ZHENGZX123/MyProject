@@ -9,6 +9,9 @@ public class Global {
     public static final String GL_NICKNAME = "gl_nickname";
     public static final String GL_LOGO = "gl_logo";
     public static final String GL_GENDER = "gl_gender";
+    public static final String GL_UID = "gl_uid";
+
+
     public static Global instance;
     //当前用户信息
     private String userName;
