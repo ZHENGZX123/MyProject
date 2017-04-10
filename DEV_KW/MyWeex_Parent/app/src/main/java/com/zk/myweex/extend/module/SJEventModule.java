@@ -175,9 +175,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
             }
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             Log.d("test", "images count = " + images.size());
-            HashMap map = new HashMap();
-            map.put("path", "file://" + images.get(0).path);
-            pickerCallback.invoke(map);
+
             doUploadImage(images);
         }
     }
@@ -191,6 +189,15 @@ public class SJEventModule extends WXModule implements HttpHandler {
                 File file = new File(ii.path);
                 String ret = UploadUtil.uploadFile(file, url, "icon", "JSESSIONID=" + jsessionid);
                 Log.d("test", "upload ret = " + ret);
+                if (ret == null) {
+                    return;
+                }
+                if (!ret.contains("200")) {
+                    return;
+                }
+                HashMap map = new HashMap();
+                map.put("path", "file://" + images.get(0).path);
+                pickerCallback.invoke(map);
             }
         }.start();
     }

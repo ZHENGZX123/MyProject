@@ -17,6 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.taobao.weex.WXSDKInstance;
+import com.taobao.weex.http.WXStreamModule;
+import com.taobao.weex.utils.OfflineTask;
+import com.taobao.weex.utils.WXDBHelper;
 import com.zk.myweex.entity.TabEntity;
 import com.zk.myweex.utils.MyDBHelper;
 import com.zk.myweex.utils.ScreenManager;
@@ -182,6 +186,21 @@ public class MainActivity2 extends TabActivity {
                 rl_nonet.setVisibility(View.VISIBLE);
             } else {
                 rl_nonet.setVisibility(View.GONE);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        ArrayList<OfflineTask> tasks = new WXDBHelper(getApplicationContext()).getAllOfflineTask();
+                        int count = tasks.size();
+                        Log.d("stream", "tasks count = " + count);
+                        for (OfflineTask task : tasks) {
+                            Log.d("stream", "dotask , task.id = " + task.id);
+                            WXStreamModule stream = new WXStreamModule();
+                            stream.mWXSDKInstance = new WXSDKInstance(getApplicationContext());
+                            stream.fetch(task.request, null, null);
+                        }
+                    }
+                }.start();
             }
         }
     };
