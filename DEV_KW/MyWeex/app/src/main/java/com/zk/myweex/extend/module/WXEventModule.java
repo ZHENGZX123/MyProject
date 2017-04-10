@@ -252,7 +252,7 @@ public class WXEventModule extends WXModule {
             }
             String result = data.getStringExtra("result");
             Toast.makeText(mWXSDKInstance.getContext(), "扫描到的是" + result, Toast.LENGTH_SHORT).show();
-            Log.d("test", "result = "+result);
+            Log.d("test", "result = " + result);
             //扫描二维码，扫描后的数据返回给js
             //http://192.168.8.206:8180/yjpt/?&ref=class&classid=57&schoolId=129&classname=
             String[] splits = result.split("&");
@@ -292,14 +292,12 @@ public class WXEventModule extends WXModule {
                 File file = new File(ii.path);
                 String ret = UploadUtil.uploadFile(file, url, "qzq", "JSESSIONID=" + jsessionid);
                 Log.d("test", "upload ret = " + ret);
-
                 if (ret == null) {
                     return;
                 }
                 if (!ret.contains("200")) {
                     return;
                 }
-
                 try {
                     String imgUrl = new JSONObject(ret).getJSONObject("data").getString("url");
 
