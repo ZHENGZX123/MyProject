@@ -1,10 +1,10 @@
 package com.zk.webviewdemo;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,7 +25,7 @@ import net.lingala.zip4j.exception.ZipException;
 
 import java.io.File;
 
-public class WebViewActivity extends AppCompatActivity {
+public class WebViewActivity extends Activity {
 
     private EditText et;
     private Button go;
@@ -34,13 +34,13 @@ public class WebViewActivity extends AppCompatActivity {
     private TextView title;
     private ProgressBar pb;
     private ProgressDialog pd;
+    private boolean first = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
 
-        getSupportActionBar().hide();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         et = (EditText) findViewById(R.id.et);
@@ -60,9 +60,10 @@ public class WebViewActivity extends AppCompatActivity {
         settings.setUseWideViewPort(true);
         wv.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 
-        String url = getSharedPreferences("webview", 0).getString("url", "http://192.168.8.6:8280/weex/yqyd_xs.zip/yqyd/index/index.html");
+        String url = getSharedPreferences("webview", 0).getString("url", "http://202.104.136.9:8280/weex/yqyd_xs.zip/yqyd/index/index.html");
         et.setText(url);
-//        clickGo(null);
+
+        clickGo(null);
 
         //覆盖WebView默认使用第三方或系统默认浏览器打开网页的行为，使网页用WebView打开
         wv.setWebViewClient(new WebViewClient() {
@@ -146,42 +147,48 @@ public class WebViewActivity extends AppCompatActivity {
                 final String fileName = new File(zipUrl).getName();
                 final String route = url.replace(zipUrl, "");
                 final String filePath = root + fileName;
+
                 if (new File(filePath).exists()) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(WebViewActivity.this);
-                            builder.setMessage("包已存在，是否替换旧的包？");
-                            builder.setTitle("提示");
-                            builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    new Thread() {
-                                        @Override
-                                        public void run() {
-                                            new File(filePath).delete();
-                                            FileUtils.delFolder(filePath.replace(".zip", ""));
-                                            try {
-                                                doDownload(zipUrl, root, fileName, filePath, route);
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                                dismissPD();
+                    if (first) {
+                        first = false;
+                        load(filePath, route);
+                    } else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(WebViewActivity.this);
+                                builder.setMessage("包已存在，是否替换旧的包？");
+                                builder.setTitle("提示");
+                                builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        new Thread() {
+                                            @Override
+                                            public void run() {
+                                                new File(filePath).delete();
+                                                FileUtils.delFolder(filePath.replace(".zip", ""));
+                                                try {
+                                                    doDownload(zipUrl, root, fileName, filePath, route);
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                    dismissPD();
+                                                }
                                             }
-                                        }
-                                    }.start();
-                                }
-                            });
-                            builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    load(filePath, route);
-                                }
-                            });
-                            builder.create().show();
-                        }
-                    });
+                                        }.start();
+                                    }
+                                });
+                                builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        load(filePath, route);
+                                    }
+                                });
+                                builder.create().show();
+                            }
+                        });
+                    }
                 } else {
                     try {
                         doDownload(zipUrl, root, fileName, filePath, route);
