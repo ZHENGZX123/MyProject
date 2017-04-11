@@ -3,25 +3,23 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
     android:background="#ebebeb"
-    >
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/timestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#ffffff"
-        android:padding="3dip"
-        android:background="@drawable/im_time_backround"
         android:layout_gravity="center"
-        android:textSize="@dimen/_13sp"/>
+        android:background="@drawable/im_time_backround"
+        android:padding="3dip"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/_13sp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/iv_userhead"
@@ -29,20 +27,18 @@
             android:layout_height="@dimen/size_avatar"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            fresco:roundAsCircle="true"
             android:layout_marginRight="@dimen/margin_chat_activity"
             android:layout_marginTop="@dimen/_15dp"
             fresco:placeholderImage="@drawable/yjpty_baba"
-            />
+            fresco:roundAsCircle="true" />
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/iv_userhead"
             android:layout_marginRight="8dp"
-            android:text="heheheh"
-            />
+            android:layout_toLeftOf="@+id/iv_userhead"
+            android:text="heheheh" />
 
         <LinearLayout
             android:id="@+id/ll_chatcontent"
@@ -51,25 +47,22 @@
             android:layout_below="@+id/name"
             android:layout_toLeftOf="@id/iv_userhead"
 
-            android:background="@drawable/im_chatto_bg_pressed"
-            >
+            android:background="@drawable/im_chatto_bg_pressed">
 
             <TextView
                 android:id="@+id/tv_chatcontent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:maxWidth="225dp"
+                android:drawableTop="@drawable/im_homeworks"
                 android:focusable="true"
                 android:gravity="left|center"
-                android:drawableTop="@drawable/im_homeworks"
+                android:maxWidth="225dp"
                 android:textColor="#ff000000"
-                android:textSize="15sp"
-                />
+                android:textSize="15sp" />
 
 
         </LinearLayout>
-
 
 
         <ImageView
@@ -122,8 +115,7 @@
             android:text="!"
             android:textColor="@android:color/white"
             android:textSize="15sp"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
     </RelativeLayout>
 

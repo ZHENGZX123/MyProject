@@ -26,8 +26,10 @@ public class MainListDao extends Dao {
      * @param json 服务端传入json数据
      */
     public static void saveGroupList(String json, String sendType) {
+        if (json == null || json.equals("")) {
+            return;
+        }
         Realm realm = getRealm();
-        Log.d("test", "grouplist = " + json);
         realm.beginTransaction();
         Converse converse = new Gson().fromJson(json, Converse.class);
         if (converse == null) {
@@ -60,7 +62,6 @@ public class MainListDao extends Dao {
         }
         realm.commitTransaction();
         realm.close();
-
     }
 
     /**

@@ -8,7 +8,7 @@ public interface DaoType {
     /**
      * 聊天数据是否是登陆用户自己发送
      */
-    interface ISMY{
+    interface ISMY {
         String ISMY = "isMy";
         String UN_ISMY = "un_ismy";
     }
@@ -16,7 +16,7 @@ public interface DaoType {
     /**
      * 聊天数据类型
      */
-    interface TYPY{
+    interface TYPY {
         String TEXT = "text";     //普通信息
         String PUSH = "push";//推送通知
         String FILE = "file";//文件信息
@@ -38,27 +38,30 @@ public interface DaoType {
     /**
      * 音频，视频等是否播放
      */
-    interface ISPLAY{
+    interface ISPLAY {
         String ISPLAY = "isPaly"; //播放
         String UNPLAY = "unPaly"; //未播放
-        String NOPLAY ="noPaly"; //非此类消息
+        String NOPLAY = "noPaly"; //非此类消息
     }
 
     /**
      * 是否已读
      */
-    interface READ{
+    interface READ {
         String ISREAD = "isread"; //已读
         String UNREAD = "unread"; //未读
     }
-    interface ISSENDOK{
-        String OK = "ok";
-        String NO = "no";
+
+    //是否发送成功
+    interface STATUS {
+        String SENDING = "sending";//发送中
+        String SUCCESS = "ok";//发送成功
+        String FAILURE = "no";//发送失败
     }
 
-    interface SESSTIONTYPE{
+    interface SESSTIONTYPE {
         //个人
-        String PERSON ="1";
+        String PERSON = "1";
         //群
         String GROUP = "2";
         //应用号

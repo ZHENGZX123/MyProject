@@ -10,7 +10,7 @@ import io.realm.annotations.Required;
  * 处理用户消息数据表
  */
 @RealmClass
-public class Message extends RealmObject{
+public class Message extends RealmObject {
     @PrimaryKey
     private String meassgeId;    //消息ID
 
