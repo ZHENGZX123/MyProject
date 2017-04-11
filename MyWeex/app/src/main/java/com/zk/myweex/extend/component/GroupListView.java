@@ -21,11 +21,8 @@ import com.zk.myweex.utils.ScreenUtil;
 import cn.kiway.utils.SharedPreferencesUtil;
 import cn.kwim.mqttcilent.app_ui.fragment.HomeSchoolAdapter;
 import cn.kwim.mqttcilent.common.Global;
-import cn.kwim.mqttcilent.common.cache.dao.DaoType;
 import cn.kwim.mqttcilent.common.cache.dao.MainListDao;
-import cn.kwim.mqttcilent.common.cache.dao.MessageDao;
 import cn.kwim.mqttcilent.common.cache.javabean.MainList;
-import cn.kwim.mqttcilent.common.cache.javabean.Message;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
@@ -49,6 +46,7 @@ public class GroupListView extends WXComponent<ListView> {
         this.lv.setFocusableInTouchMode(false);
         this.adapter = new HomeSchoolAdapter(getContext());
         this.lv.setAdapter(this.adapter);
+
         addListener();
         initData();
         return this.lv;
@@ -68,21 +66,6 @@ public class GroupListView extends WXComponent<ListView> {
 
     private void initData() {
         refreshUI();
-
-        RealmResults<MainList> s = MainListDao.getMainList();
-        if (s != null) {
-            for (int i = 0; i < s.size(); i++) {
-                MainList groupList = s.get(i);
-                String groupid = groupList.getId();
-                String key = groupList.getKey();
-                int sum = MessageDao.unreadCount(groupid, DaoType.SESSTIONTYPE.GROUP);
-                Message message = MessageDao.getLastContent(groupid, DaoType.SESSTIONTYPE.GROUP);
-                if (message != null) {
-                    MainListDao.updateGroupListChat(sum + "", key, message.getMsg(), message.getMessageType(), message
-                            .getSendName());
-                }
-            }
-        }
     }
 
     private void refreshUI() {
