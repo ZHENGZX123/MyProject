@@ -1,8 +1,10 @@
 package cn.kwim.mqttcilent.app_ui.home_school;
 
 import android.app.Activity;
+import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -15,28 +17,38 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.text.style.ImageSpan;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -52,7 +64,9 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cn.kiway.IConstant;
 import cn.kiway.Yjpty.R;
+import cn.kiway.utils.SharedPreferencesUtil;
 import cn.kiway.utils.ViewUtil;
 import cn.kwim.mqttcilent.BaseActivity;
 import cn.kwim.mqttcilent.app_ui.dailog.CreateGroudDialog;
@@ -66,15 +80,20 @@ import cn.kwim.mqttcilent.common.cache.dao.MessageDao;
 import cn.kwim.mqttcilent.common.cache.javabean.Converse;
 import cn.kwim.mqttcilent.common.cache.javabean.GroupContent;
 import cn.kwim.mqttcilent.common.cache.javabean.Message;
-import cn.kwim.mqttcilent.common.utils.L;
+import cn.kwim.mqttcilent.common.http.OkhttpUtils;
+import cn.kwim.mqttcilent.common.http.PercentListener;
+import cn.kwim.mqttcilent.common.utils.DateUtil;
 import cn.kwim.mqttcilent.common.utils.Utils;
 import cn.kwim.mqttcilent.common.views.DropdownListView;
 import cn.kwim.mqttcilent.common.views.MyEditText;
+import cn.kwim.mqttcilent.common.views.ProgressImageView;
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
 import cn.kwim.mqttcilent.mqttclient.mq.PushInterface;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
+
+import static cn.kiway.Yjpty.R.id.resend;
 
 /**
  * 聊天chat
@@ -133,7 +152,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
     private String chatType;
     private LinearLayout rl_bottom;
     private TextView title1;
-    CreateGroudDialog createGroudDialog;
+    private CreateGroudDialog createGroudDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -302,11 +321,10 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
             String uuid = UUID.randomUUID().toString();
             MessageDao.saveSendMessage(uuid, DaoType.TYPY.TEXT, content.getText().toString(), Global.getInstance
                             ().getNickName(),
-                    "2", groupId, System.currentTimeMillis() + "", DaoType.ISSENDOK.OK);
-            saveMessage(contents, uuid, DaoType.TYPY.TEXT);
+                    "2", groupId, System.currentTimeMillis() + "", DaoType.STATUS.SENDING);
+            sendTextMessage(contents, uuid, DaoType.TYPY.TEXT);
             content.setText("");
             setSkipLastItem();
-
         } else if (i1 == R.id.btn_more) {
             ll_emoticon.setVisibility(View.GONE);
             ll_btn_top_container.setVisibility(View.GONE);
@@ -320,7 +338,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
 
             }
             Utils.hideSoftInput(ChatActivity.this);
-
         } else if (i1 == R.id.iv_emoticons_normal) {
             ll_btn_container.setVisibility(View.GONE);
             ll_btn_container1.setVisibility(View.GONE);
@@ -331,7 +348,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                 ll_emoticon.setVisibility(View.GONE);
             }
             Utils.hideSoftInput(ChatActivity.this);
-
         } else if (i1 == R.id.iv_back) {
             if (update == false) {
                 update = true;
@@ -351,29 +367,22 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                 finish();
                 overridePendingTransition(R.anim.im_slide_in_from_left, R.anim.im_slide_out_to_right);
             }
-
         } else if (i1 == R.id.ll_tv_pic) {
             Intent intentPic = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             //选择图片格式
             //intentPic.setType("image/*");
             //intentPic.putExtra("return-data", true);
-
             startActivityForResult(intentPic, CHOOSE_PHOTO);
-
         } else if (i1 == R.id.ll_tv_homework) {
             createGroudDialog.setTitle("发布作业", R.id.ll_tv_homework);
             createGroudDialog.show();
-
         } else if (i1 == R.id.ll_tv_photo) {
             Intent intentPhoto = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);//实例化Intent对象,
             // 使用MediaStore的ACTION_IMAGE_CAPTURE常量调用系统相机
             startActivityForResult(intentPhoto, TAKE_PHOTO);//开启相机，传入上面的Intent对象
-
-
         } else if (i1 == R.id.ll_tv_notification) {
             createGroudDialog.setTitle("发布通知", R.id.ll_tv_notification);
             createGroudDialog.show();
-
         } else if (i1 == R.id.ll_top_homework) {
             adapter.setLst(MessageDao.getFLData(groupId, chatType, DaoType.TYPY.HOMEWORK));
             update = false;
@@ -383,9 +392,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
         } else if (i1 == R.id.ll_top_pic) {
             adapter.setLst(MessageDao.getFLData(groupId, chatType, DaoType.TYPY.IMAGE));
             update = false;
-        } else {
         }
-
     }
 
 
@@ -395,18 +402,14 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
             switch (requestCode) {
                 case CHOOSE_PHOTO:
                     Uri uri = data.getData();
-//                    L.i("图片124564513", data.getType());
-                    // System.out.print("图片);
                     ContentResolver cr = this.getContentResolver();
                     Cursor cursor = cr.query(uri, null, null, null, null);
                     cursor.moveToFirst();
                     MessageDao.saveSendMessage(UUID.randomUUID().toString(), DaoType.TYPY.IMAGE,
                             uri.toString(), Global.getInstance().getNickName(), chatType,
-                            groupId, System.currentTimeMillis() + "", DaoType.ISSENDOK.NO);
+                            groupId, System.currentTimeMillis() + "", DaoType.STATUS.SENDING);
                     break;
                 case TAKE_PHOTO:
-                    L.i("相机", data.toString());
-
                     String sdState = Environment.getExternalStorageState();
                     if (!sdState.equals(Environment.MEDIA_MOUNTED)) {
                         //  GameLog.log(Tag, "sd card unmount");
@@ -436,7 +439,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                     }
                     MessageDao.saveSendMessage(UUID.randomUUID().toString(), DaoType.TYPY.IMAGE,
                             filename, Global.getInstance().getNickName(), chatType,
-                            groupId, System.currentTimeMillis() + "", DaoType.ISSENDOK.NO);
+                            groupId, System.currentTimeMillis() + "", DaoType.STATUS.SENDING);
                     break;
             }
 
@@ -501,7 +504,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Message message = MessageDao.getLastContent(groupId, chatType);
             if (message != null) {
@@ -712,9 +714,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                 if (lst != null && i != 1) {
                     list.setSelection(lst.size() - ordersum + 1);
                     list.setSelected(true);
-
                 }
-
             }
         }, 500);
     }
@@ -725,15 +725,13 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
         if (viewId == R.id.ll_tv_homework) {
             MessageDao.saveSendMessage(uuid, DaoType.TYPY.HOMEWORK, message, Global.getInstance()
                             .getNickName(),
-                    "2", groupId, System.currentTimeMillis() + "", DaoType.ISSENDOK.OK);
-            saveMessage(message, uuid, DaoType.TYPY.HOMEWORK);
-
+                    "2", groupId, System.currentTimeMillis() + "", DaoType.STATUS.SUCCESS);
+            sendTextMessage(message, uuid, DaoType.TYPY.HOMEWORK);
         } else if (viewId == R.id.ll_tv_notification) {
             MessageDao.saveSendMessage(uuid, DaoType.TYPY.NOTICE, message, Global.getInstance()
                             .getNickName(),
-                    "2", groupId, System.currentTimeMillis() + "", DaoType.ISSENDOK.OK);
-            saveMessage(message, uuid, DaoType.TYPY.NOTICE);
-
+                    "2", groupId, System.currentTimeMillis() + "", DaoType.STATUS.SUCCESS);
+            sendTextMessage(message, uuid, DaoType.TYPY.NOTICE);
         }
         createGroudDialog.dismiss();
     }
@@ -758,48 +756,20 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
             }
             mDotsLayout.getChildAt(arg0).setSelected(true);
         }
-
     }
 
-    /**
-     * 更新数据库
-     *
-     * @param contents
-     * @param uuid
-     * @param type
-     */
-    private void saveMessage(String contents, String uuid, String type) {
-
-//        try{
-//            //异步进行
-//            String key = MqttInstance.getInstance().getPushInterface().sendMessage(groupId, "{\"msg\":\"" +
-// contents + "\",\"type\":\"text\"}", "2");
-//            Converse converse = new Gson().fromJson(key, Converse.class);
-//            if (converse.getStatusCode().equals("200")) {
-//                Map map = (Map) converse.getData();
-//                String msgid = map.get("msgid").toString().replace(".0", "");
-//                MessageDao.sendOk(uuid, msgid, contents);
-//            }
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
+    private void sendTextMessage(String contents, String uuid, String type) {
         UpdateTask updateTask = new UpdateTask(ChatActivity.this, contents, uuid, type);
         updateTask.execute();
-
-
     }
 
     class UpdateTask extends AsyncTask<Void, Integer, Integer> {
-        private Context context;
         private String contents;
         private String uuid;
-        private String type;
 
         UpdateTask(Context context, String contents, String uuid, String type) {
-            this.context = context;
             this.contents = contents;
             this.uuid = uuid;
-            this.type = type;
         }
 
         /**
@@ -807,7 +777,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
          */
         @Override
         protected void onPreExecute() {
-            // Toast.makeText(context,"开始执行",Toast.LENGTH_SHORT).show();
         }
 
         /**
@@ -819,18 +788,23 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                 //异步进行
                 String key = MqttInstance.getInstance().getPushInterface().sendMessage(groupId, "{\"msg\":\"" +
                         contents + "\",\"type\":\"text\"}", "2");
+                Log.d("mqtt", "send text = " + key);
                 Converse converse = new Gson().fromJson(key, Converse.class);
                 if (converse.getStatusCode().equals("200")) {
+                    //SUCCESS
                     Map map = (Map) converse.getData();
-                    if (map.get("msgid") != null) {
-                        String msgid = map.get("msgid").toString().replace(".0", "");
-                        MessageDao.sendOk(uuid, msgid, contents);
-                    }
+                    String msgid = map.get("msgid").toString().replace(".0", "");
+                    MessageDao.sendSuccess(uuid, msgid, contents);
+                } else {
+                    //FAILURE
+                    Log.d("mqtt", "send text failure");
+                    MessageDao.sendFailure(uuid, contents);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                Log.d("mqtt", "send text = e" + e.toString());
+                MessageDao.sendFailure(uuid, contents);
             }
-
             return null;
         }
 
@@ -851,5 +825,657 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
         }
     }
 
+
+    class ChatAdapter extends BaseAdapter {
+
+        private List<Message> lst;
+        private Context context;
+        private LayoutInflater mInflater;
+        private boolean isdelete;
+
+        private static final int TEXTR = 1;
+        private static final int TEXTL = 2;
+        private static final int PUSHR = 3;
+        private static final int PUSHL = 4;
+        private static final int FILER = 5;
+        private static final int FILEL = 6;
+        private static final int IMAGER = 7;
+        private static final int IMAGEL = 8;
+        private static final int VOICER = 9;
+        private static final int VOICEL = 10;
+        private static final int HOMEWORKR = 11;
+        private static final int HOMEWORKL = 12;
+        private static final int NOTICER = 13;
+        private static final int NOTICEL = 14;
+        private static final int ACTIVITYR = 15;
+        private static final int ACTIVITYL = 16;
+        private static final int LOCATIONR = 17;
+        private static final int LOCATIONL = 18;
+        private static final int TOUSERR = 19;
+        private static final int TOUSERL = 20;
+        private static final int LINKR = 21;
+        private static final int LINKL = 22;
+        private static final int MUSICR = 23;
+        private static final int MUSICL = 24;
+        private static final int RECALL = 25;
+
+
+        public ChatAdapter(Context context) {
+            this.lst = new ArrayList<>();
+            this.context = context;
+            mInflater = LayoutInflater.from(context);
+        }
+
+        /**
+         * 更新lst 实现
+         */
+        public void setLst(List<Message> list) {
+            this.lst = list;
+            notifyDataSetChanged();
+        }
+
+        public boolean getIsdelete() {
+            return isdelete;
+
+        }
+
+        public void setIsdelete(boolean isdelete) {
+            this.isdelete = isdelete;
+        }
+
+
+        @Override
+        public int getCount() {
+            return lst != null ? lst.size() : 0;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return lst.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            Message message = (Message) getItem(position);
+            System.out.print("=============" + message.toString());
+            if (message.getMessageType().equals(DaoType.TYPY.TEXT)) {
+                if (message.getIsMy().equals(DaoType.ISMY.ISMY)) {
+                    return TEXTR;
+                } else {
+                    return TEXTL;
+                }
+            } else if (message.getMessageType().equals(DaoType.TYPY.HOMEWORK)) {
+                if (message.getIsMy().equals(DaoType.ISMY.ISMY)) {
+                    return HOMEWORKR;
+                } else {
+                    return HOMEWORKL;
+                }
+
+            } else if (message.getMessageType().equals(DaoType.TYPY.NOTICE)) {
+                if (message.getIsMy().equals(DaoType.ISMY.ISMY)) {
+                    return NOTICER;
+                } else {
+                    return NOTICEL;
+                }
+            } else if (message.getMessageType().equals(DaoType.TYPY.IMAGE)) {
+                if (message.getIsMy().equals(DaoType.ISMY.ISMY)) {
+                    return IMAGER;
+                } else {
+                    return IMAGEL;
+                }
+            } else if (message.getMessageType().equals(DaoType.TYPY.RECALLMSG)) {
+                return RECALL;
+            }
+            return TEXTL;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+
+            return 26;
+        }
+
+        @SuppressWarnings("unused")
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final Message message = lst.get(position);
+            ViewHolder viewHolder = null;
+            int type = getItemViewType(position);
+            if (viewHolder == null) {
+                viewHolder = new ViewHolder();
+                switch (type) {
+                    case TEXTR: {
+                        convertView = mInflater.inflate(R.layout.im_a_chat_item_txt_right, null);
+                        viewHolder.tv_chatcontent = (TextView) convertView.findViewById(R.id.tv_chatcontent);
+                        viewHolder.resend = (TextView) convertView.findViewById(resend);
+                        viewHolder.pb_sending = (ProgressBar) convertView.findViewById(R.id.pb_sending);
+                        setViewHolder(convertView, viewHolder);
+                        break;
+                    }
+                    case TEXTL: {
+                        convertView = mInflater.inflate(R.layout.im_a_chat_item_txt_left, null);
+                        viewHolder.tv_chatcontent = (TextView) convertView.findViewById(R.id.tv_chatcontent);
+                        setViewHolder(convertView, viewHolder);
+                        break;
+                    }
+                    case HOMEWORKR: {
+                        convertView = mInflater.inflate(R.layout.im_a_chat_item_homework_right, null);
+                        viewHolder.tv_chatcontent = (TextView) convertView.findViewById(R.id.tv_chatcontent);
+                        viewHolder.resend = (TextView) convertView.findViewById(resend);
+                        setViewHolder(convertView, viewHolder);
+                        break;
+                    }
+                    case HOMEWORKL: {
+                        convertView = mInflater.inflate(R.layout.im_a_chat_item_homework_left, null);
+                        viewHolder.tv_chatcontent = (TextView) convertView.findViewById(R.id.tv_chatcontent);
+                        setViewHolder(convertView, viewHolder);
+                        break;
+                    }
+                    case NOTICER: {
+                        convertView = mInflater.inflate(R.layout.im_a_chat_item_notice_right, null);
+                        viewHolder.tv_chatcontent = (TextView) convertView.findViewById(R.id.tv_chatcontent);
+                        viewHolder.resend = (TextView) convertView.findViewById(R.id.resend);
+                        setViewHolder(convertView, viewHolder);
+                        break;
+                    }
+                    case NOTICEL: {
+                        convertView = mInflater.inflate(R.layout.im_a_chat_item_notice_left, null);
+                        viewHolder.tv_chatcontent = (TextView) convertView.findViewById(R.id.tv_chatcontent);
+                        setViewHolder(convertView, viewHolder);
+                        break;
+                    }
+                    case IMAGER: {
+                        convertView = mInflater.inflate(R.layout.im_a_chat_item_image_right, null);
+                        setViewHolder(convertView, viewHolder);
+                        viewHolder.pb_sending = (ProgressBar) convertView.findViewById(R.id.pb_sending);
+                        viewHolder.resend = (TextView) convertView.findViewById(R.id.resend);
+                        viewHolder.imageView = (ProgressImageView) convertView.findViewById(R.id.iv_chatcontent);
+                        break;
+                    }
+                    case IMAGEL: {
+                        convertView = mInflater.inflate(R.layout.im_a_chat_item_image_left, null);
+                        setViewHolder(convertView, viewHolder);
+                        viewHolder.iv_chatcontent = (SimpleDraweeView) convertView.findViewById(R.id.iv_chatcontent);
+                        break;
+                    }
+                    case RECALL: {
+                        convertView = mInflater.inflate(R.layout.im_a_chat_item_chexiao, null);
+                        viewHolder.time = (TextView) convertView.findViewById(R.id.timestamp);
+                    }
+                }
+                convertView.setTag(viewHolder);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            Uri uri = Uri.parse(message.getSendLogo());
+            switch (type) {
+                case TEXTR: {
+                    viewHolder.tv_chatcontent.setText(handler(viewHolder.tv_chatcontent, message.getMsg(), context));
+                    if (message.getSendLogo().equals("null") || message.getSendLogo().equals(""))
+                        uri = Uri.parse(SharedPreferencesUtil.getString(context, IConstant.USER_PIC));
+                    setView(message, viewHolder, uri, position);
+                    viewHolder.tv_chatcontent.setLongClickable(true);
+                    viewHolder.tv_chatcontent.setTag(position + "$" + message.getKey() + "$" + message.getMessageType() +
+                            "$" + message.getReadType() + "$" + "1");
+                    viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
+                    if (message.getIsSendOk().equals(DaoType.STATUS.SENDING)) {
+                        viewHolder.pb_sending.setVisibility(View.VISIBLE);
+                        viewHolder.resend.setVisibility(View.GONE);
+                    } else if (message.getIsSendOk().equals(DaoType.STATUS.SUCCESS)) {
+                        viewHolder.pb_sending.setVisibility(View.GONE);
+                        viewHolder.resend.setVisibility(View.GONE);
+                    } else if (message.getIsSendOk().equals(DaoType.STATUS.FAILURE)) {
+                        viewHolder.pb_sending.setVisibility(View.GONE);
+                        viewHolder.resend.setVisibility(View.VISIBLE);
+                    }
+                    viewHolder.resend.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            resend(message);
+                        }
+                    });
+                    break;
+                }
+                case TEXTL: {
+                    viewHolder.tv_chatcontent.setText(handler(viewHolder.tv_chatcontent, message.getMsg(), context));
+                    setView(message, viewHolder, uri, position);
+                    viewHolder.tv_chatcontent.setLongClickable(true);
+                    viewHolder.tv_chatcontent.setTag(position + "$" + message.getKey() + "$" + message.getMessageType() +
+                            "$" + message.getReadType() + "$" + "3");
+                    viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
+                    break;
+                }
+                case HOMEWORKR: {
+                    viewHolder.tv_chatcontent.setText(handler(viewHolder.tv_chatcontent, message.getMsg(), context));
+                    if (message.getSendLogo().equals("null") || message.getSendLogo().equals(""))
+                        uri = Uri.parse(SharedPreferencesUtil.getString(context, IConstant.USER_PIC));
+                    setView(message, viewHolder, uri, position);
+                    viewHolder.tv_chatcontent.setLongClickable(true);
+                    viewHolder.tv_chatcontent.setTag(position + "$" + message.getKey() + "$" + message.getMessageType() +
+                            "$" + message.getReadType() + "$" + type);
+                    viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
+                    break;
+                }
+                case HOMEWORKL: {
+                    viewHolder.tv_chatcontent.setText(handler(viewHolder.tv_chatcontent, message.getMsg(), context));
+                    setView(message, viewHolder, uri, position);
+                    viewHolder.tv_chatcontent.setLongClickable(true);
+                    viewHolder.tv_chatcontent.setTag(position + "$" + message.getKey() + "$" + message.getMessageType() +
+                            "$" + message.getReadType() + "$" + "3");
+                    viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
+                    break;
+                }
+                case NOTICER: {
+                    viewHolder.tv_chatcontent.setText(handler(viewHolder.tv_chatcontent, message.getMsg(), context));
+                    if (message.getSendLogo().equals("null") || message.getSendLogo().equals(""))
+                        uri = Uri.parse(SharedPreferencesUtil.getString(context, IConstant.USER_PIC));
+                    setView(message, viewHolder, uri, position);
+                    viewHolder.tv_chatcontent.setLongClickable(true);
+                    viewHolder.tv_chatcontent.setTag(position + "$" + message.getKey() + "$" + message.getMessageType() +
+                            "$" + message.getReadType() + "$" + type);
+                    viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
+                    break;
+                }
+                case NOTICEL: {
+                    viewHolder.tv_chatcontent.setText(handler(viewHolder.tv_chatcontent, message.getMsg(), context));
+                    setView(message, viewHolder, uri, position);
+                    viewHolder.tv_chatcontent.setLongClickable(true);
+                    viewHolder.tv_chatcontent.setTag(position + "$" + message.getKey() + "$" + message.getMessageType() +
+                            "$" + message.getReadType() + "$" + "3");
+                    viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
+                    break;
+                }
+                case IMAGER: {
+                    String url = null;
+                    if (message.getSendLogo().equals("null") || message.getSendLogo().equals(""))
+                        uri = Uri.parse(SharedPreferencesUtil.getString(context, IConstant.USER_PIC));
+                    setView(message, viewHolder, uri, position);
+                    if (message.getIsSendOk().equals(DaoType.STATUS.SUCCESS)) {
+                        viewHolder.resend.setVisibility(View.GONE);
+                        viewHolder.imageView.setProgress(100);
+                        url = OkhttpUtils.base_pic_url + message.getMsg();
+                        final Uri urii = Uri.parse(url);
+                        viewHolder.imageView.setImageURI(urii);
+                    } else if (message.getIsSendOk().equals(DaoType.STATUS.FAILURE)) {
+                        viewHolder.resend.setVisibility(View.VISIBLE);
+                    } else {
+                        Uri urii;
+                        if (message.getMsg().startsWith("content://")) {
+                            urii = Uri.parse(message.getMsg());
+                        } else {
+                            urii = Uri.parse("file://" + message.getMsg());
+                        }
+                        viewHolder.imageView.setImageURI(urii);
+                        setPercent(viewHolder, urii, message.getMeassgeId(), message.getId());
+                        url = OkhttpUtils.base_pic_url + message.getMsg();
+                    }
+                    viewHolder.imageView.setLongClickable(true);
+                    viewHolder.imageView.setTag(position + "$" + message.getKey() + "$" + message.getMessageType() + "$"
+                            + message.getReadType() + "$" + type);
+                    viewHolder.imageView.setOnCreateContextMenuListener(mListViewContextMenuListener);
+                    setOnclickImage(viewHolder, url);
+
+                    viewHolder.resend.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            resend2(message);
+                        }
+                    });
+                    break;
+                }
+                case IMAGEL: {
+                    setView(message, viewHolder, uri, position);
+                    final Uri urii = Uri.parse(OkhttpUtils.base_pic_url + message.getMsg());
+                    viewHolder.iv_chatcontent.setImageURI(urii);
+                    viewHolder.iv_chatcontent.setLongClickable(true);
+                    viewHolder.iv_chatcontent.setTag(position + "$" + message.getKey() + "$" + message.getMessageType() +
+                            "$" + message.getReadType() + "$" + "2");
+                    viewHolder.iv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
+                    viewHolder.iv_chatcontent.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+//                        Intent intent = new Intent(context, PicturePreviewActivity.class);
+//                        intent.putExtra("url", OkhttpUtils.base_pic_url + message.getMsg());
+//                        intent.putExtra("indentify", context.getResources().getIdentifier("im_ic_picture_loadfailed",
+//                                "drawable",
+//                                context.getPackageName()));
+//                        ((Activity) context).startActivity(intent);
+                            BaseActivity activity = (BaseActivity) context;
+                            List<String> list = new ArrayList<String>();
+                            list.add(OkhttpUtils.base_pic_url + message.getMsg());
+                            Bundle bundle = new Bundle();
+                            bundle.putStringArrayList(IConstant.BUNDLE_PARAMS, (ArrayList<String>) list);
+                            bundle.putInt(IConstant.BUNDLE_PARAMS1, 1);
+//                        activity.startActivity(ViewPhotosActivity.class, bundle);
+                        }
+                    });
+                    break;
+                }
+                case RECALL: {
+                    viewHolder.time.setText(message.getSendName() + "撤回了一条消息");
+                    break;
+                }
+
+            }
+            return convertView;
+        }
+
+        private void resend(final Message message) {
+            final AlertDialog.Builder normalDialog = new AlertDialog.Builder(context);
+            normalDialog.setTitle("提示");
+            normalDialog.setMessage("重发该消息");
+            normalDialog.setPositiveButton("确定",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            sendTextMessage(message.getMsg(), message.getMeassgeId(), message.getType());
+                        }
+                    });
+            normalDialog.setNegativeButton("取消", null);
+            normalDialog.show();
+        }
+
+        private void resend2(final Message message) {
+            final AlertDialog.Builder normalDialog = new AlertDialog.Builder(context);
+            normalDialog.setTitle("提示");
+            normalDialog.setMessage("重发该消息");
+            normalDialog.setPositiveButton("确定",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            MessageDao.resend(message.getMeassgeId(), message.getMsg());
+                        }
+                    });
+            normalDialog.setNegativeButton("取消", null);
+            normalDialog.show();
+        }
+
+
+        private void setOnclickImage(ViewHolder viewHolder, final String url) {
+            viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+//                Intent intent = new Intent(context, PicturePreviewActivity.class);
+//                intent.putExtra("url", url);
+//                intent.putExtra("indentify", context.getResources().getIdentifier("im_ic_picture_loadfailed",
+//                        "drawable",
+//                        context.getPackageName()));
+//                ((Activity) context).startActivity(intent);
+                    BaseActivity activity = (BaseActivity) context;
+                    List<String> list = new ArrayList<String>();
+                    list.add(url);
+                    Bundle bundle = new Bundle();
+                    bundle.putStringArrayList(IConstant.BUNDLE_PARAMS, (ArrayList<String>) list);
+                    bundle.putInt(IConstant.BUNDLE_PARAMS1, 1);
+//                activity.startActivity(ViewPhotosActivity.class, bundle);
+                }
+            });
+        }
+
+        String path;
+
+        private synchronized void setPercent(final ViewHolder viewHolder, final Uri uri, final String messageId, final String
+                groupId) {
+
+            Log.i("Uri", uri.toString());
+            if (uri.toString().startsWith("content://")) {
+                ContentResolver cr = context.getContentResolver();
+                Cursor cursor = cr.query(uri, null, null, null, null);
+                cursor.moveToFirst();
+                path = cursor.getString(1);
+            } else {
+                path = uri.toString().replace("file://", "");
+            }
+            if (Utils.getFileSize(path) > 100 * 1024) {
+                Bitmap bitmap = ViewUtil.getSmallBitmap(path);
+                String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
+                FileOutputStream fout = null;
+                File file = new File("/sdcard/pintu/");
+                file.mkdirs();
+                String filename = file.getPath() + name;
+                try {
+                    fout = new FileOutputStream(filename);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fout);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        fout.flush();
+                        fout.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                path = filename;
+            }
+            OkhttpUtils.upLoadImg(path, new PercentListener() {
+                @Override
+                public void onPercent(final String percent) {
+                    Log.i("onPercent", percent);
+                    viewHolder.imageView.setProgress(Integer.parseInt(percent));
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (percent.equals("100")) {
+                        File file = new File(path);
+                        Log.i("获得文件大小Tag", file.length() + "");
+                        file.delete();
+                    }
+                }
+
+                @Override
+                public void onReponse(String response) {
+                    try {
+                        Converse converse = new Gson().fromJson(response, Converse.class);
+                        if (converse.getStatusCode().equals("200")) {
+                            List list = (List) converse.getData();
+                            Map map = (Map) list.get(0);
+                            String key = MqttInstance.getInstance().getPushInterface().sendMessage(groupId,
+                                    "{\"msg\":\"" + map.get("url").toString() + "\",\"type\":\"image\"}", "2");
+                            Converse converse1 = new Gson().fromJson(key, Converse.class);
+                            Map map1 = (Map) converse1.getData();
+                            MessageDao.sendSuccess(messageId, map1.get("msgid").toString().replace(".0", ""), map.get("url")
+                                    .toString());
+                        } else {
+                            MessageDao.sendFailure(messageId, uri.toString());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        MessageDao.sendFailure(messageId, uri.toString());
+                    }
+                }
+            });
+        }
+
+        private void setView(Message message, ViewHolder viewHolder, Uri uri, int position) {
+            if (position % 15 == 0) {
+                viewHolder.time.setText(DateUtil.getTimeDisplay(DateUtil.getDate(Long.parseLong(message.getTime()))));
+                viewHolder.time.setVisibility(View.VISIBLE);
+            } else
+                viewHolder.time.setVisibility(View.GONE);
+            viewHolder.name.setText(message.getSendName());
+            if (ViewUtil.getContent(viewHolder.name).equals("null"))
+                viewHolder.name.setText("匿名");
+            viewHolder.header.setImageURI(uri);
+        }
+
+        private void setViewHolder(View convertView, ViewHolder viewHolder) {
+            viewHolder.time = (TextView) convertView.findViewById(R.id.timestamp);
+            viewHolder.name = (TextView) convertView.findViewById(R.id.name);
+            viewHolder.header = (SimpleDraweeView) convertView.findViewById(R.id.iv_userhead);
+        }
+
+        class ViewHolder {
+            TextView tv_chatcontent;
+            TextView time;
+            TextView name;
+            SimpleDraweeView header;
+            ProgressImageView imageView;
+            SimpleDraweeView iv_chatcontent;
+            TextView resend;
+            ProgressBar pb_sending;
+        }
+
+        /**
+         * 过滤 显示GIF 动画
+         *
+         * @param gifTextView
+         * @param content
+         * @return
+         */
+        public SpannableString handler(final TextView gifTextView, String content, Context context) {
+
+            SpannableString sb = new SpannableString(content);
+            String regex = "(\\#\\[face/png/f_static_)\\d{3}(.png\\]\\#)";
+            String[] s = content.split("\\d{3}(.png\\]\\#)");
+
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(content);
+
+            while (m.find()) {
+                String tempText = m.group();
+                try {
+                    String png = tempText.substring("#[".length(), tempText.length() - "]#".length());
+                    try {
+                        sb.setSpan(new ImageSpan(context, BitmapFactory.decodeStream(context.getAssets().open(png))), m
+                                .start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    } catch (IOException e1) {
+
+                        e1.printStackTrace();
+                    }
+                 /*
+                String num = tempText.substring("#[im_face/png/f_static_".length(), tempText.length() - ".png]#"
+                .length());
+                //if (s.length > 5) {
+                    String png = "face/gif/f" + num + ".png";
+                    sb.setSpan(
+                            new ImageSpan(context, BitmapFactory
+                                    .decodeStream(context.getAssets().open(png))), sb.length()
+                                    - tempText.length(), sb.length(),
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+              } else {
+                    String gif = "face/gif/f" + num + ".gif";
+                    *//**
+                     * 如果open这里不抛异常说明存在gif，则显示对应的gif
+                     * 否则说明gif找不到，则显示png
+                     * *//*
+                    InputStream is = context.getAssets().open(gif);
+
+                    sb.setSpan(new AnimatedImageSpan(new AnimatedGifDrawable(is, new AnimatedGifDrawable
+                    .UpdateListener() {
+                                @Override
+                                public void update() {
+                                    gifTextView.postInvalidate();
+                                }
+                            })), m.start(), m.end(),
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    is.close();
+                }*/
+                } catch (Exception e) {
+                    String png = tempText.substring("#[".length(), tempText.length() - "]#".length());
+                    try {
+                        sb.setSpan(new ImageSpan(context, BitmapFactory.decodeStream(context.getAssets().open(png))), m
+                                .start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    } catch (IOException e1) {
+
+                        e1.printStackTrace();
+                    }
+                    e.printStackTrace();
+                }
+            }
+            return sb;
+        }
+
+        // context menu
+        private static final int menu_copy = 101;
+        private static final int menu_delete = 102;
+        private static final int menu_chehui = 103;
+        public String selid = "-1";
+        public View view = null;
+        private View.OnCreateContextMenuListener mListViewContextMenuListener = new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+                selid = v.getTag() + "";
+                view = v;
+                String s[] = selid.split("\\$");
+                if (s[s.length - 1].equals("1")) {
+                    addMenuItem(menu, menu_copy, 0, R.string.copy);
+                    addMenuItem(menu, menu_delete, 0, R.string.delete);
+                    addMenuItem(menu, menu_chehui, 0, R.string.chehui);
+
+                } else if (s[s.length - 1].equals("2")) {
+//                addMenuItem(menu, menu_copy, 0, R.string.copy); //添加菜单(菜单,id,排序序号,名字) 多个会出现滚动条
+                    addMenuItem(menu, menu_delete, 0, R.string.delete);
+                    //addMenuItem(menu, menu_copy, 0, R.string.copy);
+                } else if (s[s.length - 1].equals("3")) {
+                    addMenuItem(menu, menu_copy, 0, R.string.copy);
+                    addMenuItem(menu, menu_delete, 0, R.string.delete);
+
+                } else {
+                    addMenuItem(menu, menu_delete, 0, R.string.delete);
+                    addMenuItem(menu, menu_chehui, 0, R.string.chehui);
+                }
+            }
+        };
+
+        private void addMenuItem(Menu menu, int itemId, int order, int string) {
+            addMenuItem(menu, itemId, order, string, -1);
+        }
+
+        private void addMenuItem(Menu menu, int itemId, int order, int string, int iconRes) {
+            MenuItem item = menu.add(0, itemId, order, string).setOnMenuItemClickListener(menuItemClick);
+            if (iconRes > 0) {
+                item.setIcon(iconRes);
+            }
+        }
+
+        private MenuItem.OnMenuItemClickListener menuItemClick = new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                int itemId = item.getItemId();
+                String obj[] = selid.split("\\$");
+                switch (itemId) {
+                    case menu_copy:
+                        ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                        cm.setText(lst.get(Integer.parseInt(obj[0])).getMsg());
+                        break;
+                    case menu_delete:
+                        MessageDao.clearChatDataById(obj[1]);
+                        lst.remove(Integer.parseInt(obj[0]));
+                        setIsdelete(true);
+                        notifyDataSetChanged();
+                        break;
+                    case menu_chehui:
+                        String content = MqttInstance.getInstance().getPushInterface().recallMessage(obj[1]);
+                        Converse converse = new Gson().fromJson(content, Converse.class);
+                        if (converse.getStatusCode().equals("200")) {
+                            Map map = (Map) converse.getData();
+                            Object ob = map.get("status").toString();
+                            if (ob != null && ob.toString().equals("fail")) {
+                                String errinfo = map.get("errinfo").toString();
+                                Toast.makeText(context, errinfo, Toast.LENGTH_SHORT).show();
+                            } else {
+                                MessageDao.recallMsg(obj[1]);
+                            }
+                        }
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            }
+        };
+
+    }
 
 }

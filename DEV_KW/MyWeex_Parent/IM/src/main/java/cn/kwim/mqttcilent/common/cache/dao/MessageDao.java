@@ -45,7 +45,7 @@ public class MessageDao extends Dao {
             String type = map.get("sendtype").toString();
             String id = map.get("recvid").toString().replace(".0", "");
             Message message = setMessage(messageId, DaoType.ISMY.UN_ISMY, messageType, msg
-                    , sendId, sendName, sendLogo, type, id, System.currentTimeMillis() + "", DaoType.READ.UNREAD, DaoType.ISSENDOK.OK);
+                    , sendId, sendName, sendLogo, type, id, System.currentTimeMillis() + "", DaoType.READ.UNREAD, DaoType.STATUS.SUCCESS);
             Realm realm = getRealm();
             realm.beginTransaction();
             realm.copyToRealmOrUpdate(message);
@@ -77,7 +77,7 @@ public class MessageDao extends Dao {
                 String messageType = mapMsg.get("type").toString();
                 String msg = mapMsg.get("msg").toString();
                 String sendId = map.get("fuid").toString().replace(".0", "");
-                if(null!=map.get("nickname")){
+                if (null != map.get("nickname")) {
                     sendName = map.get("nickname").toString();
                 }
                 if (null != map.get("flogo")) {
@@ -87,7 +87,7 @@ public class MessageDao extends Dao {
                 String id = map.get("tuid").toString().replace(".0", "");
                 String time = Utils.dateToLong(map.get("time").toString());
                 Message message = setMessage(messageId, DaoType.ISMY.UN_ISMY, messageType, msg
-                        , sendId, sendName, sendLogo, type, id, time, DaoType.READ.UNREAD, DaoType.ISSENDOK.OK);
+                        , sendId, sendName, sendLogo, type, id, time, DaoType.READ.UNREAD, DaoType.STATUS.SUCCESS);
                 Realm realm = getRealm();
                 realm.beginTransaction();
                 realm.copyToRealmOrUpdate(message);
@@ -113,18 +113,16 @@ public class MessageDao extends Dao {
     public static Message saveSendMessage(String messageId, String messageType,
                                           String msg,
                                           String sendName, String type,
-                                          String id, String time , String sendok) {
+                                          String id, String time, String sendok) {
         Realm realm = getRealm();
         Message message = setMessage(messageId, DaoType.ISMY.ISMY, messageType, msg
                 , Global.getInstance().getUserId(), sendName, Global.getInstance().getLogo(), type
                 , id, time, DaoType.READ.ISREAD, sendok);
-        //Toast.makeText()
-        Log.i("保存图片",message.toString());
-        try{
+        try {
             realm.beginTransaction();
             realm.copyToRealmOrUpdate(message);
             realm.commitTransaction();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return message;
@@ -184,17 +182,17 @@ public class MessageDao extends Dao {
         results = results.sort("time", Sort.DESCENDING);
         L.i("getLimitMessage", results.toString());
         int i = count * page;
-        if(count*(page-1)>=results.size()){
+        if (count * (page - 1) >= results.size()) {
             return null;
         }
         for (int j = 0; j < i; j++) {
             if (j < results.size()) {
-                list.add(0,results.get(j));
+                list.add(0, results.get(j));
             } else {
                 break;
             }
         }
-        if(list!=null&&list.size()!=0){
+        if (list != null && list.size() != 0) {
             return list;
         }
         return null;
@@ -214,6 +212,7 @@ public class MessageDao extends Dao {
         return null;
 
     }
+
     /**
      * 更新未读消息
      *
@@ -252,15 +251,15 @@ public class MessageDao extends Dao {
 
     /**
      * 更新发送数据Id
-     * @param messageId 之前的id
      *
-     * @param updateId 从服务器获取的Id
+     * @param messageId 之前的id
+     * @param updateId  从服务器获取的Id
      */
-    public static void sendOk(String messageId, String updateId, String msg){
+    public static void sendSuccess(String messageId, String updateId, String msg) {
         Realm realm = getRealm();
-        Message message = realm.where(Message.class).equalTo("meassgeId",messageId).findFirst();
+        Message message = realm.where(Message.class).equalTo("meassgeId", messageId).findFirst();
         realm.beginTransaction();
-        message.setIsSendOk(DaoType.ISSENDOK.OK);
+        message.setIsSendOk(DaoType.STATUS.SUCCESS);
         message.setKey(updateId);
         message.setMsg(msg);
         realm.copyToRealmOrUpdate(message);
@@ -268,31 +267,56 @@ public class MessageDao extends Dao {
         realm.close();
     }
 
+    public static void sendFailure(String messageId, String msg) {
+        Realm realm = getRealm();
+        Message message = realm.where(Message.class).equalTo("meassgeId", messageId).findFirst();
+        realm.beginTransaction();
+        message.setIsSendOk(DaoType.STATUS.FAILURE);
+        message.setMsg(msg);
+        realm.copyToRealmOrUpdate(message);
+        realm.commitTransaction();
+        realm.close();
+    }
+
+    public static void resend(String messageId, String msg) {
+        Realm realm = getRealm();
+        Message message = realm.where(Message.class).equalTo("meassgeId", messageId).findFirst();
+        realm.beginTransaction();
+        message.setIsSendOk(DaoType.STATUS.SENDING);
+        message.setMsg(msg);
+        realm.copyToRealmOrUpdate(message);
+        realm.commitTransaction();
+        realm.close();
+    }
+
+
     /**
      * 获取分类数据
+     *
      * @param id
      * @param type
      * @param messageType
      */
-    public static List<Message> getFLData(String id, String type, String messageType){
+    public static List<Message> getFLData(String id, String type, String messageType) {
         List<Message> list = new ArrayList<>();
         Realm realm = getRealm();
         RealmResults<Message> results = realm.where(Message.class).equalTo("id", id)
-                .equalTo("type", type).equalTo("userId", Global.getInstance().getUserId()).equalTo("messageType",messageType).findAll();
+                .equalTo("type", type).equalTo("userId", Global.getInstance().getUserId()).equalTo("messageType", messageType).findAll();
 
         results = results.sort("time", Sort.DESCENDING);
-        for (int i=0;i<results.size();i++){
+        for (int i = 0; i < results.size(); i++) {
             list.add(results.get(i));
         }
-        return  list;
+        return list;
     }
+
     /**
      * 清除聊天一条记录
      */
-    public static void clearChatDataById(String key){
+    public static void clearChatDataById(String key) {
         Realm realm = getRealm();
         final RealmResults<Message> results = realm.where(Message.class).equalTo("key", key).findAll();
-        realm.executeTransaction(new Realm.Transaction(){
+        realm.executeTransaction(new Realm.Transaction() {
 
             @Override
             public void execute(Realm realm) {
@@ -300,14 +324,15 @@ public class MessageDao extends Dao {
             }
         });
     }
+
     /**
      * 撤销一条消息
      */
-    public static void recallMsg(String key){
+    public static void recallMsg(String key) {
         Realm realm = getRealm();
-        Message message = realm.where(Message.class).equalTo("key",key).findFirst();
+        Message message = realm.where(Message.class).equalTo("key", key).findFirst();
         realm.beginTransaction();
-        message.setIsSendOk(DaoType.ISSENDOK.OK);
+        message.setIsSendOk(DaoType.STATUS.SUCCESS);
         message.setMessageType(DaoType.TYPY.RECALLMSG);
         realm.copyToRealmOrUpdate(message);
         realm.commitTransaction();
@@ -318,11 +343,11 @@ public class MessageDao extends Dao {
     /**
      * 清除某一个群或者某一个
      */
-    public static void clearChatData(String id, String type){
+    public static void clearChatData(String id, String type) {
         Realm realm = getRealm();
         final RealmResults<Message> results = realm.where(Message.class).equalTo("id", id).equalTo("type", type)
                 .equalTo("userId", Global.getInstance().getUserId()).findAll();
-        realm.executeTransaction(new Realm.Transaction(){
+        realm.executeTransaction(new Realm.Transaction() {
 
             @Override
             public void execute(Realm realm) {
