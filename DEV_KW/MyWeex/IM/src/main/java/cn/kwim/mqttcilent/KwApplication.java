@@ -13,7 +13,6 @@ import java.io.File;
 import cn.kiway.App;
 import cn.kiway.IConstant;
 import cn.kwim.mqttcilent.common.cache.KwMigration;
-import cn.kwim.mqttcilent.mqttclient.MqttInstance;
 import cn.kwim.mqttcilent.mqttclient.mq.Conf;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -43,8 +42,7 @@ public class KwApplication extends App {
 
         //初始化mqtt
         Conf.getInstance().init(this);
-        //mqttSdk 初始化
-        MqttInstance.init(this);
+
         DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(this).setMaxCacheSize(2 * 1024 * 2014)
                 .setBaseDirectoryName(IConstant.DOWNLOAD_PHOTO_FLODER)
                 .setBaseDirectoryPathSupplier(new Supplier<File>() {

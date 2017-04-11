@@ -13,7 +13,8 @@ public class CreateGroudDialog extends BaseDialog {
     BaseActivity activity;
     CreateGroup createGroup;
     EditText editText;
-int viewId;
+    int viewId;
+
     public CreateGroudDialog(Context context, CreateGroup createGroup) {
         super(context);
         activity = (BaseActivity) context;
@@ -25,12 +26,13 @@ int viewId;
         this.createGroup = createGroup;
     }
 
-    public void setTitle(String title,int viewId) {
+    public void setTitle(String title, int viewId) {
         ViewUtil.setContent(view, R.id.title, title);
-        this.viewId=viewId;
-        if (editText!=null)
+        this.viewId = viewId;
+        if (editText != null)
             editText.setText("");
     }
+
     @Override
     public void onClick(View v) {
         super.onClick(v);
@@ -51,6 +53,6 @@ int viewId;
     }
 
     public interface CreateGroup {
-        public void createGroupCallBack(String message,int viewId) throws Exception;
+        public void createGroupCallBack(String message, int viewId) throws Exception;
     }
 }

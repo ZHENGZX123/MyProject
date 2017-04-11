@@ -3,25 +3,23 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
     android:background="#ebebeb"
-   >
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/timestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#ffffff"
-        android:padding="3dip"
-        android:background="@drawable/im_time_backround"
         android:layout_gravity="center"
-        android:textSize="@dimen/_13sp"/>
+        android:background="@drawable/im_time_backround"
+        android:padding="3dip"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/_13sp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/iv_userhead"
@@ -30,35 +28,33 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="@dimen/margin_chat_activity"
-            fresco:roundAsCircle="true"
             android:layout_marginTop="@dimen/_15dp"
             fresco:placeholderImage="@drawable/yjpty_baba"
-            />
+            fresco:roundAsCircle="true" />
 
         <TextView
             android:id="@+id/name"
-            android:layout_width="wrap_content" 
-           	android:layout_height="wrap_content"
-           	android:layout_toLeftOf="@+id/iv_userhead"
-           	android:layout_marginRight="8dp"
-           	android:text="heheheh"
-            />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_toLeftOf="@+id/iv_userhead"
+            android:text="name" />
 
-       <TextView
-           android:id="@+id/tv_chatcontent"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_below="@+id/name"
-           android:layout_toLeftOf="@id/iv_userhead"
-           android:background="@drawable/im_chatto_bg_pressed"
-           android:clickable="true"
-       	   android:focusable="true"
-       	   android:gravity="left|center"
-       	   android:maxWidth="225.0dip"
-       	   android:textColor="#ff000000"
-       	   android:textSize="15sp"
-           />
+        <TextView
+            android:id="@+id/tv_chatcontent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/name"
+            android:layout_toLeftOf="@id/iv_userhead"
+            android:background="@drawable/im_chatto_bg_pressed"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="left|center"
+            android:maxWidth="225.0dip"
+            android:textColor="#ff000000"
+            android:textSize="15sp" />
 
+        <!-- 没有用到 -->
         <ImageView
             android:id="@+id/msg_status"
             android:layout_width="wrap_content"
@@ -69,6 +65,7 @@
             android:src="@drawable/im_msg_state_failed_resend"
             android:visibility="gone" />
 
+        <!-- 没有用到 -->
         <TextView
             android:id="@+id/tv_ack"
             android:layout_width="wrap_content"
@@ -79,6 +76,7 @@
             android:textSize="12sp"
             android:visibility="gone" />
 
+        <!-- 没有用到 -->
         <TextView
             android:id="@+id/tv_delivered"
             android:layout_width="wrap_content"
@@ -105,12 +103,12 @@
             android:layout_alignBottom="@+id/tv_chatcontent"
             android:layout_toLeftOf="@+id/tv_chatcontent"
             android:background="@drawable/im_unread_count_bg"
+            android:clickable="true"
             android:gravity="center"
             android:text="!"
             android:textColor="@android:color/white"
             android:textSize="15sp"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
     </RelativeLayout>
 
