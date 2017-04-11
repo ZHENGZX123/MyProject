@@ -16,6 +16,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.kiway.yjpt.Teacher.R;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
@@ -32,15 +33,28 @@ import com.zk.myweex.utils.UploadUtil;
 import com.zk.myweex.utils.Utils;
 import com.zk.myweex.utils.VersionUpManager;
 
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Service;
+import cn.kiway.utils.SharedPreferencesUtil;
+import cn.kwim.mqttcilent.common.Global;
+import cn.kwim.mqttcilent.common.cache.dao.Dao;
+import cn.kwim.mqttcilent.common.cache.dao.DaoType;
+import cn.kwim.mqttcilent.common.cache.dao.MainListDao;
+import cn.kwim.mqttcilent.common.cache.dao.MessageDao;
+import cn.kwim.mqttcilent.common.cache.javabean.Converse;
+import cn.kwim.mqttcilent.mqttclient.MqttInstance;
+import cn.kwim.mqttcilent.mqttclient.mq.HproseMqttClient;
+import cn.kwim.mqttcilent.mqttclient.mq.PushInterface;
+import cn.kwim.mqttcilent.mqttclient.mq.TopicProcessService;
 
 import static uk.co.senab.photoview.sample.ViewPagerActivity.getLoaderOptions;
 
@@ -197,34 +211,143 @@ public class MainActivity2 extends TabActivity {
                 rl_nonet.setVisibility(View.VISIBLE);
             } else {
                 rl_nonet.setVisibility(View.GONE);
-
-                new Thread() {
-                    @Override
-                    public void run() {
-                        ArrayList<OfflineTask> tasks = new WXDBHelper(getApplicationContext()).getAllOfflineTask();
-                        int count = tasks.size();
-                        Log.d("stream", "tasks count = " + count);
-                        for (OfflineTask task : tasks) {
-                            Log.d("stream", "dotask , task.id = " + task.id);
-                            if (task.request.contains("classes")) {
-                                doQzqTask(task);
-                            } else {
-                                WXStreamModule stream = new WXStreamModule();
-                                stream.mWXSDKInstance = new WXSDKInstance(getApplicationContext());
-                                stream.fetch(task.request, null, null);
-                            }
-                        }
-                    }
-                }.start();
+                //1.connetMqtt
+                connectMqtt();
+                //2.check offline task
+                checkOfflineTask();
             }
         }
     };
+
+    private void checkOfflineTask() {
+        new Thread() {
+            @Override
+            public void run() {
+                ArrayList<OfflineTask> tasks = new WXDBHelper(getApplicationContext()).getAllOfflineTask();
+                int count = tasks.size();
+                Log.d("stream", "tasks count = " + count);
+                for (OfflineTask task : tasks) {
+                    Log.d("stream", "dotask , task.id = " + task.id);
+                    if (task.request.contains("classes")) {
+                        doQzqTask(task);
+                    } else {
+                        WXStreamModule stream = new WXStreamModule();
+                        stream.mWXSDKInstance = new WXSDKInstance(getApplicationContext());
+                        stream.fetch(task.request, null, null);
+                    }
+                }
+            }
+        }.start();
+    }
+
+    private void connectMqtt() {
+        new Thread() {
+            @Override
+            public void run() {
+                String userName = getSharedPreferences("kiway", 0).getString("userName", "");
+                String userPwd = getSharedPreferences("kiway", 0).getString("userPwd", "");
+                MqttInstance.getInstance().conMqtt(userName, userPwd, new MqttInstance.LoginImlisener() {
+                    @Override
+                    public void isLogin() {
+                        Log.d("mqtt", "mqtt login failure");
+                        return;
+                    }
+                });
+                HproseMqttClient client = MqttInstance.getInstance().getHproseMqttClient();
+                if (!MqttInstance.getInstance().getType()) {
+                    //登录失败
+                    Log.d("mqtt", "登录失败");
+                } else {
+                    Log.d("mqtt", "登录成功");
+                    try {
+                        PushInterface pushInterface = MqttInstance.getInstance().getPushInterface();
+                        if (pushInterface != null) {
+                            //1.userinfo
+                            getUserInfo(pushInterface.getUserInfo());
+                            //2.grouplist
+                            getGroupInfo(pushInterface.getGroupList());
+                            //3.注册回调
+                            client.register(RegisterType.MESSAGE, new TopicProcessService() {
+                                @Override
+                                public void process(String topic, MqttMessage message, String time) {
+                                    Log.d("mqtt", "process1 message =" + message);//接到聊天消息。。。。
+                                    MessageDao.saveRecMessage(message.toString());
+                                    Map map = new Gson().fromJson(message.toString(), Map.class);
+                                    String id = map.get("recvid").toString().replace(".0", "");
+                                    String sendtype = map.get("sendtype").toString();
+                                    String content = map.get("msg").toString();
+                                    String type = map.get("type").toString();
+                                    String name = map.get("formnick").toString();
+                                    int num = MessageDao.unreadCount(id, sendtype);
+                                    MainListDao.updateGroupList(num + "", Dao.getKey(id), content, type, name);
+                                }
+                            });
+                            //监听撤回消息
+                            client.register(RegisterType.RECALLMESSAGE, new TopicProcessService() {
+                                @Override
+                                public void process(String topic, MqttMessage message, String time) {
+                                    Log.d("mqtt", "process2 message =" + message);
+                                    Map map = new Gson().fromJson(message.toString(), Map.class);
+                                    String msgId = map.get("msgid").toString().replace(".0", "");
+                                    MessageDao.recallMsg(msgId);
+                                }
+                            });
+                        } else {
+                            Log.d("mqtt", "pushInterface null");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+    }
+
+    public interface RegisterType {
+        String MESSAGE = "message";
+        String RECALLMESSAGE = "recallMessage";
+    }
+
+    private void getGroupInfo(String groupList) {
+        Log.d("mqtt", "groupList = " + groupList);
+        MainListDao.saveGroupList(groupList, DaoType.SESSTIONTYPE.GROUP);
+    }
+
+    private void getUserInfo(String userInfo) {
+        try {
+            Log.d("mqtt", "userInfo = " + userInfo);
+            if (userInfo == null || userInfo.equals("")) {
+                return;
+            }
+            Converse converse = new Gson().fromJson(userInfo, Converse.class);
+            if (converse.getStatusCode().equals("200")) {
+                Map map = (Map) converse.getData();
+                Global.getInstance().setLogo(map.get("logo").toString());
+                Global.getInstance().setUserId(map.get("uid").toString().replace(".0", ""));
+                Global.getInstance().setGender(map.get("gender").toString());
+                Global.getInstance().setNickName(map.get("nickname").toString());
+
+                SharedPreferencesUtil.save(this, Global.GL_NICKNAME,
+                        map.get("nickname").toString());
+                SharedPreferencesUtil.save(this, Global.GL_LOGO,
+                        map.get("logo").toString());
+                SharedPreferencesUtil.save(this, Global.GL_GENDER,
+                        map.get("gender").toString());
+                SharedPreferencesUtil.save(this, Global.GL_UID,
+                        map.get("uid").toString());
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void doQzqTask(final OfflineTask task) {
         Log.d("stream", "doQzqTask = " + task.request);
         //1.上传图片
         //2.成功后保存成数组，替换原数组
         //3.调用提交接口
+
         try {
             JSONObject obj = new JSONObject(task.request);
             String url = obj.getString("url");
@@ -232,6 +355,7 @@ public class MainActivity2 extends TabActivity {
             String content = obj.getString("content");
             JSONArray img_url = obj.getJSONArray("img_url");
             String classes = obj.getString("classes");
+
             Log.d("stream", "before upload img_url = " + img_url.toString());
             int count = img_url.length();
             for (int i = 0; i < count; i++) {
@@ -265,10 +389,12 @@ public class MainActivity2 extends TabActivity {
             params.put("classes", classes);
             params.put("content", content);
             String temp = "";
-            for (int i = 0; i < img_url.length(); i++) {
-                temp += img_url.get(i).toString() + "#";
+            if (img_url.length() > 0) {
+                for (int i = 0; i < img_url.length(); i++) {
+                    temp += img_url.get(i).toString() + "#";
+                }
+                temp = temp.substring(0, temp.length() - 1);
             }
-            temp = temp.substring(0, temp.length() - 1);
             params.put("img_url", temp);
             client.post(getApplicationContext(), url, params, new TextHttpResponseHandler() {
 
@@ -291,7 +417,6 @@ public class MainActivity2 extends TabActivity {
     public void clickNetwork(View view) {
         startActivity(new Intent(this, NoNetActivity.class));
     }
-
 
     public void setCurrentTab(int tab) {
         tabhost.setCurrentTab(tab);
