@@ -308,9 +308,11 @@ public class MainActivity2 extends TabActivity {
         String RECALLMESSAGE = "recallMessage";
     }
 
-    private void getGroupInfo(String groupList) {
-        Log.d("mqtt", "groupList = " + groupList);
-        MainListDao.saveGroupList(groupList, DaoType.SESSTIONTYPE.GROUP);
+    private void getGroupInfo(String list) {
+        Log.d("mqtt", "groupList = " + list);
+        //1.不能赋值，顺序会有问题的。
+        //  应该改为：
+        MainListDao.saveGroupList(list, DaoType.SESSTIONTYPE.GROUP);
     }
 
     private void getUserInfo(String userInfo) {
