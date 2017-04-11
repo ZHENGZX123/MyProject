@@ -147,18 +147,18 @@ public class WXEventModule extends WXModule {
     @JSMethod()
     public void Publish(String str, final JSCallback callback) {
         Log.d("test", "publish str = " + str);
-
         try {
             JSONObject obj = new JSONObject(str);
             String url = obj.getString("url");
             String jsessionid = obj.getString("jsessionid");
             String content = obj.getString("content");
             org.json.JSONArray img_url = obj.getJSONArray("img_url");
-            if (img_url.length() == 0) {
-                toast("请先上传图片");
+            String classes = obj.getString("classes");
+
+            if (img_url.length() == 0 && content.equals("")) {
+                toast("图片和文字不能同时为空");
                 return;
             }
-            String classes = obj.getString("classes");
 
             if (!NetworkUtil.isNetworkAvailable(mWXSDKInstance.getContext())) {
                 OfflineTask task = new OfflineTask();
@@ -170,7 +170,6 @@ public class WXEventModule extends WXModule {
                 MainActivity2.main.setCurrentTab(1);
                 return;
             }
-
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
             client.addHeader("Cookie", "JSESSIONID=" + jsessionid);
@@ -178,13 +177,14 @@ public class WXEventModule extends WXModule {
             params.put("classes", classes);
             params.put("content", content);
             String temp = "";
-            for (int i = 0; i < img_url.length(); i++) {
-                temp += img_url.get(i).toString() + "#";
+            if (img_url.length() > 0) {
+                for (int i = 0; i < img_url.length(); i++) {
+                    temp += img_url.get(i).toString() + "#";
+                }
+                temp = temp.substring(0, temp.length() - 1);
             }
-            temp = temp.substring(0, temp.length() - 1);
             params.put("img_url", temp);
             client.post(mWXSDKInstance.getContext(), url, params, new TextHttpResponseHandler() {
-
                 public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
                     Log.d("test", "onFailure = " + responseString);
                 }
@@ -260,7 +260,7 @@ public class WXEventModule extends WXModule {
                 Toast.makeText(mWXSDKInstance.getContext(), "扫描到的是" + result, Toast.LENGTH_SHORT).show();
                 Log.d("test", "result = " + result);
                 //扫描二维码，扫描后的数据返回给js
-                //http://192.168.8.206:8180/yjpt/?&ref=class&classid=57&schoolId=129&classname=
+                //       http://192.168.8.206:8180/yjpt/?&ref=class&classid=57&schoolId=129&classname=xxxxxxx
                 String[] splits = result.split("&");
                 if (splits.length < 5) {
                     return;
@@ -325,5 +325,4 @@ public class WXEventModule extends WXModule {
             }
         }.start();
     }
-
 }

@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
@@ -109,7 +110,7 @@ public class SJEventModule extends WXModule {
             String code = "http://www.yuertong.com/yjpts/?&ref=class&classid=" + classId + "&schoolId=" + schoolId + "&classname=" + className;
 
             Bitmap b = Utils.createQRImage(code, 400, 400);
-            String filepath = Utils.saveMyBitmap(b, "myweex");
+            String filepath = Utils.saveMyBitmap(b, new Random().nextInt() + "");
             callback.invoke("file://" + filepath);
 
         } catch (Exception e) {
