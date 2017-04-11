@@ -19,7 +19,10 @@ import com.lzy.imagepicker.view.CropImageView;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
+import com.taobao.weex.utils.OfflineTask;
+import com.taobao.weex.utils.WXDBHelper;
 import com.zk.myweex.activity.MainActivity2;
+import com.zk.myweex.utils.NetworkUtil;
 import com.zk.myweex.utils.UploadUtil;
 
 import org.json.JSONException;
@@ -155,7 +158,16 @@ public class WXEventModule extends WXModule {
                 return;
             }
             String classes = obj.getString("classes");
-
+            if (!NetworkUtil.isNetworkAvailable(mWXSDKInstance.getContext())) {
+                OfflineTask task = new OfflineTask();
+                task.request = str;
+                task.requesttime = System.currentTimeMillis() + "";
+                new WXDBHelper(mWXSDKInstance.getContext()).addOfflineTask(task);
+                toast("您当前没有网络，已为您添加到离线任务，下次有网络的时候自动发表到亲子圈");
+                mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
+                MainActivity2.main.setCurrentTab(1);
+                return;
+            }
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
             client.addHeader("Cookie", "JSESSIONID=" + jsessionid);
@@ -164,12 +176,11 @@ public class WXEventModule extends WXModule {
             params.put("content", content);
             String temp = "";
             for (int i = 0; i < img_url.length(); i++) {
-                temp = img_url.get(i).toString() + "#";
+                temp += img_url.get(i).toString() + "#";
             }
             temp = temp.substring(0, temp.length() - 1);
             params.put("img_url", temp);
             client.post(mWXSDKInstance.getContext(), url, params, new TextHttpResponseHandler() {
-
                 public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
                     Log.d("test", "onFailure = " + responseString);
                 }
@@ -274,7 +285,6 @@ public class WXEventModule extends WXModule {
         mWXSDKInstance.getContext().startActivity(i);
     }
 
-    private ArrayList<String> temps = new ArrayList<>();
 
     private void doUploadImage(final ArrayList<ImageItem> images) {
         new Thread() {
@@ -282,15 +292,13 @@ public class WXEventModule extends WXModule {
             public void run() {
                 ImageItem ii = images.get(0);
 
-//                if (!NetworkUtil.isNetworkAvailable(mWXSDKInstance.getContext())) {
-//                    String temp = ii.path;
-//                    temps.add(temp);
-//                    HashMap map = new HashMap();
-//                    map.put("path", "file://" + ii.path);
-//                    map.put("imgUrl", "file://" + ii.path);
-//                    pickerCallback.invoke(map);
-//                    return;
-//                }
+                if (!NetworkUtil.isNetworkAvailable(mWXSDKInstance.getContext())) {
+                    HashMap map = new HashMap();
+                    map.put("path", "file://" + ii.path);
+                    map.put("imgUrl", "file://" + ii.path);
+                    pickerCallback.invoke(map);
+                    return;
+                }
 
                 File file = new File(ii.path);
                 String ret = UploadUtil.uploadFile(file, url, "qzq", "JSESSIONID=" + jsessionid);
