@@ -28,7 +28,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import cn.kwim.mqttcilent.common.cache.dao.DaoType;
+import cn.kwim.mqttcilent.common.cache.dao.MainListDao;
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
+import cn.kwim.mqttcilent.mqttclient.mq.PushInterface;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 
@@ -96,7 +99,6 @@ public class SJEventModule extends WXModule {
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
         ScreenManager.getScreenManager().popAllActivityExceptOne(LoginActivity.class);
     }
-
 
     @JSMethod(uiThread = true)
     public void makeQRCode(String dic, JSCallback callback) {
@@ -209,5 +211,21 @@ public class SJEventModule extends WXModule {
             e.printStackTrace();
         }
     }
+
+    @JSMethod(uiThread = true)
+    public void modifyClass() {
+        Log.d("test", "modifyClass is called");
+        PushInterface pushInterface = MqttInstance.getInstance().getPushInterface();
+        if (pushInterface != null) {
+            //2.grouplist
+            getGroupInfo(pushInterface.getGroupList());
+        }
+    }
+
+    private void getGroupInfo(String list) {
+        Log.d("mqtt", "groupList = " + list);
+        MainListDao.saveGroupList(list, DaoType.SESSTIONTYPE.GROUP);
+    }
+
 }
 
