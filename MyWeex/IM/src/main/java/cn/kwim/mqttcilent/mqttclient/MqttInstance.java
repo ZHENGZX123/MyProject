@@ -13,10 +13,9 @@ import cn.kwim.mqttcilent.mqttclient.mq.TopicProcessService;
 public class MqttInstance {
 
     private static MqttInstance instance;
-    private boolean type = true;
+//    private boolean type = true;
 
     private HproseMqttClient client;
-
 
     public static MqttInstance getInstance() {
         if (instance == null) {
@@ -25,20 +24,15 @@ public class MqttInstance {
         return instance;
     }
 
-
-    public boolean getType() {
-        return type;
-    }
-
     //如果登陆不成功 请再次登陆
     public void conMqtt(String name, String pwd, final LoginImlisener loginImlisener) {
         try {
-            type = true;
+//            type = true;
             client = new HproseMqttClient("yjpt", name, pwd, "1",
                     new TopicProcessService() {
                         @Override
                         public void process(String topic, MqttMessage message, String time) {
-                            type = false;
+//                            type = false;
                             loginImlisener.isLogin();
                             return;
                         }
@@ -61,7 +55,8 @@ public class MqttInstance {
             if (client.useService(PushInterface.class) == null) {
                 return null;
             } else {
-                return type ? client.useService(PushInterface.class) : null;
+//                return type ? client.useService(PushInterface.class) : null;
+                return client.useService(PushInterface.class);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,7 +64,6 @@ public class MqttInstance {
         }
 
     }
-
 
     /**
      * 获得连接
