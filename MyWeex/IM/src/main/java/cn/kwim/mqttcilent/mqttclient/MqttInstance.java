@@ -34,7 +34,7 @@ public class MqttInstance {
     public void conMqtt(String name, String pwd, final LoginImlisener loginImlisener) {
         try {
             type = true;
-            client = new HproseMqttClient("yjpt", name, pwd, "2",
+            client = new HproseMqttClient("yjpt", name, pwd, "1",
                     new TopicProcessService() {
                         @Override
                         public void process(String topic, MqttMessage message, String time) {

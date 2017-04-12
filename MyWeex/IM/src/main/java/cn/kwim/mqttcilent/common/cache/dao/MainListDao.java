@@ -29,12 +29,18 @@ public class MainListDao extends Dao {
         if (json == null || json.equals("")) {
             return;
         }
-        Realm realm = getRealm();
-        realm.beginTransaction();
         Converse converse = new Gson().fromJson(json, Converse.class);
         if (converse == null) {
             return;
         }
+
+        Realm realm = getRealm();
+        realm.beginTransaction();
+
+        //1.delete all
+        final RealmResults<MainList> results = realm.where(MainList.class).findAll();
+        results.deleteAllFromRealm();
+        //2.insert
         if (converse.getStatusCode().equals("200")) {
             List<Object> list = (List) converse.getData();
             for (int i = 0; i < list.size(); i++) {
