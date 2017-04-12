@@ -472,34 +472,43 @@ public class WXStreamModule extends WXModule {
     }
 
     private void saveCacheToDB(String optionsStr, String respData) {
-        Log.d("stream", "saveCacheToDB");
-        HTTPCache a = new WXDBHelper(mWXSDKInstance.getContext()).getHttpCacheByRequest(optionsStr);
-        // if existed , update
-        if (a == null) {
-            a = new HTTPCache();
-            a.request = optionsStr;
-            a.response = respData;
-            a.requesttime = "" + System.currentTimeMillis();
-            new WXDBHelper(mWXSDKInstance.getContext()).addHTTPCache(a);
-        } else {
-            a.response = respData;
-            a.requesttime = "" + System.currentTimeMillis();
-            new WXDBHelper(mWXSDKInstance.getContext()).updateHTTPCache(a);
+        try {
+            Log.d("stream", "saveCacheToDB");
+            HTTPCache a = new WXDBHelper(mWXSDKInstance.getContext()).getHttpCacheByRequest(optionsStr);
+            // if existed , update
+            if (a == null) {
+                a = new HTTPCache();
+                a.request = optionsStr;
+                a.response = respData;
+                a.requesttime = "" + System.currentTimeMillis();
+                new WXDBHelper(mWXSDKInstance.getContext()).addHTTPCache(a);
+            } else {
+                a.response = respData;
+                a.requesttime = "" + System.currentTimeMillis();
+                new WXDBHelper(mWXSDKInstance.getContext()).updateHTTPCache(a);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     private String getCacheFromDB(String optionsStr) {
-        HTTPCache cache = new WXDBHelper(mWXSDKInstance.getContext()).getHttpCacheByRequest(optionsStr);
-        if (cache == null) {
-            return null;
+        try {
+            HTTPCache cache = new WXDBHelper(mWXSDKInstance.getContext()).getHttpCacheByRequest(optionsStr);
+            if (cache == null) {
+                return null;
+            }
+            long current = System.currentTimeMillis();
+            long requesttime = Long.parseLong(cache.requesttime);
+            long between = current - requesttime;
+            if (between > 4 * 60 * 60 * 1000) {
+                return null;
+            }
+            return cache.response;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        long current = System.currentTimeMillis();
-        long requesttime = Long.parseLong(cache.requesttime);
-        long between = current - requesttime;
-        if (between > 4 * 60 * 60 * 1000) {
-            return null;
-        }
-        return cache.response;
+        return null;
     }
 
     Object parseData(String data, Options.Type type) throws JSONException {
@@ -645,7 +654,6 @@ public class WXStreamModule extends WXModule {
             if (mProgressCallback != null) {
                 mProgressCallback.invokeAndKeepAlive(mResponse);
             }
-
         }
 
         @Override
