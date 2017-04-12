@@ -59,7 +59,7 @@ public class PushService extends Service {
                     }
                 });
                 HproseMqttClient client = MqttInstance.getInstance().getHproseMqttClient();
-                if (client != null) {
+                if (client == null) {
                     //登录失败
                     Log.d("test", "登录失败");
                 } else {
