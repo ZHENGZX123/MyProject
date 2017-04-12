@@ -141,8 +141,6 @@ public class MainActivity2 extends TabActivity {
             final int ii = i;
             LayoutInflater inflater = LayoutInflater.from(this);
             LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.layout_tab, null);
-            ImageView iv = (ImageView) ll.findViewById(R.id.iv);
-            TextView tv = (TextView) ll.findViewById(R.id.tv);
             bottom.addView(ll, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
             lls.add(ll);
             Intent tab = new Intent(this, MyTabActivity.class);
@@ -176,12 +174,41 @@ public class MainActivity2 extends TabActivity {
 
             if (i == position) {
                 tv.setTextColor(getResources().getColor(R.color.orange));
-                ImageLoader.getInstance().displayImage(tabs.get(i).image_selected, iv, getLoaderOptions());
+                ImageLoader.getInstance().displayImage(getTabImage(tabs, i, true), iv, getLoaderOptions());
             } else {
                 tv.setTextColor(getResources().getColor(R.color.lightblack));
-                ImageLoader.getInstance().displayImage(tabs.get(i).image_default, iv, getLoaderOptions());
+                ImageLoader.getInstance().displayImage(getTabImage(tabs, i, false), iv, getLoaderOptions());
             }
         }
+    }
+
+    private String getTabImage(ArrayList<TabEntity> tabs, int position, boolean select) {
+        String url = "";
+        if (select) {
+            url = tabs.get(position).image_selected;
+        } else {
+            url = tabs.get(position).image_default;
+        }
+        if (url == null || url.equals("")) {
+            if (select) {
+                if (position == 0) {
+                    url = "drawable://" + R.drawable.tab12;
+                } else if (position == 1) {
+                    url = "drawable://" + R.drawable.tab22;
+                } else if (position == 2) {
+                    url = "drawable://" + R.drawable.tab32;
+                }
+            } else {
+                if (position == 0) {
+                    url = "drawable://" + R.drawable.tab11;
+                } else if (position == 1) {
+                    url = "drawable://" + R.drawable.tab21;
+                } else if (position == 2) {
+                    url = "drawable://" + R.drawable.tab31;
+                }
+            }
+        }
+        return url;
     }
 
     protected void toast(final String id) {
