@@ -18,12 +18,8 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.taobao.weex.InitConfig;
 import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.WXSDKManager;
-import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXException;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.zk.myweex.extend.adapter.GitHubApi;
-import com.zk.myweex.extend.adapter.ReadCookiesInterceptor;
-import com.zk.myweex.extend.adapter.SaveCookiesInterceptor;
 import com.zk.myweex.extend.adapter.UniversalImageAdapter;
 import com.zk.myweex.extend.component.KWImageComponent;
 import com.zk.myweex.extend.module.SJEventModule;
@@ -32,10 +28,6 @@ import com.zk.myweex.extend.module.WXEventModule;
 import java.io.File;
 
 import cn.kiway.baas.sdk.Configure;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * Created by Administrator on 2017/2/22.
@@ -53,12 +45,7 @@ public class WXApplication extends Application {
 
     public static String PATH_PATCH = ROOT + "patch/";
 
-    public static String BASE_URL = "http://www.yuertong.com/";
-
-    public static JSCallback callback;
-
     public Activity currentActivity;
-
 
     @Override
     public void onCreate() {
@@ -71,9 +58,6 @@ public class WXApplication extends Application {
 
         //universal-image-loader初始化
         initImageCache();
-
-        //retrofit2.0初始化
-        initRetrofit();
 
         //初始化weex
         WXSDKEngine.initialize(this, new InitConfig.Builder()
@@ -136,27 +120,6 @@ public class WXApplication extends Application {
                 }
             }
         });
-    }
-
-    public static GitHubApi repo;
-
-    public GitHubApi initRetrofit() {
-        if (repo == null) {
-            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new SaveCookiesInterceptor(this))
-                    .addInterceptor(new ReadCookiesInterceptor(this)).build();
-            //旧语法不再支持
-//        OkHttpClient client = new OkHttpClient();
-//        client.addInterceptor(new ReadCookiesInterceptor(this));
-//        client.interceptors().add(new SaveCookiesInterceptor(this));
-            Retrofit retrofit = new Retrofit.Builder()
-                    .client(client)
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(ScalarsConverterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-            repo = retrofit.create(GitHubApi.class);
-        }
-        return repo;
     }
 
     private void initImageCache() {
