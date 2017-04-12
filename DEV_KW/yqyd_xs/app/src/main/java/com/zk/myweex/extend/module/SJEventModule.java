@@ -4,21 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.view.CropImageView;
-import com.pay.util.Constants;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
-import com.tencent.mm.opensdk.constants.Build;
-import com.tencent.mm.opensdk.modelpay.PayReq;
-import com.tencent.mm.opensdk.openapi.IWXAPI;
-import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
 import com.zk.myweex.utils.ScreenManager;
@@ -31,32 +25,11 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
-import cn.kwim.mqttcilent.mqttclient.MqttInstance;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
-import yjpty.teaching.http.BaseHttpHandler;
-import yjpty.teaching.http.BaseHttpRequest;
-import yjpty.teaching.http.HttpHandler;
-import yjpty.teaching.http.HttpResponseModel;
-import yjpty.teaching.http.IUrContant;
-import yjpty.teaching.util.IConstant;
 
 
-public class SJEventModule extends WXModule implements HttpHandler {
-    /**
-     * 微信API
-     */
-    private IWXAPI msgApi;
-    /**
-     * 请求回调
-     */
-    protected BaseHttpHandler activityHandler = new BaseHttpHandler(this) {
-    };
-    /**
-     * 微信支付请求
-     */
-    private PayReq req;
+public class SJEventModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void showLog(String tag, String log) {
@@ -96,16 +69,6 @@ public class SJEventModule extends WXModule implements HttpHandler {
 
     private void doLogout() {
         Log.d("test", "logoutSuccess");
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    MqttInstance.getInstance().getPushInterface().logout();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
         ScreenManager.getScreenManager().popAllActivityExceptOne(LoginActivity.class);
@@ -122,7 +85,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
             String className = obj.getString("className");
             String schoolId = obj.getString("schoolId");
             String code = "http://www.yuertong.com/yjpts/?&ref=class&classid=" + classId + "&schoolId=" + schoolId + "&classname=" + className;
-            Bitmap b = Utils.createQRImage(code, 400, 400);
+            Bitmap b = null;//= Utils.createQRImage(code, 400, 400);
             String filepath = Utils.saveMyBitmap(b, "myweex");
             callback.invoke("file://" + filepath);
 
@@ -204,67 +167,6 @@ public class SJEventModule extends WXModule implements HttpHandler {
                 }
             }
         }.start();
-    }
-
-    @JSMethod(uiThread = true)
-    public void WeChatPay(String param, JSCallback callback) {
-        Log.d("test", "param = " + param);
-        //{"total":0.06,"remark":"智慧课堂","attach":{"childId":"ffc7337009f211e7b048299dbf864a63","classId":"bc6f1550093611e7bc6713374ff06eb4","schoolId":"344da9f107cb11e7bbb321aab2798d9f","payUserId":"43f8d7f00d3c11e7a588051dfb74031a"},"outTradeNo":"20170328173719695","url":"file:///mnt/sdcard/kiway/weex/parenttab0.zip/yjpt/weex_jzd/catalog-list.js"}
-
-        BaseHttpRequest.JSESSIONID = mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).getString("jsessionid", "");
-        msgApi = WXAPIFactory.createWXAPI(mWXSDKInstance.getContext(), null);
-        req = new PayReq();
-        msgApi.registerApp(Constants.APP_ID);
-        Activity a = ((Activity) mWXSDKInstance.getContext());
-        if (!msgApi.isWXAppInstalled() || msgApi.isWXAppSupportAPI()) {
-            Toast.makeText(a, "没有安装微信", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (msgApi.getWXAppSupportAPI() < Build.PAY_SUPPORTED_SDK_INT) {
-            Toast.makeText(a, "微信版本过低，不支持支付", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        JSONObject data = null;
-        try {
-            data = new JSONObject(param);
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("attach", data.getString("attach"));
-            map.put("total", data.getString("total"));
-            map.put("outTradeNo", data.getString("outTradeNo"));
-            map.put("remark", data.getString("remark"));
-            IConstant.HTTP_CONNECT_POOL.addRequest(IUrContant.GET_WEI_PRIDUCT_URL, map, activityHandler, true, 1);
-
-            callback = callback;
-            // 测试用
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void httpErr(HttpResponseModel message) throws Exception {
-        toast("请求失败，请稍后再试");
-    }
-
-    @Override
-    public void httpSuccess(HttpResponseModel message) throws Exception {
-        if (message.getUrl().equals(IUrContant.GET_WEI_PRIDUCT_URL)) {
-            JSONObject da = new JSONObject(new String(message.getResponse()));
-            req.appId = Constants.APP_ID;
-            req.partnerId = Constants.MCH_ID;
-            req.prepayId = da.optString("prepayId");
-            req.packageValue = "Sign=WXPay";
-            req.nonceStr = da.optString("nonceStr");
-            req.timeStamp = da.optString("timeStamp");
-            req.extData = "app data"; // optional
-            req.sign = da.optString("signSecond");
-            msgApi.sendReq(req);
-        }
-    }
-
-    @Override
-    public void HttpError(HttpResponseModel message) throws Exception {
-        toast("请求失败，请稍后再试");
     }
 
     @JSMethod(uiThread = true)

@@ -138,6 +138,28 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void updateZipPackagePatchs(String patchs, String zipName) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("patchs", patchs);
+        String[] args = {zipName};
+        db.update(TABLE_ZIPPACKAGE, cv, "name=?", args);
+        db.close();
+    }
+
+
+    public void updateZipPackageBaseUrl(String baseUrl, String zipName) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("indexPath", baseUrl);
+        String[] args = {zipName};
+        db.update(TABLE_ZIPPACKAGE, cv, "name=?", args);
+        db.close();
+    }
+
+
     public void updateTabEntity(TabEntity tab) {
         if (db == null)
             db = getWritableDatabase();
@@ -149,11 +171,5 @@ public class MyDBHelper extends SQLiteOpenHelper {
         String[] args = {tab.idStr};
         db.update(TABLE_TABENTITY, cv, "idstr=?", args);
         db.close();
-    }
-
-    public void closeDB() {
-        if (db != null) {
-            db.close();
-        }
     }
 }

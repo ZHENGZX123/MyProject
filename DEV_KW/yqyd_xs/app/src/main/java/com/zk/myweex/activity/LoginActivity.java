@@ -15,7 +15,7 @@ public class LoginActivity extends WXBaseActivity {
         Log.d("test", "loginPath = " + loginPath);
         renderPage(WXFileUtils.readFileInZip(loginPath),
                 "file://" + loginPath.replace("login.js", ""),
-                "ParentTab0.zip");
+                "yqydTab0.zip");
     }
 
 }

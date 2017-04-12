@@ -2,9 +2,7 @@ package com.zk.myweex;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -27,9 +25,7 @@ import com.zk.myweex.extend.adapter.GitHubApi;
 import com.zk.myweex.extend.adapter.ReadCookiesInterceptor;
 import com.zk.myweex.extend.adapter.SaveCookiesInterceptor;
 import com.zk.myweex.extend.adapter.UniversalImageAdapter;
-import com.zk.myweex.extend.component.GroupListView;
 import com.zk.myweex.extend.component.KWImageComponent;
-import com.zk.myweex.extend.module.ChatEventModule;
 import com.zk.myweex.extend.module.SJEventModule;
 import com.zk.myweex.extend.module.WXEventModule;
 
@@ -40,15 +36,14 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
-import yjpty.teaching.App;
 
 /**
  * Created by Administrator on 2017/2/22.
  */
 
-public class WXApplication extends App {
+public class WXApplication extends Application {
 
-    public static String ROOT = "/mnt/sdcard/kiway/parent/";
+    public static String ROOT = "/mnt/sdcard/kiway/yqyd_xs/";
 
     public static String PATH = ROOT + "weex/";
 
@@ -89,9 +84,7 @@ public class WXApplication extends App {
         try {
             WXSDKEngine.registerModule("SJevent", SJEventModule.class);
             WXSDKEngine.registerModule("event", WXEventModule.class);
-            WXSDKEngine.registerModule("ChatEvent", ChatEventModule.class);
 
-            WXSDKEngine.registerComponent("chattable", GroupListView.class);
             WXSDKEngine.registerComponent("kwimage", KWImageComponent.class);
 
         } catch (WXException e) {
@@ -212,9 +205,9 @@ public class WXApplication extends App {
         ImageLoader.getInstance().init(config);
     }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
-    }
+//    @Override
+//    protected void attachBaseContext(Context base) {
+//        super.attachBaseContext(base);
+//        MultiDex.install(this);
+//    }
 }
