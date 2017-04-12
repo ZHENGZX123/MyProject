@@ -94,7 +94,6 @@ public class MainActivity2 extends TabActivity {
                 List<Service> services = null;
                 try {
                     services = new Service().find(new KWQuery().like("id", "tab%"));
-                    Log.d("test", "services count  = " + services.size());
                     for (Service s : services) {
                         Log.d("test", "service  = " + s.toString());
                         TabEntity tab = new TabEntity();
@@ -106,6 +105,9 @@ public class MainActivity2 extends TabActivity {
                         } catch (Exception e) {
                         }
                         new MyDBHelper(getApplicationContext()).updateTabEntity(tab);
+
+                        String baseUrl = s.get("baseUrl").toString();
+                        new MyDBHelper(getApplicationContext()).updateZipPackageBaseUrl(baseUrl, tab.idStr + ".zip");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
