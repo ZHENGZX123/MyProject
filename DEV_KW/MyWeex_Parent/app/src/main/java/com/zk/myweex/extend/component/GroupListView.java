@@ -7,6 +7,7 @@ package com.zk.myweex.extend.component;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -44,6 +45,8 @@ public class GroupListView extends WXComponent<ListView> {
         this.lv.setBackgroundColor(Color.WHITE);
         this.lv.setFocusable(false);
         this.lv.setFocusableInTouchMode(false);
+        this.lv.setDivider(new ColorDrawable(Color.parseColor("#eeeeee")));
+        this.lv.setDividerHeight(1);
         this.adapter = new HomeSchoolAdapter(getContext());
         this.lv.setAdapter(this.adapter);
 
