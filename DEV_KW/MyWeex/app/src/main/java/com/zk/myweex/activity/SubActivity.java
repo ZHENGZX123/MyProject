@@ -2,8 +2,6 @@ package com.zk.myweex.activity;
 
 import android.view.KeyEvent;
 
-import com.zk.myweex.utils.MyDBHelper;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,8 +18,8 @@ public class SubActivity extends WXBaseActivity {
                     mTimer.cancel();
                     mTimer = null;
                 }
-                new MyDBHelper(this).closeDB();
                 finish();
+                android.os.Process.killProcess(android.os.Process.myPid());
             } else {
                 toast("再按一次退出");
                 mCanQuit = true;

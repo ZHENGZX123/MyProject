@@ -30,9 +30,17 @@ import java.util.Random;
 
 import cn.kwim.mqttcilent.common.cache.dao.DaoType;
 import cn.kwim.mqttcilent.common.cache.dao.MainListDao;
+import cn.kwim.mqttcilent.common.cache.javabean.FriendList;
+import cn.kwim.mqttcilent.common.cache.javabean.GroupContent;
+import cn.kwim.mqttcilent.common.cache.javabean.GroupListMember;
+import cn.kwim.mqttcilent.common.cache.javabean.MainList;
+import cn.kwim.mqttcilent.common.cache.javabean.Message;
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
 import cn.kwim.mqttcilent.mqttclient.mq.PushInterface;
+import io.realm.Realm;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
+
+import static cn.kwim.mqttcilent.common.cache.dao.Dao.getRealm;
 
 
 public class SJEventModule extends WXModule {
@@ -94,6 +102,16 @@ public class SJEventModule extends WXModule {
                 }
             }
         }.start();
+
+        Realm realm = getRealm();
+        realm.beginTransaction();
+        realm.where(MainList.class).findAll().deleteAllFromRealm();
+        realm.where(Message.class).findAll().deleteAllFromRealm();
+        realm.where(GroupListMember.class).findAll().deleteAllFromRealm();
+        realm.where(GroupContent.class).findAll().deleteAllFromRealm();
+        realm.where(FriendList.class).findAll().deleteAllFromRealm();
+        realm.commitTransaction();
+        realm.close();
 
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
@@ -196,6 +214,7 @@ public class SJEventModule extends WXModule {
     public void backToMain() {
         Log.d("test", "backToMain is called");
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
+        ScreenManager.getScreenManager().popAllActivityExceptOne(MainActivity2.class);
     }
 
     @JSMethod(uiThread = true)
