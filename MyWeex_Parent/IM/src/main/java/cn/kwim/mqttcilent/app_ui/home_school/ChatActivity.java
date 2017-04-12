@@ -1022,7 +1022,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                     viewHolder.tv_chatcontent.setLongClickable(true);
                     viewHolder.tv_chatcontent.setTag(position + "$" + message.getKey() + "$" + message.getMessageType() +
                             "$" + message.getReadType() + "$" + "1");
-                    viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
+                    // viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
                     if (message.getIsSendOk().equals(DaoType.STATUS.SENDING)) {
                         viewHolder.pb_sending.setVisibility(View.VISIBLE);
                         viewHolder.resend.setVisibility(View.GONE);
@@ -1047,7 +1047,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                     viewHolder.tv_chatcontent.setLongClickable(true);
                     viewHolder.tv_chatcontent.setTag(position + "$" + message.getKey() + "$" + message.getMessageType() +
                             "$" + message.getReadType() + "$" + "3");
-                    viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
+                    // viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
                     break;
                 }
                 case HOMEWORKR: {
@@ -1058,7 +1058,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                     viewHolder.tv_chatcontent.setLongClickable(true);
                     viewHolder.tv_chatcontent.setTag(position + "$" + message.getKey() + "$" + message.getMessageType() +
                             "$" + message.getReadType() + "$" + type);
-                    viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
+                    // viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
                     break;
                 }
                 case HOMEWORKL: {
@@ -1067,7 +1067,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                     viewHolder.tv_chatcontent.setLongClickable(true);
                     viewHolder.tv_chatcontent.setTag(position + "$" + message.getKey() + "$" + message.getMessageType() +
                             "$" + message.getReadType() + "$" + "3");
-                    viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
+                    // viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
                     break;
                 }
                 case NOTICER: {
@@ -1078,7 +1078,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                     viewHolder.tv_chatcontent.setLongClickable(true);
                     viewHolder.tv_chatcontent.setTag(position + "$" + message.getKey() + "$" + message.getMessageType() +
                             "$" + message.getReadType() + "$" + type);
-                    viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
+                    // viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
                     break;
                 }
                 case NOTICEL: {
@@ -1087,7 +1087,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                     viewHolder.tv_chatcontent.setLongClickable(true);
                     viewHolder.tv_chatcontent.setTag(position + "$" + message.getKey() + "$" + message.getMessageType() +
                             "$" + message.getReadType() + "$" + "3");
-                    viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
+                    // viewHolder.tv_chatcontent.setOnCreateContextMenuListener(mListViewContextMenuListener);
                     break;
                 }
                 case IMAGER: {
@@ -1117,7 +1117,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                     viewHolder.imageView.setLongClickable(true);
                     viewHolder.imageView.setTag(position + "$" + message.getKey() + "$" + message.getMessageType() + "$"
                             + message.getReadType() + "$" + type);
-                    viewHolder.imageView.setOnCreateContextMenuListener(mListViewContextMenuListener);
+//                    viewHolder.imageView.setOnCreateContextMenuListener(mListViewContextMenuListener);
                     setOnclickImage(viewHolder, url);
 
                     viewHolder.resend.setOnClickListener(new View.OnClickListener() {
