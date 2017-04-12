@@ -47,8 +47,8 @@ public class GroupListView extends WXComponent<ListView> {
         this.adapter = new HomeSchoolAdapter(getContext());
         this.lv.setAdapter(this.adapter);
 
-        initData();
         addListener();
+        initData();
         return this.lv;
     }
 

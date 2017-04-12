@@ -153,11 +153,13 @@ public class WXEventModule extends WXModule {
             String jsessionid = obj.getString("jsessionid");
             String content = obj.getString("content");
             org.json.JSONArray img_url = obj.getJSONArray("img_url");
-            if (img_url.length() == 0) {
-                toast("请先上传图片");
+            String classes = obj.getString("classes");
+
+            if (img_url.length() == 0 && content.equals("")) {
+                toast("图片和文字不能同时为空");
                 return;
             }
-            String classes = obj.getString("classes");
+
             if (!NetworkUtil.isNetworkAvailable(mWXSDKInstance.getContext())) {
                 OfflineTask task = new OfflineTask();
                 task.request = str;
@@ -175,10 +177,12 @@ public class WXEventModule extends WXModule {
             params.put("classes", classes);
             params.put("content", content);
             String temp = "";
-            for (int i = 0; i < img_url.length(); i++) {
-                temp += img_url.get(i).toString() + "#";
+            if (img_url.length() > 0) {
+                for (int i = 0; i < img_url.length(); i++) {
+                    temp += img_url.get(i).toString() + "#";
+                }
+                temp = temp.substring(0, temp.length() - 1);
             }
-            temp = temp.substring(0, temp.length() - 1);
             params.put("img_url", temp);
             client.post(mWXSDKInstance.getContext(), url, params, new TextHttpResponseHandler() {
                 public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
