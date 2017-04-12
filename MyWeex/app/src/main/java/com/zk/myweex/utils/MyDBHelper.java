@@ -150,10 +150,4 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.update(TABLE_TABENTITY, cv, "idstr=?", args);
         db.close();
     }
-
-    public void closeDB() {
-        if (db != null) {
-            db.close();
-        }
-    }
 }
