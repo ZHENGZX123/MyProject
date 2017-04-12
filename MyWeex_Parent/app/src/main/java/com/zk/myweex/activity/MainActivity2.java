@@ -105,6 +105,9 @@ public class MainActivity2 extends TabActivity {
                         } catch (Exception e) {
                         }
                         new MyDBHelper(getApplicationContext()).updateTabEntity(tab);
+
+                        String baseUrl = s.get("baseUrl").toString();
+                        new MyDBHelper(getApplicationContext()).updateZipPackageBaseUrl(baseUrl, tab.idStr + ".zip");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
