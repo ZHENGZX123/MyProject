@@ -13,7 +13,6 @@ import java.util.List;
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Package;
 import cn.kiway.baas.sdk.model.service.Service;
-import io.realm.Realm;
 
 /**
  * Created by Administrator on 2017/2/28.
@@ -110,12 +109,9 @@ public class VersionUpManager {
         //4.删除文件夹
         FileUtils.delFolder(zipA.replace(".zip", ""));
 
-        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                zip.patchs = zip.patchs + " " + patch.getId();
-            }
-        });
+        zip.patchs = zip.patchs + " " + patch.getId();
+
+        new MyDBHelper(context).updateZipPackagePatchs(zip.patchs, zipA);
         Log.d("version", "包打好了");
     }
 
@@ -138,10 +134,7 @@ public class VersionUpManager {
         File newFile = new File(WXApplication.PATH_TMP + zipName);
         boolean move2 = newFile.renameTo(new File(WXApplication.PATH + zipName));
         //3.保存版本号
-
-
         new MyDBHelper(context).updateZipPackageVersion(version, zipName);
-
     }
 
     private void comparePackage(String currentPackage, String newPackage) {

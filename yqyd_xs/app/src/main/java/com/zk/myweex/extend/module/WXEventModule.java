@@ -29,10 +29,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import yjpty.teaching.acitivity.HeizInfoActivity;
-import yjpty.teaching.acitivity.MipcaCaptureActivity;
-import yjpty.teaching.http.BaseHttpRequest;
-
 
 public class WXEventModule extends WXModule {
 
@@ -117,15 +113,7 @@ public class WXEventModule extends WXModule {
     public void QRScan(String classId, JSCallback callback) {
         Log.d("test", "QRScan classid = " + classId);
         this.scanCallback = callback;
-        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), MipcaCaptureActivity.class), 999);
     }
-
-    @JSMethod(uiThread = true)
-    public void ControllBox(String dic) {
-        Log.d("test", "ControllBox dic = " + dic);
-        //跳到另一个控制页面
-    }
-
 
     @JSMethod(uiThread = true)
     public void CallPhone(String phone) {
@@ -187,13 +175,6 @@ public class WXEventModule extends WXModule {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    @JSMethod()
-    public void AddClass(String str, JSCallback callback) {
-        Log.d("test", "addclass str = " + str);
-        this.scanCallback = callback;
-        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), MipcaCaptureActivity.class), 9999);
     }
 
     @Override
@@ -264,14 +245,6 @@ public class WXEventModule extends WXModule {
                 e.printStackTrace();
             }
         }
-    }
-
-    @JSMethod(uiThread = true)
-    public void teaching(String url) {
-        Log.d("test", "teaching url = " + url);
-        BaseHttpRequest.JSESSIONID = url;
-        Intent i = new Intent(mWXSDKInstance.getContext(), HeizInfoActivity.class);
-        mWXSDKInstance.getContext().startActivity(i);
     }
 
     private ArrayList<String> temps = new ArrayList<>();

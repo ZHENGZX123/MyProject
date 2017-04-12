@@ -32,7 +32,6 @@ import com.zk.myweex.utils.UploadUtil;
 import com.zk.myweex.utils.Utils;
 import com.zk.myweex.utils.VersionUpManager;
 
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -41,20 +40,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import cn.kiway.Yjptj.R;
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.service.Service;
-import cn.kiway.utils.SharedPreferencesUtil;
-import cn.kwim.mqttcilent.common.Global;
-import cn.kwim.mqttcilent.common.cache.dao.Dao;
-import cn.kwim.mqttcilent.common.cache.dao.DaoType;
-import cn.kwim.mqttcilent.common.cache.dao.MainListDao;
-import cn.kwim.mqttcilent.common.cache.dao.MessageDao;
-import cn.kwim.mqttcilent.common.cache.javabean.Converse;
-import cn.kwim.mqttcilent.mqttclient.MqttInstance;
-import cn.kwim.mqttcilent.mqttclient.mq.HproseMqttClient;
-import cn.kwim.mqttcilent.mqttclient.mq.PushInterface;
-import cn.kwim.mqttcilent.mqttclient.mq.TopicProcessService;
+import cn.kiway.yiqiyuedu.R;
 
 import static uk.co.senab.photoview.sample.ViewPagerActivity.getLoaderOptions;
 
@@ -82,8 +70,6 @@ public class MainActivity2 extends TabActivity {
         tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
         initView(tabs);
 
-        //1.connetMqtt
-        connectMqtt();
     }
 
     private void checkRemoteService() {
@@ -105,6 +91,9 @@ public class MainActivity2 extends TabActivity {
                         } catch (Exception e) {
                         }
                         new MyDBHelper(getApplicationContext()).updateTabEntity(tab);
+
+                        String baseUrl = s.get("baseUrl").toString();
+                        new MyDBHelper(getApplicationContext()).updateZipPackageBaseUrl(baseUrl, tab.idStr + ".zip");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -266,107 +255,6 @@ public class MainActivity2 extends TabActivity {
         }.start();
     }
 
-    private void connectMqtt() {
-        new Thread() {
-            @Override
-            public void run() {
-                String userName = getSharedPreferences("kiway", 0).getString("userName", "");
-                String userPwd = getSharedPreferences("kiway", 0).getString("userPwd", "");
-                MqttInstance.getInstance().conMqtt(userName, userPwd, new MqttInstance.LoginImlisener() {
-                    @Override
-                    public void isLogin() {
-                        Log.d("mqtt", "mqtt login failure");
-                        return;
-                    }
-                });
-                HproseMqttClient client = MqttInstance.getInstance().getHproseMqttClient();
-                if (client == null) {
-                    //登录失败
-                    Log.d("mqtt", "登录失败");
-                } else {
-                    Log.d("mqtt", "登录成功");
-                    try {
-                        PushInterface pushInterface = MqttInstance.getInstance().getPushInterface();
-                        if (pushInterface != null) {
-                            //1.userinfo
-                            getUserInfo(pushInterface.getUserInfo());
-                            //2.grouplist
-                            getGroupInfo(pushInterface.getGroupList());
-                            //3.注册回调
-                            client.register(RegisterType.MESSAGE, new TopicProcessService() {
-                                @Override
-                                public void process(String topic, MqttMessage message, String time) {
-                                    Log.d("mqtt", "process1 message =" + message);//接到聊天消息。。。。
-                                    MessageDao.saveRecMessage(message.toString());
-                                    Map map = new Gson().fromJson(message.toString(), Map.class);
-                                    String id = map.get("recvid").toString().replace(".0", "");
-                                    String sendtype = map.get("sendtype").toString();
-                                    String content = map.get("msg").toString();
-                                    String type = map.get("type").toString();
-                                    String name = map.get("formnick").toString();
-                                    int num = MessageDao.unreadCount(id, sendtype);
-                                    MainListDao.updateGroupList(num + "", Dao.getKey(id), content, type, name);
-                                }
-                            });
-                            //监听撤回消息
-                            client.register(RegisterType.RECALLMESSAGE, new TopicProcessService() {
-                                @Override
-                                public void process(String topic, MqttMessage message, String time) {
-                                    Log.d("mqtt", "process2 message =" + message);
-                                    Map map = new Gson().fromJson(message.toString(), Map.class);
-                                    String msgId = map.get("msgid").toString().replace(".0", "");
-                                    MessageDao.recallMsg(msgId);
-                                }
-                            });
-                        } else {
-                            Log.d("mqtt", "pushInterface null");
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }.start();
-    }
-
-    public interface RegisterType {
-        String MESSAGE = "message";
-        String RECALLMESSAGE = "recallMessage";
-    }
-
-    private void getGroupInfo(String groupList) {
-        Log.d("mqtt", "groupList = " + groupList);
-        MainListDao.saveGroupList(groupList, DaoType.SESSTIONTYPE.GROUP);
-    }
-
-    private void getUserInfo(String userInfo) {
-        try {
-            Log.d("mqtt", "userInfo = " + userInfo);
-            if (userInfo == null || userInfo.equals("")) {
-                return;
-            }
-            Converse converse = new Gson().fromJson(userInfo, Converse.class);
-            if (converse.getStatusCode().equals("200")) {
-                Map map = (Map) converse.getData();
-                Global.getInstance().setLogo(map.get("logo").toString());
-                Global.getInstance().setUserId(map.get("uid").toString().replace(".0", ""));
-                Global.getInstance().setGender(map.get("gender").toString());
-                Global.getInstance().setNickName(map.get("nickname").toString());
-
-                SharedPreferencesUtil.save(this, Global.GL_NICKNAME,
-                        map.get("nickname").toString());
-                SharedPreferencesUtil.save(this, Global.GL_LOGO,
-                        map.get("logo").toString());
-                SharedPreferencesUtil.save(this, Global.GL_GENDER,
-                        map.get("gender").toString());
-                SharedPreferencesUtil.save(this, Global.GL_UID,
-                        map.get("uid").toString());
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     private void doQzqTask(final OfflineTask task) {
         Log.d("stream", "doQzqTask = " + task.request);

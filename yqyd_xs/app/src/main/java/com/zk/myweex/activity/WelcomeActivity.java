@@ -88,36 +88,36 @@ public class WelcomeActivity extends WXBaseActivity {
                 new File(WXApplication.PATH_TMP).mkdirs();
             }
             //2.拷贝。。。
-            FileUtils.copyRawToSdcard(this, R.raw.yjpt, "ParentTab0.zip");
-            FileUtils.copyRawToSdcard(this, R.raw.yjpt, "ParentTab1.zip");
-            FileUtils.copyRawToSdcard(this, R.raw.yjpt, "ParentTab2.zip");
+            FileUtils.copyRawToSdcard(this, R.raw.yjpt, "yqydTab0.zip");
+            FileUtils.copyRawToSdcard(this, R.raw.yjpt, "yqydTab1.zip");
+            FileUtils.copyRawToSdcard(this, R.raw.yjpt, "yqydTab2.zip");
 
             //3.插入数据库
             TabEntity tab0 = new TabEntity();
             tab0.name = "首页";
-            tab0.idStr = "ParentTab0";
+            tab0.idStr = "yqydTab0";
             TabEntity tab1 = new TabEntity();
             tab1.name = "亲子圈";
-            tab1.idStr = "ParentTab1";
+            tab1.idStr = "yqydTab1";
             TabEntity tab2 = new TabEntity();
             tab2.name = "我的";
-            tab2.idStr = "ParentTab2";
+            tab2.idStr = "yqydTab2";
             new MyDBHelper(getApplicationContext()).addTabEntity(tab0);
             new MyDBHelper(getApplicationContext()).addTabEntity(tab1);
             new MyDBHelper(getApplicationContext()).addTabEntity(tab2);
 
             ZipPackage zip0 = new ZipPackage();
-            zip0.name = "ParentTab0.zip";
+            zip0.name = "yqydTab0.zip";
             zip0.indexPath = "yjpt/weex_jzd/main.js";
             zip0.version = "2.0.0";
             zip0.patchs = "";
             ZipPackage zip1 = new ZipPackage();
-            zip1.name = "ParentTab1.zip";
+            zip1.name = "yqydTab1.zip";
             zip1.indexPath = "yjpt/weex_jzd/qzq.js";
             zip1.version = "2.0.0";
             zip1.patchs = "";
             ZipPackage zip2 = new ZipPackage();
-            zip2.name = "ParentTab2.zip";
+            zip2.name = "yqydTab2.zip";
             zip2.indexPath = "yjpt/weex_jzd/wd.js";
             zip2.version = "2.0.0";
             zip2.patchs = "";
