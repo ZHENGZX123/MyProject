@@ -19,6 +19,7 @@ import com.tencent.mm.opensdk.constants.Build;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.zk.myweex.WXApplication;
 import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
 import com.zk.myweex.utils.ScreenManager;
@@ -32,8 +33,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
+import cn.kwim.mqttcilent.common.cache.dao.DaoType;
+import cn.kwim.mqttcilent.common.cache.dao.MainListDao;
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
+import cn.kwim.mqttcilent.mqttclient.mq.PushInterface;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 import yjpty.teaching.http.BaseHttpHandler;
 import yjpty.teaching.http.BaseHttpRequest;
@@ -106,6 +111,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
                 }
             }
         }.start();
+        //TODO 清除掉数据库
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
         ScreenManager.getScreenManager().popAllActivityExceptOne(LoginActivity.class);
@@ -123,9 +129,8 @@ public class SJEventModule extends WXModule implements HttpHandler {
             String schoolId = obj.getString("schoolId");
             String code = "http://www.yuertong.com/yjpts/?&ref=class&classid=" + classId + "&schoolId=" + schoolId + "&classname=" + className;
             Bitmap b = Utils.createQRImage(code, 400, 400);
-            String filepath = Utils.saveMyBitmap(b, "myweex");
+            String filepath = Utils.saveMyBitmap(b, new Random().nextInt() + "");
             callback.invoke("file://" + filepath);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -216,7 +221,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
         req = new PayReq();
         msgApi.registerApp(Constants.APP_ID);
         Activity a = ((Activity) mWXSDKInstance.getContext());
-        if (!msgApi.isWXAppInstalled() || msgApi.isWXAppSupportAPI()) {
+        if (!msgApi.isWXAppInstalled()) {
             Toast.makeText(a, "没有安装微信", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -234,7 +239,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
             map.put("remark", data.getString("remark"));
             IConstant.HTTP_CONNECT_POOL.addRequest(IUrContant.GET_WEI_PRIDUCT_URL, map, activityHandler, true, 1);
 
-            callback = callback;
+            WXApplication.callback = callback;
             // 测试用
         } catch (JSONException e) {
             e.printStackTrace();
@@ -285,6 +290,22 @@ public class SJEventModule extends WXModule implements HttpHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    @JSMethod(uiThread = true)
+    public void modifyClass() {
+        Log.d("test", "modifyClass is called");
+        PushInterface pushInterface = MqttInstance.getInstance().getPushInterface();
+        if (pushInterface != null) {
+            //2.grouplist
+            getGroupInfo(pushInterface.getGroupList());
+        }
+    }
+
+    private void getGroupInfo(String list) {
+        Log.d("mqtt", "groupList = " + list);
+        MainListDao.saveGroupList(list, DaoType.SESSTIONTYPE.GROUP);
     }
 }
 
