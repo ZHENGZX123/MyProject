@@ -252,7 +252,7 @@ public class MainActivity2 extends TabActivity {
                     }
                 });
                 HproseMqttClient client = MqttInstance.getInstance().getHproseMqttClient();
-                if (client != null) {
+                if (client == null) {
                     //登录失败
                     Log.d("mqtt", "登录失败");
                 } else {

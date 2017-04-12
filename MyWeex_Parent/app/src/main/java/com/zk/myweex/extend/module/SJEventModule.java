@@ -294,7 +294,6 @@ public class SJEventModule extends WXModule implements HttpHandler {
     public void backToMain() {
         Log.d("test", "backToMain is called");
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
-        ScreenManager.getScreenManager().popAllActivityExceptOne(MainActivity2.class);
     }
 
     @JSMethod(uiThread = true)
