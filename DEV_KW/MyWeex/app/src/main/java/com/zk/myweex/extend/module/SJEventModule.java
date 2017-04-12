@@ -66,12 +66,16 @@ public class SJEventModule extends WXModule {
     @JSMethod(uiThread = true)
     public void loginSuccess(String url) {
         Log.d("test", "loginSuccess url = " + url);
+//        {"pageUrl":"http://assets/yjpts/weex_jzd/index.js","userPwd":"111111","userName":"13430893721","jsessionid":"6B1C6F0669567E562130F2618D6E603C","userType":"2"}
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
         try {
             String userName = new JSONObject(url).getString("userName");
             String userPwd = new JSONObject(url).getString("userPwd");
+            String jsessionid = new JSONObject(url).getString("jsessionid");
+
             mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("userName", userName).commit();
             mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("userPwd", userPwd).commit();
+            mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("jsessionid", jsessionid).commit();
         } catch (JSONException e) {
             e.printStackTrace();
         }
