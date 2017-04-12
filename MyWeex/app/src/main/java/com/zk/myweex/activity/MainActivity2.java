@@ -79,10 +79,11 @@ public class MainActivity2 extends TabActivity {
         checkZipVersion();
 
         ArrayList<TabEntity> tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
-        Log.d("test", "main initView");
+
         tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
         initView(tabs);
 
+        Log.d("mqtt", "main oncreate");
         //1.connetMqtt
         connectMqtt();
     }
