@@ -81,6 +81,9 @@ public class MainActivity2 extends TabActivity {
         Log.d("test", "main initView");
         tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
         initView(tabs);
+
+        //1.connetMqtt
+        connectMqtt();
     }
 
     private void checkRemoteService() {
@@ -208,8 +211,6 @@ public class MainActivity2 extends TabActivity {
                 rl_nonet.setVisibility(View.VISIBLE);
             } else {
                 rl_nonet.setVisibility(View.GONE);
-                //1.connetMqtt
-                connectMqtt();
                 //2.check offline task
                 checkOfflineTask();
             }
@@ -251,7 +252,7 @@ public class MainActivity2 extends TabActivity {
                     }
                 });
                 HproseMqttClient client = MqttInstance.getInstance().getHproseMqttClient();
-                if (!MqttInstance.getInstance().getType()) {
+                if (client != null) {
                     //登录失败
                     Log.d("mqtt", "登录失败");
                 } else {

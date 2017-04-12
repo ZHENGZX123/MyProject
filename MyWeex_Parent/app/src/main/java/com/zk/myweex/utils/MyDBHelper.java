@@ -151,9 +151,4 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void closeDB() {
-        if (db != null) {
-            db.close();
-        }
-    }
 }
