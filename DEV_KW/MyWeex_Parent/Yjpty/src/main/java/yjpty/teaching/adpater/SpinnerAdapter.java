@@ -8,10 +8,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.zk.myweex.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import yjpty.teaching.R;
 import yjpty.teaching.acitivity.BaseActivity;
 import yjpty.teaching.util.ViewUtil;
 

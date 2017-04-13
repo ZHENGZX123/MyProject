@@ -34,6 +34,7 @@ import com.zbar.lib.camera.CameraManager;
 import com.zbar.lib.decode.CaptureActivityHandler;
 import com.zbar.lib.decode.InactivityTimer;
 import com.zbar.lib.decode.RGBLuminanceSource;
+import com.zk.myweex.R;
 
 import org.json.JSONObject;
 
@@ -42,7 +43,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import yjpty.teaching.R;
 import yjpty.teaching.dialog.ClearDataDialog;
 import yjpty.teaching.dialog.LoginDialog;
 import yjpty.teaching.dialog.NewVersionDialog;
@@ -148,7 +148,7 @@ public class MipcaCaptureActivity extends BaseActivity implements
         mQrLineView.setAnimation(mAnimation);
         findViewById(R.id.for_photos).setOnClickListener(this);
         dialog = new NewVersionDialog(this, this);
-        if (bundle!=null) {
+        if (bundle != null) {
             if (bundle.getInt(IConstant.BUNDLE_PARAMS) == 1) // 1为上课动作
                 findViewById(R.id.for_photos).setVisibility(View.GONE);
         }
@@ -403,6 +403,13 @@ public class MipcaCaptureActivity extends BaseActivity implements
             return;
         }
         if (str.equals("box")) {// 上课
+            if (bundle != null && bundle.getInt(IConstant.BUNDLE_PARAMS) == 3) {
+                Intent i = new Intent();
+                i.putExtra("result", result);
+                setResult(RESULT_OK, i);
+                finish();
+                return;
+            }
             hCode = mapRequest.get("cid");
             isHot = mapRequest.get("ishot");
             SharedPreferencesUtil.save(this, IConstant.WIFI_NEME

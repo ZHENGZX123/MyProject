@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.ListView;
 
+import com.zk.myweex.R;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -15,7 +17,6 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
-import yjpty.teaching.R;
 import yjpty.teaching.adpater.HeizInfoAdapter;
 import yjpty.teaching.http.HttpResponseModel;
 import yjpty.teaching.http.IUrContant;
@@ -24,8 +25,6 @@ import yjpty.teaching.model.HeziStautsModel;
 import yjpty.teaching.util.IConstant;
 import yjpty.teaching.util.ViewUtil;
 import yjpty.teaching.wifi.WifiAdmin;
-
-import static android.content.Context.WIFI_SERVICE;
 
 public class HeizInfoActivity extends BaseActivity {
     ListView listView;
@@ -213,6 +212,7 @@ public class HeizInfoActivity extends BaseActivity {
                         model.setHezi_code(item.optString("mac"));// 盒子编号
                         model.setSchoolId(item.optString("schoolId"));// 学校id
                         model.setYear(item.optString("gradeId"));// 年级
+                        model.setIsActivateKinect(item.optString("isKT"));//是否开通体感课程
                         app.classModels.add(model);
                     }
                 }

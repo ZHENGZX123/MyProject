@@ -6,7 +6,8 @@ import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
-import yjpty.teaching.R;
+import com.zk.myweex.R;
+
 import yjpty.teaching.fragment.BaseFragment;
 import yjpty.teaching.fragment.MySessionFragment;
 import yjpty.teaching.fragment.SessionLNFragment;

@@ -8,9 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.zk.myweex.R;
+
 import java.util.List;
 
-import yjpty.teaching.R;
 import yjpty.teaching.acitivity.BaseActivity;
 import yjpty.teaching.acitivity.MipcaCaptureActivity;
 import yjpty.teaching.acitivity.TeachingPlansActivity;
@@ -83,7 +84,7 @@ public class HeizInfoAdapter extends ArrayAdapter<HeziStautsModel> implements
 
     @Override
     public void onClick(View v) {
-        int position = Integer.parseInt(v.getTag(R.id.bundle_params).toString());
+        int position =Integer.parseInt(v.getTag(R.id.bundle_params).toString());
         HeziStautsModel model = list.get(position);
         Bundle bundle = new Bundle();
         activity.app.setClassPosition(position);
@@ -92,7 +93,7 @@ public class HeizInfoAdapter extends ArrayAdapter<HeziStautsModel> implements
                 if (model.getHeziResoures(activity).indexOf(model.getString(activity)) < 0) {
                     String string;
                     if (model.getHeziResoures(activity).equals(activity.resources.getString(R.string.no_resource))) {
-                        string = "盒子没有资源";
+                        string ="盒子没有资源";
                     } else {
                         string = "资源不对应";
                     }
