@@ -146,6 +146,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
             String className = obj.getString("className");
             String schoolId = obj.getString("schoolId");
             String code = "http://www.yuertong.com/yjpts/?&ref=class&classid=" + classId + "&schoolId=" + schoolId + "&classname=" + className;
+            ;
             Bitmap b = Utils.createQRImage(code, 400, 400);
             String filepath = Utils.saveMyBitmap(b, new Random().nextInt() + "");
             callback.invoke("file://" + filepath);
