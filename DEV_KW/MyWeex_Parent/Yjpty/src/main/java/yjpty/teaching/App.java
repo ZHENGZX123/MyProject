@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.kwim.mqttcilent.KwApplication;
 import yjpty.teaching.model.ClassModel;
 import yjpty.teaching.model.VideoModel;
 import yjpty.teaching.tcpudp.HandlerClient;
@@ -21,7 +22,7 @@ import yjpty.teaching.util.IConstant;
  * Created by Administrator on 2017/3/17.
  */
 
-public class App extends Application{
+public class App extends KwApplication{
     public HandlerClient client;
     public List<ClassModel> classModels = new ArrayList<ClassModel>();
     /**
@@ -109,6 +110,7 @@ public class App extends Application{
 
     @Override
     public void onCreate() {
+        super.onCreate();
         DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(this).setMaxCacheSize(2 * 1024 * 2014)
                 .setBaseDirectoryName(IConstant.DOWNLOAD_PHOTO_FLODER)
                 .setBaseDirectoryPathSupplier(new Supplier<File>() {
