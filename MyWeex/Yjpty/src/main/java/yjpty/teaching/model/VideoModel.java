@@ -9,10 +9,6 @@ public class VideoModel implements Serializable {
      */
     int id;
     /**
-     * 视频dir_id
-     */
-    int dirId;
-    /**
      * 视频类型type
      */
     int type;
@@ -29,10 +25,6 @@ public class VideoModel implements Serializable {
      */
     String preview;
     /**
-     * cateId
-     */
-    int cate;
-    /**
      * 教学目标
      */
     String teachingAim;
@@ -45,39 +37,86 @@ public class VideoModel implements Serializable {
      */
     String homework;
     /**
-     * 主课
-     */
-    String dirName;
-    /**
      * 分类图像
      */
-    String dirPreview;
     String typeName;
-    int seqno;
     /**
      * 课程属于哪个年级
      */
     String gragde;
     /**
-     * 是否为自定义
-     */
-    int isUser;
-    /**
      * 所属的课程名字
      */
     String sessionName;
     /**
-     * 课程定义播放的时间
+     * 体感课程包名
      */
-    String sessionTime;
+    String kinectPackageName;
     /**
-     * 课程上课的播放时间
+     * 是否为体感课程
      */
-    String seesionPlayTime;
+    boolean isKiectSession;
     /**
-     * 是否为当前课程
+     * 播放的次数
      */
-    boolean isTotalSession;
+    int readCount;
+    /***
+     * 体感课程介绍
+     * */
+    String KiectSessionContent;
+    /***
+     * 体感课程apk下载地址
+     * */
+    String KiectApkDownLoadUrl;
+
+    public String getKiectApkDownLoadUrl() {
+        if (KiectApkDownLoadUrl.equals(""))
+            KiectApkDownLoadUrl = "null";
+        return KiectApkDownLoadUrl;
+    }
+
+    public void setKiectApkDownLoadUrl(String kiectApkDownLoadUrl) {
+        KiectApkDownLoadUrl = kiectApkDownLoadUrl;
+    }
+
+    public int getIsKT() {
+        return isKT;
+    }
+
+    public void setIsKT(int isKT) {
+        this.isKT = isKT;
+    }
+
+    /**
+     * 体感课程是否开通
+     */
+    int isKT;
+
+    public String getKiectSessionContent() {
+        if (KiectSessionContent.equals("null"))
+            KiectSessionContent = "暂无介绍";
+        return KiectSessionContent;
+    }
+
+    public void setKiectSessionContent(String kiectSessionContent) {
+        KiectSessionContent = kiectSessionContent;
+    }
+
+    public boolean isKiectSession() {
+        return isKiectSession;
+    }
+
+    public void setKiectSession(boolean kiectSession) {
+        isKiectSession = kiectSession;
+    }
+
+    public String getKinectPackageName() {
+        return kinectPackageName;
+    }
+
+    public void setKinectPackageName(String kinectPackageName) {
+        this.kinectPackageName = kinectPackageName;
+    }
 
     public int getReadCount() {
         return readCount;
@@ -85,30 +124,6 @@ public class VideoModel implements Serializable {
 
     public void setReadCount(int readCount) {
         this.readCount = readCount;
-    }
-
-    /**
-     * 播放的次数
-     */
-
-    int readCount;
-
-    public boolean isTotalSession() {
-        return isTotalSession;
-    }
-
-    public void setTotalSession(boolean isTotalSession) {
-        this.isTotalSession = isTotalSession;
-    }
-
-    public String getSeesionPlayTime() {
-        if ("null".equals(seesionPlayTime) || seesionPlayTime == null)
-            seesionPlayTime = "";
-        return seesionPlayTime;
-    }
-
-    public void setSeesionPlayTime(String seesionPlayTime) {
-        this.seesionPlayTime = seesionPlayTime;
     }
 
     public String getSessionName() {
@@ -121,30 +136,12 @@ public class VideoModel implements Serializable {
         this.sessionName = sessionName;
     }
 
-    public String getSessionTime() {
-        if ("null".equals(sessionTime) || sessionTime == null)
-            sessionTime = "";
-        return sessionTime;
-    }
-
-    public void setSessionTime(String sessionTime) {
-        this.sessionTime = sessionTime;
-    }
-
     public void setId(int id) {
         this.id = id;
     }
 
     public int getId() {
         return this.id;
-    }
-
-    public void setDirId(int dirId) {
-        this.dirId = dirId;
-    }
-
-    public int getDirId() {
-        return this.dirId;
     }
 
     public void setType(int type) {
@@ -165,10 +162,6 @@ public class VideoModel implements Serializable {
         return this.name;
     }
 
-    public void setRequireTime(String requireTime) {
-        this.requireTime = requireTime;
-    }
-
     public String getRequireTime() {
         return this.requireTime;
     }
@@ -179,14 +172,6 @@ public class VideoModel implements Serializable {
 
     public String getPreview() {
         return this.preview;
-    }
-
-    public void setCate(int cate) {
-        this.cate = cate;
-    }
-
-    public int getCate() {
-        return this.cate;
     }
 
     public void setTeachingAim(String teachingAim) {
@@ -209,30 +194,6 @@ public class VideoModel implements Serializable {
         this.homework = homework;
     }
 
-    public String getHomework() {
-        return this.homework;
-    }
-
-    public void setDirName(String dirName) {
-        this.dirName = dirName;
-    }
-
-    public String getDirName() {
-        return this.dirName;
-    }
-
-    public void setDirPreview(String dirPreview) {
-        this.dirPreview = dirPreview;
-    }
-
-    public String getDirPreview() {
-        return this.dirPreview;
-    }
-
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-
     public String getTypeName() {
         if (null == typeName) {
             typeName = "";
@@ -243,13 +204,6 @@ public class VideoModel implements Serializable {
         return typeName;
     }
 
-    public void setSeqNo(int seqno) {
-        this.seqno = seqno;
-    }
-
-    public int getSeqNo() {
-        return this.seqno;
-    }
 
     public void setGrader(String grader) {
         this.gragde = grader;
@@ -257,13 +211,5 @@ public class VideoModel implements Serializable {
 
     public String getGrader() {
         return this.gragde;
-    }
-
-    public void setIsUser(int isUser) {
-        this.isUser = isUser;
-    }
-
-    public int getIsUser() {
-        return this.isUser;
     }
 }

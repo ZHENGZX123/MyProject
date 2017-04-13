@@ -1,6 +1,5 @@
 package yjpty.teaching.acitivity;
 
-
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
@@ -13,14 +12,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.zk.myweex.R;
+
 import java.util.List;
 
 import yjpty.teaching.App;
-import yjpty.teaching.R;
 import yjpty.teaching.http.BaseHttpHandler;
 import yjpty.teaching.http.HttpHandler;
 import yjpty.teaching.http.HttpResponseModel;
@@ -28,7 +29,7 @@ import yjpty.teaching.util.ACache;
 import yjpty.teaching.util.AppUtil;
 
 public class BaseActivity extends FragmentActivity implements HttpHandler,
-        View.OnClickListener {
+        OnClickListener {
     /**
      * 应有程序
      */
@@ -106,7 +107,6 @@ public class BaseActivity extends FragmentActivity implements HttpHandler,
         mCache = ACache.get(this);
         baseActivityInsantnce = this;
     }
-
     /**
      * 初始化视图
      */
@@ -120,7 +120,6 @@ public class BaseActivity extends FragmentActivity implements HttpHandler,
     public void setData() throws Exception {
 
     }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -205,6 +204,7 @@ public class BaseActivity extends FragmentActivity implements HttpHandler,
     protected void onActivityResult(int requstCode, int resultCode, Intent data) {
         super.onActivityResult(requstCode, resultCode, data);
     }
+
 
 
     @Override

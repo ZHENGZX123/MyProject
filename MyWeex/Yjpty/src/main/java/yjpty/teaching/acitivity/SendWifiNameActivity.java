@@ -17,7 +17,8 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
 
-import yjpty.teaching.R;
+import com.zk.myweex.R;
+
 import yjpty.teaching.adpater.SpinnerAdapter;
 import yjpty.teaching.dialog.LoginDialog;
 import yjpty.teaching.tcpudp.Client;
@@ -28,8 +29,6 @@ import yjpty.teaching.util.IConstant;
 import yjpty.teaching.util.SharedPreferencesUtil;
 import yjpty.teaching.util.ViewUtil;
 import yjpty.teaching.wifi.WifiAdmin;
-
-import static android.content.Context.WIFI_SERVICE;
 
 
 //, NettyMessageCallBack

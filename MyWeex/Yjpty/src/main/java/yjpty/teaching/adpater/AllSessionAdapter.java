@@ -13,11 +13,11 @@ import android.widget.Filter;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.zk.myweex.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import yjpty.teaching.R;
 import yjpty.teaching.acitivity.BaseActivity;
 import yjpty.teaching.acitivity.SessionDbDetailActivity;
 import yjpty.teaching.fragment.AllSessionFragment;

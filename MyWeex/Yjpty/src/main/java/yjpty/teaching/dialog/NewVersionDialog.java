@@ -5,7 +5,8 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnShowListener;
 import android.view.View;
 
-import yjpty.teaching.R;
+import com.zk.myweex.R;
+
 import yjpty.teaching.acitivity.BaseActivity;
 import yjpty.teaching.util.ViewUtil;
 

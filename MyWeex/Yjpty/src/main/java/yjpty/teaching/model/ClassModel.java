@@ -32,7 +32,19 @@ public class ClassModel implements Serializable {
      * 年级
      */
     String year;
+    public String getIsActivateKinect() {
+        return isActivateKinect;
+    }
 
+    public void setIsActivateKinect(String isActivateKinect) {
+        this.isActivateKinect = isActivateKinect;
+    }
+
+    /**
+     * 是否开通了体感课程
+     * */
+
+    String isActivateKinect;
     public void setId(String id) {
         this.id = id;
     }

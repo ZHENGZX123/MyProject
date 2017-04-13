@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -14,13 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.zk.myweex.R;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import yjpty.teaching.R;
 import yjpty.teaching.acitivity.BaseActivity;
 import yjpty.teaching.acitivity.OnSessionActivity;
 import yjpty.teaching.dialog.LoginDialog;
@@ -36,10 +35,9 @@ import yjpty.teaching.util.SharedPreferencesUtil;
 import yjpty.teaching.util.ViewUtil;
 import yjpty.teaching.wifi.WifiAdmin;
 
-
 public class TeacherTableAdapter extends ArrayAdapter<VideoModel>
         implements
-        OnClickListener, HttpHandler {
+        OnClickListener,HttpHandler {
     BaseActivity activity;
     TeacherTableHolder holder;
     boolean isAttendClass;// 1 上课 2 看详情
@@ -82,7 +80,8 @@ public class TeacherTableAdapter extends ArrayAdapter<VideoModel>
             parent) {
         View view = convertView;
         if (view == null) {
-            view = LayoutInflater.from(activity).inflate(R.layout.yjpty_teacher_table_list_item, null);
+            view = ViewUtil.inflate(activity, R.layout
+                    .yjpty_teacher_table_list_item);
             holder = new TeacherTableHolder();
             holder.pic = ViewUtil.findViewById(view, R.id.pic);
             holder.videoName = ViewUtil.findViewById(view, R.id.name);
@@ -221,21 +220,33 @@ public class TeacherTableAdapter extends ArrayAdapter<VideoModel>
             dialog.show();
 
         }
-        if (isTeacherSession)
-            RequesetType = RequesetType + "&sectionType=teacher";
-        else
-            RequesetType = RequesetType + "&sectionType=null";
-        RequsetUrl = IUrContant.GET_ONE_COURSE.replace
-                ("{sectionId}", model.getId() + "") + activity.app.classModels.get(activity.app.getClassPosition())
-                .getId() + RequesetType;
-        IConstant.HTTP_CONNECT_POOL.addRequest(RequsetUrl, null, adapterHandler, 2);
+        if (model.isKiectSession()) {//如果是体感课程则直接进入
+            if (model.getIsKT() == 0) {
+                dialog.close();
+                ViewUtil.showMessage(activity,"没有开通体感课程");
+                return;
+            }
+            try {
+                statActivity();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            if (isTeacherSession)
+                RequesetType = RequesetType + "&sectionType=teacher";
+            else
+                RequesetType = RequesetType + "&sectionType=null";
+            RequsetUrl = IUrContant.GET_ONE_COURSE.replace
+                    ("{sectionId}", model.getId() + "") + activity.app.classModels.get(activity.app.getClassPosition())
+                    .getId() + RequesetType;
+            IConstant.HTTP_CONNECT_POOL.addRequest(RequsetUrl, null, adapterHandler, 2);
+        }
     }
 
     String RequsetUrl;
     String RequesetType;
 
     void statActivity() throws Exception {
-
         Bundle bundle = new Bundle();
         bundle.putSerializable(IConstant.BUNDLE_PARAMS, model);
         activity.app.setVideoModel(model);
@@ -271,16 +282,14 @@ public class TeacherTableAdapter extends ArrayAdapter<VideoModel>
     public void httpSuccess(HttpResponseModel message) throws
             Exception {
         if (message.getUrl().equals(RequsetUrl)) {
-            try{
+            try {
                 JSONObject data = new JSONObject(new String(message.getResponse()));
                 if (data.optInt("StatusCode") == 200) {
                     activity.mCache.put(IUrContant.GET_ONE_COURSE + model.getId(), data);
                     statActivity();
                 } else if (data.optInt("StatusCode") == 500) {
-                   // activity.loading();
                 }
-            } catch (Exception e){
-               // activity.loading();
+            } catch (Exception e) {
             }
         }
     }
@@ -299,10 +308,6 @@ public class TeacherTableAdapter extends ArrayAdapter<VideoModel>
             ViewUtil.showMessage(activity, activity.resources.getString(R.string.ser_bi));
         }
     }
-
-
-
-
 
     @Override
     public Filter getFilter() {
