@@ -173,6 +173,15 @@
     <orderEntry type="module" module-name="sdk" exported="" />
     <orderEntry type="module" module-name="ImagePicker" exported="" />
     <orderEntry type="library" exported="" name="core" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.2.4" level="project" />
+    <orderEntry type="library" exported="" name="okio-1.6.0" level="project" />
+    <orderEntry type="library" exported="" name="relinker-1.2.2" level="project" />
+    <orderEntry type="library" exported="" name="org.eclipse.paho.client.mqttv3-1.0.2" level="project" />
+    <orderEntry type="library" exported="" name="android-adapters-1.4.0" level="project" />
+    <orderEntry type="library" exported="" name="hprose_for_java_7" level="project" />
+    <orderEntry type="library" exported="" name="realm-annotations-3.0.0" level="project" />
+    <orderEntry type="library" exported="" name="okhttp-3.0.1" level="project" />
+    <orderEntry type="library" exported="" name="realm-android-library-3.0.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="javassist-3.20.0-GA" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="powermock-module-junit4-common-1.6.4" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="asm-commons-5.0.1" level="project" />

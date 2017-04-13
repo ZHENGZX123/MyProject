@@ -138,6 +138,17 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void updateZipPackagePatchs(String patchs, String zipName) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("patchs", patchs);
+        String[] args = {zipName};
+        db.update(TABLE_ZIPPACKAGE, cv, "name=?", args);
+        db.close();
+    }
+
+
     public void updateZipPackageBaseUrl(String baseUrl, String zipName) {
         if (db == null)
             db = getWritableDatabase();
