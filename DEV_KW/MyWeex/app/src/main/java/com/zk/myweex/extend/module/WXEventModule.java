@@ -261,14 +261,12 @@ public class WXEventModule extends WXModule {
                 Log.d("test", "result = " + result);
                 //扫描二维码，扫描后的数据返回给js
                 //
-                //       http://192.168.8.206:8180/yjpt/?&ref=class&classid=57&schoolId=129&classname=xxxxxxx
-                String[] splits = result.split("&");
-                if (splits.length < 5) {
-                    return;
-                }
-                String classId = splits[2].split("=")[1];
-                String schoolId = splits[3].split("=")[1];
-                String classname = splits[4].split("=")[1];
+                //       http://192.168.8.206:8180/yjpt/?classid=57&ref=class&schoolId=129&classname=xxxxxxx
+                result = result.substring(result.indexOf("?") + 1, result.length());
+                String splits[] = result.split("&");
+                String classId = splits[0].split("=")[1];
+                String schoolId = splits[2].split("=")[1];
+                String classname = splits[3].split("=")[1];
 
                 HashMap map = new HashMap();
                 map.put("result", "1");
@@ -276,6 +274,7 @@ public class WXEventModule extends WXModule {
                 map.put("schoolId", schoolId);
                 map.put("className", classname);
                 this.scanCallback.invoke(map);
+
                 //this.scanCallback callback(@{@"result":`result,@"classId":classId,@"schoolId":schoolId,@"className":className}
             } catch (Exception e) {
                 e.printStackTrace();
