@@ -9,7 +9,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 
-import yjpty.teaching.R;
+import com.zk.myweex.R;
+
 import yjpty.teaching.acitivity.BaseActivity;
 
 

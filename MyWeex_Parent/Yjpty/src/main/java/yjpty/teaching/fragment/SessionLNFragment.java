@@ -6,7 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import yjpty.teaching.R;
+import com.zk.myweex.R;
+
 import yjpty.teaching.model.VideoCateMode;
 import yjpty.teaching.util.ViewUtil;
 

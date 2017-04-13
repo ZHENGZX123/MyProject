@@ -34,12 +34,8 @@ public class IUrContant {
      */
     public static final String BANG_DING_HE_ZI_URL = BASE_URL + "app/class/{classId}/box";
    /**
-    * 生成微信订单
+    * 获取体感课程列表
     */
-   public static final String CTREATE_WEI_PRODUCT_URL = BASE_URL + "app/paymentOrder/createOrder";
-   /**
-    * 获取微信支付相关参数
-    */
-   public static final String GET_WEI_PRIDUCT_URL = BASE_URL + "app/payment/getWxPayConfig";
+   public static final String GET_KINECTSESSION_URL = BASE_URL + "app/feelingCourse";
 }
 

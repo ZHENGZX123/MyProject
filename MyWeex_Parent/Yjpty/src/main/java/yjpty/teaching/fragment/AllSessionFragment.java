@@ -10,13 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.zk.myweex.R;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import yjpty.teaching.R;
 import yjpty.teaching.adpater.AllSessionAdapter;
 import yjpty.teaching.http.HttpResponseModel;
 import yjpty.teaching.http.IUrContant;
@@ -61,7 +62,7 @@ public class AllSessionFragment extends BaseFragment implements TextWatcher {
         listView.setAdapter(adapter);
         listView.setTextFilterEnabled(true);
         listView.setSelected(true);
-        // 鏍规嵁杈撳叆妗嗚緭鍏ュ€肩殑鏀瑰彉鏉ヨ繃婊ゆ悳绱?
+        // 根据输入框输入值的改变来过滤搜索
         srv1.addTextChangedListener(this);
     }
 
@@ -70,7 +71,8 @@ public class AllSessionFragment extends BaseFragment implements TextWatcher {
         if (activity.app.classModels.size() <= 0)
             return;
         IConstant.HTTP_CONNECT_POOL.addRequest(IUrContant.GET_ALL_SESSION + activity.app.classModels.get(activity.app
-                .getClassPosition()).getId(), null, fragmentHandler, true, 2);
+                .getClassPosition()).getId()+ "&gradeId=" + activity.app.classModels.get(activity.app
+                .getClassPosition()).getYear(), null, fragmentHandler, true, 2);
     }
 
     void setData() throws Exception {
@@ -145,7 +147,8 @@ public class AllSessionFragment extends BaseFragment implements TextWatcher {
         super.httpSuccess(message);
         JSONObject data = new JSONObject(new String(message.getResponse()));
         if (message.getUrl().equals(IUrContant.GET_ALL_SESSION + activity.app.classModels.get(activity.app
-                .getClassPosition()).getId())
+                .getClassPosition()).getId()+ "&gradeId=" + activity.app.classModels.get(activity.app
+                .getClassPosition()).getYear())
                 && data.optInt("StatusCode") == 200) {
             activity.mCache.put(IUrContant.GET_ALL_SESSION
                             + activity.app.classModels.get(activity.app.getClassPosition()).getId(),

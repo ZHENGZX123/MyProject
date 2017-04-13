@@ -9,9 +9,10 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.zk.myweex.R;
+
 import java.util.List;
 
-import yjpty.teaching.R;
 import yjpty.teaching.acitivity.BaseActivity;
 import yjpty.teaching.acitivity.OnSessionActivity;
 import yjpty.teaching.model.OnClassModel;

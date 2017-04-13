@@ -3,7 +3,8 @@ package yjpty.teaching.dialog;
 import android.content.Context;
 import android.view.View;
 
-import yjpty.teaching.R;
+import com.zk.myweex.R;
+
 import yjpty.teaching.util.ViewUtil;
 
 
