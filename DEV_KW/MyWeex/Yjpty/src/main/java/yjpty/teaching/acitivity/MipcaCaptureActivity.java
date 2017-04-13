@@ -34,6 +34,7 @@ import com.zbar.lib.camera.CameraManager;
 import com.zbar.lib.decode.CaptureActivityHandler;
 import com.zbar.lib.decode.InactivityTimer;
 import com.zbar.lib.decode.RGBLuminanceSource;
+import com.zk.myweex.R;
 
 import org.json.JSONObject;
 
@@ -42,7 +43,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import yjpty.teaching.R;
 import yjpty.teaching.dialog.ClearDataDialog;
 import yjpty.teaching.dialog.LoginDialog;
 import yjpty.teaching.dialog.NewVersionDialog;

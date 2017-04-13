@@ -7,10 +7,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
+
+import com.zk.myweex.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,7 +22,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import yjpty.teaching.R;
 import yjpty.teaching.adpater.OnSessionAdapter;
 import yjpty.teaching.dialog.ClearDataDialog;
 import yjpty.teaching.dialog.LoginDialog;
@@ -30,11 +33,12 @@ import yjpty.teaching.tcpudp.HandlerClient;
 import yjpty.teaching.util.AppUtil;
 import yjpty.teaching.util.GlobeVariable;
 import yjpty.teaching.util.IConstant;
+import yjpty.teaching.util.StringUtil;
 import yjpty.teaching.util.ViewUtil;
 import yjpty.teaching.wifi.WifiAdmin;
 
 public class OnSessionActivity extends BaseActivity implements
-        OnCheckedChangeListener, ClearDataDialog.ClearDataCallBack {
+        OnCheckedChangeListener, ClearDataDialog.ClearDataCallBack, Animation.AnimationListener {
     RadioGroup rg;
     OnSessionFragment sessionZhuKeFragment, sessionWeiKeFragment;
     int page = 0;
@@ -72,13 +76,17 @@ public class OnSessionActivity extends BaseActivity implements
 
     void setSessionMessage() {
         if (bundle.getBoolean(IConstant.BUNDLE_PARAMS1)) {
-            if (Zhukelist.size() <= 0)
-                return;
+            if (videoCateMode.isKiectSession()) {//判断是否为体感课程
+                playData = GlobeVariable.STRAT_APK + videoCateMode.getKinectPackageName()+":::"+videoCateMode.getKiectApkDownLoadUrl();
+            } else {
+                if (Zhukelist.size() <= 0)
+                    return;
+                playData = GlobeVariable.PLAY_VIDEO
+                        + Zhukelist.get(ZhukePosition).getUuid() + ":::" +
+                        Zhukelist.get(ZhukePosition).getVideoUrl();// 进来播放第一个视频
+            }
             if (app.client == null)
                 app.client = new HandlerClient();
-            playData = GlobeVariable.PLAY_VIDEO
-                    + Zhukelist.get(ZhukePosition).getUuid() + ":::" +
-                    Zhukelist.get(ZhukePosition).getVideoUrl();// 进来播放第一个视频
             if (app.isHotSesson()) {
                 if (app.client != null) {
                     app.client.close();
@@ -91,7 +99,6 @@ public class OnSessionActivity extends BaseActivity implements
                 sendHeziMessage(playData);
             }
         }
-
     }
 
     Handler handler = new Handler() {
@@ -151,35 +158,42 @@ public class OnSessionActivity extends BaseActivity implements
         super.loadData();
         Zhukelist.clear();
         Weikelist1.clear();
-        JSONObject data = mCache.getAsJSONObject(IUrContant.GET_ONE_COURSE + videoCateMode.getId());
-        if (data != null) {
-            JSONArray ZhukeJs = data.optJSONObject("data").optJSONArray("processList");
-            JSONArray WeikeJs = data.optJSONObject("data").optJSONArray("courseTinyList");
-            if (ZhukeJs != null) {
-                for (int i = 0; i < ZhukeJs.length(); i++) {
-                    JSONObject item = ZhukeJs.optJSONObject(i);
-                    OnClassModel model = new OnClassModel();
-                    model.setUuid(item.optJSONObject("resource").optString("uuid") + "." + item.optJSONObject
-                            ("resource").optString("suffix"));
-                    model.setContent(item.optString("content"));
-                    model.setVideoUrl(item.optJSONObject("resource").optString("file_path"));
-                    if (i == 0)
-                        model.setBool(true);
-                    else
-                        model.setBool(false);
-                    Zhukelist.add(model);
+        if (videoCateMode.isKiectSession()) {
+            OnClassModel model = new OnClassModel();
+            model.setContent(videoCateMode.getKiectSessionContent());
+            model.setBool(true);
+            Zhukelist.add(model);
+        } else {
+            JSONObject data = mCache.getAsJSONObject(IUrContant.GET_ONE_COURSE + videoCateMode.getId());
+            if (data != null) {
+                JSONArray ZhukeJs = data.optJSONObject("data").optJSONArray("processList");
+                JSONArray WeikeJs = data.optJSONObject("data").optJSONArray("courseTinyList");
+                if (ZhukeJs != null) {
+                    for (int i = 0; i < ZhukeJs.length(); i++) {
+                        JSONObject item = ZhukeJs.optJSONObject(i);
+                        OnClassModel model = new OnClassModel();
+                        model.setUuid(item.optJSONObject("resource").optString("uuid") + "." + item.optJSONObject
+                                ("resource").optString("suffix"));
+                        model.setContent(item.optString("content"));
+                        model.setVideoUrl(item.optJSONObject("resource").optString("file_path"));
+                        if (i == 0)
+                            model.setBool(true);
+                        else
+                            model.setBool(false);
+                        Zhukelist.add(model);
+                    }
                 }
-            }
-            if (WeikeJs != null) {
-                for (int i = 0; i < WeikeJs.length(); i++) {
-                    JSONObject item = WeikeJs.optJSONObject(i);
-                    OnClassModel model = new OnClassModel();
-                    model.setUuid(item.optJSONObject("resource").optString("uuid") + "." + item.optJSONObject
-                            ("resource").optString("suffix"));
-                    model.setContent(item.optJSONObject("resource").optString("name"));
-                    model.setVideoUrl(item.optJSONObject("resource").optString("file_path"));
-                    model.setBool(false);
-                    Weikelist1.add(model);
+                if (WeikeJs != null) {
+                    for (int i = 0; i < WeikeJs.length(); i++) {
+                        JSONObject item = WeikeJs.optJSONObject(i);
+                        OnClassModel model = new OnClassModel();
+                        model.setUuid(item.optJSONObject("resource").optString("uuid") + "." + item.optJSONObject
+                                ("resource").optString("suffix"));
+                        model.setContent(item.optJSONObject("resource").optString("name"));
+                        model.setVideoUrl(item.optJSONObject("resource").optString("file_path"));
+                        model.setBool(false);
+                        Weikelist1.add(model);
+                    }
                 }
             }
         }
@@ -187,7 +201,6 @@ public class OnSessionActivity extends BaseActivity implements
             findViewById(R.id.rg).setVisibility(View.GONE);
             findViewById(R.id.views).setVisibility(View.GONE);
         }
-
     }
 
     @Override
@@ -228,6 +241,12 @@ public class OnSessionActivity extends BaseActivity implements
                 resources.getString(R.string.exit_this_session), v);
         if (!bundle.getBoolean(IConstant.BUNDLE_PARAMS1))
             findViewById(R.id.layout).setVisibility(View.GONE);
+        if (videoCateMode.isKiectSession()) {//如果是体感课程则隐藏掉一下按钮
+            findViewById(R.id.layout2).setVisibility(View.GONE);
+            findViewById(R.id.layout3).setVisibility(View.GONE);
+            findViewById(R.id.pause).setVisibility(View.GONE);
+            findViewById(R.id.resume).setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -268,7 +287,7 @@ public class OnSessionActivity extends BaseActivity implements
                 sessionWeiKeFragment = OnSessionFragment.newInstance(Weikelist1, null, bundle.getBoolean(IConstant
                         .BUNDLE_PARAMS1));
                 transaction.add(R.id.fragment, sessionWeiKeFragment,
-                        "sessionAbout");
+                        "sessionWeiKeFragment");
             } else if (sessionWeiKeFragment.isAdded()
                     && sessionWeiKeFragment.isHidden()) {
                 transaction.show(sessionWeiKeFragment);
@@ -379,21 +398,29 @@ public class OnSessionActivity extends BaseActivity implements
 
         } else if (i == R.id.open) {
             if (findViewById(R.id.layout1).getVisibility() == View.VISIBLE) {
-                findViewById(R.id.layout1).setVisibility(View.GONE);
+                Animation animation1 = AnimationUtils.loadAnimation(this, R.anim.yjpty_dialog_bottom_exit_anim);
+                layout.setAnimation(animation1);
+                animation1.setAnimationListener(this);
                 ViewUtil.setContent(this, R.id.open, R.string.open);
                 ViewUtil.setArroundDrawable(open_txt, -1, -1,// 更改按钮文字，与图形
                         R.drawable.yjpty_ic_hardware_keyboard_arrow_up, -1);
-                if (OnSessionAdapter.viewSpace != null// 隐藏空白
-                        && OnSessionAdapter.viewSpace.getVisibility() == View.VISIBLE)
-                    OnSessionAdapter.viewSpace.setVisibility(View.GONE);
+                if (OnSessionAdapter.viewSpace != null) {// 隐藏空白
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                            OnSessionActivity.width, (int) resources.getDimension(R.dimen._50dp));
+                    OnSessionAdapter.viewSpace.setLayoutParams(layoutParams);
+                }
             } else {
                 findViewById(R.id.layout1).setVisibility(View.VISIBLE);
+                Animation animation1 = AnimationUtils.loadAnimation(this, R.anim.yjpty_dialog_bottom_enter_anim);
+                layout.setAnimation(animation1);
                 ViewUtil.setContent(this, R.id.open, R.string.close);
                 ViewUtil.setArroundDrawable(open_txt, -1, -1,
                         R.drawable.yjpty_ic_hardware_keyboard_arrow_down, -1);
-                if (OnSessionAdapter.viewSpace != null// 打开的时候给下方留空白，不留的话，播放到最后的时候，文字会被键盘挡住
-                        && OnSessionAdapter.viewSpace.getVisibility() == View.GONE)
-                    OnSessionAdapter.viewSpace.setVisibility(View.VISIBLE);
+                if (OnSessionAdapter.viewSpace != null) {// 打开的时候给下方留空白，不留的话，播放到最后的时候，文字会被键盘挡住
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                            OnSessionActivity.width, height);
+                    OnSessionAdapter.viewSpace.setLayoutParams(layoutParams);
+                }
             }
 
         } else if (i == R.id.pause) {
@@ -401,7 +428,6 @@ public class OnSessionActivity extends BaseActivity implements
                 sendHeziMessage(GlobeVariable.PAUSE);
             } else {
                 sendHeziMessage(GlobeVariable.PPT_LASR);
-
             }
 
         } else if (i == R.id.resume) {
@@ -473,17 +499,17 @@ public class OnSessionActivity extends BaseActivity implements
         } else {
             ViewUtil.setContent(this, R.id.pause, R.string.last);
             ViewUtil.setContent(this, R.id.resume, R.string.next);
-
         }
     }
 
     int GradId() {
-        String s = yjpty.teaching.util.StringUtil.getResourse(this, videoCateMode.getGrader());
+        String s = StringUtil.getResourse(this, videoCateMode.getGrader());
         if (s.contains(resources.getString(R.string.s_class)))
             return 4;
         else if (s.contains(resources.getString(R.string.m_class)))
             return 3;
-        else if (s.contains(resources.getString(R.string.h_class)) && !s.contains(resources.getString(R.string.l_class)))
+        else if (s.contains(resources.getString(R.string.h_class)) && !s.contains(resources.getString(R.string
+                .l_class)))
             return 2;
         else if (s.contains(resources.getString(R.string.l_class)))
             return 1;
@@ -493,7 +519,10 @@ public class OnSessionActivity extends BaseActivity implements
 
     @Override
     public void clearDataCallBack(View vx) throws Exception {
-        sendHeziMessage(GlobeVariable.EXIT);
+        if (videoCateMode.isKiectSession())
+            sendHeziMessage(GlobeVariable.KILL_APK + videoCateMode.getKinectPackageName());
+        else
+            sendHeziMessage(GlobeVariable.EXIT);
         if (timeOut == 1) {
             finish();
             return;
@@ -541,5 +570,20 @@ public class OnSessionActivity extends BaseActivity implements
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onAnimationStart(Animation animation) {
+
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+        findViewById(R.id.layout1).setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+
     }
 }

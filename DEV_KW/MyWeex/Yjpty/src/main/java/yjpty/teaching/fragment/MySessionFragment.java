@@ -9,12 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.zk.myweex.R;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import yjpty.teaching.R;
 import yjpty.teaching.adpater.TeacherTableAdapter;
 import yjpty.teaching.http.HttpResponseModel;
 import yjpty.teaching.http.IUrContant;

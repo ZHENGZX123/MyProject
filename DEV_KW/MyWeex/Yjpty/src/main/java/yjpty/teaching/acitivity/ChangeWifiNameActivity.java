@@ -12,7 +12,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import yjpty.teaching.R;
+import com.zk.myweex.R;
+
 import yjpty.teaching.dialog.LoginDialog;
 import yjpty.teaching.util.AppUtil;
 import yjpty.teaching.util.IConstant;
@@ -36,7 +37,7 @@ public class ChangeWifiNameActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         wifiName = bundle.getString(IConstant.BUNDLE_PARAMS);
-        admin = new WifiAdmin(this);
+        admin=new WifiAdmin(this);
         setContentView(R.layout.yjpty_activity_send_wifiname);
         try {
             initView();

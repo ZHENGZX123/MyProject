@@ -366,9 +366,9 @@ public class BaseHttpRequest extends Thread {
             cookieStore = ((AbstractHttpClient) this.httpClient)
                     .getCookieStore();
             String name = "JSESSIONID";
-            String value = JSESSIONID;
+            String value =JSESSIONID;
             String path = "/yjpts/";
-            String domain = "www.yuertong.com";
+            String domain ="www.yuertong.com";
             String expiryDate = "";
             BasicClientCookie cookie = new BasicClientCookie(name, value);
             cookie.setDomain(domain);

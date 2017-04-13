@@ -8,11 +8,11 @@ import android.os.Message;
 
 import com.zbar.lib.ZbarManager;
 import com.zbar.lib.bitmap.PlanarYUVLuminanceSource;
+import com.zk.myweex.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
 
-import yjpty.teaching.R;
 import yjpty.teaching.acitivity.MipcaCaptureActivity;
 
 

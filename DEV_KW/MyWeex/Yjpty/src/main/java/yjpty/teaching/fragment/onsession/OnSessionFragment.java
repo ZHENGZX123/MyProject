@@ -7,10 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.zk.myweex.R;
+
 import java.io.Serializable;
 import java.util.List;
 
-import yjpty.teaching.R;
 import yjpty.teaching.adpater.OnSessionAdapter;
 import yjpty.teaching.fragment.BaseFragment;
 import yjpty.teaching.model.OnClassModel;
