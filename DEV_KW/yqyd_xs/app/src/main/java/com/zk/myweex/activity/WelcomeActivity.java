@@ -88,9 +88,9 @@ public class WelcomeActivity extends WXBaseActivity {
                 new File(WXApplication.PATH_TMP).mkdirs();
             }
             //2.拷贝。。。
-            FileUtils.copyRawToSdcard(this, R.raw.yjpt, "yqydTab0.zip");
-            FileUtils.copyRawToSdcard(this, R.raw.yjpt, "yqydTab1.zip");
-            FileUtils.copyRawToSdcard(this, R.raw.yjpt, "yqydTab2.zip");
+//            FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab0.zip");
+//            FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab1.zip");
+//            FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab2.zip");
 
             //3.插入数据库
             TabEntity tab0 = new TabEntity();
