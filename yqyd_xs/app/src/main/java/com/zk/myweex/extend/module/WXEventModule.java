@@ -255,16 +255,6 @@ public class WXEventModule extends WXModule {
             public void run() {
                 ImageItem ii = images.get(0);
 
-//                if (!NetworkUtil.isNetworkAvailable(mWXSDKInstance.getContext())) {
-//                    String temp = ii.path;
-//                    temps.add(temp);
-//                    HashMap map = new HashMap();
-//                    map.put("path", "file://" + ii.path);
-//                    map.put("imgUrl", "file://" + ii.path);
-//                    pickerCallback.invoke(map);
-//                    return;
-//                }
-
                 File file = new File(ii.path);
                 String ret = UploadUtil.uploadFile(file, url, "qzq", "JSESSIONID=" + jsessionid);
                 Log.d("test", "upload ret = " + ret);

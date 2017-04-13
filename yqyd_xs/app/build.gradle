@@ -94,10 +94,11 @@ dependencies {
     //IM
     //    compile project(':IM')
     //teaching
-//    compile project(':Yjpty')
+    //    compile project(':Yjpty')
     compile project(':ImagePicker')
     //    compile project(':pay')
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:1.0.2'
     compile project(':photoview')
+    compile project(':zxing')
 }
 
