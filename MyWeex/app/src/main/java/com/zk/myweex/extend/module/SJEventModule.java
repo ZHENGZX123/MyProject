@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -131,7 +132,7 @@ public class SJEventModule extends WXModule {
             String classId = obj.getString("classId");
             String className = obj.getString("className");
             String schoolId = obj.getString("schoolId");
-            String code = "http://www.yuertong.com/yjpts/?&ref=class&classid=" + classId + "&schoolId=" + schoolId + "&classname=" + className;
+            String code = "http://www.yuertong.com/yjpts/?classid=" + classId + "&ref=class&schoolId=" + schoolId + "&classname=" + className;
 
             Bitmap b = Utils.createQRImage(code, 400, 400);
             String filepath = Utils.saveMyBitmap(b, new Random().nextInt() + "");
