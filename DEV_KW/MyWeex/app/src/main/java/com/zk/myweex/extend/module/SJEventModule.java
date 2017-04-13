@@ -80,7 +80,7 @@ public class SJEventModule extends WXModule {
             e.printStackTrace();
         }
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
-        ScreenManager.getScreenManager().popAllActivityExceptOne(MainActivity2.class);
+        ((Activity) mWXSDKInstance.getContext()).finish();
     }
 
     @JSMethod(uiThread = true)
