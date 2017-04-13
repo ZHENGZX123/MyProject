@@ -261,13 +261,11 @@ public class WXEventModule extends WXModule {
                 Log.d("test", "result = " + result);
                 //扫描二维码，扫描后的数据返回给js
                 //http://192.168.8.206:8180/yjpt/?&ref=class&classid=57&schoolId=129&classname=
-                String[] splits = result.split("&");
-                if (splits.length < 5) {
-                    return;
-                }
-                String classId = splits[2].split("=")[1];
-                String schoolId = splits[3].split("=")[1];
-                String classname = splits[4].split("=")[1];
+                result = result.substring(result.indexOf("?") + 1, result.length());
+                String splits[] = result.split("&");
+                String classId = splits[0].split("=")[1];
+                String schoolId = splits[2].split("=")[1];
+                String classname = splits[3].split("=")[1];
                 HashMap map = new HashMap();
                 map.put("result", "1");
                 map.put("classId", classId);
