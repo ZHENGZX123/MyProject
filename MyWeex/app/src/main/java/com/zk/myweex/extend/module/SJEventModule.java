@@ -23,7 +23,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,17 +30,9 @@ import java.util.Random;
 
 import cn.kwim.mqttcilent.common.cache.dao.DaoType;
 import cn.kwim.mqttcilent.common.cache.dao.MainListDao;
-import cn.kwim.mqttcilent.common.cache.javabean.FriendList;
-import cn.kwim.mqttcilent.common.cache.javabean.GroupContent;
-import cn.kwim.mqttcilent.common.cache.javabean.GroupListMember;
-import cn.kwim.mqttcilent.common.cache.javabean.MainList;
-import cn.kwim.mqttcilent.common.cache.javabean.Message;
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
 import cn.kwim.mqttcilent.mqttclient.mq.PushInterface;
-import io.realm.Realm;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
-
-import static cn.kwim.mqttcilent.common.cache.dao.Dao.getRealm;
 
 
 public class SJEventModule extends WXModule {
@@ -108,7 +99,7 @@ public class SJEventModule extends WXModule {
             }
         }.start();
 
-        Realm realm = getRealm();
+        /*Realm realm = getRealm();
         realm.beginTransaction();
         realm.where(MainList.class).findAll().deleteAllFromRealm();
         realm.where(Message.class).findAll().deleteAllFromRealm();
@@ -116,11 +107,12 @@ public class SJEventModule extends WXModule {
         realm.where(GroupContent.class).findAll().deleteAllFromRealm();
         realm.where(FriendList.class).findAll().deleteAllFromRealm();
         realm.commitTransaction();
-        realm.close();
+        realm.close();*/
 
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
         ScreenManager.getScreenManager().popAllActivityExceptOne(LoginActivity.class);
+
     }
 
     @JSMethod(uiThread = true)

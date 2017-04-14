@@ -51,10 +51,12 @@ import cn.kwim.mqttcilent.common.cache.dao.DaoType;
 import cn.kwim.mqttcilent.common.cache.dao.MainListDao;
 import cn.kwim.mqttcilent.common.cache.dao.MessageDao;
 import cn.kwim.mqttcilent.common.cache.javabean.Converse;
+import cn.kwim.mqttcilent.common.cache.javabean.MainList;
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
 import cn.kwim.mqttcilent.mqttclient.mq.HproseMqttClient;
 import cn.kwim.mqttcilent.mqttclient.mq.PushInterface;
 import cn.kwim.mqttcilent.mqttclient.mq.TopicProcessService;
+import io.realm.RealmResults;
 
 import static uk.co.senab.photoview.sample.ViewPagerActivity.getLoaderOptions;
 
@@ -296,6 +298,22 @@ public class MainActivity2 extends TabActivity {
                             getUserInfo(pushInterface.getUserInfo());
                             //2.grouplist
                             getGroupInfo(pushInterface.getGroupList());
+                            //3.获取未读消息
+                            getUnreadMsg(pushInterface.getUnReadMsg("0", null));
+                            //4.显示未读消息
+                            RealmResults<MainList> s = MainListDao.getMainList();
+                            for (int i = 0; i < s.size(); i++) {
+                                MainList groupList = s.get(i);
+                                String groupid = groupList.getId();
+                                String key = groupList.getKey();
+                                int sum = MessageDao.unreadCount(groupid, DaoType.SESSTIONTYPE.GROUP);
+                                cn.kwim.mqttcilent.common.cache.javabean.Message message = MessageDao.getLastContent(groupid, DaoType.SESSTIONTYPE.GROUP);
+                                if (message != null) {
+                                    MainListDao.updateGroupListChat(sum + "", key, message.getMsg(), message.getMessageType(), message
+                                            .getSendName());
+                                }
+                            }
+
                             //3.注册回调
                             client.register(RegisterType.MESSAGE, new TopicProcessService() {
                                 @Override
@@ -332,6 +350,11 @@ public class MainActivity2 extends TabActivity {
                 }
             }
         }.start();
+    }
+
+    private void getUnreadMsg(String unReadMsg) {
+        Log.d("mqtt", "unReadMsg = " + unReadMsg);
+        MessageDao.saveTSUnreadMessage(unReadMsg);
     }
 
     public interface RegisterType {
