@@ -21,7 +21,7 @@ import static android.R.attr.type;
  */
 public class UploadUtil {
     private static final String TAG = "uploadFile";
-    private static final int TIME_OUT = 10 * 1000; // 超时时间
+    private static final int TIME_OUT = 30 * 1000; // 超时时间
     private static final String CHARSET = "utf-8"; // 设置编码
 
     /**
@@ -86,7 +86,6 @@ public class UploadUtil {
                         sb1.append((char) ss);
                     }
                     result = sb1.toString();
-                    Log.d("test", "upload result = " + result);
                 }
             }
         } catch (MalformedURLException e) {
