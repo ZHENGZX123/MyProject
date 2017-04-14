@@ -37,14 +37,8 @@ import java.util.Random;
 
 import cn.kwim.mqttcilent.common.cache.dao.DaoType;
 import cn.kwim.mqttcilent.common.cache.dao.MainListDao;
-import cn.kwim.mqttcilent.common.cache.javabean.FriendList;
-import cn.kwim.mqttcilent.common.cache.javabean.GroupContent;
-import cn.kwim.mqttcilent.common.cache.javabean.GroupListMember;
-import cn.kwim.mqttcilent.common.cache.javabean.MainList;
-import cn.kwim.mqttcilent.common.cache.javabean.Message;
 import cn.kwim.mqttcilent.mqttclient.MqttInstance;
 import cn.kwim.mqttcilent.mqttclient.mq.PushInterface;
-import io.realm.Realm;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 import yjpty.teaching.http.BaseHttpHandler;
 import yjpty.teaching.http.BaseHttpRequest;
@@ -52,8 +46,6 @@ import yjpty.teaching.http.HttpHandler;
 import yjpty.teaching.http.HttpResponseModel;
 import yjpty.teaching.http.IUrContant;
 import yjpty.teaching.util.IConstant;
-
-import static cn.kwim.mqttcilent.common.cache.dao.Dao.getRealm;
 
 
 public class SJEventModule extends WXModule implements HttpHandler {
@@ -120,7 +112,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
             }
         }.start();
 
-        Realm realm = getRealm();
+        /*Realm realm = getRealm();
         realm.beginTransaction();
         realm.where(MainList.class).findAll().deleteAllFromRealm();
         realm.where(Message.class).findAll().deleteAllFromRealm();
@@ -128,7 +120,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
         realm.where(GroupContent.class).findAll().deleteAllFromRealm();
         realm.where(FriendList.class).findAll().deleteAllFromRealm();
         realm.commitTransaction();
-        realm.close();
+        realm.close();*/
 
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
