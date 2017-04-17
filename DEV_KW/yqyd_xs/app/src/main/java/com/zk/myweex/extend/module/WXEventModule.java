@@ -247,8 +247,6 @@ public class WXEventModule extends WXModule {
         }
     }
 
-    private ArrayList<String> temps = new ArrayList<>();
-
     private void doUploadImage(final ArrayList<ImageItem> images) {
         new Thread() {
             @Override
