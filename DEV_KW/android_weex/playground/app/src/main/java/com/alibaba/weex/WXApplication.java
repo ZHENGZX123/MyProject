@@ -38,6 +38,7 @@ import com.alibaba.weex.extend.component.MyWheelView;
 import com.alibaba.weex.extend.module.MyAliPay;
 import com.alibaba.weex.extend.module.MyAudioRecorderPlayer;
 import com.alibaba.weex.extend.module.MyCamera;
+import com.alibaba.weex.extend.module.MyDropDown;
 import com.alibaba.weex.extend.module.MyImagePicker;
 import com.alibaba.weex.extend.module.MyLocation;
 import com.alibaba.weex.extend.module.MyLog;
@@ -158,6 +159,8 @@ public class WXApplication extends Application {
             WXSDKEngine.registerModule("my_audiorecorderplayer", MyAudioRecorderPlayer.class);
             WXSDKEngine.registerModule("my_vibrator", MyVibrator.class);
             WXSDKEngine.registerModule("my_shake", MyShake.class);
+            WXSDKEngine.registerModule("my_dropdown", MyDropDown.class);
+
 
             WXSDKEngine.registerModule("event", WXEventModule.class);
             /**
