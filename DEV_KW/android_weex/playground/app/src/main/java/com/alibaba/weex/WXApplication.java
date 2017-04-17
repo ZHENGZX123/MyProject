@@ -29,6 +29,7 @@ import com.alibaba.weex.extend.component.MyRadioButton;
 import com.alibaba.weex.extend.component.MyRichText;
 import com.alibaba.weex.extend.component.MyRoundedImageView;
 import com.alibaba.weex.extend.component.MySeekbar;
+import com.alibaba.weex.extend.component.MySpinner;
 import com.alibaba.weex.extend.component.MySquareProgressBar;
 import com.alibaba.weex.extend.component.MyStaggeredGridView;
 import com.alibaba.weex.extend.component.MyTimePicker;
@@ -141,6 +142,7 @@ public class WXApplication extends Application {
             WXSDKEngine.registerComponent("my_numberpicker", MyNumberPicker.class);
             WXSDKEngine.registerComponent("my_calendarview", MyCalendarView.class);
             WXSDKEngine.registerComponent("my_wheelview", MyWheelView.class);
+            WXSDKEngine.registerComponent("my_spinner", MySpinner.class);
 
 
             WXSDKEngine.registerModule("my_toast", MyToast.class);

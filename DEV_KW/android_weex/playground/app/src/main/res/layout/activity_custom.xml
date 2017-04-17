@@ -301,6 +301,13 @@
             android:text="mydropdown"
             android:textAllCaps="false" />
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:onClick="clickButton"
+            android:text="myspinner"
+            android:textAllCaps="false" />
+
     </LinearLayout>
 
 </ScrollView>
