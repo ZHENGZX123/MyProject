@@ -18,7 +18,7 @@ import com.wjc.R;
 public class MyDropDown extends WXModule {
 
     @JSMethod(uiThread = true)
-    public void showDropDown(String list, final JSCallback callback) {
+    public void showDropDown(String list, int x , int y , final JSCallback callback) {
         Log.d("test", "lig = " + list);
         View contentView = LayoutInflater.from(mWXSDKInstance.getContext()).inflate(
                 R.layout.pop_window, null);
@@ -32,7 +32,7 @@ public class MyDropDown extends WXModule {
 
         Activity a = (Activity) mWXSDKInstance.getContext();
         View root = a.getWindow().getDecorView();
-        popupWindow.showAtLocation(root, Gravity.TOP | Gravity.LEFT, 50, 200);
+        popupWindow.showAtLocation(root, Gravity.TOP | Gravity.LEFT, x, y);
 
 
         contentView.findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
