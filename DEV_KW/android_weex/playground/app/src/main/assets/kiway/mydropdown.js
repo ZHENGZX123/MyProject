@@ -88,7 +88,7 @@
 	module.exports = {
 	  methods: {
 	    click: function click() {
-	      __weex_require__('@weex-module/my_dropdown').showDropDown("test",
+	      __weex_require__('@weex-module/my_dropdown').showDropDown("test", 50 , 280 ,
 function (res) {
                 	       var modal = __weex_require__('@weex-module/modal');
                                     modal.toast({
