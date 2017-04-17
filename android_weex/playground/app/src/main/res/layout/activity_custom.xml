@@ -294,6 +294,13 @@
             android:text="mywheelview"
             android:textAllCaps="false" />
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:onClick="clickButton"
+            android:text="mydropdown"
+            android:textAllCaps="false" />
+
     </LinearLayout>
 
 </ScrollView>
