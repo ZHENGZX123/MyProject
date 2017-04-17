@@ -61,7 +61,6 @@ public class WXApplication extends Application {
 
         //初始化weex
         WXSDKEngine.initialize(this, new InitConfig.Builder()
-//                .setHttpAdapter(new AsyncHttpAdapter(this))
                 .setImgAdapter(new UniversalImageAdapter(this)).build());
 
         //注册自定义组件
@@ -70,13 +69,12 @@ public class WXApplication extends Application {
             WXSDKEngine.registerModule("event", WXEventModule.class);
 
             WXSDKEngine.registerComponent("kwimage", KWImageComponent.class);
-
         } catch (WXException e) {
             e.printStackTrace();
         }
 
         //bugly
-        CrashReport.initCrashReport(getApplicationContext(), "e58c1950de", false);
+        CrashReport.initCrashReport(getApplicationContext(), "528f1459f9", false);
 
         registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
             @Override

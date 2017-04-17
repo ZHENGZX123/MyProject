@@ -292,6 +292,7 @@ public class UniversalImageAdapter implements IWXImgLoaderAdapter {
     }
 
     private void displayZipImage(ImageView view, String url) {
+        Log.d("universal", "zip start");
         //绝对路径好处理。
         //相对路径怎么处理。
         try {
@@ -314,6 +315,7 @@ public class UniversalImageAdapter implements IWXImgLoaderAdapter {
                     if (ze.getName().contains(targetFile)) {
                         Bitmap result = new BitmapDrawable(zf.getInputStream(ze)).getBitmap();
                         view.setImageBitmap(result);
+                        Log.d("universal", "zip end");
                         break;
                     }
                 }
