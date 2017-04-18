@@ -26,7 +26,7 @@ public class MySpinner extends WXComponent<Spinner> {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, mItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         view.setAdapter(adapter);
-        
+
         return view;
     }
 
