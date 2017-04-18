@@ -418,7 +418,7 @@ public class WXStreamModule extends WXModule {
                         new WXDBHelper(mWXSDKInstance.getContext()).deleteOfflineTask(optionsStr);
                         return;
                     }
-                    if (url.contains("sms")) {
+                    if (url.contains("sms") || url.contains("mail")) {
                         return;
                     }
                     if (!method.equalsIgnoreCase("get")) {
@@ -429,8 +429,6 @@ public class WXStreamModule extends WXModule {
                     }
                     saveCacheToDB(optionsStr, respData);
                 }
-
-
             }
         }, progressCallback);
     }
