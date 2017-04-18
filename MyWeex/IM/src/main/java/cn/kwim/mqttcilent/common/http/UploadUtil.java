@@ -19,7 +19,7 @@ import java.util.UUID;
  */
 public class UploadUtil {
     private static final String TAG = "uploadFile";
-    private static final int TIME_OUT = 10 * 1000; // 超时时间
+    private static final int TIME_OUT = 30 * 1000; // 超时时间
     private static final String CHARSET = "utf-8"; // 设置编码
 
     /**
@@ -32,6 +32,8 @@ public class UploadUtil {
      * @return 返回响应的内容
      */
     public static String uploadFile(File file, String RequestURL, String filename, String jsessionid) {
+        Log.d("test", "upload file = " + file.getAbsolutePath());
+
         String result = null;
         String BOUNDARY = UUID.randomUUID().toString(); // 边界标识 随机生成
         String PREFIX = "--", LINE_END = "\r\n";

@@ -401,16 +401,19 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case CHOOSE_PHOTO:
+                case CHOOSE_PHOTO: {
                     Uri uri = data.getData();
                     ContentResolver cr = this.getContentResolver();
                     Cursor cursor = cr.query(uri, null, null, null, null);
                     cursor.moveToFirst();
-                    MessageDao.saveSendMessage(UUID.randomUUID().toString(), DaoType.TYPY.IMAGE,
+                    String msgId = UUID.randomUUID().toString();
+                    MessageDao.saveSendMessage(msgId, DaoType.TYPY.IMAGE,
                             uri.toString(), Global.getInstance().getNickName(), chatType,
                             groupId, System.currentTimeMillis() + "", DaoType.STATUS.SENDING);
-                    break;
-                case TAKE_PHOTO:
+                    setPercent(uri, msgId, groupId);
+                }
+                break;
+                case TAKE_PHOTO: {
                     String sdState = Environment.getExternalStorageState();
                     if (!sdState.equals(Environment.MEDIA_MOUNTED)) {
                         //  GameLog.log(Tag, "sd card unmount");
@@ -438,10 +441,13 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                             e.printStackTrace();
                         }
                     }
-                    MessageDao.saveSendMessage(UUID.randomUUID().toString(), DaoType.TYPY.IMAGE,
+                    String msgId = UUID.randomUUID().toString();
+                    MessageDao.saveSendMessage(msgId, DaoType.TYPY.IMAGE,
                             filename, Global.getInstance().getNickName(), chatType,
                             groupId, System.currentTimeMillis() + "", DaoType.STATUS.SENDING);
-                    break;
+                    setPercent(Uri.parse(filename), msgId, groupId);
+                }
+                break;
             }
 
         }
@@ -1112,7 +1118,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                             urii = Uri.parse("file://" + message.getMsg());
                         }
                         viewHolder.imageView.setImageURI(urii);
-                        setPercent(viewHolder, urii, message.getMeassgeId(), message.getId());
                         url = /*OkhttpUtils.base_pic_url +*/ message.getMsg();
                     }
                     viewHolder.imageView.setLongClickable(true);
@@ -1216,102 +1221,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
 //                activity.startActivity(ViewPhotosActivity.class, bundle);
                 }
             });
-        }
-
-        String path;
-
-        private synchronized void setPercent(final ViewHolder viewHolder, final Uri uri, final String messageId, final String
-                groupId) {
-            Log.i("Uri", uri.toString());
-            if (uri.toString().startsWith("content://")) {
-                ContentResolver cr = context.getContentResolver();
-                Cursor cursor = cr.query(uri, null, null, null, null);
-                cursor.moveToFirst();
-                path = cursor.getString(1);
-            } else {
-                path = uri.toString().replace("file://", "");
-            }
-            if (Utils.getFileSize(path) > 100 * 1024) {
-                Bitmap bitmap = ViewUtil.getSmallBitmap(path);
-                String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
-                FileOutputStream fout = null;
-                File file = new File("/sdcard/pintu/");
-                file.mkdirs();
-                String filename = file.getPath() + name;
-                try {
-                    fout = new FileOutputStream(filename);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fout);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        fout.flush();
-                        fout.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                path = filename;
-            }
-
-            new Thread() {
-                @Override
-                public void run() {
-                    String jsessionid = getSharedPreferences("kiway", 0).getString("jsessionid", "");
-                    String ret = UploadUtil.uploadFile(new File(path), "http://www.yuertong.com/yjpts/course/file", "image", "JSESSIONID=" + jsessionid);
-                    Log.d("test", "upload ret = " + ret);
-                    try {
-                        String serverUrl = new JSONObject(ret).getJSONObject("data").getString("url");
-                        String key = MqttInstance.getInstance().getPushInterface().sendMessage(groupId,
-                                "{\"msg\":\"" + serverUrl + "\",\"type\":\"image\"}", "2");
-                        Converse converse1 = new Gson().fromJson(key, Converse.class);
-                        Map map1 = (Map) converse1.getData();
-                        MessageDao.sendSuccess(messageId, map1.get("msgid").toString().replace(".0", ""), serverUrl);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        MessageDao.sendFailure(messageId, uri.toString());
-                    }
-                }
-            }.start();
-//            OkhttpUtils.upLoadImg(ChatActivity.this, path, new PercentListener() {
-//                @Override
-//                public void onPercent(final String percent) {
-//                    Log.i("onPercent", percent);
-//                    viewHolder.imageView.setProgress(Integer.parseInt(percent));
-//                    try {
-//                        Thread.sleep(50);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    if (percent.equals("100")) {
-//                        File file = new File(path);
-//                        Log.i("获得文件大小Tag", file.length() + "");
-//                        file.delete();
-//                    }
-//                }
-//
-//                @Override
-//                public void onReponse(String response) {
-//                    try {
-//                        Converse converse = new Gson().fromJson(response, Converse.class);
-//                        if (converse.getStatusCode().equals("200")) {
-//                            List list = (List) converse.getData();
-//                            Map map = (Map) list.get(0);
-//                            String key = MqttInstance.getInstance().getPushInterface().sendMessage(groupId,
-//                                    "{\"msg\":\"" + map.get("url").toString() + "\",\"type\":\"image\"}", "2");
-//                            Converse converse1 = new Gson().fromJson(key, Converse.class);
-//                            Map map1 = (Map) converse1.getData();
-//                            MessageDao.sendSuccess(messageId, map1.get("msgid").toString().replace(".0", ""), map.get("url")
-//                                    .toString());
-//                        } else {
-//                            MessageDao.sendFailure(messageId, uri.toString());
-//                        }
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                        MessageDao.sendFailure(messageId, uri.toString());
-//                    }
-//                }
-//            });
         }
 
         private void setView(Message message, ViewHolder viewHolder, Uri uri, int position) {
@@ -1495,7 +1404,102 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                 return true;
             }
         };
+    }
 
+    String path;
+
+    private void setPercent(final Uri uri, final String messageId, final String
+            groupId) {
+        Log.i("Uri", uri.toString());
+        if (uri.toString().startsWith("content://")) {
+            ContentResolver cr = context.getContentResolver();
+            Cursor cursor = cr.query(uri, null, null, null, null);
+            cursor.moveToFirst();
+            path = cursor.getString(1);
+        } else {
+            path = uri.toString().replace("file://", "");
+        }
+        if (Utils.getFileSize(path) > 100 * 1024) {
+            Bitmap bitmap = ViewUtil.getSmallBitmap(path);
+            String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
+            FileOutputStream fout = null;
+            File file = new File("/sdcard/pintu/");
+            file.mkdirs();
+            String filename = file.getPath() + name;
+            try {
+                fout = new FileOutputStream(filename);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fout);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    fout.flush();
+                    fout.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            path = filename;
+        }
+
+        new Thread() {
+            @Override
+            public void run() {
+                String jsessionid = getSharedPreferences("kiway", 0).getString("jsessionid", "");
+                String ret = UploadUtil.uploadFile(new File(path), "http://www.yuertong.com/yjpts/course/file", "image", "JSESSIONID=" + jsessionid);
+                Log.d("test", "upload ret = " + ret);
+                try {
+                    String serverUrl = new JSONObject(ret).getJSONObject("data").getString("url");
+                    String key = MqttInstance.getInstance().getPushInterface().sendMessage(groupId,
+                            "{\"msg\":\"" + serverUrl + "\",\"type\":\"image\"}", "2");
+                    Converse converse1 = new Gson().fromJson(key, Converse.class);
+                    Map map1 = (Map) converse1.getData();
+                    MessageDao.sendSuccess(messageId, map1.get("msgid").toString().replace(".0", ""), serverUrl);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    MessageDao.sendFailure(messageId, uri.toString());
+                }
+            }
+        }.start();
+//            OkhttpUtils.upLoadImg(ChatActivity.this, path, new PercentListener() {
+//                @Override
+//                public void onPercent(final String percent) {
+//                    Log.i("onPercent", percent);
+//                    viewHolder.imageView.setProgress(Integer.parseInt(percent));
+//                    try {
+//                        Thread.sleep(50);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    if (percent.equals("100")) {
+//                        File file = new File(path);
+//                        Log.i("获得文件大小Tag", file.length() + "");
+//                        file.delete();
+//                    }
+//                }
+//
+//                @Override
+//                public void onReponse(String response) {
+//                    try {
+//                        Converse converse = new Gson().fromJson(response, Converse.class);
+//                        if (converse.getStatusCode().equals("200")) {
+//                            List list = (List) converse.getData();
+//                            Map map = (Map) list.get(0);
+//                            String key = MqttInstance.getInstance().getPushInterface().sendMessage(groupId,
+//                                    "{\"msg\":\"" + map.get("url").toString() + "\",\"type\":\"image\"}", "2");
+//                            Converse converse1 = new Gson().fromJson(key, Converse.class);
+//                            Map map1 = (Map) converse1.getData();
+//                            MessageDao.sendSuccess(messageId, map1.get("msgid").toString().replace(".0", ""), map.get("url")
+//                                    .toString());
+//                        } else {
+//                            MessageDao.sendFailure(messageId, uri.toString());
+//                        }
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                        MessageDao.sendFailure(messageId, uri.toString());
+//                    }
+//                }
+//            });
     }
 
 }
