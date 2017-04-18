@@ -18,7 +18,7 @@ public class MyAudioRecorderPlayer extends WXModule {
     private RecordPlayer player;
 
     public MyAudioRecorderPlayer() {
-        recordFile = new File("/mnt/sdcard", "kk.amr");
+        recordFile = new File("/mnt/sdcard", "kk.mp3");
     }
 
     @JSMethod(uiThread = true)
@@ -31,8 +31,11 @@ public class MyAudioRecorderPlayer extends WXModule {
             recordFile.delete();
         }
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+        mediaRecorder.setAudioChannels(2);
+        mediaRecorder.setAudioSamplingRate(44100);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);//输出格式
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);//编码格式
+        mediaRecorder.setAudioEncodingBitRate(16);
         mediaRecorder.setOutputFile(recordFile.getAbsolutePath());
         try {
             // 准备好开始录音

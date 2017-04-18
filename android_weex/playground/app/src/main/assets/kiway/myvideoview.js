@@ -66,7 +66,8 @@
 	      "attr": {
 //	        "url": "http://www.kiway.cn"
 //	        "url":"file:///android_asset/test.html"
-	        "url":"http://qiubai-video.qiushibaike.com/91B2TEYP9D300XXH_3g.mp4"
+//	        "url":"http://qiubai-video.qiushibaike.com/91B2TEYP9D300XXH_3g.mp4"
+	        "url":"file:///mnt/sdcard/www/video/test1.mp4"
 	      },
 
 	      "style": {
