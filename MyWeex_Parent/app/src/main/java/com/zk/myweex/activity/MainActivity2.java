@@ -384,7 +384,8 @@ public class MainActivity2 extends TabActivity {
                         map.get("logo").toString());
                 SharedPreferencesUtil.save(this, Global.GL_GENDER,
                         map.get("gender").toString());
-                SharedPreferencesUtil.save(this, Global.GL_UID,
+                SharedPreferencesUtil.
+                        save(this, Global.GL_UID,
                         map.get("uid").toString());
 
             }

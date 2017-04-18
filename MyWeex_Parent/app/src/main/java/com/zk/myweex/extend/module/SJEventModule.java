@@ -213,7 +213,8 @@ public class SJEventModule extends WXModule implements HttpHandler {
                 }
                 HashMap map = new HashMap();
                 try {
-                    map.put("path", new JSONObject(ret).getJSONObject("data").getString("url"));//"file://" + images.get(0).path
+                    String url = new JSONObject(ret).getJSONObject("data").getString("url");
+                    map.put("path", url);//"file://" + images.get(0).path
                     pickerCallback.invoke(map);
                 } catch (JSONException e) {
                     e.printStackTrace();
