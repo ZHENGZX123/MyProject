@@ -88,6 +88,7 @@ public class WXApplication extends Application {
         //百度地图。。
         SDKInitializer.initialize(getApplicationContext());
 
+        //vitamio
         Vitamio.initialize(getApplicationContext());
 
         /**

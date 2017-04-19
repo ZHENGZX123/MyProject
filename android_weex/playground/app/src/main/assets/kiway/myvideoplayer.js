@@ -66,7 +66,7 @@
 	      "attr": {
 //	        "src":"http://qiubai-video.qiushibaike.com/91B2TEYP9D300XXH_3g.mp4"
 //            "src": "http://g.tbcdn.cn/ali-wireless-h5/res/0.0.6/toy.mp4",
-	        "url": "[\"file:///mnt/sdcard/www/video/test.mp4\" ,  \"file:///mnt/sdcard/www/video/test1.mp4\"]"
+	        "url": "[\"file:///mnt/sdcard/www/video/test.mp4\",\"file:///mnt/sdcard/www/video/test1.mp4\"]"
 //	      "url": "file:///mnt/sdcard/www/video/test1.mp4"
 	      },
 
