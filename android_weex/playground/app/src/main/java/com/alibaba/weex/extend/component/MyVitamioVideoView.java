@@ -15,11 +15,11 @@ import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.widget.MediaController;
 import io.vov.vitamio.widget.VideoView;
 
-public class MyVideoView extends WXComponent<VideoView> implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
+public class MyVitamioVideoView extends WXComponent<VideoView> implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
     private VideoView mVvv;
 
-    public MyVideoView(WXSDKInstance instance, WXDomObject dom, WXVContainer parent) {
+    public MyVitamioVideoView(WXSDKInstance instance, WXDomObject dom, WXVContainer parent) {
         super(instance, dom, parent);
     }
 
@@ -59,5 +59,7 @@ public class MyVideoView extends WXComponent<VideoView> implements MediaPlayer.O
     public void onPrepared(MediaPlayer mp) {
         Log.d("test", "prepare");
         mVvv.start();
+
+
     }
 }

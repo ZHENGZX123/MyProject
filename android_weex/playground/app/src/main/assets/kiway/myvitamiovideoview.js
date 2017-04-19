@@ -62,17 +62,15 @@
 	  "type": "div",
 	  "children": [
 	    {
-	      "type": "my_videoview",
+	      "type": "my_vitamiovideoview",
 	      "attr": {
-//	        "url": "http://www.kiway.cn"
-//	        "url":"file:///android_asset/test.html"
 //	        "url":"http://qiubai-video.qiushibaike.com/91B2TEYP9D300XXH_3g.mp4"
 	        "url":"file:///mnt/sdcard/www/video/test1.mp4"
 	      },
 
 	      "style": {
-          	        "width": 1080,
-          	        "height": 1920
+          	        "width": 750,
+          	        "height": 500
           	      }
 	    }
 	  ]
