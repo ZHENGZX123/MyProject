@@ -32,7 +32,7 @@ import java.util.ArrayList;
 //import android.widget.VideoView;
 
 
-//包括播放列表的播放器
+//废弃。。。按原生写没法全屏，要换种写法了
 public class MyVideoPlayer extends WXComponent<View> implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, MediaController.onClickIsFullScreenListener {
 
     private com.example.vedioviewcompat.VideoView mVvv;
@@ -165,8 +165,9 @@ public class MyVideoPlayer extends WXComponent<View> implements MediaPlayer.OnPr
         }
     }
 
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        Log.d("test", "onConfigurationChanged");
+        Log.d("test", "onConfigurationChanged 无效");
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             gv.setVisibility(View.GONE);
         } else {
