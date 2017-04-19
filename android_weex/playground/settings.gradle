@@ -11,3 +11,4 @@ project(":weex_debug").projectDir=new File("../weex_debug")
 
 
 include ':dslv'
+include ':vedioViewMediaController'
