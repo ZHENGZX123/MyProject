@@ -70,7 +70,7 @@ public class MyWebView extends WXComponent<WebView> {
                 ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
                 Log.d("test", "images count = " + images.size());
                 //callback.invoke(images.get(0).path);
-                wv.loadUrl("javascript:pickphotoResult('" + images.get(0).path + "')");
+                wv.loadUrl("javascript:pickphotoResult('" + "file://" + images.get(0).path + "')");
             } else {
                 Toast.makeText(getContext(), "没有数据", Toast.LENGTH_SHORT).show();
             }

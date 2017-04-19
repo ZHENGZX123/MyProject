@@ -18,6 +18,11 @@
         background-color: highlight;
         text-decoration: none;
     }
+
+
+
+
+
     </style>
 </head>
 
@@ -26,6 +31,7 @@
 <script>
     function pickphotoResult(param){
     	document.getElementById("testID").innerHTML=param;
+    	document.getElementById("img").src=param;
     }
     var aTag = document.getElementsByTagName('a')[0];
     aTag.addEventListener('click', function(){
@@ -34,10 +40,9 @@
         return false;
     }, false);
 
-</script>
-<p></p>
-<div id="testID">
 
-</div>
+</script>
+<img id="img" src="file:///android_asset/a.jpg" width="100" height="100"/>
+<div id="testID"></div>
 </body>
 </html>
