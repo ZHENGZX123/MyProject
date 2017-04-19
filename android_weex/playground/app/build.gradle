@@ -101,6 +101,7 @@ dependencies {
     compile files('src/main/libs/ShareSDK-Wechat-Moments-2.8.1.jar')
     compile project(':wjc_ImagePicker')
     compile project(':dslv')
+    compile project(':vedioViewMediaController')
     compile 'com.taobao.android:dexposed:0.1.8'
     compile 'com.loopj.android:android-async-http:1.4.9@aar'
     compile 'com.facebook.fresco:fresco:0.12.0'
@@ -129,5 +130,4 @@ dependencies {
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
     androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
     debugCompile 'com.taobao.android:weex_analyzer:0.1.0.5'
-    compile project(':vedioViewMediaController')
 }

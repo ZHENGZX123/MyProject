@@ -70,9 +70,8 @@
         tools:replace="android:allowBackup,android:theme,android:icon">
         <uses-library android:name="android.test.runner" />
 
-        <activity android:name="com.alibaba.weex.TestActivity"></activity>
-        <activity android:name="com.alibaba.weex.TestActivity2"></activity>
-
+        <activity android:name="com.alibaba.weex.TestActivity" />
+        <activity android:name="com.alibaba.weex.TestActivity2" />
         <activity
             android:name="com.alibaba.weex.SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -223,8 +222,9 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
-
+        <activity
+            android:name="com.alibaba.weex.PlayVideoActivity"
+            android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>
