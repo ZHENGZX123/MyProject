@@ -59,7 +59,5 @@ public class MyVitamioVideoView extends WXComponent<VideoView> implements MediaP
     public void onPrepared(MediaPlayer mp) {
         Log.d("test", "prepare");
         mVvv.start();
-
-
     }
 }

@@ -33,6 +33,7 @@ import com.alibaba.weex.extend.component.MySpinner;
 import com.alibaba.weex.extend.component.MySquareProgressBar;
 import com.alibaba.weex.extend.component.MyStaggeredGridView;
 import com.alibaba.weex.extend.component.MyTimePicker;
+import com.alibaba.weex.extend.component.MyVideoPlayer;
 import com.alibaba.weex.extend.component.MyVideoView;
 import com.alibaba.weex.extend.component.MyVitamioVideoView;
 import com.alibaba.weex.extend.component.MyWebView;
@@ -130,6 +131,7 @@ public class WXApplication extends Application {
             WXSDKEngine.registerComponent("my_photoview", MyPhotoView.class);
             WXSDKEngine.registerComponent("my_chartview", MyChartView.class);
             WXSDKEngine.registerComponent("my_videoview", MyVideoView.class);
+            WXSDKEngine.registerComponent("my_videoplayer", MyVideoPlayer.class);
             WXSDKEngine.registerComponent("my_vitamiovideoview", MyVitamioVideoView.class);
             WXSDKEngine.registerComponent("my_gridview", MyGridView.class);
             WXSDKEngine.registerComponent("my_staggeredgridview", MyStaggeredGridView.class);
