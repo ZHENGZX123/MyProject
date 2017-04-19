@@ -65,7 +65,8 @@
 	      "type": "my_webview",
 	      "attr": {
 //	        "url": "http://www.kiway.cn"
-	        "url":"file:///android_asset/test.html"
+//	        "url":"file:///android_asset/test.html"
+             "url":"file:///android_asset/test2.html"
 	      },
 	      "style": {
           	        "width": 1080,
