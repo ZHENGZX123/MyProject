@@ -1,6 +1,7 @@
 package com.alibaba.weex;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -29,5 +30,11 @@ public class Custom2Activity extends AbstractWeexActivity {
         mInstance.onActivityResult(requestCode, resultCode, data);
     }
 
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (mInstance != null) {
+            mInstance.onConfigurationChanged(newConfig);
+        }
+    }
 
 }

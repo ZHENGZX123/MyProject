@@ -3,6 +3,7 @@ package com.alibaba.weex;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -148,6 +149,13 @@ public class IndexActivity extends AbstractWeexActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mInstance.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (mInstance != null) {
+            mInstance.onConfigurationChanged(newConfig);
+        }
     }
 }
 

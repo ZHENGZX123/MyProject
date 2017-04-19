@@ -9,7 +9,7 @@
         android:layout_height="500px"
         android:layout_gravity="center">
 
-        <VideoView
+        <com.example.vedioviewcompat.VideoView
             android:id="@+id/mvv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

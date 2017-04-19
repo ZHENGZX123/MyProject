@@ -1,6 +1,9 @@
 package com.alibaba.weex.extend.component;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -12,9 +15,8 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.MediaController;
-import android.widget.VideoView;
 
+import com.example.vedioviewcompat.MediaController;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.component.WXComponent;
@@ -26,12 +28,16 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 
+//import android.widget.MediaController;
+//import android.widget.VideoView;
+
 
 //包括播放列表的播放器
-public class MyVideoPlayer extends WXComponent<View> implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
+public class MyVideoPlayer extends WXComponent<View> implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, MediaController.onClickIsFullScreenListener {
 
-    private VideoView mVvv;
+    private com.example.vedioviewcompat.VideoView mVvv;
     private GridView gv;
+    private MediaController mediaController;
 
     public MyVideoPlayer(WXSDKInstance instance, WXDomObject dom, WXVContainer parent) {
         super(instance, dom, parent);
@@ -41,7 +47,7 @@ public class MyVideoPlayer extends WXComponent<View> implements MediaPlayer.OnPr
     protected View initComponentHostView(@NonNull Context context) {
         View view = View.inflate(getContext(), R.layout.layout_video, null);
 
-        mVvv = (VideoView) view.findViewById(R.id.mvv);
+        mVvv = (com.example.vedioviewcompat.VideoView) view.findViewById(R.id.mvv);
         gv = (GridView) view.findViewById(R.id.gv);
         adapter = new MyAdapter();
         gv.setAdapter(adapter);
@@ -63,12 +69,12 @@ public class MyVideoPlayer extends WXComponent<View> implements MediaPlayer.OnPr
     @WXComponentProp(name = "url")
     public void setUrl(String url) {
         Log.d("test", "url = " + url);
-
-        mVvv.setMediaController(new MediaController(getContext()));
+        mediaController = new MediaController(getContext());
+        mediaController.setClickIsFullScreenListener(this);
+        mVvv.setMediaController(mediaController);
         mVvv.setOnPreparedListener(this);
         mVvv.setOnErrorListener(this);
         mVvv.setOnCompletionListener(this);
-
         try {
             JSONArray array = new JSONArray(url);
             for (int i = 0; i < array.length(); i++) {
@@ -81,8 +87,6 @@ public class MyVideoPlayer extends WXComponent<View> implements MediaPlayer.OnPr
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     @Override
@@ -149,6 +153,27 @@ public class MyVideoPlayer extends WXComponent<View> implements MediaPlayer.OnPr
         public long getItemId(int arg0) {
             return arg0;
         }
+    }
+
+
+    @Override
+    public void setOnClickIsFullScreen() {
+        if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {//设置RelativeLayout的全屏模式
+            ((Activity) getContext()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        } else {
+            ((Activity) getContext()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    }
+
+    public void onConfigurationChanged(Configuration newConfig) {
+        Log.d("test", "onConfigurationChanged");
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            gv.setVisibility(View.GONE);
+        } else {
+            gv.setVisibility(View.VISIBLE);
+        }
+        super.onConfigurationChanged(newConfig);
+        mVvv.refreshDrawableState();
     }
 
 }
