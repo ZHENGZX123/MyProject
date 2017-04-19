@@ -1,9 +1,7 @@
 package com.alibaba.weex.extend.component;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -13,10 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.VideoView;
 
-import com.example.vedioviewcompat.MediaController;
+import com.alibaba.weex.PlayVideoActivity;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.component.WXComponent;
@@ -28,27 +28,25 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 
-//import android.widget.MediaController;
-//import android.widget.VideoView;
+public class MyVideoPlayer2 extends WXComponent<View> implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
-
-//废弃。。。没法全屏，要换种写法了。。
-public class MyVideoPlayer extends WXComponent<View> implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, MediaController.onClickIsFullScreenListener {
-
-    private com.example.vedioviewcompat.VideoView mVvv;
+    private VideoView mVvv;
     private GridView gv;
-    private MediaController mediaController;
+    private Button full;
+    private String currentUrl;
 
-    public MyVideoPlayer(WXSDKInstance instance, WXDomObject dom, WXVContainer parent) {
+    public MyVideoPlayer2(WXSDKInstance instance, WXDomObject dom, WXVContainer parent) {
         super(instance, dom, parent);
     }
 
     @Override
     protected View initComponentHostView(@NonNull Context context) {
-        View view = View.inflate(getContext(), R.layout.layout_video, null);
+        View view = View.inflate(getContext(), R.layout.layout_video2, null);
 
-        mVvv = (com.example.vedioviewcompat.VideoView) view.findViewById(R.id.mvv);
+        mVvv = (VideoView) view.findViewById(R.id.mvv);
         gv = (GridView) view.findViewById(R.id.gv);
+        full = (Button) view.findViewById(R.id.full);
+
         adapter = new MyAdapter();
         gv.setAdapter(adapter);
 
@@ -56,7 +54,19 @@ public class MyVideoPlayer extends WXComponent<View> implements MediaPlayer.OnPr
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Video v = videos.get(i);
+                currentUrl = v.url;
                 mVvv.setVideoURI(Uri.parse(v.url));
+            }
+        });
+
+        full.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getContext(), PlayVideoActivity.class);
+                i.putExtra("url", currentUrl);
+                i.putExtra("position", mVvv.getCurrentPosition());
+                getContext().startActivity(i);
+                mVvv.pause();
             }
         });
 
@@ -69,9 +79,6 @@ public class MyVideoPlayer extends WXComponent<View> implements MediaPlayer.OnPr
     @WXComponentProp(name = "url")
     public void setUrl(String url) {
         Log.d("test", "url = " + url);
-        mediaController = new MediaController(getContext());
-        mediaController.setClickIsFullScreenListener(this);
-        mVvv.setMediaController(mediaController);
         mVvv.setOnPreparedListener(this);
         mVvv.setOnErrorListener(this);
         mVvv.setOnCompletionListener(this);
@@ -153,28 +160,6 @@ public class MyVideoPlayer extends WXComponent<View> implements MediaPlayer.OnPr
         public long getItemId(int arg0) {
             return arg0;
         }
-    }
-
-
-    @Override
-    public void setOnClickIsFullScreen() {
-        if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {//设置RelativeLayout的全屏模式
-            ((Activity) getContext()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else {
-            ((Activity) getContext()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        Log.d("test", "onConfigurationChanged 无效");
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            gv.setVisibility(View.GONE);
-        } else {
-            gv.setVisibility(View.VISIBLE);
-        }
-        super.onConfigurationChanged(newConfig);
-        mVvv.refreshDrawableState();
     }
 
 }
