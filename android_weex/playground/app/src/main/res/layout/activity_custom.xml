@@ -221,6 +221,13 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:onClick="clickButton"
+            android:text="myvitamiovideoview"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:onClick="clickButton"
             android:text="mygridview"
             android:textAllCaps="false" />
 
