@@ -205,6 +205,7 @@
 package com.taobao.weex.bridge;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -558,4 +559,17 @@ public class WXModuleManager {
         }
     }
 
+    public static void onConfigurationChanged(String instanceId, Configuration newConfig) {
+        Map<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
+        if (modules != null) {
+            for (String key : modules.keySet()) {
+                WXModule module = modules.get(key);
+                if (module != null) {
+                    module.onConfigurationChanged(newConfig);
+                } else {
+                    WXLogUtils.w("onActivityResult can not find the " + key + " module");
+                }
+            }
+        }
+    }
 }

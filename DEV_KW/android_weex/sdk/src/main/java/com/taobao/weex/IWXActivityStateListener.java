@@ -211,17 +211,18 @@ package com.taobao.weex;
 @Deprecated
 public interface IWXActivityStateListener {
 
-  void onActivityCreate();
+    void onActivityCreate();
 
-  void onActivityStart();
+    void onActivityStart();
 
-  void onActivityPause();
+    void onActivityPause();
 
-  void onActivityResume();
+    void onActivityResume();
 
-  void onActivityStop();
+    void onActivityStop();
 
-  void onActivityDestroy();
+    void onActivityDestroy();
 
-  boolean onActivityBack();
+    boolean onActivityBack();
+
 }
