@@ -31,6 +31,7 @@ public class Custom2Activity extends AbstractWeexActivity {
     }
 
     public void onConfigurationChanged(Configuration newConfig) {
+        Log.d("test", "onConfigurationChanged .......");
         super.onConfigurationChanged(newConfig);
         if (mInstance != null) {
             mInstance.onConfigurationChanged(newConfig);

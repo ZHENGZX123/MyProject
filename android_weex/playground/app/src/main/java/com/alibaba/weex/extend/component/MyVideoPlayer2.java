@@ -1,5 +1,6 @@
 package com.alibaba.weex.extend.component;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -62,11 +63,11 @@ public class MyVideoPlayer2 extends WXComponent<View> implements MediaPlayer.OnP
         full.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mVvv.pause();
                 Intent i = new Intent(getContext(), PlayVideoActivity.class);
                 i.putExtra("url", currentUrl);
                 i.putExtra("position", mVvv.getCurrentPosition());
-                getContext().startActivity(i);
-                mVvv.pause();
+                ((Activity) getContext()).startActivityForResult(i, 888);
             }
         });
 
@@ -114,8 +115,26 @@ public class MyVideoPlayer2 extends WXComponent<View> implements MediaPlayer.OnP
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        Log.d("test", "prepare");
-        mVvv.start();
+        Log.d("test", "为毛回来就调用prepare");
+        if (backFromFull) {
+            backFromFull = false;
+            mVvv.seekTo(position);
+            mVvv.resume();
+        } else {
+            mVvv.start();
+        }
+    }
+
+    private boolean backFromFull = false;
+    private int position = 0;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("test", "onActivityResult , requestcode = " + requestCode + " , resultcode = " + resultCode);
+
+        backFromFull = true;
+        position = data.getIntExtra("position", 0);
     }
 
     private class MyAdapter extends BaseAdapter {

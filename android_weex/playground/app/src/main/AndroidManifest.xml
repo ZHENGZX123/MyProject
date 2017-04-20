@@ -177,8 +177,10 @@
             android:process=":remote" />
 
         <activity android:name="com.alibaba.weex.CustomActivity" />
-        <activity android:name="com.alibaba.weex.Custom2Activity" />
-        s
+        <activity
+            android:name="com.alibaba.weex.Custom2Activity"
+            android:configChanges="orientation|screenSize|layoutDirection" />
+
         <activity android:name="cn.xdeveloper.regionselector.RegionSelectActivity" />
 
         <!-- sharesdk -->
