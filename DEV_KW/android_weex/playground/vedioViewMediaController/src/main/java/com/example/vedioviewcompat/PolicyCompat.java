@@ -1,6 +1,7 @@
 package com.example.vedioviewcompat;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.Window;
 
 import java.lang.reflect.Constructor;
@@ -57,7 +58,7 @@ public class PolicyCompat {
      * Public methods
      */
     public static Window createWindow(Context context) {
-        if (true)//...
+        if (Build.VERSION.SDK_INT > 20)//...
             return createPhoneWindow(context);
         else
             return makeNewWindow(context);
