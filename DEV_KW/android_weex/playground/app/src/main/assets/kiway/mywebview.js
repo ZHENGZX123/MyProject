@@ -67,6 +67,7 @@
 //	        "url": "http://www.kiway.cn"
 //	        "url":"file:///android_asset/test.html"
              "url":"file:///android_asset/test2.html"
+//             "url":"file:///android_asset/test3.html"  //h5写法也是可以滴
 	      },
 	      "style": {
           	        "width": 1080,
