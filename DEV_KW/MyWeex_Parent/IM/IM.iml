@@ -152,6 +152,9 @@
     <orderEntry type="library" exported="" name="appcompat-v7-25.0.1" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-25.0.1" level="project" />
     <orderEntry type="library" exported="" name="realm-android-library-3.0.0" level="project" />
+    <orderEntry type="module" module-name="photoview" exported="" />
     <orderEntry type="library" exported="" name="org.apache.http.legacy-android-25" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-18.0.0" level="project" />
+    <orderEntry type="library" exported="" name="universal-image-loader-1.9.5" level="project" />
   </component>
 </module>
