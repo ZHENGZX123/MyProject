@@ -5,6 +5,8 @@ import android.view.KeyEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cn.kwim.mqttcilent.mqttclient.MqttInstance;
+
 //4个tab用的
 public class SubActivity extends WXBaseActivity {
 
@@ -18,8 +20,28 @@ public class SubActivity extends WXBaseActivity {
                     mTimer.cancel();
                     mTimer = null;
                 }
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            MqttInstance.getInstance().getPushInterface().logout();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
                 finish();
-                android.os.Process.killProcess(android.os.Process.myPid());
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                    }
+                }.start();
             } else {
                 toast("再按一次退出");
                 mCanQuit = true;
