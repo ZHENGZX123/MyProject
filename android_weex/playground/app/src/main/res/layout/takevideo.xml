@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    
+    <LinearLayout
+        android:id="@+id/takevideo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+       	<Button
+		    android:id="@+id/takestop"
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1.0"
+		    android:gravity="center"
+		    android:text="停止"
+		    android:textSize="20sp"/>
+        
+		<Button
+		    android:id="@+id/takestart"
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1.0"
+		    android:gravity="center"
+		    android:text="开始"
+		    android:textSize="20sp"/>
+
+	</LinearLayout>
+        
+    <SurfaceView
+        android:id="@+id/video"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/takevideo"/>
+</RelativeLayout>
