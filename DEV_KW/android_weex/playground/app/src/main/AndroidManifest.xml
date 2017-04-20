@@ -180,7 +180,6 @@
         <activity
             android:name="com.alibaba.weex.Custom2Activity"
             android:configChanges="orientation|screenSize|layoutDirection" />
-
         <activity android:name="cn.xdeveloper.regionselector.RegionSelectActivity" />
 
         <!-- sharesdk -->
@@ -226,11 +225,11 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name="com.alibaba.weex.PlayVideoActivity"
-            android:screenOrientation="landscape"></activity>
-
+            android:screenOrientation="landscape" />
         <activity
             android:name="com.alibaba.weex.VideoRecordActivity"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
+        <activity android:name="com.alibaba.weex.ScanResultActivity"></activity>
     </application>
 
 </manifest>
