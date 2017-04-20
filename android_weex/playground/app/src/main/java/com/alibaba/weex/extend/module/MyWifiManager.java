@@ -8,6 +8,7 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.alibaba.weex.ScanResultActivity;
 import com.alibaba.weex.utils.WifiAdmin;
 import com.google.zxing.client.android.CaptureActivity;
 import com.taobao.weex.annotation.JSMethod;
@@ -84,6 +85,8 @@ public class MyWifiManager extends WXModule {
         }
         String result = data.getStringExtra("result");
         Toast.makeText(mWXSDKInstance.getContext(), "扫描到的是" + result, Toast.LENGTH_SHORT).show();
+
+        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), ScanResultActivity.class).putExtra("result", result));
     }
 
 
