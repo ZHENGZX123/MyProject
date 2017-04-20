@@ -38,7 +38,7 @@ public class MyDropDown extends WXModule {
         contentView.findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                callback.invoke("11111111");
+                callback.invoke("一年级");
                 popupWindow.dismiss();
             }
         });
