@@ -1,6 +1,7 @@
 package com.alibaba.weex;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -44,5 +45,11 @@ public class PlayVideoActivity extends Activity implements MediaPlayer.OnPrepare
         Log.d("test", "prepare");
         mvv.start();
         mvv.seekTo(getIntent().getIntExtra("position", 0));
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(888, new Intent().putExtra("position", mvv.getCurrentPosition()));
+        super.onBackPressed();
     }
 }

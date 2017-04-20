@@ -158,6 +158,7 @@ public class MyVideoPlayer extends WXComponent<View> implements MediaPlayer.OnPr
 
     @Override
     public void setOnClickIsFullScreen() {
+        Log.d("test", "activity name = " + ((Activity) getContext()).getLocalClassName());
         if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {//设置RelativeLayout的全屏模式
             ((Activity) getContext()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else {
@@ -165,15 +166,13 @@ public class MyVideoPlayer extends WXComponent<View> implements MediaPlayer.OnPr
         }
     }
 
-    @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        Log.d("test", "onConfigurationChanged 无效");
+        Log.d("test", "onConfigurationChanged 不调用，只有mRootComp才调用");
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             gv.setVisibility(View.GONE);
         } else {
             gv.setVisibility(View.VISIBLE);
         }
-        super.onConfigurationChanged(newConfig);
         mVvv.refreshDrawableState();
     }
 
