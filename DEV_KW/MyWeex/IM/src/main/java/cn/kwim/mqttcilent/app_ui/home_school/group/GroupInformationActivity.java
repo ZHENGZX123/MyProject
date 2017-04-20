@@ -30,7 +30,7 @@ import cn.kwim.mqttcilent.mqttclient.MqttUtils;
  *
  * @author hmg
  */
-public class GroupInformationActivity extends BaseActivity implements OnClickListener,CreateGroudDialog.CreateGroup {
+public class GroupInformationActivity extends BaseActivity implements OnClickListener, CreateGroudDialog.CreateGroup {
 
     private RelativeLayout relative;
     private ImageView iv_back;
@@ -40,7 +40,8 @@ public class GroupInformationActivity extends BaseActivity implements OnClickLis
     private RelativeLayout rl_chatdata;
     private Button deleteGroup;
     CreateGroudDialog createGroudDialog;
-//    LoginDialog loginDialog;
+
+    //    LoginDialog loginDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -74,7 +75,7 @@ public class GroupInformationActivity extends BaseActivity implements OnClickLis
         deleteGroup.setOnClickListener(this);
 //        loginDialog=new LoginDialog(this);
         createGroudDialog = new CreateGroudDialog(this, this);
-        ViewUtil.setContent(this,R.id.tv_groupName,getIntent().getStringExtra(ChatActivity.GROUPNAME));
+        ViewUtil.setContent(this, R.id.tv_groupName, getIntent().getStringExtra(ChatActivity.GROUPNAME));
     }
 
     @Override
@@ -82,7 +83,7 @@ public class GroupInformationActivity extends BaseActivity implements OnClickLis
         super.onStart();
     }
 
-        String s;
+    String s;
 
     @Override
     public void onClick(View v) {
@@ -183,16 +184,16 @@ public class GroupInformationActivity extends BaseActivity implements OnClickLis
 
                         }
                     });
-                    JSONObject data =new JSONObject();
+                    JSONObject data = new JSONObject();
                     try {
-                        data.put("groupid",groupId);
-                        data.put("name",message);
-                        data.put("icon","");
-                        data.put("notice","");
-                        data.put("intro","");
-                        data.put("ispublic","");
-                        data.put("isvalidate","");
-                        data.put("maxnum","1000");
+                        data.put("groupid", groupId);
+                        data.put("name", message);
+                        data.put("icon", "");
+                        data.put("notice", "");
+                        data.put("intro", "");
+                        data.put("ispublic", "");
+                        data.put("isvalidate", "");
+                        data.put("maxnum", "1000");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -215,9 +216,9 @@ public class GroupInformationActivity extends BaseActivity implements OnClickLis
                         JSONObject data = new JSONObject(s);
                         Log.e("JOSN", s);
                         if (data.optJSONObject("data").optString("status").equals("success")) {
-                            ViewUtil.showMessage(GroupInformationActivity.this,data.optJSONObject("data")
+                            ViewUtil.showMessage(GroupInformationActivity.this, data.optJSONObject("data")
                                     .optString("errinfo"));
-                            new Thread(){
+                            new Thread() {
                                 @Override
                                 public void run() {
                                     MainListDao.saveGroupList(MqttInstance.getInstance().getPushInterface().getGroupList(), DaoType.SESSTIONTYPE.GROUP);
@@ -227,7 +228,7 @@ public class GroupInformationActivity extends BaseActivity implements OnClickLis
                             finish();
 //                            startActivity(MainActivity.class);
                         } else {
-                            ViewUtil.showMessage(GroupInformationActivity.this,data.optJSONObject("data")
+                            ViewUtil.showMessage(GroupInformationActivity.this, data.optJSONObject("data")
                                     .optString("errinfo"));
                         }
                     } catch (Exception e) {

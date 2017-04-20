@@ -93,6 +93,7 @@ import cn.kwim.mqttcilent.mqttclient.mq.PushInterface;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
+import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static cn.kiway.Yjpty.R.id.resend;
 
@@ -1132,6 +1133,14 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                             resend2(message);
                         }
                     });
+
+                    final String urlurl = url;
+                    viewHolder.imageView.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showBigImage(urlurl);
+                        }
+                    });
                     break;
                 }
                 case IMAGEL: {
@@ -1145,19 +1154,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
                     viewHolder.iv_chatcontent.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-//                        Intent intent = new Intent(context, PicturePreviewActivity.class);
-//                        intent.putExtra("url", OkhttpUtils.base_pic_url + message.getMsg());
-//                        intent.putExtra("indentify", context.getResources().getIdentifier("im_ic_picture_loadfailed",
-//                                "drawable",
-//                                context.getPackageName()));
-//                        ((Activity) context).startActivity(intent);
-                            BaseActivity activity = (BaseActivity) context;
-                            List<String> list = new ArrayList<String>();
-                            list.add(/*OkhttpUtils.base_pic_url +*/ message.getMsg());
-                            Bundle bundle = new Bundle();
-                            bundle.putStringArrayList(IConstant.BUNDLE_PARAMS, (ArrayList<String>) list);
-                            bundle.putInt(IConstant.BUNDLE_PARAMS1, 1);
-//                        activity.startActivity(ViewPhotosActivity.class, bundle);
+                            showBigImage(message.getMsg());
                         }
                     });
                     break;
@@ -1169,6 +1166,15 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Dropd
 
             }
             return convertView;
+        }
+
+        private void showBigImage(String url) {
+            String[] urls = new String[1];
+            urls[0] = url;
+            ViewPagerActivity.sDrawables = urls;
+            Intent intent = new Intent(ChatActivity.this, ViewPagerActivity.class);
+            intent.putExtra("position", 0);
+            startActivity(intent);
         }
 
         private void resend(final Message message) {
