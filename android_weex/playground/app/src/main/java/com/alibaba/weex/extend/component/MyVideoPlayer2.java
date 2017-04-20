@@ -118,8 +118,8 @@ public class MyVideoPlayer2 extends WXComponent<View> implements MediaPlayer.OnP
         Log.d("test", "为毛回来就调用prepare");
         if (backFromFull) {
             backFromFull = false;
+            mVvv.start();
             mVvv.seekTo(position);
-            mVvv.resume();
         } else {
             mVvv.start();
         }
