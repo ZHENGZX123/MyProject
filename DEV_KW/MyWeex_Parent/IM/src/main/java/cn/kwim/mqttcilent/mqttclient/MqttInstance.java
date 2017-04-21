@@ -24,8 +24,14 @@ public class MqttInstance {
         return instance;
     }
 
+    public static String currentUser = "";
+
     //如果登陆不成功 请再次登陆
     public void conMqtt(String name, String pwd, final LoginImlisener loginImlisener) {
+        if (name.equals(currentUser)) {
+            return;
+        }
+        currentUser = name;
         try {
 //            type = true;
             client = new HproseMqttClient("yjpt", name, pwd, "2",
