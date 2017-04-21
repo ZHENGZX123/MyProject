@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+
+        android:gravity="center_vertical">
+
+        <!-- <include layout="@layout/ease_commom_back_btn" />-->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="录制视频"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <VideoView
+            android:id="@+id/mVideoView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+
+        <Button
+            android:id="@+id/switch_btn"
+            android:layout_width="45dip"
+            android:layout_height="45dip"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:visibility="invisible" />
+        <!--android:background="@drawable/em_camera_switch_selector"-->
+
+        <Chronometer
+            android:id="@+id/chronometer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center_horizontal"
+            android:textColor="#FFF" />
+        <!--android:background="@color/btn_gray_normal"-->
+
+        <ImageView
+            android:id="@+id/recorder_start"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:src="@mipmap/grid_camera"
+            android:visibility="visible" />
+        <!--android:src="@drawable/em_video_recorder_start_btn"-->
+
+        <ImageView
+            android:id="@+id/recorder_stop"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@mipmap/list_selected"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:visibility="invisible" />
+        <!--android:src="@drawable/em_video_recorder_stop_btn"-->
+    </RelativeLayout>
+
+</LinearLayout>

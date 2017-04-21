@@ -85,7 +85,7 @@
         	        "click": "click2"
         	      },
         	      "attr": {
-        	        "value": "stop record "
+        	        "value": "start play"
         	      },
         	      "style": {
                   	 "width": 200,
