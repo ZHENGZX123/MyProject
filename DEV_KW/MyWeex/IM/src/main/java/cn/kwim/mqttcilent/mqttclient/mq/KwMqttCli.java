@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import cn.kwim.mqttcilent.mqttclient.MqttInstance;
+
 public class KwMqttCli implements MqttCallback {
     //public final static KwMqttCli INSTANCE = new KwMqttCli(Settings.INSTANCE.clientid());
     private MqttClient client = null;
@@ -98,6 +100,10 @@ public class KwMqttCli implements MqttCallback {
     }
 
     private void conn() {
+        if (!this.username.equals(MqttInstance.currentUser)) {
+            close();
+            return;
+        }
         try {
             client.connect(options);
         } catch (MqttException e) {
@@ -124,8 +130,8 @@ public class KwMqttCli implements MqttCallback {
         } catch (MqttException e) {
             e.printStackTrace();
         }
-
     }
+
 
     public void subscribe(String topicName) {
         try {
@@ -154,7 +160,7 @@ public class KwMqttCli implements MqttCallback {
     }
 
     public boolean connect() {
-        while (!client.isConnected() && (recode != 4)) {
+        while (!client.isConnected() && (recode != 4) && this.username.equals(MqttInstance.currentUser)) {
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
