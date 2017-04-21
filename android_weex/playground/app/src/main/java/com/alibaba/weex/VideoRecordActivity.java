@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.wjc.R;
 
 import java.io.File;
-import java.util.Random;
 
 public class VideoRecordActivity extends Activity {
     private Button start, stop;
@@ -72,12 +71,11 @@ public class VideoRecordActivity extends Activity {
                     // 每秒4帧
                     // mRecorder.setVideoFrameRate(4);
 
-                    String path = "/mnt/sdcard/video/";
+                    String path = "/mnt/sdcard/";
                     if (!new File(path).exists()) {
                         new File(path).mkdirs();
                     }
-                    mRecorder.setOutputFile(path + new Random().nextInt()
-                            + ".mp4");
+                    mRecorder.setOutputFile(path + "record.mp4");
 
                     // 设置录制视频的方向
 //					mRecorder.setOrientationHint(90); 横屏先不设置这个了。。。无语
