@@ -133,15 +133,16 @@ public class SJEventModule extends WXModule implements HttpHandler {
         Log.d("test", "makeQRCode = " + dic);
         //生成一个二维码，保存在本地，把路径callback回去。
         try {
-            org.json.JSONObject obj = new org.json.JSONObject(dic);
+            JSONObject obj = new JSONObject(dic);
             String classId = obj.getString("classId");
             String className = obj.getString("className");
             String schoolId = obj.getString("schoolId");
-            String code = "http://www.yuertong.com/yjpts/?&ref=class&classid=" + classId + "&schoolId=" + schoolId + "&classname=" + className;
-            ;
+            String code = "http://www.yuertong.com/yjpts/?classid=" + classId + "&ref=class&schoolId=" + schoolId + "&classname=" + className;
+
             Bitmap b = Utils.createQRImage(code, 400, 400);
             String filepath = Utils.saveMyBitmap(b, new Random().nextInt() + "");
             callback.invoke("file://" + filepath);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -157,7 +158,7 @@ public class SJEventModule extends WXModule implements HttpHandler {
         Log.d("test", "PostSigalImg dic = " + dic);
 
         try {
-            org.json.JSONObject obj = new org.json.JSONObject(dic);
+            JSONObject obj = new JSONObject(dic);
             userId = obj.getString("userId");
             url = obj.getString("url");
             jsessionid = obj.getString("jsessionid");

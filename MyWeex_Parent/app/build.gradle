@@ -75,7 +75,7 @@ dependencies {
     //sdk
     compile files('libs/jdeferred-core-1.2.4.jar')
     compile files('libs/org.apache.http.legacy.jar')
-    compile files('libs/sdk-0.0.2-SNAPSHOT.jar')
+    //compile files('libs/sdk-0.0.2-SNAPSHOT.jar')
     compile 'com.alibaba:fastjson:1.2.24'
     compile 'org.slf4j:slf4j-android:1.7.24'
     compile files('libs/android-async-http-1.4.5.jar')
@@ -99,5 +99,6 @@ dependencies {
     //    compile project(':pay')
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:1.0.2'
     compile project(':photoview')
+    compile files('libs/sdk-0.0.3.jar')
 }
 
