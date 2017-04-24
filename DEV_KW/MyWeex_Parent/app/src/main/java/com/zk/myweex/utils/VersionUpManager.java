@@ -42,7 +42,7 @@ public class VersionUpManager {
                 ZipPackage zip = new MyDBHelper(context).getAllZipPackageByName(name);
                 Module s = new Module().findOne(new KWQuery().equalTo("id", name.replace(".zip", "")));
                 Log.d("version", "s  = " + s.toString());
-                Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
+                Package p = new Package().findOne(new KWQuery().equalTo("moduleId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
                 Log.d("version", "p = " + p.toString());
                 String currentVersion = zip.version;
                 String remoteVersion = p.get("version").toString();
@@ -53,7 +53,7 @@ public class VersionUpManager {
                     downloadFull(downloadUrl, name, version);
                 } else {
                     //如果版本号一样，检查增量包
-                    List<Package> patchs = new Package().find(new KWQuery().equalTo("serviceId", s.getId()).equalTo("version", currentVersion).equalTo("updateType", "patch").equalTo("platform", "android"));
+                    List<Package> patchs = new Package().find(new KWQuery().equalTo("moduleId", s.getId()).equalTo("version", currentVersion).equalTo("updateType", "patch").equalTo("platform", "android"));
                     if (patchs.size() == 0) {
                         Log.d("version", "没有新版本");
                     } else {
