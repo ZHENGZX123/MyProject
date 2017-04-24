@@ -43,6 +43,7 @@ import java.util.Map;
 
 import cn.kiway.Yjptj.R;
 import cn.kiway.baas.sdk.KWQuery;
+import cn.kiway.baas.sdk.model.module.Module;
 import cn.kiway.baas.sdk.model.service.Service;
 import cn.kiway.utils.SharedPreferencesUtil;
 import cn.kwim.mqttcilent.common.Global;
@@ -92,11 +93,11 @@ public class MainActivity2 extends TabActivity {
         new Thread() {
             @Override
             public void run() {
-                List<Service> services = null;
+                List<Module> services = null;
                 try {
-                    services = new Service().find(new KWQuery().like("id", "ParentTab%"));
+                    services = new Module().find(new KWQuery().like("id", "ParentTab%"));
                     Log.d("test", "services count  = " + services.size());
-                    for (Service s : services) {
+                    for (Module s : services) {
                         Log.d("test", "service  = " + s.toString());
                         TabEntity tab = new TabEntity();
                         tab.idStr = s.get("id").toString();
