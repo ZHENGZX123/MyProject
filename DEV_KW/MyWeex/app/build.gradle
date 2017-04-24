@@ -63,7 +63,7 @@ dependencies {
     //sdk
     compile files('libs/jdeferred-core-1.2.4.jar')
     compile files('libs/org.apache.http.legacy.jar')
-    compile files('libs/sdk-0.0.2-SNAPSHOT.jar')
+    //compile files('libs/sdk-0.0.2-SNAPSHOT.jar')
     compile files('libs/android-async-http-1.4.5.jar')
     //添加retrofit
     //ConverterFactory的Gson依赖包
@@ -98,4 +98,5 @@ dependencies {
     compile 'com.facebook.fresco:fresco:0.12.0'
     compile 'com.tencent.bugly:crashreport:latest.release'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile files('libs/sdk-0.0.3.jar')
 }
