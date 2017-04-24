@@ -440,7 +440,7 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
             Module s = new Module().findOne(new KWQuery().equalTo("id", name.replace(".zip", "")));
             Log.d("test", "s  = " + s.toString());
             //返回最新的全量包
-            Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
+            Package p = new Package().findOne(new KWQuery().equalTo("moduleId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
             Log.d("test", "p = " + p.toString());
             String baseUrl = s.get("url").toString();
             String downloadUrl = p.get("url").toString();
