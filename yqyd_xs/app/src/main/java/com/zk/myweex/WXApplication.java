@@ -53,8 +53,9 @@ public class WXApplication extends Application {
 
         //xizhou sdk init
         Configure.getInstance().setHost("zip.kiway.cn");
-        Configure.getInstance().setPort(4000);
-        Configure.getInstance().setRoot("admin");
+        Configure.getInstance().setPort(3000);
+        Configure.getInstance().setRoot("api");
+        Configure.init("5b4e6117143c2abd97a51a04303987bc", "3a13696a633e49d20ee6bf4bee9f5874c64aa57b", "");
 
         //universal-image-loader初始化
         initImageCache();

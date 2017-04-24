@@ -16,7 +16,6 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -38,10 +37,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import cn.kiway.baas.sdk.KWQuery;
-import cn.kiway.baas.sdk.model.service.Service;
+import cn.kiway.baas.sdk.model.module.Module;
 import cn.kiway.yiqiyuedu.R;
 
 import static uk.co.senab.photoview.sample.ViewPagerActivity.getLoaderOptions;
@@ -76,11 +74,11 @@ public class MainActivity2 extends TabActivity {
         new Thread() {
             @Override
             public void run() {
-                List<Service> services = null;
+                List<Module> services = null;
                 try {
-                    services = new Service().find(new KWQuery().like("id", "yqydTab%"));
+                    services = new Module().find(new KWQuery().like("id", "yqydTab%"));
                     Log.d("test", "services count  = " + services.size());
-                    for (Service s : services) {
+                    for (Module s : services) {
                         Log.d("test", "service  = " + s.toString());
                         TabEntity tab = new TabEntity();
                         tab.idStr = s.get("id").toString();
@@ -92,7 +90,7 @@ public class MainActivity2 extends TabActivity {
                         }
                         new MyDBHelper(getApplicationContext()).updateTabEntity(tab);
 
-                        String baseUrl = s.get("baseUrl").toString();
+                        String baseUrl = s.get("url").toString();
                         new MyDBHelper(getApplicationContext()).updateZipPackageBaseUrl(baseUrl, tab.idStr + ".zip");
                     }
                 } catch (Exception e) {

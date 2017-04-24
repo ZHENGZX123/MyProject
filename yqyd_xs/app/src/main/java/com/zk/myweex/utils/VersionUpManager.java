@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.baas.sdk.KWQuery;
-import cn.kiway.baas.sdk.model.service.Package;
-import cn.kiway.baas.sdk.model.service.Service;
+import cn.kiway.baas.sdk.model.module.Module;
+import cn.kiway.baas.sdk.model.module.Package;
 
 /**
  * Created by Administrator on 2017/2/28.
@@ -40,7 +40,7 @@ public class VersionUpManager {
                 String name = f.getName();
                 Log.d("version", "====================检测" + name + "的新版本===============================");
                 ZipPackage zip = new MyDBHelper(context).getAllZipPackageByName(name);
-                Service s = new Service().findOne(new KWQuery().equalTo("id", name.replace(".zip", "")));
+                Module s = new Module().findOne(new KWQuery().equalTo("id", name.replace(".zip", "")));
                 Log.d("version", "s  = " + s.toString());
                 Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
                 Log.d("version", "p = " + p.toString());

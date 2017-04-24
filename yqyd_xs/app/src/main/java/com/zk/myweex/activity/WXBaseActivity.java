@@ -232,10 +232,10 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import cn.kiway.yiqiyuedu.R;
 import cn.kiway.baas.sdk.KWQuery;
-import cn.kiway.baas.sdk.model.service.Package;
-import cn.kiway.baas.sdk.model.service.Service;
+import cn.kiway.baas.sdk.model.module.Module;
+import cn.kiway.baas.sdk.model.module.Package;
+import cn.kiway.yiqiyuedu.R;
 
 /**
  * Created by sospartan on 5/30/16.
@@ -439,12 +439,12 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         } else {
             // 这一段代码几乎没什么作用咯。。。
             Log.d("test", "不存在，下载");
-            Service s = new Service().findOne(new KWQuery().equalTo("id", name.replace(".zip", "")));
+            Module s = new Module().findOne(new KWQuery().equalTo("id", name.replace(".zip", "")));
             Log.d("test", "s  = " + s.toString());
             //返回最新的全量包
             Package p = new Package().findOne(new KWQuery().equalTo("serviceId", s.getId()).equalTo("updateType", "all").equalTo("platform", "android").descending("version"));
             Log.d("test", "p = " + p.toString());
-            String baseUrl = s.get("baseUrl").toString();
+            String baseUrl = s.get("url").toString();
             String downloadUrl = p.get("url").toString();
             String version = p.get("version").toString();
             downloadJSBundle(zipName, downloadUrl, version, baseUrl);
