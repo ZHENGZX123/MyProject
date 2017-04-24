@@ -44,7 +44,6 @@ import java.util.Map;
 import cn.kiway.Yjptj.R;
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.module.Module;
-import cn.kiway.baas.sdk.model.service.Service;
 import cn.kiway.utils.SharedPreferencesUtil;
 import cn.kwim.mqttcilent.common.Global;
 import cn.kwim.mqttcilent.common.cache.dao.Dao;
@@ -109,7 +108,7 @@ public class MainActivity2 extends TabActivity {
                         }
                         new MyDBHelper(getApplicationContext()).updateTabEntity(tab);
 
-                        String baseUrl = s.get("baseUrl").toString();
+                        String baseUrl = s.get("url").toString();
                         new MyDBHelper(getApplicationContext()).updateZipPackageBaseUrl(baseUrl, tab.idStr + ".zip");
                     }
                 } catch (Exception e) {
