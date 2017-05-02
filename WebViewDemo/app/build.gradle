@@ -23,4 +23,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.0'
     compile files('libs/zip4j_1.3.1.jar')
     compile project(':wjc_ImagePicker')
+    compile files('libs/android-async-http-1.4.5.jar')
+    compile files('libs/org.apache.http.legacy.jar')
 }

@@ -2,6 +2,7 @@ package com.zk.webviewdemo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class WebViewActivity2 extends Activity {
@@ -23,8 +26,35 @@ public class WebViewActivity2 extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview2);
-
         wv = (WebView) findViewById(R.id.wv);
+        initData();
+        load();
+        checkVersionUp();
+    }
+
+    private void checkVersionUp() {
+        //静默更新
+    }
+
+    private void initData() {
+        //跨域问题
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            wv.getSettings().setAllowUniversalAccessFromFileURLs(true);
+        } else {
+            try {
+                Class<?> clazz = wv.getSettings().getClass();
+                Method method = clazz.getMethod("setAllowUniversalAccessFromFileURLs", boolean.class);
+                if (method != null) {
+                    method.invoke(wv.getSettings(), true);
+                }
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
 
 
         WebSettings settings = wv.getSettings();
@@ -44,11 +74,13 @@ public class WebViewActivity2 extends Activity {
                 return true;
             }
         });
-
-        wv.addJavascriptInterface(new JavaScriptObject(this), "native");
-        wv.loadUrl("file:///android_asset/test2.html");
     }
 
+    private void load() {
+        //wv.addJavascriptInterface(new JavaScriptObject(this), "native");
+        //wv.loadUrl("file:///android_asset/test2.html");
+        wv.loadUrl("file:///android_asset/yqydls/yqyd/index/index.html");
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
