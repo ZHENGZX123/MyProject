@@ -101,5 +101,6 @@ dependencies {
     compile project(':photoview')
     compile project(':zxing')
     compile files('libs/sdk-0.0.3.jar')
+    compile files('libs/BaseRecyclerViewAdapterHelper.jar')
 }
 

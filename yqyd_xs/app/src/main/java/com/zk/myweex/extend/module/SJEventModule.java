@@ -15,6 +15,8 @@ import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
 import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
+import com.zk.myweex.regionselector.RegionSelectActivity;
+import com.zk.myweex.regionselector.util.DBCopyUtil;
 import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.UploadUtil;
 import com.zk.myweex.utils.Utils;
@@ -140,6 +142,11 @@ public class SJEventModule extends WXModule {
             Log.d("test", "images count = " + images.size());
 
             doUploadImage(images);
+        } else if (requestCode == 100 && resultCode == 200) {
+            String province = data.getStringExtra(RegionSelectActivity.REGION_PROVINCE);
+            String city = data.getStringExtra(RegionSelectActivity.REGION_CITY);
+            String area = data.getStringExtra(RegionSelectActivity.REGION_AREA);
+            selectCallback.invoke(province + city + area);
         }
     }
 
@@ -188,5 +195,16 @@ public class SJEventModule extends WXModule {
             e.printStackTrace();
         }
     }
+
+
+    private JSCallback selectCallback;
+
+    @JSMethod(uiThread = true)
+    public void selectRegion(JSCallback callback) {
+        this.selectCallback = callback;
+        DBCopyUtil.copyDataBaseFromAssets(mWXSDKInstance.getContext(), "region.db");
+        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), RegionSelectActivity.class), 100);
+    }
+
 }
 
