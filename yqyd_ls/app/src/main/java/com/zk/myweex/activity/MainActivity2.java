@@ -40,7 +40,7 @@ import java.util.List;
 
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.module.Module;
-import cn.kiway.yiqiyuedu.R;
+import cn.kiway.yiqiyuedu.ls.R;
 
 import static uk.co.senab.photoview.sample.ViewPagerActivity.getLoaderOptions;
 
@@ -76,7 +76,7 @@ public class MainActivity2 extends TabActivity {
             public void run() {
                 List<Module> services = null;
                 try {
-                    services = new Module().find(new KWQuery().like("id", "yqydTab%"));
+                    services = new Module().find(new KWQuery().like("id", "yqydLSTab%"));
                     Log.d("test", "services count  = " + services.size());
                     for (Module s : services) {
                         Log.d("test", "service  = " + s.toString());

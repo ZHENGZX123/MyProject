@@ -14,7 +14,7 @@ import com.zk.myweex.regionselector.db.RegionDao;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.kiway.yiqiyuedu.R;
+import cn.kiway.yiqiyuedu.ls.R;
 
 
 /**

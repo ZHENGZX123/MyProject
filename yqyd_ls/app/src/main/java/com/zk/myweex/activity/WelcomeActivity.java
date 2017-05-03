@@ -18,7 +18,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.kiway.yiqiyuedu.R;
+import cn.kiway.yiqiyuedu.ls.R;
 
 public class WelcomeActivity extends WXBaseActivity {
 
@@ -40,7 +40,7 @@ public class WelcomeActivity extends WXBaseActivity {
                 if (getSharedPreferences("kiway", 0).getBoolean("login", false)) {
                     startActivity(new Intent(WelcomeActivity.this, MainActivity2.class));
                 } else {
-                    startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
+                    startActivity(new Intent(WelcomeActivity.this, MainActivity2.class));
                 }
                 finish();
             }
@@ -88,36 +88,36 @@ public class WelcomeActivity extends WXBaseActivity {
                 new File(WXApplication.PATH_TMP).mkdirs();
             }
             //2.拷贝。。。
-            FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab0.zip");
-            FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab1.zip");
-            FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab2.zip");
+            FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydLSTab0.zip");
+            FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydLSTab1.zip");
+            FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydLSTab2.zip");
 
             //3.插入数据库
             TabEntity tab0 = new TabEntity();
             tab0.name = "首页";
-            tab0.idStr = "yqydTab0";
+            tab0.idStr = "yqydLSTab0";
             TabEntity tab1 = new TabEntity();
             tab1.name = "亲子圈";
-            tab1.idStr = "yqydTab1";
+            tab1.idStr = "yqydLSTab1";
             TabEntity tab2 = new TabEntity();
             tab2.name = "我的";
-            tab2.idStr = "yqydTab2";
+            tab2.idStr = "yqydLSTab2";
             new MyDBHelper(getApplicationContext()).addTabEntity(tab0);
             new MyDBHelper(getApplicationContext()).addTabEntity(tab1);
             new MyDBHelper(getApplicationContext()).addTabEntity(tab2);
 
             ZipPackage zip0 = new ZipPackage();
-            zip0.name = "yqydTab0.zip";
+            zip0.name = "yqydLSTab0.zip";
             zip0.indexPath = "yqyd/dist/tab0.js";
             zip0.version = "2.0.0";
             zip0.patchs = "";
             ZipPackage zip1 = new ZipPackage();
-            zip1.name = "yqydTab1.zip";
+            zip1.name = "yqydLSTab1.zip";
             zip1.indexPath = "yqyd/dist/tab1.js";
             zip1.version = "2.0.0";
             zip1.patchs = "";
             ZipPackage zip2 = new ZipPackage();
-            zip2.name = "yqydTab2.zip";
+            zip2.name = "yqydLSTab2.zip";
             zip2.indexPath = "yqyd/dist/tab2.js";
             zip2.version = "2.0.0";
             zip2.patchs = "";
