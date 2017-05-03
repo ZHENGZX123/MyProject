@@ -62,7 +62,8 @@ public class IndexActivity extends AbstractWeexActivity {
         RenderContainer renderContainer = new RenderContainer(this);
         //kiway/module/mycamera.js
         if (TextUtils.equals(sCurrentIp, DEFAULT_IP)) {
-            renderPage(WXFileUtils.loadAsset("index.js", this), getIndexUrl());
+            renderPage(WXFileUtils.loadAsset("index.js", this), getIndexUrl());//index.js
+//            renderPage(WXFileUtils.loadAsset("yqyd/dist/tab0.js", this), getIndexUrl());//index.js
         } else {
             renderPageByURL(getIndexUrl());
         }

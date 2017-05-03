@@ -49,6 +49,7 @@ import com.alibaba.weex.extend.module.MyLog;
 import com.alibaba.weex.extend.module.MyNotification;
 import com.alibaba.weex.extend.module.MyOpenURL;
 import com.alibaba.weex.extend.module.MyRegion;
+import com.alibaba.weex.extend.module.MyRegion2;
 import com.alibaba.weex.extend.module.MyShake;
 import com.alibaba.weex.extend.module.MyShare;
 import com.alibaba.weex.extend.module.MyThirdLogin;
@@ -166,6 +167,7 @@ public class WXApplication extends Application {
             WXSDKEngine.registerModule("my_wechatpay", MyWechatPay.class);
             WXSDKEngine.registerModule("my_alipay", MyAliPay.class);
             WXSDKEngine.registerModule("my_region", MyRegion.class);
+            WXSDKEngine.registerModule("my_region2", MyRegion2.class);
             WXSDKEngine.registerModule("my_audiorecorderplayer", MyAudioRecorderPlayer.class);
             WXSDKEngine.registerModule("my_videorecorderplayer", MyVideoRecorderPlayer.class);
             WXSDKEngine.registerModule("my_vibrator", MyVibrator.class);

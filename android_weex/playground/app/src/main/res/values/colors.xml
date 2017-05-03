@@ -6,4 +6,10 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="lable_blue">#3DB0FD</color>
+
+    <color name="mainColor">#1BC47A</color>
+    <color name="gray">#EEEEEE</color>
+    <color name="black">#5E5E5E</color>
+    <color name="white">#FFF</color>
+    <color name="touming">#00000000</color>
 </resources>
