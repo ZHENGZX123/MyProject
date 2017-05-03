@@ -35,7 +35,7 @@ import cn.kiway.baas.sdk.Configure;
 
 public class WXApplication extends Application {
 
-    public static String ROOT = "/mnt/sdcard/kiway/yqyd_xs/";
+    public static String ROOT = "/mnt/sdcard/kiway/yqyd_ls/";
 
     public static String PATH = ROOT + "weex/";
 

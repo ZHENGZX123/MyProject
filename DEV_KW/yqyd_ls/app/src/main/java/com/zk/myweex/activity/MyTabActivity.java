@@ -9,7 +9,7 @@ import android.widget.ProgressBar;
 import com.zk.myweex.entity.TabEntity;
 import com.zk.myweex.utils.MyDBHelper;
 
-import cn.kiway.yiqiyuedu.R;
+import cn.kiway.yiqiyuedu.ls.R;
 
 /**
  * Created by Administrator on 2017/3/7.

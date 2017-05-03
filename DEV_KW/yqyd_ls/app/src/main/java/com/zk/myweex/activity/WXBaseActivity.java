@@ -235,7 +235,7 @@ import java.util.Map;
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.module.Module;
 import cn.kiway.baas.sdk.model.module.Package;
-import cn.kiway.yiqiyuedu.R;
+import cn.kiway.yiqiyuedu.ls.R;
 
 /**
  * Created by sospartan on 5/30/16.

@@ -6,7 +6,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 
 import java.util.List;
 
-import cn.kiway.yiqiyuedu.R;
+import cn.kiway.yiqiyuedu.ls.R;
 
 /**
  * Created by Laiyimin on 2016/9/2.
