@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -41,11 +43,13 @@ public class ChooseCityUtil implements View.OnClickListener, NumberPicker.OnValu
         newCityArray[0] = oldCityArray[0];
         newCityArray[1] = oldCityArray[1];
         newCityArray[2] = oldCityArray[2];
-
         dialog = new AlertDialog.Builder(context).create();
         dialog.show();
         Window window = dialog.getWindow();
         window.setContentView(R.layout.dialog_choose_city);
+        WindowManager.LayoutParams lp = window.getAttributes();
+        window.setGravity(Gravity.BOTTOM);
+        window.setAttributes(lp);
         //初始化控件
         tvCancel = (TextView) window.findViewById(R.id.tvCancel);
         tvSure = (TextView) window.findViewById(R.id.tvSure);
