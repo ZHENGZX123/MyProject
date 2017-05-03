@@ -89,6 +89,9 @@
 
         <activity android:name="com.zk.myweex.activity.NoNetActivity"></activity>
 
+        <activity android:name="com.zk.myweex.regionselector.RegionSelectActivity"></activity>
+
+
     </application>
 
 </manifest>
