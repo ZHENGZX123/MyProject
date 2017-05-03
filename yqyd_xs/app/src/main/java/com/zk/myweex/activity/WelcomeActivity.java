@@ -40,7 +40,7 @@ public class WelcomeActivity extends WXBaseActivity {
                 if (getSharedPreferences("kiway", 0).getBoolean("login", false)) {
                     startActivity(new Intent(WelcomeActivity.this, MainActivity2.class));
                 } else {
-                    startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
+                    startActivity(new Intent(WelcomeActivity.this, MainActivity2.class));
                 }
                 finish();
             }
