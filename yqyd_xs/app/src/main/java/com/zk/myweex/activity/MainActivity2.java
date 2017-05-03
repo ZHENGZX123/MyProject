@@ -68,6 +68,10 @@ public class MainActivity2 extends TabActivity {
         tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
         initView(tabs);
 
+//        SJEventModule sj = new SJEventModule();
+//        sj.mWXSDKInstance = new WXSDKInstance(this);
+//        sj.selectRegion(null);
+
     }
 
     private void checkRemoteService() {

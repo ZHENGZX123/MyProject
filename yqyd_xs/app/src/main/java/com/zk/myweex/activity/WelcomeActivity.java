@@ -97,7 +97,7 @@ public class WelcomeActivity extends WXBaseActivity {
             tab0.name = "首页";
             tab0.idStr = "yqydTab0";
             TabEntity tab1 = new TabEntity();
-            tab1.name = "亲子圈";
+            tab1.name = "书库";
             tab1.idStr = "yqydTab1";
             TabEntity tab2 = new TabEntity();
             tab2.name = "我的";
