@@ -88,6 +88,7 @@
 	module.exports = {
 	  methods: {
 	    click: function click() {
+
 	      __weex_require__('@weex-module/my_region').selectRegion(
 	            function (res) {
                 	       var modal = __weex_require__('@weex-module/modal');
@@ -97,6 +98,7 @@
                                               });
                 }
 	      );
+
 	    }
 	  }
 	};}
