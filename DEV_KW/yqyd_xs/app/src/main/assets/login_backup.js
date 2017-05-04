@@ -4491,11 +4491,12 @@ exports.default = {
 				return;
 			}
 
-			sjevent.QRScan(function(ret){
-            						            modal.toast({message: ret.url,
-                                                			duration: 0.3,
-                                                		    });
-                                        		});
+			sjevent.Share("你好。。。");
+//			sjevent.QRScan(function(ret){
+//            						            modal.toast({message: ret.url,
+//                                                			duration: 0.3,
+//                                                		    });
+//                                        		});
 
             if(true){
                 return;
