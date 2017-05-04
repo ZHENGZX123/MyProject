@@ -4491,7 +4491,7 @@ exports.default = {
 				return;
 			}
 
-			sjevent.PostSigalVoice(function(ret){
+			sjevent.PostSigalImg(function(ret){
             						            modal.toast({message: ret.url,
                                                 			duration: 0.3,
                                                 		    });
