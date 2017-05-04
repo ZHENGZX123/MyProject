@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
 import com.zk.myweex.regionselector.RegionSelectActivity;
 import com.zk.myweex.regionselector.util.DBCopyUtil;
+import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.Utils;
 
@@ -315,5 +317,40 @@ public class SJEventModule extends WXModule {
         ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), RegionSelectActivity.class), 100);
     }
 
+    @JSMethod(uiThread = true)
+    public void PlayVoice(final String url) {
+        Log.d("test", "PlayVoice url = " + url);
+        if (!new File("/mnt/sdcard/audio/").exists()) {
+            new File("/mnt/sdcard/audio/").mkdirs();
+        }
+        new Thread() {
+            @Override
+            public void run() {
+                String name = url.substring(url.lastIndexOf("/") + 1);
+                File check = new File("/mnt/sdcard/audio/" + name);
+                if (check.exists()) {
+                    playAudio("/mnt/sdcard/audio/" + name);
+                    return;
+                }
+                HttpDownload httpDownload = new HttpDownload();
+                int ret = httpDownload.downFile(url, "/mnt/sdcard/audio/", name);
+                if (ret != 0) {
+                    return;
+                }
+                playAudio("/mnt/sdcard/audio/" + name);
+            }
+        }.start();
+    }
+
+    private void playAudio(String url) {
+        try {
+            MediaPlayer mPlayer = new MediaPlayer();
+            mPlayer.setDataSource(url);
+            mPlayer.prepare();
+            mPlayer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
