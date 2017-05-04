@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.zxing.client.android.CaptureActivity;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
@@ -236,6 +237,16 @@ public class SJEventModule extends WXModule {
             String city = data.getStringExtra(RegionSelectActivity.REGION_CITY);
             String area = data.getStringExtra(RegionSelectActivity.REGION_AREA);
             selectCallback.invoke(province + city + area);
+        } else if (requestCode == 999) {
+            //扫描二维码返回
+            if (data == null) {
+                return;
+            }
+            String result = data.getStringExtra("result");
+            Log.d("test", "result = " + result);
+            HashMap map = new HashMap();
+            map.put("result", result);
+            scanCallback.invoke(map);
         }
     }
 
@@ -351,6 +362,15 @@ public class SJEventModule extends WXModule {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private JSCallback scanCallback;
+
+    @JSMethod(uiThread = true)
+    public void QRScan(JSCallback callback) {
+        Log.d("test", "QRScan    ");
+        this.scanCallback = callback;
+        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), CaptureActivity.class), 999);
     }
 }
 
