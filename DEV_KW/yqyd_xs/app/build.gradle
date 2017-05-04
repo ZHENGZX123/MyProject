@@ -101,6 +101,8 @@ dependencies {
     compile project(':photoview')
     compile project(':zxing')
     compile files('libs/sdk-0.0.3.jar')
-    compile files('libs/BaseRecyclerViewAdapterHelper.jar')
+    //qiniu
+    compile 'com.qiniu:qiniu-android-sdk:7.3.+'
+    compile 'com.qiniu:qiniu-java-sdk:7.2.+'
 }
 

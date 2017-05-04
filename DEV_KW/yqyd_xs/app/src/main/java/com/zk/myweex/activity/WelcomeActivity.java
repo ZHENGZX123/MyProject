@@ -40,7 +40,7 @@ public class WelcomeActivity extends WXBaseActivity {
                 if (getSharedPreferences("kiway", 0).getBoolean("login", false)) {
                     startActivity(new Intent(WelcomeActivity.this, MainActivity2.class));
                 } else {
-                    startActivity(new Intent(WelcomeActivity.this, MainActivity2.class));
+                    startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
                 }
                 finish();
             }
@@ -50,7 +50,15 @@ public class WelcomeActivity extends WXBaseActivity {
     @Override
     public void onResume() {
         super.onResume();
-        requestRunTimePermission(new String[]{Manifest.permission.CALL_PHONE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+        requestRunTimePermission(
+                new String[]{
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.RECORD_AUDIO,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_PHONE_STATE
+                },
                 mListener);
     }
 
