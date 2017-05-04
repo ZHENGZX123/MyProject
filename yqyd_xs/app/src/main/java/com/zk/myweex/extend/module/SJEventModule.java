@@ -35,6 +35,7 @@ import com.zk.myweex.utils.Utils;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -372,5 +373,35 @@ public class SJEventModule extends WXModule {
         this.scanCallback = callback;
         ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), CaptureActivity.class), 999);
     }
+
+    @JSMethod(uiThread = true)
+    public void Share(String url) {
+        Log.d("test", "Share url = " + url);
+        //截取屏幕图片
+        screenshot();
+    }
+
+
+    private void screenshot() {
+        // 获取屏幕
+        View dView = ((Activity) mWXSDKInstance.getContext()).getWindow().getDecorView();
+        dView.setDrawingCacheEnabled(true);
+        dView.buildDrawingCache();
+        Bitmap bmp = dView.getDrawingCache();
+        if (bmp != null) {
+            try {
+                // 图片文件路径
+                String name = System.currentTimeMillis() + ".png";
+                String filePath = "/mnt/sdcard/" + name;
+                File file = new File(filePath);
+                FileOutputStream os = new FileOutputStream(file);
+                bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
+                os.flush();
+                os.close();
+            } catch (Exception e) {
+            }
+        }
+    }
+
 }
 
