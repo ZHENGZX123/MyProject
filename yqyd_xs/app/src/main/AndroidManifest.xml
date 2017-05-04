@@ -63,13 +63,7 @@
         <activity android:name="com.zk.myweex.activity.MyTabActivity" />
         <activity
             android:name="com.zk.myweex.activity.MainActivity2"
-            android:launchMode="singleTask">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:launchMode="singleTask"></activity>
 
 
         <activity
@@ -84,9 +78,17 @@
 
         <activity
             android:name="com.zk.myweex.activity.WelcomeActivity"
-            android:theme="@style/Theme.AppStartLoadTranslucent"></activity>
+            android:theme="@style/Theme.AppStartLoadTranslucent">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        <activity android:name="com.zk.myweex.activity.TestActivity"></activity>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.zk.myweex.activity.TestActivity">
+
+        </activity>
 
         <activity android:name="com.zk.myweex.activity.NoNetActivity"></activity>
 

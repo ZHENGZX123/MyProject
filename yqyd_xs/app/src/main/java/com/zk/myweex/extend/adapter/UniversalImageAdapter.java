@@ -317,7 +317,7 @@ public class UniversalImageAdapter implements IWXImgLoaderAdapter {
                 });
                 return;
             }
-            String zipPath = WXApplication.PATH + currentActivity.currentZipName;//来自哪个包
+            String zipPath = WXApplication.PATH + "yqydTab0.zip";//来自哪个包currentActivity.currentZipName
             System.out.println("zipPath = " + zipPath);
             ZipFile zf = new ZipFile(zipPath);
             InputStream in = new BufferedInputStream(new FileInputStream(
