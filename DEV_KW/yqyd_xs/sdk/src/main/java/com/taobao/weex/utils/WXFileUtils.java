@@ -243,7 +243,7 @@ public class WXFileUtils {
             while ((len = bufferedReader.read(data)) > 0) {
                 builder.append(data, 0, len);
             }
-
+            System.out.println("sb = " + builder.toString());
             return builder.toString();
         } catch (IOException e) {
             e.printStackTrace();
