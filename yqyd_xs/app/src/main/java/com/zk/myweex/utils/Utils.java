@@ -12,6 +12,7 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.qiniu.util.Auth;
 import com.zk.myweex.activity.MainActivity2;
 
 import java.io.File;
@@ -25,6 +26,15 @@ import java.util.Hashtable;
  */
 
 public class Utils {
+
+    public static String getQiniuToken() {
+        String accessKey = "SQWC77eBEVRT_5_3XntqEBfL1SDgwxluAaZxRnKZ";
+        String secretKey = "HBfVSA1kPjvzD6m92imabqUo4w8Uqna7AJV9MMgl";
+        String bucket = "kiway";
+        Auth auth = Auth.create(accessKey, secretKey);
+        String upToken = auth.uploadToken(bucket);
+        return upToken;
+    }
 
     public static void checkNetWork(Context context) {
         //获取手机的连接服务管理器，这里是连接管理器类

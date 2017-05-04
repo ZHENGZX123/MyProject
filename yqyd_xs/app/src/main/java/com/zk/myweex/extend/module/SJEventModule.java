@@ -1,15 +1,24 @@
 package com.zk.myweex.extend.module;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaRecorder;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.view.CropImageView;
+import com.qiniu.android.common.Zone;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.Configuration;
+import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UploadManager;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
@@ -18,17 +27,19 @@ import com.zk.myweex.activity.MainActivity2;
 import com.zk.myweex.regionselector.RegionSelectActivity;
 import com.zk.myweex.regionselector.util.DBCopyUtil;
 import com.zk.myweex.utils.ScreenManager;
-import com.zk.myweex.utils.UploadUtil;
 import com.zk.myweex.utils.Utils;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cn.kiway.yiqiyuedu.R;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
+
+import static com.zk.myweex.utils.Utils.getQiniuToken;
 
 
 public class SJEventModule extends WXModule {
@@ -38,23 +49,11 @@ public class SJEventModule extends WXModule {
         Log.d(tag, log);
     }
 
-
     @JSMethod(uiThread = true)
-    public void loginSuccess(String url) {
-        Log.d("test", "loginSuccess url = " + url);
-//        {"pageUrl":"http://assets/yjpts/weex_jzd/index.js","userPwd":"111111","userName":"13430893721","jsessionid":"6B1C6F0669567E562130F2618D6E603C","userType":"2"}
+    public void loginSuccess(String username) {
+        Log.d("test", "loginSuccess username = " + username);
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
-        try {
-            String userName = new JSONObject(url).getString("userName");
-            String userPwd = new JSONObject(url).getString("userPwd");
-            String jsessionid = new JSONObject(url).getString("jsessionid");
-
-            mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("userName", userName).commit();
-            mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("userPwd", userPwd).commit();
-            mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("jsessionid", jsessionid).commit();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("userName", username).commit();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
         ScreenManager.getScreenManager().popAllActivityExceptOne(MainActivity2.class);
     }
@@ -102,14 +101,13 @@ public class SJEventModule extends WXModule {
     String jsessionid;
 
     @JSMethod(uiThread = true)
-    public void PostSigalImg(String dic, JSCallback callback) {
-        Log.d("test", "PostSigalImg dic = " + dic);
-
+    public void PostSigalImg(JSCallback callback) {
+//        Log.d("test", "PostSigalImg dic = " + dic);
         try {
-            org.json.JSONObject obj = new org.json.JSONObject(dic);
-            userId = obj.getString("userId");
-            url = obj.getString("url");
-            jsessionid = obj.getString("jsessionid");
+//            org.json.JSONObject obj = new org.json.JSONObject(dic);
+//            userId = obj.getString("userId");
+//            url = obj.getString("url");
+//            jsessionid = obj.getString("jsessionid");
 
             pickerCallback = callback;
 
@@ -129,6 +127,95 @@ public class SJEventModule extends WXModule {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private MediaRecorder mediaRecorder;
+    private File recordFile;
+    private long start;
+
+    @JSMethod(uiThread = true)
+    public void PostSigalVoice(JSCallback callback) {
+        pickerCallback = callback;
+
+        final Dialog dialog = new Dialog(mWXSDKInstance.getContext(), R.style.popupDialog);
+        dialog.setContentView(R.layout.dialog_voice);
+        dialog.show();
+        final Button voice = (Button) dialog.findViewById(R.id.voice);
+        voice.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                if (voice.getText().toString().equals("开始")) {
+                    startRecord();
+                    voice.setText("结束");
+                } else if (voice.getText().toString().equals("结束")) {
+                    stopRecord();
+                    dialog.dismiss();
+                }
+            }
+        });
+    }
+
+    private void stopRecord() {
+        if (recordFile != null) {
+            mediaRecorder.stop();
+            mediaRecorder.release();
+        }
+
+        final int duration = (int) (System.currentTimeMillis() - start) / 1000;
+        if (duration < 1) {
+            toast("太短了");
+            return;
+        }
+        String key = recordFile.getName();
+        Configuration config = new Configuration.Builder().zone(Zone.zone2).connectTimeout(10).build();
+        UploadManager uploadManager = new UploadManager(config);
+        uploadManager.put(recordFile, key, getQiniuToken(),
+                new UpCompletionHandler() {
+                    @Override
+                    public void complete(String key, ResponseInfo info, JSONObject res) {
+                        if (info.isOK()) {
+                            Log.i("qiniu", "Upload Success");
+                            String url = "http://ooy49eq1n.bkt.clouddn.com/" + key;
+                            HashMap map = new HashMap();
+                            map.put("duration", duration);
+                            map.put("url", url);
+                            pickerCallback.invoke(map);
+                        } else {
+                            Log.i("qiniu", "Upload Fail");
+                            toast("上传失败，请稍后再试");
+                        }
+                    }
+                }, null);
+    }
+
+    private void startRecord() {
+        //录音并上传
+        // 判断，若当前文件已存在，则删除
+        String path = "/mnt/sdcard/voice/";
+        if (!new File(path).exists()) {
+            new File(path).mkdirs();
+        }
+
+        recordFile = new File(path + System.currentTimeMillis() + ".mp3");
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setAudioChannels(2);
+        mediaRecorder.setAudioSamplingRate(44100);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);//输出格式
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);//编码格式
+        mediaRecorder.setAudioEncodingBitRate(16);
+        mediaRecorder.setOutputFile(recordFile.getAbsolutePath());
+        try {
+            // 准备好开始录音
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        start = System.currentTimeMillis();
     }
 
     @Override
@@ -151,29 +238,51 @@ public class SJEventModule extends WXModule {
     }
 
     private void doUploadImage(final ArrayList<ImageItem> images) {
-        new Thread() {
-            @Override
-            public void run() {
-                ImageItem ii = images.get(0);
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                ImageItem ii = images.get(0);
+//
+//                File file = new File(ii.path);
+//                String ret = UploadUtil.uploadFile(file, url, "icon", "JSESSIONID=" + jsessionid);
+//                Log.d("test", "upload ret = " + ret);
+//                if (ret == null) {
+//                    return;
+//                }
+//                if (!ret.contains("200")) {
+//                    return;
+//                }
+//                HashMap map = new HashMap();
+//                try {
+//                    map.put("path", new JSONObject(ret).getJSONObject("data").getString("url"));//"file://" + images.get(0).path
+//                    pickerCallback.invoke(map);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }.start();
 
-                File file = new File(ii.path);
-                String ret = UploadUtil.uploadFile(file, url, "icon", "JSESSIONID=" + jsessionid);
-                Log.d("test", "upload ret = " + ret);
-                if (ret == null) {
-                    return;
-                }
-                if (!ret.contains("200")) {
-                    return;
-                }
-                HashMap map = new HashMap();
-                try {
-                    map.put("path", new JSONObject(ret).getJSONObject("data").getString("url"));//"file://" + images.get(0).path
-                    pickerCallback.invoke(map);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
+        ImageItem ii = images.get(0);
+        String key = System.currentTimeMillis() + ".jpg";
+        File file = new File(ii.path);
+        Configuration config = new Configuration.Builder().zone(Zone.zone2).connectTimeout(10).build();
+        UploadManager uploadManager = new UploadManager(config);
+        uploadManager.put(file, key, getQiniuToken(),
+                new UpCompletionHandler() {
+                    @Override
+                    public void complete(String key, ResponseInfo info, JSONObject res) {
+                        if (info.isOK()) {
+                            Log.i("qiniu", "Upload Success");
+                            String url = "http://ooy49eq1n.bkt.clouddn.com/" + key;
+                            HashMap map = new HashMap();
+                            map.put("url", url);
+                            pickerCallback.invoke(map);
+                        } else {
+                            Log.i("qiniu", "Upload Fail");
+                            toast("上传失败，请稍后再试");
+                        }
+                    }
+                }, null);
     }
 
     @JSMethod(uiThread = true)
