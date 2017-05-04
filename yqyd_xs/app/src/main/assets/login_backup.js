@@ -4491,7 +4491,7 @@ exports.default = {
 				return;
 			}
 
-			sjevent.PostSigalImg(function(ret){
+			sjevent.QRScan(function(ret){
             						            modal.toast({message: ret.url,
                                                 			duration: 0.3,
                                                 		    });

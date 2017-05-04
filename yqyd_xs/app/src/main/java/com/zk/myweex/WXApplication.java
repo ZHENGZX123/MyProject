@@ -21,9 +21,7 @@ import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.common.WXException;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.zk.myweex.extend.adapter.UniversalImageAdapter;
-import com.zk.myweex.extend.component.KWImageComponent;
 import com.zk.myweex.extend.module.SJEventModule;
-import com.zk.myweex.extend.module.WXEventModule;
 
 import java.io.File;
 
@@ -67,9 +65,6 @@ public class WXApplication extends Application {
         //注册自定义组件
         try {
             WXSDKEngine.registerModule("SJevent", SJEventModule.class);
-            WXSDKEngine.registerModule("event", WXEventModule.class);
-
-            WXSDKEngine.registerComponent("kwimage", KWImageComponent.class);
         } catch (WXException e) {
             e.printStackTrace();
         }
