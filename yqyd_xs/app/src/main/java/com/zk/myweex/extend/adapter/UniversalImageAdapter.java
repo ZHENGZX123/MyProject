@@ -219,7 +219,11 @@ import com.zk.myweex.WXApplication;
 import com.zk.myweex.activity.WXBaseActivity;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.zip.ZipEntry;
@@ -285,37 +289,53 @@ public class UniversalImageAdapter implements IWXImgLoaderAdapter {
                     ImageLoader.getInstance().displayImage(url, view, getLoaderOptions());
                 } else {
                     //其他的全部当作zip来处理好了
-                    displayZipImage(view, url);
+                    final String u = url;
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            displayZipImage(view, u);
+                        }
+                    }.start();
+
                 }
             }
         }, 0);
     }
 
-    private void displayZipImage(ImageView view, String url) {
-        Log.d("universal", "zip start");
-        //绝对路径好处理。
-        //相对路径怎么处理。
+    private void displayZipImage(final ImageView view, String url) {
         try {
-            int last = url.lastIndexOf("/");
-            String targetFile = url.substring(last + 1);
-            System.out.println("targetFile = " + targetFile);
             WXBaseActivity currentActivity = (WXBaseActivity) ((WXApplication) this.c).currentActivity;
+            final int last = url.lastIndexOf("/");
+            final String targetFile = url.substring(last + 1);
+            System.out.println("targetFile = " + targetFile);
+            if (new File("/mnt/sdcard/image/" + targetFile).exists()) {
+                currentActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ImageLoader.getInstance().displayImage("file:///mnt/sdcard/image/" + targetFile, view, getLoaderOptions());
+                    }
+                });
+                return;
+            }
             String zipPath = WXApplication.PATH + currentActivity.currentZipName;//来自哪个包
             System.out.println("zipPath = " + zipPath);
-
             ZipFile zf = new ZipFile(zipPath);
             InputStream in = new BufferedInputStream(new FileInputStream(
                     zipPath));
             ZipInputStream zin = new ZipInputStream(in);
             ZipEntry ze;
-
             while ((ze = zin.getNextEntry()) != null) {
                 if (ze.isDirectory()) {
                 } else {
                     if (ze.getName().contains(targetFile)) {
-                        Bitmap result = new BitmapDrawable(zf.getInputStream(ze)).getBitmap();
-                        view.setImageBitmap(result);
-                        Log.d("universal", "zip end");
+                        final Bitmap result = new BitmapDrawable(zf.getInputStream(ze)).getBitmap();
+                        currentActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.setImageBitmap(result);
+                            }
+                        });
+                        saveBitmap(result, new File("/mnt/sdcard/image/" + targetFile));
                         break;
                     }
                 }
@@ -337,5 +357,25 @@ public class UniversalImageAdapter implements IWXImgLoaderAdapter {
         DisplayImageOptions defaultDisplayImageOptions = displayImageOptionsBuilder
                 .build();
         return defaultDisplayImageOptions;
+    }
+
+    public void saveBitmap(Bitmap bm, File f) {
+        if (!new File("/mnt/sdcard/image/").exists()) {
+            new File("/mnt/sdcard/image/").mkdirs();
+        }
+        if (f.exists()) {
+            f.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(f);
+            bm.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.flush();
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
