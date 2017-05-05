@@ -19,4 +19,6 @@
         android:layout_height="wrap_content"
         android:onClick="click2"
         android:text="自定义组件" />
+
+
 </LinearLayout>

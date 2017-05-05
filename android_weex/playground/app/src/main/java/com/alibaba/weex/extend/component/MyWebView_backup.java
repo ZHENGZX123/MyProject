@@ -2,23 +2,29 @@ package com.alibaba.weex.extend.component;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.alibaba.weex.utils.JavaScriptObject;
+import com.lzy.imagepicker.ImagePicker;
+import com.lzy.imagepicker.bean.ImageItem;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXComponentProp;
 import com.taobao.weex.ui.component.WXVContainer;
-import com.taobao.weex.utils.WXFileUtils;
 
-public class MyWebView extends WXComponent<WebView> {
+import java.util.ArrayList;
+
+public class MyWebView_backup extends WXComponent<WebView> {
     private WebView wv;
 
-    public MyWebView(WXSDKInstance instance, WXDomObject dom, WXVContainer parent) {
+    public MyWebView_backup(WXSDKInstance instance, WXDomObject dom, WXVContainer parent) {
         super(instance, dom, parent);
     }
 
@@ -37,33 +43,36 @@ public class MyWebView extends WXComponent<WebView> {
         settings.setLoadWithOverviewMode(true);
 
         wv.setWebViewClient(new WebViewClient() {
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                wv.loadUrl("javascript:(function(){"
-                        + "var objs = document.getElementsByTagName(\"img\"); "
-                        + "for(var i=0;i<objs.length;i++)  " + "{"
-                        + "    objs[i].onclick=function()  " + "    {  "
-                        + "        window.imagelistner.openImage(this.src);  "
-                        + "    }  " + "}" + "})()");
-            }
-
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return super.shouldOverrideUrlLoading(view, url);
+                view.loadUrl(url);
+                return true;
             }
         });
-        wv.addJavascriptInterface(new JavaScriptObject(context), "imagelistner");
+
+        wv.addJavascriptInterface(new JavaScriptObject(context), "native");
+
         return wv;
     }
 
     @WXComponentProp(name = "url")
     public void setUrl(String url) {
-        String txt = WXFileUtils.loadAsset("test2.txt", getContext());
-        txt = txt.replaceAll("font-size: 16px", "font-size: 34px").replaceAll("font-size: 12px", "font-size: 34px");
-        txt = txt.replaceAll("<img", "<img style='width:90%;height:auto'");
-        wv.loadDataWithBaseURL(null, txt, "text/html", "utf-8", null);
+//        ((WebView) getHostView()).loadUrl(url);
     }
 
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == ImagePicker.RESULT_CODE_ITEMS) {
+            if (data != null && requestCode == 888) {
+                ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+                Log.d("test", "images count = " + images.size());
+                //callback.invoke(images.get(0).path);
+                wv.loadUrl("javascript:pickphotoResult('" + "file://" + images.get(0).path + "')");
+            } else {
+                Toast.makeText(getContext(), "没有数据", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
