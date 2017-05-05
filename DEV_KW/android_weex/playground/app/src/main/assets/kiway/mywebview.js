@@ -70,8 +70,8 @@
 //             "url":"file:///android_asset/test3.html"  //h5写法也是可以滴
 	      },
 	      "style": {
-          	        "width": 1080,
-          	        "height": 1920
+          	        "width": 750,
+          	        "height": 1080
           	      }
 	    }
 	  ]

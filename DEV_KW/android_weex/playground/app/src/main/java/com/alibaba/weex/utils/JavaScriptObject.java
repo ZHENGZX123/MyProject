@@ -24,6 +24,11 @@ public class JavaScriptObject {
     }
 
     @JavascriptInterface
+    public void openImage(String txt) {
+        Toast.makeText(mContxt, txt, Toast.LENGTH_SHORT).show();
+    }
+
+    @JavascriptInterface
     public void pickphoto(String txt) {
         Toast.makeText(mContxt, txt, Toast.LENGTH_SHORT).show();
 
@@ -42,5 +47,6 @@ public class JavaScriptObject {
         Intent intent = new Intent(this.mContxt, ImageGridActivity.class);
         ((Activity) this.mContxt).startActivityForResult(intent, 888);
     }
+
 
 }
