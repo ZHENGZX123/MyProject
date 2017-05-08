@@ -2,10 +2,15 @@ package com.zk.myweex.extend.module;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +41,7 @@ import com.zk.myweex.utils.Utils;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,6 +59,9 @@ import static com.zk.myweex.utils.Utils.getQiniuToken;
 
 
 public class SJEventModule extends WXModule {
+
+    private MediaPlayer mPlayer;
+
 
     @JSMethod(uiThread = true)
     public void showLog(String tag, String log) {
@@ -360,15 +369,32 @@ public class SJEventModule extends WXModule {
         }.start();
     }
 
+    @JSMethod(uiThread = true)
+    public void StopVoice() {
+        if (mPlayer == null) {
+            return;
+        }
+        if (mPlayer.isPlaying()) {
+            mPlayer.stop();
+            mPlayer.release();
+        }
+    }
+
     private void play(String url, final JSCallback callback) {
         try {
-            MediaPlayer mPlayer = new MediaPlayer();
+            if (mPlayer != null && mPlayer.isPlaying()) {
+                mPlayer.stop();
+                mPlayer.release();
+            }
+
+            mPlayer = new MediaPlayer();
             mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
                     callback.invoke("ok");
                 }
             });
+
             mPlayer.setDataSource(url);
             mPlayer.prepare();
             mPlayer.start();
@@ -381,7 +407,7 @@ public class SJEventModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void QRScan(JSCallback callback) {
-        Log.d("test", "QRScan    ");
+        Log.d("test", "QRScan");
         this.scanCallback = callback;
         ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), CaptureActivity.class), 999);
     }
@@ -391,14 +417,12 @@ public class SJEventModule extends WXModule {
         ((Activity) mWXSDKInstance.getContext()).finish();
     }
 
-
     @JSMethod(uiThread = true)
     public void Share(String url) {
         Log.d("test", "Share url = " + url);
         //截取屏幕图片
         screenshot();
     }
-
 
     private void screenshot() {
         // 获取屏幕
@@ -471,5 +495,53 @@ public class SJEventModule extends WXModule {
         oks.show(mWXSDKInstance.getContext());
     }
 
+    @JSMethod(uiThread = true)
+    public void gongzhonghao() {
+        Bitmap bmp = BitmapFactory.decodeResource(mWXSDKInstance.getContext().getResources(),
+                R.drawable.ic_launcher);
+        // 首先保存图片
+        File appDir = new File(Environment.getExternalStorageDirectory(), "wjc");
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        String fileName = System.currentTimeMillis() + ".jpg";
+        File file = new File(appDir, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 其次把文件插入到系统图库
+        try {
+            MediaStore.Images.Media.insertImage(mWXSDKInstance.getContext().getContentResolver(),
+                    file.getAbsolutePath(), fileName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        toast("二维码已保存至手机，请使用手机微信二维码扫描二维码关注公众号");
+        // 最后通知图库更新
+        mWXSDKInstance.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                Uri.parse("file://" + file.getAbsolutePath())));
+
+        // /打开微信
+        try {
+            Intent intent = new Intent();
+            ComponentName cmp = new ComponentName("com.tencent.mm",
+                    "com.tencent.mm.ui.LauncherUI");
+            intent.setAction(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setComponent(cmp);
+            mWXSDKInstance.getContext().startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
 
