@@ -318,7 +318,7 @@ public class SJEventModule extends WXModule {
             Log.d("test", "showPhoto param2 = " + param2);
             ViewPagerActivity.sDrawables = param1.replace("[", "").replace("]", "").replace("\"", "").split(",");
             Intent intent = new Intent(mWXSDKInstance.getContext(), ViewPagerActivity.class);
-            intent.putExtra("position", Integer.parseInt(param2));//0 , 1
+            intent.putExtra("position", Integer.parseInt(param2));
             mWXSDKInstance.getContext().startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
@@ -385,6 +385,12 @@ public class SJEventModule extends WXModule {
         this.scanCallback = callback;
         ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), CaptureActivity.class), 999);
     }
+
+    @JSMethod(uiThread = true)
+    public void finish() {
+        ((Activity) mWXSDKInstance.getContext()).finish();
+    }
+
 
     @JSMethod(uiThread = true)
     public void Share(String url) {
