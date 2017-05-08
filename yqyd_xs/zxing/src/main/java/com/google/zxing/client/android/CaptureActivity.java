@@ -431,12 +431,15 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
      */
     public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
 
+        Intent i = new Intent();
+        i.putExtra("result", rawResult.getText());
+        setResult(999, i);
+        finish();
 
+        
         if (true) {
             return;
         }
-
-
         inactivityTimer.onActivity();
         lastResult = rawResult;
         ResultHandler resultHandler = ResultHandlerFactory.makeResultHandler(this, rawResult);
