@@ -243,58 +243,30 @@ public class SJEventModule extends WXModule {
             }
             String result = data.getStringExtra("result");
             Log.d("test", "result = " + result);
-            HashMap map = new HashMap();
-            map.put("result", result);
-            scanCallback.invoke(map);
+            scanCallback.invoke(result);
         }
     }
 
     private void doUploadImage(final ArrayList<ImageItem> images) {
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                ImageItem ii = images.get(0);
-//
-//                File file = new File(ii.path);
-//                String ret = UploadUtil.uploadFile(file, url, "icon", "JSESSIONID=" + jsessionid);
-//                Log.d("test", "upload ret = " + ret);
-//                if (ret == null) {
-//                    return;
-//                }
-//                if (!ret.contains("200")) {
-//                    return;
-//                }
-//                HashMap map = new HashMap();
-//                try {
-//                    map.put("path", new JSONObject(ret).getJSONObject("data").getString("url"));//"file://" + images.get(0).path
-//                    pickerCallback.invoke(map);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }.start();
+        int successCount = 0;
+        for (ImageItem ii : images) {
+            String key = System.currentTimeMillis() + ".jpg";
+            File file = new File(ii.path);
+            Configuration config = new Configuration.Builder().zone(Zone.zone2).connectTimeout(10).build();
+            UploadManager uploadManager = new UploadManager(config);
+            ResponseInfo result = uploadManager.syncPut(file, key, getQiniuToken(), null);
+            Log.d("test", "result = " + result.toString());
+            successCount++;
+        }
 
-        ImageItem ii = images.get(0);
-        String key = System.currentTimeMillis() + ".jpg";
-        File file = new File(ii.path);
-        Configuration config = new Configuration.Builder().zone(Zone.zone2).connectTimeout(10).build();
-        UploadManager uploadManager = new UploadManager(config);
-        uploadManager.put(file, key, getQiniuToken(),
-                new UpCompletionHandler() {
-                    @Override
-                    public void complete(String key, ResponseInfo info, JSONObject res) {
-                        if (info.isOK()) {
-                            Log.i("qiniu", "Upload Success");
-                            String url = "http://ooy49eq1n.bkt.clouddn.com/" + key;
-                            HashMap map = new HashMap();
-                            map.put("url", url);
-                            pickerCallback.invoke(map);
-                        } else {
-                            Log.i("qiniu", "Upload Fail");
-                            toast("上传失败，请稍后再试");
-                        }
-                    }
-                }, null);
+        if (successCount != images.size()) {
+            toast("上传失败，请稍后再试");
+            return;
+        }
+//        String url = "http://ooy49eq1n.bkt.clouddn.com/" + key;
+//        HashMap map = new HashMap();
+//        map.put("url", url);
+//        pickerCallback.invoke(map);
     }
 
     @JSMethod(uiThread = true)
