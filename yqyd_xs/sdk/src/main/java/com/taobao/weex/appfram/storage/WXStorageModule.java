@@ -206,10 +206,11 @@ package com.taobao.weex.appfram.storage;
 
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.taobao.weex.WXSDKEngine;
-import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.annotation.JSMethod;
+import com.taobao.weex.bridge.JSCallback;
 
 import java.util.Map;
 
@@ -242,7 +243,8 @@ public class WXStorageModule extends WXSDKEngine.DestroyableModule implements IW
         adapter.setItem(key, value, new IWXStorageAdapter.OnResultReceivedListener() {
             @Override
             public void onReceived(Map<String, Object> data) {
-                if(callback != null){
+                Log.d("storage", "setitem data = " + data);
+                if (callback != null) {
                     callback.invoke(data);
                 }
             }
@@ -258,7 +260,6 @@ public class WXStorageModule extends WXSDKEngine.DestroyableModule implements IW
             StorageResultHandler.handleInvalidParam(callback);
             return;
         }
-
         IWXStorageAdapter adapter = ability();
         if (adapter == null) {
             StorageResultHandler.handleNoHandlerError(callback);
@@ -267,7 +268,8 @@ public class WXStorageModule extends WXSDKEngine.DestroyableModule implements IW
         adapter.getItem(key, new IWXStorageAdapter.OnResultReceivedListener() {
             @Override
             public void onReceived(Map<String, Object> data) {
-                if(callback != null){
+                Log.d("storage", "getitem data = " + data);
+                if (callback != null) {
                     callback.invoke(data);
                 }
             }
@@ -290,7 +292,7 @@ public class WXStorageModule extends WXSDKEngine.DestroyableModule implements IW
         adapter.removeItem(key, new IWXStorageAdapter.OnResultReceivedListener() {
             @Override
             public void onReceived(Map<String, Object> data) {
-                if(callback != null){
+                if (callback != null) {
                     callback.invoke(data);
                 }
             }
@@ -308,7 +310,7 @@ public class WXStorageModule extends WXSDKEngine.DestroyableModule implements IW
         adapter.length(new IWXStorageAdapter.OnResultReceivedListener() {
             @Override
             public void onReceived(Map<String, Object> data) {
-                if(callback != null){
+                if (callback != null) {
                     callback.invoke(data);
                 }
             }
@@ -326,7 +328,7 @@ public class WXStorageModule extends WXSDKEngine.DestroyableModule implements IW
         adapter.getAllKeys(new IWXStorageAdapter.OnResultReceivedListener() {
             @Override
             public void onReceived(Map<String, Object> data) {
-                if(callback != null){
+                if (callback != null) {
                     callback.invoke(data);
                 }
             }
@@ -349,7 +351,7 @@ public class WXStorageModule extends WXSDKEngine.DestroyableModule implements IW
         adapter.setItemPersistent(key, value, new IWXStorageAdapter.OnResultReceivedListener() {
             @Override
             public void onReceived(Map<String, Object> data) {
-                if(callback != null){
+                if (callback != null) {
                     callback.invoke(data);
                 }
             }
