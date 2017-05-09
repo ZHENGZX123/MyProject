@@ -472,6 +472,9 @@ public class WXStreamModule extends WXModule {
     }
 
     private void saveCacheToDB(String optionsStr, String respData) {
+        if (true) {
+            return;
+        }
         Log.d("stream", "saveCacheToDB");
         HTTPCache a = new WXDBHelper(mWXSDKInstance.getContext()).getHttpCacheByRequest(optionsStr);
         // if existed , update
