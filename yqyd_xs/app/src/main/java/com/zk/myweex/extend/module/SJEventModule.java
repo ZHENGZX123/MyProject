@@ -69,31 +69,23 @@ public class SJEventModule extends WXModule {
     }
 
     @JSMethod(uiThread = true)
-    public void loginSuccess(String username) {
+    public void loginSuccess(final String username) {
         Log.d("test", "loginSuccess username = " + username);
-        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
-        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("userName", username).commit();
-        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
-        ScreenManager.getScreenManager().popAllActivityExceptOne(MainActivity2.class);
-    }
 
-    @JSMethod(uiThread = true)
-    public void logoutSuccess(String url) {
-        doLogout();
+        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).apply();
+        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("userName", username).apply();
+        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
+        //ScreenManager.getScreenManager().popAllActivityExceptOne(MainActivity2.class);
+        finish();
     }
 
     @JSMethod(uiThread = true)
     public void logoutSuccess() {
-        doLogout();
-    }
-
-    private void doLogout() {
         Log.d("test", "logoutSuccess");
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
         ScreenManager.getScreenManager().popAllActivityExceptOne(LoginActivity.class);
     }
-
 
     @JSMethod(uiThread = true)
     public void makeQRCode(String dic, JSCallback callback) {
@@ -376,7 +368,6 @@ public class SJEventModule extends WXModule {
         }
         if (mPlayer.isPlaying()) {
             mPlayer.stop();
-            mPlayer.release();
         }
     }
 
