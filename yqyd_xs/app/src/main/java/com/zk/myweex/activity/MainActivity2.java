@@ -67,11 +67,6 @@ public class MainActivity2 extends TabActivity {
         Log.d("test", "main initView");
         tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
         initView(tabs);
-
-//        SJEventModule sj = new SJEventModule();
-//        sj.mWXSDKInstance = new WXSDKInstance(this);
-//        sj.selectRegion(null);
-
     }
 
     private void checkRemoteService() {
@@ -334,10 +329,6 @@ public class MainActivity2 extends TabActivity {
 
     public void clickNetwork(View view) {
         startActivity(new Intent(this, NoNetActivity.class));
-    }
-
-    public void setCurrentTab(int tab) {
-        tabhost.setCurrentTab(tab);
     }
 
     @Override
