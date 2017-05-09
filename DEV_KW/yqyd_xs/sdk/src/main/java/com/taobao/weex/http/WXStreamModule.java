@@ -492,6 +492,9 @@ public class WXStreamModule extends WXModule {
     }
 
     private String getCacheFromDB(String optionsStr) {
+        if (true) {
+            return null;
+        }
         HTTPCache cache = new WXDBHelper(mWXSDKInstance.getContext()).getHttpCacheByRequest(optionsStr);
         if (cache == null) {
             return null;
