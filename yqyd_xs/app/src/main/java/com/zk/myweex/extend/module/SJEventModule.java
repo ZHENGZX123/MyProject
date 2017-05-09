@@ -107,19 +107,10 @@ public class SJEventModule extends WXModule {
     }
 
     private JSCallback pickerCallback;
-    String userId;
-    String url;
-    String jsessionid;
 
     @JSMethod(uiThread = true)
     public void PostSigalImg(JSCallback callback) {
-//        Log.d("test", "PostSigalImg dic = " + dic);
         try {
-//            org.json.JSONObject obj = new org.json.JSONObject(dic);
-//            userId = obj.getString("userId");
-//            url = obj.getString("url");
-//            jsessionid = obj.getString("jsessionid");
-
             pickerCallback = callback;
 
             ImagePicker imagePicker = ImagePicker.getInstance();

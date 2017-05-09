@@ -21,6 +21,7 @@ import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.common.WXException;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.zk.myweex.extend.adapter.UniversalImageAdapter;
+import com.zk.myweex.extend.component.MyWebView;
 import com.zk.myweex.extend.module.SJEventModule;
 
 import java.io.File;
@@ -64,6 +65,7 @@ public class WXApplication extends Application {
 
         //注册自定义组件
         try {
+            WXSDKEngine.registerComponent("my_webview", MyWebView.class);
             WXSDKEngine.registerModule("SJevent", SJEventModule.class);
         } catch (WXException e) {
             e.printStackTrace();
