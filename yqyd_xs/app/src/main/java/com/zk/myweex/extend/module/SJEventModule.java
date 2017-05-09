@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -115,8 +114,8 @@ public class SJEventModule extends WXModule {
 
             ImagePicker imagePicker = ImagePicker.getInstance();
             imagePicker.setImageLoader(new GlideImageLoader());// 图片加载器
-            imagePicker.setSelectLimit(1);// 设置可以选择几张
-            imagePicker.setMultiMode(false);// 是否为多选
+            imagePicker.setSelectLimit(3);// 设置可以选择几张
+            imagePicker.setMultiMode(true);// 是否为多选
             imagePicker.setCrop(true);// 是否剪裁
             imagePicker.setFocusWidth(1000);// 需要剪裁的宽
             imagePicker.setFocusHeight(1000);// 需要剪裁的高
@@ -248,25 +247,44 @@ public class SJEventModule extends WXModule {
     }
 
     private void doUploadImage(final ArrayList<ImageItem> images) {
-        int successCount = 0;
-        for (ImageItem ii : images) {
-            String key = System.currentTimeMillis() + ".jpg";
-            File file = new File(ii.path);
-            Configuration config = new Configuration.Builder().zone(Zone.zone2).connectTimeout(10).build();
-            UploadManager uploadManager = new UploadManager(config);
-            ResponseInfo result = uploadManager.syncPut(file, key, getQiniuToken(), null);
-            Log.d("test", "result = " + result.toString());
-            successCount++;
-        }
-
-        if (successCount != images.size()) {
-            toast("上传失败，请稍后再试");
-            return;
-        }
-//        String url = "http://ooy49eq1n.bkt.clouddn.com/" + key;
-//        HashMap map = new HashMap();
-//        map.put("url", url);
-//        pickerCallback.invoke(map);
+        new Thread() {
+            @Override
+            public void run() {
+                int successCount = 0;
+                int count = images.size();
+                String[] urls = new String[count];
+                String url = "";
+                for (int i = 0; i < count; i++) {
+                    ImageItem ii = images.get(i);
+                    String key = System.currentTimeMillis() + ".jpg";
+                    File file = new File(ii.path);
+                    Configuration config = new Configuration.Builder().zone(Zone.zone2).connectTimeout(10).build();
+                    UploadManager uploadManager = new UploadManager(config);
+                    ResponseInfo result = uploadManager.syncPut(file, key, getQiniuToken(), null);
+                    Log.d("test", "result = " + result.toString());
+                    if (result.isOK()) {
+                        successCount++;
+                        String after = "http://ooy49eq1n.bkt.clouddn.com/" + key;
+                        urls[i] = after;
+                        if (i == count - 1) {
+                            url = url + after;
+                        } else {
+                            url = url + after + ",";
+                        }
+                    }
+                }
+                if (successCount != images.size()) {
+                    toast("上传失败，请稍后再试");
+                    return;
+                }
+                for (int i = 0; i < urls.length; i++) {
+                    Log.d("test", "url[" + i + "] = " + urls[i]);
+                }
+                HashMap map = new HashMap();
+                map.put("url", url);//urls
+                pickerCallback.invoke(map);
+            }
+        }.start();
     }
 
     @JSMethod(uiThread = true)
@@ -372,13 +390,13 @@ public class SJEventModule extends WXModule {
     }
 
     @JSMethod(uiThread = true)
-    public void Share(String url) {
-        Log.d("test", "Share url = " + url);
+    public void Share(String text, String url) {
+        Log.d("test", "Share text = " + text + " , url = " + url);
         //截取屏幕图片
-        screenshot();
+        screenshot(text, url);
     }
 
-    private void screenshot() {
+    private void screenshot(String text, String jumpUrl) {
         // 获取屏幕
         View dView = ((Activity) mWXSDKInstance.getContext()).getWindow().getDecorView();
         dView.setDrawingCacheEnabled(true);
@@ -397,15 +415,13 @@ public class SJEventModule extends WXModule {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                doShare(filePath);
+                doShare(filePath, text, jumpUrl);
             }
         }
     }
 
-    private void doShare(String imagePath) {
+    private void doShare(String imagePath, final String text, final String jumpUrl) {
         final String title = "一起阅读";
-        final String jumpUrl = "http://www.kiway.cn";
-        final String text = "一起来阅读吧";
         final String imageUrl = "http://120.24.84.206/ic_launcher.png";
 
         // 分享到其他平台.
@@ -452,11 +468,11 @@ public class SJEventModule extends WXModule {
     @JSMethod(uiThread = true)
     public void gongzhonghao() {
         Bitmap bmp = BitmapFactory.decodeResource(mWXSDKInstance.getContext().getResources(),
-                R.drawable.ic_launcher);
+                R.drawable.erweima);
         // 首先保存图片
-        File appDir = new File(Environment.getExternalStorageDirectory(), "wjc");
+        File appDir = new File("/mnt/sdcard/erweima/");
         if (!appDir.exists()) {
-            appDir.mkdir();
+            appDir.mkdirs();
         }
         String fileName = System.currentTimeMillis() + ".jpg";
         File file = new File(appDir, fileName);
@@ -478,7 +494,7 @@ public class SJEventModule extends WXModule {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        toast("二维码已保存至手机，请使用手机微信二维码扫描二维码关注公众号");
+        toast("二维码已保存至手机，请使用手机微信扫描二维码关注公众号");
         // 最后通知图库更新
         mWXSDKInstance.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
                 Uri.parse("file://" + file.getAbsolutePath())));
