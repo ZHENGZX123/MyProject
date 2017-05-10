@@ -3,6 +3,7 @@ package com.zk.myweex.extend.component;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -12,7 +13,6 @@ import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXComponentProp;
 import com.taobao.weex.ui.component.WXVContainer;
-import com.taobao.weex.utils.WXFileUtils;
 
 public class MyWebView extends WXComponent<WebView> {
     private WebView wv;
@@ -56,9 +56,11 @@ public class MyWebView extends WXComponent<WebView> {
         return wv;
     }
 
-    @WXComponentProp(name = "url")
-    public void setUrl(String url) {
-        String txt = WXFileUtils.loadAsset("test2.txt", getContext());
+    @WXComponentProp(name = "content")
+    public void setContent(String content) {
+        Log.d("test", "content = " + content);
+//        String txt = WXFileUtils.loadAsset("test2.txt", getContext());
+        String txt = content;
         txt = txt.replaceAll("font-size: 16px", "font-size: 34px").replaceAll("font-size: 12px", "font-size: 34px");
         txt = txt.replaceAll("<img", "<img style='width:90%;height:auto'");
         wv.loadDataWithBaseURL(null, txt, "text/html", "utf-8", null);

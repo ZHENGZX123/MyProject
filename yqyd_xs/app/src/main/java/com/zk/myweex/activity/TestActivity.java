@@ -9,7 +9,7 @@ public class TestActivity extends WXBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        renderPage(WXFileUtils.loadAsset("login_backup.js", this), "", "");
+        renderPage(WXFileUtils.loadAsset("tab1.js", this), "", "");
 
 //        renderPage(WXFileUtils.loadAsset("index.weex.js", this), "", "");
 

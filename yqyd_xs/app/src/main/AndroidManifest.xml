@@ -100,7 +100,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.zk.myweex.activity.TestActivity"></activity>
+        <activity android:name="com.zk.myweex.activity.TestActivity">
+        </activity>
 
         <activity android:name="com.zk.myweex.activity.NoNetActivity"></activity>
 

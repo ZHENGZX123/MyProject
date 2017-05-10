@@ -65,7 +65,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -483,14 +483,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(29)
+__vue_styles__.push(__webpack_require__(30)
 )
 
 /* script */
 __vue_exports__ = __webpack_require__(21)
 
 /* template */
-var __vue_template__ = __webpack_require__(34)
+var __vue_template__ = __webpack_require__(36)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -502,10 +502,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0419\\weex-yqyd_sx0421\\src\\components\\footer.vue"
+__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\footer.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-6bad5d86"
+__vue_options__._scopeId = "data-v-c68af722"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -521,50 +521,6 @@ module.exports = __vue_exports__
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_exports__, __vue_options__
-var __vue_styles__ = []
-
-/* styles */
-__vue_styles__.push(__webpack_require__(30)
-)
-
-/* script */
-__vue_exports__ = __webpack_require__(22)
-
-/* template */
-var __vue_template__ = __webpack_require__(36)
-__vue_options__ = __vue_exports__ = __vue_exports__ || {}
-if (
-  typeof __vue_exports__.default === "object" ||
-  typeof __vue_exports__.default === "function"
-) {
-if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
-__vue_options__ = __vue_exports__ = __vue_exports__.default
-}
-if (typeof __vue_options__ === "function") {
-  __vue_options__ = __vue_options__.options
-}
-__vue_options__.__file = "F:\\weex-yqyd_sx0419\\weex-yqyd_sx0421\\src\\components\\sc.vue"
-__vue_options__.render = __vue_template__.render
-__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-e614958a"
-__vue_options__.style = __vue_options__.style || {}
-__vue_styles__.forEach(function (module) {
-  for (var name in module) {
-    __vue_options__.style[name] = module[name]
-  }
-})
-if (typeof __register_static_styles__ === "function") {
-  __register_static_styles__(__vue_options__._scopeId, __vue_styles__)
-}
-
-module.exports = __vue_exports__
-
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -619,7 +575,7 @@ function unescape(text) {
 }
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -639,7 +595,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -649,7 +605,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _vueRouter = __webpack_require__(15);
+var _vueRouter = __webpack_require__(14);
 
 var _vueRouter2 = _interopRequireDefault(_vueRouter);
 
@@ -664,42 +620,70 @@ Vue.use(_vueRouter2.default); // import Vue from 'vue'
 exports.default = new _vueRouter2.default({
   // mode: 'abstract',
   routes: [
-  /* { path: '/', name: 'login', component: require('./components/login.vue')},
+  /* { path: '/login', name: 'login', component: require('./components/login.vue')},
    { path: '/wjmm', name: 'wjmm', component: require('./components/forget_pwd.vue')},
   // { path: '/wjzh', name: 'wjzh', component: require('./components/forget_admin.vue')},
-     // { path: '/', name: 'index', component: require('./components/index.vue')},
-   { path: '/index', name: 'index', component: require('./components/index.vue')},
+      { path: '/index', name: 'index', component: require('./components/index.vue')},
   
    // 阅读任务
    { path: '/ydrw', name: 'ydrw', component: require('./components/ydrw.vue')}, 
-   // 任务详情
-   { path: '/ydrw/ckjh', name: 'ydrw_jh', component: require('./components/ydrw_jh.vue')}, 
+    // 任务详情
+   { path: '/ydrw/ckjh', name: 'ydrw_jh', component: require('./components/ydrw_jh.vue')},  
     // 阅读任务详情
    { path: '/ydrw_xq', name: 'ydrw_xq', component: require('./components/ydrw_xq.vue')}, 
-   // 阅读任务 写读后感
-   { path: '/ydrw/xdhg', name: 'ydrw_xdhg', component: require('./components/ydrw_xdhg.vue')}, 
+    // 阅读任务 写读后感
+   { path: '/ydrw/xdhg', name: 'ydrw_xdhg', component: require('./components/ydrw_xdhg.vue')},  
     // 阅读任务 我的读后感
    { path: '/ydrw/wddhg', name: 'ydrw_wddhg', component: require('./components/ydrw_wddhg.vue')}, 
-   // 阅读任务 开始闯关
+    // 阅读任务 开始闯关
    { path: '/ydrw/kscg', name: 'ydrw_kscg', component: require('./components/ydrw_kscg.vue')}, 
    // 阅读任务 我的闯关
    { path: '/ydrw/wdcg', name: 'ydrw_wdcg', component: require('./components/ydrw_wdcg.vue')}, 
      //考试提分宝
+  //   { path: '/kstfb', name: 'kstfb', component: require('./components/kstfb.vue')},
+     // 阅读任务 闯关结果
+   { path: '/ydrw/cgjg', name: 'ydrw_cgjg', component: require('./components/kstfb_tjh.vue')}, 
+    // 阅读任务 每日一练
+   { path: '/wdrw_mryl', name: 'wdrw_mryl', component: require('./components/wdrw_mryl.vue')}, 
+    // 学习报告
+   { path: '/ydbg', name: 'ydbg', component: require('./components/xxbg.vue')}, 
+   // 学习报告 阅读报告
+   { path: '/ydbg/rwbg', name: 'ckbg_rwbg', component: require('./components/ydbg_rwbg.vue')},
+   // 学习报告 查看详情
+   { path: '/ydrw/ckxq', name: 'ckxq', component: require('./components/ydrw_ckxq.vue')},
+   // 学习报告 报告闯关详情
+   { path: '/ydrw/cgsb', name: 'ydrw_cgsb', component: require('./components/ydrw_cgsb.vue')}, 
+   // 学习报告 任务详情
+   { path: '/ydbg_rwxq', name: 'ydbg_rwxq', component: require('./components/ydbg_rwxq.vue')}, 
+   //学习报告 每日一练详情
+    { path: '/ydrw/mryl', name: 'ydrw_mril', component: require('./components/ydrw_mryl.vue')},
+     //我的闯关
+    { path: '/ydrw_mryl', name: 'ydrw_mryl', component: require('./components/ydrw_mryl.vue')},
+     //提交
+    { path: '/ydrw_tj', name: 'ydrw_tj', component: require('./components/ydrw_tj.vue')},
+   //完成
+  { path: '/kstfb_tjh', name: 'kstfb_tjh', component: require('./components/kstfb_tjh.vue')}, 
+  //学习报告 开始闯关
+  { path: '/ydbg_wdcg', name: 'ydbg_wdcg', component: require('./components/ydbg_wdcg.vue')}, 
+    //考试提分宝
     { path: '/kstfb', name: 'kstfb', component: require('./components/kstfb.vue')},
-    // 书香榜
+   //考试提分宝 每日一练
+    { path: '/kstfb/mryl', name: 'kstfb_mril', component: require('./components/kstfb_mryl.vue')},
+     // 书香榜
    { path: '/sxb', name: 'sxb', component: require('./components/sxb.vue')},
     // // 阅读资讯
    { path: '/ydzx', name: 'ydzx', component: require('./components/ydzx.vue')},
    // 阅读资讯 详情
    { path: '/ydzx/xq', name: 'ydzx_xq', component: require('./components/ydzx_xq.vue')},
   */
+
   // // 书库
-  { path: '/', name: 'sc', component: __webpack_require__(2) }, { path: '/sc', name: 'sc', component: __webpack_require__(2) }, { path: '/sk/xq', name: 'sk_xq', component: __webpack_require__(18) }, { path: '/sk/sk_search', name: 'sk_search', component: __webpack_require__(17) }, { path: '/sk/sm_search', name: 'sm_search', component: __webpack_require__(19) }]
+  { path: '/sc', name: 'sc', component: __webpack_require__(16) }, { path: '/sk/xq', name: 'sk_xq', component: __webpack_require__(18) }, { path: '/sk/sk_search', name: 'sk_search', component: __webpack_require__(17) }, { path: '/sk/sm_search', name: 'sm_search', component: __webpack_require__(19) }]
 
 });
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -709,15 +693,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _vuex = __webpack_require__(16);
+var _vuex = __webpack_require__(15);
 
 var _vuex2 = _interopRequireDefault(_vuex);
 
-var _actions = __webpack_require__(11);
+var _actions = __webpack_require__(10);
 
 var actions = _interopRequireWildcard(_actions);
 
-var _mutations = __webpack_require__(13);
+var _mutations = __webpack_require__(12);
 
 var mutations = _interopRequireWildcard(_mutations);
 
@@ -782,7 +766,7 @@ var store = new _vuex2.default.Store({
 exports.default = store;
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -825,7 +809,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports) {
 
 exports.sync = function (store, router, options) {
@@ -886,7 +870,7 @@ function cloneRoute (to, from) {
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
@@ -896,7 +880,7 @@ var __vue_styles__ = []
 __vue_exports__ = __webpack_require__(20)
 
 /* template */
-var __vue_template__ = __webpack_require__(35)
+var __vue_template__ = __webpack_require__(31)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -908,7 +892,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0419\\weex-yqyd_sx0421\\src\\App.vue"
+__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\App.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 __vue_options__.style = __vue_options__.style || {}
@@ -925,35 +909,35 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _App = __webpack_require__(9);
+var _App = __webpack_require__(8);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _router = __webpack_require__(5);
+var _router = __webpack_require__(4);
 
 var _router2 = _interopRequireDefault(_router);
 
-var _store = __webpack_require__(6);
+var _store = __webpack_require__(5);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _vuexRouterSync = __webpack_require__(8);
+var _vuexRouterSync = __webpack_require__(7);
 
-var _filters = __webpack_require__(3);
+var _filters = __webpack_require__(2);
 
 var filters = _interopRequireWildcard(_filters);
 
-var _mixins = __webpack_require__(4);
+var _mixins = __webpack_require__(3);
 
 var _mixins2 = _interopRequireDefault(_mixins);
 
-var _url = __webpack_require__(7);
+var _url = __webpack_require__(6);
 
 var _url2 = _interopRequireDefault(_url);
 
@@ -965,10 +949,10 @@ _router2.default.beforeEach(function (to, from, next) {
     var fullPath = to.fullPath;
     var globalEvent = weex.requireModule('globalEvent');
     if (globalEvent) {
-        var index = fullPath.indexOf('/index') != -1;
-        var sc = fullPath.indexOf('/sc') != -1;
-        var main = fullPath.indexOf('/main') != -1;
-        var login = fullPath.indexOf('/') != -1;
+        var index = fullPath.match('/index') != null;
+        var sc = fullPath.match('/sc') != null;
+        var main = fullPath.match('/main') != null;
+        var login = fullPath.match('/login') != null;
         if (index || sc || main || login) {
             globalEvent.addEventListener("clickback", function (e) {
                 var sjevent = weex.requireModule('SJevent');
@@ -1010,10 +994,10 @@ Vue.mixin(_mixins2.default);
 // making them available everywhere as `this.$router` and `this.$store`.
 new Vue(Vue.util.extend({ el: '#root', router: _router2.default, store: _store2.default }, _App2.default));
 
-_router2.default.push('/');
+_router2.default.push('/sc');
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1028,7 +1012,7 @@ exports.ENSURE_ACTIVE_ITEMS = ENSURE_ACTIVE_ITEMS;
 exports.FETCH_ITEMS = FETCH_ITEMS;
 exports.FETCH_USER = FETCH_USER;
 
-var _fetch = __webpack_require__(12);
+var _fetch = __webpack_require__(11);
 
 var LOAD_MORE_STEP = 10;
 
@@ -1091,7 +1075,7 @@ function FETCH_USER(_ref7, _ref8) {
 }
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1143,7 +1127,7 @@ function fetchUser(id) {
 }
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1186,7 +1170,7 @@ function SET_USER(state, _ref4) {
 }
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -1372,7 +1356,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3655,10 +3639,10 @@ if (inBrowser && window.Vue) {
 
 /* harmony default export */ __webpack_exports__["default"] = (VueRouter);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(14)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(13)))
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4474,18 +4458,18 @@ var index_esm = {
 
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(27)
+__vue_styles__.push(__webpack_require__(26)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(23)
+__vue_exports__ = __webpack_require__(22)
 
 /* template */
 var __vue_template__ = __webpack_require__(32)
@@ -4500,10 +4484,54 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0419\\weex-yqyd_sx0421\\src\\components\\sk_search.vue"
+__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\sc.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-44fbd4d4"
+__vue_options__._scopeId = "data-v-35168eb8"
+__vue_options__.style = __vue_options__.style || {}
+__vue_styles__.forEach(function (module) {
+  for (var name in module) {
+    __vue_options__.style[name] = module[name]
+  }
+})
+if (typeof __register_static_styles__ === "function") {
+  __register_static_styles__(__vue_options__._scopeId, __vue_styles__)
+}
+
+module.exports = __vue_exports__
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_exports__, __vue_options__
+var __vue_styles__ = []
+
+/* styles */
+__vue_styles__.push(__webpack_require__(28)
+)
+
+/* script */
+__vue_exports__ = __webpack_require__(23)
+
+/* template */
+var __vue_template__ = __webpack_require__(34)
+__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+if (
+  typeof __vue_exports__.default === "object" ||
+  typeof __vue_exports__.default === "function"
+) {
+if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+__vue_options__ = __vue_exports__ = __vue_exports__.default
+}
+if (typeof __vue_options__ === "function") {
+  __vue_options__ = __vue_options__.options
+}
+__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\sk_search.vue"
+__vue_options__.render = __vue_template__.render
+__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+__vue_options__._scopeId = "data-v-6e7ed94b"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4525,14 +4553,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(26)
+__vue_styles__.push(__webpack_require__(27)
 )
 
 /* script */
 __vue_exports__ = __webpack_require__(24)
 
 /* template */
-var __vue_template__ = __webpack_require__(31)
+var __vue_template__ = __webpack_require__(33)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4544,10 +4572,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0419\\weex-yqyd_sx0421\\src\\components\\sk_xq.vue"
+__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\sk_xq.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-0781d7a5"
+__vue_options__._scopeId = "data-v-6c2faf9c"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4569,14 +4597,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(28)
+__vue_styles__.push(__webpack_require__(29)
 )
 
 /* script */
 __vue_exports__ = __webpack_require__(25)
 
 /* template */
-var __vue_template__ = __webpack_require__(33)
+var __vue_template__ = __webpack_require__(35)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4588,10 +4616,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0419\\weex-yqyd_sx0421\\src\\components\\sm_search.vue"
+__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\sm_search.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-545f1f92"
+__vue_options__._scopeId = "data-v-7de22409"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4969,11 +4997,7 @@ exports.default = {
 						method: 'POST',
 						type: 'json',
 						success: function success(ret) {
-							//sconsole.log(ret.data);
-							// modal.toast({ message: JSON.stringify(ret), duration: 10 })
 							var datas = ret.data.books || [];
-							//self.sc_list=eval(datas);
-							//debugger
 							if (ret.data.statusCode == 200 && datas.length != 0) {
 								for (var _i2 = 0; _i2 < datas.length; _i2++) {
 									self.sc_list.push(datas[_i2]);
@@ -5027,17 +5051,13 @@ exports.default = {
 			this.$router.push('/sk/sk_search');
 		},
 		scan: function scan() {
+		    var self = this;
 			var sjevent = weex.requireModule('SJevent');
 			if (sjevent) {
 				sjevent.QRScan(function (isbn) {
-					//storage.setItem('isbn',isbn,function(e){});
-					this.$router.push('/sk/sm_search?isbn=' + isbn); //{path:'',query:{isbt:0215}} {path:'',query:{title:0215}}
-
-					//modal.toast({ message: isbn, duration: 10 });
+					self.$router.push('/sk/sm_search?isbn=' + isbn);
 				});
 			}
-
-			//this.$router.push('/sk/sm_search');
 		},
 		onpeScxq: function onpeScxq(path) {
 			this.$router.push(path);
@@ -5103,7 +5123,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
-//
 
 var storage = weex.requireModule('storage');
 var modal = weex.requireModule('modal');
@@ -5111,16 +5130,13 @@ exports.default = {
 	data: function data() {
 		return {
 			ss: '',
-			searchList: {/*src: '../static/images/book02.png', btime: '2017-01-01', etime: '2017-01-02', bname: '飞来的伤心梅', bath: '张琴声', bpre: '北京邮电',isbn:'9787547705063'*/},
+			searchList: {},
 			title: ''
 		};
 	},
 
 
 	methods: {
-		/* goback () {
-      
-     },*/
 		selectes: function selectes(e) {
 			this.title = e;
 		},
@@ -5129,13 +5145,7 @@ exports.default = {
 		},
 		search: function search(e) {
 			//storage.setItem('title',e.content);
-			/*modal.toast({
-     		message:e.content
-     	});*/
 			this.$router.push('/sk/sm_search?title=' + e.content);
-			/*modal.toast({
-   	message:e.content
-   });*/
 		}
 	},
 	created: function created() {
@@ -5145,18 +5155,13 @@ exports.default = {
 			url: '/app/book/hot',
 			method: 'POST',
 			type: 'json',
-			//data:'loginAccount=12&token=123123&id=1',
 			success: function success(ret) {
 				var datas = ret.data.result;
 				self.searchList = eval(datas);
 				console.log(self.searchList);
 			}
 		});
-		// window.addEventListener('keyup', this.keyUp(),false)
-	} /*,
-   beforeDestroy(){
-   // window.removeEventListener('keyup', this.keyUp())	
-   }*/
+	}
 
 };
 
@@ -5223,8 +5228,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
-//
-//
 
 var storage = weex.requireModule('storage');
 var modal = weex.requireModule('modal');
@@ -5240,25 +5243,30 @@ exports.default = {
 	methods: {
 		goback: function goback() {
 			this.$router.go(-1);
-		},
-		openFx: function openFx() {
-			this.$router.push('/ydrw_xq/ydrw_xq_hare');
 		}
 	},
 	created: function created() {
 		var self = this;
-		console.log(self.$route.query.type);
 		_Utils2.default.fetch({
 			url: '/app/book/' + self.$route.query.id + '?type=' + self.$route.query.type,
 			method: 'GET',
 			type: 'json',
-			//data:'loginAccount=12&token=123123&id=1',
 			success: function success(ret) {
 				var books = ret.data.result;
 				self.book = eval(books);
-				console.log(self.book);
+				//console.log(self.book);
 			}
 		});
+	},
+	filters: {
+		filterHTMLs: function filterHTMLs(val) {
+			if (val) {
+				// debugger
+				var newVal = val.replace(/<p>/g, '').replace(/<\/p>/g, '').replace(/<br\/>/g, /\n/);
+				console.log(newVal);
+				return newVal;
+			}
+		}
 	}
 };
 
@@ -5284,13 +5292,6 @@ var _Utils2 = _interopRequireDefault(_Utils);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; } //
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -5356,20 +5357,11 @@ exports.default = {
 
 	name: 'sc',
 	methods: {
-
-		/*  goback () {
-   this.$router.go(-1);
-  },*/
 		cancel: function cancel(e) {
 			this.$router.go(-1);
 		},
 		search: function search(e) {
-			//storage.setItem('title',e.content);
-			modal.toast({
-				message: e.content
-			});
-
-			//this.$router.push('/sk/sm_search');
+			this.$router.push('/sk/sm_search?title=' + e.content);
 		},
 
 		praise: function praise(sc, tabsId) {
@@ -5389,9 +5381,6 @@ exports.default = {
 				});
 				//})
 			} else {
-				//var self=this;
-				//storage.getItem('username',function(e){  //从缓存中取userId
-				//      self.Account = e.data;
 				_Utils2.default.fetch({
 					url: '/app/book/zan?bookId=' + sc.id + '&loginAccount=' + self.Account + '&bookType=' + tabsId,
 					method: 'POST',
@@ -5401,19 +5390,48 @@ exports.default = {
 						sc.isZan = 0;
 					}
 				});
-				//	})
 			}
 		},
 		onpeScxq: function onpeScxq(path) {
 			this.$router.push(path);
 		},
-
 		onloading: function onloading(event) {
 			this.page += 1;
 			this.flag = true;
-			// modal.toast({ message: 'loading', duration: 1 })
 			this.showLoading = 'show';
 			this.light(this.tabsIndex, this.tabsId);
+		},
+		dataLoad: function dataLoad() {
+
+			var self = this;
+			/*self.isbn= this.$route.query.isbn;
+   self.title= this.$route.query.title;*/
+			storage.getItem('username', function (e) {
+				//从缓存中取userId
+				self.Account = e.data;
+				storage.getItem('schoolCode', function (e) {
+					//从缓存中取userId
+					self.schoolId = e.data;
+					_Utils2.default.fetch({
+						url: '/app/book/search?loginAccount=' + self.Account + '&keywords=' + self.title + '&isbn=' + self.isbn + '&page=' + self.page + '&pageSize=8&schoolCode=' + self.schoolId,
+						method: 'POST',
+						type: 'json',
+						success: function success(ret) {
+							var datas = ret.data.result || [];
+							if (ret.data.status == 200 && datas.length != 0) {
+								for (var i = 0; i < datas.length; i++) {
+									self.sc_list.push(datas[i]);
+								}
+							} else if (ret.data.status == 404 && datas.length == 0) {
+								modal.toast({ message: '已到底部', duration: 1 });
+							}
+							self.flag = false;
+							self.showLoading = 'hide';
+						}
+
+					});
+				});
+			});
 		}
 	},
 	created: function created() {
@@ -5421,502 +5439,25 @@ exports.default = {
 		self.isbn = this.$route.query.isbn;
 		self.title = this.$route.query.title;
 		//var titles;
-
-
 		if (!self.isbn) {
 			this.isbn = "";
+			this.dataLoad();
 		} else {
 			self.ss = self.isbn;
+			this.dataLoad();
 		}
 		if (!self.title) {
 			this.title = "";
+			this.dataLoad();
 		} else {
 			self.ss = self.title;
+			this.dataLoad();
 		}
-		storage.getItem('username', function (e) {
-			//从缓存中取userId
-			self.Account = e.data;
-			storage.getItem('schoolCode', function (e) {
-				//从缓存中取userId
-				self.schoolId = e.data;
-				_Utils2.default.fetch({
-					url: '/app/book/search?loginAccount=' + self.Account + '&keywords=' + self.title + '&isbn=' + self.isbn + '&page=' + self.page + '&pageSize=8&schoolCode=' + self.schoolId,
-					method: 'POST',
-					type: 'json',
-					success: function success(ret) {
-
-						var datas = ret.data.result || [];
-
-						if (ret.data.statusCode == 200 && datas.length != 0) {
-							for (var i = 0; i < datas.length; i++) {
-								self.sc_list.push(datas[i]);
-							}
-						} else if (ret.data.statusCode == 404 && datas.length == 0) {
-							modal.toast({ message: '已到底部', duration: 1 });
-						}
-						self.flag = false;
-						self.showLoading = 'hide';
-					}
-
-				});
-			});
-		});
 	}
 };
 
 /***/ }),
 /* 26 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "top": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "position": "absolute",
-    "top": 22,
-    "left": 25,
-    "width": 44,
-    "height": 44
-  },
-  "goback_r": {
-    "position": "absolute",
-    "top": 22,
-    "right": 25,
-    "width": 44,
-    "height": 44
-  },
-  "goback_r1": {
-    "position": "absolute",
-    "top": 22,
-    "right": 100,
-    "width": 37,
-    "height": 37
-  },
-  "book": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "width": 750,
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#f1f1ee",
-    "borderBottomStyle": "solid",
-    "paddingBottom": 24,
-    "paddingTop": 24,
-    "paddingRight": 30,
-    "paddingLeft": 30,
-    "overflow": "hidden",
-    "backgroundColor": "#ffffff"
-  },
-  "b_img": {
-    "width": 180,
-    "height": 220,
-    "marginRight": 30
-  },
-  "b_info": {
-    "width": 500
-  },
-  "b_main": {
-    "fontSize": 34,
-    "color": "#666666",
-    "marginTop": 20,
-    "lineHeight": 40
-  },
-  "b_list": {
-    "fontSize": 30,
-    "color": "#666666",
-    "lineHeight": 55
-  },
-  "b_name": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#e7f1ff",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "b_syn": {
-    "width": 750,
-    "backgroundColor": "#ffffff"
-  },
-  "b_cnt": {
-    "width": 750,
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#f1f1ee",
-    "borderBottomStyle": "solid",
-    "paddingBottom": 60,
-    "paddingTop": 60,
-    "paddingRight": 30,
-    "paddingLeft": 30
-  },
-  "b_title": {
-    "textAlign": "left",
-    "fontSize": 32,
-    "color": "#79a8ec"
-  },
-  "jyzx": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#ffffff",
-    "marginTop": 20,
-    "borderColor": "#e7e7e7",
-    "borderBottomWidth": 1,
-    "borderStyle": "solid",
-    "paddingRight": 20,
-    "paddingLeft": 20,
-    "flexDirection": "row",
-    "alignItems": "center"
-  },
-  "jyzx_title": {
-    "color": "#70a1e8",
-    "fontSize": 36
-  },
-  "title_img": {
-    "backgroundColor": "#70a1e8",
-    "marginRight": 1,
-    "width": 5
-  },
-  "ts_label": {
-    "fontSize": 26,
-    "backgroundColor": "#d9e8fd",
-    "color": "#666666",
-    "paddingRight": 15,
-    "paddingLeft": 15,
-    "paddingTop": 4,
-    "paddingBottom": 4,
-    "margin": 10,
-    "marginLeft": 0,
-    "borderRadius": 5
-  },
-  "ico_22": {
-    "width": 40,
-    "height": 40
-  },
-  "ico_23": {
-    "width": 33,
-    "height": 40
-  },
-  "ico_24": {
-    "width": 37,
-    "height": 37
-  }
-}
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "top": {
-    "width": 750,
-    "height": 98,
-    "backgroundColor": "#ffffff",
-    "borderBottomWidth": 1,
-    "borderStyle": "solid",
-    "borderColor": "#e7e7e7"
-  },
-  "topMain": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "fontSize": 36,
-    "lineHeight": 88,
-    "width": 600,
-    "backgroundColor": "#f0f0f0",
-    "borderRadius": 8,
-    "marginBottom": 12,
-    "marginTop": 12,
-    "marginLeft": 20,
-    "marginRight": 20
-  },
-  "pot_input": {
-    "width": 490,
-    "height": 70,
-    "fontSize": 32,
-    "backgroundColor": "#f0f0f0",
-    "border": "none"
-  },
-  "look": {
-    "width": 48,
-    "height": 48,
-    "marginLeft": 20,
-    "marginRight": 20
-  },
-  "main": {
-    "backgroundColor": "#ffffff",
-    "paddingBottom": 30
-  },
-  "goback_r": {
-    "position": "absolute",
-    "top": 30,
-    "right": 25,
-    "width": 100,
-    "height": 37,
-    "textAlign": "center",
-    "color": "#666666",
-    "fontSize": 34
-  },
-  "hot_list": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "borderBottomStyle": "solid",
-    "borderBottomColor": "#e7e7e7",
-    "borderBottomWidth": 1,
-    "height": 88,
-    "marginLeft": 30,
-    "color": "#666666"
-  },
-  "hot": {
-    "width": 40,
-    "height": 40,
-    "marginRight": 20,
-    "fontSize": 30
-  },
-  "orange": {
-    "color": "#ff6600"
-  }
-}
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "loading": {
-    "width": 750,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "indicator": {
-    "color": "#888888",
-    "fontSize": 42,
-    "paddingTop": 20,
-    "paddingBottom": 20,
-    "textAlign": "center"
-  },
-  "top": {
-    "width": 750,
-    "height": 98,
-    "backgroundColor": "#ffffff",
-    "borderBottomWidth": 1,
-    "borderStyle": "solid",
-    "borderColor": "#e7e7e7"
-  },
-  "topMain": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "fontSize": 36,
-    "lineHeight": 88,
-    "width": 600,
-    "backgroundColor": "#f0f0f0",
-    "borderRadius": 8,
-    "marginBottom": 12,
-    "marginTop": 12,
-    "marginLeft": 20,
-    "marginRight": 20
-  },
-  "pot_input": {
-    "width": 490,
-    "height": 70,
-    "fontSize": 32,
-    "backgroundColor": "#f0f0f0",
-    "border": "none"
-  },
-  "look": {
-    "width": 48,
-    "height": 48,
-    "marginLeft": 20,
-    "marginRight": 20
-  },
-  "main": {
-    "backgroundColor": "#ffffff",
-    "paddingBottom": 30
-  },
-  "goback_r": {
-    "position": "absolute",
-    "top": 30,
-    "right": 25,
-    "width": 100,
-    "height": 37,
-    "textAlign": "center",
-    "color": "#666666",
-    "fontSize": 34
-  },
-  "nav": {
-    "width": 750,
-    "height": 88,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "borderColor": "#e7e7e7",
-    "borderBottomWidth": 1,
-    "borderStyle": "solid",
-    "backgroundColor": "#ffffff"
-  },
-  "ydjy_list": {
-    "width": 750,
-    "height": 290,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "backgroundColor": "#ffffff",
-    "borderColor": "#ececec",
-    "borderBottomWidth": 1,
-    "borderStyle": "solid",
-    "position": "relative",
-    "zIndex": 1
-  },
-  "ydjy_l": {
-    "width": 240,
-    "height": 240,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "ydjy_lPic": {
-    "width": 190,
-    "height": 240
-  },
-  "ydjy_r": {
-    "height": 240,
-    "width": 455
-  },
-  "play": {
-    "position": "absolute",
-    "backgroundColor": "#000000",
-    "width": 191,
-    "height": 240,
-    "top": 0,
-    "left": 22,
-    "zIndex": 88,
-    "display": "flex",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "filter": "alpha(opacity=30)",
-    "MozOpacity": 0.3,
-    "opacity": 0.3
-  },
-  "record": {
-    "width": 455,
-    "height": 50,
-    "fontSize": 30,
-    "flexDirection": "row",
-    "color": "#999999"
-  },
-  "ico_22": {
-    "width": 60,
-    "height": 60,
-    "position": "absolute",
-    "top": 100,
-    "left": 85,
-    "zIndex": 99
-  },
-  "b_list": {
-    "flexDirection": "row",
-    "fontSize": 30,
-    "color": "#666666",
-    "lineHeight": 55
-  },
-  "record_li": {
-    "flex": 1,
-    "flexDirection": "row",
-    "alignItems": "center"
-  },
-  "pic_see": {
-    "width": 38,
-    "height": 27
-  },
-  "pic_praise": {
-    "width": 32,
-    "height": 28
-  },
-  "hdzq_titil": {
-    "flexDirection": "row",
-    "color": "#333333",
-    "fontSize": 36,
-    "height": 60,
-    "textOverflow": "ellipsis",
-    "lines": 1
-  },
-  "ts_label": {
-    "fontSize": 26,
-    "backgroundColor": "#d9e8fd",
-    "color": "#666666",
-    "paddingTop": 4,
-    "paddingBottom": 4,
-    "paddingLeft": 15,
-    "paddingRight": 15,
-    "margin": 10,
-    "marginLeft": 0,
-    "borderRadius": 5
-  },
-  "ydjy_state": {
-    "backgroundColor": "#ff6600",
-    "color": "#ffffff",
-    "fontSize": 22,
-    "position": "absolute",
-    "left": 22,
-    "top": 10,
-    "paddingRight": 15,
-    "paddingLeft": 15,
-    "paddingTop": 8,
-    "paddingBottom": 8,
-    "zIndex": 89,
-    "borderTopRightRadius": 20,
-    "borderBottomRightRadius": 20
-  },
-  "author": {
-    "flexDirection": "row",
-    "lineHeight": 40
-  },
-  "fontSize": {
-    "fontSize": 32,
-    "color": "#666666"
-  }
-}
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "footer": {
-    "width": 750,
-    "height": 110,
-    "borderStyle": "solid",
-    "borderColor": "#e7e7e7",
-    "borderTopWidth": 1,
-    "position": "fixed",
-    "bottom": 0,
-    "left": 0,
-    "zIndex": 999,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "backgroundColor": "#ffffff"
-  },
-  "f_list": {
-    "flex": 1,
-    "flexDirection": "column",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "footer_img": {
-    "marginTop": 12,
-    "width": 44,
-    "height": 44
-  }
-}
-
-/***/ }),
-/* 30 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -6160,339 +5701,400 @@ module.exports = {
 }
 
 /***/ }),
+/* 27 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 22,
+    "left": 25,
+    "width": 44,
+    "height": 44
+  },
+  "goback_r": {
+    "position": "absolute",
+    "top": 22,
+    "right": 25,
+    "width": 44,
+    "height": 44
+  },
+  "book": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "width": 750,
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#f1f1ee",
+    "borderBottomStyle": "solid",
+    "paddingBottom": 24,
+    "paddingTop": 24,
+    "paddingRight": 30,
+    "paddingLeft": 30,
+    "overflow": "hidden",
+    "backgroundColor": "#ffffff"
+  },
+  "b_img": {
+    "width": 180,
+    "height": 220,
+    "marginRight": 30
+  },
+  "b_info": {
+    "width": 500
+  },
+  "b_main": {
+    "fontSize": 34,
+    "color": "#666666",
+    "marginTop": 20,
+    "lineHeight": 40
+  },
+  "b_list": {
+    "fontSize": 30,
+    "color": "#666666",
+    "lineHeight": 55
+  },
+  "b_name": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#e7f1ff",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "b_syn": {
+    "width": 750,
+    "backgroundColor": "#ffffff"
+  },
+  "b_cnt": {
+    "width": 750,
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#f1f1ee",
+    "borderBottomStyle": "solid",
+    "paddingBottom": 60,
+    "paddingTop": 60,
+    "paddingRight": 30,
+    "paddingLeft": 30
+  },
+  "b_title": {
+    "textAlign": "left",
+    "fontSize": 32,
+    "color": "#79a8ec"
+  },
+  "jyzx": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#ffffff",
+    "marginTop": 20,
+    "borderColor": "#e7e7e7",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "paddingRight": 20,
+    "paddingLeft": 20,
+    "flexDirection": "row",
+    "alignItems": "center"
+  },
+  "jyzx_title": {
+    "color": "#70a1e8",
+    "fontSize": 36
+  },
+  "ts_label": {
+    "fontSize": 26,
+    "backgroundColor": "#d9e8fd",
+    "color": "#666666",
+    "paddingRight": 15,
+    "paddingLeft": 15,
+    "paddingTop": 4,
+    "paddingBottom": 4,
+    "margin": 10,
+    "marginLeft": 0,
+    "borderRadius": 5
+  }
+}
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
+    "height": 98,
+    "backgroundColor": "#ffffff",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#e7e7e7"
+  },
+  "topMain": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "fontSize": 36,
+    "lineHeight": 88,
+    "width": 600,
+    "backgroundColor": "#f0f0f0",
+    "borderRadius": 8,
+    "marginBottom": 12,
+    "marginTop": 12,
+    "marginLeft": 20,
+    "marginRight": 20
+  },
+  "pot_input": {
+    "width": 490,
+    "height": 70,
+    "fontSize": 32,
+    "backgroundColor": "#f0f0f0",
+    "border": "none"
+  },
+  "look": {
+    "width": 48,
+    "height": 48,
+    "marginLeft": 20,
+    "marginRight": 20
+  },
+  "main": {
+    "backgroundColor": "#ffffff",
+    "paddingBottom": 30
+  },
+  "goback_r": {
+    "position": "absolute",
+    "top": 30,
+    "right": 25,
+    "width": 100,
+    "height": 37,
+    "textAlign": "center",
+    "color": "#666666",
+    "fontSize": 34
+  },
+  "hot_list": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "borderBottomStyle": "solid",
+    "borderBottomColor": "#e7e7e7",
+    "borderBottomWidth": 1,
+    "height": 88,
+    "marginLeft": 30,
+    "color": "#666666"
+  },
+  "hot": {
+    "width": 40,
+    "height": 40,
+    "marginRight": 20,
+    "fontSize": 30
+  },
+  "orange": {
+    "color": "#ff6600"
+  }
+}
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "loading": {
+    "width": 750,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "indicator": {
+    "color": "#888888",
+    "fontSize": 42,
+    "paddingTop": 20,
+    "paddingBottom": 20,
+    "textAlign": "center"
+  },
+  "main": {
+    "backgroundColor": "#ffffff",
+    "paddingBottom": 30
+  },
+  "goback_r": {
+    "position": "absolute",
+    "top": 30,
+    "right": 25,
+    "width": 100,
+    "height": 37,
+    "textAlign": "center",
+    "color": "#666666",
+    "fontSize": 34
+  },
+  "nav": {
+    "width": 750,
+    "height": 88,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "borderColor": "#e7e7e7",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "backgroundColor": "#ffffff"
+  },
+  "ydjy_list": {
+    "width": 750,
+    "height": 290,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "backgroundColor": "#ffffff",
+    "borderColor": "#ececec",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "position": "relative",
+    "zIndex": 1
+  },
+  "ydjy_l": {
+    "width": 240,
+    "height": 240,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "ydjy_lPic": {
+    "width": 190,
+    "height": 240
+  },
+  "ydjy_r": {
+    "height": 240,
+    "width": 455
+  },
+  "play": {
+    "position": "absolute",
+    "backgroundColor": "#000000",
+    "width": 191,
+    "height": 240,
+    "top": 0,
+    "left": 22,
+    "zIndex": 88,
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "filter": "alpha(opacity=30)",
+    "MozOpacity": 0.3,
+    "opacity": 0.3
+  },
+  "record": {
+    "width": 455,
+    "height": 50,
+    "fontSize": 30,
+    "flexDirection": "row",
+    "color": "#999999"
+  },
+  "ico_22": {
+    "width": 60,
+    "height": 60,
+    "position": "absolute",
+    "top": 100,
+    "left": 85,
+    "zIndex": 99
+  },
+  "b_list": {
+    "flexDirection": "row",
+    "fontSize": 30,
+    "color": "#666666",
+    "lineHeight": 55
+  },
+  "record_li": {
+    "flex": 1,
+    "flexDirection": "row",
+    "alignItems": "center"
+  },
+  "pic_see": {
+    "width": 38,
+    "height": 27
+  },
+  "pic_praise": {
+    "width": 32,
+    "height": 28
+  },
+  "hdzq_titil": {
+    "flexDirection": "row",
+    "color": "#333333",
+    "fontSize": 36,
+    "height": 60,
+    "textOverflow": "ellipsis",
+    "lines": 1
+  },
+  "ts_label": {
+    "fontSize": 26,
+    "backgroundColor": "#d9e8fd",
+    "color": "#666666",
+    "paddingTop": 4,
+    "paddingBottom": 4,
+    "paddingLeft": 15,
+    "paddingRight": 15,
+    "margin": 10,
+    "marginLeft": 0,
+    "borderRadius": 5
+  },
+  "ydjy_state": {
+    "backgroundColor": "#ff6600",
+    "color": "#ffffff",
+    "fontSize": 22,
+    "position": "absolute",
+    "left": 22,
+    "top": 10,
+    "paddingRight": 15,
+    "paddingLeft": 15,
+    "paddingTop": 8,
+    "paddingBottom": 8,
+    "zIndex": 89,
+    "borderTopRightRadius": 20,
+    "borderBottomRightRadius": 20
+  },
+  "author": {
+    "flexDirection": "row",
+    "lineHeight": 40
+  },
+  "fontSize": {
+    "fontSize": 32,
+    "color": "#666666"
+  }
+}
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "footer": {
+    "width": 750,
+    "height": 110,
+    "borderStyle": "solid",
+    "borderColor": "#e7e7e7",
+    "borderTopWidth": 1,
+    "position": "fixed",
+    "bottom": 0,
+    "left": 0,
+    "zIndex": 999,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "backgroundColor": "#ffffff"
+  },
+  "f_list": {
+    "flex": 1,
+    "flexDirection": "column",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "footer_img": {
+    "marginTop": 12,
+    "width": 44,
+    "height": 44
+  }
+}
+
+/***/ }),
 /* 31 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticStyle: {
-      backgroundColor: "#fafafa"
-    }
-  }, [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
-    attrs: {
-      "src": "../static/images/xs_pic_fh.png"
-    },
-    on: {
-      "click": _vm.goback
-    }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v(_vm._s(_vm.book.bookName))]), _c('image', {
-    staticClass: ["goback_r"],
-    attrs: {
-      "src": "../static/images/ico_heart01.png"
-    }
-  })]), _c('scroller', [_c('div', {
-    staticClass: ["b_name"]
-  }, [_c('text', {
-    staticStyle: {
-      color: "#666",
-      fontSize: "36px"
-    }
-  }, [_vm._v(_vm._s(_vm.book.bookName))])]), _c('div', {
-    staticClass: ["book"]
-  }, [_c('image', {
-    staticClass: ["b_img"],
-    attrs: {
-      "src": _vm.book.bookPic
-    }
-  }), _c('div', {
-    staticClass: ["b_info"]
-  }, [_c('text', {
-    staticClass: ["b_list"]
-  }, [_vm._v("作者：" + _vm._s(_vm.book.author) + "/著 ")]), _c('text', {
-    staticClass: ["b_list"]
-  }, [_vm._v("出版社：" + _vm._s(_vm.book.press))]), _c('text', {
-    staticClass: ["b_list"]
-  }, [_vm._v("ISBN: " + _vm._s(_vm.book.isbn) + " ")]), _c('div', {
-    staticStyle: {
-      flexDirection: "row",
-      justifyContent: "left",
-      alignItems: "center"
-    }
-  }, [_c('text', {
-    staticClass: ["ts_label"]
-  }, [_vm._v(_vm._s(_vm.book.bookType))])])])]), _vm._m(0), _c('div', {
-    staticClass: ["b_syn"]
-  }, [_c('video', {
-    staticStyle: {
-      width: "750px",
-      height: "400px"
-    },
-    attrs: {
-      "src": _vm.book.guideVoice,
-      "controls": ""
-    }
-  }), _c('div', {
-    staticClass: ["b_cnt"]
-  }, [_c('text', {
-    staticClass: ["b_title"]
-  }, [_vm._v("编辑推荐")]), _c('text', {
-    staticClass: ["b_main"]
-  }, [_vm._v(_vm._s(_vm.book.editorIntro))])]), _c('div', {
-    staticClass: ["b_cnt"]
-  }, [_c('text', {
-    staticClass: ["b_title"]
-  }, [_vm._v("内容简介")]), _c('text', {
-    staticClass: ["b_main"]
-  }, [_vm._v(_vm._s(_vm.book.desc))])]), _c('div', {
-    staticClass: ["b_cnt"]
-  }, [_c('text', {
-    staticClass: ["b_title"]
-  }, [_vm._v("作者简介")]), _c('text', {
-    staticClass: ["b_main"]
-  }, [_vm._v(_vm._s(_vm.book.authorDesc))])])], 1)])])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["jyzx"]
-  }, [_c('text', {
-    staticClass: ["jyzx_title"]
-  }, [_vm._v("专家导读")])])
-}]}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticStyle: {
-      backgroundColor: "#fafafa"
-    }
-  }, [_c('myedittext', {
-    staticStyle: {
-      height: "100px",
-      width: "750px"
-    },
-    attrs: {
-      "content": _vm.title
-    },
-    on: {
-      "cancel": _vm.cancel,
-      "search": _vm.search
-    }
-  }), _c('div', {
-    staticClass: ["main"]
-  }, [_vm._m(0), _vm._l((_vm.searchList), function(ssList, index) {
-    return _c('div', {
-      staticClass: ["hot_list"],
-      on: {
-        "click": function($event) {
-          _vm.selectes(ssList.word)
-        }
-      }
-    }, [_c('text', {
-      staticClass: ["hot", "orange"]
-    }, [_vm._v(_vm._s(index + 1))]), _c('text', {
-      staticStyle: {
-        fontSize: "32px"
-      }
-    }, [_vm._v(_vm._s(ssList.word))])])
-  })], 2)], 1)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["hot_list"]
-  }, [_c('image', {
-    staticClass: ["hot"],
-    attrs: {
-      "src": "../static/images/pic_hot.png"
-    }
-  }), _c('text', {
-    staticStyle: {
-      fontSize: "32px"
-    }
-  }, [_vm._v("热门搜索")])])
-}]}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticStyle: {
-      backgroundColor: "#fff",
-      paddingBottom: "120px"
-    },
-    attrs: {
-      "id": "sc"
-    }
-  }, [_c('myedittext', {
-    staticStyle: {
-      height: "100px",
-      width: "750px"
-    },
-    attrs: {
-      "content": _vm.ss
-    },
-    on: {
-      "cancel": _vm.cancel,
-      "search": _vm.search
-    }
-  }), _c('scroller', [_vm._l((_vm.sc_list), function(sc) {
-    return _c('div', {
-      staticClass: ["ydjy_list"]
-    }, [_c('div', {
-      staticClass: ["ydjy_l"]
-    }, [_c('img', {
-      staticClass: ["ydjy_lPic"],
-      staticStyle: {
-        position: "relative"
-      },
-      attrs: {
-        "src": sc.pic
-      }
-    }), _c('div', {
-      staticClass: ["play"],
-      on: {
-        "click": function($event) {
-          _vm.onpeScxq('/sk/xq?id=' + sc.id + '&type=' + _vm.tabsId)
-        }
-      }
-    }), _c('image', {
-      staticClass: ["ico_22"],
-      attrs: {
-        "src": sc.tabImg
-      }
-    })]), _c('div', {
-      staticClass: ["ydjy_r"]
-    }, [_c('text', {
-      staticClass: ["hdzq_titil"],
-      on: {
-        "click": function($event) {
-          _vm.onpeScxq('/sk/xq?id=' + sc.id + '&type=' + _vm.tabsId)
-        }
-      }
-    }, [_vm._v(_vm._s(sc.name))]), _c('div', {
-      staticClass: ["author"]
-    }, [_c('text', {
-      staticClass: ["fontSize"]
-    }, [_vm._v(_vm._s(sc.author))]), _c('text', {
-      staticStyle: {
-        fontSize: "30px",
-        color: "#666"
-      }
-    }, [_vm._v("著")])]), _c('div', {
-      staticClass: ["b_list"]
-    }, [_c('text', {
-      staticClass: ["fontSize"]
-    }, [_vm._v("ISBN:")]), _c('text', {
-      staticStyle: {
-        fontSize: "32px",
-        color: "#666"
-      }
-    }, [_vm._v(_vm._s(sc.isbn))])]), _c('div', {
-      staticStyle: {
-        flexDirection: "row",
-        justifyContent: "left",
-        alignItems: "center"
-      }
-    }, [_c('text', {
-      staticClass: ["ts_label"]
-    }, [_vm._v(_vm._s(sc.bookType))])]), _c('div', {
-      staticClass: ["record"]
-    }, [_c('div', {
-      staticClass: ["record_li"]
-    }, [_c('image', {
-      staticClass: ["pic_see"],
-      attrs: {
-        "src": "../static/images/ico_see.png"
-      }
-    }), _vm._v("  "), _c('text', [_vm._v(_vm._s(sc.view))])]), _c('div', {
-      staticClass: ["record_li"],
-      on: {
-        "click": function($event) {
-          _vm.praise(sc, _vm.tabsId)
-        }
-      }
-    }, [(sc.isZan == 1) ? _c('image', {
-      staticClass: ["pic_praise"],
-      attrs: {
-        "src": _vm.checkYes
-      }
-    }) : _vm._e(), (sc.isZan == 0) ? _c('image', {
-      staticClass: ["pic_praise"],
-      attrs: {
-        "src": _vm.checkes
-      }
-    }) : _vm._e(), _vm._v("  "), _c('text', [_vm._v(_vm._s(sc.toast))])])])])])
-  }), _c('loading', {
-    staticClass: ["loading"],
-    attrs: {
-      "display": _vm.showLoading
-    },
-    on: {
-      "loading": _vm.onloading
-    }
-  }, [_c('text', {
-    staticClass: ["indicator"]
-  }, [_vm._v("加载更多 ...")])])], 2)], 1)
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: ["footer"]
-  }, [_c('div', {
-    staticClass: ["f_list"],
-    on: {
-      "click": _vm.tab
-    }
-  }, [_c('image', {
-    staticClass: ["footer_img"],
-    attrs: {
-      "src": "../static/images/xs_pic_sy.png"
-    }
-  }), _c('text', {
-    staticStyle: {
-      marginTop: "9px",
-      color: "#70a1e8"
-    }
-  }, [_vm._v("首 页")])]), _c('div', {
-    staticClass: ["f_list"],
-    on: {
-      "click": _vm.tab1
-    }
-  }, [_c('image', {
-    staticClass: ["footer_img"],
-    attrs: {
-      "src": "../static/images/pic_sc01.png"
-    }
-  }), _c('text', {
-    staticStyle: {
-      marginTop: "9px",
-      color: "#666"
-    }
-  }, [_vm._v("书 库")])]), _c('div', {
-    staticClass: ["f_list"],
-    on: {
-      "click": _vm.tab2
-    }
-  }, [_c('image', {
-    staticClass: ["footer_img"],
-    attrs: {
-      "src": "../static/images/pic_w01.png"
-    }
-  }), _c('text', {
-    staticStyle: {
-      marginTop: "9px",
-      color: "#666"
-    }
-  }, [_vm._v("我 的")])])])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 35 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -6509,7 +6111,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 36 */
+/* 32 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -6750,6 +6352,338 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('text', {
     staticClass: ["indicator"]
   }, [_vm._v("加载更多 ...")])])], 2)], 1)
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticStyle: {
+      backgroundColor: "#fafafa"
+    }
+  }, [_c('div', {
+    staticClass: ["top"]
+  }, [_c('image', {
+    staticClass: ["goback"],
+    attrs: {
+      "src": "../static/images/xs_pic_fh.png"
+    },
+    on: {
+      "click": _vm.goback
+    }
+  }), _c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v(_vm._s(_vm.book.bookName))]), _c('image', {
+    staticClass: ["goback_r"],
+    attrs: {
+      "src": "../static/images/ico_heart01.png"
+    }
+  })]), _c('scroller', [_c('div', {
+    staticClass: ["b_name"]
+  }, [_c('text', {
+    staticStyle: {
+      color: "#666",
+      fontSize: "36px"
+    }
+  }, [_vm._v(_vm._s(_vm.book.bookName))])]), _c('div', {
+    staticClass: ["book"]
+  }, [_c('image', {
+    staticClass: ["b_img"],
+    attrs: {
+      "src": _vm.book.bookPic
+    }
+  }), _c('div', {
+    staticClass: ["b_info"]
+  }, [_c('text', {
+    staticClass: ["b_list"]
+  }, [_vm._v("作者：" + _vm._s(_vm.book.author) + "/著 ")]), _c('text', {
+    staticClass: ["b_list"]
+  }, [_vm._v("出版社：" + _vm._s(_vm.book.press))]), _c('text', {
+    staticClass: ["b_list"]
+  }, [_vm._v("ISBN: " + _vm._s(_vm.book.isbn) + " ")]), _c('div', {
+    staticStyle: {
+      flexDirection: "row",
+      justifyContent: "left",
+      alignItems: "center"
+    }
+  }, [_c('text', {
+    staticClass: ["ts_label"]
+  }, [_vm._v(_vm._s(_vm.book.bookType))])])])]), _vm._m(0), _c('div', {
+    staticClass: ["b_syn"]
+  }, [_c('video', {
+    staticStyle: {
+      width: "750px",
+      height: "400px"
+    },
+    attrs: {
+      "src": _vm.book.guideVoice,
+      "controls": ""
+    }
+  }), _c('div', {
+    staticClass: ["b_cnt"]
+  }, [_c('text', {
+    staticClass: ["b_title"]
+  }, [_vm._v("编辑推荐")]), _c('text', {
+    staticClass: ["b_main"]
+  }, [_vm._v(_vm._s(_vm._f("filterHTMLs")(_vm.book.editorIntro)))])]), _c('div', {
+    staticClass: ["b_cnt"]
+  }, [_c('text', {
+    staticClass: ["b_title"]
+  }, [_vm._v("内容简介")]), _c('text', {
+    staticClass: ["b_main"]
+  }, [_vm._v(_vm._s(_vm.book.desc))])]), _c('div', {
+    staticClass: ["b_cnt"]
+  }, [_c('text', {
+    staticClass: ["b_title"]
+  }, [_vm._v("作者简介")]), _c('text', {
+    staticClass: ["b_main"]
+  }, [_vm._v(_vm._s(_vm.book.authorDesc))])])], 1)])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["jyzx"]
+  }, [_c('text', {
+    staticClass: ["jyzx_title"]
+  }, [_vm._v("专家导读")])])
+}]}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticStyle: {
+      backgroundColor: "#fafafa"
+    }
+  }, [_c('myedittext', {
+    staticStyle: {
+      height: "100px",
+      width: "750px"
+    },
+    attrs: {
+      "content": _vm.title
+    },
+    on: {
+      "cancel": _vm.cancel,
+      "search": _vm.search
+    }
+  }), _c('div', {
+    staticClass: ["main"]
+  }, [_vm._m(0), _vm._l((_vm.searchList), function(ssList, index) {
+    return _c('div', {
+      staticClass: ["hot_list"],
+      on: {
+        "click": function($event) {
+          _vm.selectes(ssList.word)
+        }
+      }
+    }, [_c('text', {
+      staticClass: ["hot", "orange"]
+    }, [_vm._v(_vm._s(index + 1))]), _c('text', {
+      staticStyle: {
+        fontSize: "32px"
+      }
+    }, [_vm._v(_vm._s(ssList.word))])])
+  })], 2)], 1)
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["hot_list"]
+  }, [_c('image', {
+    staticClass: ["hot"],
+    attrs: {
+      "src": "../static/images/pic_hot.png"
+    }
+  }), _c('text', {
+    staticStyle: {
+      fontSize: "32px"
+    }
+  }, [_vm._v("热门搜索")])])
+}]}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticStyle: {
+      backgroundColor: "#fff",
+      paddingBottom: "120px"
+    },
+    attrs: {
+      "id": "sc"
+    }
+  }, [_c('myedittext', {
+    staticStyle: {
+      height: "100px",
+      width: "750px"
+    },
+    attrs: {
+      "content": _vm.ss
+    },
+    on: {
+      "cancel": _vm.cancel,
+      "search": _vm.search
+    }
+  }), _c('scroller', [_vm._l((_vm.sc_list), function(sc) {
+    return _c('div', {
+      staticClass: ["ydjy_list"]
+    }, [_c('div', {
+      staticClass: ["ydjy_l"]
+    }, [_c('img', {
+      staticClass: ["ydjy_lPic"],
+      staticStyle: {
+        position: "relative"
+      },
+      attrs: {
+        "src": sc.pic
+      }
+    }), _c('div', {
+      staticClass: ["play"],
+      on: {
+        "click": function($event) {
+          _vm.onpeScxq('/sk/xq?id=' + sc.id + '&type=' + _vm.tabsId)
+        }
+      }
+    }), _c('image', {
+      staticClass: ["ico_22"],
+      attrs: {
+        "src": sc.tabImg
+      }
+    })]), _c('div', {
+      staticClass: ["ydjy_r"]
+    }, [_c('text', {
+      staticClass: ["hdzq_titil"],
+      on: {
+        "click": function($event) {
+          _vm.onpeScxq('/sk/xq?id=' + sc.id + '&type=' + _vm.tabsId)
+        }
+      }
+    }, [_vm._v(_vm._s(sc.name))]), _c('div', {
+      staticClass: ["author"]
+    }, [_c('text', {
+      staticClass: ["fontSize"]
+    }, [_vm._v(_vm._s(sc.author))]), _c('text', {
+      staticStyle: {
+        fontSize: "30px",
+        color: "#666"
+      }
+    }, [_vm._v("著")])]), _c('div', {
+      staticClass: ["b_list"]
+    }, [_c('text', {
+      staticClass: ["fontSize"]
+    }, [_vm._v("ISBN:")]), _c('text', {
+      staticStyle: {
+        fontSize: "32px",
+        color: "#666"
+      }
+    }, [_vm._v(_vm._s(sc.isbn))])]), _c('div', {
+      staticStyle: {
+        flexDirection: "row",
+        justifyContent: "left",
+        alignItems: "center"
+      }
+    }, [_c('text', {
+      staticClass: ["ts_label"]
+    }, [_vm._v(_vm._s(sc.bookType))])]), _c('div', {
+      staticClass: ["record"]
+    }, [_c('div', {
+      staticClass: ["record_li"]
+    }, [_c('image', {
+      staticClass: ["pic_see"],
+      attrs: {
+        "src": "../static/images/ico_see.png"
+      }
+    }), _vm._v("  "), _c('text', [_vm._v(_vm._s(sc.view))])]), _c('div', {
+      staticClass: ["record_li"],
+      on: {
+        "click": function($event) {
+          _vm.praise(sc, _vm.tabsId)
+        }
+      }
+    }, [(sc.isZan == 1) ? _c('image', {
+      staticClass: ["pic_praise"],
+      attrs: {
+        "src": _vm.checkYes
+      }
+    }) : _vm._e(), (sc.isZan == 0) ? _c('image', {
+      staticClass: ["pic_praise"],
+      attrs: {
+        "src": _vm.checkes
+      }
+    }) : _vm._e(), _vm._v("  "), _c('text', [_vm._v(_vm._s(sc.toast))])])])])])
+  }), _c('loading', {
+    staticClass: ["loading"],
+    attrs: {
+      "display": _vm.showLoading
+    },
+    on: {
+      "loading": _vm.onloading
+    }
+  }, [_c('text', {
+    staticClass: ["indicator"]
+  }, [_vm._v("加载更多 ...")])])], 2)], 1)
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('div', {
+    staticClass: ["footer"]
+  }, [_c('div', {
+    staticClass: ["f_list"],
+    on: {
+      "click": _vm.tab
+    }
+  }, [_c('image', {
+    staticClass: ["footer_img"],
+    attrs: {
+      "src": "../static/images/xs_pic_sy.png"
+    }
+  }), _c('text', {
+    staticStyle: {
+      marginTop: "9px",
+      color: "#70a1e8"
+    }
+  }, [_vm._v("首 页")])]), _c('div', {
+    staticClass: ["f_list"],
+    on: {
+      "click": _vm.tab1
+    }
+  }, [_c('image', {
+    staticClass: ["footer_img"],
+    attrs: {
+      "src": "../static/images/pic_sc01.png"
+    }
+  }), _c('text', {
+    staticStyle: {
+      marginTop: "9px",
+      color: "#666"
+    }
+  }, [_vm._v("书 库")])]), _c('div', {
+    staticClass: ["f_list"],
+    on: {
+      "click": _vm.tab2
+    }
+  }, [_c('image', {
+    staticClass: ["footer_img"],
+    attrs: {
+      "src": "../static/images/pic_w01.png"
+    }
+  }), _c('text', {
+    staticStyle: {
+      marginTop: "9px",
+      color: "#666"
+    }
+  }, [_vm._v("我 的")])])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 
