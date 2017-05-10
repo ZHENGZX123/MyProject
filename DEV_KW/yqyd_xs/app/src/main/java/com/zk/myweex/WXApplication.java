@@ -66,7 +66,7 @@ public class WXApplication extends Application {
 
         //注册自定义组件
         try {
-            WXSDKEngine.registerComponent("my_webview", MyWebView.class);
+            WXSDKEngine.registerComponent("mywebview", MyWebView.class);
             WXSDKEngine.registerComponent("myedittext", MyEditText.class);
             WXSDKEngine.registerModule("SJevent", SJEventModule.class);
         } catch (WXException e) {
