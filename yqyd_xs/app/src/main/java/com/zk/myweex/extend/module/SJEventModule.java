@@ -71,8 +71,8 @@ public class SJEventModule extends WXModule {
     public void loginSuccess(final String username) {
         Log.d("test", "loginSuccess username = " + username);
 
-        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).apply();
-        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("userName", username).apply();
+        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
+        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("username", username).commit();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
         //ScreenManager.getScreenManager().popAllActivityExceptOne(MainActivity2.class);
         finish();
@@ -278,7 +278,6 @@ public class SJEventModule extends WXModule {
             public void run() {
                 int successCount = 0;
                 int count = images.size();
-                String[] urls = new String[count];
                 String url = "";
                 for (int i = 0; i < count; i++) {
                     ImageItem ii = images.get(i);
@@ -291,7 +290,6 @@ public class SJEventModule extends WXModule {
                     if (result.isOK()) {
                         successCount++;
                         String after = "http://ooy49eq1n.bkt.clouddn.com/" + key;
-                        urls[i] = after;
                         if (i == count - 1) {
                             url = url + after;
                         } else {
@@ -303,9 +301,7 @@ public class SJEventModule extends WXModule {
                     toast("上传失败，请稍后再试");
                     return;
                 }
-                for (int i = 0; i < urls.length; i++) {
-                    Log.d("test", "url[" + i + "] = " + urls[i]);
-                }
+                Log.d("test", "url = " + url);
                 HashMap map = new HashMap();
                 map.put("url", url);//urls
                 pickerCallback.invoke(map);
