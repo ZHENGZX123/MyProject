@@ -664,35 +664,34 @@ Vue.use(_vueRouter2.default); // import Vue from 'vue'
 exports.default = new _vueRouter2.default({
   // mode: 'abstract',
   routes: [
-  /*{ path: '/', name: 'login', component: require('./components/login.vue')},
-  { path: '/wjmm', name: 'wjmm', component: require('./components/forget_pwd.vue')},*/
+  /* { path: '/', name: 'login', component: require('./components/login.vue')},
+   { path: '/wjmm', name: 'wjmm', component: require('./components/forget_pwd.vue')},
   // { path: '/wjzh', name: 'wjzh', component: require('./components/forget_admin.vue')},
-  /*
-    { path: '/', name: 'index', component: require('./components/index.vue')},
-    { path: '/index', name: 'index', component: require('./components/index.vue')},
-   
-    // 阅读任务
-    { path: '/ydrw', name: 'ydrw', component: require('./components/ydrw.vue')}, 
-    // 任务详情
-    { path: '/ydrw/ckjh', name: 'ydrw_jh', component: require('./components/ydrw_jh.vue')}, 
-     // 阅读任务详情
-    { path: '/ydrw_xq', name: 'ydrw_xq', component: require('./components/ydrw_xq.vue')}, 
-    // 阅读任务 写读后感
-    { path: '/ydrw/xdhg', name: 'ydrw_xdhg', component: require('./components/ydrw_xdhg.vue')}, 
-     // 阅读任务 我的读后感
-    { path: '/ydrw/wddhg', name: 'ydrw_wddhg', component: require('./components/ydrw_wddhg.vue')}, 
-    // 阅读任务 开始闯关
-    { path: '/ydrw/kscg', name: 'ydrw_kscg', component: require('./components/ydrw_kscg.vue')}, 
-    // 阅读任务 我的闯关
-    { path: '/ydrw/wdcg', name: 'ydrw_wdcg', component: require('./components/ydrw_wdcg.vue')}, 
-      //考试提分宝
-     { path: '/kstfb', name: 'kstfb', component: require('./components/kstfb.vue')},
-     // 书香榜
-    { path: '/sxb', name: 'sxb', component: require('./components/sxb.vue')},
-     // // 阅读资讯
-    { path: '/ydzx', name: 'ydzx', component: require('./components/ydzx.vue')},
-    // 阅读资讯 详情
-    { path: '/ydzx/xq', name: 'ydzx_xq', component: require('./components/ydzx_xq.vue')},
+     // { path: '/', name: 'index', component: require('./components/index.vue')},
+   { path: '/index', name: 'index', component: require('./components/index.vue')},
+  
+   // 阅读任务
+   { path: '/ydrw', name: 'ydrw', component: require('./components/ydrw.vue')}, 
+   // 任务详情
+   { path: '/ydrw/ckjh', name: 'ydrw_jh', component: require('./components/ydrw_jh.vue')}, 
+    // 阅读任务详情
+   { path: '/ydrw_xq', name: 'ydrw_xq', component: require('./components/ydrw_xq.vue')}, 
+   // 阅读任务 写读后感
+   { path: '/ydrw/xdhg', name: 'ydrw_xdhg', component: require('./components/ydrw_xdhg.vue')}, 
+    // 阅读任务 我的读后感
+   { path: '/ydrw/wddhg', name: 'ydrw_wddhg', component: require('./components/ydrw_wddhg.vue')}, 
+   // 阅读任务 开始闯关
+   { path: '/ydrw/kscg', name: 'ydrw_kscg', component: require('./components/ydrw_kscg.vue')}, 
+   // 阅读任务 我的闯关
+   { path: '/ydrw/wdcg', name: 'ydrw_wdcg', component: require('./components/ydrw_wdcg.vue')}, 
+     //考试提分宝
+    { path: '/kstfb', name: 'kstfb', component: require('./components/kstfb.vue')},
+    // 书香榜
+   { path: '/sxb', name: 'sxb', component: require('./components/sxb.vue')},
+    // // 阅读资讯
+   { path: '/ydzx', name: 'ydzx', component: require('./components/ydzx.vue')},
+   // 阅读资讯 详情
+   { path: '/ydzx/xq', name: 'ydzx_xq', component: require('./components/ydzx_xq.vue')},
   */
   // // 书库
   { path: '/', name: 'sc', component: __webpack_require__(2) }, { path: '/sc', name: 'sc', component: __webpack_require__(2) }, { path: '/sk/xq', name: 'sk_xq', component: __webpack_require__(18) }, { path: '/sk/sk_search', name: 'sk_search', component: __webpack_require__(17) }, { path: '/sk/sm_search', name: 'sm_search', component: __webpack_require__(19) }]
@@ -962,10 +961,34 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+_router2.default.beforeEach(function (to, from, next) {
+    var fullPath = to.fullPath;
+    var globalEvent = weex.requireModule('globalEvent');
+    if (globalEvent) {
+        var index = fullPath.indexOf('/index') != -1;
+        var sc = fullPath.indexOf('/sc') != -1;
+        var main = fullPath.indexOf('/main') != -1;
+        var login = fullPath.indexOf('/') != -1;
+        if (index || sc || main || login) {
+            globalEvent.addEventListener("clickback", function (e) {
+                var sjevent = weex.requireModule('SJevent');
+                if (sjevent) {
+                    sjevent.finish();
+                }
+            });
+        } else {
+            globalEvent.addEventListener("clickback", function (e) {
+                window.history.go(-1);
+            });
+        }
+    }
+    next(true);
+});
+
 // sync the router with the vuex store.
 // this registers `store.state.route`
-(0, _vuexRouterSync.sync)(_store2.default, _router2.default); // import Vue from 'vue'
-
+// import Vue from 'vue'
+(0, _vuexRouterSync.sync)(_store2.default, _router2.default);
 
 Vue.prototype.globalurl = _url2.default;
 /*
@@ -976,7 +999,7 @@ globalEvent.addEventListener("clickback", function (e) {
 });*/
 // register global utility filters.
 Object.keys(filters).forEach(function (key) {
-  Vue.filter(key, filters[key]);
+    Vue.filter(key, filters[key]);
 });
 
 // register global mixins.
@@ -4915,6 +4938,28 @@ exports.default = {
 			}
 			if (this.tabsId == 1) {
 				this.schoolId = "";
+				_Utils2.default.fetch({
+					url: '/app/book/list?loginAccount=' + self.Account + '&moduleId=' + self.subjId + '&grade=' + self.njName + '&type=' + self.tabsId + '&page=' + self.page + '&pageSize=8&schoolCode=' + self.schoolId,
+					method: 'POST',
+					type: 'json',
+					success: function success(ret) {
+						//sconsole.log(ret.data);
+						// modal.toast({ message: JSON.stringify(ret), duration: 10 })
+						var datas = ret.data.books || [];
+						//self.sc_list=eval(datas);
+						//debugger
+						if (ret.data.statusCode == 200 && datas.length != 0) {
+							for (var _i = 0; _i < datas.length; _i++) {
+								self.sc_list.push(datas[_i]);
+							}
+						} else if (ret.data.statusCode == 404 && datas.length == 0) {
+							modal.toast({ message: '已到底部', duration: 1 });
+						}
+						self.flag = false;
+						self.showLoading = 'hide';
+					}
+
+				});
 			} else {
 				storage.getItem('schoolCode', function (e) {
 					//从缓存中取userId
@@ -4930,8 +4975,8 @@ exports.default = {
 							//self.sc_list=eval(datas);
 							//debugger
 							if (ret.data.statusCode == 200 && datas.length != 0) {
-								for (var _i = 0; _i < datas.length; _i++) {
-									self.sc_list.push(datas[_i]);
+								for (var _i2 = 0; _i2 < datas.length; _i2++) {
+									self.sc_list.push(datas[_i2]);
 								}
 							} else if (ret.data.statusCode == 404 && datas.length == 0) {
 								modal.toast({ message: '已到底部', duration: 1 });
@@ -4982,16 +5027,17 @@ exports.default = {
 			this.$router.push('/sk/sk_search');
 		},
 		scan: function scan() {
-			/* var sjevent = weex.requireModule('SJevent');
-   if(sjevent) {
-   	sjevent.QRScan(function(isbn){
-   		storage.setItem('isbn',isbn,function(e){});
-   		this.$router.push('/sk/sm_search');
-   		modal.toast({ message: isbn, duration: 10 });
-   	})
-   }
-   */
-			this.$router.push('/sk/sm_search');
+			var sjevent = weex.requireModule('SJevent');
+			if (sjevent) {
+				sjevent.QRScan(function (isbn) {
+					//storage.setItem('isbn',isbn,function(e){});
+					this.$router.push('/sk/sm_search?isbn=' + isbn); //{path:'',query:{isbt:0215}} {path:'',query:{title:0215}}
+
+					//modal.toast({ message: isbn, duration: 10 });
+				});
+			}
+
+			//this.$router.push('/sk/sm_search');
 		},
 		onpeScxq: function onpeScxq(path) {
 			this.$router.push(path);
@@ -5026,20 +5072,13 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 //
 //
 //
@@ -5066,12 +5105,59 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 
+var storage = weex.requireModule('storage');
+var modal = weex.requireModule('modal');
 exports.default = {
+	data: function data() {
+		return {
+			ss: '',
+			searchList: {/*src: '../static/images/book02.png', btime: '2017-01-01', etime: '2017-01-02', bname: '飞来的伤心梅', bath: '张琴声', bpre: '北京邮电',isbn:'9787547705063'*/},
+			title: ''
+		};
+	},
+
+
 	methods: {
-		goback: function goback() {
+		/* goback () {
+      
+     },*/
+		selectes: function selectes(e) {
+			this.title = e;
+		},
+		cancel: function cancel(e) {
 			this.$router.go(-1);
+		},
+		search: function search(e) {
+			//storage.setItem('title',e.content);
+			/*modal.toast({
+     		message:e.content
+     	});*/
+			this.$router.push('/sk/sm_search?title=' + e.content);
+			/*modal.toast({
+   	message:e.content
+   });*/
 		}
-	}
+	},
+	created: function created() {
+		var self = this;
+		console.log(self.$route.query.type);
+		_Utils2.default.fetch({
+			url: '/app/book/hot',
+			method: 'POST',
+			type: 'json',
+			//data:'loginAccount=12&token=123123&id=1',
+			success: function success(ret) {
+				var datas = ret.data.result;
+				self.searchList = eval(datas);
+				console.log(self.searchList);
+			}
+		});
+		// window.addEventListener('keyup', this.keyUp(),false)
+	} /*,
+   beforeDestroy(){
+   // window.removeEventListener('keyup', this.keyUp())	
+   }*/
+
 };
 
 /***/ }),
@@ -5237,6 +5323,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
 
 var storage = weex.requireModule('storage');
 var modal = weex.requireModule('modal');
@@ -5251,10 +5340,10 @@ exports.default = {
 			checkYes: '../static/images/ico_heart_yes.png',
 
 			isShow: false,
-			flagSrc: '../static/images/Selected.png',
-			arrowSrc: '../static/images/down.png',
+			/*flagSrc: '../static/images/Selected.png',
+   arrowSrc: '../static/images/down.png',*/
 			// 阅读教研 列表
-			sc_list: [{ title: '飞来的伤心梅', img: '../static/images/book01.png', tabImg: '../static/images/pic_pause.png', href: '/sk/xq', see: '4万', praise: '200', state: '完成阅读', isbn: '9787547705063' }, { title: '狼王梦狼王梦狼王梦狼王梦狼王梦', img: '../static/images/book02.png', tabImg: '../static/images/pic_pause.png', href: '/sk/xq', see: '100', state: '', isbn: '9787547705063' }],
+			sc_list: [],
 			flag: 0,
 			subjId: '',
 			njName: '',
@@ -5262,62 +5351,63 @@ exports.default = {
 			tabsIndex: 0,
 			page: 1,
 			schoolId: ''
-		}, _defineProperty(_ref, 'flag', false), _defineProperty(_ref, 'showLoading', 'hide'), _defineProperty(_ref, 'Account', ''), _ref;
+		}, _defineProperty(_ref, 'flag', false), _defineProperty(_ref, 'showLoading', 'hide'), _defineProperty(_ref, 'Account', ''), _defineProperty(_ref, 'title', ''), _defineProperty(_ref, 'isbn', ''), _ref;
 	},
 
 	name: 'sc',
 	methods: {
 
+		/*  goback () {
+   this.$router.go(-1);
+  },*/
+		cancel: function cancel(e) {
+			this.$router.go(-1);
+		},
+		search: function search(e) {
+			//storage.setItem('title',e.content);
+			modal.toast({
+				message: e.content
+			});
+
+			//this.$router.push('/sk/sm_search');
+		},
+
 		praise: function praise(sc, tabsId) {
+			var self = this;
 			if (sc.isZan == 0) {
-				var self = this;
-				storage.getItem('username', function (e) {
-					//从缓存中取userId
-					self.Account = e.data;
-					_Utils2.default.fetch({
-						url: '/app/book/zan?bookId=' + sc.id + '&loginAccount=' + self.Account + '&bookType=' + tabsId,
-						method: 'POST',
-						type: 'json',
-						success: function success(ret) {
-							sc.isZan = 1;
-							sc.toast = sc.toast + 1;
-						}
-					});
+				//var self=this;
+				//storage.getItem('username',function(e){  //从缓存中取userId
+				//      self.Account = e.data;
+				_Utils2.default.fetch({
+					url: '/app/book/zan?bookId=' + sc.id + '&loginAccount=' + self.Account + '&bookType=' + tabsId,
+					method: 'POST',
+					type: 'json',
+					success: function success(ret) {
+						sc.isZan = 1;
+						sc.toast = sc.toast + 1;
+					}
 				});
+				//})
 			} else {
-				var self = this;
-				storage.getItem('username', function (e) {
-					//从缓存中取userId
-					self.Account = e.data;
-					_Utils2.default.fetch({
-						url: '/app/book/zan?bookId=' + sc.id + '&loginAccount=' + self.Account + '&bookType=' + tabsId,
-						method: 'POST',
-						type: 'json',
-						success: function success(ret) {
-							sc.toast = sc.toast - 1;
-							sc.isZan = 0;
-						}
-					});
+				//var self=this;
+				//storage.getItem('username',function(e){  //从缓存中取userId
+				//      self.Account = e.data;
+				_Utils2.default.fetch({
+					url: '/app/book/zan?bookId=' + sc.id + '&loginAccount=' + self.Account + '&bookType=' + tabsId,
+					method: 'POST',
+					type: 'json',
+					success: function success(ret) {
+						sc.toast = sc.toast - 1;
+						sc.isZan = 0;
+					}
 				});
+				//	})
 			}
 		},
-
-		goback: function goback() {
-			this.$router.push('/sk/sk_search');
-		},
-		scan: function scan(isbn) {
-			var sjevent = weex.requireModule('SJevent');
-			if (sjevent) {
-				sjevent.QRScan(function (isbn) {
-				    modal.toast({ message: isbn, duration: 10 });
-					storage.setItem('isbn', isbn, function (e) {});
-				});
-			}
-		},
-
 		onpeScxq: function onpeScxq(path) {
 			this.$router.push(path);
 		},
+
 		onloading: function onloading(event) {
 			this.page += 1;
 			this.flag = true;
@@ -5326,10 +5416,23 @@ exports.default = {
 			this.light(this.tabsIndex, this.tabsId);
 		}
 	},
-	components: {
-		'foot': _footer2.default },
 	created: function created() {
 		var self = this;
+		self.isbn = this.$route.query.isbn;
+		self.title = this.$route.query.title;
+		//var titles;
+
+
+		if (!self.isbn) {
+			this.isbn = "";
+		} else {
+			self.ss = self.isbn;
+		}
+		if (!self.title) {
+			this.title = "";
+		} else {
+			self.ss = self.title;
+		}
 		storage.getItem('username', function (e) {
 			//从缓存中取userId
 			self.Account = e.data;
@@ -5337,12 +5440,12 @@ exports.default = {
 				//从缓存中取userId
 				self.schoolId = e.data;
 				_Utils2.default.fetch({
-					url: '/app/book/search?loginAccount=' + self.Account + '&keywords=' + xxx + '&isbn=' + self.isbn + '&page=' + self.page + '&pageSize=8&schoolCode=' + self.schoolId,
+					url: '/app/book/search?loginAccount=' + self.Account + '&keywords=' + self.title + '&isbn=' + self.isbn + '&page=' + self.page + '&pageSize=8&schoolCode=' + self.schoolId,
 					method: 'POST',
 					type: 'json',
 					success: function success(ret) {
 
-						var datas = ret.data.books || [];
+						var datas = ret.data.result || [];
 
 						if (ret.data.statusCode == 200 && datas.length != 0) {
 							for (var i = 0; i < datas.length; i++) {
@@ -5601,29 +5704,51 @@ module.exports = {
   },
   "top": {
     "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
+    "height": 98,
+    "backgroundColor": "#ffffff",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#e7e7e7"
+  },
+  "topMain": {
     "flexDirection": "row",
     "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
     "fontSize": 36,
-    "color": "#ffffff"
+    "lineHeight": 88,
+    "width": 600,
+    "backgroundColor": "#f0f0f0",
+    "borderRadius": 8,
+    "marginBottom": 12,
+    "marginTop": 12,
+    "marginLeft": 20,
+    "marginRight": 20
   },
-  "goback": {
-    "position": "absolute",
-    "top": 22,
-    "left": 25,
-    "width": 44,
-    "height": 44
+  "pot_input": {
+    "width": 490,
+    "height": 70,
+    "fontSize": 32,
+    "backgroundColor": "#f0f0f0",
+    "border": "none"
+  },
+  "look": {
+    "width": 48,
+    "height": 48,
+    "marginLeft": 20,
+    "marginRight": 20
+  },
+  "main": {
+    "backgroundColor": "#ffffff",
+    "paddingBottom": 30
   },
   "goback_r": {
     "position": "absolute",
-    "top": 22,
+    "top": 30,
     "right": 25,
-    "width": 44,
-    "height": 44
+    "width": 100,
+    "height": 37,
+    "textAlign": "center",
+    "color": "#666666",
+    "fontSize": 34
   },
   "nav": {
     "width": 750,
@@ -5635,74 +5760,6 @@ module.exports = {
     "borderBottomWidth": 1,
     "borderStyle": "solid",
     "backgroundColor": "#ffffff"
-  },
-  "navYes": {
-    "backgroundColor": "#5f94df",
-    "color": "#ffffff",
-    "padding": 1,
-    "paddingRight": 25,
-    "paddingLeft": 25,
-    "borderRadius": 8
-  },
-  "nav_li": {
-    "flex": 1,
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "nav1": {
-    "width": 750,
-    "height": 88,
-    "borderColor": "#e7e7e7",
-    "borderBottomWidth": 1,
-    "borderStyle": "solid",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "position": "relative"
-  },
-  "nav1_li": {
-    "position": "relative",
-    "flex": 1,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between",
-    "borderRightColor": "#e7e7e7",
-    "borderRightWidth": 1,
-    "borderRightStyle": "solid",
-    "paddingLeft": 20,
-    "paddingRight": 20
-  },
-  "nav_name": {
-    "fontSize": 34,
-    "borderRadius": 5,
-    "color": "#666666",
-    "paddingLeft": 20,
-    "paddingTop": 8,
-    "paddingBottom": 8,
-    "paddingRight": 20
-  },
-  "s_class": {
-    "position": "fixed",
-    "zIndex": 9999,
-    "top": 264,
-    "paddingLeft": 36,
-    "paddingRight": 36,
-    "width": 375,
-    "height": 500,
-    "borderColor": "#e6e6e6",
-    "borderStyle": "solid",
-    "borderWidth": 1,
-    "backgroundColor": "#ffffff"
-  },
-  "s_class_opt": {
-    "color": "#666666",
-    "fontSize": 32,
-    "width": 302,
-    "height": 80,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "borderBottomColor": "#e6e6e6",
-    "borderBottomStyle": "solid",
-    "borderBottomWidth": 1
   },
   "ydjy_list": {
     "width": 750,
@@ -6128,14 +6185,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "src": "../static/images/ico_heart01.png"
     }
-  }), _c('image', {
-    staticClass: ["goback_r1"],
-    attrs: {
-      "src": "../static/images/ico_2101.png"
-    },
-    on: {
-      "click": _vm.openFx
-    }
   })]), _c('scroller', [_c('div', {
     staticClass: ["b_name"]
   }, [_c('text', {
@@ -6214,34 +6263,38 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticStyle: {
       backgroundColor: "#fafafa"
     }
-  }, [_c('div', {
-    staticClass: ["top"]
-  }, [_vm._m(0), _c('text', {
-    staticClass: ["goback_r"],
+  }, [_c('myedittext', {
+    staticStyle: {
+      height: "100px",
+      width: "750px"
+    },
+    attrs: {
+      "content": _vm.title
+    },
     on: {
-      "click": _vm.goback
+      "cancel": _vm.cancel,
+      "search": _vm.search
     }
-  }, [_vm._v("取消")])]), _vm._m(1)])
+  }), _c('div', {
+    staticClass: ["main"]
+  }, [_vm._m(0), _vm._l((_vm.searchList), function(ssList, index) {
+    return _c('div', {
+      staticClass: ["hot_list"],
+      on: {
+        "click": function($event) {
+          _vm.selectes(ssList.word)
+        }
+      }
+    }, [_c('text', {
+      staticClass: ["hot", "orange"]
+    }, [_vm._v(_vm._s(index + 1))]), _c('text', {
+      staticStyle: {
+        fontSize: "32px"
+      }
+    }, [_vm._v(_vm._s(ssList.word))])])
+  })], 2)], 1)
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: ["topMain"]
-  }, [_c('image', {
-    staticClass: ["look"],
-    attrs: {
-      "src": "../static/images/ico_look.png"
-    }
-  }), _c('input', {
-    staticClass: ["pot_input"],
-    attrs: {
-      "type": "text",
-      "name": "",
-      "placeholder": "请输入书籍名称"
-    }
-  })])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["main"]
-  }, [_c('div', {
     staticClass: ["hot_list"]
   }, [_c('image', {
     staticClass: ["hot"],
@@ -6252,47 +6305,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticStyle: {
       fontSize: "32px"
     }
-  }, [_vm._v("热门搜索")])]), _c('div', {
-    staticClass: ["hot_list"]
-  }, [_c('text', {
-    staticClass: ["hot", "orange"]
-  }, [_vm._v("1")]), _c('text', {
-    staticStyle: {
-      fontSize: "32px"
-    }
-  }, [_vm._v("熊逸书院")])]), _c('div', {
-    staticClass: ["hot_list"]
-  }, [_c('text', {
-    staticClass: ["hot", "orange"]
-  }, [_vm._v("2")]), _c('text', {
-    staticStyle: {
-      fontSize: "32px"
-    }
-  }, [_vm._v("Dr.魏的家庭教育宝典")])]), _c('div', {
-    staticClass: ["hot_list"]
-  }, [_c('text', {
-    staticClass: ["hot", "orange"]
-  }, [_vm._v("3")]), _c('text', {
-    staticStyle: {
-      fontSize: "32px"
-    }
-  }, [_vm._v("每天听本书：《哈佛中国史》")])]), _c('div', {
-    staticClass: ["hot_list"]
-  }, [_c('text', {
-    staticClass: ["hot"]
-  }, [_vm._v("4")]), _c('text', {
-    staticStyle: {
-      fontSize: "32px"
-    }
-  }, [_vm._v("控制愤怒")])]), _c('div', {
-    staticClass: ["hot_list"]
-  }, [_c('text', {
-    staticClass: ["hot"]
-  }, [_vm._v("5")]), _c('text', {
-    staticStyle: {
-      fontSize: "32px"
-    }
-  }, [_vm._v("鞋狗")])])])
+  }, [_vm._v("热门搜索")])])
 }]}
 module.exports.render._withStripped = true
 
@@ -6309,29 +6322,19 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "id": "sc"
     }
-  }, [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
+  }, [_c('myedittext', {
+    staticStyle: {
+      height: "100px",
+      width: "750px"
+    },
     attrs: {
-      "src": "../static/images/pic_ss.png"
+      "content": _vm.ss
     },
     on: {
-      "click": _vm.goback
+      "cancel": _vm.cancel,
+      "search": _vm.search
     }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v("书库")]), _c('image', {
-    staticClass: ["goback_r"],
-    attrs: {
-      "src": "../static/images/ico_18.png"
-    },
-    on: {
-      "click": function($event) {
-        _vm.scan(_vm.isbn)
-      }
-    }
-  })]), _c('scroller', [_vm._l((_vm.sc_list), function(sc) {
+  }), _c('scroller', [_vm._l((_vm.sc_list), function(sc) {
     return _c('div', {
       staticClass: ["ydjy_list"]
     }, [_c('div', {
@@ -6428,7 +6431,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('text', {
     staticClass: ["indicator"]
-  }, [_vm._v("加载更多 ...")])])], 2)])
+  }, [_vm._v("加载更多 ...")])])], 2)], 1)
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 

@@ -105,6 +105,30 @@ public class SJEventModule extends WXModule {
         }
     }
 
+    @JSMethod(uiThread = true)
+    public void PostAvatar(JSCallback callback) {
+        try {
+            pickerCallback = callback;
+
+            ImagePicker imagePicker = ImagePicker.getInstance();
+            imagePicker.setImageLoader(new GlideImageLoader());// 图片加载器
+            imagePicker.setSelectLimit(1);// 设置可以选择几张
+            imagePicker.setMultiMode(false);// 是否为多选
+            imagePicker.setCrop(true);// 是否剪裁
+            imagePicker.setFocusWidth(1000);// 需要剪裁的宽
+            imagePicker.setFocusHeight(1000);// 需要剪裁的高
+            imagePicker.setStyle(CropImageView.Style.RECTANGLE);// 方形
+            imagePicker.setShowCamera(true);// 是否显示摄像
+
+            Intent intent = new Intent(mWXSDKInstance.getContext(), ImageGridActivity.class);
+            ((Activity) mWXSDKInstance.getContext()).startActivityForResult(intent, 888);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     private JSCallback pickerCallback;
 
     @JSMethod(uiThread = true)
@@ -114,9 +138,9 @@ public class SJEventModule extends WXModule {
 
             ImagePicker imagePicker = ImagePicker.getInstance();
             imagePicker.setImageLoader(new GlideImageLoader());// 图片加载器
-            imagePicker.setSelectLimit(3);// 设置可以选择几张
+            imagePicker.setSelectLimit(8);// 设置可以选择几张
             imagePicker.setMultiMode(true);// 是否为多选
-            imagePicker.setCrop(true);// 是否剪裁
+            imagePicker.setCrop(false);// 是否剪裁
             imagePicker.setFocusWidth(1000);// 需要剪裁的宽
             imagePicker.setFocusHeight(1000);// 需要剪裁的高
             imagePicker.setStyle(CropImageView.Style.RECTANGLE);// 方形
@@ -140,6 +164,8 @@ public class SJEventModule extends WXModule {
 
         final Dialog dialog = new Dialog(mWXSDKInstance.getContext(), R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_voice);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
         final Button voice = (Button) dialog.findViewById(R.id.voice);
         voice.setOnClickListener(new View.OnClickListener() {

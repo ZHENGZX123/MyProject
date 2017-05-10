@@ -12,9 +12,11 @@ public class SubActivity extends WXBaseActivity {
     private Timer mTimer;
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        mInstance.fireGlobalEventCallback("clickback", new HashMap());
-        return true;
-
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            mInstance.fireGlobalEventCallback("clickback", new HashMap());
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
 //        if (keyCode == KeyEvent.KEYCODE_BACK) {
 //            if (mCanQuit) {
 //                if (mTimer != null) {
