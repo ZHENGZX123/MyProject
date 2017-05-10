@@ -486,6 +486,8 @@ public class CropImageView extends ImageView {
      * @return 裁剪后的图片的Bitmap
      */
     private Bitmap makeCropBitmap(Bitmap bitmap, RectF focusRect, RectF imageMatrixRect, int expectWidth, int exceptHeight, boolean isSaveRectangle) {
+        if (bitmap==null)
+            return null;
         float scale = imageMatrixRect.width() / bitmap.getWidth();
         int left = (int) ((focusRect.left - imageMatrixRect.left) / scale);
         int top = (int) ((focusRect.top - imageMatrixRect.top) / scale);
@@ -562,6 +564,10 @@ public class CropImageView extends ImageView {
 
     /** 将图片保存在本地 */
     private void saveOutput(Bitmap croppedImage, Bitmap.CompressFormat outputFormat, File saveFile) {
+        if (croppedImage==null){
+            Message.obtain(mHandler, SAVE_ERROR, saveFile).sendToTarget();
+            mSaving = false;
+            return;}
         OutputStream outputStream = null;
         try {
             outputStream = getContext().getContentResolver().openOutputStream(Uri.fromFile(saveFile));
