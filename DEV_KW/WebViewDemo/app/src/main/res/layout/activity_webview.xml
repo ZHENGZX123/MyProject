@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.zk.webviewdemo.activity.WebViewActivity">
+    tools:context="com.zk.webviewdemo.cn.zk.webviewdemo.activity.WebViewActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"

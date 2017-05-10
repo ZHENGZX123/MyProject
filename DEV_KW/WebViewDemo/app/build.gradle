@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 25
+    buildToolsVersion '25.0.1'
     defaultConfig {
-        applicationId "com.zk.webviewdemo"
+        applicationId "cn.kiway.yqyd"
         minSdkVersion 15
-        targetSdkVersion 21
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
     }
@@ -24,6 +24,8 @@ dependencies {
     compile project(':wjc_ImagePicker')
     compile files('libs/android-async-http-1.4.5.jar')
     compile files('libs/org.apache.http.legacy.jar')
-    compile 'com.android.support:appcompat-v7:21.0.0'
+    compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.squareup.okhttp3:okhttp:3.0.1'
+    compile files('libs/core.jar')
 }
