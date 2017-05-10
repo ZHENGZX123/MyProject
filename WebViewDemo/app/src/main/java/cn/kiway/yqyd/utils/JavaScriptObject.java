@@ -1,4 +1,4 @@
-package com.zk.webviewdemo.utils;
+package cn.kiway.yqyd.utils;
 
 import android.app.Activity;
 import android.content.Context;

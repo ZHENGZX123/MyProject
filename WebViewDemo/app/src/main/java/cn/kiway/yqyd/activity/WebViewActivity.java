@@ -1,4 +1,4 @@
-package com.zk.webviewdemo.activity;
+package cn.kiway.yqyd.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -20,14 +20,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.zk.webviewdemo.R;
-import com.zk.webviewdemo.utils.FileUtils;
-import com.zk.webviewdemo.utils.HttpDownload;
-
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
 import java.io.File;
+
+import cn.kiway.yqyd.R;
+import cn.kiway.yqyd.utils.FileUtils;
+import cn.kiway.yqyd.utils.HttpDownload;
 
 public class WebViewActivity extends Activity {
 
@@ -63,10 +63,8 @@ public class WebViewActivity extends Activity {
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
         wv.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-
         String url = getSharedPreferences("webview", 0).getString("url", "http://202.104.136.9:8280/weex/yqyd_xs.zip/yqyd/index/index.html");
         et.setText(url);
-
         clickGo(null);
 
         //覆盖WebView默认使用第三方或系统默认浏览器打开网页的行为，使网页用WebView打开
