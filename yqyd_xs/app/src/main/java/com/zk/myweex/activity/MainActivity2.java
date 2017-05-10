@@ -19,7 +19,6 @@ import android.widget.Toast;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.http.WXStreamModule;
 import com.taobao.weex.utils.OfflineTask;
@@ -41,8 +40,6 @@ import java.util.List;
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.module.Module;
 import cn.kiway.yiqiyuedu.R;
-
-import static uk.co.senab.photoview.sample.ViewPagerActivity.getLoaderOptions;
 
 
 public class MainActivity2 extends TabActivity {
@@ -140,7 +137,6 @@ public class MainActivity2 extends TabActivity {
                 @Override
                 public void onClick(View arg0) {
                     tabhost.setCurrentTab(ii);
-
                     refreshUI(ii, tabs);
                 }
             });
@@ -150,20 +146,53 @@ public class MainActivity2 extends TabActivity {
 
     private void refreshUI(int position, ArrayList<TabEntity> tabs) {
         Log.d("test", "refreshUI = " + position);
-
         for (int i = 0; i < lls.size(); i++) {
             LinearLayout ll = lls.get(i);
             ImageView iv = (ImageView) ll.findViewById(R.id.iv);
             TextView tv = (TextView) ll.findViewById(R.id.tv);
             tv.setText(tabs.get(i).name);
 
-            if (i == position) {
-                tv.setTextColor(getResources().getColor(R.color.orange));
-                ImageLoader.getInstance().displayImage(getTabImage(tabs, i, true), iv, getLoaderOptions());
-            } else {
-                tv.setTextColor(getResources().getColor(R.color.lightblack));
-                ImageLoader.getInstance().displayImage(getTabImage(tabs, i, false), iv, getLoaderOptions());
+            if (position == 0) {
+                if (i == 0) {
+                    iv.setImageResource(R.drawable.tab12);
+                    tv.setTextColor(getResources().getColor(R.color.orange));
+                } else if (i == 1) {
+                    iv.setImageResource(R.drawable.tab21);
+                    tv.setTextColor(getResources().getColor(R.color.lightblack));
+                } else if (i == 2) {
+                    iv.setImageResource(R.drawable.tab31);
+                    tv.setTextColor(getResources().getColor(R.color.lightblack));
+                }
+            } else if (position == 1) {
+                if (i == 0) {
+                    iv.setImageResource(R.drawable.tab11);
+                    tv.setTextColor(getResources().getColor(R.color.lightblack));
+                } else if (i == 1) {
+                    iv.setImageResource(R.drawable.tab22);
+                    tv.setTextColor(getResources().getColor(R.color.orange));
+                } else if (i == 2) {
+                    iv.setImageResource(R.drawable.tab31);
+                    tv.setTextColor(getResources().getColor(R.color.lightblack));
+                }
+            } else if (position == 2) {
+                if (i == 0) {
+                    iv.setImageResource(R.drawable.tab11);
+                    tv.setTextColor(getResources().getColor(R.color.lightblack));
+                } else if (i == 1) {
+                    iv.setImageResource(R.drawable.tab21);
+                    tv.setTextColor(getResources().getColor(R.color.lightblack));
+                } else if (i == 2) {
+                    iv.setImageResource(R.drawable.tab32);
+                    tv.setTextColor(getResources().getColor(R.color.orange));
+                }
             }
+//            if (i == position) {
+//                tv.setTextColor(getResources().getColor(R.color.orange));
+//                ImageLoader.getInstance().displayImage(getTabImage(tabs, i, true), iv, getLoaderOptions());
+//            } else {
+//                tv.setTextColor(getResources().getColor(R.color.lightblack));
+//                ImageLoader.getInstance().displayImage(getTabImage(tabs, i, false), iv, getLoaderOptions());
+//            }
         }
     }
 
