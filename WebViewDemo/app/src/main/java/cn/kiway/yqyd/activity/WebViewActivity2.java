@@ -267,7 +267,7 @@ public class WebViewActivity2 extends Activity implements Callback {
         }
 
         @JavascriptInterface
-        public String getSessionObj() {
+        public String getSessionObj() {//js获取用户名
             JSONObject da = new JSONObject();
             try {
                 da.put("userName", SharedPreferencesUtil.getString(WebViewActivity2.this, "userName"));

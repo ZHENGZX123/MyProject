@@ -1,8 +1,5 @@
 package com.lzy.imagepicker.ui;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,11 +8,15 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.R;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.view.CropImageView;
+
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  * ================================================
@@ -98,6 +99,10 @@ public class ImageCropActivity extends ImageBaseActivity implements View.OnClick
             setResult(RESULT_CANCELED);
             finish();
         } else if (id == R.id.btn_ok) {
+            if (imagePicker.getCropCacheFolder(this)==null){
+                Toast.makeText(this,"获取图片失败",Toast.LENGTH_SHORT).show();
+                finish();
+                return;}
             mCropImageView.saveBitmapToFile(imagePicker.getCropCacheFolder(this), mOutputX, mOutputY, mIsSaveRectangle);
         }
     }
