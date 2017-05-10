@@ -15,18 +15,18 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cn.kiway.yqyd.App;
 import cn.kiway.yqyd.R;
 import cn.kiway.yqyd.utils.SharedPreferencesUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class LoginActivity extends Activity implements Callback {
-    public static String loginUrl = "http://yqyd.qgjydd.com/yqyd/app/teaLogin?username={userName}&password=";
+import static cn.kiway.yqyd.utils.HttpUploadFile.loginUrl;
 
-    OkHttpClient mOkHttpClient = new OkHttpClient();
+public class LoginActivity extends Activity implements Callback {
+    App app;
     EditText userName, password;
     TextView error;
     Button loadButton;
@@ -35,6 +35,7 @@ public class LoginActivity extends Activity implements Callback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        app = (App) getApplicationContext();
         initView();
     }
 
@@ -60,10 +61,10 @@ public class LoginActivity extends Activity implements Callback {
     }
 
     void loading(String userName, String password) {
-        final Request request = new Request.Builder()
+        Request request = new Request.Builder()
                 .url(loginUrl.replace("{userName}", userName) + password)
                 .build();
-        Call call = mOkHttpClient.newCall(request);
+        Call call = app.mOkHttpClient.newCall(request);
         call.enqueue(this);
     }
 

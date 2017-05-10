@@ -16,13 +16,15 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import cn.kiway.yqyd.App;
 import cn.kiway.yqyd.R;
 import cn.kiway.yqyd.utils.SharedPreferencesUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import static cn.kiway.yqyd.utils.HttpUploadFile.loginUrl;
 
 /**
  * Created by Administrator on 2017/5/8.
@@ -30,7 +32,7 @@ import okhttp3.Response;
 
 public class BootActivity extends Activity implements Animation.AnimationListener, Callback {
     ImageView Img;
-    OkHttpClient mOkHttpClient = new OkHttpClient();
+    App app;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class BootActivity extends Activity implements Animation.AnimationListene
         setContentView(R.layout.activiy_boot);
         Img = (ImageView) findViewById(R.id.img);
         setAnimmation(Img);
+        app= (App) getApplicationContext();
     }
 
     void setAnimmation(View view) {
@@ -54,9 +57,9 @@ public class BootActivity extends Activity implements Animation.AnimationListene
 
     void loading(String userName, String password) {
         final Request request = new Request.Builder()
-                .url(LoginActivity.loginUrl.replace("{userName}", userName) + password)
+                .url(loginUrl.replace("{userName}", userName) + password)
                 .build();
-        Call call = mOkHttpClient.newCall(request);
+        Call call = app.mOkHttpClient.newCall(request);
         call.enqueue(this);
     }
 
