@@ -483,14 +483,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(66)
+__vue_styles__.push(__webpack_require__(64)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(44)
+__vue_exports__ = __webpack_require__(42)
 
 /* template */
-var __vue_template__ = __webpack_require__(90)
+var __vue_template__ = __webpack_require__(87)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -527,14 +527,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(69)
+__vue_styles__.push(__webpack_require__(67)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(56)
+__vue_exports__ = __webpack_require__(54)
 
 /* template */
-var __vue_template__ = __webpack_require__(94)
+var __vue_template__ = __webpack_require__(91)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -655,11 +655,6 @@ var _vueRouter2 = _interopRequireDefault(_vueRouter);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*import StoriesView from './views/StoriesView.vue'
-import ArticleView from './views/ArticleView.vue'
-import CommentView from './views/CommentView.vue'
-import UserView from './views/UserView.vue'*/
-
 Vue.use(_vueRouter2.default); // import Vue from 'vue'
 exports.default = new _vueRouter2.default({
   // mode: 'abstract',
@@ -668,26 +663,25 @@ exports.default = new _vueRouter2.default({
    { path: '/wjmm', name: 'wjmm', component: require('./components/forget_pwd.vue')},*/
   // { path: '/wjzh', name: 'wjzh', component: require('./components/forget_admin.vue')},
 
-  //{ path: '/', name: 'index', component: require('./components/index.vue')},
-  { path: '/index', name: 'index', component: __webpack_require__(18) },
+  { path: '/index', name: 'index', component: __webpack_require__(17) },
 
   // 阅读任务
-  { path: '/ydrw', name: 'ydrw', component: __webpack_require__(27) },
+  { path: '/ydrw', name: 'ydrw', component: __webpack_require__(26) },
 
   // 任务详情
-  { path: '/ydrw/ckjh', name: 'ydrw_jh', component: __webpack_require__(30) },
+  { path: '/ydrw/ckjh', name: 'ydrw_jh', component: __webpack_require__(29) },
   // 阅读任务详情
-  { path: '/ydrw_xq', name: 'ydrw_xq', component: __webpack_require__(36) },
+  { path: '/ydrw_xq', name: 'ydrw_xq', component: __webpack_require__(35) },
 
   // 阅读任务 写读后感
-  { path: '/ydrw/xdhg', name: 'ydrw_xdhg', component: __webpack_require__(35) },
+  { path: '/ydrw/xdhg', name: 'ydrw_xdhg', component: __webpack_require__(34) },
   // 阅读任务 我的读后感
-  { path: '/ydrw/wddhg', name: 'ydrw_wddhg', component: __webpack_require__(34) },
+  { path: '/ydrw/wddhg', name: 'ydrw_wddhg', component: __webpack_require__(33) },
 
   // 阅读任务 开始闯关
-  { path: '/ydrw/kscg', name: 'ydrw_kscg', component: __webpack_require__(31) },
+  { path: '/ydrw/kscg', name: 'ydrw_kscg', component: __webpack_require__(30) },
   // 阅读任务 我的闯关
-  { path: '/ydrw/wdcg', name: 'ydrw_wdcg', component: __webpack_require__(33) },
+  { path: '/ydrw/wdcg', name: 'ydrw_wdcg', component: __webpack_require__(32) },
 
   //考试提分宝
   //   { path: '/kstfb', name: 'kstfb', component: require('./components/kstfb.vue')},
@@ -696,40 +690,40 @@ exports.default = new _vueRouter2.default({
   // 阅读任务 闯关结果
   { path: '/ydrw/cgjg', name: 'ydrw_cgjg', component: __webpack_require__(1) },
   // 阅读任务 每日一练
-  { path: '/wdrw_mryl', name: 'wdrw_mryl', component: __webpack_require__(22) },
+  { path: '/wdrw_mryl', name: 'wdrw_mryl', component: __webpack_require__(21) },
 
   // 学习报告
-  { path: '/ydbg', name: 'ydbg', component: __webpack_require__(23) },
+  { path: '/ydbg', name: 'ydbg', component: __webpack_require__(22) },
   // 学习报告 阅读报告
-  { path: '/ydbg/rwbg', name: 'ckbg_rwbg', component: __webpack_require__(24) },
+  { path: '/ydbg/rwbg', name: 'ckbg_rwbg', component: __webpack_require__(23) },
   // 学习报告 查看详情
-  { path: '/ydrw/ckxq', name: 'ckxq', component: __webpack_require__(29) },
+  { path: '/ydrw/ckxq', name: 'ckxq', component: __webpack_require__(28) },
   // 学习报告 报告闯关详情
-  { path: '/ydrw/cgsb', name: 'ydrw_cgsb', component: __webpack_require__(28) },
+  { path: '/ydrw/cgsb', name: 'ydrw_cgsb', component: __webpack_require__(27) },
   // 学习报告 任务详情
-  { path: '/ydbg_rwxq', name: 'ydbg_rwxq', component: __webpack_require__(25) },
+  { path: '/ydbg_rwxq', name: 'ydbg_rwxq', component: __webpack_require__(24) },
   //学习报告 每日一练详情
   { path: '/ydrw/mryl', name: 'ydrw_mril', component: __webpack_require__(2) },
   //我的闯关
   { path: '/ydrw_mryl', name: 'ydrw_mryl', component: __webpack_require__(2) },
   //提交
-  { path: '/ydrw_tj', name: 'ydrw_tj', component: __webpack_require__(32) },
+  { path: '/ydrw_tj', name: 'ydrw_tj', component: __webpack_require__(31) },
   //完成
   { path: '/kstfb_tjh', name: 'kstfb_tjh', component: __webpack_require__(1) },
   //学习报告 开始闯关
-  { path: '/ydbg_wdcg', name: 'ydbg_wdcg', component: __webpack_require__(26) },
+  { path: '/ydbg_wdcg', name: 'ydbg_wdcg', component: __webpack_require__(25) },
 
   //考试提分宝
-  { path: '/kstfb', name: 'kstfb', component: __webpack_require__(19) },
+  { path: '/kstfb', name: 'kstfb', component: __webpack_require__(18) },
   //考试提分宝 每日一练
-  { path: '/kstfb/mryl', name: 'kstfb_mril', component: __webpack_require__(20) },
+  { path: '/kstfb/mryl', name: 'kstfb_mril', component: __webpack_require__(19) },
 
   // 书香榜
-  { path: '/sxb', name: 'sxb', component: __webpack_require__(21) },
+  { path: '/sxb', name: 'sxb', component: __webpack_require__(20) },
   // // 阅读资讯
-  { path: '/ydzx', name: 'ydzx', component: __webpack_require__(37) },
+  { path: '/ydzx', name: 'ydzx', component: __webpack_require__(36) },
   // 阅读资讯 详情
-  { path: '/ydzx/xq', name: 'ydzx_xq', component: __webpack_require__(38) }]
+  { path: '/ydzx/xq', name: 'ydzx_xq', component: __webpack_require__(37) }]
 
 });
 
@@ -928,10 +922,10 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* script */
-__vue_exports__ = __webpack_require__(39)
+__vue_exports__ = __webpack_require__(38)
 
 /* template */
-var __vue_template__ = __webpack_require__(92)
+var __vue_template__ = __webpack_require__(89)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -1004,6 +998,7 @@ _router2.default.beforeEach(function (to, from, next) {
         var sc = fullPath.match('/sc') != null;
         var main = fullPath.match('/main') != null;
         var login = fullPath.match('/login') != null;
+        globalEvent.removeEventListener("clickback");
         if (index || sc || main || login) {
             globalEvent.addEventListener("clickback", function (e) {
                 var sjevent = weex.requireModule('SJevent');
@@ -1013,7 +1008,7 @@ _router2.default.beforeEach(function (to, from, next) {
             });
         } else {
             globalEvent.addEventListener("clickback", function (e) {
-                window.history.go(-1);
+                _router2.default.back();
             });
         }
     }
@@ -4516,58 +4511,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(84)
+__vue_styles__.push(__webpack_require__(77)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(40)
+__vue_exports__ = __webpack_require__(39)
 
 /* template */
-var __vue_template__ = __webpack_require__(109)
-__vue_options__ = __vue_exports__ = __vue_exports__ || {}
-if (
-  typeof __vue_exports__.default === "object" ||
-  typeof __vue_exports__.default === "function"
-) {
-if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
-__vue_options__ = __vue_exports__ = __vue_exports__.default
-}
-if (typeof __vue_options__ === "function") {
-  __vue_options__ = __vue_options__.options
-}
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\footer.vue"
-__vue_options__.render = __vue_template__.render
-__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-c68af722"
-__vue_options__.style = __vue_options__.style || {}
-__vue_styles__.forEach(function (module) {
-  for (var name in module) {
-    __vue_options__.style[name] = module[name]
-  }
-})
-if (typeof __register_static_styles__ === "function") {
-  __register_static_styles__(__vue_options__._scopeId, __vue_styles__)
-}
-
-module.exports = __vue_exports__
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_exports__, __vue_options__
-var __vue_styles__ = []
-
-/* styles */
-__vue_styles__.push(__webpack_require__(79)
-)
-
-/* script */
-__vue_exports__ = __webpack_require__(41)
-
-/* template */
-var __vue_template__ = __webpack_require__(104)
+var __vue_template__ = __webpack_require__(101)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4597,21 +4548,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(71)
+__vue_styles__.push(__webpack_require__(69)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(42)
+__vue_exports__ = __webpack_require__(40)
 
 /* template */
-var __vue_template__ = __webpack_require__(96)
+var __vue_template__ = __webpack_require__(93)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4641,21 +4592,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 20 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(64)
+__vue_styles__.push(__webpack_require__(62)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(43)
+__vue_exports__ = __webpack_require__(41)
 
 /* template */
-var __vue_template__ = __webpack_require__(88)
+var __vue_template__ = __webpack_require__(85)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4685,21 +4636,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(67)
+__vue_styles__.push(__webpack_require__(65)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(45)
+__vue_exports__ = __webpack_require__(43)
 
 /* template */
-var __vue_template__ = __webpack_require__(91)
+var __vue_template__ = __webpack_require__(88)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4729,21 +4680,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 22 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(76)
+__vue_styles__.push(__webpack_require__(74)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(46)
+__vue_exports__ = __webpack_require__(44)
 
 /* template */
-var __vue_template__ = __webpack_require__(101)
+var __vue_template__ = __webpack_require__(98)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4773,21 +4724,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(65)
+__vue_styles__.push(__webpack_require__(63)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(47)
+__vue_exports__ = __webpack_require__(45)
 
 /* template */
-var __vue_template__ = __webpack_require__(89)
+var __vue_template__ = __webpack_require__(86)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4817,21 +4768,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 24 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(86)
+__vue_styles__.push(__webpack_require__(83)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(48)
+__vue_exports__ = __webpack_require__(46)
 
 /* template */
-var __vue_template__ = __webpack_require__(111)
+var __vue_template__ = __webpack_require__(107)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4861,21 +4812,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 25 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(81)
+__vue_styles__.push(__webpack_require__(79)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(49)
+__vue_exports__ = __webpack_require__(47)
 
 /* template */
-var __vue_template__ = __webpack_require__(106)
+var __vue_template__ = __webpack_require__(103)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4905,21 +4856,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 26 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(83)
+__vue_styles__.push(__webpack_require__(81)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(50)
+__vue_exports__ = __webpack_require__(48)
 
 /* template */
-var __vue_template__ = __webpack_require__(108)
+var __vue_template__ = __webpack_require__(105)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4949,21 +4900,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 27 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(77)
+__vue_styles__.push(__webpack_require__(75)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(51)
+__vue_exports__ = __webpack_require__(49)
 
 /* template */
-var __vue_template__ = __webpack_require__(102)
+var __vue_template__ = __webpack_require__(99)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4993,21 +4944,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 28 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(74)
+__vue_styles__.push(__webpack_require__(72)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(52)
+__vue_exports__ = __webpack_require__(50)
 
 /* template */
-var __vue_template__ = __webpack_require__(99)
+var __vue_template__ = __webpack_require__(96)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5037,21 +4988,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 29 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(80)
+__vue_styles__.push(__webpack_require__(78)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(53)
+__vue_exports__ = __webpack_require__(51)
 
 /* template */
-var __vue_template__ = __webpack_require__(105)
+var __vue_template__ = __webpack_require__(102)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5081,21 +5032,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(68)
+__vue_styles__.push(__webpack_require__(66)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(54)
+__vue_exports__ = __webpack_require__(52)
 
 /* template */
-var __vue_template__ = __webpack_require__(93)
+var __vue_template__ = __webpack_require__(90)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5125,21 +5076,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 31 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(78)
+__vue_styles__.push(__webpack_require__(76)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(55)
+__vue_exports__ = __webpack_require__(53)
 
 /* template */
-var __vue_template__ = __webpack_require__(103)
+var __vue_template__ = __webpack_require__(100)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5169,21 +5120,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(72)
+__vue_styles__.push(__webpack_require__(70)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(57)
+__vue_exports__ = __webpack_require__(55)
 
 /* template */
-var __vue_template__ = __webpack_require__(97)
+var __vue_template__ = __webpack_require__(94)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5213,21 +5164,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(70)
+__vue_styles__.push(__webpack_require__(68)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(58)
+__vue_exports__ = __webpack_require__(56)
 
 /* template */
-var __vue_template__ = __webpack_require__(95)
+var __vue_template__ = __webpack_require__(92)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5257,21 +5208,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(85)
+__vue_styles__.push(__webpack_require__(82)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(59)
+__vue_exports__ = __webpack_require__(57)
 
 /* template */
-var __vue_template__ = __webpack_require__(110)
+var __vue_template__ = __webpack_require__(106)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5301,21 +5252,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(82)
+__vue_styles__.push(__webpack_require__(80)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(60)
+__vue_exports__ = __webpack_require__(58)
 
 /* template */
-var __vue_template__ = __webpack_require__(107)
+var __vue_template__ = __webpack_require__(104)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5345,21 +5296,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(73)
+__vue_styles__.push(__webpack_require__(71)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(61)
+__vue_exports__ = __webpack_require__(59)
 
 /* template */
-var __vue_template__ = __webpack_require__(98)
+var __vue_template__ = __webpack_require__(95)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5389,21 +5340,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(87)
+__vue_styles__.push(__webpack_require__(84)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(62)
+__vue_exports__ = __webpack_require__(60)
 
 /* template */
-var __vue_template__ = __webpack_require__(112)
+var __vue_template__ = __webpack_require__(108)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5433,21 +5384,21 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 38 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(75)
+__vue_styles__.push(__webpack_require__(73)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(63)
+__vue_exports__ = __webpack_require__(61)
 
 /* template */
-var __vue_template__ = __webpack_require__(100)
+var __vue_template__ = __webpack_require__(97)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5477,7 +5428,7 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 39 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5502,108 +5453,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-exports.default = {
-	data: function data() {
-		return {
-			/*src: [
-   	{href: '/index', value: 'index', title: '首 页',img: '../static/images/xs_pic_sy.png',},
-   	{href: '/sc', value: 'sc', title: '书 库',img: '../static/images/pic_sc01.png',},
-   	{href: 'lt', value: 'lt', title: '阅读圈'},
-   	{href: '/main', value: 'main', title: '我 的',img: '../static/images/pic_w01.png',}
-   ],
-   flag: 0*/
-		};
-	},
-
-	/*computed: {
- 	bg: function(){
- 		if(this.show==0){
- 			return '/index'
- 		}
- 		if(this.show==1){
- 			return '/sc'
- 		}
- 		if(this.show==2){
- 			return '/lt'
- 		}
- 		if(this.show==2){
- 			return '/main'
- 		}
- 	}
- },
- props: ['show']
- ,*/
-	methods: {
-		tab: function tab() {
-			this.$router.push('/index');
-		},
-		tab1: function tab1() {
-			this.$router.push('/sc');
-		},
-		tab2: function tab2() {
-			this.$router.push('/main');
-		}
-	}
-};
-
-/***/ }),
-/* 41 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5616,10 +5466,6 @@ Object.defineProperty(exports, "__esModule", {
 var _Utils = __webpack_require__(0);
 
 var _Utils2 = _interopRequireDefault(_Utils);
-
-var _footer = __webpack_require__(17);
-
-var _footer2 = _interopRequireDefault(_footer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5721,14 +5567,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
-//
 
 var storage = weex.requireModule('storage');
 var modal = weex.requireModule('modal');
+
+// import foot from './footer.vue'
 exports.default = {
-	components: {
-		'foot': _footer2.default
-	},
+	// components: {
+	// 	'foot': foot
+	// },
 	data: function data() {
 		return {
 			imageList: [{ src: '../static/images/pic_01.png' }, { src: '../static/images/W020130321296490618267.jpg' }, { src: '../static/images/158_150401141239_1.jpeg' }],
@@ -5754,15 +5601,6 @@ exports.default = {
 	},
 
 	created: function created() {
-
-		/*var globalEvent = weex.requireModule('globalEvent');
-  			globalEvent.addEventListener("clickback", function (e) {
-  			var sjevent = weex.requireModule('SJevent');
-  			if(sjevent){
-       		 sjevent.finish();
-  			}
-   		});*/
-
 		var loginA;
 		var self = this;
 		storage.getItem('username', function (e) {
@@ -5807,16 +5645,10 @@ exports.default = {
 			this.$router.push(path);
 		}
 	}
-	/* beforeDestroy(){
-  	var globalEvent = weex.requireModule('globalEvent');
- 	globalEvent.removeEventListener("clickback", function (e) {
- 	
- 	});
- }*/
 };
 
 /***/ }),
-/* 42 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5963,7 +5795,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 43 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6078,7 +5910,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 44 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6170,7 +6002,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 45 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6339,7 +6171,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 46 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6505,7 +6337,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 47 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6577,12 +6409,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
+//
+//
+//
 
 var storage = weex.requireModule('storage');
 var modal = weex.requireModule('modal');
 exports.default = {
 	data: function data() {
 		return {
+			page: 1,
+			showLoading: 'hide',
 			willShow: false,
 			willShow2: false,
 			typeId: '',
@@ -6654,14 +6491,13 @@ exports.default = {
 			}
 			if (type == 2) {
 				this.$router.push('/ydrw/mryl?id=' + id);
-				// console.log(id);
 			}
 		},
 		dataLoad: function dataLoad() {
 			var self = this;
 			this.rw_list = [];
 			_Utils2.default.fetch({
-				url: '/app/student/report/?loginAccount=' + self.loginA + '&page=1&pageSize=10' + '&type=' + self.typeId + '&state=' + self.stateId,
+				url: '/app/student/report/?loginAccount=' + self.loginA + '&page=' + self.page + '&pageSize=10' + '&type=' + self.typeId + '&state=' + self.stateId,
 				method: 'POST',
 				type: 'json',
 				data: '',
@@ -6672,6 +6508,14 @@ exports.default = {
 					}
 				}
 			});
+		},
+		onloading: function onloading(event) {
+			var self = this;
+			self.page += 1;
+			//self.flag=true;
+			// modal.toast({ message: 'loading', duration: 1 })
+			self.showLoading = 'show';
+			self.dataLoad();
 		}
 	},
 	created: function created() {
@@ -6690,7 +6534,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 48 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6875,311 +6719,311 @@ exports.default = {
 };
 
 /***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+var storage = weex.requireModule('storage');
+var modal = weex.requireModule('modal');
+exports.default = {
+	data: function data() {
+		return {
+			b_syn: true,
+			lt: false,
+			book: {/*src: '../static/images/book02.png', btime: '2017-01-01', etime: '2017-01-02', bname: '飞来的伤心梅', bath: '张琴声', bpre: '北京邮电',isbn:'9787547705063'*/},
+			wwc: '',
+			zrw: '',
+			loginA: '',
+			rwId: '',
+			bId: '',
+			rwtype: 0,
+			bName: '',
+			feeling: '',
+			test: ''
+
+		};
+	},
+
+	methods: {
+		goback: function goback() {
+			this.$router.go(-1);
+		},
+		openFx: function openFx() {
+			this.$router.push('/ydrw_xq/ydrw_xq_hare');
+		},
+		opendhfx: function opendhfx(path) {
+			this.$router.push(path);
+		},
+		openwdfx: function openwdfx(path) {
+			this.$router.push(path);
+		},
+		openkscg: function openkscg() {
+			this.$router.push('/ydrw/kscg?bid=' + this.bId + '&bname=' + this.bName + '&pid=' + this.rwId);
+		},
+		openwdcg: function openwdcg() {
+			this.$router.push('/ydrw/wdcg');
+		}
+	},
+	created: function created() {
+
+		var self = this;
+		this.zrw = self.$route.query.access;
+		self.feeling = self.$route.query.feelingFinish;
+		self.test = self.$route.query.testFinish;
+
+		this.loginA = self.$route.query.loginAccount;
+		this.rwId = self.$route.query.planId;
+		this.bId = self.$route.query.bookId;
+		this.rwtype = self.$route.query.type;
+		this.bName = self.$route.query.bookName;
+
+		/* console.log('任务id'+self.rwId);
+  console.log('学生账号'+self.loginA);
+  console.log('书本id'+self.$route.query.bookId);
+  console.log('类型'+self.$route.query.type);
+  console.log('书名'+self.$route.query.bookName);
+   console.log(self.wwc);
+   console.log(self.zrw);*/
+		// console.log(self.$route.query.bookId);
+		_Utils2.default.fetch({
+			url: '/app/book/' + self.$route.query.bookId + '?type=' + self.$route.query.type,
+			method: 'GET',
+			type: 'json',
+			//data:'loginAccount=12&token=123123&id=1',
+			success: function success(ret) {
+				var books = ret.data.result;
+				self.book = eval(books);
+				//console.log(self.book);
+			}
+		});
+	}
+
+};
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+var storage = weex.requireModule('storage');
+var modal = weex.requireModule('modal');
+exports.default = {
+	data: function data() {
+		return {
+			b_syn: true,
+			lt: false,
+			book: {/*src: '../static/images/book02.png', btime: '2017-01-01', etime: '2017-01-02', bname: '飞来的伤心梅', bath: '张琴声', bpre: '北京邮电',isbn:'9787547705063'*/},
+			wwc: '',
+			zrw: '',
+			loginA: '',
+			rwId: '',
+			bId: '',
+			rwtype: 0,
+			bName: '',
+			feeling: '',
+			test: ''
+
+		};
+	},
+
+	methods: {
+		goback: function goback() {
+			this.$router.go(-1);
+		},
+		openFx: function openFx() {
+			this.$router.push('/ydrw_xq/ydrw_xq_hare');
+		},
+		opendhfx: function opendhfx(path) {
+			this.$router.push(path);
+		},
+		openwdfx: function openwdfx(path) {
+			this.$router.push(path);
+		},
+		openkscg: function openkscg() {
+			this.$router.push('/ydrw/kscg?bid=' + this.bId + '&bname=' + this.bName + '&pid=' + this.rwId);
+		},
+		openwdcg: function openwdcg() {
+			this.$router.push('/ydrw/wdcg');
+		}
+	},
+	created: function created() {
+
+		var self = this;
+		this.zrw = self.$route.query.access;
+		self.feeling = self.$route.query.feelingFinish;
+		self.test = self.$route.query.testFinish;
+
+		this.loginA = self.$route.query.loginAccount;
+		this.rwId = self.$route.query.planId;
+		this.bId = self.$route.query.bookId;
+		this.rwtype = self.$route.query.type;
+		this.bName = self.$route.query.bookName;
+
+		/* console.log('任务id'+self.rwId);
+  console.log('学生账号'+self.loginA);
+  console.log('书本id'+self.$route.query.bookId);
+  console.log('类型'+self.$route.query.type);
+  console.log('书名'+self.$route.query.bookName);
+   console.log(self.wwc);
+   console.log(self.zrw);*/
+		// console.log(self.$route.query.bookId);
+		_Utils2.default.fetch({
+			url: '/app/book/' + self.$route.query.bookId + '?type=' + self.$route.query.type,
+			method: 'GET',
+			type: 'json',
+			//data:'loginAccount=12&token=123123&id=1',
+			success: function success(ret) {
+				var books = ret.data.result;
+				self.book = eval(books);
+				//console.log(self.book);
+			}
+		});
+	}
+
+};
+
+/***/ }),
 /* 49 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _Utils = __webpack_require__(0);
-
-var _Utils2 = _interopRequireDefault(_Utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-var storage = weex.requireModule('storage');
-var modal = weex.requireModule('modal');
-exports.default = {
-	data: function data() {
-		return {
-			b_syn: true,
-			lt: false,
-			book: {/*src: '../static/images/book02.png', btime: '2017-01-01', etime: '2017-01-02', bname: '飞来的伤心梅', bath: '张琴声', bpre: '北京邮电',isbn:'9787547705063'*/},
-			wwc: '',
-			zrw: '',
-			loginA: '',
-			rwId: '',
-			bId: '',
-			rwtype: 0,
-			bName: '',
-			feeling: '',
-			test: ''
-
-		};
-	},
-
-	methods: {
-		goback: function goback() {
-			this.$router.go(-1);
-		},
-		openFx: function openFx() {
-			this.$router.push('/ydrw_xq/ydrw_xq_hare');
-		},
-		opendhfx: function opendhfx(path) {
-			this.$router.push(path);
-		},
-		openwdfx: function openwdfx(path) {
-			this.$router.push(path);
-		},
-		openkscg: function openkscg() {
-			this.$router.push('/ydrw/kscg?bid=' + this.bId + '&bname=' + this.bName + '&pid=' + this.rwId);
-		},
-		openwdcg: function openwdcg() {
-			this.$router.push('/ydrw/wdcg');
-		}
-	},
-	created: function created() {
-
-		var self = this;
-		this.zrw = self.$route.query.access;
-		self.feeling = self.$route.query.feelingFinish;
-		self.test = self.$route.query.testFinish;
-
-		this.loginA = self.$route.query.loginAccount;
-		this.rwId = self.$route.query.planId;
-		this.bId = self.$route.query.bookId;
-		this.rwtype = self.$route.query.type;
-		this.bName = self.$route.query.bookName;
-
-		/* console.log('任务id'+self.rwId);
-  console.log('学生账号'+self.loginA);
-  console.log('书本id'+self.$route.query.bookId);
-  console.log('类型'+self.$route.query.type);
-  console.log('书名'+self.$route.query.bookName);
-   console.log(self.wwc);
-   console.log(self.zrw);*/
-		// console.log(self.$route.query.bookId);
-		_Utils2.default.fetch({
-			url: '/app/book/' + self.$route.query.bookId + '?type=' + self.$route.query.type,
-			method: 'GET',
-			type: 'json',
-			//data:'loginAccount=12&token=123123&id=1',
-			success: function success(ret) {
-				var books = ret.data.result;
-				self.book = eval(books);
-				//console.log(self.book);
-			}
-		});
-	}
-
-};
-
-/***/ }),
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _Utils = __webpack_require__(0);
-
-var _Utils2 = _interopRequireDefault(_Utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-var storage = weex.requireModule('storage');
-var modal = weex.requireModule('modal');
-exports.default = {
-	data: function data() {
-		return {
-			b_syn: true,
-			lt: false,
-			book: {/*src: '../static/images/book02.png', btime: '2017-01-01', etime: '2017-01-02', bname: '飞来的伤心梅', bath: '张琴声', bpre: '北京邮电',isbn:'9787547705063'*/},
-			wwc: '',
-			zrw: '',
-			loginA: '',
-			rwId: '',
-			bId: '',
-			rwtype: 0,
-			bName: '',
-			feeling: '',
-			test: ''
-
-		};
-	},
-
-	methods: {
-		goback: function goback() {
-			this.$router.go(-1);
-		},
-		openFx: function openFx() {
-			this.$router.push('/ydrw_xq/ydrw_xq_hare');
-		},
-		opendhfx: function opendhfx(path) {
-			this.$router.push(path);
-		},
-		openwdfx: function openwdfx(path) {
-			this.$router.push(path);
-		},
-		openkscg: function openkscg() {
-			this.$router.push('/ydrw/kscg?bid=' + this.bId + '&bname=' + this.bName + '&pid=' + this.rwId);
-		},
-		openwdcg: function openwdcg() {
-			this.$router.push('/ydrw/wdcg');
-		}
-	},
-	created: function created() {
-
-		var self = this;
-		this.zrw = self.$route.query.access;
-		self.feeling = self.$route.query.feelingFinish;
-		self.test = self.$route.query.testFinish;
-
-		this.loginA = self.$route.query.loginAccount;
-		this.rwId = self.$route.query.planId;
-		this.bId = self.$route.query.bookId;
-		this.rwtype = self.$route.query.type;
-		this.bName = self.$route.query.bookName;
-
-		/* console.log('任务id'+self.rwId);
-  console.log('学生账号'+self.loginA);
-  console.log('书本id'+self.$route.query.bookId);
-  console.log('类型'+self.$route.query.type);
-  console.log('书名'+self.$route.query.bookName);
-   console.log(self.wwc);
-   console.log(self.zrw);*/
-		// console.log(self.$route.query.bookId);
-		_Utils2.default.fetch({
-			url: '/app/book/' + self.$route.query.bookId + '?type=' + self.$route.query.type,
-			method: 'GET',
-			type: 'json',
-			//data:'loginAccount=12&token=123123&id=1',
-			success: function success(ret) {
-				var books = ret.data.result;
-				self.book = eval(books);
-				//console.log(self.book);
-			}
-		});
-	}
-
-};
-
-/***/ }),
-/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7328,7 +7172,14 @@ exports.default = {
 			//this.$router.go(-1);
 			this.$router.push('/index');
 		},
-		jump: function jump(path) {
+		onpeKstfb: function onpeKstfb() {
+			this.$router.push('/kstfb');
+		},
+		openYdrw: function openYdrw() {
+			this.$router.push('/ydrw');
+		},
+		openRwxq: function openRwxq(path) {
+			//this.$router.push('/ydrw/ckjh');
 			this.$router.push(path);
 		},
 		dataLoad: function dataLoad() {
@@ -7351,6 +7202,7 @@ exports.default = {
 					data: '',
 					success: function success(ret) {
 						var datas = ret.data.result;
+						//self.rw_list=eval(datas);
 						if (ret.data.status == 200) {
 							for (var i = 0; i < datas.length; i++) {
 								self.rw_list.push(datas[i]);
@@ -7389,7 +7241,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 52 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7572,7 +7424,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 53 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7794,7 +7646,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 54 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8036,7 +7888,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 55 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8137,6 +7989,7 @@ exports.default = {
 		this.bName = this.$route.query.bname;
 		// 初始化题目
 		var self = this;
+
 		_Utils2.default.fetch({
 			url: '/app/student/question/' + self.$route.query.bid + '?index=' + self.index + '&loginAccount=' + self.loninA,
 			method: 'POST',
@@ -8253,7 +8106,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 56 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8437,7 +8290,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 57 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8630,7 +8483,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 58 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8639,6 +8492,14 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//
 //
 //
 //
@@ -8679,56 +8540,108 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 
+var storage = weex.requireModule('storage');
+var modal = weex.requireModule('modal');
 exports.default = {
 	data: function data() {
 		return {
-			q_list: [{ id: 1, title: '请问下面哪一项是正确', ans: 'A', cnt: '问题解析……',
-				answer: [{ option: '选项一', ans: 'A' }, { option: '选项二', ans: 'B' }, { option: '选项三', ans: 'C' }, { option: '选项四', ans: 'D' }]
-			}, { id: 2, title: '1954年重大事件', ans: 'B',
-				answer: [{ option: '123', ans: 'A' }, { option: '321', ans: 'B' }, { option: '131', ans: 'C' }, { option: '212', ans: 'D' }]
-			}, { id: 3, title: '秦国哪一年建立', ans: 'D',
-				answer: [{ option: '111', ans: 'A' }, { option: '222', ans: 'B' }, { option: '333', ans: 'C' }, { option: '000', ans: 'D' }]
-			}]
-
+			q_list: [],
+			aa: true,
+			bNname: '',
+			bid: '',
+			pid: '',
+			msg: '',
+			cont: '',
+			id: '',
+			ss: false,
+			list: [],
+			arr: [],
+			bgColor: '#fafafa',
+			dui: 0,
+			cuo: 0,
+			zql: 0,
+			loginA: ''
 		};
 	},
 
+	created: function created() {
+		this.aa = false;
+		var self = this;
+		self.bNname = self.$route.query.bname;
+		self.bid = self.$route.query.bid;
+		self.pid = self.$route.query.pid;
+
+		storage.getItem('username', function (e) {
+			//从缓存中取userId
+			self.loginA = e.data;
+			_Utils2.default.fetch({
+				url: '/app/student/report/plan/record?planId=' + self.pid + '&bookId=' + self.bid + '&loginAccount=' + self.loginA,
+				method: 'POST',
+				type: 'json',
+				data: '',
+				success: function success(ret) {
+					// console.log(ret.data);	
+					if (ret.data.status == 200) {
+						// console.log(ret.data.result)
+						self.q_list = ret.data.result;
+						var arrs = {};
+						self.list = [];
+						for (var i = 0; i < self.q_list.length; i++) {
+							if (self.q_list[i].isRight == 1) {
+								self.dui++;
+							} else {
+								self.cuo++;
+							}
+							self.zql = parseInt(self.dui / (self.dui + self.cuo) * 100);
+							self.$set(self.q_list[i], 'isShow', false);
+							self.$set(self.q_list[i], 'ans', self.arr.join(''));
+							for (var j = 0; j < self.q_list[i].answer.length; j++) {
+								if (self.q_list[i].chooseAnswer == self.q_list[i].answer[j].answerOption && self.q_list[i].isRight == 1) {
+									self.$set(self.q_list[i].answer[j], 'bgColor', '#36c681');
+								}
+								if (self.q_list[i].isRight != 1 && self.q_list[i].chooseAnswer == self.q_list[i].answer[j].answerOption) {
+									self.$set(self.q_list[i].answer[j], 'bgColor', '#ffb5b6');
+								}
+							}
+						}
+
+						// console.log('list',self.q_list);
+					} else if (ret.status) {
+						// console.log(ret.data.message);
+						self.msg = ret.data.message;
+					}
+				}
+			});
+		});
+	},
 	methods: {
-		last: function last(i, x, el) {
-			if (i == x) {} else {}
-		},
 		goback: function goback() {
 			this.$router.go(-1);
+		},
+		_goto: function _goto(path) {
+			console.log(this.bNname);
+			this.$router.push(path);
+		},
+		show: function show(ans, v) {
+			this.arr = [];
+			for (var i = 0; i < ans.length; i++) {
+				if (ans[i].rightOption == 1) {
+					this.arr.push(ans[i].answerOption);
+				}
+			}
+			this.q_list[v].ans = this.arr.join(' ');
+			this.q_list[v].isShow = true;
+			// console.log(this.list);
+			this.id = true;
+		},
+		hidden: function hidden(v) {
+			this.q_list[v].isShow = false;
 		}
-	},
-	directives: {
-
-		/*// 解析按钮自定义点击事件指令
-  click: {
-  	inserted: function(el){
-  		el.onclick=function(){
-  			// 获取解析内容
-  			var nextNode=this.parentNode.parentNode.getElementsByTagName('div')[1];
-  			// 显示解析内容
-  			nextNode.style.display='block';
-  		}
-  	},
-  
-  },
-  // 收起解析
-  hidden: {
-  	inserted: function(el){
-  		// el.
-  		el.onclick=function(){
-  			this.parentNode.parentNode.style.display='none';
-  		}
-  	}
-  }*/
 	}
 };
 
 /***/ }),
-/* 59 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8864,7 +8777,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 60 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9025,7 +8938,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 61 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9041,7 +8954,6 @@ var _Utils2 = _interopRequireDefault(_Utils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//
 //
 //
 //
@@ -9162,11 +9074,7 @@ exports.default = {
 		this.zrw = this.$route.query.access;
 		this.feeling = this.$route.query.feelingFinish || '0';
 		this.test = this.$route.query.testFinish || '0';
-		/*    console.log('zrw----------'+this.zrw);
-      console.log('feel----------'+this.feeling);
-      console.log('test----------'+this.test);
-  */
-		//	this.loginA=this.$route.query.loginAccount;
+
 		self.rwId = self.$route.query.planId;
 		self.bId = self.$route.query.bookId;
 		self.rwtype = self.$route.query.type;
@@ -9174,25 +9082,34 @@ exports.default = {
 		storage.getItem('username', function (e) {
 			//从缓存中取userId
 			self.loginA = e.data;
-			// console.log(self.$route.query.bookId);
 			_Utils2.default.fetch({
 				url: '/app/book/' + self.$route.query.bookId + '?type=' + self.$route.query.type,
 				method: 'GET',
 				type: 'json',
 				success: function success(ret) {
 					var books = ret.data.result;
-					self.book = eval(books);
-					self.guideId = eval(books.guideId);
+					self.book = books; //eval(books);
+					self.guideId = books.guideId; //eval(books.guideId);
 					//console.log(self.book);
 				}
 			});
 		});
+	},
+	filters: {
+		filterHTMLs: function filterHTMLs(val) {
+			if (val) {
+				// debugger
+				var newVal = val.replace(/<p>/g, '').replace(/<\/p>/g, '').replace(/<br\/>/g, '');
+				console.log(newVal);
+				return newVal;
+			}
+		}
 	}
 
 };
 
 /***/ }),
-/* 62 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9253,24 +9170,7 @@ exports.default = {
 
 	name: 'ydzx',
 	created: function created() {
-		var self = this;
-		_Utils2.default.fetch({
-			url: '/app/information/?page=' + self.page + '&pageSize=10',
-			method: 'POST',
-			type: 'json',
-			success: function success(ret) {
-				var data = ret.data.result;
-				if (ret.data.status == 200) {
-					for (var i = 0; i < data.length; i++) {
-						self.ydzx_list.push(data[i]);
-					}
-				} else if (ret.data.status == 404) {
-					modal.toast({ message: '已到底部', duration: 1 });
-				}
-				self.showLoading = 'hide';
-				// console.log(self.jyzx_list);
-			}
-		});
+		this.dataLoad();
 	},
 	methods: {
 		goback: function goback() {
@@ -9279,11 +9179,7 @@ exports.default = {
 		onpeNew: function onpeNew(path) {
 			this.$router.push(path);
 		},
-		onloading: function onloading(event) {
-			this.page += 1;
-
-			// modal.toast({ message: '加载更多', duration: 1 })
-			this.showLoading = 'show';
+		dataLoad: function dataLoad() {
 			var self = this;
 			_Utils2.default.fetch({
 				url: '/app/information/?page=' + self.page + '&pageSize=10',
@@ -9299,14 +9195,21 @@ exports.default = {
 						modal.toast({ message: '已到底部', duration: 1 });
 					}
 					self.showLoading = 'hide';
+					// console.log(self.jyzx_list);
 				}
 			});
+		},
+		onloading: function onloading(event) {
+			var self = this;
+			self.page += 1;
+			self.showLoading = 'show';
+			self.dataLoad();
 		}
 	}
 };
 
 /***/ }),
-/* 63 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9377,7 +9280,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 64 */
+/* 62 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -9519,10 +9422,23 @@ module.exports = {
 }
 
 /***/ }),
-/* 65 */
+/* 63 */
 /***/ (function(module, exports) {
 
 module.exports = {
+  "loading": {
+    "width": 750,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "indicator": {
+    "color": "#888888",
+    "fontSize": 42,
+    "paddingTop": 20,
+    "paddingBottom": 20,
+    "textAlign": "center"
+  },
   "top": {
     "width": 750,
     "height": 88,
@@ -9714,17 +9630,21 @@ module.exports = {
     "flexDirection": "row"
   },
   "dhg": {
-    "fontSize": 28,
+    "fontSize": 32,
     "color": "#70a1e8",
     "marginRight": 25
   },
   "ct": {
     "color": "#777777"
+  },
+  "rwType": {
+    "fontSize": 34,
+    "color": "#808080"
   }
 }
 
 /***/ }),
-/* 66 */
+/* 64 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -9832,7 +9752,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 67 */
+/* 65 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -9979,7 +9899,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 68 */
+/* 66 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -10277,7 +10197,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 69 */
+/* 67 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -10452,10 +10372,16 @@ module.exports = {
 }
 
 /***/ }),
-/* 70 */
+/* 68 */
 /***/ (function(module, exports) {
 
 module.exports = {
+  "msg": {
+    "width": 750,
+    "height": 100,
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
   "top": {
     "width": 750,
     "height": 88,
@@ -10497,10 +10423,7 @@ module.exports = {
     "color": "#666666"
   },
   "question": {
-    "flexDirection": "row",
-    "alignItems": "center",
     "width": 750,
-    "height": 88,
     "fontSize": 36,
     "color": "#333333"
   },
@@ -10508,11 +10431,12 @@ module.exports = {
     "marginTop": 25,
     "fontSize": 34,
     "color": "#808080",
-    "flexDirection": "row",
-    "alignItems": "center",
     "padding": 20,
     "backgroundColor": "#fafafa",
-    "borderRadius": 30
+    "borderRadius": 30,
+    "borderWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#e7e7e7"
   },
   "yes": {
     "backgroundColor": "#40cc8b",
@@ -10562,7 +10486,6 @@ module.exports = {
     "backgroundColor": "#70a1e8"
   },
   "j_cnt": {
-    "display": "none",
     "paddingTop": 26,
     "paddingBottom": 26,
     "paddingLeft": 30,
@@ -10586,11 +10509,15 @@ module.exports = {
     "color": "#343434",
     "lineHeight": 50,
     "marginTop": 25
+  },
+  "hid": {
+    "justifyContent": "center",
+    "alignItems": "center"
   }
 }
 
 /***/ }),
-/* 71 */
+/* 69 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -10808,7 +10735,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 72 */
+/* 70 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -10983,7 +10910,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 73 */
+/* 71 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -11159,7 +11086,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 74 */
+/* 72 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -11304,7 +11231,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 75 */
+/* 73 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -11366,7 +11293,8 @@ module.exports = {
     "lineHeight": 80,
     "overflow": "hidden",
     "textOverflow": "ellipsis",
-    "whiteSpace": "nowrap"
+    "whiteSpace": "nowrap",
+    "lines": 2
   },
   "ydzx_time": {
     "color": "#b7b7b7",
@@ -11379,7 +11307,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 76 */
+/* 74 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -11544,7 +11472,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 77 */
+/* 75 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -11634,6 +11562,33 @@ module.exports = {
     "width": 35,
     "height": 18
   },
+  "type_li1": {
+    "position": "absolute",
+    "right": 0,
+    "zIndex": 99,
+    "backgroundColor": "#ffffff",
+    "width": 50,
+    "fontSize": 30,
+    "height": 284,
+    "lineHeight": 70,
+    "flexDirection": "column",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "textIndent": 0.3,
+    "borderStyle": "solid",
+    "borderColor": "#e6e6e6",
+    "borderWidth": 1,
+    "color": "#666666"
+  },
+  "type_li2": {
+    "height": 214,
+    "left": 0
+  },
+  "type_ling": {
+    "borderBottomStyle": "solid",
+    "borderBottomColor": "#e6e6e6",
+    "borderBottomWidth": 1
+  },
   "s_class": {
     "position": "fixed",
     "zIndex": 9999,
@@ -11656,6 +11611,10 @@ module.exports = {
     "borderBottomColor": "#e6e6e6",
     "borderBottomStyle": "solid",
     "borderBottomWidth": 1
+  },
+  "type_yes": {
+    "backgroundColor": "#40cc8b",
+    "color": "#ffffff"
   },
   "jrrw": {
     "width": 750,
@@ -11732,11 +11691,38 @@ module.exports = {
     "fontSize": 22,
     "color": "#ff6600",
     "left": 0
+  },
+  "bj0": {
+    "backgroundColor": "#f1f6fd"
+  },
+  "bj1": {
+    "backgroundColor": "#ffffff",
+    "borderWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#d9e8fd"
+  },
+  "bj2": {
+    "backgroundColor": "#ffffff"
+  },
+  "c_bg_btn2": {
+    "backgroundColor": "#ffffff",
+    "color": "#70a1e8",
+    "borderWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#70a1e8"
+  },
+  "c_bg_btn1": {
+    "border": "#e6e6e6 1px solid",
+    "borderWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#e6e6e6",
+    "backgroundColor": "#ffffff",
+    "color": "#999999"
   }
 }
 
 /***/ }),
-/* 78 */
+/* 76 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -12027,7 +12013,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 79 */
+/* 77 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -12300,7 +12286,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 80 */
+/* 78 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -12600,6 +12586,296 @@ module.exports = {
 }
 
 /***/ }),
+/* 79 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "width": 500,
+    "textAlign": "center",
+    "marginLeft": 120,
+    "marginRight": 120,
+    "textOverflow": "ellipsis",
+    "lines": 1,
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 22,
+    "left": 25,
+    "width": 44,
+    "height": 44
+  },
+  "goback_r": {
+    "position": "absolute",
+    "top": 22,
+    "right": 25,
+    "width": 44,
+    "height": 44
+  },
+  "goback_r1": {
+    "position": "absolute",
+    "top": 22,
+    "right": 100,
+    "width": 37,
+    "height": 37
+  },
+  "book": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "width": 750,
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#f1f1ee",
+    "borderBottomStyle": "solid",
+    "paddingBottom": 24,
+    "paddingTop": 24,
+    "paddingRight": 30,
+    "paddingLeft": 30,
+    "overflow": "hidden",
+    "backgroundColor": "#ffffff"
+  },
+  "b_img": {
+    "width": 180,
+    "height": 220,
+    "marginRight": 30
+  },
+  "b_info": {
+    "width": 500
+  },
+  "b_main": {
+    "fontSize": 34,
+    "color": "#666666",
+    "marginTop": 20,
+    "lineHeight": 40
+  },
+  "b_list": {
+    "fontSize": 30,
+    "color": "#666666",
+    "lineHeight": 55,
+    "textOverflow": "ellipsis",
+    "lines": 1
+  },
+  "b_name": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#e7f1ff",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "b_name1": {
+    "width": 750,
+    "color": "#666666",
+    "fontSize": 36,
+    "textOverflow": "ellipsis",
+    "lines": 1,
+    "paddingLeft": 20,
+    "paddingRight": 20
+  },
+  "b_syn": {
+    "width": 750,
+    "backgroundColor": "#ffffff"
+  },
+  "b_cnt": {
+    "width": 750,
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#f1f1ee",
+    "borderBottomStyle": "solid",
+    "paddingBottom": 60,
+    "paddingTop": 60,
+    "paddingRight": 30,
+    "paddingLeft": 30
+  },
+  "b_title": {
+    "textAlign": "left",
+    "fontSize": 32,
+    "color": "#79a8ec"
+  },
+  "jyzx": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#ffffff",
+    "marginTop": 20,
+    "borderColor": "#e7e7e7",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "paddingRight": 20,
+    "paddingLeft": 20,
+    "flexDirection": "row",
+    "alignItems": "center"
+  },
+  "jyzx_title": {
+    "color": "#70a1e8",
+    "fontSize": 36
+  },
+  "title_img": {
+    "backgroundColor": "#70a1e8",
+    "marginRight": 1,
+    "width": 5
+  },
+  "ts_label": {
+    "fontSize": 26,
+    "backgroundColor": "#d9e8fd",
+    "color": "#666666",
+    "paddingRight": 15,
+    "paddingLeft": 15,
+    "paddingTop": 4,
+    "paddingBottom": 4,
+    "margin": 10,
+    "marginLeft": 0,
+    "borderRadius": 5
+  },
+  "ico_22": {
+    "width": 40,
+    "height": 40
+  },
+  "ico_23": {
+    "width": 33,
+    "height": 40
+  },
+  "ico_24": {
+    "width": 37,
+    "height": 37
+  },
+  "footes": {
+    "position": "fixed",
+    "bottom": 0,
+    "width": 750,
+    "height": 98,
+    "backgroundColor": "#70a1e8",
+    "flexDirection": "row",
+    "justifyContent": "center",
+    "alignItems": "center"
+  },
+  "footes_btn": {
+    "flex": 2,
+    "height": 70,
+    "lineHeight": 60,
+    "marginLeft": 15,
+    "marginRight": 15,
+    "flexDirection": "row",
+    "justifyContent": "center",
+    "alignItems": "center",
+    "borderColor": "#ffffff",
+    "borderWidth": 1,
+    "borderStyle": "solid",
+    "fontSize": 34,
+    "borderRadius": 8,
+    "color": "#ffffff",
+    "textAlign": "center"
+  }
+}
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 22,
+    "left": 25,
+    "width": 44,
+    "height": 44
+  },
+  "content": {
+    "width": 750,
+    "padding": 30
+  },
+  "textarea": {
+    "width": 700,
+    "height": 417,
+    "lines": 8,
+    "borderColor": "#e6e6e6",
+    "borderStyle": "solid",
+    "borderWidth": 1,
+    "padding": 24,
+    "fontSize": 34,
+    "marginTop": 30,
+    "borderRadius": 10
+  },
+  "panel": {
+    "width": 700,
+    "height": 88,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "space-between",
+    "marginTop": 30,
+    "marginBottom": 47,
+    "paddingRight": 20
+  },
+  "photoList": {
+    "flexDirection": "row",
+    "flexWrap": "wrap",
+    "marginTop": 20
+  },
+  "photo": {
+    "width": 52,
+    "height": 52,
+    "marginLeft": 60
+  },
+  "voicePic": {
+    "flexDirection": "row",
+    "justifyContent": "flex-start",
+    "width": 41,
+    "height": 52,
+    "marginLeft": 60
+  },
+  "confirm": {
+    "width": 700,
+    "height": 100,
+    "textAlign": "center",
+    "fontSize": 39,
+    "color": "#ffffff",
+    "fontWeight": "500",
+    "borderRadius": 10,
+    "backgroundColor": "#79a8ec",
+    "lineHeight": 100,
+    "border": 0
+  },
+  "voice": {
+    "width": 270,
+    "height": 80,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "space-between",
+    "borderStyle": "solid",
+    "borderColor": "#e8e8e8",
+    "borderWidth": 1,
+    "borderRadius": 8,
+    "backgroundColor": "#f5f5f5",
+    "marginTop": 20,
+    "paddingLeft": 20,
+    "paddingRight": 20
+  },
+  "pic_yy": {
+    "width": 20,
+    "height": 30
+  }
+}
+
+/***/ }),
 /* 81 */
 /***/ (function(module, exports) {
 
@@ -12808,329 +13084,6 @@ module.exports = {
   },
   "goback": {
     "position": "absolute",
-    "top": 22,
-    "left": 25,
-    "width": 44,
-    "height": 44
-  },
-  "content": {
-    "width": 750,
-    "padding": 30
-  },
-  "textarea": {
-    "width": 700,
-    "height": 417,
-    "lines": 8,
-    "borderColor": "#e6e6e6",
-    "borderStyle": "solid",
-    "borderWidth": 1,
-    "padding": 24,
-    "fontSize": 34,
-    "marginTop": 30,
-    "borderRadius": 10
-  },
-  "panel": {
-    "width": 700,
-    "height": 88,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between",
-    "marginTop": 30,
-    "marginBottom": 47,
-    "paddingRight": 20
-  },
-  "photoList": {
-    "flexDirection": "row",
-    "flexWrap": "wrap",
-    "marginTop": 20
-  },
-  "photo": {
-    "width": 52,
-    "height": 52,
-    "marginLeft": 60
-  },
-  "voicePic": {
-    "flexDirection": "row",
-    "justifyContent": "flex-start",
-    "width": 41,
-    "height": 52,
-    "marginLeft": 60
-  },
-  "confirm": {
-    "width": 700,
-    "height": 100,
-    "textAlign": "center",
-    "fontSize": 39,
-    "color": "#ffffff",
-    "fontWeight": "500",
-    "borderRadius": 10,
-    "backgroundColor": "#79a8ec",
-    "lineHeight": 100,
-    "border": 0
-  },
-  "voice": {
-    "width": 270,
-    "height": 80,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between",
-    "borderStyle": "solid",
-    "borderColor": "#e8e8e8",
-    "borderWidth": 1,
-    "borderRadius": 8,
-    "backgroundColor": "#f5f5f5",
-    "marginTop": 20,
-    "paddingLeft": 20,
-    "paddingRight": 20
-  },
-  "pic_yy": {
-    "width": 20,
-    "height": 30
-  }
-}
-
-/***/ }),
-/* 83 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "top": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
-    "width": 500,
-    "textAlign": "center",
-    "marginLeft": 120,
-    "marginRight": 120,
-    "textOverflow": "ellipsis",
-    "lines": 1,
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "position": "absolute",
-    "top": 22,
-    "left": 25,
-    "width": 44,
-    "height": 44
-  },
-  "goback_r": {
-    "position": "absolute",
-    "top": 22,
-    "right": 25,
-    "width": 44,
-    "height": 44
-  },
-  "goback_r1": {
-    "position": "absolute",
-    "top": 22,
-    "right": 100,
-    "width": 37,
-    "height": 37
-  },
-  "book": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "width": 750,
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#f1f1ee",
-    "borderBottomStyle": "solid",
-    "paddingBottom": 24,
-    "paddingTop": 24,
-    "paddingRight": 30,
-    "paddingLeft": 30,
-    "overflow": "hidden",
-    "backgroundColor": "#ffffff"
-  },
-  "b_img": {
-    "width": 180,
-    "height": 220,
-    "marginRight": 30
-  },
-  "b_info": {
-    "width": 500
-  },
-  "b_main": {
-    "fontSize": 34,
-    "color": "#666666",
-    "marginTop": 20,
-    "lineHeight": 40
-  },
-  "b_list": {
-    "fontSize": 30,
-    "color": "#666666",
-    "lineHeight": 55,
-    "textOverflow": "ellipsis",
-    "lines": 1
-  },
-  "b_name": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#e7f1ff",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "b_name1": {
-    "width": 750,
-    "color": "#666666",
-    "fontSize": 36,
-    "textOverflow": "ellipsis",
-    "lines": 1,
-    "paddingLeft": 20,
-    "paddingRight": 20
-  },
-  "b_syn": {
-    "width": 750,
-    "backgroundColor": "#ffffff"
-  },
-  "b_cnt": {
-    "width": 750,
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#f1f1ee",
-    "borderBottomStyle": "solid",
-    "paddingBottom": 60,
-    "paddingTop": 60,
-    "paddingRight": 30,
-    "paddingLeft": 30
-  },
-  "b_title": {
-    "textAlign": "left",
-    "fontSize": 32,
-    "color": "#79a8ec"
-  },
-  "jyzx": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#ffffff",
-    "marginTop": 20,
-    "borderColor": "#e7e7e7",
-    "borderBottomWidth": 1,
-    "borderStyle": "solid",
-    "paddingRight": 20,
-    "paddingLeft": 20,
-    "flexDirection": "row",
-    "alignItems": "center"
-  },
-  "jyzx_title": {
-    "color": "#70a1e8",
-    "fontSize": 36
-  },
-  "title_img": {
-    "backgroundColor": "#70a1e8",
-    "marginRight": 1,
-    "width": 5
-  },
-  "ts_label": {
-    "fontSize": 26,
-    "backgroundColor": "#d9e8fd",
-    "color": "#666666",
-    "paddingRight": 15,
-    "paddingLeft": 15,
-    "paddingTop": 4,
-    "paddingBottom": 4,
-    "margin": 10,
-    "marginLeft": 0,
-    "borderRadius": 5
-  },
-  "ico_22": {
-    "width": 40,
-    "height": 40
-  },
-  "ico_23": {
-    "width": 33,
-    "height": 40
-  },
-  "ico_24": {
-    "width": 37,
-    "height": 37
-  },
-  "footes": {
-    "position": "fixed",
-    "bottom": 0,
-    "width": 750,
-    "height": 98,
-    "backgroundColor": "#70a1e8",
-    "flexDirection": "row",
-    "justifyContent": "center",
-    "alignItems": "center"
-  },
-  "footes_btn": {
-    "flex": 2,
-    "height": 70,
-    "lineHeight": 60,
-    "marginLeft": 15,
-    "marginRight": 15,
-    "flexDirection": "row",
-    "justifyContent": "center",
-    "alignItems": "center",
-    "borderColor": "#ffffff",
-    "borderWidth": 1,
-    "borderStyle": "solid",
-    "fontSize": 34,
-    "borderRadius": 8,
-    "color": "#ffffff",
-    "textAlign": "center"
-  }
-}
-
-/***/ }),
-/* 84 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "footer": {
-    "width": 750,
-    "height": 110,
-    "borderStyle": "solid",
-    "borderColor": "#e7e7e7",
-    "borderTopWidth": 1,
-    "position": "fixed",
-    "bottom": 0,
-    "left": 0,
-    "zIndex": 999,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "backgroundColor": "#ffffff"
-  },
-  "f_list": {
-    "flex": 1,
-    "flexDirection": "column",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "footer_img": {
-    "marginTop": 12,
-    "width": 44,
-    "height": 44
-  }
-}
-
-/***/ }),
-/* 85 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "top": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "position": "absolute",
     "top": 25,
     "left": 25,
     "width": 37,
@@ -13225,7 +13178,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 86 */
+/* 83 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -13441,7 +13394,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 87 */
+/* 84 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -13545,7 +13498,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 88 */
+/* 85 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -13645,7 +13598,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 89 */
+/* 86 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -13768,27 +13721,23 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [_c('text', {
       staticClass: ["rw_title"]
     }, [_vm._v(_vm._s(_vm._f("tName")(rw.type)))]), (rw.type == 1) ? _c('text', {
+      staticClass: ["rwType"],
       staticStyle: {
-        fontSize: "28px",
-        color: "#808080",
         marginTop: "20px"
       }
     }, [_vm._v("阅读任务：" + _vm._s(rw.name))]) : _vm._e(), (rw.type == 2) ? _c('text', {
+      staticClass: ["rwType"],
       staticStyle: {
-        fontSize: "28px",
-        color: "#808080",
         marginTop: "20px"
       }
     }, [_vm._v("阅读任务：" + _vm._s(rw.title))]) : _vm._e(), _c('text', {
+      staticClass: ["rwType"],
       staticStyle: {
-        fontSize: "28px",
-        color: "#808080",
         marginTop: "10px"
       }
     }, [_vm._v(_vm._s(rw.teaName) + " 老师")]), _c('text', {
+      staticClass: ["rwType"],
       staticStyle: {
-        fontSize: "28px",
-        color: "#808080",
         marginTop: "10px"
       }
     }, [_vm._v("截止：" + _vm._s(rw.endDate))])]), _c('div', {
@@ -13809,12 +13758,22 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [_vm._v("闯关正确率" + _vm._s(rw.percent) + "%")]), _c('text', {
       staticClass: ["dhg", "ct"]
     }, [_vm._v("错题" + _vm._s(rw.wrongCount) + "题")])])])
-  }))])])
+  })), _c('loading', {
+    staticClass: ["loading"],
+    attrs: {
+      "display": _vm.showLoading
+    },
+    on: {
+      "loading": _vm.onloading
+    }
+  }, [_c('text', {
+    staticClass: ["indicator"]
+  }, [_vm._v("加载更多 ...")])])], 1)])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 90 */
+/* 87 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -13934,7 +13893,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 91 */
+/* 88 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -14099,7 +14058,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 92 */
+/* 89 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -14116,7 +14075,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 93 */
+/* 90 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -14353,7 +14312,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 94 */
+/* 91 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -14474,7 +14433,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 95 */
+/* 92 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -14490,62 +14449,91 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _c('text', {
     staticClass: ["top_name"]
-  }, [_vm._v("小巴掌故事")])]), _vm._m(0), _c('scroller', [_c('div', {
+  }, [_vm._v(_vm._s(_vm.bNname))])]), (_vm.q_list.length == 0) ? _c('div', {
+    staticClass: ["msg"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "50px",
+      color: "#6fa1e8"
+    }
+  }, [_vm._v(_vm._s(_vm.msg))])]) : _vm._e(), (_vm.q_list.length != 0) ? _c('div', {
+    staticClass: ["state"]
+  }, [_c('text', {
+    staticClass: ["count"]
+  }, [_vm._v("答对" + _vm._s(_vm.dui) + "道，答错" + _vm._s(_vm.cuo) + "道，正确率：" + _vm._s(_vm.zql) + "%")])]) : _vm._e(), _c('scroller', [_c('div', {
     staticClass: ["content"]
-  }, _vm._l((_vm.q_list), function(q) {
+  }, _vm._l((_vm.q_list), function(q, v) {
     return _c('div', [_c('div', {
       staticClass: ["question"]
     }, [_c('text', {
       staticStyle: {
         fontSize: "36px",
-        color: "#666"
+        color: "#666",
+        marginRight: "35px"
       }
-    }, [_vm._v(_vm._s(q.id) + "." + _vm._s(q.title) + "(    )")])]), _vm._l((q.answer), function(a) {
+    }, [_vm._v(_vm._s(q.no) + "." + _vm._s(q.question.qname) + "(    )")])]), _vm._l((q.answer), function(a) {
       return _c('div', {
-        staticClass: ["answer"]
+        staticClass: ["answer"],
+        style: {
+          backgroundColor: a.bgColor
+        }
       }, [_c('text', {
         staticStyle: {
           fontSize: "34px",
-          color: "#666"
-        },
-        on: {
-          "click": function($event) {
-            _vm.last(q.ans, a.ans)
-          }
+          color: "#666",
+          marginRight: "10px"
         }
-      }, [_vm._v(_vm._s(a.ans) + "、" + _vm._s(a.option))])])
+      }, [_vm._v(_vm._s(a.answerOption) + "、" + _vm._s(a.content))])])
     }), _c('div', {
       staticClass: ["list"]
     }, [_c('div', {
       staticClass: ["t_q"],
       on: {
-        "click": _vm.show
+        "click": function($event) {
+          _vm.show(q.answer, v)
+        }
       }
-    }, [_vm._m(1, true)]), _c('div', {
+    }, [_vm._m(0, true)]), (q.isShow) ? _c('div', {
+      key: v,
       staticClass: ["j_cnt"]
     }, [_c('text', {
       staticClass: ["ans"]
-    }, [_vm._v("正确答案是" + _vm._s(q.ans) + "，你的答案是" + _vm._s(q.answer.ans)), (q.answer.ans) ? _c('text', [_vm._v("回答错误")]) : _vm._e(), (!q.answer.ans) ? _c('text', [_vm._v("回答正确")]) : _vm._e()]), _c('text', {
+    }, [_vm._v("正确答案是  " + _vm._s(q.ans) + "，你的答案是  " + _vm._s(q.chooseAnswer) + "\n\t\t\t\t\t\t")]), _c('text', {
       staticClass: ["tips"]
     }, [_vm._v("解析")]), _c('text', {
       staticClass: ["contents"]
-    }, [_vm._v(_vm._s(q.cnt))]), _c('div', {
-      on: {
-        "click": _vm.hidden
-      }
+    }, [_vm._v("暂无解析")]), _c('div', {
+      staticClass: ["hid"]
     }, [_c('text', {
       staticStyle: {
-        fontSize: "34px"
+        fontSize: "36px",
+        borderStyle: "solid",
+        color: "#666",
+        padding: "10px",
+        borderRadius: "5px",
+        paddingLeft: "30px",
+        paddingRight: "30px"
+      },
+      on: {
+        "click": function($event) {
+          _vm.hidden(v)
+        }
       }
-    }, [_vm._v("收起")])])])])], 2)
-  }))]), _vm._m(2)])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["state"]
+    }, [_vm._v("收起")])])]) : _vm._e()])], 2)
+  }))]), _c('div', {
+    staticClass: ["footer"],
+    on: {
+      "click": function($event) {
+        _vm._goto('/ydrw/kscg?bid=' + _vm.bid + '&bname=' + _vm.bNname)
+      }
+    }
   }, [_c('text', {
-    staticClass: ["count"]
-  }, [_vm._v("答对7道，答错3道，正确率：70%")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+    staticStyle: {
+      fontSize: "39px",
+      color: "#fff"
+    }
+  }, [_vm._v("重新闯关")])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: ["t_q_btn"]
   }, [_c('text', {
@@ -14562,20 +14550,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "src": "../static/images/pic_jx.png"
     }
   })])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["footer"]
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "39px",
-      color: "#fff"
-    }
-  }, [_vm._v("重新闯关")])])
 }]}
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 96 */
+/* 93 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -14687,7 +14666,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 97 */
+/* 94 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -14808,7 +14787,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 98 */
+/* 95 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -14871,9 +14850,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "src": _vm.book.guideVoice,
       "playStatus": "play",
       "controls": "controls"
-    },
-    on: {
-      "start": _vm.onstart
     }
   }), _c('div', {
     staticClass: ["b_cnt"]
@@ -14881,19 +14857,19 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: ["b_title"]
   }, [_vm._v("编辑推荐")]), _c('text', {
     staticClass: ["b_main"]
-  }, [_vm._v(_vm._s(_vm.book.editorIntro))])]), _c('div', {
+  }, [_vm._v(_vm._s(_vm._f("filterHTMLs")(_vm.book.editorIntro)))])]), _c('div', {
     staticClass: ["b_cnt"]
   }, [_c('text', {
     staticClass: ["b_title"]
   }, [_vm._v("内容简介")]), _c('text', {
     staticClass: ["b_main"]
-  }, [_vm._v(_vm._s(_vm.book.desc))])]), _c('div', {
+  }, [_vm._v(_vm._s(_vm._f("filterHTMLs")(_vm.book.desc)))])]), _c('div', {
     staticClass: ["b_cnt"]
   }, [_c('text', {
     staticClass: ["b_title"]
   }, [_vm._v("作者简介")]), _c('text', {
     staticClass: ["b_main"]
-  }, [_vm._v(_vm._s(_vm.book.authorDesc))])])], 1)]), _c('div', {
+  }, [_vm._v(_vm._s(_vm._f("filterHTMLs")(_vm.book.authorDesc)))])])], 1)]), _c('div', {
     staticClass: ["footes"]
   }, [(_vm.pcShow) ? _c('text', {
     staticClass: ["footes_btn"],
@@ -14920,7 +14896,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: ["footes_btn"],
     on: {
       "click": function($event) {
-        _vm.jump('/ydrw/wdcg')
+        _vm.jump('/ydrw/wdcg?bid=' + _vm.bId + '&bname=' + _vm.bName + '&pid=' + _vm.rwId)
       }
     }
   }, [_vm._v("我的闯关")]) : _vm._e()])])
@@ -14934,7 +14910,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 99 */
+/* 96 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -15058,7 +15034,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 100 */
+/* 97 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -15124,7 +15100,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 101 */
+/* 98 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -15195,7 +15171,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 102 */
+/* 99 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -15216,18 +15192,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: ["tab_li", "tab_yes"],
     on: {
-      "click": function($event) {
-        _vm.jump('/ydrw')
-      }
+      "click": _vm.openYdrw
     }
   }, [_c('text', {
     staticClass: ["tab_yes"]
   }, [_vm._v("阅读任务")])]), _c('div', {
     staticClass: ["tab_li"],
     on: {
-      "click": function($event) {
-        _vm.jump('/kstfb')
-      }
+      "click": _vm.onpeKstfb
     }
   }, [_c('text', {
     staticStyle: {
@@ -15333,7 +15305,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       class: ['bj' + rw.state],
       on: {
         "click": function($event) {
-          _vm.jump('/ydrw/ckjh?planId=' + rw.planId + '&type=' + _vm.typeId)
+          _vm.openRwxq('/ydrw/ckjh?planId=' + rw.planId + '&type=' + _vm.typeId)
         }
       }
     }, [_c('div', {
@@ -15380,7 +15352,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 103 */
+/* 100 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -15466,7 +15438,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 104 */
+/* 101 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -15696,11 +15668,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "src": jyzx.image
       }
     })])])
-  })], 2), _c('foot', {
-    attrs: {
-      "show": 0
-    }
-  })], 1)
+  })], 2)])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: ["fx_key"]
@@ -15731,7 +15699,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 105 */
+/* 102 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -15972,7 +15940,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 106 */
+/* 103 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -16104,7 +16072,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 107 */
+/* 104 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -16216,7 +16184,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 108 */
+/* 105 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -16360,63 +16328,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 109 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: ["footer"]
-  }, [_c('div', {
-    staticClass: ["f_list"],
-    on: {
-      "click": _vm.tab
-    }
-  }, [_c('image', {
-    staticClass: ["footer_img"],
-    attrs: {
-      "src": "../static/images/xs_pic_sy.png"
-    }
-  }), _c('text', {
-    staticStyle: {
-      marginTop: "9px",
-      color: "#70a1e8"
-    }
-  }, [_vm._v("首 页")])]), _c('div', {
-    staticClass: ["f_list"],
-    on: {
-      "click": _vm.tab1
-    }
-  }, [_c('image', {
-    staticClass: ["footer_img"],
-    attrs: {
-      "src": "../static/images/pic_sc01.png"
-    }
-  }), _c('text', {
-    staticStyle: {
-      marginTop: "9px",
-      color: "#666"
-    }
-  }, [_vm._v("书 库")])]), _c('div', {
-    staticClass: ["f_list"],
-    on: {
-      "click": _vm.tab2
-    }
-  }, [_c('image', {
-    staticClass: ["footer_img"],
-    attrs: {
-      "src": "../static/images/pic_w01.png"
-    }
-  }), _c('text', {
-    staticStyle: {
-      marginTop: "9px",
-      color: "#666"
-    }
-  }, [_vm._v("我 的")])])])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 110 */
+/* 106 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -16535,7 +16447,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 111 */
+/* 107 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -16707,7 +16619,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 112 */
+/* 108 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;

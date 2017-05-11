@@ -29,6 +29,7 @@ import com.qiniu.android.storage.UploadManager;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
+import com.zk.myweex.WXApplication;
 import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
 import com.zk.myweex.regionselector.RegionSelectActivity;
@@ -406,9 +407,22 @@ public class SJEventModule extends WXModule {
         ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), CaptureActivity.class), 999);
     }
 
+
     @JSMethod(uiThread = true)
     public void finish() {
-        ((Activity) mWXSDKInstance.getContext()).finish();
+        long current = System.currentTimeMillis();
+        if (WXApplication.time == 0) {
+            WXApplication.time = current;
+            toast("再按一次返回退出APP");
+            return;
+        }
+        if ((current - WXApplication.time) < 2000) {
+            WXApplication.time = 0;
+            ((Activity) mWXSDKInstance.getContext()).finish();
+        } else {
+            toast("再按一次返回退出APP");
+            WXApplication.time = current;
+        }
     }
 
     @JSMethod(uiThread = true)

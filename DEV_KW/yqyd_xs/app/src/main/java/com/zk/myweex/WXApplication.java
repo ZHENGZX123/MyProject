@@ -47,6 +47,8 @@ public class WXApplication extends Application {
 
     public Activity currentActivity;
 
+    public static long time;
+
     @Override
     public void onCreate() {
         super.onCreate();
