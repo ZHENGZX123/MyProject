@@ -37,6 +37,8 @@ public class MyWebView extends WXComponent<WebView> {
 
         wv.setWebViewClient(new WebViewClient() {
 
+
+
             @Override
             public void onPageFinished(WebView view, String url) {
                 wv.loadUrl("javascript:(function(){"

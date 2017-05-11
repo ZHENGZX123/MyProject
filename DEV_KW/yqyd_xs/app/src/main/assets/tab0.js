@@ -80,7 +80,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var Utils = {
   dir: 'v1',
   //ip : 'http://192.168.8.6:8180/'
-  ip: 'http://192.168.8.6:8882/v1'
+  // ip : 'http://192.168.8.6:8882/v1'
+  ip: 'http://yqyd.qgjydd.com/yqyd/v1'
   //ip : 'http://192.168.8.6:8881/v1'
 };
 Utils.setOpenUrl = function (context, arr) {
@@ -483,14 +484,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(64)
+__vue_styles__.push(__webpack_require__(73)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(42)
+__vue_exports__ = __webpack_require__(41)
 
 /* template */
-var __vue_template__ = __webpack_require__(87)
+var __vue_template__ = __webpack_require__(96)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -502,10 +503,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\kstfb_tjh.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\kstfb_tjh.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-1fab10d2"
+__vue_options__._scopeId = "data-v-47bebf36"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -527,14 +528,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(67)
+__vue_styles__.push(__webpack_require__(81)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(54)
+__vue_exports__ = __webpack_require__(52)
 
 /* template */
-var __vue_template__ = __webpack_require__(91)
+var __vue_template__ = __webpack_require__(104)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -546,10 +547,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\ydrw_mryl.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\ydrw_mryl.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-388affa3"
+__vue_options__._scopeId = "data-v-dfc1717c"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -669,19 +670,19 @@ exports.default = new _vueRouter2.default({
   { path: '/ydrw', name: 'ydrw', component: __webpack_require__(26) },
 
   // 任务详情
-  { path: '/ydrw/ckjh', name: 'ydrw_jh', component: __webpack_require__(29) },
+  { path: '/ydrw/ckjh', name: 'ydrw_jh', component: __webpack_require__(28) },
   // 阅读任务详情
-  { path: '/ydrw_xq', name: 'ydrw_xq', component: __webpack_require__(35) },
+  { path: '/ydrw_xq', name: 'ydrw_xq', component: __webpack_require__(34) },
 
   // 阅读任务 写读后感
-  { path: '/ydrw/xdhg', name: 'ydrw_xdhg', component: __webpack_require__(34) },
+  { path: '/ydrw/xdhg', name: 'ydrw_xdhg', component: __webpack_require__(33) },
   // 阅读任务 我的读后感
-  { path: '/ydrw/wddhg', name: 'ydrw_wddhg', component: __webpack_require__(33) },
+  { path: '/ydrw/wddhg', name: 'ydrw_wddhg', component: __webpack_require__(32) },
 
   // 阅读任务 开始闯关
-  { path: '/ydrw/kscg', name: 'ydrw_kscg', component: __webpack_require__(30) },
+  { path: '/ydrw/kscg', name: 'ydrw_kscg', component: __webpack_require__(29) },
   // 阅读任务 我的闯关
-  { path: '/ydrw/wdcg', name: 'ydrw_wdcg', component: __webpack_require__(32) },
+  { path: '/ydrw/wdcg', name: 'ydrw_wdcg', component: __webpack_require__(31) },
 
   //考试提分宝
   //   { path: '/kstfb', name: 'kstfb', component: require('./components/kstfb.vue')},
@@ -697,7 +698,7 @@ exports.default = new _vueRouter2.default({
   // 学习报告 阅读报告
   { path: '/ydbg/rwbg', name: 'ckbg_rwbg', component: __webpack_require__(23) },
   // 学习报告 查看详情
-  { path: '/ydrw/ckxq', name: 'ckxq', component: __webpack_require__(28) },
+  //  { path: '/ydrw/ckxq', name: 'ckxq', component: require('./components/ydrw_ckxq.vue')},
   // 学习报告 报告闯关详情
   { path: '/ydrw/cgsb', name: 'ydrw_cgsb', component: __webpack_require__(27) },
   // 学习报告 任务详情
@@ -707,7 +708,7 @@ exports.default = new _vueRouter2.default({
   //我的闯关
   { path: '/ydrw_mryl', name: 'ydrw_mryl', component: __webpack_require__(2) },
   //提交
-  { path: '/ydrw_tj', name: 'ydrw_tj', component: __webpack_require__(31) },
+  { path: '/ydrw_tj', name: 'ydrw_tj', component: __webpack_require__(30) },
   //完成
   { path: '/kstfb_tjh', name: 'kstfb_tjh', component: __webpack_require__(1) },
   //学习报告 开始闯关
@@ -721,9 +722,9 @@ exports.default = new _vueRouter2.default({
   // 书香榜
   { path: '/sxb', name: 'sxb', component: __webpack_require__(20) },
   // // 阅读资讯
-  { path: '/ydzx', name: 'ydzx', component: __webpack_require__(36) },
+  { path: '/ydzx', name: 'ydzx', component: __webpack_require__(35) },
   // 阅读资讯 详情
-  { path: '/ydzx/xq', name: 'ydzx_xq', component: __webpack_require__(37) }]
+  { path: '/ydzx/xq', name: 'ydzx_xq', component: __webpack_require__(36) }]
 
 });
 
@@ -922,10 +923,10 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* script */
-__vue_exports__ = __webpack_require__(38)
+__vue_exports__ = __webpack_require__(37)
 
 /* template */
-var __vue_template__ = __webpack_require__(89)
+var __vue_template__ = __webpack_require__(95)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -937,7 +938,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\App.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\App.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 __vue_options__.style = __vue_options__.style || {}
@@ -4511,14 +4512,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(77)
+__vue_styles__.push(__webpack_require__(66)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(39)
+__vue_exports__ = __webpack_require__(38)
 
 /* template */
-var __vue_template__ = __webpack_require__(101)
+var __vue_template__ = __webpack_require__(88)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4530,10 +4531,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\index.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\index.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-7cc6cda4"
+__vue_options__._scopeId = "data-v-168b884d"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4555,14 +4556,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(69)
+__vue_styles__.push(__webpack_require__(79)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(40)
+__vue_exports__ = __webpack_require__(39)
 
 /* template */
-var __vue_template__ = __webpack_require__(93)
+var __vue_template__ = __webpack_require__(102)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4574,10 +4575,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\kstfb.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\kstfb.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-406ddf24"
+__vue_options__._scopeId = "data-v-d546637a"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4599,14 +4600,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(62)
+__vue_styles__.push(__webpack_require__(78)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(41)
+__vue_exports__ = __webpack_require__(40)
 
 /* template */
-var __vue_template__ = __webpack_require__(85)
+var __vue_template__ = __webpack_require__(101)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4618,10 +4619,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\kstfb_mryl.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\kstfb_mryl.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-05797a63"
+__vue_options__._scopeId = "data-v-bf23b2b8"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4643,14 +4644,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(65)
+__vue_styles__.push(__webpack_require__(60)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(43)
+__vue_exports__ = __webpack_require__(42)
 
 /* template */
-var __vue_template__ = __webpack_require__(88)
+var __vue_template__ = __webpack_require__(82)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4662,10 +4663,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\sxb.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\sxb.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-20979b0e"
+__vue_options__._scopeId = "data-v-00fb4550"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4687,14 +4688,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(74)
+__vue_styles__.push(__webpack_require__(77)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(44)
+__vue_exports__ = __webpack_require__(43)
 
 /* template */
-var __vue_template__ = __webpack_require__(98)
+var __vue_template__ = __webpack_require__(100)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4706,10 +4707,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\wdrw_mryl.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\wdrw_mryl.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-5b84f2a1"
+__vue_options__._scopeId = "data-v-99cd8b80"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4735,10 +4736,10 @@ __vue_styles__.push(__webpack_require__(63)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(45)
+__vue_exports__ = __webpack_require__(44)
 
 /* template */
-var __vue_template__ = __webpack_require__(86)
+var __vue_template__ = __webpack_require__(85)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4750,10 +4751,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\xxbg.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\xxbg.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-113a8419"
+__vue_options__._scopeId = "data-v-099c95cc"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4775,14 +4776,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(83)
+__vue_styles__.push(__webpack_require__(71)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(46)
+__vue_exports__ = __webpack_require__(45)
 
 /* template */
-var __vue_template__ = __webpack_require__(107)
+var __vue_template__ = __webpack_require__(93)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4794,10 +4795,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\ydbg_rwbg.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\ydbg_rwbg.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-e3f04316"
+__vue_options__._scopeId = "data-v-34c7b3d8"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4819,14 +4820,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(79)
+__vue_styles__.push(__webpack_require__(65)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(47)
+__vue_exports__ = __webpack_require__(46)
 
 /* template */
-var __vue_template__ = __webpack_require__(103)
+var __vue_template__ = __webpack_require__(87)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4838,10 +4839,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\ydbg_rwxq.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\ydbg_rwxq.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-97c131ae"
+__vue_options__._scopeId = "data-v-0bb3aec8"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4863,14 +4864,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(81)
+__vue_styles__.push(__webpack_require__(61)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(48)
+__vue_exports__ = __webpack_require__(47)
 
 /* template */
-var __vue_template__ = __webpack_require__(105)
+var __vue_template__ = __webpack_require__(83)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4882,10 +4883,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\ydbg_wdcg.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\ydbg_wdcg.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-abe79cc8"
+__vue_options__._scopeId = "data-v-01a0793b"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4907,14 +4908,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(75)
+__vue_styles__.push(__webpack_require__(74)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(49)
+__vue_exports__ = __webpack_require__(48)
 
 /* template */
-var __vue_template__ = __webpack_require__(99)
+var __vue_template__ = __webpack_require__(97)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4926,10 +4927,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\ydrw.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\ydrw.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-734e11e4"
+__vue_options__._scopeId = "data-v-5d4542e5"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4951,14 +4952,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(72)
+__vue_styles__.push(__webpack_require__(70)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(50)
+__vue_exports__ = __webpack_require__(49)
 
 /* template */
-var __vue_template__ = __webpack_require__(96)
+var __vue_template__ = __webpack_require__(92)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4970,10 +4971,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\ydrw_cgsb.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\ydrw_cgsb.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-4dde9744"
+__vue_options__._scopeId = "data-v-30a4fbfd"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4995,14 +4996,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(78)
+__vue_styles__.push(__webpack_require__(64)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(51)
+__vue_exports__ = __webpack_require__(50)
 
 /* template */
-var __vue_template__ = __webpack_require__(102)
+var __vue_template__ = __webpack_require__(86)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5014,10 +5015,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\ydrw_ckxq.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\ydrw_jh.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-93f585e8"
+__vue_options__._scopeId = "data-v-09cc5e88"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -5039,14 +5040,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(66)
+__vue_styles__.push(__webpack_require__(75)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(52)
+__vue_exports__ = __webpack_require__(51)
 
 /* template */
-var __vue_template__ = __webpack_require__(90)
+var __vue_template__ = __webpack_require__(98)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5058,10 +5059,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\ydrw_jh.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\ydrw_kscg.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-34dcbb29"
+__vue_options__._scopeId = "data-v-611bd4d4"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -5083,14 +5084,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(76)
+__vue_styles__.push(__webpack_require__(67)
 )
 
 /* script */
 __vue_exports__ = __webpack_require__(53)
 
 /* template */
-var __vue_template__ = __webpack_require__(100)
+var __vue_template__ = __webpack_require__(89)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5102,10 +5103,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\ydrw_kscg.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\ydrw_tj.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-77ddcdf7"
+__vue_options__._scopeId = "data-v-1af903c0"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -5127,14 +5128,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(70)
+__vue_styles__.push(__webpack_require__(80)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(55)
+__vue_exports__ = __webpack_require__(54)
 
 /* template */
-var __vue_template__ = __webpack_require__(94)
+var __vue_template__ = __webpack_require__(103)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5146,10 +5147,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\ydrw_tj.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\ydrw_wdcg.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-46096061"
+__vue_options__._scopeId = "data-v-d6fa918a"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -5171,14 +5172,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(68)
+__vue_styles__.push(__webpack_require__(72)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(56)
+__vue_exports__ = __webpack_require__(55)
 
 /* template */
-var __vue_template__ = __webpack_require__(92)
+var __vue_template__ = __webpack_require__(94)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5190,10 +5191,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\ydrw_wdcg.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\ydrw_wddhg.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-3cee6f9c"
+__vue_options__._scopeId = "data-v-3571cb1c"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -5215,14 +5216,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(82)
+__vue_styles__.push(__webpack_require__(62)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(57)
+__vue_exports__ = __webpack_require__(56)
 
 /* template */
-var __vue_template__ = __webpack_require__(106)
+var __vue_template__ = __webpack_require__(84)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5234,10 +5235,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\ydrw_wddhg.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\ydrw_xdhg.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-cb05c24a"
+__vue_options__._scopeId = "data-v-04ec1f35"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -5259,14 +5260,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(80)
+__vue_styles__.push(__webpack_require__(68)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(58)
+__vue_exports__ = __webpack_require__(57)
 
 /* template */
-var __vue_template__ = __webpack_require__(104)
+var __vue_template__ = __webpack_require__(90)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5278,10 +5279,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\ydrw_xdhg.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\ydrw_xq.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-a55050d4"
+__vue_options__._scopeId = "data-v-222f0ac3"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -5303,14 +5304,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(71)
+__vue_styles__.push(__webpack_require__(76)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(59)
+__vue_exports__ = __webpack_require__(58)
 
 /* template */
-var __vue_template__ = __webpack_require__(95)
+var __vue_template__ = __webpack_require__(99)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5322,10 +5323,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\ydrw_xq.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\ydzx.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-4d3f6764"
+__vue_options__._scopeId = "data-v-6afa1f5e"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -5347,14 +5348,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(84)
+__vue_styles__.push(__webpack_require__(69)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(60)
+__vue_exports__ = __webpack_require__(59)
 
 /* template */
-var __vue_template__ = __webpack_require__(108)
+var __vue_template__ = __webpack_require__(91)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -5366,10 +5367,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\ydzx.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\ydzx_xq.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-fdfa2346"
+__vue_options__._scopeId = "data-v-2c33afaa"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -5385,50 +5386,6 @@ module.exports = __vue_exports__
 
 /***/ }),
 /* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_exports__, __vue_options__
-var __vue_styles__ = []
-
-/* styles */
-__vue_styles__.push(__webpack_require__(73)
-)
-
-/* script */
-__vue_exports__ = __webpack_require__(61)
-
-/* template */
-var __vue_template__ = __webpack_require__(97)
-__vue_options__ = __vue_exports__ = __vue_exports__ || {}
-if (
-  typeof __vue_exports__.default === "object" ||
-  typeof __vue_exports__.default === "function"
-) {
-if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
-__vue_options__ = __vue_exports__ = __vue_exports__.default
-}
-if (typeof __vue_options__ === "function") {
-  __vue_options__ = __vue_options__.options
-}
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\ydzx_xq.vue"
-__vue_options__.render = __vue_template__.render
-__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-57440c4b"
-__vue_options__.style = __vue_options__.style || {}
-__vue_styles__.forEach(function (module) {
-  for (var name in module) {
-    __vue_options__.style[name] = module[name]
-  }
-})
-if (typeof __register_static_styles__ === "function") {
-  __register_static_styles__(__vue_options__._scopeId, __vue_styles__)
-}
-
-module.exports = __vue_exports__
-
-
-/***/ }),
-/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5453,7 +5410,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 39 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5562,11 +5519,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
-//
-//
-//
-//
-//
 
 var storage = weex.requireModule('storage');
 var modal = weex.requireModule('modal');
@@ -5580,22 +5532,10 @@ exports.default = {
 		return {
 			imageList: [{ src: '../static/images/pic_01.png' }, { src: '../static/images/W020130321296490618267.jpg' }, { src: '../static/images/158_150401141239_1.jpeg' }],
 			//每日之星
-			s_list: [
-				/*{src: '../static/images/head_04.png', name: '姜熙建', id: '../static/images/pic_hg.png'},*/
-			],
-			rw_list: [
-				/*{href: '/kstfb_mr',title: '每日一练', time: '03-27 23:59',new: true},
-    {title: '每周一测', time: '2017-03-31 23:59',new: true},
-    {href: '/ydrw/ckjh',title: '阅读任务', time: '05-30 23:59',new: true,name:'张老师'}*/
-			],
-			// 功能模块列表
-			/*p_list: [
-   	{href: 'tsg',title: '听书馆', src: '../../static/images/ico_dsg.png', flag: false},
-   	{href: 'hdzq',title: '活动专区', src: '../../static/images/ico_hdzq.png', flag: false}
-   /*],*/
-			jyzx_list: []
-			/*{title: '全民阅读不是一句口号', img:'../static/images/158_150401141239_1.jpeg', href:'/ydzx/xq',see:'3542',name:'一起阅读'},*/
+			s_list: [],
+			rw_list: [],
 
+			jyzx_list: []
 			//	loginA:'10099521'
 		};
 	},
@@ -5648,7 +5588,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 40 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5795,7 +5735,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 41 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5910,7 +5850,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 42 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6002,7 +5942,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 43 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6171,7 +6111,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6337,7 +6277,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6534,7 +6474,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6645,6 +6585,7 @@ exports.default = {
 			aid: '',
 			aName: '',
 			cid: '',
+			typeId: '',
 			loginA: '10099521',
 			voiceUrl: '',
 			VoicePic: '../static/images/xs_pic_yy.png',
@@ -6660,6 +6601,7 @@ exports.default = {
 			for (var i = 0; i < arrs.length; i++) {
 				this.aName = arrs[0];
 				self.ydId = arrs[1];
+				self.typeId = arrs[2];
 			}
 		} else {
 			self.ydId = self.$route.query.id;
@@ -6674,7 +6616,7 @@ exports.default = {
 			data: '',
 			success: function success(ret) {
 				if (ret.data.status == 200) {
-					console.log('-*-/-/-/', ret.data.result);
+					console.log('-*-/-/-/', ret.data);
 					self.ydBook = ret.data.result.bookInfo;
 					self.aid = ret.data.result.id;
 					// self.aid = ret.data.result.id;
@@ -6694,15 +6636,14 @@ exports.default = {
 			// console.log(this.ydBook);
 			var arr = [];
 			this.cid = this.ydBook[v].bookId;
-			console.log('test', this.cid);
+			// console.log('test',this.cid);
 			arr.push(this.ydBook[v].bookName);
 			arr.push(this.ydBook[v].bookId);
 			arr.push(this.aid);
 			this.$router.push('/ydrw/cgsb?bId=' + arr);
 		},
 		playVoice: function playVoice(n, v) {
-
-			console.log(n[v].feeling.voice);
+			// console.log(n[v].feeling.voice);
 			var self = this;
 			self.sjevent.PlayVoice(n[v].feeling.voice, function (ret) {
 				if (self.VoicePic == self.checkYes && ret == 'ok') {
@@ -6713,9 +6654,163 @@ exports.default = {
 			});
 		},
 		ckxq: function ckxq() {
-			this.$router.push('/ydrw/ckxq?cid=' + this.ydId + '&loginA=' + this.loginA);
+			this.$router.push('/ydrw/ckjh?planId=' + this.ydId + '&type=' + this.typeId);
+			// '/ydrw/ckjh?planId='+rw.planId+'&type='+typeId
+
 		}
 	}
+};
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+var storage = weex.requireModule('storage');
+var modal = weex.requireModule('modal');
+exports.default = {
+	data: function data() {
+		return {
+			b_syn: true,
+			lt: false,
+			book: {/*src: '../static/images/book02.png', btime: '2017-01-01', etime: '2017-01-02', bname: '飞来的伤心梅', bath: '张琴声', bpre: '北京邮电',isbn:'9787547705063'*/},
+			wwc: '',
+			zrw: '',
+			loginA: '',
+			rwId: '',
+			bId: '',
+			rwtype: 0,
+			bName: '',
+			feeling: '',
+			test: ''
+
+		};
+	},
+
+	methods: {
+		goback: function goback() {
+			this.$router.go(-1);
+		},
+		openFx: function openFx() {
+			this.$router.push('/ydrw_xq/ydrw_xq_hare');
+		},
+		opendhfx: function opendhfx(path) {
+			this.$router.push(path);
+		},
+		openwdfx: function openwdfx(path) {
+			this.$router.push(path);
+		},
+		openkscg: function openkscg() {
+			this.$router.push('/ydrw/kscg?bid=' + this.bId + '&bname=' + this.bName + '&pid=' + this.rwId);
+		},
+		openwdcg: function openwdcg() {
+			this.$router.push('/ydrw/wdcg');
+		}
+	},
+	created: function created() {
+
+		var self = this;
+		this.zrw = self.$route.query.access;
+		self.feeling = self.$route.query.feelingFinish;
+		self.test = self.$route.query.testFinish;
+
+		this.loginA = self.$route.query.loginAccount;
+		this.rwId = self.$route.query.planId;
+		this.bId = self.$route.query.bookId;
+		this.rwtype = self.$route.query.type;
+		this.bName = self.$route.query.bookName;
+
+		/* console.log('任务id'+self.rwId);
+  console.log('学生账号'+self.loginA);
+  console.log('书本id'+self.$route.query.bookId);
+  console.log('类型'+self.$route.query.type);
+  console.log('书名'+self.$route.query.bookName);
+   console.log(self.wwc);
+   console.log(self.zrw);*/
+		// console.log(self.$route.query.bookId);
+		_Utils2.default.fetch({
+			url: '/app/book/' + self.$route.query.bookId + '?type=' + self.$route.query.type,
+			method: 'GET',
+			type: 'json',
+			//data:'loginAccount=12&token=123123&id=1',
+			success: function success(ret) {
+				var books = ret.data.result;
+				self.book = eval(books);
+				//console.log(self.book);
+			}
+		});
+	}
+
 };
 
 /***/ }),
@@ -6735,8 +6830,6 @@ var _Utils2 = _interopRequireDefault(_Utils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//
-//
 //
 //
 //
@@ -6944,158 +7037,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
-
-var storage = weex.requireModule('storage');
-var modal = weex.requireModule('modal');
-exports.default = {
-	data: function data() {
-		return {
-			b_syn: true,
-			lt: false,
-			book: {/*src: '../static/images/book02.png', btime: '2017-01-01', etime: '2017-01-02', bname: '飞来的伤心梅', bath: '张琴声', bpre: '北京邮电',isbn:'9787547705063'*/},
-			wwc: '',
-			zrw: '',
-			loginA: '',
-			rwId: '',
-			bId: '',
-			rwtype: 0,
-			bName: '',
-			feeling: '',
-			test: ''
-
-		};
-	},
-
-	methods: {
-		goback: function goback() {
-			this.$router.go(-1);
-		},
-		openFx: function openFx() {
-			this.$router.push('/ydrw_xq/ydrw_xq_hare');
-		},
-		opendhfx: function opendhfx(path) {
-			this.$router.push(path);
-		},
-		openwdfx: function openwdfx(path) {
-			this.$router.push(path);
-		},
-		openkscg: function openkscg() {
-			this.$router.push('/ydrw/kscg?bid=' + this.bId + '&bname=' + this.bName + '&pid=' + this.rwId);
-		},
-		openwdcg: function openwdcg() {
-			this.$router.push('/ydrw/wdcg');
-		}
-	},
-	created: function created() {
-
-		var self = this;
-		this.zrw = self.$route.query.access;
-		self.feeling = self.$route.query.feelingFinish;
-		self.test = self.$route.query.testFinish;
-
-		this.loginA = self.$route.query.loginAccount;
-		this.rwId = self.$route.query.planId;
-		this.bId = self.$route.query.bookId;
-		this.rwtype = self.$route.query.type;
-		this.bName = self.$route.query.bookName;
-
-		/* console.log('任务id'+self.rwId);
-  console.log('学生账号'+self.loginA);
-  console.log('书本id'+self.$route.query.bookId);
-  console.log('类型'+self.$route.query.type);
-  console.log('书名'+self.$route.query.bookName);
-   console.log(self.wwc);
-   console.log(self.zrw);*/
-		// console.log(self.$route.query.bookId);
-		_Utils2.default.fetch({
-			url: '/app/book/' + self.$route.query.bookId + '?type=' + self.$route.query.type,
-			method: 'GET',
-			type: 'json',
-			//data:'loginAccount=12&token=123123&id=1',
-			success: function success(ret) {
-				var books = ret.data.result;
-				self.book = eval(books);
-				//console.log(self.book);
-			}
-		});
-	}
-
-};
-
-/***/ }),
-/* 49 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _Utils = __webpack_require__(0);
-
-var _Utils2 = _interopRequireDefault(_Utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 
@@ -7168,22 +7109,10 @@ exports.default = {
 				}
 			}
 		},
-		goback: function goback() {
-			//this.$router.go(-1);
-			this.$router.push('/index');
-		},
-		onpeKstfb: function onpeKstfb() {
-			this.$router.push('/kstfb');
-		},
-		openYdrw: function openYdrw() {
-			this.$router.push('/ydrw');
-		},
-		openRwxq: function openRwxq(path) {
-			//this.$router.push('/ydrw/ckjh');
+		jump: function jump(path) {
 			this.$router.push(path);
 		},
 		dataLoad: function dataLoad() {
-
 			if (!this.flag) {
 				this.rw_list = [];
 				this.page = 1;
@@ -7241,7 +7170,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 50 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7424,7 +7353,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 51 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7440,227 +7369,7 @@ var _Utils2 = _interopRequireDefault(_Utils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-var storage = weex.requireModule('storage');
-var modal = weex.requireModule('modal');
-exports.default = {
-	data: function data() {
-		return {
-			requirementsVoice: "",
-			beginDate: "",
-			reason: "",
-			loginAccount: "",
-			requirements: "",
-			readState: '',
-			access: "",
-			teacher: {
-				TEA_NAME: "",
-				SCHOOL_NAME: "",
-				HEAD_URL: "",
-				SCHOOL_ID: ""
-			},
-			books: [
-				/* {
-        toast: 0,
-        planBookId: "fa9eaf6de8cf4b259d9877e3c581b2e9",
-        bookGrade: "五年级",
-        author: "林汉达",
-        isbn: "9787500791362",
-        pic: "http://yqyd-image.img-cn-hangzhou.aliyuncs.com/6141_50.jpg",
-        type: 1,
-        press: "中国少年儿童出版社",
-        readCount: 4278,
-        bookName: "中国历史故事集",
-        bookType: "儿童故事",
-        desc: null
-      }*/
-			],
-			endDate: "",
-			planName: "",
-			voiceReason: "",
-			loginA: '',
-			rwId: ''
-		};
-	},
-
-	methods: {
-		goback: function goback() {
-			this.$router.go(-1);
-		},
-		openYdxq: function openYdxq(path) {
-			this.$router.push(path);
-		}
-	},
-	created: function created() {
-		var self = this;
-		console.log('ssssss', self.$route.query.cid);
-		self.loginA = self.$route.query.loginA;
-		self.rwId = self.$route.query.cid;
-		/*console.log('任务id'+self.rwId);
-  console.log('学生账号'+self.loginA);*/
-
-		_Utils2.default.fetch({
-			url: '/app/plan/review?planId=' + self.$route.query.cid + '&loginAccount=' + this.loginA,
-			method: 'POST',
-			type: 'json',
-			//data:'loginAccount=12&token=123123&id=1',
-			success: function success(ret) {
-				console.log(ret);
-				var retdata = ret.data.result;
-				self.beginDate = retdata.beginDate;
-				//console.log(self.beginDate);
-				self.requirementsVoice = retdata.requirementsVoice;
-				self.beginDate = retdata.beginDate;
-				self.reason = retdata.reason;
-				self.loginAccount = retdata.loginAccount;
-				self.requirements = retdata.requirements;
-				self.readState = retdata.readState;
-				self.access = retdata.access;
-				self.endDate = retdata.endDate;
-				self.planName = retdata.planName;
-				self.voiceReason = retdata.voiceReason;
-				self.teacher = eval(retdata.teacher);
-				self.books = eval(retdata.books);
-			}
-		});
-	},
-	filters: {
-		types: function types(v) {
-			if (v == '1') {
-				return '做测评';
-			} else if (v == '2') {
-				return '读后分享';
-			} else if (v == '1,2') {
-				return '做测评,读后分享';
-			}
-		},
-		ydName: function ydName(n) {
-			if (n == 1) {
-				return '完成阅读';
-			}
-		}
-	}
-};
-
-/***/ }),
-/* 52 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _Utils = __webpack_require__(0);
-
-var _Utils2 = _interopRequireDefault(_Utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 //
 //
@@ -7763,7 +7472,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var storage = weex.requireModule('storage');
 var modal = weex.requireModule('modal');
-exports.default = {
+exports.default = _defineProperty({
 	data: function data() {
 		return {
 			VoicePic: '../static/images/xs_pic_yy.png',
@@ -7885,10 +7594,19 @@ exports.default = {
 			}
 		}
 	}
-};
+}, 'filters', {
+	filterHTMLs: function filterHTMLs(val) {
+		if (val) {
+			// debugger
+			var newVal = val.replace(/<p>/g, '').replace(/<\/p>/g, '').replace(/<br\/>/g, '');
+			console.log(newVal);
+			return newVal;
+		}
+	}
+});
 
 /***/ }),
-/* 53 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8106,7 +7824,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 54 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8290,7 +8008,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 55 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8483,7 +8201,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 56 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8641,7 +8359,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 57 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8777,7 +8495,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 58 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8938,7 +8656,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 59 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9109,7 +8827,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 60 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9209,7 +8927,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 61 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9280,10 +8998,23 @@ exports.default = {
 };
 
 /***/ }),
-/* 62 */
+/* 60 */
 /***/ (function(module, exports) {
 
 module.exports = {
+  "loading": {
+    "width": 750,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "indicator": {
+    "color": "#888888",
+    "fontSize": 42,
+    "paddingTop": 20,
+    "paddingBottom": 20,
+    "textAlign": "center"
+  },
   "top": {
     "width": 750,
     "height": 88,
@@ -9303,121 +9034,403 @@ module.exports = {
     "width": 37,
     "height": 37
   },
-  "content": {
-    "width": 750,
-    "paddingRight": 25,
-    "paddingLeft": 25,
-    "paddingTop": 30,
-    "backgroundColor": "#ffffff",
-    "paddingBottom": 120
-  },
-  "state": {
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#e7e7e7",
-    "borderBottomStyle": "solid",
-    "padding": 20
-  },
-  "s_tit": {
-    "fontSize": 30,
-    "color": "#777777"
-  },
-  "count": {
-    "fontSize": 34,
-    "color": "#666666"
-  },
-  "question": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "width": 750,
-    "height": 88,
-    "fontSize": 36,
-    "color": "#333333"
-  },
-  "answer": {
-    "marginTop": 25,
-    "fontSize": 34,
-    "color": "#808080",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "padding": 20,
-    "backgroundColor": "#fafafa",
-    "borderRadius": 30,
-    "borderWidth": 1,
-    "borderStyle": "solid",
-    "borderColor": "#e7e7e7"
-  },
-  "yes": {
-    "backgroundColor": "#40cc8b",
-    "color": "#ffffff"
-  },
-  "no": {
-    "backgroundColor": "#f66c6c",
-    "color": "#ffffff",
-    "fontSize": 34
-  },
-  "footer": {
-    "position": "fixed",
-    "bottom": 0,
-    "left": 0,
-    "width": 750,
-    "height": 100,
+  "tab": {
     "flexDirection": "row",
     "alignItems": "center",
     "justifyContent": "center",
-    "backgroundColor": "#6fa1e8"
-  },
-  "list": {
-    "marginBottom": 20,
+    "height": 70,
+    "marginLeft": 60,
+    "marginRight": 60,
+    "marginTop": 19,
+    "marginBottom": 19,
+    "borderWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#d9e8fd",
+    "borderRadius": 40,
     "backgroundColor": "#ffffff"
   },
-  "t_q": {
-    "width": 750,
-    "height": 140,
+  "tab_li": {
+    "width": 315,
+    "textAlign": "center",
+    "borderRadius": 40,
+    "height": 70,
     "flexDirection": "row",
     "alignItems": "center",
-    "justifyContent": "flex-end",
-    "padding": 30,
+    "justifyContent": "center"
+  },
+  "info_tit": {
+    "width": 750,
+    "height": 70,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center",
     "borderBottomWidth": 1,
-    "borderRightStyle": "solid",
-    "borderBottomColor": "#e7e7e7"
-  },
-  "t_q_btn": {
-    "flexDirection": "row",
-    "justifyContent": "space-between",
-    "alignItems": "center",
-    "width": 200,
-    "height": 80,
-    "paddingRight": 30,
-    "paddingLeft": 30,
-    "borderRadius": 50,
-    "marginRight": 40,
-    "backgroundColor": "#70a1e8"
-  },
-  "j_cnt": {
-    "display": "none",
-    "paddingTop": 26,
-    "paddingBottom": 26,
-    "paddingLeft": 30,
-    "paddingRight": 30,
-    "width": 750,
-    "borderBottomColor": "#e6e6e6",
     "borderBottomStyle": "solid",
-    "borderBottomWidth": 1
+    "borderBottomColor": "#f6f6f6"
   },
-  "ans": {
-    "fontSize": 33,
+  "info_tit_list": {
+    "fontSize": 32,
+    "color": "#666666",
+    "flexDirection": "row",
+    "textAlign": "center"
+  },
+  "info_l_s": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "width": 750,
+    "height": 120,
+    "borderBottomColor": "#f1f1f1",
+    "borderBottomWidth": 1,
+    "borderBottomStyle": "solid"
+  },
+  "info_flex1": {
+    "flex": 1,
+    "flexDirection": "row",
+    "justifyContent": "center"
+  },
+  "info_flex2": {
+    "flex": 2,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "info_flex3": {
+    "flex": 3,
+    "flexDirection": "row",
+    "alignItems": "center"
+  },
+  "pic_ph": {
+    "width": 43,
+    "height": 53
+  },
+  "o_nbr": {
+    "flexDirection": "row",
+    "justifyContent": "center",
+    "alignItems": "center",
+    "height": 52,
+    "fontSize": 32,
     "color": "#808080"
   },
-  "tips": {
-    "fontSize": 40,
-    "color": "#79a8ec",
-    "marginTop": 40
+  "s_tx": {
+    "float": "left",
+    "marginLeft": 10,
+    "marginRight": 20,
+    "width": 60,
+    "height": 60,
+    "borderRadius": 100
   },
-  "contents": {
-    "fontSize": 33,
-    "color": "#343434",
-    "lineHeight": 50,
-    "marginTop": 25
+  "s_name": {
+    "marginTop": 7,
+    "fontSize": 32,
+    "color": "#1a1a1a",
+    "textOverflow": "ellipsis",
+    "lines": 1
+  },
+  "designation": {
+    "marginTop": 11,
+    "fontSize": 30,
+    "color": "#ffb700"
+  },
+  "s_rank": {
+    "flex": 2,
+    "fontSize": 40,
+    "color": "#ff6600",
+    "textAlign": "center",
+    "lineHeight": 80
+  },
+  "s_grade": {
+    "color": "#ff6600",
+    "fontSize": 40
+  }
+}
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "width": 500,
+    "textAlign": "center",
+    "marginLeft": 120,
+    "marginRight": 120,
+    "textOverflow": "ellipsis",
+    "lines": 1,
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 22,
+    "left": 25,
+    "width": 44,
+    "height": 44
+  },
+  "goback_r": {
+    "position": "absolute",
+    "top": 22,
+    "right": 25,
+    "width": 44,
+    "height": 44
+  },
+  "goback_r1": {
+    "position": "absolute",
+    "top": 22,
+    "right": 100,
+    "width": 37,
+    "height": 37
+  },
+  "book": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "width": 750,
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#f1f1ee",
+    "borderBottomStyle": "solid",
+    "paddingBottom": 24,
+    "paddingTop": 24,
+    "paddingRight": 30,
+    "paddingLeft": 30,
+    "overflow": "hidden",
+    "backgroundColor": "#ffffff"
+  },
+  "b_img": {
+    "width": 180,
+    "height": 220,
+    "marginRight": 30
+  },
+  "b_info": {
+    "width": 500
+  },
+  "b_main": {
+    "fontSize": 34,
+    "color": "#666666",
+    "marginTop": 20,
+    "lineHeight": 40
+  },
+  "b_list": {
+    "fontSize": 30,
+    "color": "#666666",
+    "lineHeight": 55,
+    "textOverflow": "ellipsis",
+    "lines": 1
+  },
+  "b_name": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#e7f1ff",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "b_name1": {
+    "width": 750,
+    "color": "#666666",
+    "fontSize": 36,
+    "textOverflow": "ellipsis",
+    "lines": 1,
+    "paddingLeft": 20,
+    "paddingRight": 20
+  },
+  "b_syn": {
+    "width": 750,
+    "backgroundColor": "#ffffff"
+  },
+  "b_cnt": {
+    "width": 750,
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#f1f1ee",
+    "borderBottomStyle": "solid",
+    "paddingBottom": 60,
+    "paddingTop": 60,
+    "paddingRight": 30,
+    "paddingLeft": 30
+  },
+  "b_title": {
+    "textAlign": "left",
+    "fontSize": 32,
+    "color": "#79a8ec"
+  },
+  "jyzx": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#ffffff",
+    "marginTop": 20,
+    "borderColor": "#e7e7e7",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "paddingRight": 20,
+    "paddingLeft": 20,
+    "flexDirection": "row",
+    "alignItems": "center"
+  },
+  "jyzx_title": {
+    "color": "#70a1e8",
+    "fontSize": 36
+  },
+  "title_img": {
+    "backgroundColor": "#70a1e8",
+    "marginRight": 1,
+    "width": 5
+  },
+  "ts_label": {
+    "fontSize": 26,
+    "backgroundColor": "#d9e8fd",
+    "color": "#666666",
+    "paddingRight": 15,
+    "paddingLeft": 15,
+    "paddingTop": 4,
+    "paddingBottom": 4,
+    "margin": 10,
+    "marginLeft": 0,
+    "borderRadius": 5
+  },
+  "ico_22": {
+    "width": 40,
+    "height": 40
+  },
+  "ico_23": {
+    "width": 33,
+    "height": 40
+  },
+  "ico_24": {
+    "width": 37,
+    "height": 37
+  },
+  "footes": {
+    "position": "fixed",
+    "bottom": 0,
+    "width": 750,
+    "height": 98,
+    "backgroundColor": "#70a1e8",
+    "flexDirection": "row",
+    "justifyContent": "center",
+    "alignItems": "center"
+  },
+  "footes_btn": {
+    "flex": 2,
+    "height": 70,
+    "lineHeight": 60,
+    "marginLeft": 15,
+    "marginRight": 15,
+    "flexDirection": "row",
+    "justifyContent": "center",
+    "alignItems": "center",
+    "borderColor": "#ffffff",
+    "borderWidth": 1,
+    "borderStyle": "solid",
+    "fontSize": 34,
+    "borderRadius": 8,
+    "color": "#ffffff",
+    "textAlign": "center"
+  }
+}
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 22,
+    "left": 25,
+    "width": 44,
+    "height": 44
+  },
+  "content": {
+    "width": 750,
+    "padding": 30
+  },
+  "textarea": {
+    "width": 700,
+    "height": 417,
+    "lines": 8,
+    "borderColor": "#e6e6e6",
+    "borderStyle": "solid",
+    "borderWidth": 1,
+    "padding": 24,
+    "fontSize": 34,
+    "marginTop": 30,
+    "borderRadius": 10
+  },
+  "panel": {
+    "width": 700,
+    "height": 88,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "space-between",
+    "marginTop": 30,
+    "marginBottom": 47,
+    "paddingRight": 20
+  },
+  "photoList": {
+    "flexDirection": "row",
+    "flexWrap": "wrap",
+    "marginTop": 20
+  },
+  "photo": {
+    "width": 52,
+    "height": 52,
+    "marginLeft": 60
+  },
+  "voicePic": {
+    "flexDirection": "row",
+    "justifyContent": "flex-start",
+    "width": 41,
+    "height": 52,
+    "marginLeft": 60
+  },
+  "confirm": {
+    "width": 700,
+    "height": 100,
+    "textAlign": "center",
+    "fontSize": 39,
+    "color": "#ffffff",
+    "fontWeight": "500",
+    "borderRadius": 10,
+    "backgroundColor": "#79a8ec",
+    "lineHeight": 100,
+    "border": 0
+  },
+  "voice": {
+    "width": 270,
+    "height": 80,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "space-between",
+    "borderStyle": "solid",
+    "borderColor": "#e8e8e8",
+    "borderWidth": 1,
+    "borderRadius": 8,
+    "backgroundColor": "#f5f5f5",
+    "marginTop": 20,
+    "paddingLeft": 20,
+    "paddingRight": 20
+  },
+  "pic_yy": {
+    "width": 20,
+    "height": 30
   }
 }
 
@@ -9645,261 +9658,6 @@ module.exports = {
 
 /***/ }),
 /* 64 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "top": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "position": "absolute",
-    "top": 25,
-    "left": 25,
-    "width": 37,
-    "height": 37
-  },
-  "contents": {
-    "position": "relative",
-    "top": 88,
-    "bottom": 0,
-    "backgroundColor": "#ffffff"
-  },
-  "success": {
-    "flex": 1,
-    "alignItems": "center",
-    "paddingTop": 100,
-    "paddingRight": 20,
-    "paddingBottom": 50,
-    "paddingLeft": 20,
-    "height": 200
-  },
-  "succ_btn": {
-    "backgroundColor": "#f0f0f0",
-    "height": 100,
-    "width": 350,
-    "borderRadius": 10,
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "stars_list": {
-    "marginTop": -180,
-    "position": "relative",
-    "flexDirection": "row",
-    "alignItems": "flex-end"
-  },
-  "stars": {
-    "width": 70,
-    "height": 70
-  },
-  "stars1": {
-    "width": 100,
-    "height": 100,
-    "marginRight": 15,
-    "marginLeft": 15
-  },
-  "topic": {
-    "fontSize": 34,
-    "paddingTop": 30,
-    "paddingBottom": 30,
-    "flexDirection": "row",
-    "alignItems": "flex-end",
-    "justifyContent": "center"
-  },
-  "topic_num": {
-    "color": "#ff6600",
-    "fontSize": 50,
-    "fontWeight": "bold"
-  },
-  "integral": {
-    "fontSize": 32,
-    "paddingBottom": 50,
-    "flexDirection": "row",
-    "justifyContent": "center"
-  },
-  "footes": {
-    "position": "absolute",
-    "bottom": 0,
-    "width": 750,
-    "height": 98,
-    "backgroundColor": "#70a1e8",
-    "flexDirection": "row",
-    "alignItems": "center"
-  },
-  "footes_btn": {
-    "flex": 1,
-    "marginLeft": 30,
-    "marginRight": 30,
-    "height": 65,
-    "justifyContent": "center",
-    "alignItems": "center",
-    "borderWidth": 1,
-    "borderColor": "#ffffff",
-    "borderStyle": "solid",
-    "fontSize": 36,
-    "borderRadius": 30,
-    "color": "#70a1e8",
-    "backgroundColor": "#ffffff"
-  }
-}
-
-/***/ }),
-/* 65 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "loading": {
-    "width": 750,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "indicator": {
-    "color": "#888888",
-    "fontSize": 42,
-    "paddingTop": 20,
-    "paddingBottom": 20,
-    "textAlign": "center"
-  },
-  "top": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "position": "absolute",
-    "top": 25,
-    "left": 25,
-    "width": 37,
-    "height": 37
-  },
-  "tab": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "height": 70,
-    "marginLeft": 60,
-    "marginRight": 60,
-    "marginTop": 19,
-    "marginBottom": 19,
-    "borderWidth": 1,
-    "borderStyle": "solid",
-    "borderColor": "#d9e8fd",
-    "borderRadius": 40,
-    "backgroundColor": "#ffffff"
-  },
-  "tab_li": {
-    "width": 315,
-    "textAlign": "center",
-    "borderRadius": 40,
-    "height": 70,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "info_tit": {
-    "width": 750,
-    "height": 70,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "borderBottomWidth": 1,
-    "borderBottomStyle": "solid",
-    "borderBottomColor": "#f6f6f6"
-  },
-  "info_tit_list": {
-    "fontSize": 32,
-    "color": "#666666",
-    "flexDirection": "row",
-    "textAlign": "center"
-  },
-  "info_l_s": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "width": 750,
-    "height": 120,
-    "borderBottomColor": "#f1f1f1",
-    "borderBottomWidth": 1,
-    "borderBottomStyle": "solid"
-  },
-  "info_flex1": {
-    "flex": 1,
-    "flexDirection": "row",
-    "justifyContent": "center"
-  },
-  "info_flex2": {
-    "flex": 2,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "info_flex3": {
-    "flex": 3,
-    "flexDirection": "row",
-    "alignItems": "center"
-  },
-  "pic_ph": {
-    "width": 43,
-    "height": 53
-  },
-  "o_nbr": {
-    "flexDirection": "row",
-    "justifyContent": "center",
-    "alignItems": "center",
-    "height": 52,
-    "fontSize": 32,
-    "color": "#808080"
-  },
-  "s_tx": {
-    "float": "left",
-    "marginLeft": 10,
-    "marginRight": 20,
-    "width": 60,
-    "height": 60,
-    "borderRadius": 100
-  },
-  "s_name": {
-    "marginTop": 7,
-    "fontSize": 32,
-    "color": "#1a1a1a",
-    "textOverflow": "ellipsis",
-    "lines": 1
-  },
-  "designation": {
-    "marginTop": 11,
-    "fontSize": 30,
-    "color": "#ffb700"
-  },
-  "s_rank": {
-    "flex": 2,
-    "fontSize": 40,
-    "color": "#ff6600",
-    "textAlign": "center",
-    "lineHeight": 80
-  },
-  "s_grade": {
-    "color": "#ff6600",
-    "fontSize": 40
-  }
-}
-
-/***/ }),
-/* 66 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -10197,6 +9955,468 @@ module.exports = {
 }
 
 /***/ }),
+/* 65 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "width": 500,
+    "textAlign": "center",
+    "marginLeft": 120,
+    "marginRight": 120,
+    "textOverflow": "ellipsis",
+    "lines": 1,
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 22,
+    "left": 25,
+    "width": 44,
+    "height": 44
+  },
+  "goback_r": {
+    "position": "absolute",
+    "top": 22,
+    "right": 25,
+    "width": 44,
+    "height": 44
+  },
+  "goback_r1": {
+    "position": "absolute",
+    "top": 22,
+    "right": 100,
+    "width": 37,
+    "height": 37
+  },
+  "book": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "width": 750,
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#f1f1ee",
+    "borderBottomStyle": "solid",
+    "paddingBottom": 24,
+    "paddingTop": 24,
+    "paddingRight": 30,
+    "paddingLeft": 30,
+    "overflow": "hidden",
+    "backgroundColor": "#ffffff"
+  },
+  "b_img": {
+    "width": 180,
+    "height": 220,
+    "marginRight": 30
+  },
+  "b_info": {
+    "width": 500
+  },
+  "b_main": {
+    "fontSize": 34,
+    "color": "#666666",
+    "marginTop": 20,
+    "lineHeight": 40
+  },
+  "b_list": {
+    "fontSize": 30,
+    "color": "#666666",
+    "lineHeight": 55,
+    "textOverflow": "ellipsis",
+    "lines": 1
+  },
+  "b_name": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#e7f1ff",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "b_name1": {
+    "width": 750,
+    "color": "#666666",
+    "fontSize": 36,
+    "textOverflow": "ellipsis",
+    "lines": 1,
+    "paddingLeft": 20,
+    "paddingRight": 20
+  },
+  "b_syn": {
+    "width": 750,
+    "backgroundColor": "#ffffff"
+  },
+  "b_cnt": {
+    "width": 750,
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#f1f1ee",
+    "borderBottomStyle": "solid",
+    "paddingBottom": 60,
+    "paddingTop": 60,
+    "paddingRight": 30,
+    "paddingLeft": 30
+  },
+  "b_title": {
+    "textAlign": "left",
+    "fontSize": 32,
+    "color": "#79a8ec"
+  },
+  "jyzx": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#ffffff",
+    "marginTop": 20,
+    "borderColor": "#e7e7e7",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "paddingRight": 20,
+    "paddingLeft": 20,
+    "flexDirection": "row",
+    "alignItems": "center"
+  },
+  "jyzx_title": {
+    "color": "#70a1e8",
+    "fontSize": 36
+  },
+  "title_img": {
+    "backgroundColor": "#70a1e8",
+    "marginRight": 1,
+    "width": 5
+  },
+  "ts_label": {
+    "fontSize": 26,
+    "backgroundColor": "#d9e8fd",
+    "color": "#666666",
+    "paddingRight": 15,
+    "paddingLeft": 15,
+    "paddingTop": 4,
+    "paddingBottom": 4,
+    "margin": 10,
+    "marginLeft": 0,
+    "borderRadius": 5
+  },
+  "ico_22": {
+    "width": 40,
+    "height": 40
+  },
+  "ico_23": {
+    "width": 33,
+    "height": 40
+  },
+  "ico_24": {
+    "width": 37,
+    "height": 37
+  },
+  "footes": {
+    "position": "fixed",
+    "bottom": 0,
+    "width": 750,
+    "height": 98,
+    "backgroundColor": "#70a1e8",
+    "flexDirection": "row",
+    "justifyContent": "center",
+    "alignItems": "center"
+  },
+  "footes_btn": {
+    "flex": 2,
+    "height": 70,
+    "lineHeight": 60,
+    "marginLeft": 15,
+    "marginRight": 15,
+    "flexDirection": "row",
+    "justifyContent": "center",
+    "alignItems": "center",
+    "borderColor": "#ffffff",
+    "borderWidth": 1,
+    "borderStyle": "solid",
+    "fontSize": 34,
+    "borderRadius": 8,
+    "color": "#ffffff",
+    "textAlign": "center"
+  }
+}
+
+/***/ }),
+/* 66 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "image": {
+    "width": 750,
+    "height": 320
+  },
+  "slider": {
+    "width": 750,
+    "height": 320
+  },
+  "frame": {
+    "width": 750,
+    "height": 320,
+    "position": "relative"
+  },
+  "indicator": {
+    "width": 700,
+    "height": 20,
+    "itemColor": "#ccc",
+    "itemSelectedColor": "#f60",
+    "itemSize": 12,
+    "position": "absolute",
+    "bottom": 20,
+    "left": 20
+  },
+  "content": {
+    "marginBottom": 20,
+    "backgroundColor": "#ffffff",
+    "flexDirection": "row"
+  },
+  "cont_fx": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "space-between",
+    "height": 200,
+    "zIndex": 99
+  },
+  "fx_img": {
+    "width": 20,
+    "height": 36
+  },
+  "panel": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "width": 650,
+    "height": 200
+  },
+  "panel_li": {
+    "alignItems": "center",
+    "justifyContent": "center",
+    "width": 170
+  },
+  "icon_1": {
+    "position": "absolute",
+    "top": 0,
+    "right": 40,
+    "display": "inline-block",
+    "width": 17,
+    "height": 17,
+    "backgroundColor": "#ff6666",
+    "borderRadius": 100
+  },
+  "icon_0": {
+    "width": 88,
+    "height": 88
+  },
+  "type_title": {
+    "marginTop": 16,
+    "fontSize": 30,
+    "color": "#838383"
+  },
+  "fx_key": {
+    "width": 50,
+    "height": 200,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "jrrw": {
+    "width": 750,
+    "backgroundColor": "#ffffff",
+    "position": "relative"
+  },
+  "jrrw_title": {
+    "flexDirection": "row",
+    "height": 35,
+    "marginTop": 25,
+    "marginBottom": 25,
+    "paddingLeft": 20
+  },
+  "title_img": {
+    "backgroundColor": "#70a1e8",
+    "marginRight": 1,
+    "width": 5
+  },
+  "jrrw_list": {
+    "width": 700,
+    "height": 130,
+    "marginLeft": 24,
+    "backgroundColor": "#f1f6fd",
+    "borderStyle": "solid",
+    "borderWidth": 1,
+    "borderColor": "#d9e8fd",
+    "borderRadius": 12,
+    "marginBottom": 20,
+    "padding": 30,
+    "paddingTop": 10,
+    "paddingBottom": 10
+  },
+  "newR": {
+    "position": "absolute",
+    "right": 0,
+    "top": 0,
+    "width": 75,
+    "height": 75
+  },
+  "jrrw_info": {
+    "width": 540
+  },
+  "rw_title": {
+    "flexDirection": "row",
+    "height": 55,
+    "alignItems": "center"
+  },
+  "rw_time": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "space-between",
+    "width": 450,
+    "height": 60
+  },
+  "c_bg": {
+    "position": "absolute",
+    "right": 40,
+    "width": 100,
+    "textAlign": "center",
+    "top": 50,
+    "height": 45,
+    "lineHeight": 45,
+    "fontSize": 28,
+    "borderRadius": 8,
+    "backgroundColor": "#70a1e8",
+    "color": "#ffffff"
+  },
+  "mrzx": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "marginTop": 20,
+    "borderStyle": "solid",
+    "borderColor": "#e7e7e7",
+    "borderBottomWidth": 1,
+    "backgroundColor": "#ffffff"
+  },
+  "mrzx_l": {
+    "alignItems": "center",
+    "justifyContent": "center",
+    "height": 88,
+    "padding": 30
+  },
+  "mrzx_title": {
+    "fontSize": 36,
+    "lineHeight": 45,
+    "color": "#70a1e8"
+  },
+  "mrzx_r": {
+    "height": 180,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "mrzx_list": {
+    "width": 140,
+    "height": 180,
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "mrzx_list_tx": {
+    "width": 101,
+    "height": 101,
+    "borderRadius": 55,
+    "position": "relative",
+    "zIndex": 8
+  },
+  "name": {
+    "fontSize": 28,
+    "color": "#666666",
+    "marginTop": 15
+  },
+  "pic_hg": {
+    "width": 45,
+    "height": 45,
+    "position": "absolute",
+    "left": 45,
+    "top": -5,
+    "zIndex": 99
+  },
+  "jyzx": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#ffffff",
+    "marginTop": 20,
+    "borderStyle": "solid",
+    "borderColor": "#e7e7e7",
+    "borderBottomWidth": 1,
+    "fontSize": 36,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "space-between"
+  },
+  "yjzc_more": {
+    "fontSize": 28,
+    "color": "#838383"
+  },
+  "yjzc_more_img": {
+    "width": 16,
+    "height": 26,
+    "marginLeft": 10
+  },
+  "jyzx_list": {
+    "backgroundColor": "#ffffff",
+    "borderStyle": "solid",
+    "borderColor": "#e7e7e7",
+    "borderBottomWidth": 1,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "space-between"
+  },
+  "jyzx_l": {
+    "width": 180,
+    "height": 118,
+    "borderRadius": 3,
+    "margin": 20
+  },
+  "jyzx_r": {
+    "flex": 3,
+    "marginLeft": 20,
+    "marginRight": 10
+  },
+  "jyzx_titil": {
+    "color": "#333333",
+    "fontSize": 34,
+    "lineHeight": 60,
+    "textOverflow": "ellipsis",
+    "lines": 1
+  },
+  "record": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "space-between",
+    "height": 60
+  },
+  "type_name": {
+    "backgroundColor": "#70a1e8",
+    "color": "#ffffff",
+    "paddingLeft": 8,
+    "paddingRight": 8,
+    "paddingTop": 4,
+    "paddingBottom": 4,
+    "borderRadius": 5
+  },
+  "openYdzx": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "paddingRight": 20
+  }
+}
+
+/***/ }),
 /* 67 */
 /***/ (function(module, exports) {
 
@@ -10376,544 +10596,6 @@ module.exports = {
 /***/ (function(module, exports) {
 
 module.exports = {
-  "msg": {
-    "width": 750,
-    "height": 100,
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "position": "absolute",
-    "top": 25,
-    "left": 25,
-    "width": 37,
-    "height": 37
-  },
-  "content": {
-    "width": 750,
-    "paddingRight": 25,
-    "paddingLeft": 25,
-    "paddingTop": 30,
-    "backgroundColor": "#ffffff",
-    "paddingBottom": 120
-  },
-  "state": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "height": 88,
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#e7e7e7",
-    "borderBottomStyle": "solid"
-  },
-  "count": {
-    "fontSize": 34,
-    "color": "#666666"
-  },
-  "question": {
-    "width": 750,
-    "fontSize": 36,
-    "color": "#333333"
-  },
-  "answer": {
-    "marginTop": 25,
-    "fontSize": 34,
-    "color": "#808080",
-    "padding": 20,
-    "backgroundColor": "#fafafa",
-    "borderRadius": 30,
-    "borderWidth": 1,
-    "borderStyle": "solid",
-    "borderColor": "#e7e7e7"
-  },
-  "yes": {
-    "backgroundColor": "#40cc8b",
-    "color": "#ffffff"
-  },
-  "no": {
-    "backgroundColor": "#f66c6c",
-    "color": "#ffffff",
-    "fontSize": 34
-  },
-  "footer": {
-    "position": "fixed",
-    "bottom": 0,
-    "left": 0,
-    "width": 750,
-    "height": 100,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "backgroundColor": "#6fa1e8"
-  },
-  "list": {
-    "marginBottom": 20,
-    "backgroundColor": "#ffffff"
-  },
-  "t_q": {
-    "width": 750,
-    "height": 140,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "flex-end",
-    "padding": 30,
-    "borderBottomWidth": 1,
-    "borderRightStyle": "solid",
-    "borderBottomColor": "#e7e7e7"
-  },
-  "t_q_btn": {
-    "flexDirection": "row",
-    "justifyContent": "space-between",
-    "alignItems": "center",
-    "width": 200,
-    "height": 80,
-    "paddingRight": 30,
-    "paddingLeft": 30,
-    "borderRadius": 50,
-    "marginRight": 40,
-    "backgroundColor": "#70a1e8"
-  },
-  "j_cnt": {
-    "paddingTop": 26,
-    "paddingBottom": 26,
-    "paddingLeft": 30,
-    "paddingRight": 30,
-    "width": 750,
-    "borderBottomColor": "#e6e6e6",
-    "borderBottomStyle": "solid",
-    "borderBottomWidth": 1
-  },
-  "ans": {
-    "fontSize": 33,
-    "color": "#808080"
-  },
-  "tips": {
-    "fontSize": 40,
-    "color": "#79a8ec",
-    "marginTop": 40
-  },
-  "contents": {
-    "fontSize": 33,
-    "color": "#343434",
-    "lineHeight": 50,
-    "marginTop": 25
-  },
-  "hid": {
-    "justifyContent": "center",
-    "alignItems": "center"
-  }
-}
-
-/***/ }),
-/* 69 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "top": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "position": "absolute",
-    "top": 25,
-    "left": 25,
-    "width": 37,
-    "height": 37
-  },
-  "content": {
-    "width": 750,
-    "backgroundColor": "#ffffff",
-    "paddingBottom": 30
-  },
-  "tab": {
-    "height": 70,
-    "marginTop": 12,
-    "marginBottom": 12,
-    "marginRight": 60,
-    "marginLeft": 60,
-    "borderWidth": 2,
-    "borderStyle": "solid",
-    "borderColor": "#d9e8fd",
-    "borderRadius": 35,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "tab_li": {
-    "flex": 1,
-    "verticalAlign": "middle",
-    "height": 70,
-    "lineHeight": 65,
-    "textAlign": "center",
-    "fontSize": 34,
-    "color": "#666666"
-  },
-  "tab_yes": {
-    "backgroundColor": "#d9e8fd",
-    "borderRadius": 35,
-    "color": "#6fa1e8"
-  },
-  "type": {
-    "height": 85,
-    "width": 750,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "borderBottomStyle": "solid",
-    "borderBottomColor": "#e6e6e6",
-    "borderBottomWidth": 1,
-    "borderTopStyle": "solid",
-    "borderTopColor": "#e6e6e6",
-    "borderTopWidth": 1
-  },
-  "type_li": {
-    "position": "relative",
-    "flex": 1,
-    "paddingLeft": 40,
-    "paddingRight": 40,
-    "marginTop": 8,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between"
-  },
-  "type_img": {
-    "width": 35,
-    "height": 18
-  },
-  "type_li1": {
-    "position": "absolute",
-    "right": 0,
-    "zIndex": 99,
-    "backgroundColor": "#ffffff",
-    "width": 50,
-    "fontSize": 30,
-    "height": 284,
-    "lineHeight": 70,
-    "flexDirection": "column",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "textIndent": 0.3,
-    "borderStyle": "solid",
-    "borderColor": "#e6e6e6",
-    "borderWidth": 1,
-    "color": "#666666"
-  },
-  "type_li2": {
-    "height": 214,
-    "left": 0
-  },
-  "type_ling": {
-    "borderBottomStyle": "solid",
-    "borderBottomColor": "#e6e6e6",
-    "borderBottomWidth": 1
-  },
-  "type_yes": {
-    "backgroundColor": "#70a1e8",
-    "color": "#ffffff"
-  },
-  "jrrw": {
-    "width": 750,
-    "backgroundColor": "#ffffff",
-    "paddingTop": 30,
-    "paddingBottom": 30
-  },
-  "title_img": {
-    "backgroundColor": "#70a1e8",
-    "marginRight": 10
-  },
-  "jrrw_list": {
-    "overflow": "hidden",
-    "position": "relative",
-    "zIndex": 2,
-    "width": 710,
-    "marginLeft": 20,
-    "marginRight": 20,
-    "backgroundColor": "#f1f6fd",
-    "borderWidth": 1,
-    "borderStyle": "solid",
-    "borderColor": "#d9e8fd",
-    "borderRadius": 12,
-    "marginBottom": 20
-  },
-  "newR": {
-    "position": "absolute",
-    "top": -2,
-    "right": -2,
-    "width": 75,
-    "height": 75
-  },
-  "jrrw_info": {
-    "width": 540,
-    "paddingTop": 20,
-    "paddingBottom": 20,
-    "paddingLeft": 30,
-    "paddingRight": 30
-  },
-  "rw_title": {
-    "fontSize": 34,
-    "lineHeight": 38,
-    "color": "#666666"
-  },
-  "rw_time": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between",
-    "height": 40,
-    "marginTop": 5
-  },
-  "c_bg": {
-    "position": "absolute",
-    "top": 35,
-    "right": 0,
-    "bottom": 0,
-    "width": 150,
-    "textAlign": "center"
-  },
-  "c_bg_btn": {
-    "textAlign": "center",
-    "width": 110,
-    "paddingTop": 5,
-    "paddingBottom": 5,
-    "fontSize": 28,
-    "borderRadius": 8,
-    "backgroundColor": "#70a1e8",
-    "color": "#ffffff",
-    "marginBottom": 10
-  },
-  "bj0": {
-    "backgroundColor": "#f1f6fd"
-  },
-  "bj1": {
-    "backgroundColor": "#ffffff",
-    "border": "#d9e8fd 0.01rem solid"
-  },
-  "bj2": {
-    "backgroundColor": "#ffffff"
-  },
-  "c_bg_btn2": {
-    "backgroundColor": "#ffffff",
-    "color": "#70a1e8",
-    "borderWidth": 1,
-    "borderStyle": "solid",
-    "borderColor": "#70a1e8"
-  },
-  "c_bg_btn1": {
-    "border": "#e6e6e6 1px solid",
-    "borderWidth": 1,
-    "borderStyle": "solid",
-    "borderColor": "#e6e6e6",
-    "backgroundColor": "#ffffff",
-    "color": "#999999"
-  },
-  "stateName": {
-    "position": "absolute",
-    "bottom": -20,
-    "fontSize": 22,
-    "color": "#ff6600",
-    "left": 0
-  }
-}
-
-/***/ }),
-/* 70 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "tj": {
-    "width": 750,
-    "height": 200,
-    "borderWidth": 1,
-    "borderColor": "#e7e7e7",
-    "borderStyle": "solid"
-  },
-  "top": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "position": "absolute",
-    "top": 25,
-    "left": 25,
-    "width": 37,
-    "height": 37
-  },
-  "content": {
-    "width": 750,
-    "paddingRight": 25,
-    "paddingLeft": 25,
-    "paddingTop": 30,
-    "backgroundColor": "#ffffff",
-    "paddingBottom": 120
-  },
-  "title": {
-    "paddingTop": 20,
-    "paddingBottom": 20,
-    "paddingLeft": 30,
-    "paddingRight": 30,
-    "flexDirection": "row",
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#e7e7e7",
-    "borderBottomStyle": "solid"
-  },
-  "t_l": {
-    "flex": 2
-  },
-  "t_r": {
-    "flex": 1,
-    "flexDirection": "row",
-    "justifyContent": "center",
-    "alignItems": "center",
-    "borderLeftWidth": 1,
-    "borderLeftColor": "#e7e7e7",
-    "borderLeftStyle": "solid"
-  },
-  "state": {
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#e7e7e7",
-    "borderBottomStyle": "solid",
-    "padding": 30
-  },
-  "s_tit": {
-    "fontSize": 32,
-    "color": "#777777",
-    "marginBottom": 10,
-    "fontWeight": "900"
-  },
-  "count": {
-    "fontSize": 34,
-    "color": "#666666"
-  },
-  "question": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "width": 750,
-    "height": 88,
-    "fontSize": 36,
-    "color": "#333333"
-  },
-  "answer": {
-    "marginTop": 25,
-    "fontSize": 34,
-    "color": "#808080",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "padding": 20,
-    "backgroundColor": "#fafafa",
-    "borderRadius": 30,
-    "borderWidth": 1,
-    "borderStyle": "solid",
-    "borderColor": "#e7e7e7"
-  },
-  "answer_y": {
-    "backgroundColor": "#40cc8b",
-    "color": "#ffffff"
-  },
-  "answer_n": {
-    "backgroundColor": "#f66c6c",
-    "color": "#ffffff"
-  },
-  "footer": {
-    "position": "fixed",
-    "bottom": 0,
-    "left": 0,
-    "width": 750,
-    "height": 100,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "backgroundColor": "#6fa1e8"
-  },
-  "list": {
-    "marginBottom": 20,
-    "backgroundColor": "#ffffff"
-  },
-  "t_q": {
-    "width": 750,
-    "height": 140,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "flex-end",
-    "padding": 30,
-    "borderBottomWidth": 1,
-    "borderRightStyle": "solid",
-    "borderBottomColor": "#e7e7e7"
-  },
-  "t_q_btn": {
-    "flexDirection": "row",
-    "justifyContent": "space-between",
-    "alignItems": "center",
-    "width": 200,
-    "height": 80,
-    "paddingRight": 30,
-    "paddingLeft": 30,
-    "borderRadius": 50,
-    "marginRight": 40,
-    "backgroundColor": "#70a1e8"
-  },
-  "j_cnt": {
-    "paddingTop": 26,
-    "paddingBottom": 26,
-    "paddingLeft": 30,
-    "paddingRight": 30,
-    "width": 750,
-    "borderBottomColor": "#e6e6e6",
-    "borderBottomStyle": "solid",
-    "borderBottomWidth": 1
-  },
-  "ans": {
-    "fontSize": 33,
-    "color": "#808080"
-  },
-  "tips": {
-    "fontSize": 40,
-    "color": "#79a8ec",
-    "marginTop": 40
-  },
-  "contents": {
-    "fontSize": 33,
-    "color": "#343434",
-    "lineHeight": 50,
-    "marginTop": 25
-  },
-  "hid": {
-    "justifyContent": "center",
-    "alignItems": "center"
-  }
-}
-
-/***/ }),
-/* 71 */
-/***/ (function(module, exports) {
-
-module.exports = {
   "top": {
     "width": 750,
     "height": 88,
@@ -11086,7 +10768,83 @@ module.exports = {
 }
 
 /***/ }),
-/* 72 */
+/* 69 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "width": 550,
+    "marginLeft": 100,
+    "marginRight": 100,
+    "textOverflow": "ellipsis",
+    "lines": 1,
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 25,
+    "left": 25,
+    "width": 37,
+    "height": 37
+  },
+  "send": {
+    "position": "absolute",
+    "width": 42,
+    "height": 42,
+    "top": 22,
+    "right": 27
+  },
+  "ydzx_main": {
+    "width": 750
+  },
+  "ydzx_l": {
+    "paddingTop": 20,
+    "paddingBottom": 20,
+    "paddingLeft": 30,
+    "paddingRight": 30,
+    "width": 750
+  },
+  "ydzx_img": {
+    "width": 690,
+    "height": 360,
+    "marginLeft": 30,
+    "marginRight": 30
+  },
+  "ydzx_text": {
+    "padding": 30,
+    "marginBottom": 120,
+    "backgroundColor": "#ffffff"
+  },
+  "ydzx_titil": {
+    "color": "#333333",
+    "fontSize": 40,
+    "lineHeight": 80,
+    "overflow": "hidden",
+    "textOverflow": "ellipsis",
+    "whiteSpace": "nowrap",
+    "lines": 2
+  },
+  "ydzx_time": {
+    "color": "#b7b7b7",
+    "fontSize": 35,
+    "lineHeight": 60,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "space-between"
+  }
+}
+
+/***/ }),
+/* 70 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -11231,87 +10989,11 @@ module.exports = {
 }
 
 /***/ }),
-/* 73 */
+/* 71 */
 /***/ (function(module, exports) {
 
 module.exports = {
-  "top": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
-    "width": 550,
-    "marginLeft": 100,
-    "marginRight": 100,
-    "textOverflow": "ellipsis",
-    "lines": 1,
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "position": "absolute",
-    "top": 25,
-    "left": 25,
-    "width": 37,
-    "height": 37
-  },
-  "send": {
-    "position": "absolute",
-    "width": 42,
-    "height": 42,
-    "top": 22,
-    "right": 27
-  },
-  "ydzx_main": {
-    "width": 750
-  },
-  "ydzx_l": {
-    "paddingTop": 20,
-    "paddingBottom": 20,
-    "paddingLeft": 30,
-    "paddingRight": 30,
-    "width": 750
-  },
-  "ydzx_img": {
-    "width": 690,
-    "height": 360,
-    "marginLeft": 30,
-    "marginRight": 30
-  },
-  "ydzx_text": {
-    "padding": 30,
-    "marginBottom": 120,
-    "backgroundColor": "#ffffff"
-  },
-  "ydzx_titil": {
-    "color": "#333333",
-    "fontSize": 40,
-    "lineHeight": 80,
-    "overflow": "hidden",
-    "textOverflow": "ellipsis",
-    "whiteSpace": "nowrap",
-    "lines": 2
-  },
-  "ydzx_time": {
-    "color": "#b7b7b7",
-    "fontSize": 35,
-    "lineHeight": 60,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between"
-  }
-}
-
-/***/ }),
-/* 74 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "top": {
+  "header": {
     "width": 750,
     "height": 88,
     "backgroundColor": "#6fa1e8",
@@ -11332,147 +11014,418 @@ module.exports = {
   },
   "content": {
     "width": 750,
-    "paddingRight": 25,
-    "paddingLeft": 25,
-    "paddingTop": 30,
-    "backgroundColor": "#ffffff",
-    "paddingBottom": 120
+    "paddingTop": 27,
+    "paddingBottom": 27,
+    "paddingLeft": 20,
+    "paddingRight": 20
   },
-  "title": {
-    "paddingTop": 20,
-    "paddingBottom": 20,
-    "paddingLeft": 30,
-    "paddingRight": 30,
-    "flexDirection": "row",
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#e7e7e7",
-    "borderBottomStyle": "solid"
+  "title_img": {
+    "borderLeftWidth": 10,
+    "borderLeftStyle": "solid",
+    "borderLeftColor": "#70a1e8",
+    "fontSize": 40,
+    "color": "#333333",
+    "paddingLeft": 10
+  },
+  "cnt": {
+    "backgroundColor": "#ffffff",
+    "alignItems": "stretch"
+  },
+  "top": {
+    "flexDirection": "row"
   },
   "t_l": {
     "flex": 2
   },
-  "t_r": {
-    "flex": 1,
-    "flexDirection": "row",
-    "justifyContent": "center",
-    "alignItems": "center",
-    "borderLeftWidth": 1,
-    "borderLeftColor": "#e7e7e7",
-    "borderLeftStyle": "solid"
+  "time": {
+    "color": "#808080",
+    "fontSize": 33,
+    "marginTop": 15
   },
-  "state": {
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#e7e7e7",
-    "borderBottomStyle": "solid",
-    "padding": 30
-  },
-  "s_tit": {
-    "fontSize": 32,
-    "color": "#777777",
-    "marginBottom": 10,
-    "fontWeight": "900"
-  },
-  "count": {
-    "fontSize": 34,
-    "color": "#666666"
-  },
-  "question": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "width": 750,
-    "height": 88,
-    "fontSize": 36,
+  "t_tle": {
+    "fontSize": 40,
     "color": "#333333"
   },
-  "answer": {
-    "marginTop": 25,
-    "fontSize": 34,
-    "color": "#808080",
-    "flexDirection": "row",
+  "t_r": {
+    "flex": 1,
     "alignItems": "center",
-    "padding": 20,
-    "backgroundColor": "#fafafa",
-    "borderRadius": 30,
+    "flexDirection": "row"
+  },
+  "t_r_i": {
+    "width": 17,
+    "height": 24
+  },
+  "topic": {
+    "flex": 2,
+    "borderLeftWidth": 1,
+    "borderLeftColor": "#e7e7e7",
+    "borderLeftStyle": "solid",
+    "color": "#79a8ec",
+    "textAlign": "center",
+    "lineHeight": 105,
+    "fontSize": 32
+  },
+  "acc": {
+    "flex": 1,
+    "marginTop": 20,
     "borderWidth": 1,
+    "borderColor": "#e7f1ff",
     "borderStyle": "solid",
-    "borderColor": "#e7e7e7"
+    "borderRadius": 5
   },
-  "answer_y": {
-    "backgroundColor": "#40cc8b",
-    "color": "#ffffff"
-  },
-  "answer_n": {
-    "backgroundColor": "#f66c6c",
-    "color": "#ffffff"
-  },
-  "footer": {
-    "position": "fixed",
-    "bottom": 0,
-    "left": 0,
-    "width": 750,
-    "height": 100,
-    "flexDirection": "row",
-    "alignItems": "center",
+  "book_name": {
+    "flex": 1,
+    "height": 75,
     "justifyContent": "center",
-    "backgroundColor": "#6fa1e8"
+    "fontWeight": "bold",
+    "fontSize": 34,
+    "backgroundColor": "#e7f1ff",
+    "color": "#666666",
+    "borderTopLeftRadius": 5,
+    "borderTopRightRadius": 5
   },
-  "list": {
-    "marginBottom": 20,
-    "backgroundColor": "#ffffff"
+  "book_main": {
+    "flex": 1
   },
-  "t_q": {
-    "width": 750,
-    "height": 140,
+  "book_type": {
     "flexDirection": "row",
     "alignItems": "center",
-    "justifyContent": "flex-end",
-    "padding": 30,
+    "justifyContent": "space-between",
+    "paddingTop": 30,
+    "paddingRight": 20,
+    "paddingBottom": 10,
+    "paddingLeft": 20,
+    "fontSize": 34
+  },
+  "b_t_g": {
+    "flexDirection": "row",
+    "alignItems": "center"
+  },
+  "cg_btn": {
+    "backgroundColor": "#6fa1e8",
+    "color": "#ffffff",
+    "fontSize": 28,
+    "paddingTop": 10,
+    "paddingRight": 15,
+    "paddingBottom": 10,
+    "paddingLeft": 15,
+    "borderRadius": 8
+  },
+  "book_type1": {
+    "flex": 1,
+    "marginLeft": 20,
+    "marginRight": 20,
+    "height": 88,
+    "alignItems": "center",
+    "fontSize": 30,
+    "color": "#666666",
+    "flexDirection": "row",
     "borderBottomWidth": 1,
-    "borderRightStyle": "solid",
+    "borderBottomStyle": "solid",
     "borderBottomColor": "#e7e7e7"
   },
-  "t_q_btn": {
+  "b_t_c": {
+    "flex": 1,
+    "justifyContent": "center",
+    "flexDirection": "row"
+  },
+  "remark": {
+    "flex": 1,
     "flexDirection": "row",
-    "justifyContent": "space-between",
+    "paddingRight": 30,
+    "paddingBottom": 27,
+    "paddingLeft": 30
+  },
+  "r_info": {
+    "fontSize": 32,
+    "color": "#666666",
+    "float": "left",
+    "marginTop": 20
+  },
+  "title": {
+    "height": 75,
+    "alignItems": "flex-start",
+    "justifyContent": "center",
+    "paddingLeft": 20,
+    "fontSize": 33
+  },
+  "lstj_l": {
+    "flexDirection": "column",
+    "width": 150
+  },
+  "lstj_lpic": {
+    "width": 100,
+    "height": 100,
+    "borderRadius": 50
+  },
+  "lstj_lname": {
+    "position": "relative",
+    "backgroundColor": "#70a1e8",
+    "fontSize": 24,
+    "width": 110,
+    "paddingTop": 6,
+    "paddingBottom": 6,
+    "borderRadius": 5,
+    "color": "#ffffff",
+    "top": -25,
+    "left": -8,
+    "textAlign": "center",
+    "overflow": "hidden",
+    "textOverflow": "ellipsis",
+    "whiteSpace": "nowrap"
+  },
+  "ydrw_lump_comt": {
+    "flex": 3,
+    "fontSize": 28,
+    "marginTop": 20,
+    "marginBottom": 20,
+    "lineHeight": 40,
+    "color": "#666666"
+  },
+  "yy_btn": {
+    "height": 70,
+    "borderWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#666666",
+    "borderRadius": 10,
+    "flexDirection": "row",
     "alignItems": "center",
-    "width": 200,
-    "height": 80,
-    "paddingRight": 30,
-    "paddingLeft": 30,
-    "borderRadius": 50,
-    "marginRight": 40,
-    "backgroundColor": "#70a1e8"
+    "justifyContent": "space-between",
+    "paddingLeft": 20,
+    "paddingRight": 20
   },
-  "j_cnt": {
-    "display": "none",
-    "paddingTop": 26,
-    "paddingBottom": 26,
-    "paddingLeft": 30,
-    "paddingRight": 30,
-    "width": 750,
-    "borderBottomColor": "#e6e6e6",
-    "borderBottomStyle": "solid",
-    "borderBottomWidth": 1
-  },
-  "ans": {
-    "fontSize": 33,
-    "color": "#808080"
-  },
-  "tips": {
-    "fontSize": 40,
+  "yy_t": {
     "color": "#79a8ec",
-    "marginTop": 40
+    "fontSize": 30
   },
-  "contents": {
-    "fontSize": 33,
-    "color": "#343434",
-    "lineHeight": 50,
-    "marginTop": 25
+  "yy_i": {
+    "width": 70,
+    "height": 60
   }
 }
 
 /***/ }),
-/* 75 */
+/* 72 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 25,
+    "left": 25,
+    "width": 37,
+    "height": 37
+  },
+  "main": {
+    "backgroundColor": "#ffffff",
+    "width": 750
+  },
+  "title": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "width": 750,
+    "height": 90,
+    "backgroundColor": "#ffffff"
+  },
+  "content": {
+    "width": 750,
+    "paddingLeft": 35,
+    "paddingBottom": 40,
+    "paddingRight": 35,
+    "backgroundColor": "#ffffff",
+    "borderBottomWidth": 1,
+    "borderBottomStyle": "solid",
+    "borderBottomColor": "#e7e7e7"
+  },
+  "grade": {
+    "textAlign": "right",
+    "fontSize": 46,
+    "color": "#f66c6c",
+    "fontWeight": "600",
+    "marginTop": 80,
+    "marginRight": 40
+  },
+  "tlt": {
+    "width": 750,
+    "padding": 30,
+    "fontSize": 36,
+    "color": "#999999",
+    "backgroundColor": "#f3f3ef"
+  },
+  "remark": {
+    "width": 750,
+    "padding": 30,
+    "flexDirection": "row"
+  },
+  "remark_pic": {
+    "width": 80,
+    "height": 80,
+    "borderRadius": 40,
+    "float": "left",
+    "marginRight": 20
+  },
+  "name": {
+    "marginRight": 25,
+    "float": "left",
+    "fontSize": 35,
+    "color": "#79a8ec",
+    "height": 80,
+    "lineHeight": 80
+  },
+  "photoList": {
+    "flexDirection": "row",
+    "flexWrap": "wrap",
+    "marginTop": 20
+  },
+  "voice": {
+    "width": 270,
+    "height": 80,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "space-between",
+    "borderStyle": "solid",
+    "borderColor": "#e8e8e8",
+    "borderWidth": 1,
+    "borderRadius": 8,
+    "backgroundColor": "#f5f5f5",
+    "marginTop": 20,
+    "paddingLeft": 20,
+    "paddingRight": 20
+  },
+  "pic_yy": {
+    "width": 20,
+    "height": 30
+  },
+  "r_info": {
+    "fontSize": 34,
+    "color": "#333333",
+    "marginTop": 20
+  }
+}
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 25,
+    "left": 25,
+    "width": 37,
+    "height": 37
+  },
+  "contents": {
+    "position": "relative",
+    "top": 88,
+    "bottom": 0,
+    "backgroundColor": "#ffffff"
+  },
+  "success": {
+    "flex": 1,
+    "alignItems": "center",
+    "paddingTop": 100,
+    "paddingRight": 20,
+    "paddingBottom": 50,
+    "paddingLeft": 20,
+    "height": 200
+  },
+  "succ_btn": {
+    "backgroundColor": "#f0f0f0",
+    "height": 100,
+    "width": 350,
+    "borderRadius": 10,
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "stars_list": {
+    "marginTop": -180,
+    "position": "relative",
+    "flexDirection": "row",
+    "alignItems": "flex-end"
+  },
+  "stars": {
+    "width": 70,
+    "height": 70
+  },
+  "stars1": {
+    "width": 100,
+    "height": 100,
+    "marginRight": 15,
+    "marginLeft": 15
+  },
+  "topic": {
+    "fontSize": 34,
+    "paddingTop": 30,
+    "paddingBottom": 30,
+    "flexDirection": "row",
+    "alignItems": "flex-end",
+    "justifyContent": "center"
+  },
+  "topic_num": {
+    "color": "#ff6600",
+    "fontSize": 50,
+    "fontWeight": "bold"
+  },
+  "integral": {
+    "fontSize": 32,
+    "paddingBottom": 50,
+    "flexDirection": "row",
+    "justifyContent": "center"
+  },
+  "footes": {
+    "position": "absolute",
+    "bottom": 0,
+    "width": 750,
+    "height": 98,
+    "backgroundColor": "#70a1e8",
+    "flexDirection": "row",
+    "alignItems": "center"
+  },
+  "footes_btn": {
+    "flex": 1,
+    "marginLeft": 30,
+    "marginRight": 30,
+    "height": 65,
+    "justifyContent": "center",
+    "alignItems": "center",
+    "borderWidth": 1,
+    "borderColor": "#ffffff",
+    "borderStyle": "solid",
+    "fontSize": 36,
+    "borderRadius": 30,
+    "color": "#70a1e8",
+    "backgroundColor": "#ffffff"
+  }
+}
+
+/***/ }),
+/* 74 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -11722,7 +11675,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 76 */
+/* 75 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -12013,1388 +11966,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 77 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "image": {
-    "width": 750,
-    "height": 320
-  },
-  "slider": {
-    "width": 750,
-    "height": 320
-  },
-  "frame": {
-    "width": 750,
-    "height": 320,
-    "position": "relative"
-  },
-  "indicator": {
-    "width": 700,
-    "height": 20,
-    "itemColor": "#ccc",
-    "itemSelectedColor": "#f60",
-    "itemSize": 12,
-    "position": "absolute",
-    "bottom": 20,
-    "left": 20
-  },
-  "content": {
-    "marginBottom": 20,
-    "height": 200,
-    "backgroundColor": "#ffffff",
-    "flexDirection": "row"
-  },
-  "cont_fx": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between",
-    "height": 200,
-    "zIndex": 99
-  },
-  "fx_img": {
-    "width": 20,
-    "height": 36
-  },
-  "panel": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "width": 650,
-    "height": 200
-  },
-  "panel_li": {
-    "alignItems": "center",
-    "justifyContent": "center",
-    "width": 170
-  },
-  "icon_1": {
-    "position": "absolute",
-    "top": 0,
-    "right": 40,
-    "display": "inline-block",
-    "width": 17,
-    "height": 17,
-    "backgroundColor": "#ff6666",
-    "borderRadius": 100
-  },
-  "icon_0": {
-    "width": 88,
-    "height": 88
-  },
-  "type_title": {
-    "marginTop": 16,
-    "fontSize": 30,
-    "color": "#838383"
-  },
-  "fx_key": {
-    "width": 50,
-    "height": 200,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "jrrw": {
-    "width": 750,
-    "backgroundColor": "#ffffff",
-    "position": "relative"
-  },
-  "jrrw_title": {
-    "flexDirection": "row",
-    "height": 35,
-    "marginTop": 25,
-    "marginBottom": 25,
-    "paddingLeft": 20
-  },
-  "title_img": {
-    "backgroundColor": "#70a1e8",
-    "marginRight": 1,
-    "width": 5
-  },
-  "jrrw_list": {
-    "width": 700,
-    "height": 130,
-    "marginLeft": 24,
-    "backgroundColor": "#f1f6fd",
-    "borderStyle": "solid",
-    "borderWidth": 1,
-    "borderColor": "#d9e8fd",
-    "borderRadius": 12,
-    "marginBottom": 20,
-    "padding": 30,
-    "paddingTop": 10,
-    "paddingBottom": 10
-  },
-  "newR": {
-    "position": "absolute",
-    "right": 0,
-    "top": 0,
-    "width": 75,
-    "height": 75
-  },
-  "jrrw_info": {
-    "width": 540
-  },
-  "rw_title": {
-    "flexDirection": "row",
-    "height": 55,
-    "alignItems": "center"
-  },
-  "rw_time": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between",
-    "width": 450,
-    "height": 60
-  },
-  "c_bg": {
-    "position": "absolute",
-    "right": 40,
-    "width": 100,
-    "textAlign": "center",
-    "top": 50,
-    "height": 45,
-    "lineHeight": 45,
-    "fontSize": 28,
-    "borderRadius": 8,
-    "backgroundColor": "#70a1e8",
-    "color": "#ffffff"
-  },
-  "mrzx": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "marginTop": 20,
-    "borderStyle": "solid",
-    "borderColor": "#e7e7e7",
-    "borderBottomWidth": 1,
-    "backgroundColor": "#ffffff"
-  },
-  "mrzx_l": {
-    "alignItems": "center",
-    "justifyContent": "center",
-    "height": 88,
-    "padding": 30
-  },
-  "mrzx_title": {
-    "fontSize": 36,
-    "lineHeight": 45,
-    "color": "#70a1e8"
-  },
-  "mrzx_r": {
-    "height": 180,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "mrzx_list": {
-    "width": 140,
-    "height": 180,
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "mrzx_list_tx": {
-    "width": 101,
-    "height": 101,
-    "borderRadius": 55,
-    "position": "relative",
-    "zIndex": 8
-  },
-  "name": {
-    "fontSize": 28,
-    "color": "#666666",
-    "marginTop": 15
-  },
-  "pic_hg": {
-    "width": 45,
-    "height": 45,
-    "position": "absolute",
-    "left": 45,
-    "top": -5,
-    "zIndex": 99
-  },
-  "jyzx": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#ffffff",
-    "marginTop": 20,
-    "borderStyle": "solid",
-    "borderColor": "#e7e7e7",
-    "borderBottomWidth": 1,
-    "fontSize": 36,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between"
-  },
-  "yjzc_more": {
-    "fontSize": 28,
-    "color": "#838383"
-  },
-  "yjzc_more_img": {
-    "width": 16,
-    "height": 26,
-    "marginLeft": 10
-  },
-  "jyzx_list": {
-    "backgroundColor": "#ffffff",
-    "borderStyle": "solid",
-    "borderColor": "#e7e7e7",
-    "borderBottomWidth": 1,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between"
-  },
-  "jyzx_l": {
-    "width": 180,
-    "height": 118,
-    "borderRadius": 3,
-    "margin": 20
-  },
-  "jyzx_r": {
-    "flex": 3,
-    "marginLeft": 20,
-    "marginRight": 10
-  },
-  "jyzx_titil": {
-    "color": "#333333",
-    "fontSize": 34,
-    "lineHeight": 60,
-    "textOverflow": "ellipsis",
-    "lines": 1
-  },
-  "record": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between",
-    "height": 60
-  },
-  "type_name": {
-    "backgroundColor": "#70a1e8",
-    "color": "#ffffff",
-    "paddingLeft": 8,
-    "paddingRight": 8,
-    "paddingTop": 4,
-    "paddingBottom": 4,
-    "borderRadius": 5
-  },
-  "openYdzx": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "paddingRight": 20
-  }
-}
-
-/***/ }),
-/* 78 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "top": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "position": "absolute",
-    "top": 22,
-    "left": 25,
-    "width": 44,
-    "height": 44
-  },
-  "goback_r": {
-    "position": "absolute",
-    "top": 22,
-    "right": 25,
-    "width": 44,
-    "height": 44
-  },
-  "goback_r1": {
-    "position": "absolute",
-    "top": 22,
-    "right": 100,
-    "width": 44,
-    "height": 44
-  },
-  "ydrw_zt": {
-    "width": 750,
-    "height": 300,
-    "position": "relative"
-  },
-  "ydrw_zt_title": {
-    "width": 750,
-    "position": "absolute",
-    "top": 0,
-    "left": 0,
-    "paddingTop": 40,
-    "paddingBottom": 40,
-    "color": "#ffffff"
-  },
-  "ydrw_ztName": {
-    "fontSize": 45,
-    "lineHeight": 160,
-    "letterSpacing": 12,
-    "fontWeight": "bold",
-    "textAlign": "center",
-    "color": "#ffffff"
-  },
-  "ydry_ztlist": {
-    "fontSize": 32,
-    "textAlign": "center",
-    "color": "#ffffff"
-  },
-  "ydrw_lump": {
-    "borderBottomColor": "#e6e6e6",
-    "borderBottomWidth": 1,
-    "borderBottomStyle": "solid",
-    "margin": 20,
-    "marginBottom": 0,
-    "paddingBottom": 20
-  },
-  "fontsz": {
-    "fontSize": 34
-  },
-  "bookName": {
-    "fontSize": 36,
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#e7f1ff",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "textIndent": 20,
-    "color": "#666666"
-  },
-  "book_lump": {
-    "width": 750,
-    "height": 290,
-    "backgroundColor": "#ffffff",
-    "position": "relative",
-    "paddingRight": 30,
-    "paddingLeft": 30,
-    "paddingTop": 25,
-    "paddingBottom": 25,
-    "borderBottomStyle": "solid",
-    "borderBottomColor": "#ececec",
-    "borderBottomWidth": 1,
-    "flexDirection": "row"
-  },
-  "jrrw_title": {
-    "flexDirection": "row",
-    "height": 35,
-    "marginTop": 25,
-    "marginBottom": 25
-  },
-  "ydjy_l": {
-    "width": 190,
-    "height": 240,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "book_lump_img": {
-    "width": 190,
-    "height": 240
-  },
-  "book_lump_info": {
-    "width": 500,
-    "paddingLeft": 30
-  },
-  "ydjy_state": {
-    "position": "absolute",
-    "top": 20,
-    "left": 0,
-    "backgroundColor": "#ff6600",
-    "color": "#ffffff",
-    "fontSize": 26,
-    "paddingRight": 15,
-    "paddingLeft": 15,
-    "paddingTop": 5,
-    "paddingBottom": 5
-  },
-  "ydrw_lump_comt": {
-    "marginBottom": 20,
-    "marginTop": 20,
-    "lineHeight": 40,
-    "fontSize": 32,
-    "color": "#666666"
-  },
-  "lstj": {
-    "width": 750,
-    "fontSize": 32,
-    "flexDirection": "row"
-  },
-  "lstj_l": {
-    "flexDirection": "column",
-    "width": 180,
-    "paddingRight": 30,
-    "paddingLeft": 30,
-    "paddingTop": 20,
-    "paddingBottom": 20
-  },
-  "lstj_lpic": {
-    "width": 120,
-    "height": 120,
-    "borderRadius": 60,
-    "position": "relative"
-  },
-  "lstj_lname": {
-    "backgroundColor": "#70a1e8",
-    "fontSize": 32,
-    "padding": 10,
-    "paddingTop": 5,
-    "paddingBottom": 5,
-    "borderRadius": 8,
-    "color": "#ffffff",
-    "textAlign": "center",
-    "position": "relative",
-    "left": 0,
-    "bottom": 20
-  },
-  "b_list": {
-    "fontSize": 30,
-    "color": "#666666",
-    "lineHeight": 47,
-    "textOverflow": "ellipsis",
-    "lines": 1
-  },
-  "yerw_yd": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "height": 120
-  },
-  "ydrw_btn": {
-    "backgroundColor": "#ff6600",
-    "fontSize": 36,
-    "paddingRight": 120,
-    "paddingLeft": 120,
-    "paddingTop": 20,
-    "paddingBottom": 20,
-    "borderRadius": 8,
-    "color": "#ffffff"
-  },
-  "px_smq": {
-    "width": 750,
-    "fontSize": 32,
-    "flexDirection": "row",
-    "padding": 20,
-    "backgroundColor": "#f0f0f0",
-    "marginBottom": 100
-  },
-  "ewm_name": {
-    "fontSize": 28,
-    "marginRight": 20,
-    "lineHeight": 60,
-    "alignItems": "center",
-    "paddingTop": 20
-  },
-  "pic_ewm": {
-    "width": 120,
-    "height": 120,
-    "marginRight": 30
-  },
-  "footes": {
-    "width": 750,
-    "height": 98,
-    "position": "fixed",
-    "bottom": 0,
-    "backgroundColor": "#70a1e8",
-    "flexDirection": "row",
-    "justifyContent": "center",
-    "alignItems": "center"
-  },
-  "footes_btn": {
-    "width": 450,
-    "height": 80,
-    "borderStyle": "solid",
-    "borderColor": "#ffffff",
-    "borderWidth": 1,
-    "fontSize": 36,
-    "borderRadius": 8,
-    "color": "#ffffff",
-    "textAlign": "center",
-    "lineHeight": 70
-  },
-  "voice": {
-    "width": 270,
-    "height": 80,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between",
-    "borderStyle": "solid",
-    "borderColor": "#e8e8e8",
-    "borderWidth": 1,
-    "borderRadius": 8,
-    "backgroundColor": "#f5f5f5",
-    "marginTop": 20,
-    "paddingLeft": 20,
-    "paddingRight": 20
-  },
-  "pic_yy": {
-    "width": 20,
-    "height": 30
-  },
-  "title_img": {
-    "backgroundColor": "#70a1e8",
-    "marginRight": 1,
-    "width": 5
-  },
-  "ts_type": {
-    "flexDirection": "row",
-    "alignItems": "center"
-  },
-  "ts_label": {
-    "fontSize": 26,
-    "backgroundColor": "#d9e8fd",
-    "color": "#666666",
-    "paddingBottom": 4,
-    "paddingTop": 4,
-    "paddingLeft": 15,
-    "paddingRight": 15,
-    "margin": 10,
-    "marginLeft": 0,
-    "borderRadius": 5
-  },
-  "record": {
-    "flexDirection": "row",
-    "height": 45,
-    "lineHeight": 45,
-    "fontSize": 30,
-    "color": "#999999",
-    "fontFamily": "微软雅黑"
-  },
-  "record_li": {
-    "flex": 1,
-    "flexDirection": "row",
-    "alignItems": "center"
-  },
-  "pic_see": {
-    "width": 33,
-    "height": 22
-  },
-  "pic_praise": {
-    "width": 28,
-    "height": 23
-  }
-}
-
-/***/ }),
-/* 79 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "top": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
-    "width": 500,
-    "textAlign": "center",
-    "marginLeft": 120,
-    "marginRight": 120,
-    "textOverflow": "ellipsis",
-    "lines": 1,
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "position": "absolute",
-    "top": 22,
-    "left": 25,
-    "width": 44,
-    "height": 44
-  },
-  "goback_r": {
-    "position": "absolute",
-    "top": 22,
-    "right": 25,
-    "width": 44,
-    "height": 44
-  },
-  "goback_r1": {
-    "position": "absolute",
-    "top": 22,
-    "right": 100,
-    "width": 37,
-    "height": 37
-  },
-  "book": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "width": 750,
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#f1f1ee",
-    "borderBottomStyle": "solid",
-    "paddingBottom": 24,
-    "paddingTop": 24,
-    "paddingRight": 30,
-    "paddingLeft": 30,
-    "overflow": "hidden",
-    "backgroundColor": "#ffffff"
-  },
-  "b_img": {
-    "width": 180,
-    "height": 220,
-    "marginRight": 30
-  },
-  "b_info": {
-    "width": 500
-  },
-  "b_main": {
-    "fontSize": 34,
-    "color": "#666666",
-    "marginTop": 20,
-    "lineHeight": 40
-  },
-  "b_list": {
-    "fontSize": 30,
-    "color": "#666666",
-    "lineHeight": 55,
-    "textOverflow": "ellipsis",
-    "lines": 1
-  },
-  "b_name": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#e7f1ff",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "b_name1": {
-    "width": 750,
-    "color": "#666666",
-    "fontSize": 36,
-    "textOverflow": "ellipsis",
-    "lines": 1,
-    "paddingLeft": 20,
-    "paddingRight": 20
-  },
-  "b_syn": {
-    "width": 750,
-    "backgroundColor": "#ffffff"
-  },
-  "b_cnt": {
-    "width": 750,
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#f1f1ee",
-    "borderBottomStyle": "solid",
-    "paddingBottom": 60,
-    "paddingTop": 60,
-    "paddingRight": 30,
-    "paddingLeft": 30
-  },
-  "b_title": {
-    "textAlign": "left",
-    "fontSize": 32,
-    "color": "#79a8ec"
-  },
-  "jyzx": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#ffffff",
-    "marginTop": 20,
-    "borderColor": "#e7e7e7",
-    "borderBottomWidth": 1,
-    "borderStyle": "solid",
-    "paddingRight": 20,
-    "paddingLeft": 20,
-    "flexDirection": "row",
-    "alignItems": "center"
-  },
-  "jyzx_title": {
-    "color": "#70a1e8",
-    "fontSize": 36
-  },
-  "title_img": {
-    "backgroundColor": "#70a1e8",
-    "marginRight": 1,
-    "width": 5
-  },
-  "ts_label": {
-    "fontSize": 26,
-    "backgroundColor": "#d9e8fd",
-    "color": "#666666",
-    "paddingRight": 15,
-    "paddingLeft": 15,
-    "paddingTop": 4,
-    "paddingBottom": 4,
-    "margin": 10,
-    "marginLeft": 0,
-    "borderRadius": 5
-  },
-  "ico_22": {
-    "width": 40,
-    "height": 40
-  },
-  "ico_23": {
-    "width": 33,
-    "height": 40
-  },
-  "ico_24": {
-    "width": 37,
-    "height": 37
-  },
-  "footes": {
-    "position": "fixed",
-    "bottom": 0,
-    "width": 750,
-    "height": 98,
-    "backgroundColor": "#70a1e8",
-    "flexDirection": "row",
-    "justifyContent": "center",
-    "alignItems": "center"
-  },
-  "footes_btn": {
-    "flex": 2,
-    "height": 70,
-    "lineHeight": 60,
-    "marginLeft": 15,
-    "marginRight": 15,
-    "flexDirection": "row",
-    "justifyContent": "center",
-    "alignItems": "center",
-    "borderColor": "#ffffff",
-    "borderWidth": 1,
-    "borderStyle": "solid",
-    "fontSize": 34,
-    "borderRadius": 8,
-    "color": "#ffffff",
-    "textAlign": "center"
-  }
-}
-
-/***/ }),
-/* 80 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "top": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "position": "absolute",
-    "top": 22,
-    "left": 25,
-    "width": 44,
-    "height": 44
-  },
-  "content": {
-    "width": 750,
-    "padding": 30
-  },
-  "textarea": {
-    "width": 700,
-    "height": 417,
-    "lines": 8,
-    "borderColor": "#e6e6e6",
-    "borderStyle": "solid",
-    "borderWidth": 1,
-    "padding": 24,
-    "fontSize": 34,
-    "marginTop": 30,
-    "borderRadius": 10
-  },
-  "panel": {
-    "width": 700,
-    "height": 88,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between",
-    "marginTop": 30,
-    "marginBottom": 47,
-    "paddingRight": 20
-  },
-  "photoList": {
-    "flexDirection": "row",
-    "flexWrap": "wrap",
-    "marginTop": 20
-  },
-  "photo": {
-    "width": 52,
-    "height": 52,
-    "marginLeft": 60
-  },
-  "voicePic": {
-    "flexDirection": "row",
-    "justifyContent": "flex-start",
-    "width": 41,
-    "height": 52,
-    "marginLeft": 60
-  },
-  "confirm": {
-    "width": 700,
-    "height": 100,
-    "textAlign": "center",
-    "fontSize": 39,
-    "color": "#ffffff",
-    "fontWeight": "500",
-    "borderRadius": 10,
-    "backgroundColor": "#79a8ec",
-    "lineHeight": 100,
-    "border": 0
-  },
-  "voice": {
-    "width": 270,
-    "height": 80,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between",
-    "borderStyle": "solid",
-    "borderColor": "#e8e8e8",
-    "borderWidth": 1,
-    "borderRadius": 8,
-    "backgroundColor": "#f5f5f5",
-    "marginTop": 20,
-    "paddingLeft": 20,
-    "paddingRight": 20
-  },
-  "pic_yy": {
-    "width": 20,
-    "height": 30
-  }
-}
-
-/***/ }),
-/* 81 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "top": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
-    "width": 500,
-    "textAlign": "center",
-    "marginLeft": 120,
-    "marginRight": 120,
-    "textOverflow": "ellipsis",
-    "lines": 1,
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "position": "absolute",
-    "top": 22,
-    "left": 25,
-    "width": 44,
-    "height": 44
-  },
-  "goback_r": {
-    "position": "absolute",
-    "top": 22,
-    "right": 25,
-    "width": 44,
-    "height": 44
-  },
-  "goback_r1": {
-    "position": "absolute",
-    "top": 22,
-    "right": 100,
-    "width": 37,
-    "height": 37
-  },
-  "book": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "width": 750,
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#f1f1ee",
-    "borderBottomStyle": "solid",
-    "paddingBottom": 24,
-    "paddingTop": 24,
-    "paddingRight": 30,
-    "paddingLeft": 30,
-    "overflow": "hidden",
-    "backgroundColor": "#ffffff"
-  },
-  "b_img": {
-    "width": 180,
-    "height": 220,
-    "marginRight": 30
-  },
-  "b_info": {
-    "width": 500
-  },
-  "b_main": {
-    "fontSize": 34,
-    "color": "#666666",
-    "marginTop": 20,
-    "lineHeight": 40
-  },
-  "b_list": {
-    "fontSize": 30,
-    "color": "#666666",
-    "lineHeight": 55,
-    "textOverflow": "ellipsis",
-    "lines": 1
-  },
-  "b_name": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#e7f1ff",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "b_name1": {
-    "width": 750,
-    "color": "#666666",
-    "fontSize": 36,
-    "textOverflow": "ellipsis",
-    "lines": 1,
-    "paddingLeft": 20,
-    "paddingRight": 20
-  },
-  "b_syn": {
-    "width": 750,
-    "backgroundColor": "#ffffff"
-  },
-  "b_cnt": {
-    "width": 750,
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#f1f1ee",
-    "borderBottomStyle": "solid",
-    "paddingBottom": 60,
-    "paddingTop": 60,
-    "paddingRight": 30,
-    "paddingLeft": 30
-  },
-  "b_title": {
-    "textAlign": "left",
-    "fontSize": 32,
-    "color": "#79a8ec"
-  },
-  "jyzx": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#ffffff",
-    "marginTop": 20,
-    "borderColor": "#e7e7e7",
-    "borderBottomWidth": 1,
-    "borderStyle": "solid",
-    "paddingRight": 20,
-    "paddingLeft": 20,
-    "flexDirection": "row",
-    "alignItems": "center"
-  },
-  "jyzx_title": {
-    "color": "#70a1e8",
-    "fontSize": 36
-  },
-  "title_img": {
-    "backgroundColor": "#70a1e8",
-    "marginRight": 1,
-    "width": 5
-  },
-  "ts_label": {
-    "fontSize": 26,
-    "backgroundColor": "#d9e8fd",
-    "color": "#666666",
-    "paddingRight": 15,
-    "paddingLeft": 15,
-    "paddingTop": 4,
-    "paddingBottom": 4,
-    "margin": 10,
-    "marginLeft": 0,
-    "borderRadius": 5
-  },
-  "ico_22": {
-    "width": 40,
-    "height": 40
-  },
-  "ico_23": {
-    "width": 33,
-    "height": 40
-  },
-  "ico_24": {
-    "width": 37,
-    "height": 37
-  },
-  "footes": {
-    "position": "fixed",
-    "bottom": 0,
-    "width": 750,
-    "height": 98,
-    "backgroundColor": "#70a1e8",
-    "flexDirection": "row",
-    "justifyContent": "center",
-    "alignItems": "center"
-  },
-  "footes_btn": {
-    "flex": 2,
-    "height": 70,
-    "lineHeight": 60,
-    "marginLeft": 15,
-    "marginRight": 15,
-    "flexDirection": "row",
-    "justifyContent": "center",
-    "alignItems": "center",
-    "borderColor": "#ffffff",
-    "borderWidth": 1,
-    "borderStyle": "solid",
-    "fontSize": 34,
-    "borderRadius": 8,
-    "color": "#ffffff",
-    "textAlign": "center"
-  }
-}
-
-/***/ }),
-/* 82 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "top": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "position": "absolute",
-    "top": 25,
-    "left": 25,
-    "width": 37,
-    "height": 37
-  },
-  "main": {
-    "backgroundColor": "#ffffff",
-    "width": 750
-  },
-  "title": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "width": 750,
-    "height": 90,
-    "backgroundColor": "#ffffff"
-  },
-  "content": {
-    "width": 750,
-    "paddingLeft": 35,
-    "paddingBottom": 40,
-    "paddingRight": 35,
-    "backgroundColor": "#ffffff",
-    "borderBottomWidth": 1,
-    "borderBottomStyle": "solid",
-    "borderBottomColor": "#e7e7e7"
-  },
-  "grade": {
-    "textAlign": "right",
-    "fontSize": 46,
-    "color": "#f66c6c",
-    "fontWeight": "600",
-    "marginTop": 80,
-    "marginRight": 40
-  },
-  "tlt": {
-    "width": 750,
-    "padding": 30,
-    "fontSize": 36,
-    "color": "#999999",
-    "backgroundColor": "#f3f3ef"
-  },
-  "remark": {
-    "width": 750,
-    "padding": 30,
-    "flexDirection": "row"
-  },
-  "remark_pic": {
-    "width": 80,
-    "height": 80,
-    "borderRadius": 40,
-    "float": "left",
-    "marginRight": 20
-  },
-  "name": {
-    "marginRight": 25,
-    "float": "left",
-    "fontSize": 35,
-    "color": "#79a8ec",
-    "height": 80,
-    "lineHeight": 80
-  },
-  "photoList": {
-    "flexDirection": "row",
-    "flexWrap": "wrap",
-    "marginTop": 20
-  },
-  "voice": {
-    "width": 270,
-    "height": 80,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between",
-    "borderStyle": "solid",
-    "borderColor": "#e8e8e8",
-    "borderWidth": 1,
-    "borderRadius": 8,
-    "backgroundColor": "#f5f5f5",
-    "marginTop": 20,
-    "paddingLeft": 20,
-    "paddingRight": 20
-  },
-  "pic_yy": {
-    "width": 20,
-    "height": 30
-  },
-  "r_info": {
-    "fontSize": 34,
-    "color": "#333333",
-    "marginTop": 20
-  }
-}
-
-/***/ }),
-/* 83 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "header": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "position": "absolute",
-    "top": 25,
-    "left": 25,
-    "width": 37,
-    "height": 37
-  },
-  "content": {
-    "width": 750,
-    "paddingTop": 27,
-    "paddingBottom": 27,
-    "paddingLeft": 20,
-    "paddingRight": 20
-  },
-  "title_img": {
-    "borderLeftWidth": 10,
-    "borderLeftStyle": "solid",
-    "borderLeftColor": "#70a1e8",
-    "fontSize": 40,
-    "color": "#333333",
-    "paddingLeft": 10
-  },
-  "cnt": {
-    "backgroundColor": "#ffffff",
-    "alignItems": "stretch"
-  },
-  "top": {
-    "flexDirection": "row"
-  },
-  "t_l": {
-    "flex": 2
-  },
-  "time": {
-    "color": "#808080",
-    "fontSize": 33,
-    "marginTop": 15
-  },
-  "t_tle": {
-    "fontSize": 40,
-    "color": "#333333"
-  },
-  "t_r": {
-    "flex": 1,
-    "alignItems": "center",
-    "flexDirection": "row"
-  },
-  "t_r_i": {
-    "width": 17,
-    "height": 24
-  },
-  "topic": {
-    "flex": 2,
-    "borderLeftWidth": 1,
-    "borderLeftColor": "#e7e7e7",
-    "borderLeftStyle": "solid",
-    "color": "#79a8ec",
-    "textAlign": "center",
-    "lineHeight": 105,
-    "fontSize": 32
-  },
-  "acc": {
-    "flex": 1,
-    "marginTop": 20,
-    "borderWidth": 1,
-    "borderColor": "#e7f1ff",
-    "borderStyle": "solid",
-    "borderRadius": 5
-  },
-  "book_name": {
-    "flex": 1,
-    "height": 75,
-    "justifyContent": "center",
-    "fontWeight": "bold",
-    "fontSize": 34,
-    "backgroundColor": "#e7f1ff",
-    "color": "#666666",
-    "borderTopLeftRadius": 5,
-    "borderTopRightRadius": 5
-  },
-  "book_main": {
-    "flex": 1
-  },
-  "book_type": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between",
-    "paddingTop": 30,
-    "paddingRight": 20,
-    "paddingBottom": 10,
-    "paddingLeft": 20,
-    "fontSize": 34
-  },
-  "b_t_g": {
-    "flexDirection": "row",
-    "alignItems": "center"
-  },
-  "cg_btn": {
-    "backgroundColor": "#6fa1e8",
-    "color": "#ffffff",
-    "fontSize": 28,
-    "paddingTop": 10,
-    "paddingRight": 15,
-    "paddingBottom": 10,
-    "paddingLeft": 15,
-    "borderRadius": 8
-  },
-  "book_type1": {
-    "flex": 1,
-    "marginLeft": 20,
-    "marginRight": 20,
-    "height": 88,
-    "alignItems": "center",
-    "fontSize": 30,
-    "color": "#666666",
-    "flexDirection": "row",
-    "borderBottomWidth": 1,
-    "borderBottomStyle": "solid",
-    "borderBottomColor": "#e7e7e7"
-  },
-  "b_t_c": {
-    "flex": 1,
-    "justifyContent": "center",
-    "flexDirection": "row"
-  },
-  "remark": {
-    "flex": 1,
-    "flexDirection": "row",
-    "paddingRight": 30,
-    "paddingBottom": 27,
-    "paddingLeft": 30
-  },
-  "r_info": {
-    "fontSize": 32,
-    "color": "#666666",
-    "float": "left",
-    "marginTop": 20
-  },
-  "title": {
-    "height": 75,
-    "alignItems": "flex-start",
-    "justifyContent": "center",
-    "paddingLeft": 20,
-    "fontSize": 33
-  },
-  "lstj_l": {
-    "flexDirection": "column",
-    "width": 150
-  },
-  "lstj_lpic": {
-    "width": 100,
-    "height": 100,
-    "borderRadius": 50
-  },
-  "lstj_lname": {
-    "position": "relative",
-    "backgroundColor": "#70a1e8",
-    "fontSize": 24,
-    "width": 110,
-    "paddingTop": 6,
-    "paddingBottom": 6,
-    "borderRadius": 5,
-    "color": "#ffffff",
-    "top": -25,
-    "left": -8,
-    "textAlign": "center",
-    "overflow": "hidden",
-    "textOverflow": "ellipsis",
-    "whiteSpace": "nowrap"
-  },
-  "ydrw_lump_comt": {
-    "flex": 3,
-    "fontSize": 28,
-    "marginTop": 20,
-    "marginBottom": 20,
-    "lineHeight": 40,
-    "color": "#666666"
-  },
-  "yy_btn": {
-    "height": 70,
-    "borderWidth": 1,
-    "borderStyle": "solid",
-    "borderColor": "#666666",
-    "borderRadius": 10,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between",
-    "paddingLeft": 20,
-    "paddingRight": 20
-  },
-  "yy_t": {
-    "color": "#79a8ec",
-    "fontSize": 30
-  },
-  "yy_i": {
-    "width": 70,
-    "height": 60
-  }
-}
-
-/***/ }),
-/* 84 */
+/* 76 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -13498,7 +12070,852 @@ module.exports = {
 }
 
 /***/ }),
-/* 85 */
+/* 77 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 25,
+    "left": 25,
+    "width": 37,
+    "height": 37
+  },
+  "content": {
+    "width": 750,
+    "paddingRight": 25,
+    "paddingLeft": 25,
+    "paddingTop": 30,
+    "backgroundColor": "#ffffff",
+    "paddingBottom": 120
+  },
+  "title": {
+    "paddingTop": 20,
+    "paddingBottom": 20,
+    "paddingLeft": 30,
+    "paddingRight": 30,
+    "flexDirection": "row",
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#e7e7e7",
+    "borderBottomStyle": "solid"
+  },
+  "t_l": {
+    "flex": 2
+  },
+  "t_r": {
+    "flex": 1,
+    "flexDirection": "row",
+    "justifyContent": "center",
+    "alignItems": "center",
+    "borderLeftWidth": 1,
+    "borderLeftColor": "#e7e7e7",
+    "borderLeftStyle": "solid"
+  },
+  "state": {
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#e7e7e7",
+    "borderBottomStyle": "solid",
+    "padding": 30
+  },
+  "s_tit": {
+    "fontSize": 32,
+    "color": "#777777",
+    "marginBottom": 10,
+    "fontWeight": "900"
+  },
+  "count": {
+    "fontSize": 34,
+    "color": "#666666"
+  },
+  "question": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "width": 750,
+    "height": 88,
+    "fontSize": 36,
+    "color": "#333333"
+  },
+  "answer": {
+    "marginTop": 25,
+    "fontSize": 34,
+    "color": "#808080",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "padding": 20,
+    "backgroundColor": "#fafafa",
+    "borderRadius": 30,
+    "borderWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#e7e7e7"
+  },
+  "answer_y": {
+    "backgroundColor": "#40cc8b",
+    "color": "#ffffff"
+  },
+  "answer_n": {
+    "backgroundColor": "#f66c6c",
+    "color": "#ffffff"
+  },
+  "footer": {
+    "position": "fixed",
+    "bottom": 0,
+    "left": 0,
+    "width": 750,
+    "height": 100,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "backgroundColor": "#6fa1e8"
+  },
+  "list": {
+    "marginBottom": 20,
+    "backgroundColor": "#ffffff"
+  },
+  "t_q": {
+    "width": 750,
+    "height": 140,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "flex-end",
+    "padding": 30,
+    "borderBottomWidth": 1,
+    "borderRightStyle": "solid",
+    "borderBottomColor": "#e7e7e7"
+  },
+  "t_q_btn": {
+    "flexDirection": "row",
+    "justifyContent": "space-between",
+    "alignItems": "center",
+    "width": 200,
+    "height": 80,
+    "paddingRight": 30,
+    "paddingLeft": 30,
+    "borderRadius": 50,
+    "marginRight": 40,
+    "backgroundColor": "#70a1e8"
+  },
+  "j_cnt": {
+    "display": "none",
+    "paddingTop": 26,
+    "paddingBottom": 26,
+    "paddingLeft": 30,
+    "paddingRight": 30,
+    "width": 750,
+    "borderBottomColor": "#e6e6e6",
+    "borderBottomStyle": "solid",
+    "borderBottomWidth": 1
+  },
+  "ans": {
+    "fontSize": 33,
+    "color": "#808080"
+  },
+  "tips": {
+    "fontSize": 40,
+    "color": "#79a8ec",
+    "marginTop": 40
+  },
+  "contents": {
+    "fontSize": 33,
+    "color": "#343434",
+    "lineHeight": 50,
+    "marginTop": 25
+  }
+}
+
+/***/ }),
+/* 78 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 25,
+    "left": 25,
+    "width": 37,
+    "height": 37
+  },
+  "content": {
+    "width": 750,
+    "paddingRight": 25,
+    "paddingLeft": 25,
+    "paddingTop": 30,
+    "backgroundColor": "#ffffff",
+    "paddingBottom": 120
+  },
+  "state": {
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#e7e7e7",
+    "borderBottomStyle": "solid",
+    "padding": 20
+  },
+  "s_tit": {
+    "fontSize": 30,
+    "color": "#777777"
+  },
+  "count": {
+    "fontSize": 34,
+    "color": "#666666"
+  },
+  "question": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "width": 750,
+    "height": 88,
+    "fontSize": 36,
+    "color": "#333333"
+  },
+  "answer": {
+    "marginTop": 25,
+    "fontSize": 34,
+    "color": "#808080",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "padding": 20,
+    "backgroundColor": "#fafafa",
+    "borderRadius": 30,
+    "borderWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#e7e7e7"
+  },
+  "yes": {
+    "backgroundColor": "#40cc8b",
+    "color": "#ffffff"
+  },
+  "no": {
+    "backgroundColor": "#f66c6c",
+    "color": "#ffffff",
+    "fontSize": 34
+  },
+  "footer": {
+    "position": "fixed",
+    "bottom": 0,
+    "left": 0,
+    "width": 750,
+    "height": 100,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "backgroundColor": "#6fa1e8"
+  },
+  "list": {
+    "marginBottom": 20,
+    "backgroundColor": "#ffffff"
+  },
+  "t_q": {
+    "width": 750,
+    "height": 140,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "flex-end",
+    "padding": 30,
+    "borderBottomWidth": 1,
+    "borderRightStyle": "solid",
+    "borderBottomColor": "#e7e7e7"
+  },
+  "t_q_btn": {
+    "flexDirection": "row",
+    "justifyContent": "space-between",
+    "alignItems": "center",
+    "width": 200,
+    "height": 80,
+    "paddingRight": 30,
+    "paddingLeft": 30,
+    "borderRadius": 50,
+    "marginRight": 40,
+    "backgroundColor": "#70a1e8"
+  },
+  "j_cnt": {
+    "display": "none",
+    "paddingTop": 26,
+    "paddingBottom": 26,
+    "paddingLeft": 30,
+    "paddingRight": 30,
+    "width": 750,
+    "borderBottomColor": "#e6e6e6",
+    "borderBottomStyle": "solid",
+    "borderBottomWidth": 1
+  },
+  "ans": {
+    "fontSize": 33,
+    "color": "#808080"
+  },
+  "tips": {
+    "fontSize": 40,
+    "color": "#79a8ec",
+    "marginTop": 40
+  },
+  "contents": {
+    "fontSize": 33,
+    "color": "#343434",
+    "lineHeight": 50,
+    "marginTop": 25
+  }
+}
+
+/***/ }),
+/* 79 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 25,
+    "left": 25,
+    "width": 37,
+    "height": 37
+  },
+  "content": {
+    "width": 750,
+    "backgroundColor": "#ffffff",
+    "paddingBottom": 30
+  },
+  "tab": {
+    "height": 70,
+    "marginTop": 12,
+    "marginBottom": 12,
+    "marginRight": 60,
+    "marginLeft": 60,
+    "borderWidth": 2,
+    "borderStyle": "solid",
+    "borderColor": "#d9e8fd",
+    "borderRadius": 35,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "tab_li": {
+    "flex": 1,
+    "verticalAlign": "middle",
+    "height": 70,
+    "lineHeight": 65,
+    "textAlign": "center",
+    "fontSize": 34,
+    "color": "#666666"
+  },
+  "tab_yes": {
+    "backgroundColor": "#d9e8fd",
+    "borderRadius": 35,
+    "color": "#6fa1e8"
+  },
+  "type": {
+    "height": 85,
+    "width": 750,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "borderBottomStyle": "solid",
+    "borderBottomColor": "#e6e6e6",
+    "borderBottomWidth": 1,
+    "borderTopStyle": "solid",
+    "borderTopColor": "#e6e6e6",
+    "borderTopWidth": 1
+  },
+  "type_li": {
+    "position": "relative",
+    "flex": 1,
+    "paddingLeft": 40,
+    "paddingRight": 40,
+    "marginTop": 8,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "space-between"
+  },
+  "type_img": {
+    "width": 35,
+    "height": 18
+  },
+  "type_li1": {
+    "position": "absolute",
+    "right": 0,
+    "zIndex": 99,
+    "backgroundColor": "#ffffff",
+    "width": 50,
+    "fontSize": 30,
+    "height": 284,
+    "lineHeight": 70,
+    "flexDirection": "column",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "textIndent": 0.3,
+    "borderStyle": "solid",
+    "borderColor": "#e6e6e6",
+    "borderWidth": 1,
+    "color": "#666666"
+  },
+  "type_li2": {
+    "height": 214,
+    "left": 0
+  },
+  "type_ling": {
+    "borderBottomStyle": "solid",
+    "borderBottomColor": "#e6e6e6",
+    "borderBottomWidth": 1
+  },
+  "type_yes": {
+    "backgroundColor": "#70a1e8",
+    "color": "#ffffff"
+  },
+  "jrrw": {
+    "width": 750,
+    "backgroundColor": "#ffffff",
+    "paddingTop": 30,
+    "paddingBottom": 30
+  },
+  "title_img": {
+    "backgroundColor": "#70a1e8",
+    "marginRight": 10
+  },
+  "jrrw_list": {
+    "overflow": "hidden",
+    "position": "relative",
+    "zIndex": 2,
+    "width": 710,
+    "marginLeft": 20,
+    "marginRight": 20,
+    "backgroundColor": "#f1f6fd",
+    "borderWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#d9e8fd",
+    "borderRadius": 12,
+    "marginBottom": 20
+  },
+  "newR": {
+    "position": "absolute",
+    "top": -2,
+    "right": -2,
+    "width": 75,
+    "height": 75
+  },
+  "jrrw_info": {
+    "width": 540,
+    "paddingTop": 20,
+    "paddingBottom": 20,
+    "paddingLeft": 30,
+    "paddingRight": 30
+  },
+  "rw_title": {
+    "fontSize": 34,
+    "lineHeight": 38,
+    "color": "#666666"
+  },
+  "rw_time": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "space-between",
+    "height": 40,
+    "marginTop": 5
+  },
+  "c_bg": {
+    "position": "absolute",
+    "top": 35,
+    "right": 0,
+    "bottom": 0,
+    "width": 150,
+    "textAlign": "center"
+  },
+  "c_bg_btn": {
+    "textAlign": "center",
+    "width": 110,
+    "paddingTop": 5,
+    "paddingBottom": 5,
+    "fontSize": 28,
+    "borderRadius": 8,
+    "backgroundColor": "#70a1e8",
+    "color": "#ffffff",
+    "marginBottom": 10
+  },
+  "bj0": {
+    "backgroundColor": "#f1f6fd"
+  },
+  "bj1": {
+    "backgroundColor": "#ffffff",
+    "border": "#d9e8fd 0.01rem solid"
+  },
+  "bj2": {
+    "backgroundColor": "#ffffff"
+  },
+  "c_bg_btn2": {
+    "backgroundColor": "#ffffff",
+    "color": "#70a1e8",
+    "borderWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#70a1e8"
+  },
+  "c_bg_btn1": {
+    "border": "#e6e6e6 1px solid",
+    "borderWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#e6e6e6",
+    "backgroundColor": "#ffffff",
+    "color": "#999999"
+  },
+  "stateName": {
+    "position": "absolute",
+    "bottom": -20,
+    "fontSize": 22,
+    "color": "#ff6600",
+    "left": 0
+  }
+}
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "msg": {
+    "width": 750,
+    "height": 100,
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 25,
+    "left": 25,
+    "width": 37,
+    "height": 37
+  },
+  "content": {
+    "width": 750,
+    "paddingRight": 25,
+    "paddingLeft": 25,
+    "paddingTop": 30,
+    "backgroundColor": "#ffffff",
+    "paddingBottom": 120
+  },
+  "state": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "height": 88,
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#e7e7e7",
+    "borderBottomStyle": "solid"
+  },
+  "count": {
+    "fontSize": 34,
+    "color": "#666666"
+  },
+  "question": {
+    "width": 750,
+    "fontSize": 36,
+    "color": "#333333"
+  },
+  "answer": {
+    "marginTop": 25,
+    "fontSize": 34,
+    "color": "#808080",
+    "padding": 20,
+    "backgroundColor": "#fafafa",
+    "borderRadius": 30,
+    "borderWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#e7e7e7"
+  },
+  "yes": {
+    "backgroundColor": "#40cc8b",
+    "color": "#ffffff"
+  },
+  "no": {
+    "backgroundColor": "#f66c6c",
+    "color": "#ffffff",
+    "fontSize": 34
+  },
+  "footer": {
+    "position": "fixed",
+    "bottom": 0,
+    "left": 0,
+    "width": 750,
+    "height": 100,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "backgroundColor": "#6fa1e8"
+  },
+  "list": {
+    "marginBottom": 20,
+    "backgroundColor": "#ffffff"
+  },
+  "t_q": {
+    "width": 750,
+    "height": 140,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "flex-end",
+    "padding": 30,
+    "borderBottomWidth": 1,
+    "borderRightStyle": "solid",
+    "borderBottomColor": "#e7e7e7"
+  },
+  "t_q_btn": {
+    "flexDirection": "row",
+    "justifyContent": "space-between",
+    "alignItems": "center",
+    "width": 200,
+    "height": 80,
+    "paddingRight": 30,
+    "paddingLeft": 30,
+    "borderRadius": 50,
+    "marginRight": 40,
+    "backgroundColor": "#70a1e8"
+  },
+  "j_cnt": {
+    "paddingTop": 26,
+    "paddingBottom": 26,
+    "paddingLeft": 30,
+    "paddingRight": 30,
+    "width": 750,
+    "borderBottomColor": "#e6e6e6",
+    "borderBottomStyle": "solid",
+    "borderBottomWidth": 1
+  },
+  "ans": {
+    "fontSize": 33,
+    "color": "#808080"
+  },
+  "tips": {
+    "fontSize": 40,
+    "color": "#79a8ec",
+    "marginTop": 40
+  },
+  "contents": {
+    "fontSize": 33,
+    "color": "#343434",
+    "lineHeight": 50,
+    "marginTop": 25
+  },
+  "hid": {
+    "justifyContent": "center",
+    "alignItems": "center"
+  }
+}
+
+/***/ }),
+/* 81 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "tj": {
+    "width": 750,
+    "height": 200,
+    "borderWidth": 1,
+    "borderColor": "#e7e7e7",
+    "borderStyle": "solid"
+  },
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 25,
+    "left": 25,
+    "width": 37,
+    "height": 37
+  },
+  "content": {
+    "width": 750,
+    "paddingRight": 25,
+    "paddingLeft": 25,
+    "paddingTop": 30,
+    "backgroundColor": "#ffffff",
+    "paddingBottom": 120
+  },
+  "title": {
+    "paddingTop": 20,
+    "paddingBottom": 20,
+    "paddingLeft": 30,
+    "paddingRight": 30,
+    "flexDirection": "row",
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#e7e7e7",
+    "borderBottomStyle": "solid"
+  },
+  "t_l": {
+    "flex": 2
+  },
+  "t_r": {
+    "flex": 1,
+    "flexDirection": "row",
+    "justifyContent": "center",
+    "alignItems": "center",
+    "borderLeftWidth": 1,
+    "borderLeftColor": "#e7e7e7",
+    "borderLeftStyle": "solid"
+  },
+  "state": {
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#e7e7e7",
+    "borderBottomStyle": "solid",
+    "padding": 30
+  },
+  "s_tit": {
+    "fontSize": 32,
+    "color": "#777777",
+    "marginBottom": 10,
+    "fontWeight": "900"
+  },
+  "count": {
+    "fontSize": 34,
+    "color": "#666666"
+  },
+  "question": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "width": 750,
+    "height": 88,
+    "fontSize": 36,
+    "color": "#333333"
+  },
+  "answer": {
+    "marginTop": 25,
+    "fontSize": 34,
+    "color": "#808080",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "padding": 20,
+    "backgroundColor": "#fafafa",
+    "borderRadius": 30,
+    "borderWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#e7e7e7"
+  },
+  "answer_y": {
+    "backgroundColor": "#40cc8b",
+    "color": "#ffffff"
+  },
+  "answer_n": {
+    "backgroundColor": "#f66c6c",
+    "color": "#ffffff"
+  },
+  "footer": {
+    "position": "fixed",
+    "bottom": 0,
+    "left": 0,
+    "width": 750,
+    "height": 100,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "backgroundColor": "#6fa1e8"
+  },
+  "list": {
+    "marginBottom": 20,
+    "backgroundColor": "#ffffff"
+  },
+  "t_q": {
+    "width": 750,
+    "height": 140,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "flex-end",
+    "padding": 30,
+    "borderBottomWidth": 1,
+    "borderRightStyle": "solid",
+    "borderBottomColor": "#e7e7e7"
+  },
+  "t_q_btn": {
+    "flexDirection": "row",
+    "justifyContent": "space-between",
+    "alignItems": "center",
+    "width": 200,
+    "height": 80,
+    "paddingRight": 30,
+    "paddingLeft": 30,
+    "borderRadius": 50,
+    "marginRight": 40,
+    "backgroundColor": "#70a1e8"
+  },
+  "j_cnt": {
+    "paddingTop": 26,
+    "paddingBottom": 26,
+    "paddingLeft": 30,
+    "paddingRight": 30,
+    "width": 750,
+    "borderBottomColor": "#e6e6e6",
+    "borderBottomStyle": "solid",
+    "borderBottomWidth": 1
+  },
+  "ans": {
+    "fontSize": 33,
+    "color": "#808080"
+  },
+  "tips": {
+    "fontSize": 40,
+    "color": "#79a8ec",
+    "marginTop": 40
+  },
+  "contents": {
+    "fontSize": 33,
+    "color": "#343434",
+    "lineHeight": 50,
+    "marginTop": 25
+  },
+  "hid": {
+    "justifyContent": "center",
+    "alignItems": "center"
+  }
+}
+
+/***/ }),
+/* 82 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -13514,91 +12931,412 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _c('text', {
     staticClass: ["top_name"]
-  }, [_vm._v("每日一练")])]), _c('scroller', [_vm._m(0), _c('div', {
-    staticClass: ["content"]
-  }, _vm._l((_vm.q_list), function(q) {
-    return _c('div', [_c('div', {
-      staticClass: ["question"]
+  }, [_vm._v("书香榜")])]), _c('div', {
+    staticClass: ["tab"]
+  }, _vm._l((_vm.tylelist), function(tab, index) {
+    return _c('div', {
+      staticClass: ["tab_li"],
+      style: {
+        backgroundColor: tab.bj,
+        color: tab.color
+      },
+      on: {
+        "click": function($event) {
+          _vm.cut(index, tab.id)
+        }
+      }
     }, [_c('text', {
       staticStyle: {
         fontSize: "36px",
         color: "#666"
+      },
+      style: {
+        backgroundColor: tab.bj,
+        color: tab.color
       }
-    }, [_vm._v(_vm._s(q.id) + "." + _vm._s(q.title) + "(    )")])]), _vm._l((q.answer), function(a) {
-      return _c('div', {
-        staticClass: ["answer"]
-      }, [_c('text', {
-        staticStyle: {
-          fontSize: "34px",
-          color: "#666"
-        },
-        on: {
-          "click": function($event) {
-            _vm.last(q.ans, a.ans)
-          }
-        }
-      }, [_vm._v(_vm._s(a.ans) + "、" + _vm._s(a.option))])])
-    }), _c('div', {
-      staticClass: ["list"]
-    }, [_vm._m(1, true), _c('div', {
-      staticClass: ["j_cnt"]
-    }, [_c('text', {
-      staticClass: ["ans"]
-    }, [_vm._v("正确答案是" + _vm._s(q.ans) + "，你的答案是" + _vm._s(q.answer.ans))]), (q.answer.ans) ? _c('text', [_vm._v("回答错误")]) : _vm._e(), (!q.answer.ans) ? _c('text', [_vm._v("回答正确")]) : _vm._e(), _c('text', {
-      staticClass: ["tips"]
-    }, [_vm._v("解析")]), _c('text', {
-      staticClass: ["contents"]
-    }, [_vm._v(_vm._s(q.cnt))]), _c('div', {
-      on: {
-        "click": _vm.hidden
-      }
-    }, [_c('text', {
+    }, [_vm._v(_vm._s(tab.name))])])
+  })), _vm._m(0), _c('div', {
+    staticClass: ["info_l_s"],
+    staticStyle: {
+      backgroundColor: "#d9e8fd",
+      marginBottom: "20px"
+    }
+  }, [_c('div', {
+    staticClass: ["info_flex1"]
+  }, [_c('text', {
+    staticClass: ["o_nbr"]
+  }, [_vm._v(_vm._s(_vm.mine.index))])]), _c('div', {
+    staticClass: ["info_flex3"]
+  }, [_c('image', {
+    staticClass: ["s_tx"],
+    attrs: {
+      "src": _vm.mine.avatar
+    }
+  }), _c('div', {
+    staticStyle: {
+      flexDirection: "column"
+    }
+  }, [_c('text', {
+    staticClass: ["s_name"]
+  }, [_vm._v(_vm._s(_vm.mine.stuname))]), _c('text', {
+    staticClass: ["designation"]
+  }, [_vm._v(_vm._s(_vm.mine.level))])])]), _c('text', {
+    staticClass: ["s_rank"]
+  }, [_vm._v(_vm._s(_vm.mine.score))]), _c('div', {
+    staticClass: ["info_flex2"]
+  }, [_c('text', {
+    staticClass: ["s_grade"]
+  }, [_vm._v(_vm._s(_vm.mine.words))]), _c('text', {
+    staticStyle: {
+      fontSize: "28px"
+    }
+  }, [_vm._v("万")])])]), _c('scroller', [_vm._l((_vm.list), function(l, i) {
+    return _c('div', {
+      staticClass: ["info_l_s"],
       staticStyle: {
-        fontSize: "34px"
+        backgroundColor: "#fff"
       }
-    }, [_vm._v("收起")])])])])], 2)
-  }))]), _vm._m(2)])
+    }, [_c('div', {
+      staticClass: ["info_flex1"]
+    }, [(i > 2) ? _c('text', {
+      staticClass: ["o_nbr"]
+    }, [_vm._v(_vm._s(i + 1))]) : _vm._e(), (i == 0) ? _c('image', {
+      staticClass: ["pic_ph"],
+      attrs: {
+        "src": "../static/images/pic_gold.png"
+      }
+    }) : _vm._e(), (i == 1) ? _c('image', {
+      staticClass: ["pic_ph"],
+      attrs: {
+        "src": "../static/images/pic_silver.png"
+      }
+    }) : _vm._e(), (i == 2) ? _c('image', {
+      staticClass: ["pic_ph"],
+      attrs: {
+        "src": "../static/images/pic_copper.png"
+      }
+    }) : _vm._e()]), _c('div', {
+      staticClass: ["info_flex3"]
+    }, [_c('image', {
+      staticClass: ["s_tx"],
+      attrs: {
+        "src": l.avatar
+      }
+    }), _c('div', {
+      staticStyle: {
+        flexDirection: "column"
+      }
+    }, [_c('text', {
+      staticClass: ["s_name"]
+    }, [_vm._v(_vm._s(l.stuname))]), _c('text', {
+      staticClass: ["designation"]
+    }, [_vm._v(_vm._s(l.level))])])]), _c('text', {
+      staticClass: ["s_rank"]
+    }, [_vm._v(_vm._s(l.score))]), _c('div', {
+      staticClass: ["info_flex2"]
+    }, [_c('text', {
+      staticClass: ["s_grade"]
+    }, [_vm._v(_vm._s(l.words))]), _c('text', {
+      staticStyle: {
+        fontSize: "28px"
+      }
+    }, [_vm._v("万")])])])
+  }), _c('loading', {
+    staticClass: ["loading"],
+    attrs: {
+      "display": _vm.showLoading
+    },
+    on: {
+      "loading": _vm.onloading
+    }
+  }, [_c('text', {
+    staticClass: ["indicator"]
+  }, [_vm._v("加载更多 ...")])])], 2)])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: ["state"]
+    staticClass: ["info_tit"]
   }, [_c('text', {
-    staticClass: ["s_tit"]
-  }, [_vm._v("读短文并按要求作答")]), _c('text', {
-    staticClass: ["count"]
-  }, [_vm._v("答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["t_q"]
-  }, [_c('div', {
-    staticClass: ["t_q_btn"]
-  }, [_c('text', {
+    staticClass: ["info_tit_list"],
     staticStyle: {
-      fontSize: "36px",
-      color: "#fff"
+      flex: "1"
     }
-  }, [_vm._v("解析")]), _c('image', {
+  }, [_vm._v("排名")]), _c('text', {
+    staticClass: ["info_tit_list"],
     staticStyle: {
-      width: "29px",
-      height: "36px"
-    },
-    attrs: {
-      "src": "../static/images/pic_jx.png"
+      flex: "3"
     }
-  })])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["footer"]
-  }, [_c('text', {
+  }, [_vm._v("姓名")]), _c('text', {
+    staticClass: ["info_tit_list"],
     staticStyle: {
-      fontSize: "39px",
-      color: "#fff"
+      flex: "2"
     }
-  }, [_vm._v("提交")])])
+  }, [_vm._v("积分")]), _c('text', {
+    staticClass: ["info_tit_list"],
+    staticStyle: {
+      flex: "2"
+    }
+  }, [_vm._v("阅读量(万)")])])
 }]}
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 86 */
+/* 83 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticStyle: {
+      backgroundColor: "#fafafa"
+    }
+  }, [_c('div', {
+    staticClass: ["top"]
+  }, [_c('image', {
+    staticClass: ["goback"],
+    attrs: {
+      "src": "../static/images/xs_pic_fh.png"
+    },
+    on: {
+      "click": _vm.goback
+    }
+  }), _c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v("阅读任务详情")]), _c('image', {
+    staticClass: ["goback_r"],
+    attrs: {
+      "src": "../static/images/ico_heart01.png"
+    }
+  }), _c('image', {
+    staticClass: ["goback_r1"],
+    attrs: {
+      "src": "../static/images/ico_2101.png"
+    },
+    on: {
+      "click": _vm.openFx
+    }
+  })]), _c('scroller', [_c('div', {
+    staticClass: ["b_name"]
+  }, [_c('text', {
+    staticClass: ["b_name1"]
+  }, [_vm._v(_vm._s(_vm.book.bookName))])]), _c('div', {
+    staticClass: ["book"]
+  }, [_c('image', {
+    staticClass: ["b_img"],
+    attrs: {
+      "src": _vm.book.guideImage
+    }
+  }), _c('div', {
+    staticClass: ["b_info"]
+  }, [_c('text', {
+    staticClass: ["b_list"]
+  }, [_vm._v("作者：" + _vm._s(_vm.book.author) + "/著 ")]), _c('text', {
+    staticClass: ["b_list"]
+  }, [_vm._v("出版社：" + _vm._s(_vm.book.press))]), _c('text', {
+    staticClass: ["b_list"]
+  }, [_vm._v("ISBN: " + _vm._s(_vm.book.isbn) + " ")]), _c('div', {
+    staticStyle: {
+      flexDirection: "row",
+      justifyContent: "left",
+      alignItems: "center"
+    }
+  }, [_c('text', {
+    staticClass: ["ts_label"]
+  }, [_vm._v(_vm._s(_vm.book.bookType))])])])]), _vm._m(0), _c('div', {
+    staticClass: ["b_syn"]
+  }, [_c('video', {
+    staticStyle: {
+      width: "750px",
+      height: "400px"
+    },
+    attrs: {
+      "src": _vm.book.guideVoice,
+      "controls": "controls"
+    }
+  }), _c('div', {
+    staticClass: ["b_cnt"]
+  }, [_c('text', {
+    staticClass: ["b_title"]
+  }, [_vm._v("编辑推荐")]), _c('text', {
+    directives: [{
+      name: "html",
+      rawName: "v-html",
+      value: (_vm.book.editorIntro),
+      expression: "book.editorIntro"
+    }],
+    staticClass: ["b_main"]
+  }, [_vm._v(_vm._s(_vm.book.editorIntro))])]), _c('div', {
+    staticClass: ["b_cnt"]
+  }, [_c('text', {
+    staticClass: ["b_title"]
+  }, [_vm._v("内容简介")]), _c('text', {
+    directives: [{
+      name: "html",
+      rawName: "v-html",
+      value: (_vm.book.desc),
+      expression: "book.desc"
+    }],
+    staticClass: ["b_main"]
+  }, [_vm._v(_vm._s(_vm.book.desc))])]), _c('div', {
+    staticClass: ["b_cnt"]
+  }, [_c('text', {
+    staticClass: ["b_title"]
+  }, [_vm._v("作者简介")]), _c('text', {
+    directives: [{
+      name: "html",
+      rawName: "v-html",
+      value: (_vm.book.authorDesc),
+      expression: "book.authorDesc"
+    }],
+    staticClass: ["b_main"]
+  }, [_vm._v(_vm._s(_vm.book.authorDesc))])])], 1)]), _c('div', {
+    staticClass: ["footes"]
+  }, [_c('text', {
+    staticClass: ["footes_btn"],
+    on: {
+      "click": function($event) {
+        _vm.opendhfx('/ydrw/xdhg?planId=' + _vm.rwId + '&bookId=' + _vm.bId + '&bookType=' + _vm.rwtype + '&title=' + _vm.bName)
+      }
+    }
+  }, [_vm._v("读后分享")]), _c('text', {
+    staticClass: ["footes_btn"],
+    on: {
+      "click": _vm.openkscg
+    }
+  }, [_vm._v("开始闯关")]), (_vm.feeling == 1 && _vm.zrw == '2') ? _c('text', {
+    staticClass: ["footes_btn"],
+    on: {
+      "click": function($event) {
+        _vm.openwdfx('/ydrw/wddhg?loginAccount=' + _vm.loginA + '&planId=' + _vm.rwId + '&bookId=' + _vm.bId)
+      }
+    }
+  }, [_vm._v("我的分享")]) : _vm._e(), (_vm.test == 1 && _vm.zrw == '1') ? _c('text', {
+    staticClass: ["footes_btn"],
+    on: {
+      "click": _vm.openwdcg
+    }
+  }, [_vm._v("我的闯关")]) : _vm._e()])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["jyzx"]
+  }, [_c('text', {
+    staticClass: ["jyzx_title"]
+  }, [_vm._v("专家导读")])])
+}]}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 84 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticStyle: {
+      backgroundColor: "#fafafa"
+    }
+  }, [_c('div', {
+    staticClass: ["top"]
+  }, [_c('image', {
+    staticClass: ["goback"],
+    attrs: {
+      "src": "../static/images/xs_pic_fh.png"
+    },
+    on: {
+      "click": _vm.goback
+    }
+  }), _c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v("读后分享")])]), _c('scroller', [_c('div', {
+    staticClass: ["content"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "34px",
+      lineHeight: "45px",
+      color: "#666"
+    }
+  }, [_vm._v("请说一说或者写一写，分享您的读后感：")]), _c('textarea', {
+    staticClass: ["textarea"],
+    attrs: {
+      "placeholder": "请输入读后感",
+      "value": (_vm.content)
+    },
+    on: {
+      "input": function($event) {
+        _vm.content = $event.target.attr.value
+      }
+    }
+  }), _c('div', {
+    staticClass: ["photoList"]
+  }, [_vm._l((_vm.imageUrl), function(lPic, index) {
+    return _c('div', {
+      staticStyle: {
+        padding: "10px"
+      },
+      on: {
+        "click": function($event) {
+          _vm.enlargePic(lPic, index)
+        }
+      }
+    }, [_c('image', {
+      staticStyle: {
+        width: "152px",
+        height: "150px"
+      },
+      attrs: {
+        "src": lPic
+      }
+    })])
+  }), (_vm.imageUrl.length != 8) ? _c('div', {
+    staticStyle: {
+      padding: "10px"
+    },
+    on: {
+      "click": _vm.openPic
+    }
+  }, [_c('image', {
+    staticStyle: {
+      width: "152px",
+      height: "152px"
+    },
+    attrs: {
+      "src": "../static/images/add_pic.png"
+    }
+  })]) : _vm._e()], 2), _c('div', {
+    staticClass: ["panel"]
+  }, [_c('div', [(_vm.duration) ? _c('div', {
+    staticClass: ["voice"],
+    on: {
+      "click": function($event) {
+        _vm.playVoice(_vm.voiceUrl)
+      }
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "34px",
+      color: "#6fa1e8"
+    }
+  }, [_vm._v(_vm._s(_vm.duration) + "'")]), _c('image', {
+    staticClass: ["pic_yy"],
+    attrs: {
+      "src": _vm.VoicePic
+    }
+  })]) : _vm._e()]), _c('image', {
+    staticClass: ["voicePic"],
+    attrs: {
+      "src": "../static/images/ico_02.png"
+    },
+    on: {
+      "click": _vm.openVoice
+    }
+  })]), _c('text', {
+    staticClass: ["confirm"],
+    on: {
+      "click": _vm.confirm
+    }
+  }, [_vm._v("提 交")])], 1)])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 85 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -13773,309 +13511,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 87 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticStyle: {
-      backgroundColor: "#fff"
-    }
-  }, [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
-    attrs: {
-      "src": "../static/images/xs_pic_fh.png"
-    },
-    on: {
-      "click": _vm.goback
-    }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v("完成结果")])]), _c('div', {
-    staticClass: ["contents"]
-  }, [_c('div', {
-    staticClass: ["success"]
-  }, [_c('div', {
-    staticClass: ["succ_btn"]
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "36px",
-      color: "#666"
-    }
-  }, [_vm._v(_vm._s(_vm.state))])]), _c('div', {
-    staticClass: ["stars_list"]
-  }, [(_vm.stars1) ? _c('image', {
-    staticClass: ["stars"],
-    attrs: {
-      "src": "../static/images/Stars.png"
-    }
-  }) : _vm._e(), (!_vm.stars1) ? _c('image', {
-    staticClass: ["stars"],
-    attrs: {
-      "src": "../static/images/Stars_off.png"
-    }
-  }) : _vm._e(), (_vm.stars2) ? _c('image', {
-    staticClass: ["stars1"],
-    attrs: {
-      "src": "../static/images/Stars.png"
-    }
-  }) : _vm._e(), (!_vm.stars2) ? _c('image', {
-    staticClass: ["stars1"],
-    attrs: {
-      "src": "../static/images/Stars_off.png"
-    }
-  }) : _vm._e(), (_vm.stars3) ? _c('image', {
-    staticClass: ["stars"],
-    attrs: {
-      "src": "../static/images/Stars_off.png"
-    }
-  }) : _vm._e(), (!_vm.stars3) ? _c('image', {
-    staticClass: ["stars"],
-    attrs: {
-      "src": "../static/images/Stars_off.png"
-    }
-  }) : _vm._e()])]), _c('div', {
-    staticClass: ["topic"]
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "36px"
-    }
-  }, [_vm._v("答对")]), _c('text', {
-    staticClass: ["topic_num"]
-  }, [_vm._v(" " + _vm._s(_vm.yCount) + " ")]), _c('text', {
-    staticStyle: {
-      fontSize: "36px"
-    }
-  }, [_vm._v("题，答错")]), _c('text', {
-    staticClass: ["topic_num"]
-  }, [_vm._v(" " + _vm._s(_vm.nCount) + " ")]), _c('text', {
-    staticStyle: {
-      fontSize: "36px"
-    }
-  }, [_vm._v("题，正确率" + _vm._s(_vm.zql) + "%")])]), _vm._m(0)]), _c('div', {
-    staticClass: ["footes"]
-  }, [_c('div', {
-    staticClass: ["footes_btn"],
-    on: {
-      "click": function($event) {
-        _vm._goto("")
-      }
-    }
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "30px",
-      color: "#555555"
-    }
-  }, [_vm._v("重做错题")])]), _c('div', {
-    staticClass: ["footes_btn"],
-    on: {
-      "click": function($event) {
-        _vm._goto("/kstfb")
-      }
-    }
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "30px",
-      color: "#555555"
-    }
-  }, [_vm._v("结束闯关")])])])])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["integral"]
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "30px"
-    }
-  }, [_vm._v("奖励积分：10分")])])
-}]}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 88 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
-    attrs: {
-      "src": "../static/images/xs_pic_fh.png"
-    },
-    on: {
-      "click": _vm.goback
-    }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v("书香榜")])]), _c('div', {
-    staticClass: ["tab"]
-  }, _vm._l((_vm.tylelist), function(tab, index) {
-    return _c('div', {
-      staticClass: ["tab_li"],
-      style: {
-        backgroundColor: tab.bj,
-        color: tab.color
-      },
-      on: {
-        "click": function($event) {
-          _vm.cut(index, tab.id)
-        }
-      }
-    }, [_c('text', {
-      staticStyle: {
-        fontSize: "36px",
-        color: "#666"
-      },
-      style: {
-        backgroundColor: tab.bj,
-        color: tab.color
-      }
-    }, [_vm._v(_vm._s(tab.name))])])
-  })), _vm._m(0), _c('div', {
-    staticClass: ["info_l_s"],
-    staticStyle: {
-      backgroundColor: "#d9e8fd",
-      marginBottom: "20px"
-    }
-  }, [_c('div', {
-    staticClass: ["info_flex1"]
-  }, [_c('text', {
-    staticClass: ["o_nbr"]
-  }, [_vm._v(_vm._s(_vm.mine.index))])]), _c('div', {
-    staticClass: ["info_flex3"]
-  }, [_c('image', {
-    staticClass: ["s_tx"],
-    attrs: {
-      "src": _vm.mine.avatar
-    }
-  }), _c('div', {
-    staticStyle: {
-      flexDirection: "column"
-    }
-  }, [_c('text', {
-    staticClass: ["s_name"]
-  }, [_vm._v(_vm._s(_vm.mine.stuname))]), _c('text', {
-    staticClass: ["designation"]
-  }, [_vm._v(_vm._s(_vm.mine.level))])])]), _c('text', {
-    staticClass: ["s_rank"]
-  }, [_vm._v(_vm._s(_vm.mine.score))]), _c('div', {
-    staticClass: ["info_flex2"]
-  }, [_c('text', {
-    staticClass: ["s_grade"]
-  }, [_vm._v(_vm._s(_vm.mine.words))]), _c('text', {
-    staticStyle: {
-      fontSize: "28px"
-    }
-  }, [_vm._v("万")])])]), _c('scroller', [_vm._l((_vm.list), function(l, i) {
-    return _c('div', {
-      staticClass: ["info_l_s"],
-      staticStyle: {
-        backgroundColor: "#fff"
-      }
-    }, [_c('div', {
-      staticClass: ["info_flex1"]
-    }, [(i > 2) ? _c('text', {
-      staticClass: ["o_nbr"]
-    }, [_vm._v(_vm._s(i + 1))]) : _vm._e(), (i == 0) ? _c('image', {
-      staticClass: ["pic_ph"],
-      attrs: {
-        "src": "../static/images/pic_gold.png"
-      }
-    }) : _vm._e(), (i == 1) ? _c('image', {
-      staticClass: ["pic_ph"],
-      attrs: {
-        "src": "../static/images/pic_silver.png"
-      }
-    }) : _vm._e(), (i == 2) ? _c('image', {
-      staticClass: ["pic_ph"],
-      attrs: {
-        "src": "../static/images/pic_copper.png"
-      }
-    }) : _vm._e()]), _c('div', {
-      staticClass: ["info_flex3"]
-    }, [_c('image', {
-      staticClass: ["s_tx"],
-      attrs: {
-        "src": l.avatar
-      }
-    }), _c('div', {
-      staticStyle: {
-        flexDirection: "column"
-      }
-    }, [_c('text', {
-      staticClass: ["s_name"]
-    }, [_vm._v(_vm._s(l.stuname))]), _c('text', {
-      staticClass: ["designation"]
-    }, [_vm._v(_vm._s(l.level))])])]), _c('text', {
-      staticClass: ["s_rank"]
-    }, [_vm._v(_vm._s(l.score))]), _c('div', {
-      staticClass: ["info_flex2"]
-    }, [_c('text', {
-      staticClass: ["s_grade"]
-    }, [_vm._v(_vm._s(l.words))]), _c('text', {
-      staticStyle: {
-        fontSize: "28px"
-      }
-    }, [_vm._v("万")])])])
-  }), _c('loading', {
-    staticClass: ["loading"],
-    attrs: {
-      "display": _vm.showLoading
-    },
-    on: {
-      "loading": _vm.onloading
-    }
-  }, [_c('text', {
-    staticClass: ["indicator"]
-  }, [_vm._v("加载更多 ...")])])], 2)])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["info_tit"]
-  }, [_c('text', {
-    staticClass: ["info_tit_list"],
-    staticStyle: {
-      flex: "1"
-    }
-  }, [_vm._v("排名")]), _c('text', {
-    staticClass: ["info_tit_list"],
-    staticStyle: {
-      flex: "3"
-    }
-  }, [_vm._v("姓名")]), _c('text', {
-    staticClass: ["info_tit_list"],
-    staticStyle: {
-      flex: "2"
-    }
-  }, [_vm._v("积分")]), _c('text', {
-    staticClass: ["info_tit_list"],
-    staticStyle: {
-      flex: "2"
-    }
-  }, [_vm._v("阅读量(万)")])])
-}]}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 89 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    on: {
-      "androidback": _vm.back
-    }
-  }, [_c('router-view', {
-    staticStyle: {
-      flex: "1"
-    }
-  })], 1)
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 90 */
+/* 86 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -14274,7 +13710,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         textOverflow: "ellipsis",
         lines: "5"
       }
-    }, [_vm._v(_vm._s(book.desc))])]), _c('div', {
+    }, [_vm._v(_vm._s(_vm._f("filterHTMLs")(book.desc)))])]), _c('div', {
       staticClass: ["yerw_yd"]
     }, [_c('text', {
       staticClass: ["ydrw_btn"],
@@ -14312,482 +13748,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 91 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
-    attrs: {
-      "src": "../static/images/xs_pic_fh.png"
-    },
-    on: {
-      "click": _vm.goback
-    }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v("每日一练")])]), _c('scroller', [_c('div', {
-    staticClass: ["state"]
-  }, [_c('text', {
-    staticClass: ["s_tit"]
-  }, [_vm._v("读短文并按要求作答")]), _c('text', {
-    staticClass: ["count"]
-  }, [_vm._v("    " + _vm._s(_vm.cont))])]), _c('div', {
-    staticClass: ["content"]
-  }, _vm._l((_vm.q_list), function(q, v) {
-    return _c('div', [_c('div', {
-      staticClass: ["question"]
-    }, [_c('text', {
-      staticStyle: {
-        fontSize: "36px",
-        color: "#666"
-      }
-    }, [_vm._v(_vm._s(q.no) + "." + _vm._s(q.question.content))])]), _vm._l((q.question.answers), function(a, v) {
-      return _c('div', {
-        key: v,
-        staticClass: ["answer"],
-        style: {
-          backgroundColor: a.bgColor
-        },
-        on: {
-          "click": function($event) {
-            _vm._isZq(a, q.answers, v, q.no)
-          }
-        }
-      }, [_c('div', [_c('text', _vm._b({
-        staticStyle: {
-          fontSize: "34px",
-          color: "#666"
-        }
-      }, 'text', _vm.que), [_vm._v(_vm._s(a.answerOption) + "、" + _vm._s(a.answerContent))])])])
-    }), _c('div', {
-      staticClass: ["list"]
-    }, [_c('div', {
-      staticClass: ["t_q"],
-      on: {
-        "click": function($event) {
-          _vm._wtjx(q.question, v)
-        }
-      }
-    }, [_vm._m(0, true)]), (q.isShow) ? _c('div', {
-      key: v,
-      staticClass: ["j_cnt"]
-    }, [_c('text', {
-      staticClass: ["ans"]
-    }, [_vm._v("正确答案是  " + _vm._s(_vm.Right) + "，你的答案是  " + _vm._s(q.chooseAnswer) + "\n\t\t\t\t\t\t")]), _c('text', {
-      staticClass: ["tips"]
-    }, [_vm._v("解析")]), _c('text', {
-      staticClass: ["contents"]
-    }, [_vm._v("暂无解析")]), _c('div', {
-      staticClass: ["hid"]
-    }, [_c('text', {
-      staticStyle: {
-        fontSize: "40px",
-        backgroundColor: "#70a1e8",
-        padding: "10px",
-        borderRadius: "20px",
-        color: "#fff"
-      },
-      on: {
-        "click": function($event) {
-          _vm.hidden(v)
-        }
-      }
-    }, [_vm._v("收起")])])]) : _vm._e()])], 2)
-  }))]), _c('div', {
-    staticClass: ["footer"],
-    on: {
-      "click": _vm.subimt
-    }
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "39px",
-      color: "#fff"
-    },
-    on: {
-      "click": function($event) {
-        _vm.optj()
-      }
-    }
-  }, [_vm._v("重新练习")])])])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["t_q_btn"]
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "36px",
-      color: "#fff"
-    }
-  }, [_vm._v("解析")]), _c('image', {
-    staticStyle: {
-      width: "29px",
-      height: "36px"
-    },
-    attrs: {
-      "src": "../static/images/pic_jx.png"
-    }
-  })])
-}]}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 92 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
-    attrs: {
-      "src": "../static/images/xs_pic_fh.png"
-    },
-    on: {
-      "click": _vm.goback
-    }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v(_vm._s(_vm.bNname))])]), (_vm.q_list.length == 0) ? _c('div', {
-    staticClass: ["msg"]
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "50px",
-      color: "#6fa1e8"
-    }
-  }, [_vm._v(_vm._s(_vm.msg))])]) : _vm._e(), (_vm.q_list.length != 0) ? _c('div', {
-    staticClass: ["state"]
-  }, [_c('text', {
-    staticClass: ["count"]
-  }, [_vm._v("答对" + _vm._s(_vm.dui) + "道，答错" + _vm._s(_vm.cuo) + "道，正确率：" + _vm._s(_vm.zql) + "%")])]) : _vm._e(), _c('scroller', [_c('div', {
-    staticClass: ["content"]
-  }, _vm._l((_vm.q_list), function(q, v) {
-    return _c('div', [_c('div', {
-      staticClass: ["question"]
-    }, [_c('text', {
-      staticStyle: {
-        fontSize: "36px",
-        color: "#666",
-        marginRight: "35px"
-      }
-    }, [_vm._v(_vm._s(q.no) + "." + _vm._s(q.question.qname) + "(    )")])]), _vm._l((q.answer), function(a) {
-      return _c('div', {
-        staticClass: ["answer"],
-        style: {
-          backgroundColor: a.bgColor
-        }
-      }, [_c('text', {
-        staticStyle: {
-          fontSize: "34px",
-          color: "#666",
-          marginRight: "10px"
-        }
-      }, [_vm._v(_vm._s(a.answerOption) + "、" + _vm._s(a.content))])])
-    }), _c('div', {
-      staticClass: ["list"]
-    }, [_c('div', {
-      staticClass: ["t_q"],
-      on: {
-        "click": function($event) {
-          _vm.show(q.answer, v)
-        }
-      }
-    }, [_vm._m(0, true)]), (q.isShow) ? _c('div', {
-      key: v,
-      staticClass: ["j_cnt"]
-    }, [_c('text', {
-      staticClass: ["ans"]
-    }, [_vm._v("正确答案是  " + _vm._s(q.ans) + "，你的答案是  " + _vm._s(q.chooseAnswer) + "\n\t\t\t\t\t\t")]), _c('text', {
-      staticClass: ["tips"]
-    }, [_vm._v("解析")]), _c('text', {
-      staticClass: ["contents"]
-    }, [_vm._v("暂无解析")]), _c('div', {
-      staticClass: ["hid"]
-    }, [_c('text', {
-      staticStyle: {
-        fontSize: "36px",
-        borderStyle: "solid",
-        color: "#666",
-        padding: "10px",
-        borderRadius: "5px",
-        paddingLeft: "30px",
-        paddingRight: "30px"
-      },
-      on: {
-        "click": function($event) {
-          _vm.hidden(v)
-        }
-      }
-    }, [_vm._v("收起")])])]) : _vm._e()])], 2)
-  }))]), _c('div', {
-    staticClass: ["footer"],
-    on: {
-      "click": function($event) {
-        _vm._goto('/ydrw/kscg?bid=' + _vm.bid + '&bname=' + _vm.bNname)
-      }
-    }
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "39px",
-      color: "#fff"
-    }
-  }, [_vm._v("重新闯关")])])])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["t_q_btn"]
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "36px",
-      color: "#fff"
-    }
-  }, [_vm._v("解析")]), _c('image', {
-    staticStyle: {
-      width: "29px",
-      height: "36px"
-    },
-    attrs: {
-      "src": "../static/images/pic_jx.png"
-    }
-  })])
-}]}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 93 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
-    attrs: {
-      "src": "../static/images/xs_pic_fh.png"
-    },
-    on: {
-      "click": _vm.goback
-    }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v("我的任务")])]), _c('div', {
-    staticClass: ["tab"]
-  }, [_c('text', {
-    staticClass: ["tab_li"],
-    on: {
-      "click": _vm.openYdrw
-    }
-  }, [_vm._v("阅读任务")]), _c('text', {
-    staticClass: ["tab_li", "tab_yes"],
-    on: {
-      "click": _vm.onpeKstfb
-    }
-  }, [_vm._v("考试提分宝")])]), _c('div', {
-    staticClass: ["type"]
-  }, [_c('div', {
-    staticClass: ["type_li"],
-    staticStyle: {
-      borderRightColor: "#e6e6e6",
-      borderRightStyle: "solid",
-      borderRightWidth: "1px"
-    },
-    on: {
-      "click": function($event) {
-        _vm.fn()
-      }
-    }
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "32px",
-      color: "#666"
-    }
-  }, [_vm._v("类型")]), _c('image', {
-    staticClass: ["type_img"],
-    attrs: {
-      "src": "../static/images/ico_17.png"
-    }
-  })]), _c('div', {
-    staticClass: ["type_li"],
-    on: {
-      "click": function($event) {
-        _vm.show()
-      }
-    }
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "32px",
-      color: "#666"
-    }
-  }, [_vm._v("状态")]), _c('image', {
-    staticClass: ["type_img"],
-    attrs: {
-      "src": "../static/images/ico_17.png"
-    }
-  })])]), _c('scroller', [_c('div', {
-    staticClass: ["jrrw"]
-  }, _vm._l((_vm.kstfb_list), function(kstfb, v) {
-    return _c('div', {
-      staticClass: ["jrrw_list"],
-      class: ['bj' + kstfb.state],
-      on: {
-        "click": function($event) {
-          _vm.mryl(v)
-        }
-      }
-    }, [_c('div', {
-      staticClass: ["jrrw_info"]
-    }, [_c('text', {
-      staticClass: ["rw_title"]
-    }, [_vm._v("每日一练")]), _c('div', {
-      staticClass: ["rw_time"]
-    }, [_c('text', {
-      staticStyle: {
-        fontSize: "26px",
-        color: "#808080"
-      }
-    }, [_vm._v("截止：" + _vm._s(kstfb.endDate))])])]), _c('div', {
-      staticClass: ["c_bg"]
-    }, [(kstfb.state == 0) ? _c('text', {
-      staticClass: ["c_bg_btn"],
-      class: ['c_bg_btn' + kstfb.state]
-    }, [_vm._v("前往")]) : _vm._e(), (kstfb.state == 1) ? _c('text', {
-      staticClass: ["c_bg_btn"],
-      class: ['c_bg_btn' + kstfb.state]
-    }, [_vm._v("已完成")]) : _vm._e(), (kstfb.stateName == '补做') ? _c('text', {
-      staticClass: ["stateName"]
-    }, [_vm._v("逾期未提交")]) : _vm._e()]), (kstfb.state == 0) ? _c('image', {
-      staticClass: ["newR"],
-      attrs: {
-        "src": "../static/images/xs_pic_newR.png"
-      }
-    }) : _vm._e()])
-  }))])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 94 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
-    attrs: {
-      "src": "../static/images/xs_pic_fh.png"
-    },
-    on: {
-      "click": _vm.goback
-    }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v("每日一练")])]), _c('scroller', [_c('div', {
-    staticClass: ["state"]
-  }, [_c('text', {
-    staticClass: ["s_tit"]
-  }, [_vm._v("读短文并按要求作答")]), _c('text', {
-    staticClass: ["count"]
-  }, [_vm._v("    " + _vm._s(_vm.cont))])]), _c('div', {
-    staticClass: ["content"]
-  }, _vm._l((_vm.q_list), function(q, v) {
-    return _c('div', [_c('div', {
-      staticClass: ["question"]
-    }, [_c('text', {
-      staticStyle: {
-        fontSize: "36px",
-        color: "#666"
-      }
-    }, [_vm._v(_vm._s(q.no) + "." + _vm._s(q.question.content))])]), _vm._l((q.question.answers), function(a, v) {
-      return _c('div', {
-        key: v,
-        staticClass: ["answer"],
-        style: {
-          backgroundColor: a.bgColor
-        },
-        on: {
-          "click": function($event) {
-            _vm._isZq(a, q.answers, v, q.no)
-          }
-        }
-      }, [_c('div', [_c('text', _vm._b({
-        staticStyle: {
-          fontSize: "34px",
-          color: "#666"
-        }
-      }, 'text', _vm.que), [_vm._v(_vm._s(a.answerOption) + "、" + _vm._s(a.answerContent))])])])
-    }), (q.isRight != 1) ? _c('div', {
-      staticClass: ["list"]
-    }, [_c('div', {
-      staticClass: ["t_q"],
-      on: {
-        "click": function($event) {
-          _vm._wtjx(q.question, v)
-        }
-      }
-    }, [_vm._m(0, true)]), (q.isShow) ? _c('div', {
-      key: v,
-      staticClass: ["j_cnt"]
-    }, [_c('text', {
-      staticClass: ["ans"]
-    }, [_vm._v("正确答案是  " + _vm._s(_vm.Right) + "，你的答案是  " + _vm._s(q.chooseAnswer) + "\n\t\t\t\t\t\t")]), _c('text', {
-      staticClass: ["tips"]
-    }, [_vm._v("解析")]), _c('text', {
-      staticClass: ["contents"]
-    }, [_vm._v("暂无解析")]), _c('div', {
-      staticClass: ["hid"]
-    }, [_c('text', {
-      staticStyle: {
-        fontSize: "40px",
-        backgroundColor: "#70a1e8",
-        padding: "10px",
-        borderRadius: "20px",
-        color: "#fff"
-      },
-      on: {
-        "click": function($event) {
-          _vm.hidden(v)
-        }
-      }
-    }, [_vm._v("收起")])])]) : _vm._e()]) : _vm._e()], 2)
-  }))]), _c('div', {
-    staticClass: ["footer"],
-    on: {
-      "click": _vm.subimt
-    }
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "39px",
-      color: "#fff"
-    },
-    on: {
-      "click": function($event) {
-        _vm.optj()
-      }
-    }
-  }, [_vm._v("完成")])])])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["t_q_btn"]
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "36px",
-      color: "#fff"
-    }
-  }, [_vm._v("解析")]), _c('image', {
-    staticStyle: {
-      width: "29px",
-      height: "36px"
-    },
-    attrs: {
-      "src": "../static/images/pic_jx.png"
-    }
-  })])
-}]}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 95 */
+/* 87 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -14812,6 +13773,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "src": "../static/images/ico_heart01.png"
     }
+  }), _c('image', {
+    staticClass: ["goback_r1"],
+    attrs: {
+      "src": "../static/images/ico_2101.png"
+    },
+    on: {
+      "click": _vm.openFx
+    }
   })]), _c('scroller', [_c('div', {
     staticClass: ["b_name"]
   }, [_c('text', {
@@ -14821,7 +13790,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('image', {
     staticClass: ["b_img"],
     attrs: {
-      "src": _vm.book.bookPic
+      "src": _vm.book.guideImage
     }
   }), _c('div', {
     staticClass: ["b_info"]
@@ -14848,7 +13817,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     attrs: {
       "src": _vm.book.guideVoice,
-      "playStatus": "play",
       "controls": "controls"
     }
   }), _c('div', {
@@ -14856,48 +13824,50 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('text', {
     staticClass: ["b_title"]
   }, [_vm._v("编辑推荐")]), _c('text', {
+    directives: [{
+      name: "html",
+      rawName: "v-html",
+      value: (_vm.book.editorIntro),
+      expression: "book.editorIntro"
+    }],
     staticClass: ["b_main"]
-  }, [_vm._v(_vm._s(_vm._f("filterHTMLs")(_vm.book.editorIntro)))])]), _c('div', {
+  }, [_vm._v(_vm._s(_vm.book.editorIntro))])]), _c('div', {
     staticClass: ["b_cnt"]
   }, [_c('text', {
     staticClass: ["b_title"]
   }, [_vm._v("内容简介")]), _c('text', {
     staticClass: ["b_main"]
-  }, [_vm._v(_vm._s(_vm._f("filterHTMLs")(_vm.book.desc)))])]), _c('div', {
+  }, [_vm._v(_vm._s(_vm.book.desc))])]), _c('div', {
     staticClass: ["b_cnt"]
   }, [_c('text', {
     staticClass: ["b_title"]
   }, [_vm._v("作者简介")]), _c('text', {
     staticClass: ["b_main"]
-  }, [_vm._v(_vm._s(_vm._f("filterHTMLs")(_vm.book.authorDesc)))])])], 1)]), _c('div', {
+  }, [_vm._v(_vm._s(_vm.book.authorDesc))])])], 1)]), _c('div', {
     staticClass: ["footes"]
-  }, [(_vm.pcShow) ? _c('text', {
+  }, [(_vm.feeling == 0 && _vm.zrw == '2' || _vm.zrw == '1,2') ? _c('text', {
     staticClass: ["footes_btn"],
     on: {
       "click": function($event) {
-        _vm.jump('/ydrw/xdhg?planId=' + _vm.rwId + '&bookId=' + _vm.bId + '&bookType=' + _vm.rwtype + '&title=' + _vm.bName)
+        _vm.opendhfx('/ydrw/xdhg?planId=' + _vm.rwId + '&bookId=' + _vm.bId + '&bookType=' + _vm.rwtype + '&title=' + _vm.bName)
       }
     }
-  }, [_vm._v("读后分享")]) : _vm._e(), (_vm.cgShow) ? _c('text', {
+  }, [_vm._v("读后分享")]) : _vm._e(), (_vm.test == 0 && _vm.zrw == '1' || _vm.zrw == '1,2') ? _c('text', {
+    staticClass: ["footes_btn"],
+    on: {
+      "click": _vm.openkscg
+    }
+  }, [_vm._v("开始闯关")]) : _vm._e(), (_vm.feeling == 1 && _vm.zrw == '2') ? _c('text', {
     staticClass: ["footes_btn"],
     on: {
       "click": function($event) {
-        _vm.jump('/ydrw/kscg?bid=' + _vm.bId + '&bname=' + _vm.bName + '&pid=' + _vm.rwId)
+        _vm.openwdfx('/ydrw/wddhg?loginAccount=' + _vm.loginA + '&planId=' + _vm.rwId + '&bookId=' + _vm.bId)
       }
     }
-  }, [_vm._v("开始闯关")]) : _vm._e(), (_vm.pc) ? _c('text', {
+  }, [_vm._v("我的分享")]) : _vm._e(), (_vm.test == 1 && _vm.zrw == '1') ? _c('text', {
     staticClass: ["footes_btn"],
     on: {
-      "click": function($event) {
-        _vm.jump('/ydrw/wddhg?planId=' + _vm.rwId + '&bookId=' + _vm.bId)
-      }
-    }
-  }, [_vm._v("我的分享")]) : _vm._e(), (_vm.cg) ? _c('text', {
-    staticClass: ["footes_btn"],
-    on: {
-      "click": function($event) {
-        _vm.jump('/ydrw/wdcg?bid=' + _vm.bId + '&bname=' + _vm.bName + '&pid=' + _vm.rwId)
-      }
+      "click": _vm.openwdcg
     }
   }, [_vm._v("我的闯关")]) : _vm._e()])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -14910,542 +13880,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 96 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
-    attrs: {
-      "src": "../static/images/xs_pic_fh.png"
-    },
-    on: {
-      "click": _vm.goback
-    }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v(_vm._s(_vm.bNname))])]), (_vm.q_list.length == 0) ? _c('div', {
-    staticClass: ["msg"]
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "50px",
-      color: "#6fa1e8"
-    }
-  }, [_vm._v(_vm._s(_vm.msg))])]) : _vm._e(), (_vm.q_list.length != 0) ? _c('div', {
-    staticClass: ["state"]
-  }, [_c('text', {
-    staticClass: ["count"]
-  }, [_vm._v("答对" + _vm._s(_vm.dui) + "道，答错" + _vm._s(_vm.cuo) + "道，正确率：" + _vm._s(_vm.zql) + "%")])]) : _vm._e(), _c('scroller', [_c('div', {
-    staticClass: ["content"]
-  }, _vm._l((_vm.q_list), function(q, v) {
-    return _c('div', [_c('div', {
-      staticClass: ["question"]
-    }, [_c('text', {
-      staticStyle: {
-        fontSize: "36px",
-        color: "#666",
-        marginRight: "35px"
-      }
-    }, [_vm._v(_vm._s(q.no) + "." + _vm._s(q.question.qname) + "(    )")])]), _vm._l((q.answer), function(a) {
-      return _c('div', {
-        staticClass: ["answer"],
-        style: {
-          backgroundColor: a.bgColor
-        }
-      }, [_c('text', {
-        staticStyle: {
-          fontSize: "34px",
-          color: "#666",
-          marginRight: "10px"
-        },
-        on: {
-          "click": function($event) {
-            _vm.last(q.ans, a.ans)
-          }
-        }
-      }, [_vm._v(_vm._s(a.answerOption) + "、" + _vm._s(a.content))])])
-    }), _c('div', {
-      staticClass: ["list"]
-    }, [_c('div', {
-      staticClass: ["t_q"],
-      on: {
-        "click": function($event) {
-          _vm.show(q.answer, v)
-        }
-      }
-    }, [_vm._m(0, true)]), (q.isShow) ? _c('div', {
-      key: v,
-      staticClass: ["j_cnt"]
-    }, [_c('text', {
-      staticClass: ["ans"]
-    }, [_vm._v("正确答案是  " + _vm._s(q.ans) + "，你的答案是  " + _vm._s(q.chooseAnswer) + "\n\t\t\t\t\t\t")]), _c('text', {
-      staticClass: ["tips"]
-    }, [_vm._v("解析")]), _c('text', {
-      staticClass: ["contents"]
-    }, [_vm._v("暂无解析")]), _c('div', {
-      staticClass: ["hid"]
-    }, [_c('text', {
-      staticStyle: {
-        fontSize: "40px",
-        backgroundColor: "#70a1e8",
-        padding: "10px",
-        borderRadius: "20px",
-        color: "#fff"
-      },
-      on: {
-        "click": function($event) {
-          _vm.hidden(v)
-        }
-      }
-    }, [_vm._v("收起")])])]) : _vm._e()])], 2)
-  }))]), _c('div', {
-    staticClass: ["footer"],
-    on: {
-      "click": function($event) {
-        _vm._goto("")
-      }
-    }
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "39px",
-      color: "#fff"
-    }
-  }, [_vm._v("重新闯关")])])])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["t_q_btn"]
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "36px",
-      color: "#fff"
-    }
-  }, [_vm._v("解析")]), _c('image', {
-    staticStyle: {
-      width: "29px",
-      height: "36px"
-    },
-    attrs: {
-      "src": "../static/images/pic_jx.png"
-    }
-  })])
-}]}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 97 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticStyle: {
-      backgroundColor: "#fff",
-      fontFamily: "黑体"
-    },
-    attrs: {
-      "id": "ydzx"
-    }
-  }, [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
-    attrs: {
-      "src": "../static/images/xs_pic_fh.png"
-    },
-    on: {
-      "click": _vm.goback
-    }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v(_vm._s(_vm.ydzxXq.title))]), _c('image', {
-    staticClass: ["send"],
-    attrs: {
-      "src": "../static/images/ico_2101.png"
-    }
-  })]), _c('scroller', [_c('div', {
-    staticClass: ["ydzx_main"]
-  }, [_c('div', {
-    staticClass: ["ydzx_l"]
-  }, [_c('text', {
-    staticClass: ["ydzx_titil"]
-  }, [_vm._v(_vm._s(_vm.ydzxXq.title))]), _c('div', {
-    staticClass: ["ydzx_time"]
-  }, [_c('text', {
-    staticStyle: {
-      color: "#666",
-      fontSize: "30px"
-    }
-  }, [_vm._v(_vm._s(_vm.ydzxXq.createDate))]), _c('text', {
-    staticStyle: {
-      color: "#6fa1e8",
-      fontSize: "30px"
-    }
-  }, [_vm._v(_vm._s(_vm.ydzxXq.tags))])])]), (_vm.ydzxXq.image) ? _c('image', {
-    staticClass: ["ydzx_img"],
-    attrs: {
-      "src": _vm.ydzxXq.image
-    }
-  }) : _vm._e(), _c('div', {
-    staticClass: ["ydzx_text"]
-  }, [_c('text', {
-    staticStyle: {
-      color: "#666",
-      fontSize: "36px",
-      textAlign: "justify",
-      lineHeight: "45px"
-    }
-  }, [_vm._v(_vm._s(_vm.ydzxXq.content))])])])])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 98 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
-    attrs: {
-      "src": "../static/images/xs_pic_fh.png"
-    },
-    on: {
-      "click": _vm.goback
-    }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v("每日一练")])]), _c('scroller', [_c('div', {
-    staticClass: ["state"]
-  }, [_c('text', {
-    staticClass: ["s_tit"]
-  }, [_vm._v("读短文并按要求作答")]), _c('text', {
-    staticClass: ["count"]
-  }, [_vm._v("    " + _vm._s(_vm.cont))])]), _c('div', {
-    staticClass: ["content"]
-  }, _vm._l((_vm.q_list), function(q) {
-    return _c('div', [_c('div', {
-      staticClass: ["question"]
-    }, [_c('text', {
-      staticStyle: {
-        fontSize: "36px",
-        color: "#666"
-      }
-    }, [_vm._v(_vm._s(q.no) + "." + _vm._s(q.content))])]), _vm._l((q.answers), function(a, v) {
-      return _c('div', {
-        key: v,
-        staticClass: ["answer"],
-        style: {
-          backgroundColor: a.bgColor
-        },
-        on: {
-          "click": function($event) {
-            _vm._isZq(a, q.answers, v, q.no, q.id)
-          }
-        }
-      }, [_c('text', {
-        staticStyle: {
-          fontSize: "34px",
-          color: "#666"
-        }
-      }, [_vm._v(_vm._s(a.answerOption) + "、" + _vm._s(a.answerContent))])])
-    })], 2)
-  }))]), _c('div', {
-    staticClass: ["footer"],
-    on: {
-      "click": _vm.subimt
-    }
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "39px",
-      color: "#fff"
-    },
-    on: {
-      "click": function($event) {
-        _vm.optj()
-      }
-    }
-  }, [_vm._v("提交")])])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 99 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
-    attrs: {
-      "src": "../static/images/xs_pic_fh.png"
-    },
-    on: {
-      "click": _vm.goback
-    }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v("我的任务")])]), _c('div', {
-    staticClass: ["tab"]
-  }, [_c('div', {
-    staticClass: ["tab_li", "tab_yes"],
-    on: {
-      "click": _vm.openYdrw
-    }
-  }, [_c('text', {
-    staticClass: ["tab_yes"]
-  }, [_vm._v("阅读任务")])]), _c('div', {
-    staticClass: ["tab_li"],
-    on: {
-      "click": _vm.onpeKstfb
-    }
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "34px",
-      color: "#666"
-    }
-  }, [_vm._v("考试提分宝")])])]), _c('div', {
-    staticClass: ["type"]
-  }, [_c('div', {
-    staticClass: ["type_li"],
-    staticStyle: {
-      borderRightColor: "#e6e6e6",
-      borderRightStyle: "solid",
-      borderRightWidth: "1px"
-    },
-    on: {
-      "click": _vm.fn
-    }
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "34px",
-      color: "#666"
-    }
-  }, [_vm._v(_vm._s(_vm.typeName))]), _c('image', {
-    staticClass: ["type_img"],
-    attrs: {
-      "src": "../static/images/ico_17.png"
-    }
-  })]), _c('div', {
-    staticClass: ["type_li"],
-    on: {
-      "click": _vm.show
-    }
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "34px",
-      color: "#666"
-    }
-  }, [_vm._v(_vm._s(_vm.stateName))]), _c('image', {
-    staticClass: ["type_img"],
-    attrs: {
-      "src": "../static/images/ico_17.png"
-    }
-  })])]), (_vm.willShow) ? _c('div', {
-    staticClass: ["s_class"],
-    staticStyle: {
-      left: "0px",
-      height: "260px"
-    }
-  }, [_c('scroller', _vm._l((_vm.typeList), function(type) {
-    return _c('div', {
-      staticClass: ["s_class_opt"],
-      style: {
-        backgroundColor: type.bj,
-        color: type.color
-      },
-      on: {
-        "click": function($event) {
-          _vm.optType(type.id, type.name)
-        }
-      }
-    }, [_c('text', {
-      staticStyle: {
-        fontSize: "34px"
-      },
-      style: {
-        backgroundColor: type.bj,
-        color: type.color
-      }
-    }, [_vm._v(_vm._s(type.name))])])
-  }))]) : _vm._e(), (_vm.willShow2) ? _c('div', {
-    staticClass: ["s_class"],
-    staticStyle: {
-      left: "375px",
-      height: "330px"
-    }
-  }, [_c('scroller', _vm._l((_vm.stateList), function(state) {
-    return _c('div', {
-      staticClass: ["s_class_opt"],
-      style: {
-        backgroundColor: state.bj,
-        color: state.color
-      },
-      on: {
-        "click": function($event) {
-          _vm.optState(state.id, state.name)
-        }
-      }
-    }, [_c('text', {
-      staticStyle: {
-        fontSize: "34px"
-      },
-      style: {
-        backgroundColor: state.bj,
-        color: state.color
-      }
-    }, [_vm._v(_vm._s(state.name))])])
-  }))]) : _vm._e(), _c('scroller', [_c('div', {
-    staticClass: ["jrrw"]
-  }, _vm._l((_vm.rw_list), function(rw) {
-    return _c('div', {
-      staticClass: ["jrrw_list"],
-      class: ['bj' + rw.state],
-      on: {
-        "click": function($event) {
-          _vm.openRwxq('/ydrw/ckjh?planId=' + rw.planId + '&type=' + _vm.typeId)
-        }
-      }
-    }, [_c('div', {
-      staticClass: ["jrrw_info"]
-    }, [_c('text', {
-      staticClass: ["rw_title"]
-    }, [_vm._v(_vm._s(rw.planName))]), _c('div', {
-      staticClass: ["rw_time"]
-    }, [_c('text', {
-      staticStyle: {
-        fontSize: "26px",
-        color: "#808080"
-      }
-    }, [_vm._v("截止：" + _vm._s(rw.endDate))]), _c('text', {
-      staticStyle: {
-        fontSize: "26px",
-        color: "#808080"
-      }
-    }, [_vm._v(_vm._s(rw.teaName))])])]), _c('div', {
-      staticClass: ["c_bg"]
-    }, [_c('text', {
-      staticClass: ["c_bg_btn"],
-      class: ['c_bg_btn' + rw.state]
-    }, [_vm._v(_vm._s(_vm._f("sname")(rw.state)))]), (rw.state == '2') ? _c('text', {
-      staticClass: ["prompt"]
-    }, [_vm._v("逾期未提交")]) : _vm._e()]), (rw.new) ? _c('image', {
-      staticClass: ["newR"],
-      attrs: {
-        "src": "../static/images/xs_pic_newR.png"
-      }
-    }) : _vm._e()])
-  })), _c('loading', {
-    staticClass: ["loading"],
-    attrs: {
-      "display": _vm.showLoading
-    },
-    on: {
-      "loading": _vm.onloading
-    }
-  }, [_c('text', {
-    staticClass: ["indicator"]
-  }, [_vm._v("加载更多 ...")])])], 1)])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 100 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
-    attrs: {
-      "src": "../static/images/xs_pic_fh.png"
-    },
-    on: {
-      "click": _vm.goback
-    }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v(_vm._s(_vm.bName))])]), _c('div', {
-    staticClass: ["state"]
-  }, [_c('text', {
-    staticClass: ["count"]
-  }, [_vm._v(_vm._s(_vm.index) + "/" + _vm._s(_vm.length))])]), _c('scroller', [_c('div', {
-    staticClass: ["content"]
-  }, [_c('div', [_c('div', {
-    staticClass: ["question"]
-  }, [(_vm.type == 1) ? _c('text', {
-    staticStyle: {
-      fontSize: "36px",
-      color: "#666"
-    }
-  }, [_vm._v(_vm._s(_vm.index) + "." + _vm._s(_vm.tm.qname) + "(    )")]) : _vm._e(), (_vm.type == 2) ? _c('text', {
-    staticStyle: {
-      fontSize: "36px",
-      color: "#666"
-    }
-  }, [_vm._v(_vm._s(_vm.index) + "." + _vm._s(_vm.tm.qname) + "(    )")]) : _vm._e()]), _vm._l((_vm.an_list), function(a, i) {
-    return _c('div', {
-      staticClass: ["answer"]
-    }, [_c('div', {
-      staticClass: ["a_list"],
-      class: ['a_l_' + a.flag],
-      on: {
-        "click": function($event) {
-          _vm._chose(i, a.rightOption, a.answerOption)
-        }
-      }
-    }, [_c('text', {
-      staticClass: ["a_c"],
-      class: ['a_t_' + a.flag]
-    }, [_vm._v(_vm._s(a.answerOption) + "、")]), (!_vm.pic_flag) ? _c('text', {
-      staticClass: ["a_t"],
-      class: ['a_t_' + a.flag]
-    }, [_vm._v(_vm._s(a.content))]) : _vm._e(), (_vm.pic_flag) ? _c('image', {
-      staticClass: ["pic_t"],
-      attrs: {
-        "src": a.picUrl
-      }
-    }) : _vm._e()])])
-  })], 2), (_vm.a_flag) ? _c('div', {
-    staticClass: ["list"]
-  }, [_c('div', {
-    staticClass: ["j_cnt"]
-  }, [_c('text', {
-    staticClass: ["ans"]
-  }, [_vm._v("正确答案是" + _vm._s(_vm.c_ans))]), _c('text', {
-    staticClass: ["tips"]
-  }, [_vm._v("解析")]), _c('text', {
-    staticClass: ["contents"]
-  })])]) : _vm._e(), (_vm.c_flag) ? _c('div', {
-    staticClass: ["next"],
-    on: {
-      "click": _vm._next
-    }
-  }, [_c('text', {
-    staticClass: ["n_t"]
-  }, [_vm._v("下一题")])]) : _vm._e(), (_vm.e_flag) ? _c('div', {
-    staticClass: ["next"],
-    on: {
-      "click": _vm._end
-    }
-  }, [_c('text', {
-    staticClass: ["n_t"]
-  }, [_vm._v("完成")])]) : _vm._e()])])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 101 */
+/* 88 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('scroller', {
     staticStyle: {
-      backgroundColor: "#f0f0f0",
-      marginBottom: "100px"
+      backgroundColor: "#f0f0f0"
     }
   }, [_c('slider', {
     staticClass: ["slider"],
@@ -15699,7 +14140,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 102 */
+/* 89 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -15715,232 +14156,112 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _c('text', {
     staticClass: ["top_name"]
-  }, [_vm._v("任务详情")]), _c('image', {
-    staticClass: ["goback_r"],
-    attrs: {
-      "src": "../static/images/ico_heart01.png"
-    }
-  }), _c('image', {
-    staticClass: ["goback_r1"],
-    attrs: {
-      "src": "../static/images/ico_2101.png"
-    }
-  })]), _c('scroller', [_c('div', [_c('image', {
-    staticClass: ["ydrw_zt"],
-    attrs: {
-      "src": "../static/images/bj.png"
-    }
-  }), _c('div', {
-    staticClass: ["ydrw_zt_title"]
+  }, [_vm._v("每日一练")])]), _c('scroller', [_c('div', {
+    staticClass: ["state"]
   }, [_c('text', {
-    staticClass: ["ydrw_ztName"]
-  }, [_vm._v(_vm._s(_vm.planName))]), _c('text', {
-    staticClass: ["ydry_ztlist"]
-  }, [_vm._v(_vm._s(_vm.teacher.TEA_NAME) + "|" + _vm._s(_vm.teacher.SCHOOL_NAME))])])]), _c('div', {
-    staticClass: ["ydrw_lump"]
-  }, [_c('div', {
-    staticClass: ["jrrw_title"]
-  }, [_c('span', {
-    staticClass: ["title_img"]
-  }, [_vm._v(" ")]), _vm._v("  "), _c('text', {
-    staticClass: ["fontsz"]
-  }, [_vm._v("任务时间：" + _vm._s(_vm.beginDate) + "至" + _vm._s(_vm.endDate))])], 1)]), _c('div', {
-    staticClass: ["ydrw_lump"]
-  }, [_c('div', {
-    staticClass: ["jrrw_title"]
-  }, [_c('span', {
-    staticClass: ["title_img"]
-  }, [_vm._v(" ")]), _c('text', {
-    staticClass: ["fontsz"]
-  }, [_vm._v("老师推荐语")])], 1), _c('div', {
-    staticClass: ["lstj"]
-  }, [_c('div', {
-    staticClass: ["lstj_l"]
-  }, [_c('image', {
-    staticClass: ["lstj_lpic"],
-    attrs: {
-      "src": _vm.teacher.HEAD_URL
-    }
-  }), _c('text', {
-    staticClass: ["lstj_lname"]
-  }, [_vm._v(_vm._s(_vm.teacher.TEA_NAME))])]), _c('div', {
-    staticStyle: {
-      flex: "3",
-      marginRight: "20px"
-    }
-  }, [_c('text', {
-    staticClass: ["ydrw_lump_comt"]
-  }, [_vm._v(_vm._s(_vm.reason))]), _vm._m(0)])])]), _c('div', {
-    staticClass: ["ydrw_lump"]
-  }, [_c('div', {
-    staticClass: ["jrrw_title"]
-  }, [_c('span', {
-    staticClass: ["title_img"]
-  }, [_vm._v(" ")]), _vm._v("  "), _c('text', {
-    staticClass: ["fontsz"]
-  }, [_vm._v("考核心方式： " + _vm._s(_vm._f("types")(_vm.access)))])], 1)]), _c('div', {
-    staticClass: ["ydrw_lump"]
-  }, [_c('div', {
-    staticClass: ["jrrw_title"]
-  }, [_c('span', {
-    staticClass: ["title_img"]
-  }, [_vm._v(" ")]), _vm._v("  "), _c('text', {
-    staticClass: ["fontsz"]
-  }, [_vm._v("阅读要求")])], 1), _c('div', [_c('text', {
-    staticClass: ["ydrw_lump_comt"]
-  }, [_vm._v(_vm._s(_vm.requirements))]), _vm._m(1)])]), _c('div', {
-    staticClass: ["jrrw_title"],
-    staticStyle: {
-      marginLeft: "20px",
-      marginRight: "20px",
-      marginBottom: "20px"
-    }
-  }, [_c('span', {
-    staticClass: ["title_img"]
-  }, [_vm._v(" ")]), _vm._v("  "), _c('text', {
-    staticClass: ["fontsz"]
-  }, [_vm._v("本期图书:共" + _vm._s(_vm.books.length) + "本")])], 1), _vm._l((_vm.books), function(book, index) {
+    staticClass: ["s_tit"]
+  }, [_vm._v("读短文并按要求作答")]), _c('text', {
+    staticClass: ["count"]
+  }, [_vm._v("    " + _vm._s(_vm.cont))])]), _c('div', {
+    staticClass: ["content"]
+  }, _vm._l((_vm.q_list), function(q, v) {
     return _c('div', [_c('div', {
-      staticClass: ["bookName"]
+      staticClass: ["question"]
     }, [_c('text', {
       staticStyle: {
-        fontSize: "32px"
+        fontSize: "36px",
+        color: "#666"
       }
-    }, [_vm._v("  图书" + _vm._s(index + 1))]), _vm._v("    "), _c('text', {
-      staticStyle: {
-        flex: "3",
-        fontSize: "34px",
-        textOverflow: "ellipsis",
-        lines: "1"
-      }
-    }, [_vm._v(_vm._s(book.bookName))])]), _c('div', {
-      staticClass: ["book_lump"]
+    }, [_vm._v(_vm._s(q.no) + "." + _vm._s(q.question.content))])]), _vm._l((q.question.answers), function(a, v) {
+      return _c('div', {
+        key: v,
+        staticClass: ["answer"],
+        style: {
+          backgroundColor: a.bgColor
+        },
+        on: {
+          "click": function($event) {
+            _vm._isZq(a, q.answers, v, q.no)
+          }
+        }
+      }, [_c('div', [_c('text', _vm._b({
+        staticStyle: {
+          fontSize: "34px",
+          color: "#666"
+        }
+      }, 'text', _vm.que), [_vm._v(_vm._s(a.answerOption) + "、" + _vm._s(a.answerContent))])])])
+    }), (q.isRight != 1) ? _c('div', {
+      staticClass: ["list"]
     }, [_c('div', {
-      staticClass: ["ydjy_l"]
-    }, [_c('image', {
-      staticClass: ["book_lump_img"],
+      staticClass: ["t_q"],
+      on: {
+        "click": function($event) {
+          _vm._wtjx(q.question, v)
+        }
+      }
+    }, [_vm._m(0, true)]), (q.isShow) ? _c('div', {
+      key: v,
+      staticClass: ["j_cnt"]
+    }, [_c('text', {
+      staticClass: ["ans"]
+    }, [_vm._v("正确答案是  " + _vm._s(_vm.Right) + "，你的答案是  " + _vm._s(q.chooseAnswer) + "\n\t\t\t\t\t\t")]), _c('text', {
+      staticClass: ["tips"]
+    }, [_vm._v("解析")]), _c('text', {
+      staticClass: ["contents"]
+    }, [_vm._v("暂无解析")]), _c('div', {
+      staticClass: ["hid"]
+    }, [_c('text', {
       staticStyle: {
-        position: "relative"
+        fontSize: "40px",
+        backgroundColor: "#70a1e8",
+        padding: "10px",
+        borderRadius: "20px",
+        color: "#fff"
       },
-      attrs: {
-        "src": book.pic
-      }
-    }), (!book.finish == 0) ? _c('text', {
-      staticClass: ["ydjy_state"]
-    }, [_vm._v(_vm._s(_vm._f("ydName")(book.finish)))]) : _vm._e()]), _c('div', {
-      staticClass: ["book_lump_info"]
-    }, [_c('text', {
-      staticClass: ["b_list"]
-    }, [_vm._v("作者：" + _vm._s(book.author) + "/著 ")]), _c('text', {
-      staticClass: ["b_list"]
-    }, [_vm._v("出版社：" + _vm._s(book.press))]), _c('text', {
-      staticClass: ["b_list"]
-    }, [_vm._v("ISBN:" + _vm._s(book.isbn))]), _c('div', {
-      staticClass: ["ts_type"]
-    }, [_c('text', {
-      staticClass: ["ts_label"]
-    }, [_vm._v(_vm._s(book.bookType))])]), _c('div', {
-      staticClass: ["record"]
-    }, [_c('div', {
-      staticClass: ["record_li"]
-    }, [_c('image', {
-      staticClass: ["pic_see"],
-      attrs: {
-        "src": "../static/images/ico_see.png"
-      }
-    }), _vm._v(" "), _c('text', [_vm._v(_vm._s(book.readCount))])]), _c('div', {
-      staticClass: ["record_li"]
-    }, [_c('image', {
-      staticClass: ["pic_praise"],
-      attrs: {
-        "src": "../static/images/ico_heart.png"
-      }
-    }), _vm._v(" "), _c('text', [_vm._v(_vm._s(book.toast))])])])])]), _c('div', {
-      staticClass: ["ydrw_lump"]
-    }, [_c('div', {
-      staticClass: ["jrrw_title"]
-    }, [_c('span', {
-      staticClass: ["title_img"]
-    }, [_vm._v(" ")]), _vm._v("  "), _c('text', {
-      staticClass: ["fontsz"]
-    }, [_vm._v("内容简介")])], 1), _c('text', {
-      directives: [{
-        name: "html",
-        rawName: "v-html",
-        value: (book.desc),
-        expression: "book.desc"
-      }],
-      staticClass: ["ydrw_lump_comt"],
-      staticStyle: {
-        textOverflow: "ellipsis",
-        lines: "5"
-      }
-    }, [_vm._v(_vm._s(book.desc))])]), _c('div', {
-      staticClass: ["yerw_yd"]
-    }, [_c('text', {
-      staticClass: ["ydrw_btn"],
       on: {
         "click": function($event) {
-          _vm.openYdxq('/ydbg_wdcg?bookId=' + book.bookId + '&type=' + book.type + '&access=' + _vm.access + '&feelingFinish=' + book.feelingFinish + '&testFinish=' + book.testFinish + '&bookName=' + book.bookName + '&loginAccount=' + _vm.loginA + '&planId=' + _vm.rwId)
+          _vm.hidden(v)
         }
       }
-    }, [_vm._v("开始阅读")])])])
-  }), _vm._m(2), _vm._l((_vm.books), function(book, index) {
-    return _c('div', {
-      staticClass: ["footes"]
-    }, [_c('text', {
-      staticClass: ["footes_btn"],
-      on: {
-        "click": function($event) {
-          _vm.openYdxq('/ydbg_wdcg?bookId=' + book.bookId + '&type=' + book.type + '&access=' + _vm.access + '&feelingFinish=' + book.feelingFinish + '&testFinish=' + book.testFinish + '&bookName=' + book.bookName + '&loginAccount=' + _vm.loginA + '&planId=' + _vm.rwId)
-        }
+    }, [_vm._v("收起")])])]) : _vm._e()]) : _vm._e()], 2)
+  }))]), _c('div', {
+    staticClass: ["footer"],
+    on: {
+      "click": _vm.subimt
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "39px",
+      color: "#fff"
+    },
+    on: {
+      "click": function($event) {
+        _vm.optj()
       }
-    }, [_vm._v("开始阅读")])])
-  })], 2)])
+    }
+  }, [_vm._v("完成")])])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: ["voice"]
+    staticClass: ["t_q_btn"]
   }, [_c('text', {
     staticStyle: {
-      fontSize: "34px",
-      color: "#6fa1e8"
+      fontSize: "36px",
+      color: "#fff"
     }
-  }, [_vm._v("8'")]), _c('image', {
-    staticClass: ["pic_yy"],
-    attrs: {
-      "src": "../static/images/xs_pic_yy.png"
-    }
-  })])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["voice"]
-  }, [_c('text', {
+  }, [_vm._v("解析")]), _c('image', {
     staticStyle: {
-      fontSize: "34px",
-      color: "#6fa1e8"
-    }
-  }, [_vm._v("8'")]), _c('image', {
-    staticClass: ["pic_yy"],
+      width: "29px",
+      height: "36px"
+    },
     attrs: {
-      "src": "../static/images/xs_pic_yy.png"
+      "src": "../static/images/pic_jx.png"
     }
   })])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["px_smq"]
-  }, [_c('image', {
-    staticClass: ["pic_ewm"],
-    attrs: {
-      "src": "../static/images/ewm.png"
-    }
-  }), _c('div', {
-    staticClass: ["ewm_name"]
-  }, [_c('text', [_vm._v("长按识别二维码，关注[一起阅读]公众号")]), _c('text', [_vm._v("免费获取 200本精品图书阅读内容")])])])
 }]}
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 103 */
+/* 90 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -15965,14 +14286,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "src": "../static/images/ico_heart01.png"
     }
-  }), _c('image', {
-    staticClass: ["goback_r1"],
-    attrs: {
-      "src": "../static/images/ico_2101.png"
-    },
-    on: {
-      "click": _vm.openFx
-    }
   })]), _c('scroller', [_c('div', {
     staticClass: ["b_name"]
   }, [_c('text', {
@@ -15982,7 +14295,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('image', {
     staticClass: ["b_img"],
     attrs: {
-      "src": _vm.book.guideImage
+      "src": _vm.book.bookPic
     }
   }), _c('div', {
     staticClass: ["b_info"]
@@ -16009,6 +14322,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     attrs: {
       "src": _vm.book.guideVoice,
+      "playStatus": "play",
       "controls": "controls"
     }
   }), _c('div', {
@@ -16016,50 +14330,48 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('text', {
     staticClass: ["b_title"]
   }, [_vm._v("编辑推荐")]), _c('text', {
-    directives: [{
-      name: "html",
-      rawName: "v-html",
-      value: (_vm.book.editorIntro),
-      expression: "book.editorIntro"
-    }],
     staticClass: ["b_main"]
-  }, [_vm._v(_vm._s(_vm.book.editorIntro))])]), _c('div', {
+  }, [_vm._v(_vm._s(_vm._f("filterHTMLs")(_vm.book.editorIntro)))])]), _c('div', {
     staticClass: ["b_cnt"]
   }, [_c('text', {
     staticClass: ["b_title"]
   }, [_vm._v("内容简介")]), _c('text', {
     staticClass: ["b_main"]
-  }, [_vm._v(_vm._s(_vm.book.desc))])]), _c('div', {
+  }, [_vm._v(_vm._s(_vm._f("filterHTMLs")(_vm.book.desc)))])]), _c('div', {
     staticClass: ["b_cnt"]
   }, [_c('text', {
     staticClass: ["b_title"]
   }, [_vm._v("作者简介")]), _c('text', {
     staticClass: ["b_main"]
-  }, [_vm._v(_vm._s(_vm.book.authorDesc))])])], 1)]), _c('div', {
+  }, [_vm._v(_vm._s(_vm._f("filterHTMLs")(_vm.book.authorDesc)))])])], 1)]), _c('div', {
     staticClass: ["footes"]
-  }, [(_vm.feeling == 0 && _vm.zrw == '2' || _vm.zrw == '1,2') ? _c('text', {
+  }, [(_vm.pcShow) ? _c('text', {
     staticClass: ["footes_btn"],
     on: {
       "click": function($event) {
-        _vm.opendhfx('/ydrw/xdhg?planId=' + _vm.rwId + '&bookId=' + _vm.bId + '&bookType=' + _vm.rwtype + '&title=' + _vm.bName)
+        _vm.jump('/ydrw/xdhg?planId=' + _vm.rwId + '&bookId=' + _vm.bId + '&bookType=' + _vm.rwtype + '&title=' + _vm.bName)
       }
     }
-  }, [_vm._v("读后分享")]) : _vm._e(), (_vm.test == 0 && _vm.zrw == '1' || _vm.zrw == '1,2') ? _c('text', {
-    staticClass: ["footes_btn"],
-    on: {
-      "click": _vm.openkscg
-    }
-  }, [_vm._v("开始闯关")]) : _vm._e(), (_vm.feeling == 1 && _vm.zrw == '2') ? _c('text', {
+  }, [_vm._v("读后分享")]) : _vm._e(), (_vm.cgShow) ? _c('text', {
     staticClass: ["footes_btn"],
     on: {
       "click": function($event) {
-        _vm.openwdfx('/ydrw/wddhg?loginAccount=' + _vm.loginA + '&planId=' + _vm.rwId + '&bookId=' + _vm.bId)
+        _vm.jump('/ydrw/kscg?bid=' + _vm.bId + '&bname=' + _vm.bName + '&pid=' + _vm.rwId)
       }
     }
-  }, [_vm._v("我的分享")]) : _vm._e(), (_vm.test == 1 && _vm.zrw == '1') ? _c('text', {
+  }, [_vm._v("开始闯关")]) : _vm._e(), (_vm.pc) ? _c('text', {
     staticClass: ["footes_btn"],
     on: {
-      "click": _vm.openwdcg
+      "click": function($event) {
+        _vm.jump('/ydrw/wddhg?planId=' + _vm.rwId + '&bookId=' + _vm.bId)
+      }
+    }
+  }, [_vm._v("我的分享")]) : _vm._e(), (_vm.cg) ? _c('text', {
+    staticClass: ["footes_btn"],
+    on: {
+      "click": function($event) {
+        _vm.jump('/ydrw/wdcg?bid=' + _vm.bId + '&bname=' + _vm.bName + '&pid=' + _vm.rwId)
+      }
     }
   }, [_vm._v("我的闯关")]) : _vm._e()])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -16072,13 +14384,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 104 */
+/* 91 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticStyle: {
-      backgroundColor: "#fafafa"
+      backgroundColor: "#fff",
+      fontFamily: "黑体"
+    },
+    attrs: {
+      "id": "ydzx"
     }
   }, [_c('div', {
     staticClass: ["top"]
@@ -16092,251 +14408,53 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _c('text', {
     staticClass: ["top_name"]
-  }, [_vm._v("读后分享")])]), _c('scroller', [_c('div', {
-    staticClass: ["content"]
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "34px",
-      lineHeight: "45px",
-      color: "#666"
-    }
-  }, [_vm._v("请说一说或者写一写，分享您的读后感：")]), _c('textarea', {
-    staticClass: ["textarea"],
-    attrs: {
-      "placeholder": "请输入读后感",
-      "value": (_vm.content)
-    },
-    on: {
-      "input": function($event) {
-        _vm.content = $event.target.attr.value
-      }
-    }
-  }), _c('div', {
-    staticClass: ["photoList"]
-  }, [_vm._l((_vm.imageUrl), function(lPic, index) {
-    return _c('div', {
-      staticStyle: {
-        padding: "10px"
-      },
-      on: {
-        "click": function($event) {
-          _vm.enlargePic(lPic, index)
-        }
-      }
-    }, [_c('image', {
-      staticStyle: {
-        width: "152px",
-        height: "150px"
-      },
-      attrs: {
-        "src": lPic
-      }
-    })])
-  }), (_vm.imageUrl.length != 8) ? _c('div', {
-    staticStyle: {
-      padding: "10px"
-    },
-    on: {
-      "click": _vm.openPic
-    }
-  }, [_c('image', {
-    staticStyle: {
-      width: "152px",
-      height: "152px"
-    },
-    attrs: {
-      "src": "../static/images/add_pic.png"
-    }
-  })]) : _vm._e()], 2), _c('div', {
-    staticClass: ["panel"]
-  }, [_c('div', [(_vm.duration) ? _c('div', {
-    staticClass: ["voice"],
-    on: {
-      "click": function($event) {
-        _vm.playVoice(_vm.voiceUrl)
-      }
-    }
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "34px",
-      color: "#6fa1e8"
-    }
-  }, [_vm._v(_vm._s(_vm.duration) + "'")]), _c('image', {
-    staticClass: ["pic_yy"],
-    attrs: {
-      "src": _vm.VoicePic
-    }
-  })]) : _vm._e()]), _c('image', {
-    staticClass: ["voicePic"],
-    attrs: {
-      "src": "../static/images/ico_02.png"
-    },
-    on: {
-      "click": _vm.openVoice
-    }
-  })]), _c('text', {
-    staticClass: ["confirm"],
-    on: {
-      "click": _vm.confirm
-    }
-  }, [_vm._v("提 交")])], 1)])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 105 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticStyle: {
-      backgroundColor: "#fafafa"
-    }
-  }, [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
-    attrs: {
-      "src": "../static/images/xs_pic_fh.png"
-    },
-    on: {
-      "click": _vm.goback
-    }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v("阅读任务详情")]), _c('image', {
-    staticClass: ["goback_r"],
-    attrs: {
-      "src": "../static/images/ico_heart01.png"
-    }
-  }), _c('image', {
-    staticClass: ["goback_r1"],
+  }, [_vm._v(_vm._s(_vm.ydzxXq.title))]), _c('image', {
+    staticClass: ["send"],
     attrs: {
       "src": "../static/images/ico_2101.png"
-    },
-    on: {
-      "click": _vm.openFx
     }
   })]), _c('scroller', [_c('div', {
-    staticClass: ["b_name"]
+    staticClass: ["ydzx_main"]
+  }, [_c('div', {
+    staticClass: ["ydzx_l"]
   }, [_c('text', {
-    staticClass: ["b_name1"]
-  }, [_vm._v(_vm._s(_vm.book.bookName))])]), _c('div', {
-    staticClass: ["book"]
-  }, [_c('image', {
-    staticClass: ["b_img"],
-    attrs: {
-      "src": _vm.book.guideImage
-    }
-  }), _c('div', {
-    staticClass: ["b_info"]
+    staticClass: ["ydzx_titil"]
+  }, [_vm._v(_vm._s(_vm.ydzxXq.title))]), _c('div', {
+    staticClass: ["ydzx_time"]
   }, [_c('text', {
-    staticClass: ["b_list"]
-  }, [_vm._v("作者：" + _vm._s(_vm.book.author) + "/著 ")]), _c('text', {
-    staticClass: ["b_list"]
-  }, [_vm._v("出版社：" + _vm._s(_vm.book.press))]), _c('text', {
-    staticClass: ["b_list"]
-  }, [_vm._v("ISBN: " + _vm._s(_vm.book.isbn) + " ")]), _c('div', {
     staticStyle: {
-      flexDirection: "row",
-      justifyContent: "left",
-      alignItems: "center"
+      color: "#666",
+      fontSize: "30px"
     }
-  }, [_c('text', {
-    staticClass: ["ts_label"]
-  }, [_vm._v(_vm._s(_vm.book.bookType))])])])]), _vm._m(0), _c('div', {
-    staticClass: ["b_syn"]
-  }, [_c('video', {
+  }, [_vm._v(_vm._s(_vm.ydzxXq.createDate))]), _c('text', {
     staticStyle: {
-      width: "750px",
-      height: "400px"
-    },
+      color: "#6fa1e8",
+      fontSize: "30px"
+    }
+  }, [_vm._v(_vm._s(_vm.ydzxXq.tags))])])]), (_vm.ydzxXq.image) ? _c('image', {
+    staticClass: ["ydzx_img"],
     attrs: {
-      "src": _vm.book.guideVoice,
-      "controls": "controls"
+      "src": _vm.ydzxXq.image
     }
-  }), _c('div', {
-    staticClass: ["b_cnt"]
+  }) : _vm._e(), _c('div', {
+    staticClass: ["ydzx_text"]
   }, [_c('text', {
-    staticClass: ["b_title"]
-  }, [_vm._v("编辑推荐")]), _c('text', {
-    directives: [{
-      name: "html",
-      rawName: "v-html",
-      value: (_vm.book.editorIntro),
-      expression: "book.editorIntro"
-    }],
-    staticClass: ["b_main"]
-  }, [_vm._v(_vm._s(_vm.book.editorIntro))])]), _c('div', {
-    staticClass: ["b_cnt"]
-  }, [_c('text', {
-    staticClass: ["b_title"]
-  }, [_vm._v("内容简介")]), _c('text', {
-    directives: [{
-      name: "html",
-      rawName: "v-html",
-      value: (_vm.book.desc),
-      expression: "book.desc"
-    }],
-    staticClass: ["b_main"]
-  }, [_vm._v(_vm._s(_vm.book.desc))])]), _c('div', {
-    staticClass: ["b_cnt"]
-  }, [_c('text', {
-    staticClass: ["b_title"]
-  }, [_vm._v("作者简介")]), _c('text', {
-    directives: [{
-      name: "html",
-      rawName: "v-html",
-      value: (_vm.book.authorDesc),
-      expression: "book.authorDesc"
-    }],
-    staticClass: ["b_main"]
-  }, [_vm._v(_vm._s(_vm.book.authorDesc))])])], 1)]), _c('div', {
-    staticClass: ["footes"]
-  }, [_c('text', {
-    staticClass: ["footes_btn"],
-    on: {
-      "click": function($event) {
-        _vm.opendhfx('/ydrw/xdhg?planId=' + _vm.rwId + '&bookId=' + _vm.bId + '&bookType=' + _vm.rwtype + '&title=' + _vm.bName)
-      }
+    staticStyle: {
+      color: "#666",
+      fontSize: "36px",
+      textAlign: "justify",
+      lineHeight: "45px"
     }
-  }, [_vm._v("读后分享")]), _c('text', {
-    staticClass: ["footes_btn"],
-    on: {
-      "click": _vm.openkscg
-    }
-  }, [_vm._v("开始闯关")]), (_vm.feeling == 1 && _vm.zrw == '2') ? _c('text', {
-    staticClass: ["footes_btn"],
-    on: {
-      "click": function($event) {
-        _vm.openwdfx('/ydrw/wddhg?loginAccount=' + _vm.loginA + '&planId=' + _vm.rwId + '&bookId=' + _vm.bId)
-      }
-    }
-  }, [_vm._v("我的分享")]) : _vm._e(), (_vm.test == 1 && _vm.zrw == '1') ? _c('text', {
-    staticClass: ["footes_btn"],
-    on: {
-      "click": _vm.openwdcg
-    }
-  }, [_vm._v("我的闯关")]) : _vm._e()])])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["jyzx"]
-  }, [_c('text', {
-    staticClass: ["jyzx_title"]
-  }, [_vm._v("专家导读")])])
-}]}
+  }, [_vm._v(_vm._s(_vm.ydzxXq.content))])])])])])
+},staticRenderFns: []}
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 106 */
+/* 92 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticStyle: {
-      backgroundColor: "#fafafa"
-    }
-  }, [_c('div', {
+  return _c('div', [_c('div', {
     staticClass: ["top"]
   }, [_c('image', {
     staticClass: ["goback"],
@@ -16348,106 +14466,115 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _c('text', {
     staticClass: ["top_name"]
-  }, [_vm._v("我的读后感")])]), _c('scroller', [_c('div', {
-    staticClass: ["main"]
-  }, [_c('div', {
-    staticClass: ["title"]
+  }, [_vm._v(_vm._s(_vm.bNname))])]), (_vm.q_list.length == 0) ? _c('div', {
+    staticClass: ["msg"]
   }, [_c('text', {
     staticStyle: {
-      fontSize: "40px",
-      color: "#333333"
-    }
-  }, [_vm._v(_vm._s(_vm.redList.title))])]), _c('div', {
-    staticClass: ["content"]
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "35px",
-      color: "#666666"
-    }
-  }, [_vm._v(_vm._s(_vm.redList.content))]), (_vm.redList.duration) ? _c('div', {
-    staticClass: ["voice"],
-    on: {
-      "click": function($event) {
-        _vm.playVoice(_vm.redList.voice)
-      }
-    }
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "34px",
+      fontSize: "50px",
       color: "#6fa1e8"
     }
-  }, [_vm._v(_vm._s(_vm.redList.duration) + "'")]), _c('image', {
-    staticClass: ["pic_yy"],
-    attrs: {
-      "src": _vm.VoicePic
-    }
-  })]) : _vm._e(), _c('div', {
-    staticClass: ["photoList"]
-  }, _vm._l((_vm.piclist), function(lPic, index) {
-    return _c('div', {
+  }, [_vm._v(_vm._s(_vm.msg))])]) : _vm._e(), (_vm.q_list.length != 0) ? _c('div', {
+    staticClass: ["state"]
+  }, [_c('text', {
+    staticClass: ["count"]
+  }, [_vm._v("答对" + _vm._s(_vm.dui) + "道，答错" + _vm._s(_vm.cuo) + "道，正确率：" + _vm._s(_vm.zql) + "%")])]) : _vm._e(), _c('scroller', [_c('div', {
+    staticClass: ["content"]
+  }, _vm._l((_vm.q_list), function(q, v) {
+    return _c('div', [_c('div', {
+      staticClass: ["question"]
+    }, [_c('text', {
       staticStyle: {
-        padding: "10px"
+        fontSize: "36px",
+        color: "#666",
+        marginRight: "35px"
+      }
+    }, [_vm._v(_vm._s(q.no) + "." + _vm._s(q.question.qname) + "(    )")])]), _vm._l((q.answer), function(a) {
+      return _c('div', {
+        staticClass: ["answer"],
+        style: {
+          backgroundColor: a.bgColor
+        }
+      }, [_c('text', {
+        staticStyle: {
+          fontSize: "34px",
+          color: "#666",
+          marginRight: "10px"
+        },
+        on: {
+          "click": function($event) {
+            _vm.last(q.ans, a.ans)
+          }
+        }
+      }, [_vm._v(_vm._s(a.answerOption) + "、" + _vm._s(a.content))])])
+    }), _c('div', {
+      staticClass: ["list"]
+    }, [_c('div', {
+      staticClass: ["t_q"],
+      on: {
+        "click": function($event) {
+          _vm.show(q.answer, v)
+        }
+      }
+    }, [_vm._m(0, true)]), (q.isShow) ? _c('div', {
+      key: v,
+      staticClass: ["j_cnt"]
+    }, [_c('text', {
+      staticClass: ["ans"]
+    }, [_vm._v("正确答案是  " + _vm._s(q.ans) + "，你的答案是  " + _vm._s(q.chooseAnswer) + "\n\t\t\t\t\t\t")]), _c('text', {
+      staticClass: ["tips"]
+    }, [_vm._v("解析")]), _c('text', {
+      staticClass: ["contents"]
+    }, [_vm._v("暂无解析")]), _c('div', {
+      staticClass: ["hid"]
+    }, [_c('text', {
+      staticStyle: {
+        fontSize: "40px",
+        backgroundColor: "#70a1e8",
+        padding: "10px",
+        borderRadius: "20px",
+        color: "#fff"
       },
       on: {
         "click": function($event) {
-          _vm.enlargePic(lPic, index)
+          _vm.hidden(v)
         }
       }
-    }, [_c('image', {
-      staticStyle: {
-        width: "152px",
-        height: "150px"
-      },
-      attrs: {
-        "src": lPic
-      }
-    })])
-  })), (_vm.redList.score) ? _c('text', {
-    staticClass: ["grade"]
-  }, [_vm._v(_vm._s(_vm.redList.score) + "分")]) : _vm._e()]), _c('text', {
-    staticClass: ["tlt"]
-  }, [_vm._v("老师评语")]), _c('div', {
-    staticClass: ["remark"]
-  }, [_c('div', {
-    staticStyle: {
-      flex: "1"
-    }
-  }, [_c('image', {
-    staticClass: ["remark_pic"],
-    attrs: {
-      "src": _vm.redList.avatar
-    }
-  }), _c('text', {
-    staticClass: ["name"]
-  }, [_vm._v(_vm._s(_vm.redList.teaName))])]), _c('div', {
-    staticStyle: {
-      flex: "3"
-    }
-  }, [(_vm.redList.checkDuration) ? _c('div', {
-    staticClass: ["voice"],
+    }, [_vm._v("收起")])])]) : _vm._e()])], 2)
+  }))]), _c('div', {
+    staticClass: ["footer"],
     on: {
       "click": function($event) {
-        _vm.playTvoice(_vm.redList.checkVoice)
+        _vm._goto("")
       }
     }
   }, [_c('text', {
     staticStyle: {
-      fontSize: "34px",
-      color: "#6fa1e8"
+      fontSize: "39px",
+      color: "#fff"
     }
-  }, [_vm._v(_vm._s(_vm.redList.checkDuration) + "'")]), _c('image', {
-    staticClass: ["pic_yy"],
+  }, [_vm._v("重新闯关")])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["t_q_btn"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "36px",
+      color: "#fff"
+    }
+  }, [_vm._v("解析")]), _c('image', {
+    staticStyle: {
+      width: "29px",
+      height: "36px"
+    },
     attrs: {
-      "src": _vm.VoicePic
+      "src": "../static/images/pic_jx.png"
     }
-  })]) : _vm._e(), _c('text', {
-    staticClass: ["r_info"]
-  }, [_vm._v(_vm._s(_vm.redList.checkContent))])])])])])])
-},staticRenderFns: []}
+  })])
+}]}
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 107 */
+/* 93 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -16619,7 +14746,536 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 108 */
+/* 94 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticStyle: {
+      backgroundColor: "#fafafa"
+    }
+  }, [_c('div', {
+    staticClass: ["top"]
+  }, [_c('image', {
+    staticClass: ["goback"],
+    attrs: {
+      "src": "../static/images/xs_pic_fh.png"
+    },
+    on: {
+      "click": _vm.goback
+    }
+  }), _c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v("我的读后感")])]), _c('scroller', [_c('div', {
+    staticClass: ["main"]
+  }, [_c('div', {
+    staticClass: ["title"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "40px",
+      color: "#333333"
+    }
+  }, [_vm._v(_vm._s(_vm.redList.title))])]), _c('div', {
+    staticClass: ["content"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "35px",
+      color: "#666666"
+    }
+  }, [_vm._v(_vm._s(_vm.redList.content))]), (_vm.redList.duration) ? _c('div', {
+    staticClass: ["voice"],
+    on: {
+      "click": function($event) {
+        _vm.playVoice(_vm.redList.voice)
+      }
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "34px",
+      color: "#6fa1e8"
+    }
+  }, [_vm._v(_vm._s(_vm.redList.duration) + "'")]), _c('image', {
+    staticClass: ["pic_yy"],
+    attrs: {
+      "src": _vm.VoicePic
+    }
+  })]) : _vm._e(), _c('div', {
+    staticClass: ["photoList"]
+  }, _vm._l((_vm.piclist), function(lPic, index) {
+    return _c('div', {
+      staticStyle: {
+        padding: "10px"
+      },
+      on: {
+        "click": function($event) {
+          _vm.enlargePic(lPic, index)
+        }
+      }
+    }, [_c('image', {
+      staticStyle: {
+        width: "152px",
+        height: "150px"
+      },
+      attrs: {
+        "src": lPic
+      }
+    })])
+  })), (_vm.redList.score) ? _c('text', {
+    staticClass: ["grade"]
+  }, [_vm._v(_vm._s(_vm.redList.score) + "分")]) : _vm._e()]), _c('text', {
+    staticClass: ["tlt"]
+  }, [_vm._v("老师评语")]), _c('div', {
+    staticClass: ["remark"]
+  }, [_c('div', {
+    staticStyle: {
+      flex: "1"
+    }
+  }, [_c('image', {
+    staticClass: ["remark_pic"],
+    attrs: {
+      "src": _vm.redList.avatar
+    }
+  }), _c('text', {
+    staticClass: ["name"]
+  }, [_vm._v(_vm._s(_vm.redList.teaName))])]), _c('div', {
+    staticStyle: {
+      flex: "3"
+    }
+  }, [(_vm.redList.checkDuration) ? _c('div', {
+    staticClass: ["voice"],
+    on: {
+      "click": function($event) {
+        _vm.playTvoice(_vm.redList.checkVoice)
+      }
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "34px",
+      color: "#6fa1e8"
+    }
+  }, [_vm._v(_vm._s(_vm.redList.checkDuration) + "'")]), _c('image', {
+    staticClass: ["pic_yy"],
+    attrs: {
+      "src": _vm.VoicePic
+    }
+  })]) : _vm._e(), _c('text', {
+    staticClass: ["r_info"]
+  }, [_vm._v(_vm._s(_vm.redList.checkContent))])])])])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 95 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    on: {
+      "androidback": _vm.back
+    }
+  }, [_c('router-view', {
+    staticStyle: {
+      flex: "1"
+    }
+  })], 1)
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 96 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticStyle: {
+      backgroundColor: "#fff"
+    }
+  }, [_c('div', {
+    staticClass: ["top"]
+  }, [_c('image', {
+    staticClass: ["goback"],
+    attrs: {
+      "src": "../static/images/xs_pic_fh.png"
+    },
+    on: {
+      "click": _vm.goback
+    }
+  }), _c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v("完成结果")])]), _c('div', {
+    staticClass: ["contents"]
+  }, [_c('div', {
+    staticClass: ["success"]
+  }, [_c('div', {
+    staticClass: ["succ_btn"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "36px",
+      color: "#666"
+    }
+  }, [_vm._v(_vm._s(_vm.state))])]), _c('div', {
+    staticClass: ["stars_list"]
+  }, [(_vm.stars1) ? _c('image', {
+    staticClass: ["stars"],
+    attrs: {
+      "src": "../static/images/Stars.png"
+    }
+  }) : _vm._e(), (!_vm.stars1) ? _c('image', {
+    staticClass: ["stars"],
+    attrs: {
+      "src": "../static/images/Stars_off.png"
+    }
+  }) : _vm._e(), (_vm.stars2) ? _c('image', {
+    staticClass: ["stars1"],
+    attrs: {
+      "src": "../static/images/Stars.png"
+    }
+  }) : _vm._e(), (!_vm.stars2) ? _c('image', {
+    staticClass: ["stars1"],
+    attrs: {
+      "src": "../static/images/Stars_off.png"
+    }
+  }) : _vm._e(), (_vm.stars3) ? _c('image', {
+    staticClass: ["stars"],
+    attrs: {
+      "src": "../static/images/Stars_off.png"
+    }
+  }) : _vm._e(), (!_vm.stars3) ? _c('image', {
+    staticClass: ["stars"],
+    attrs: {
+      "src": "../static/images/Stars_off.png"
+    }
+  }) : _vm._e()])]), _c('div', {
+    staticClass: ["topic"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "36px"
+    }
+  }, [_vm._v("答对")]), _c('text', {
+    staticClass: ["topic_num"]
+  }, [_vm._v(" " + _vm._s(_vm.yCount) + " ")]), _c('text', {
+    staticStyle: {
+      fontSize: "36px"
+    }
+  }, [_vm._v("题，答错")]), _c('text', {
+    staticClass: ["topic_num"]
+  }, [_vm._v(" " + _vm._s(_vm.nCount) + " ")]), _c('text', {
+    staticStyle: {
+      fontSize: "36px"
+    }
+  }, [_vm._v("题，正确率" + _vm._s(_vm.zql) + "%")])]), _vm._m(0)]), _c('div', {
+    staticClass: ["footes"]
+  }, [_c('div', {
+    staticClass: ["footes_btn"],
+    on: {
+      "click": function($event) {
+        _vm._goto("")
+      }
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "30px",
+      color: "#555555"
+    }
+  }, [_vm._v("重做错题")])]), _c('div', {
+    staticClass: ["footes_btn"],
+    on: {
+      "click": function($event) {
+        _vm._goto("/kstfb")
+      }
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "30px",
+      color: "#555555"
+    }
+  }, [_vm._v("结束闯关")])])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["integral"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "30px"
+    }
+  }, [_vm._v("奖励积分：10分")])])
+}]}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 97 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('div', {
+    staticClass: ["top"]
+  }, [_c('image', {
+    staticClass: ["goback"],
+    attrs: {
+      "src": "../static/images/xs_pic_fh.png"
+    },
+    on: {
+      "click": function($event) {
+        _vm.jump('/index')
+      }
+    }
+  }), _c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v("我的任务")])]), _c('div', {
+    staticClass: ["tab"]
+  }, [_c('div', {
+    staticClass: ["tab_li", "tab_yes"],
+    on: {
+      "click": function($event) {
+        _vm.jump('/ydrw')
+      }
+    }
+  }, [_c('text', {
+    staticClass: ["tab_yes"]
+  }, [_vm._v("阅读任务")])]), _c('div', {
+    staticClass: ["tab_li"],
+    on: {
+      "click": function($event) {
+        _vm.jump('/kstfb')
+      }
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "34px",
+      color: "#666"
+    }
+  }, [_vm._v("考试提分宝")])])]), _c('div', {
+    staticClass: ["type"]
+  }, [_c('div', {
+    staticClass: ["type_li"],
+    staticStyle: {
+      borderRightColor: "#e6e6e6",
+      borderRightStyle: "solid",
+      borderRightWidth: "1px"
+    },
+    on: {
+      "click": _vm.fn
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "34px",
+      color: "#666"
+    }
+  }, [_vm._v(_vm._s(_vm.typeName))]), _c('image', {
+    staticClass: ["type_img"],
+    attrs: {
+      "src": "../static/images/ico_17.png"
+    }
+  })]), _c('div', {
+    staticClass: ["type_li"],
+    on: {
+      "click": _vm.show
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "34px",
+      color: "#666"
+    }
+  }, [_vm._v(_vm._s(_vm.stateName))]), _c('image', {
+    staticClass: ["type_img"],
+    attrs: {
+      "src": "../static/images/ico_17.png"
+    }
+  })])]), (_vm.willShow) ? _c('div', {
+    staticClass: ["s_class"],
+    staticStyle: {
+      left: "0px",
+      height: "260px"
+    }
+  }, [_c('scroller', _vm._l((_vm.typeList), function(type) {
+    return _c('div', {
+      staticClass: ["s_class_opt"],
+      style: {
+        backgroundColor: type.bj,
+        color: type.color
+      },
+      on: {
+        "click": function($event) {
+          _vm.optType(type.id, type.name)
+        }
+      }
+    }, [_c('text', {
+      staticStyle: {
+        fontSize: "34px"
+      },
+      style: {
+        backgroundColor: type.bj,
+        color: type.color
+      }
+    }, [_vm._v(_vm._s(type.name))])])
+  }))]) : _vm._e(), (_vm.willShow2) ? _c('div', {
+    staticClass: ["s_class"],
+    staticStyle: {
+      left: "375px",
+      height: "330px"
+    }
+  }, [_c('scroller', _vm._l((_vm.stateList), function(state) {
+    return _c('div', {
+      staticClass: ["s_class_opt"],
+      style: {
+        backgroundColor: state.bj,
+        color: state.color
+      },
+      on: {
+        "click": function($event) {
+          _vm.optState(state.id, state.name)
+        }
+      }
+    }, [_c('text', {
+      staticStyle: {
+        fontSize: "34px"
+      },
+      style: {
+        backgroundColor: state.bj,
+        color: state.color
+      }
+    }, [_vm._v(_vm._s(state.name))])])
+  }))]) : _vm._e(), _c('scroller', [_c('div', {
+    staticClass: ["jrrw"]
+  }, _vm._l((_vm.rw_list), function(rw) {
+    return _c('div', {
+      staticClass: ["jrrw_list"],
+      class: ['bj' + rw.state],
+      on: {
+        "click": function($event) {
+          _vm.jump('/ydrw/ckjh?planId=' + rw.planId + '&type=' + _vm.typeId)
+        }
+      }
+    }, [_c('div', {
+      staticClass: ["jrrw_info"]
+    }, [_c('text', {
+      staticClass: ["rw_title"]
+    }, [_vm._v(_vm._s(rw.planName))]), _c('div', {
+      staticClass: ["rw_time"]
+    }, [_c('text', {
+      staticStyle: {
+        fontSize: "26px",
+        color: "#808080"
+      }
+    }, [_vm._v("截止：" + _vm._s(rw.endDate))]), _c('text', {
+      staticStyle: {
+        fontSize: "26px",
+        color: "#808080"
+      }
+    }, [_vm._v(_vm._s(rw.teaName))])])]), _c('div', {
+      staticClass: ["c_bg"]
+    }, [_c('text', {
+      staticClass: ["c_bg_btn"],
+      class: ['c_bg_btn' + rw.state]
+    }, [_vm._v(_vm._s(_vm._f("sname")(rw.state)))]), (rw.state == '2') ? _c('text', {
+      staticClass: ["prompt"]
+    }, [_vm._v("逾期未提交")]) : _vm._e()]), (rw.new) ? _c('image', {
+      staticClass: ["newR"],
+      attrs: {
+        "src": "../static/images/xs_pic_newR.png"
+      }
+    }) : _vm._e()])
+  })), _c('loading', {
+    staticClass: ["loading"],
+    attrs: {
+      "display": _vm.showLoading
+    },
+    on: {
+      "loading": _vm.onloading
+    }
+  }, [_c('text', {
+    staticClass: ["indicator"]
+  }, [_vm._v("加载更多 ...")])])], 1)])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 98 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('div', {
+    staticClass: ["top"]
+  }, [_c('image', {
+    staticClass: ["goback"],
+    attrs: {
+      "src": "../static/images/xs_pic_fh.png"
+    },
+    on: {
+      "click": _vm.goback
+    }
+  }), _c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v(_vm._s(_vm.bName))])]), _c('div', {
+    staticClass: ["state"]
+  }, [_c('text', {
+    staticClass: ["count"]
+  }, [_vm._v(_vm._s(_vm.index) + "/" + _vm._s(_vm.length))])]), _c('scroller', [_c('div', {
+    staticClass: ["content"]
+  }, [_c('div', [_c('div', {
+    staticClass: ["question"]
+  }, [(_vm.type == 1) ? _c('text', {
+    staticStyle: {
+      fontSize: "36px",
+      color: "#666"
+    }
+  }, [_vm._v(_vm._s(_vm.index) + "." + _vm._s(_vm.tm.qname) + "(    )")]) : _vm._e(), (_vm.type == 2) ? _c('text', {
+    staticStyle: {
+      fontSize: "36px",
+      color: "#666"
+    }
+  }, [_vm._v(_vm._s(_vm.index) + "." + _vm._s(_vm.tm.qname) + "(    )")]) : _vm._e()]), _vm._l((_vm.an_list), function(a, i) {
+    return _c('div', {
+      staticClass: ["answer"]
+    }, [_c('div', {
+      staticClass: ["a_list"],
+      class: ['a_l_' + a.flag],
+      on: {
+        "click": function($event) {
+          _vm._chose(i, a.rightOption, a.answerOption)
+        }
+      }
+    }, [_c('text', {
+      staticClass: ["a_c"],
+      class: ['a_t_' + a.flag]
+    }, [_vm._v(_vm._s(a.answerOption) + "、")]), (!_vm.pic_flag) ? _c('text', {
+      staticClass: ["a_t"],
+      class: ['a_t_' + a.flag]
+    }, [_vm._v(_vm._s(a.content))]) : _vm._e(), (_vm.pic_flag) ? _c('image', {
+      staticClass: ["pic_t"],
+      attrs: {
+        "src": a.picUrl
+      }
+    }) : _vm._e()])])
+  })], 2), (_vm.a_flag) ? _c('div', {
+    staticClass: ["list"]
+  }, [_c('div', {
+    staticClass: ["j_cnt"]
+  }, [_c('text', {
+    staticClass: ["ans"]
+  }, [_vm._v("正确答案是" + _vm._s(_vm.c_ans))]), _c('text', {
+    staticClass: ["tips"]
+  }, [_vm._v("解析")]), _c('text', {
+    staticClass: ["contents"]
+  })])]) : _vm._e(), (_vm.c_flag) ? _c('div', {
+    staticClass: ["next"],
+    on: {
+      "click": _vm._next
+    }
+  }, [_c('text', {
+    staticClass: ["n_t"]
+  }, [_vm._v("下一题")])]) : _vm._e(), (_vm.e_flag) ? _c('div', {
+    staticClass: ["next"],
+    on: {
+      "click": _vm._end
+    }
+  }, [_c('text', {
+    staticClass: ["n_t"]
+  }, [_vm._v("完成")])]) : _vm._e()])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 99 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -16686,6 +15342,531 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: ["ydzx_more"],
     attrs: {
       "src": "../static/images/xs_pic_more.png"
+    }
+  })])
+}]}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 100 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('div', {
+    staticClass: ["top"]
+  }, [_c('image', {
+    staticClass: ["goback"],
+    attrs: {
+      "src": "../static/images/xs_pic_fh.png"
+    },
+    on: {
+      "click": _vm.goback
+    }
+  }), _c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v("每日一练")])]), _c('scroller', [_c('div', {
+    staticClass: ["state"]
+  }, [_c('text', {
+    staticClass: ["s_tit"]
+  }, [_vm._v("读短文并按要求作答")]), _c('text', {
+    staticClass: ["count"]
+  }, [_vm._v("    " + _vm._s(_vm.cont))])]), _c('div', {
+    staticClass: ["content"]
+  }, _vm._l((_vm.q_list), function(q) {
+    return _c('div', [_c('div', {
+      staticClass: ["question"]
+    }, [_c('text', {
+      staticStyle: {
+        fontSize: "36px",
+        color: "#666"
+      }
+    }, [_vm._v(_vm._s(q.no) + "." + _vm._s(q.content))])]), _vm._l((q.answers), function(a, v) {
+      return _c('div', {
+        key: v,
+        staticClass: ["answer"],
+        style: {
+          backgroundColor: a.bgColor
+        },
+        on: {
+          "click": function($event) {
+            _vm._isZq(a, q.answers, v, q.no, q.id)
+          }
+        }
+      }, [_c('text', {
+        staticStyle: {
+          fontSize: "34px",
+          color: "#666"
+        }
+      }, [_vm._v(_vm._s(a.answerOption) + "、" + _vm._s(a.answerContent))])])
+    })], 2)
+  }))]), _c('div', {
+    staticClass: ["footer"],
+    on: {
+      "click": _vm.subimt
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "39px",
+      color: "#fff"
+    },
+    on: {
+      "click": function($event) {
+        _vm.optj()
+      }
+    }
+  }, [_vm._v("提交")])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 101 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('div', {
+    staticClass: ["top"]
+  }, [_c('image', {
+    staticClass: ["goback"],
+    attrs: {
+      "src": "../static/images/xs_pic_fh.png"
+    },
+    on: {
+      "click": _vm.goback
+    }
+  }), _c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v("每日一练")])]), _c('scroller', [_vm._m(0), _c('div', {
+    staticClass: ["content"]
+  }, _vm._l((_vm.q_list), function(q) {
+    return _c('div', [_c('div', {
+      staticClass: ["question"]
+    }, [_c('text', {
+      staticStyle: {
+        fontSize: "36px",
+        color: "#666"
+      }
+    }, [_vm._v(_vm._s(q.id) + "." + _vm._s(q.title) + "(    )")])]), _vm._l((q.answer), function(a) {
+      return _c('div', {
+        staticClass: ["answer"]
+      }, [_c('text', {
+        staticStyle: {
+          fontSize: "34px",
+          color: "#666"
+        },
+        on: {
+          "click": function($event) {
+            _vm.last(q.ans, a.ans)
+          }
+        }
+      }, [_vm._v(_vm._s(a.ans) + "、" + _vm._s(a.option))])])
+    }), _c('div', {
+      staticClass: ["list"]
+    }, [_vm._m(1, true), _c('div', {
+      staticClass: ["j_cnt"]
+    }, [_c('text', {
+      staticClass: ["ans"]
+    }, [_vm._v("正确答案是" + _vm._s(q.ans) + "，你的答案是" + _vm._s(q.answer.ans))]), (q.answer.ans) ? _c('text', [_vm._v("回答错误")]) : _vm._e(), (!q.answer.ans) ? _c('text', [_vm._v("回答正确")]) : _vm._e(), _c('text', {
+      staticClass: ["tips"]
+    }, [_vm._v("解析")]), _c('text', {
+      staticClass: ["contents"]
+    }, [_vm._v(_vm._s(q.cnt))]), _c('div', {
+      on: {
+        "click": _vm.hidden
+      }
+    }, [_c('text', {
+      staticStyle: {
+        fontSize: "34px"
+      }
+    }, [_vm._v("收起")])])])])], 2)
+  }))]), _vm._m(2)])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["state"]
+  }, [_c('text', {
+    staticClass: ["s_tit"]
+  }, [_vm._v("读短文并按要求作答")]), _c('text', {
+    staticClass: ["count"]
+  }, [_vm._v("答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%答对7道，答错3道，正确率：70%")])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["t_q"]
+  }, [_c('div', {
+    staticClass: ["t_q_btn"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "36px",
+      color: "#fff"
+    }
+  }, [_vm._v("解析")]), _c('image', {
+    staticStyle: {
+      width: "29px",
+      height: "36px"
+    },
+    attrs: {
+      "src": "../static/images/pic_jx.png"
+    }
+  })])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["footer"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "39px",
+      color: "#fff"
+    }
+  }, [_vm._v("提交")])])
+}]}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 102 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('div', {
+    staticClass: ["top"]
+  }, [_c('image', {
+    staticClass: ["goback"],
+    attrs: {
+      "src": "../static/images/xs_pic_fh.png"
+    },
+    on: {
+      "click": _vm.goback
+    }
+  }), _c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v("我的任务")])]), _c('div', {
+    staticClass: ["tab"]
+  }, [_c('text', {
+    staticClass: ["tab_li"],
+    on: {
+      "click": _vm.openYdrw
+    }
+  }, [_vm._v("阅读任务")]), _c('text', {
+    staticClass: ["tab_li", "tab_yes"],
+    on: {
+      "click": _vm.onpeKstfb
+    }
+  }, [_vm._v("考试提分宝")])]), _c('div', {
+    staticClass: ["type"]
+  }, [_c('div', {
+    staticClass: ["type_li"],
+    staticStyle: {
+      borderRightColor: "#e6e6e6",
+      borderRightStyle: "solid",
+      borderRightWidth: "1px"
+    },
+    on: {
+      "click": function($event) {
+        _vm.fn()
+      }
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "32px",
+      color: "#666"
+    }
+  }, [_vm._v("类型")]), _c('image', {
+    staticClass: ["type_img"],
+    attrs: {
+      "src": "../static/images/ico_17.png"
+    }
+  })]), _c('div', {
+    staticClass: ["type_li"],
+    on: {
+      "click": function($event) {
+        _vm.show()
+      }
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "32px",
+      color: "#666"
+    }
+  }, [_vm._v("状态")]), _c('image', {
+    staticClass: ["type_img"],
+    attrs: {
+      "src": "../static/images/ico_17.png"
+    }
+  })])]), _c('scroller', [_c('div', {
+    staticClass: ["jrrw"]
+  }, _vm._l((_vm.kstfb_list), function(kstfb, v) {
+    return _c('div', {
+      staticClass: ["jrrw_list"],
+      class: ['bj' + kstfb.state],
+      on: {
+        "click": function($event) {
+          _vm.mryl(v)
+        }
+      }
+    }, [_c('div', {
+      staticClass: ["jrrw_info"]
+    }, [_c('text', {
+      staticClass: ["rw_title"]
+    }, [_vm._v("每日一练")]), _c('div', {
+      staticClass: ["rw_time"]
+    }, [_c('text', {
+      staticStyle: {
+        fontSize: "26px",
+        color: "#808080"
+      }
+    }, [_vm._v("截止：" + _vm._s(kstfb.endDate))])])]), _c('div', {
+      staticClass: ["c_bg"]
+    }, [(kstfb.state == 0) ? _c('text', {
+      staticClass: ["c_bg_btn"],
+      class: ['c_bg_btn' + kstfb.state]
+    }, [_vm._v("前往")]) : _vm._e(), (kstfb.state == 1) ? _c('text', {
+      staticClass: ["c_bg_btn"],
+      class: ['c_bg_btn' + kstfb.state]
+    }, [_vm._v("已完成")]) : _vm._e(), (kstfb.stateName == '补做') ? _c('text', {
+      staticClass: ["stateName"]
+    }, [_vm._v("逾期未提交")]) : _vm._e()]), (kstfb.state == 0) ? _c('image', {
+      staticClass: ["newR"],
+      attrs: {
+        "src": "../static/images/xs_pic_newR.png"
+      }
+    }) : _vm._e()])
+  }))])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 103 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('div', {
+    staticClass: ["top"]
+  }, [_c('image', {
+    staticClass: ["goback"],
+    attrs: {
+      "src": "../static/images/xs_pic_fh.png"
+    },
+    on: {
+      "click": _vm.goback
+    }
+  }), _c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v(_vm._s(_vm.bNname))])]), (_vm.q_list.length == 0) ? _c('div', {
+    staticClass: ["msg"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "50px",
+      color: "#6fa1e8"
+    }
+  }, [_vm._v(_vm._s(_vm.msg))])]) : _vm._e(), (_vm.q_list.length != 0) ? _c('div', {
+    staticClass: ["state"]
+  }, [_c('text', {
+    staticClass: ["count"]
+  }, [_vm._v("答对" + _vm._s(_vm.dui) + "道，答错" + _vm._s(_vm.cuo) + "道，正确率：" + _vm._s(_vm.zql) + "%")])]) : _vm._e(), _c('scroller', [_c('div', {
+    staticClass: ["content"]
+  }, _vm._l((_vm.q_list), function(q, v) {
+    return _c('div', [_c('div', {
+      staticClass: ["question"]
+    }, [_c('text', {
+      staticStyle: {
+        fontSize: "36px",
+        color: "#666",
+        marginRight: "35px"
+      }
+    }, [_vm._v(_vm._s(q.no) + "." + _vm._s(q.question.qname) + "(    )")])]), _vm._l((q.answer), function(a) {
+      return _c('div', {
+        staticClass: ["answer"],
+        style: {
+          backgroundColor: a.bgColor
+        }
+      }, [_c('text', {
+        staticStyle: {
+          fontSize: "34px",
+          color: "#666",
+          marginRight: "10px"
+        }
+      }, [_vm._v(_vm._s(a.answerOption) + "、" + _vm._s(a.content))])])
+    }), _c('div', {
+      staticClass: ["list"]
+    }, [_c('div', {
+      staticClass: ["t_q"],
+      on: {
+        "click": function($event) {
+          _vm.show(q.answer, v)
+        }
+      }
+    }, [_vm._m(0, true)]), (q.isShow) ? _c('div', {
+      key: v,
+      staticClass: ["j_cnt"]
+    }, [_c('text', {
+      staticClass: ["ans"]
+    }, [_vm._v("正确答案是  " + _vm._s(q.ans) + "，你的答案是  " + _vm._s(q.chooseAnswer) + "\n\t\t\t\t\t\t")]), _c('text', {
+      staticClass: ["tips"]
+    }, [_vm._v("解析")]), _c('text', {
+      staticClass: ["contents"]
+    }, [_vm._v("暂无解析")]), _c('div', {
+      staticClass: ["hid"]
+    }, [_c('text', {
+      staticStyle: {
+        fontSize: "36px",
+        borderStyle: "solid",
+        color: "#666",
+        padding: "10px",
+        borderRadius: "5px",
+        paddingLeft: "30px",
+        paddingRight: "30px"
+      },
+      on: {
+        "click": function($event) {
+          _vm.hidden(v)
+        }
+      }
+    }, [_vm._v("收起")])])]) : _vm._e()])], 2)
+  }))]), _c('div', {
+    staticClass: ["footer"],
+    on: {
+      "click": function($event) {
+        _vm._goto('/ydrw/kscg?bid=' + _vm.bid + '&bname=' + _vm.bNname)
+      }
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "39px",
+      color: "#fff"
+    }
+  }, [_vm._v("重新闯关")])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["t_q_btn"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "36px",
+      color: "#fff"
+    }
+  }, [_vm._v("解析")]), _c('image', {
+    staticStyle: {
+      width: "29px",
+      height: "36px"
+    },
+    attrs: {
+      "src": "../static/images/pic_jx.png"
+    }
+  })])
+}]}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 104 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('div', {
+    staticClass: ["top"]
+  }, [_c('image', {
+    staticClass: ["goback"],
+    attrs: {
+      "src": "../static/images/xs_pic_fh.png"
+    },
+    on: {
+      "click": _vm.goback
+    }
+  }), _c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v("每日一练")])]), _c('scroller', [_c('div', {
+    staticClass: ["state"]
+  }, [_c('text', {
+    staticClass: ["s_tit"]
+  }, [_vm._v("读短文并按要求作答")]), _c('text', {
+    staticClass: ["count"]
+  }, [_vm._v("    " + _vm._s(_vm.cont))])]), _c('div', {
+    staticClass: ["content"]
+  }, _vm._l((_vm.q_list), function(q, v) {
+    return _c('div', [_c('div', {
+      staticClass: ["question"]
+    }, [_c('text', {
+      staticStyle: {
+        fontSize: "36px",
+        color: "#666"
+      }
+    }, [_vm._v(_vm._s(q.no) + "." + _vm._s(q.question.content))])]), _vm._l((q.question.answers), function(a, v) {
+      return _c('div', {
+        key: v,
+        staticClass: ["answer"],
+        style: {
+          backgroundColor: a.bgColor
+        },
+        on: {
+          "click": function($event) {
+            _vm._isZq(a, q.answers, v, q.no)
+          }
+        }
+      }, [_c('div', [_c('text', _vm._b({
+        staticStyle: {
+          fontSize: "34px",
+          color: "#666"
+        }
+      }, 'text', _vm.que), [_vm._v(_vm._s(a.answerOption) + "、" + _vm._s(a.answerContent))])])])
+    }), _c('div', {
+      staticClass: ["list"]
+    }, [_c('div', {
+      staticClass: ["t_q"],
+      on: {
+        "click": function($event) {
+          _vm._wtjx(q.question, v)
+        }
+      }
+    }, [_vm._m(0, true)]), (q.isShow) ? _c('div', {
+      key: v,
+      staticClass: ["j_cnt"]
+    }, [_c('text', {
+      staticClass: ["ans"]
+    }, [_vm._v("正确答案是  " + _vm._s(_vm.Right) + "，你的答案是  " + _vm._s(q.chooseAnswer) + "\n\t\t\t\t\t\t")]), _c('text', {
+      staticClass: ["tips"]
+    }, [_vm._v("解析")]), _c('text', {
+      staticClass: ["contents"]
+    }, [_vm._v("暂无解析")]), _c('div', {
+      staticClass: ["hid"]
+    }, [_c('text', {
+      staticStyle: {
+        fontSize: "40px",
+        backgroundColor: "#70a1e8",
+        padding: "10px",
+        borderRadius: "20px",
+        color: "#fff"
+      },
+      on: {
+        "click": function($event) {
+          _vm.hidden(v)
+        }
+      }
+    }, [_vm._v("收起")])])]) : _vm._e()])], 2)
+  }))]), _c('div', {
+    staticClass: ["footer"],
+    on: {
+      "click": _vm.subimt
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "39px",
+      color: "#fff"
+    },
+    on: {
+      "click": function($event) {
+        _vm.optj()
+      }
+    }
+  }, [_vm._v("重新练习")])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["t_q_btn"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "36px",
+      color: "#fff"
+    }
+  }, [_vm._v("解析")]), _c('image', {
+    staticStyle: {
+      width: "29px",
+      height: "36px"
+    },
+    attrs: {
+      "src": "../static/images/pic_jx.png"
     }
   })])
 }]}

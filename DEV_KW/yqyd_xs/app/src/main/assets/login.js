@@ -80,7 +80,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var Utils = {
   dir: 'v1',
   //ip : 'http://192.168.8.6:8180/'
-  ip: 'http://192.168.8.6:8882/v1'
+  // ip : 'http://192.168.8.6:8882/v1'
+  ip: 'http://yqyd.qgjydd.com/yqyd/v1'
   //ip : 'http://192.168.8.6:8881/v1'
 };
 Utils.setOpenUrl = function (context, arr) {
@@ -567,11 +568,6 @@ var _vueRouter2 = _interopRequireDefault(_vueRouter);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*import StoriesView from './views/StoriesView.vue'
-import ArticleView from './views/ArticleView.vue'
-import CommentView from './views/CommentView.vue'
-import UserView from './views/UserView.vue'*/
-
 Vue.use(_vueRouter2.default); // import Vue from 'vue'
 exports.default = new _vueRouter2.default({
   // mode: 'abstract',
@@ -777,7 +773,7 @@ var __vue_styles__ = []
 __vue_exports__ = __webpack_require__(17)
 
 /* template */
-var __vue_template__ = __webpack_require__(22)
+var __vue_template__ = __webpack_require__(23)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -789,7 +785,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\App.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\App.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 __vue_options__.style = __vue_options__.style || {}
@@ -850,6 +846,7 @@ _router2.default.beforeEach(function (to, from, next) {
         var sc = fullPath.match('/sc') != null;
         var main = fullPath.match('/main') != null;
         var login = fullPath.match('/login') != null;
+        globalEvent.removeEventListener("clickback");
         if (index || sc || main || login) {
             globalEvent.addEventListener("clickback", function (e) {
                 var sjevent = weex.requireModule('SJevent');
@@ -859,7 +856,7 @@ _router2.default.beforeEach(function (to, from, next) {
             });
         } else {
             globalEvent.addEventListener("clickback", function (e) {
-                window.history.go(-1);
+                _router2.default.back();
             });
         }
     }
@@ -4369,7 +4366,7 @@ __vue_styles__.push(__webpack_require__(20)
 __vue_exports__ = __webpack_require__(18)
 
 /* template */
-var __vue_template__ = __webpack_require__(23)
+var __vue_template__ = __webpack_require__(22)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4381,10 +4378,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\forget_pwd.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\forget_pwd.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-521beebf"
+__vue_options__._scopeId = "data-v-25deca00"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4425,10 +4422,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\login.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\login.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-e9778776"
+__vue_options__._scopeId = "data-v-3f99a938"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4617,7 +4614,7 @@ exports.default = {
 						} else {
 							storage.removeItem('password', function (e) {});
 							storage.removeItem('checkes', function (e) {});
-							//storage.removeItem('username', function (e) {});
+							// storage.removeItem('username',function(e){});
 						}
 						//self.$router.replace('/index');
 
@@ -4786,23 +4783,6 @@ module.exports = {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    on: {
-      "androidback": _vm.back
-    }
-  }, [_c('router-view', {
-    staticStyle: {
-      flex: "1"
-    }
-  })], 1)
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
     staticStyle: {
       backgroundColor: "#fafafa",
       fontFamily: "黑体"
@@ -4850,6 +4830,23 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("老师是你的好帮手！")])])])
 }]}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    on: {
+      "androidback": _vm.back
+    }
+  }, [_c('router-view', {
+    staticStyle: {
+      flex: "1"
+    }
+  })], 1)
+},staticRenderFns: []}
 module.exports.render._withStripped = true
 
 /***/ }),
