@@ -424,6 +424,24 @@ public class SJEventModule extends WXModule {
         ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), CaptureActivity.class), 999);
     }
 
+    @JSMethod(uiThread = true)
+    public void ShowTabbar() {
+        try {
+            MainActivity2.main.bottom.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @JSMethod(uiThread = true)
+    public void HideTabbar() {
+        try {
+            MainActivity2.main.bottom.setVisibility(View.GONE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @JSMethod(uiThread = true)
     public void finish() {
@@ -436,6 +454,7 @@ public class SJEventModule extends WXModule {
         if ((current - WXApplication.time) < 2000) {
             WXApplication.time = 0;
             ((Activity) mWXSDKInstance.getContext()).finish();
+            android.os.Process.killProcess(android.os.Process.myPid());
         } else {
             toast("再按一次返回退出APP");
             WXApplication.time = current;
