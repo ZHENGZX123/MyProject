@@ -292,7 +292,6 @@ public class MipcaCaptureActivity extends Activity implements
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         hasSurface = false;
-
     }
 
     public Handler getHandler() {
@@ -303,9 +302,6 @@ public class MipcaCaptureActivity extends Activity implements
         if (vibrate) {
         }
     }
-
-    String classId, schoolId, className, hCode, isHot, ip;
-    boolean isChangHeziCode = false;
 
     // 解析二维码
     void analyzeQR(String result) throws Exception {

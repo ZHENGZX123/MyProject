@@ -12,8 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import cn.kiway.yqyd.App;
 import cn.kiway.yqyd.R;
@@ -96,13 +94,4 @@ public class LoginActivity extends Activity implements Callback {
         }
     }
 
-    /**
-     * 判断是否为手机号码
-     */
-    public boolean isMobileNum(String mobiles) {
-        Pattern p = Pattern
-                .compile("^((1[3,5,8][0-9])|(14[5,7])|(17[0,6,7,8]))\\d{8}$");
-        Matcher m = p.matcher(mobiles);
-        return m.matches();
-    }
 }

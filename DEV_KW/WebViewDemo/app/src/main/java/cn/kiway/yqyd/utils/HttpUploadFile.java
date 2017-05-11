@@ -1,7 +1,5 @@
 package cn.kiway.yqyd.utils;
 
-import org.apache.http.protocol.HTTP;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -22,7 +20,7 @@ import okio.Source;
 
 public class HttpUploadFile {
     public static String BaseUrl = "http://yqyd.qgjydd.com/yqyd/";
-    public static String loginUrl = BaseUrl + "app/teaLogin?username={userName}&password=";//登录
+    public static String loginUrl = BaseUrl+"app/teaLogin?username={userName}&password=";//登录
     public static String updateUserInfoUrl = BaseUrl + "v1/app/uc/editPersonalInfo";//更新用户头像
     public static String uploadUserPicUrl = BaseUrl + "v1/app/upload";//上传图像
     ///public static String uploadUserPicUrl = "http://192.168.8.45:8070/v1/app/upload";
@@ -60,7 +58,7 @@ public class HttpUploadFile {
         Logger.log("图片地址：：：：" + fileName.getName());
         Logger.log("图片地址：：：" + fileName.length() / 1024 + "K");
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        builder.addFormDataPart("response_type", URLEncoder.encode("images", HTTP.UTF_8));
+        builder.addFormDataPart("response_type", URLEncoder.encode("images", "UTF-8"));
         builder.addFormDataPart("file", fileName.getName(), createCustomRequestBody(MediaType.parse
                         ("image/png"),
                 fileName));
