@@ -80,7 +80,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var Utils = {
   dir: 'v1',
   //ip : 'http://192.168.8.6:8180/'
-  ip: 'http://192.168.8.6:8882/v1'
+  // ip : 'http://192.168.8.6:8882/v1'
+  ip: 'http://yqyd.qgjydd.com/yqyd/v1'
   //ip : 'http://192.168.8.6:8881/v1'
 };
 Utils.setOpenUrl = function (context, arr) {
@@ -574,7 +575,7 @@ exports.default = new _vueRouter2.default({
   /* { path: '/login', name: 'login', component: require('./components/login.vue')},
    { path: '/wjmm', name: 'wjmm', component: require('./components/forget_pwd.vue')},
   // { path: '/wjzh', name: 'wjzh', component: require('./components/forget_admin.vue')},
-      { path: '/index', name: 'index', component: require('./components/index.vue')},
+    { path: '/index', name: 'index', component: require('./components/index.vue')},
     // 阅读任务
    { path: '/ydrw', name: 'ydrw', component: require('./components/ydrw.vue')}, 
     // 任务详情
@@ -600,7 +601,7 @@ exports.default = new _vueRouter2.default({
    // 学习报告 阅读报告
    { path: '/ydbg/rwbg', name: 'ckbg_rwbg', component: require('./components/ydbg_rwbg.vue')},
    // 学习报告 查看详情
-   { path: '/ydrw/ckxq', name: 'ckxq', component: require('./components/ydrw_ckxq.vue')},
+  //  { path: '/ydrw/ckxq', name: 'ckxq', component: require('./components/ydrw_ckxq.vue')},
    // 学习报告 报告闯关详情
    { path: '/ydrw/cgsb', name: 'ydrw_cgsb', component: require('./components/ydrw_cgsb.vue')}, 
    // 学习报告 任务详情
@@ -829,7 +830,7 @@ var __vue_styles__ = []
 __vue_exports__ = __webpack_require__(20)
 
 /* template */
-var __vue_template__ = __webpack_require__(31)
+var __vue_template__ = __webpack_require__(29)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -841,7 +842,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\App.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\App.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 __vue_options__.style = __vue_options__.style || {}
@@ -4409,20 +4410,10 @@ var index_esm = {
 
 /***/ }),
 /* 15 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
-
-/* styles */
-__vue_styles__.push(__webpack_require__(30)
-)
-
-/* script */
-__vue_exports__ = __webpack_require__(21)
-
-/* template */
-var __vue_template__ = __webpack_require__(36)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4434,10 +4425,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\footer.vue"
-__vue_options__.render = __vue_template__.render
-__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-c68af722"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\footer.vue"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4463,10 +4451,10 @@ __vue_styles__.push(__webpack_require__(26)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(22)
+__vue_exports__ = __webpack_require__(21)
 
 /* template */
-var __vue_template__ = __webpack_require__(32)
+var __vue_template__ = __webpack_require__(31)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4478,10 +4466,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\sc.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\sc.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-35168eb8"
+__vue_options__._scopeId = "data-v-61d635e5"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4503,14 +4491,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(28)
+__vue_styles__.push(__webpack_require__(27)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(23)
+__vue_exports__ = __webpack_require__(22)
 
 /* template */
-var __vue_template__ = __webpack_require__(34)
+var __vue_template__ = __webpack_require__(32)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4522,10 +4510,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\sk_search.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\sk_search.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-6e7ed94b"
+__vue_options__._scopeId = "data-v-73d9be2c"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4547,11 +4535,11 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(27)
+__vue_styles__.push(__webpack_require__(28)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(24)
+__vue_exports__ = __webpack_require__(23)
 
 /* template */
 var __vue_template__ = __webpack_require__(33)
@@ -4566,10 +4554,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\sk_xq.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\sk_xq.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-6c2faf9c"
+__vue_options__._scopeId = "data-v-7dc2c28a"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4591,14 +4579,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(29)
+__vue_styles__.push(__webpack_require__(25)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(25)
+__vue_exports__ = __webpack_require__(24)
 
 /* template */
-var __vue_template__ = __webpack_require__(35)
+var __vue_template__ = __webpack_require__(30)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4610,10 +4598,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\sm_search.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\sm_search.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-7de22409"
+__vue_options__._scopeId = "data-v-551328b0"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4654,107 +4642,6 @@ exports.default = {
 
 /***/ }),
 /* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-exports.default = {
-	data: function data() {
-		return {
-			/*src: [
-   	{href: '/index', value: 'index', title: '首 页',img: '../static/images/xs_pic_sy.png',},
-   	{href: '/sc', value: 'sc', title: '书 库',img: '../static/images/pic_sc01.png',},
-   	{href: 'lt', value: 'lt', title: '阅读圈'},
-   	{href: '/main', value: 'main', title: '我 的',img: '../static/images/pic_w01.png',}
-   ],
-   flag: 0*/
-		};
-	},
-
-	/*computed: {
- 	bg: function(){
- 		if(this.show==0){
- 			return '/index'
- 		}
- 		if(this.show==1){
- 			return '/sc'
- 		}
- 		if(this.show==2){
- 			return '/lt'
- 		}
- 		if(this.show==2){
- 			return '/main'
- 		}
- 	}
- },
- props: ['show']
- ,*/
-	methods: {
-		tab: function tab() {
-			this.$router.push('/index');
-		},
-		tab1: function tab1() {
-			this.$router.push('/sc');
-		},
-		tab2: function tab2() {
-			this.$router.push('/main');
-		}
-	}
-};
-
-/***/ }),
-/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5075,7 +4962,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5158,7 +5045,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 24 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5263,7 +5150,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 25 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5446,6 +5333,170 @@ exports.default = {
 		this.searchResult();
 	}
 };
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "loading": {
+    "width": 750,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "indicator": {
+    "color": "#888888",
+    "fontSize": 42,
+    "paddingTop": 20,
+    "paddingBottom": 20,
+    "textAlign": "center"
+  },
+  "main": {
+    "backgroundColor": "#ffffff",
+    "paddingBottom": 30
+  },
+  "goback_r": {
+    "position": "absolute",
+    "top": 30,
+    "right": 25,
+    "width": 100,
+    "height": 37,
+    "textAlign": "center",
+    "color": "#666666",
+    "fontSize": 34
+  },
+  "nav": {
+    "width": 750,
+    "height": 88,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "borderColor": "#e7e7e7",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "backgroundColor": "#ffffff"
+  },
+  "ydjy_list": {
+    "width": 750,
+    "height": 290,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "backgroundColor": "#ffffff",
+    "borderColor": "#ececec",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "position": "relative",
+    "zIndex": 1
+  },
+  "ydjy_l": {
+    "width": 240,
+    "height": 240,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "ydjy_lPic": {
+    "width": 190,
+    "height": 240
+  },
+  "ydjy_r": {
+    "height": 240,
+    "width": 455
+  },
+  "play": {
+    "position": "absolute",
+    "backgroundColor": "#000000",
+    "width": 191,
+    "height": 240,
+    "top": 0,
+    "left": 22,
+    "zIndex": 88,
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "filter": "alpha(opacity=30)",
+    "MozOpacity": 0.3,
+    "opacity": 0.3
+  },
+  "record": {
+    "width": 455,
+    "height": 50,
+    "fontSize": 30,
+    "flexDirection": "row",
+    "color": "#999999"
+  },
+  "ico_22": {
+    "width": 60,
+    "height": 60,
+    "position": "absolute",
+    "top": 100,
+    "left": 85,
+    "zIndex": 99
+  },
+  "b_list": {
+    "flexDirection": "row",
+    "fontSize": 30,
+    "color": "#666666",
+    "lineHeight": 55
+  },
+  "record_li": {
+    "flex": 1,
+    "flexDirection": "row",
+    "alignItems": "center"
+  },
+  "pic_see": {
+    "width": 38,
+    "height": 27
+  },
+  "pic_praise": {
+    "width": 32,
+    "height": 28
+  },
+  "hdzq_titil": {
+    "flexDirection": "row",
+    "color": "#333333",
+    "fontSize": 36,
+    "height": 60,
+    "textOverflow": "ellipsis",
+    "lines": 1
+  },
+  "ts_label": {
+    "fontSize": 26,
+    "backgroundColor": "#d9e8fd",
+    "color": "#666666",
+    "paddingTop": 4,
+    "paddingBottom": 4,
+    "paddingLeft": 15,
+    "paddingRight": 15,
+    "margin": 10,
+    "marginLeft": 0,
+    "borderRadius": 5
+  },
+  "ydjy_state": {
+    "backgroundColor": "#ff6600",
+    "color": "#ffffff",
+    "fontSize": 22,
+    "position": "absolute",
+    "left": 22,
+    "top": 10,
+    "paddingRight": 15,
+    "paddingLeft": 15,
+    "paddingTop": 8,
+    "paddingBottom": 8,
+    "zIndex": 89,
+    "borderTopRightRadius": 20,
+    "borderBottomRightRadius": 20
+  },
+  "author": {
+    "flexDirection": "row",
+    "lineHeight": 40
+  },
+  "fontSize": {
+    "fontSize": 32,
+    "color": "#666666"
+  }
+}
 
 /***/ }),
 /* 26 */
@@ -5698,6 +5749,80 @@ module.exports = {
 module.exports = {
   "top": {
     "width": 750,
+    "height": 98,
+    "backgroundColor": "#ffffff",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#e7e7e7"
+  },
+  "topMain": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "fontSize": 36,
+    "lineHeight": 88,
+    "width": 600,
+    "backgroundColor": "#f0f0f0",
+    "borderRadius": 8,
+    "marginBottom": 12,
+    "marginTop": 12,
+    "marginLeft": 20,
+    "marginRight": 20
+  },
+  "pot_input": {
+    "width": 490,
+    "height": 70,
+    "fontSize": 32,
+    "backgroundColor": "#f0f0f0",
+    "border": "none"
+  },
+  "look": {
+    "width": 48,
+    "height": 48,
+    "marginLeft": 20,
+    "marginRight": 20
+  },
+  "main": {
+    "backgroundColor": "#ffffff",
+    "paddingBottom": 30
+  },
+  "goback_r": {
+    "position": "absolute",
+    "top": 30,
+    "right": 25,
+    "width": 100,
+    "height": 37,
+    "textAlign": "center",
+    "color": "#666666",
+    "fontSize": 34
+  },
+  "hot_list": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "borderBottomStyle": "solid",
+    "borderBottomColor": "#e7e7e7",
+    "borderBottomWidth": 1,
+    "height": 88,
+    "marginLeft": 30,
+    "color": "#666666"
+  },
+  "hot": {
+    "width": 40,
+    "height": 40,
+    "marginRight": 20,
+    "fontSize": 30
+  },
+  "orange": {
+    "color": "#ff6600"
+  }
+}
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
     "height": 88,
     "backgroundColor": "#6fa1e8",
     "flexDirection": "row",
@@ -5814,278 +5939,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 28 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "top": {
-    "width": 750,
-    "height": 98,
-    "backgroundColor": "#ffffff",
-    "borderBottomWidth": 1,
-    "borderStyle": "solid",
-    "borderColor": "#e7e7e7"
-  },
-  "topMain": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "fontSize": 36,
-    "lineHeight": 88,
-    "width": 600,
-    "backgroundColor": "#f0f0f0",
-    "borderRadius": 8,
-    "marginBottom": 12,
-    "marginTop": 12,
-    "marginLeft": 20,
-    "marginRight": 20
-  },
-  "pot_input": {
-    "width": 490,
-    "height": 70,
-    "fontSize": 32,
-    "backgroundColor": "#f0f0f0",
-    "border": "none"
-  },
-  "look": {
-    "width": 48,
-    "height": 48,
-    "marginLeft": 20,
-    "marginRight": 20
-  },
-  "main": {
-    "backgroundColor": "#ffffff",
-    "paddingBottom": 30
-  },
-  "goback_r": {
-    "position": "absolute",
-    "top": 30,
-    "right": 25,
-    "width": 100,
-    "height": 37,
-    "textAlign": "center",
-    "color": "#666666",
-    "fontSize": 34
-  },
-  "hot_list": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "borderBottomStyle": "solid",
-    "borderBottomColor": "#e7e7e7",
-    "borderBottomWidth": 1,
-    "height": 88,
-    "marginLeft": 30,
-    "color": "#666666"
-  },
-  "hot": {
-    "width": 40,
-    "height": 40,
-    "marginRight": 20,
-    "fontSize": 30
-  },
-  "orange": {
-    "color": "#ff6600"
-  }
-}
-
-/***/ }),
 /* 29 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "loading": {
-    "width": 750,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "indicator": {
-    "color": "#888888",
-    "fontSize": 42,
-    "paddingTop": 20,
-    "paddingBottom": 20,
-    "textAlign": "center"
-  },
-  "main": {
-    "backgroundColor": "#ffffff",
-    "paddingBottom": 30
-  },
-  "goback_r": {
-    "position": "absolute",
-    "top": 30,
-    "right": 25,
-    "width": 100,
-    "height": 37,
-    "textAlign": "center",
-    "color": "#666666",
-    "fontSize": 34
-  },
-  "nav": {
-    "width": 750,
-    "height": 88,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "borderColor": "#e7e7e7",
-    "borderBottomWidth": 1,
-    "borderStyle": "solid",
-    "backgroundColor": "#ffffff"
-  },
-  "ydjy_list": {
-    "width": 750,
-    "height": 290,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "backgroundColor": "#ffffff",
-    "borderColor": "#ececec",
-    "borderBottomWidth": 1,
-    "borderStyle": "solid",
-    "position": "relative",
-    "zIndex": 1
-  },
-  "ydjy_l": {
-    "width": 240,
-    "height": 240,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "ydjy_lPic": {
-    "width": 190,
-    "height": 240
-  },
-  "ydjy_r": {
-    "height": 240,
-    "width": 455
-  },
-  "play": {
-    "position": "absolute",
-    "backgroundColor": "#000000",
-    "width": 191,
-    "height": 240,
-    "top": 0,
-    "left": 22,
-    "zIndex": 88,
-    "display": "flex",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "filter": "alpha(opacity=30)",
-    "MozOpacity": 0.3,
-    "opacity": 0.3
-  },
-  "record": {
-    "width": 455,
-    "height": 50,
-    "fontSize": 30,
-    "flexDirection": "row",
-    "color": "#999999"
-  },
-  "ico_22": {
-    "width": 60,
-    "height": 60,
-    "position": "absolute",
-    "top": 100,
-    "left": 85,
-    "zIndex": 99
-  },
-  "b_list": {
-    "flexDirection": "row",
-    "fontSize": 30,
-    "color": "#666666",
-    "lineHeight": 55
-  },
-  "record_li": {
-    "flex": 1,
-    "flexDirection": "row",
-    "alignItems": "center"
-  },
-  "pic_see": {
-    "width": 38,
-    "height": 27
-  },
-  "pic_praise": {
-    "width": 32,
-    "height": 28
-  },
-  "hdzq_titil": {
-    "flexDirection": "row",
-    "color": "#333333",
-    "fontSize": 36,
-    "height": 60,
-    "textOverflow": "ellipsis",
-    "lines": 1
-  },
-  "ts_label": {
-    "fontSize": 26,
-    "backgroundColor": "#d9e8fd",
-    "color": "#666666",
-    "paddingTop": 4,
-    "paddingBottom": 4,
-    "paddingLeft": 15,
-    "paddingRight": 15,
-    "margin": 10,
-    "marginLeft": 0,
-    "borderRadius": 5
-  },
-  "ydjy_state": {
-    "backgroundColor": "#ff6600",
-    "color": "#ffffff",
-    "fontSize": 22,
-    "position": "absolute",
-    "left": 22,
-    "top": 10,
-    "paddingRight": 15,
-    "paddingLeft": 15,
-    "paddingTop": 8,
-    "paddingBottom": 8,
-    "zIndex": 89,
-    "borderTopRightRadius": 20,
-    "borderBottomRightRadius": 20
-  },
-  "author": {
-    "flexDirection": "row",
-    "lineHeight": 40
-  },
-  "fontSize": {
-    "fontSize": 32,
-    "color": "#666666"
-  }
-}
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "footer": {
-    "width": 750,
-    "height": 110,
-    "borderStyle": "solid",
-    "borderColor": "#e7e7e7",
-    "borderTopWidth": 1,
-    "position": "fixed",
-    "bottom": 0,
-    "left": 0,
-    "zIndex": 999,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "backgroundColor": "#ffffff"
-  },
-  "f_list": {
-    "flex": 1,
-    "flexDirection": "column",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "footer_img": {
-    "marginTop": 12,
-    "width": 44,
-    "height": 44
-  }
-}
-
-/***/ }),
-/* 31 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -6102,7 +5956,133 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 32 */
+/* 30 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticStyle: {
+      backgroundColor: "#fff",
+      paddingBottom: "120px"
+    },
+    attrs: {
+      "id": "sc"
+    }
+  }, [_c('myedittext', {
+    staticStyle: {
+      height: "100px",
+      width: "750px"
+    },
+    attrs: {
+      "content": _vm.ss
+    },
+    on: {
+      "cancel": _vm.cancel,
+      "search": _vm.search
+    }
+  }), _c('scroller', [_vm._l((_vm.sc_list), function(sc) {
+    return _c('div', {
+      staticClass: ["ydjy_list"]
+    }, [_c('div', {
+      staticClass: ["ydjy_l"]
+    }, [_c('img', {
+      staticClass: ["ydjy_lPic"],
+      staticStyle: {
+        position: "relative"
+      },
+      attrs: {
+        "src": sc.pic
+      }
+    }), _c('div', {
+      staticClass: ["play"],
+      on: {
+        "click": function($event) {
+          _vm.onpeScxq('/sk/xq?id=' + sc.id + '&type=' + _vm.tabsId)
+        }
+      }
+    }), _c('image', {
+      staticClass: ["ico_22"],
+      attrs: {
+        "src": sc.tabImg
+      }
+    })]), _c('div', {
+      staticClass: ["ydjy_r"]
+    }, [_c('text', {
+      staticClass: ["hdzq_titil"],
+      on: {
+        "click": function($event) {
+          _vm.onpeScxq('/sk/xq?id=' + sc.id + '&type=' + _vm.tabsId)
+        }
+      }
+    }, [_vm._v(_vm._s(sc.name))]), _c('div', {
+      staticClass: ["author"]
+    }, [_c('text', {
+      staticClass: ["fontSize"]
+    }, [_vm._v(_vm._s(sc.author))]), _c('text', {
+      staticStyle: {
+        fontSize: "30px",
+        color: "#666"
+      }
+    }, [_vm._v("著")])]), _c('div', {
+      staticClass: ["b_list"]
+    }, [_c('text', {
+      staticClass: ["fontSize"]
+    }, [_vm._v("ISBN:")]), _c('text', {
+      staticStyle: {
+        fontSize: "32px",
+        color: "#666"
+      }
+    }, [_vm._v(_vm._s(sc.isbn))])]), _c('div', {
+      staticStyle: {
+        flexDirection: "row",
+        justifyContent: "left",
+        alignItems: "center"
+      }
+    }, [_c('text', {
+      staticClass: ["ts_label"]
+    }, [_vm._v(_vm._s(sc.bookType))])]), _c('div', {
+      staticClass: ["record"]
+    }, [_c('div', {
+      staticClass: ["record_li"]
+    }, [_c('image', {
+      staticClass: ["pic_see"],
+      attrs: {
+        "src": "../static/images/ico_see.png"
+      }
+    }), _vm._v("  "), _c('text', [_vm._v(_vm._s(sc.view))])]), _c('div', {
+      staticClass: ["record_li"],
+      on: {
+        "click": function($event) {
+          _vm.praise(sc, _vm.tabsId)
+        }
+      }
+    }, [(sc.isZan == 1) ? _c('image', {
+      staticClass: ["pic_praise"],
+      attrs: {
+        "src": _vm.checkYes
+      }
+    }) : _vm._e(), (sc.isZan == 0) ? _c('image', {
+      staticClass: ["pic_praise"],
+      attrs: {
+        "src": _vm.checkes
+      }
+    }) : _vm._e(), _vm._v("  "), _c('text', [_vm._v(_vm._s(sc.toast))])])])])])
+  }), _c('loading', {
+    staticClass: ["loading"],
+    attrs: {
+      "display": _vm.showLoading
+    },
+    on: {
+      "loading": _vm.onloading
+    }
+  }, [_c('text', {
+    staticClass: ["indicator"]
+  }, [_vm._v("加载更多 ...")])])], 2)], 1)
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 31 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -6347,6 +6327,61 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
+/* 32 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticStyle: {
+      backgroundColor: "#fafafa"
+    }
+  }, [_c('myedittext', {
+    staticStyle: {
+      height: "100px",
+      width: "750px"
+    },
+    attrs: {
+      "content": _vm.title
+    },
+    on: {
+      "cancel": _vm.cancel,
+      "search": _vm.search
+    }
+  }), _c('div', {
+    staticClass: ["main"]
+  }, [_vm._m(0), _vm._l((_vm.searchList), function(ssList, index) {
+    return _c('div', {
+      staticClass: ["hot_list"],
+      on: {
+        "click": function($event) {
+          _vm.selectes(ssList.word)
+        }
+      }
+    }, [_c('text', {
+      staticClass: ["hot", "orange"]
+    }, [_vm._v(_vm._s(index + 1))]), _c('text', {
+      staticStyle: {
+        fontSize: "32px"
+      }
+    }, [_vm._v(_vm._s(ssList.word))])])
+  })], 2)], 1)
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["hot_list"]
+  }, [_c('image', {
+    staticClass: ["hot"],
+    attrs: {
+      "src": "../static/images/pic_hot.png"
+    }
+  }), _c('text', {
+    staticStyle: {
+      fontSize: "32px"
+    }
+  }, [_vm._v("热门搜索")])])
+}]}
+module.exports.render._withStripped = true
+
+/***/ }),
 /* 33 */
 /***/ (function(module, exports) {
 
@@ -6439,243 +6474,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: ["jyzx_title"]
   }, [_vm._v("专家导读")])])
 }]}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticStyle: {
-      backgroundColor: "#fafafa"
-    }
-  }, [_c('myedittext', {
-    staticStyle: {
-      height: "100px",
-      width: "750px"
-    },
-    attrs: {
-      "content": _vm.title
-    },
-    on: {
-      "cancel": _vm.cancel,
-      "search": _vm.search
-    }
-  }), _c('div', {
-    staticClass: ["main"]
-  }, [_vm._m(0), _vm._l((_vm.searchList), function(ssList, index) {
-    return _c('div', {
-      staticClass: ["hot_list"],
-      on: {
-        "click": function($event) {
-          _vm.selectes(ssList.word)
-        }
-      }
-    }, [_c('text', {
-      staticClass: ["hot", "orange"]
-    }, [_vm._v(_vm._s(index + 1))]), _c('text', {
-      staticStyle: {
-        fontSize: "32px"
-      }
-    }, [_vm._v(_vm._s(ssList.word))])])
-  })], 2)], 1)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["hot_list"]
-  }, [_c('image', {
-    staticClass: ["hot"],
-    attrs: {
-      "src": "../static/images/pic_hot.png"
-    }
-  }), _c('text', {
-    staticStyle: {
-      fontSize: "32px"
-    }
-  }, [_vm._v("热门搜索")])])
-}]}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticStyle: {
-      backgroundColor: "#fff",
-      paddingBottom: "120px"
-    },
-    attrs: {
-      "id": "sc"
-    }
-  }, [_c('myedittext', {
-    staticStyle: {
-      height: "100px",
-      width: "750px"
-    },
-    attrs: {
-      "content": _vm.ss
-    },
-    on: {
-      "cancel": _vm.cancel,
-      "search": _vm.search
-    }
-  }), _c('scroller', [_vm._l((_vm.sc_list), function(sc) {
-    return _c('div', {
-      staticClass: ["ydjy_list"]
-    }, [_c('div', {
-      staticClass: ["ydjy_l"]
-    }, [_c('img', {
-      staticClass: ["ydjy_lPic"],
-      staticStyle: {
-        position: "relative"
-      },
-      attrs: {
-        "src": sc.pic
-      }
-    }), _c('div', {
-      staticClass: ["play"],
-      on: {
-        "click": function($event) {
-          _vm.onpeScxq('/sk/xq?id=' + sc.id + '&type=' + _vm.tabsId)
-        }
-      }
-    }), _c('image', {
-      staticClass: ["ico_22"],
-      attrs: {
-        "src": sc.tabImg
-      }
-    })]), _c('div', {
-      staticClass: ["ydjy_r"]
-    }, [_c('text', {
-      staticClass: ["hdzq_titil"],
-      on: {
-        "click": function($event) {
-          _vm.onpeScxq('/sk/xq?id=' + sc.id + '&type=' + _vm.tabsId)
-        }
-      }
-    }, [_vm._v(_vm._s(sc.name))]), _c('div', {
-      staticClass: ["author"]
-    }, [_c('text', {
-      staticClass: ["fontSize"]
-    }, [_vm._v(_vm._s(sc.author))]), _c('text', {
-      staticStyle: {
-        fontSize: "30px",
-        color: "#666"
-      }
-    }, [_vm._v("著")])]), _c('div', {
-      staticClass: ["b_list"]
-    }, [_c('text', {
-      staticClass: ["fontSize"]
-    }, [_vm._v("ISBN:")]), _c('text', {
-      staticStyle: {
-        fontSize: "32px",
-        color: "#666"
-      }
-    }, [_vm._v(_vm._s(sc.isbn))])]), _c('div', {
-      staticStyle: {
-        flexDirection: "row",
-        justifyContent: "left",
-        alignItems: "center"
-      }
-    }, [_c('text', {
-      staticClass: ["ts_label"]
-    }, [_vm._v(_vm._s(sc.bookType))])]), _c('div', {
-      staticClass: ["record"]
-    }, [_c('div', {
-      staticClass: ["record_li"]
-    }, [_c('image', {
-      staticClass: ["pic_see"],
-      attrs: {
-        "src": "../static/images/ico_see.png"
-      }
-    }), _vm._v("  "), _c('text', [_vm._v(_vm._s(sc.view))])]), _c('div', {
-      staticClass: ["record_li"],
-      on: {
-        "click": function($event) {
-          _vm.praise(sc, _vm.tabsId)
-        }
-      }
-    }, [(sc.isZan == 1) ? _c('image', {
-      staticClass: ["pic_praise"],
-      attrs: {
-        "src": _vm.checkYes
-      }
-    }) : _vm._e(), (sc.isZan == 0) ? _c('image', {
-      staticClass: ["pic_praise"],
-      attrs: {
-        "src": _vm.checkes
-      }
-    }) : _vm._e(), _vm._v("  "), _c('text', [_vm._v(_vm._s(sc.toast))])])])])])
-  }), _c('loading', {
-    staticClass: ["loading"],
-    attrs: {
-      "display": _vm.showLoading
-    },
-    on: {
-      "loading": _vm.onloading
-    }
-  }, [_c('text', {
-    staticClass: ["indicator"]
-  }, [_vm._v("加载更多 ...")])])], 2)], 1)
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: ["footer"]
-  }, [_c('div', {
-    staticClass: ["f_list"],
-    on: {
-      "click": _vm.tab
-    }
-  }, [_c('image', {
-    staticClass: ["footer_img"],
-    attrs: {
-      "src": "../static/images/xs_pic_sy.png"
-    }
-  }), _c('text', {
-    staticStyle: {
-      marginTop: "9px",
-      color: "#70a1e8"
-    }
-  }, [_vm._v("首 页")])]), _c('div', {
-    staticClass: ["f_list"],
-    on: {
-      "click": _vm.tab1
-    }
-  }, [_c('image', {
-    staticClass: ["footer_img"],
-    attrs: {
-      "src": "../static/images/pic_sc01.png"
-    }
-  }), _c('text', {
-    staticStyle: {
-      marginTop: "9px",
-      color: "#666"
-    }
-  }, [_vm._v("书 库")])]), _c('div', {
-    staticClass: ["f_list"],
-    on: {
-      "click": _vm.tab2
-    }
-  }, [_c('image', {
-    staticClass: ["footer_img"],
-    attrs: {
-      "src": "../static/images/pic_w01.png"
-    }
-  }), _c('text', {
-    staticStyle: {
-      marginTop: "9px",
-      color: "#666"
-    }
-  }, [_vm._v("我 的")])])])])
-},staticRenderFns: []}
 module.exports.render._withStripped = true
 
 /***/ })

@@ -80,7 +80,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var Utils = {
   dir: 'v1',
   //ip : 'http://192.168.8.6:8180/'
-  ip: 'http://192.168.8.6:8882/v1'
+  // ip : 'http://192.168.8.6:8882/v1'
+  ip: 'http://yqyd.qgjydd.com/yqyd/v1'
   //ip : 'http://192.168.8.6:8881/v1'
 };
 Utils.setOpenUrl = function (context, arr) {
@@ -574,7 +575,7 @@ exports.default = new _vueRouter2.default({
   /* { path: '/login', name: 'login', component: require('./components/login.vue')},
    { path: '/wjmm', name: 'wjmm', component: require('./components/forget_pwd.vue')},
   // { path: '/wjzh', name: 'wjzh', component: require('./components/forget_admin.vue')},
-      { path: '/index', name: 'index', component: require('./components/index.vue')},
+    { path: '/index', name: 'index', component: require('./components/index.vue')},
     // 阅读任务
    { path: '/ydrw', name: 'ydrw', component: require('./components/ydrw.vue')}, 
     // 任务详情
@@ -600,7 +601,7 @@ exports.default = new _vueRouter2.default({
    // 学习报告 阅读报告
    { path: '/ydbg/rwbg', name: 'ckbg_rwbg', component: require('./components/ydbg_rwbg.vue')},
    // 学习报告 查看详情
-   { path: '/ydrw/ckxq', name: 'ckxq', component: require('./components/ydrw_ckxq.vue')},
+  //  { path: '/ydrw/ckxq', name: 'ckxq', component: require('./components/ydrw_ckxq.vue')},
    // 学习报告 报告闯关详情
    { path: '/ydrw/cgsb', name: 'ydrw_cgsb', component: require('./components/ydrw_cgsb.vue')}, 
    // 学习报告 任务详情
@@ -850,7 +851,7 @@ var __vue_styles__ = []
 __vue_exports__ = __webpack_require__(22)
 
 /* template */
-var __vue_template__ = __webpack_require__(37)
+var __vue_template__ = __webpack_require__(38)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -862,7 +863,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\App.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\App.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 __vue_options__.style = __vue_options__.style || {}
@@ -4455,10 +4456,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\main.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\main.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-339a56e6"
+__vue_options__._scopeId = "data-v-5fabf4e4"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4480,14 +4481,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(34)
+__vue_styles__.push(__webpack_require__(30)
 )
 
 /* script */
 __vue_exports__ = __webpack_require__(24)
 
 /* template */
-var __vue_template__ = __webpack_require__(42)
+var __vue_template__ = __webpack_require__(37)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4499,10 +4500,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\main_grxx.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\main_grxx.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-9f409a66"
+__vue_options__._scopeId = "data-v-07f3fa6c"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4524,14 +4525,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(36)
+__vue_styles__.push(__webpack_require__(32)
 )
 
 /* script */
 __vue_exports__ = __webpack_require__(25)
 
 /* template */
-var __vue_template__ = __webpack_require__(44)
+var __vue_template__ = __webpack_require__(40)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4543,10 +4544,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\main_sz.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\main_sz.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-df625eee"
+__vue_options__._scopeId = "data-v-653e73e8"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4568,14 +4569,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(30)
+__vue_styles__.push(__webpack_require__(36)
 )
 
 /* script */
 __vue_exports__ = __webpack_require__(26)
 
 /* template */
-var __vue_template__ = __webpack_require__(38)
+var __vue_template__ = __webpack_require__(44)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4587,10 +4588,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\main_wdfx.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\main_wdfx.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-2b240801"
+__vue_options__._scopeId = "data-v-fa8f60c0"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4612,14 +4613,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(32)
+__vue_styles__.push(__webpack_require__(34)
 )
 
 /* script */
 __vue_exports__ = __webpack_require__(27)
 
 /* template */
-var __vue_template__ = __webpack_require__(40)
+var __vue_template__ = __webpack_require__(42)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4631,10 +4632,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\main_wdsc.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\main_wdsc.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-402b1a7f"
+__vue_options__._scopeId = "data-v-d0813bc4"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4675,10 +4676,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\main_wdxx.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\main_wdxx.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-49db432f"
+__vue_options__._scopeId = "data-v-bd20ea64"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4719,10 +4720,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "F:\\weex-yqyd_sx0509\\weex-yqyd_sx0509\\src\\components\\xgmm.vue"
+__vue_options__.__file = "F:\\svn_project\\yqyd_xs\\project\\src\\components\\xgmm.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-bdeb1eba"
+__vue_options__._scopeId = "data-v-e9fcbcb8"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -5538,132 +5539,102 @@ module.exports = {
     "backgroundColor": "#6fa1e8",
     "flexDirection": "row",
     "alignItems": "center",
-    "justifyContent": "center"
+    "justifyContent": "space-between",
+    "padding": 20,
+    "boxSizing": "border-box"
   },
   "top_name": {
     "fontSize": 36,
     "color": "#ffffff"
   },
+  "que": {
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
   "goback": {
-    "position": "absolute",
-    "top": 25,
-    "left": 25,
     "width": 37,
     "height": 37
   },
-  "hua": {
-    "width": 850,
-    "backgroundColor": "#ffffff"
+  "grxx": {
+    "width": 750,
+    "flexDirection": "row"
+  },
+  "photo": {
+    "width": 750,
+    "height": 350,
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#cccccc",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "flexDirection": "column"
+  },
+  "pImg": {
+    "width": 200,
+    "height": 200,
+    "borderRadius": 100
+  },
+  "jia": {
+    "width": 50,
+    "height": 50,
+    "borderRadius": 50,
+    "marginTop": -50,
+    "marginLeft": 120
+  },
+  "sexName": {
+    "width": 750,
+    "height": 180,
+    "flexDirection": "row",
+    "justifyContent": "space-between"
   },
   "wrapper": {
-    "width": 750,
-    "marginTop": 20,
-    "alignItems": "center",
-    "position": "relative"
+    "flexDirection": "column",
+    "padding": 20
   },
   "input": {
-    "fontSize": 50,
-    "width": 650,
-    "marginTop": 20,
-    "paddingTop": 20,
-    "paddingBottom": 20,
-    "paddingRight": 20,
+    "fontSize": 40,
+    "width": 300,
+    "height": 90,
     "color": "#666666",
     "borderWidth": 2,
     "borderStyle": "solid",
-    "borderColor": "#41B883"
+    "borderColor": "#e7e7e7",
+    "paddingLeft": 20,
+    "borderRadius": 10
   },
-  "sear": {
-    "width": 750,
-    "height": 98,
-    "backgroundColor": "#ffffff",
-    "borderBottomWidth": 1,
+  "dh": {
+    "fontSize": 40,
+    "width": 710,
+    "height": 100,
+    "color": "#666666",
+    "borderWidth": 2,
     "borderStyle": "solid",
     "borderColor": "#e7e7e7",
-    "alignItems": "center"
+    "paddingLeft": 20,
+    "borderRadius": 10
   },
-  "searMain": {
+  "s_class": {
+    "position": "absolute",
+    "zIndex": 9999,
+    "top": 590,
+    "width": 300,
+    "right": 20,
+    "height": 160,
+    "borderColor": "#e6e6e6",
+    "borderStyle": "solid",
+    "borderWidth": 2,
+    "backgroundColor": "#ffffff"
+  },
+  "s_class_opt": {
+    "width": 375,
+    "height": 80,
     "flexDirection": "row",
-    "fontSize": 36,
-    "lineHeight": 88,
-    "width": 680,
-    "backgroundColor": "#f0f0f0",
-    "borderRadius": 8,
-    "marginBottom": 12,
-    "marginTop": 12,
-    "marginRight": 20
-  },
-  "pot_input": {
-    "width": 680,
-    "height": 70,
-    "fontSize": 32,
-    "backgroundColor": "#f0f0f0",
-    "border": "none"
-  },
-  "look": {
-    "width": 40,
-    "height": 40,
-    "marginLeft": 15,
-    "marginRight": 15,
-    "marginTop": 17
-  },
-  "main": {
-    "backgroundColor": "#ffffff",
-    "paddingBottom": 30
-  },
-  "fenx": {
-    "width": 750,
-    "height": 250,
+    "alignItems": "center",
+    "justifyContent": "flex-start",
+    "paddingLeft": 20,
+    "borderBottomColor": "#e6e6e6",
     "borderBottomStyle": "solid",
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#e7e7e7",
-    "padding": 25,
-    "boxSizing": "border-box"
-  },
-  "Delete": {
-    "width": 160,
-    "height": 250,
-    "backgroundColor": "#f3f3ef",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "deList": {
-    "width": 100,
-    "height": 100
-  },
-  "Img": {
-    "width": 710,
-    "height": 80,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between"
-  },
-  "tx": {
-    "flexDirection": "row",
-    "alignItems": "center"
-  },
-  "txImg": {
-    "width": 80,
-    "height": 80
-  },
-  "News": {
-    "width": 680,
-    "height": 120,
-    "backgroundColor": "rgb(247,247,247)",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "borderRadius": 5
-  },
-  "Nimg": {
-    "width": 120,
-    "height": 80,
-    "borderRadius": 3
-  },
-  "Ntext": {
-    "width": 550,
-    "fontSize": 32,
-    "marginLeft": 20,
-    "wordWrap": "break-word"
+    "borderBottomWidth": 2
   }
 }
 
@@ -5804,6 +5775,156 @@ module.exports = {
     "width": 37,
     "height": 37
   },
+  "PassWord": {
+    "width": 750,
+    "height": 530,
+    "borderBottomStyle": "solid",
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#cccccc",
+    "padding": 20,
+    "boxSizing": "border-box"
+  },
+  "wrapper": {
+    "flexDirection": "row",
+    "marginTop": 20
+  },
+  "pot_input": {
+    "width": 400,
+    "height": 70,
+    "fontSize": 32,
+    "backgroundColor": "#f0f0f0",
+    "border": "none",
+    "paddingLeft": 20,
+    "borderRadius": 3
+  },
+  "del": {
+    "width": 750,
+    "height": 100,
+    "flexDirection": "row",
+    "justifyContent": "space-between",
+    "padding": 20,
+    "boxSizing": "border-box",
+    "alignItems": "center",
+    "borderBottomStyle": "solid",
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#cccccc"
+  },
+  "more": {
+    "width": 20,
+    "height": 30,
+    "marginTop": 4,
+    "marginLeft": 20
+  },
+  "delSize": {
+    "flexDirection": "row"
+  },
+  "footers": {
+    "width": 750,
+    "height": 110,
+    "backgroundColor": "#ffffff",
+    "position": "fixed",
+    "bottom": 0,
+    "left": 0,
+    "borderTopStyle": "solid",
+    "borderTopWidth": 1,
+    "borderTopColor": "#cccccc",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "btn": {
+    "alignItems": "center",
+    "justifyContent": "center",
+    "marginTop": 20,
+    "width": 710,
+    "height": 70,
+    "backgroundColor": "#6fa1e8"
+  },
+  "ipt": {
+    "alignItems": "center",
+    "color": "#ffffff",
+    "fontSize": 34,
+    "borderRadius": 5
+  },
+  "Le": {
+    "width": 200
+  }
+}
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 25,
+    "left": 25,
+    "width": 37,
+    "height": 37
+  },
+  "info": {
+    "width": 750,
+    "height": 130,
+    "borderBottomStyle": "solid",
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#e7e7e7",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "paddingLeft": 30,
+    "boxSizing": "border-box"
+  },
+  "info_img": {
+    "width": 100,
+    "height": 100
+  },
+  "name": {
+    "width": 600,
+    "marginLeft": 20,
+    "flexDirection": "row",
+    "justifyContent": "space-between"
+  },
+  "xx_main": {
+    "marginLeft": 20,
+    "marginTop": 10
+  }
+}
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 25,
+    "left": 25,
+    "width": 37,
+    "height": 37
+  },
   "wrapper": {
     "width": 750,
     "marginTop": 20,
@@ -5906,167 +6027,6 @@ module.exports = {
 }
 
 /***/ }),
-/* 33 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "top": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "center"
-  },
-  "top_name": {
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "position": "absolute",
-    "top": 25,
-    "left": 25,
-    "width": 37,
-    "height": 37
-  },
-  "info": {
-    "width": 750,
-    "height": 130,
-    "borderBottomStyle": "solid",
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#e7e7e7",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "paddingLeft": 30,
-    "boxSizing": "border-box"
-  },
-  "info_img": {
-    "width": 100,
-    "height": 100
-  },
-  "name": {
-    "width": 600,
-    "marginLeft": 20,
-    "flexDirection": "row",
-    "justifyContent": "space-between"
-  },
-  "xx_main": {
-    "marginLeft": 20,
-    "marginTop": 10
-  }
-}
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "top": {
-    "width": 750,
-    "height": 88,
-    "backgroundColor": "#6fa1e8",
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between",
-    "padding": 20,
-    "boxSizing": "border-box"
-  },
-  "top_name": {
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "que": {
-    "fontSize": 36,
-    "color": "#ffffff"
-  },
-  "goback": {
-    "width": 37,
-    "height": 37
-  },
-  "grxx": {
-    "width": 750,
-    "flexDirection": "row"
-  },
-  "photo": {
-    "width": 750,
-    "height": 350,
-    "borderBottomWidth": 1,
-    "borderStyle": "solid",
-    "borderColor": "#cccccc",
-    "alignItems": "center",
-    "justifyContent": "center",
-    "flexDirection": "column"
-  },
-  "pImg": {
-    "width": 200,
-    "height": 200,
-    "borderRadius": 100
-  },
-  "jia": {
-    "width": 50,
-    "height": 50,
-    "borderRadius": 50,
-    "marginTop": -50,
-    "marginLeft": 120
-  },
-  "sexName": {
-    "width": 750,
-    "height": 180,
-    "flexDirection": "row",
-    "justifyContent": "space-between"
-  },
-  "wrapper": {
-    "flexDirection": "column",
-    "padding": 20
-  },
-  "input": {
-    "fontSize": 40,
-    "width": 300,
-    "height": 90,
-    "color": "#666666",
-    "borderWidth": 2,
-    "borderStyle": "solid",
-    "borderColor": "#e7e7e7",
-    "paddingLeft": 20,
-    "borderRadius": 10
-  },
-  "dh": {
-    "fontSize": 40,
-    "width": 710,
-    "height": 100,
-    "color": "#666666",
-    "borderWidth": 2,
-    "borderStyle": "solid",
-    "borderColor": "#e7e7e7",
-    "paddingLeft": 20,
-    "borderRadius": 10
-  },
-  "s_class": {
-    "position": "absolute",
-    "zIndex": 9999,
-    "top": 590,
-    "width": 300,
-    "right": 20,
-    "height": 160,
-    "borderColor": "#e6e6e6",
-    "borderStyle": "solid",
-    "borderWidth": 2,
-    "backgroundColor": "#ffffff"
-  },
-  "s_class_opt": {
-    "width": 375,
-    "height": 80,
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "flex-start",
-    "paddingLeft": 20,
-    "borderBottomColor": "#e6e6e6",
-    "borderBottomStyle": "solid",
-    "borderBottomWidth": 2
-  }
-}
-
-/***/ }),
 /* 35 */
 /***/ (function(module, exports) {
 
@@ -6155,469 +6115,124 @@ module.exports = {
     "width": 37,
     "height": 37
   },
-  "PassWord": {
-    "width": 750,
-    "height": 530,
-    "borderBottomStyle": "solid",
-    "borderBottomWidth": 1,
-    "borderBottomColor": "#cccccc",
-    "padding": 20,
-    "boxSizing": "border-box"
+  "hua": {
+    "width": 850,
+    "backgroundColor": "#ffffff"
   },
   "wrapper": {
+    "width": 750,
+    "marginTop": 20,
+    "alignItems": "center",
+    "position": "relative"
+  },
+  "input": {
+    "fontSize": 50,
+    "width": 650,
+    "marginTop": 20,
+    "paddingTop": 20,
+    "paddingBottom": 20,
+    "paddingRight": 20,
+    "color": "#666666",
+    "borderWidth": 2,
+    "borderStyle": "solid",
+    "borderColor": "#41B883"
+  },
+  "sear": {
+    "width": 750,
+    "height": 98,
+    "backgroundColor": "#ffffff",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#e7e7e7",
+    "alignItems": "center"
+  },
+  "searMain": {
     "flexDirection": "row",
-    "marginTop": 20
+    "fontSize": 36,
+    "lineHeight": 88,
+    "width": 680,
+    "backgroundColor": "#f0f0f0",
+    "borderRadius": 8,
+    "marginBottom": 12,
+    "marginTop": 12,
+    "marginRight": 20
   },
   "pot_input": {
-    "width": 400,
+    "width": 680,
     "height": 70,
     "fontSize": 32,
     "backgroundColor": "#f0f0f0",
-    "border": "none",
-    "paddingLeft": 20,
-    "borderRadius": 3
+    "border": "none"
   },
-  "del": {
+  "look": {
+    "width": 40,
+    "height": 40,
+    "marginLeft": 15,
+    "marginRight": 15,
+    "marginTop": 17
+  },
+  "main": {
+    "backgroundColor": "#ffffff",
+    "paddingBottom": 30
+  },
+  "fenx": {
     "width": 750,
-    "height": 100,
-    "flexDirection": "row",
-    "justifyContent": "space-between",
-    "padding": 20,
-    "boxSizing": "border-box",
-    "alignItems": "center",
+    "height": 250,
     "borderBottomStyle": "solid",
     "borderBottomWidth": 1,
-    "borderBottomColor": "#cccccc"
+    "borderBottomColor": "#e7e7e7",
+    "padding": 25,
+    "boxSizing": "border-box"
   },
-  "more": {
-    "width": 20,
-    "height": 30,
-    "marginTop": 4,
-    "marginLeft": 20
-  },
-  "delSize": {
-    "flexDirection": "row"
-  },
-  "footers": {
-    "width": 750,
-    "height": 110,
-    "backgroundColor": "#ffffff",
-    "position": "fixed",
-    "bottom": 0,
-    "left": 0,
-    "borderTopStyle": "solid",
-    "borderTopWidth": 1,
-    "borderTopColor": "#cccccc",
+  "Delete": {
+    "width": 160,
+    "height": 250,
+    "backgroundColor": "#f3f3ef",
     "alignItems": "center",
     "justifyContent": "center"
   },
-  "btn": {
-    "alignItems": "center",
-    "justifyContent": "center",
-    "marginTop": 20,
-    "width": 710,
-    "height": 70,
-    "backgroundColor": "#6fa1e8"
+  "deList": {
+    "width": 100,
+    "height": 100
   },
-  "ipt": {
+  "Img": {
+    "width": 710,
+    "height": 80,
+    "flexDirection": "row",
     "alignItems": "center",
-    "color": "#ffffff",
-    "fontSize": 34,
+    "justifyContent": "space-between"
+  },
+  "tx": {
+    "flexDirection": "row",
+    "alignItems": "center"
+  },
+  "txImg": {
+    "width": 80,
+    "height": 80
+  },
+  "News": {
+    "width": 680,
+    "height": 120,
+    "backgroundColor": "rgb(247,247,247)",
+    "flexDirection": "row",
+    "alignItems": "center",
     "borderRadius": 5
   },
-  "Le": {
-    "width": 200
+  "Nimg": {
+    "width": 120,
+    "height": 80,
+    "borderRadius": 3
+  },
+  "Ntext": {
+    "width": 550,
+    "fontSize": 32,
+    "marginLeft": 20,
+    "wordWrap": "break-word"
   }
 }
 
 /***/ }),
 /* 37 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    on: {
-      "androidback": _vm.back
-    }
-  }, [_c('router-view', {
-    staticStyle: {
-      flex: "1"
-    }
-  })], 1)
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
-    attrs: {
-      "src": "../static/images/xs_pic_fh.png"
-    },
-    on: {
-      "click": _vm.goback
-    }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v("我的分享")])]), _vm._m(0), _vm._l((_vm.List), function(item, v) {
-    return _c('div', [_c('scroller', {
-      staticClass: ["scroll"],
-      staticStyle: {
-        flexDirection: "row"
-      },
-      attrs: {
-        "scrollDirection": "horizontal"
-      }
-    }, [_c('div', {
-      staticStyle: {
-        flexDirection: "row"
-      }
-    }, [_c('div', {
-      staticClass: ["fenx"]
-    }, [_c('div', {
-      staticClass: ["Img"]
-    }, [_c('div', {
-      staticClass: ["tx"]
-    }, [_c('image', {
-      staticClass: ["txImg"],
-      attrs: {
-        "src": item.url
-      }
-    }), _c('text', {
-      staticStyle: {
-        color: "#79a8ec",
-        fontSize: "32px",
-        marginLeft: "20px"
-      }
-    }, [_vm._v(_vm._s(item.name))])]), _c('text', {
-      staticStyle: {
-        marginRight: "25px",
-        fontSize: "24px"
-      }
-    }, [_vm._v(_vm._s(item.dataTimg))])]), _c('div', {
-      staticClass: ["News"]
-    }, [_c('image', {
-      staticClass: ["Nimg"],
-      attrs: {
-        "src": item.NewsImg
-      }
-    }), _c('text', {
-      staticClass: ["Ntext"]
-    }, [_vm._v(_vm._s(item.NewsCont))])])])]), _c('div', {
-      staticClass: ["Delete"]
-    }, [_c('image', {
-      staticClass: ["deList"],
-      attrs: {
-        "src": "../static/images/delete.png"
-      },
-      on: {
-        "click": function($event) {
-          _vm.DeleteFX(v)
-        }
-      }
-    })])])])
-  })], 2)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["sear"]
-  }, [_c('div', {
-    staticClass: ["searMain"]
-  }, [_c('image', {
-    staticClass: ["look"],
-    attrs: {
-      "src": "../static/images/ico_look.png"
-    }
-  }), _c('input', {
-    staticClass: ["pot_input"],
-    attrs: {
-      "type": "text",
-      "name": "",
-      "placeholder": "搜索"
-    }
-  })])])
-}]}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 39 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticStyle: {
-      backgroundColor: "#fafafa"
-    }
-  }, [_vm._m(0), _c('div', {
-    staticClass: ["topMain"],
-    staticStyle: {
-      backgroundColor: "#fff"
-    },
-    on: {
-      "click": function($event) {
-        _vm.jump('/main/grxx')
-      }
-    }
-  }, [_c('image', {
-    staticClass: ["info_img"],
-    attrs: {
-      "src": _vm.avatar
-    }
-  }), _c('div', [_c('div', {
-    staticStyle: {
-      flexDirection: "row"
-    }
-  }, [_c('text', {
-    staticClass: ["name"]
-  }, [_vm._v(_vm._s(_vm.studentName) + " ")])]), _c('text', {
-    staticClass: ["name"],
-    staticStyle: {
-      fontSize: "32px",
-      fontWeight: "normal"
-    }
-  }, [_vm._v(_vm._s(_vm.schoolName))])])]), _c('div', {
-    staticClass: ["j_f"]
-  }, [_c('div', {
-    staticClass: ["j_f_i"]
-  }, [_c('text', {
-    staticClass: ["j_fName"]
-  }, [_vm._v(_vm._s(_vm.words) + "万字")]), _c('text', {
-    staticClass: ["j_fName1"]
-  }, [_vm._v("阅读量")])]), _c('div', {
-    staticClass: ["j_f_i"]
-  }, [_c('text', {
-    staticClass: ["j_fName"]
-  }, [_vm._v(_vm._s(_vm.score))]), _c('text', {
-    staticClass: ["j_fName1"]
-  }, [_vm._v("积分")])])]), _c('div', {
-    staticClass: ["main"]
-  }, [_c('div', {
-    staticClass: ["main_list"],
-    staticStyle: {
-      marginBottom: "20px"
-    },
-    on: {
-      "click": function($event) {
-        _vm.jump('/main/wdxx')
-      }
-    }
-  }, [_vm._m(1), _c('image', {
-    staticClass: ["more"],
-    attrs: {
-      "src": "../static/images/wd_09.png"
-    }
-  })]), _c('div', {
-    staticClass: ["main_list"],
-    on: {
-      "click": function($event) {
-        _vm.jump('/main/sz')
-      }
-    }
-  }, [_vm._m(2), _vm._m(3)])])])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["top"]
-  }, [_c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v("我的")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["main_list_l"]
-  }, [_c('image', {
-    staticClass: ["main_pic"],
-    attrs: {
-      "src": "../static/images/xs_wd_tz.png"
-    }
-  }), _c('text', {
-    staticClass: ["main_title"]
-  }, [_vm._v("消息中心")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["main_list_l"]
-  }, [_c('image', {
-    staticClass: ["main_pic"],
-    attrs: {
-      "src": "../static/images/xs_wd_sz.png"
-    }
-  }), _c('text', {
-    staticClass: ["main_title"]
-  }, [_vm._v("设置")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('image', {
-    staticClass: ["more"],
-    attrs: {
-      "src": "../static/images/wd_09.png"
-    }
-  })])
-}]}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 40 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
-    attrs: {
-      "src": "../static/images/xs_pic_fh.png"
-    },
-    on: {
-      "click": _vm.goback
-    }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v("我的分享")])]), _vm._m(0), _vm._m(1), _vm._m(2)])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["sear"]
-  }, [_c('div', {
-    staticClass: ["searMain"]
-  }, [_c('image', {
-    staticClass: ["look"],
-    attrs: {
-      "src": "../static/images/ico_look.png"
-    }
-  }), _c('input', {
-    staticClass: ["pot_input"],
-    attrs: {
-      "type": "text",
-      "name": "",
-      "placeholder": "搜索"
-    }
-  })])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["fenx"]
-  }, [_c('div', {
-    staticClass: ["Img"]
-  }, [_c('div', {
-    staticClass: ["tx"]
-  }, [_c('image', {
-    staticClass: ["txImg"],
-    attrs: {
-      "src": "../static/images/head.png"
-    }
-  }), _c('text', {
-    staticStyle: {
-      color: "#79a8ec",
-      fontSize: "32px",
-      marginLeft: "20px"
-    }
-  }, [_vm._v("王菲")])]), _c('text', {
-    staticStyle: {
-      marginRight: "25px",
-      fontSize: "24px"
-    }
-  }, [_vm._v("2017-05-03")])]), _c('div', {
-    staticClass: ["News"]
-  }, [_c('image', {
-    staticClass: ["Nimg"],
-    attrs: {
-      "src": "../static/images/21091W492-0.jpg"
-    }
-  }), _c('text', {
-    staticClass: ["Ntext"]
-  }, [_vm._v("奥斑马：阅读是帮助我撑过白宫8年的秘密")])])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["fenx"]
-  }, [_c('div', {
-    staticClass: ["Img"]
-  }, [_c('div', {
-    staticClass: ["tx"]
-  }, [_c('image', {
-    staticClass: ["txImg"],
-    attrs: {
-      "src": "../static/images/head.png"
-    }
-  }), _c('text', {
-    staticStyle: {
-      color: "#79a8ec",
-      fontSize: "32px",
-      marginLeft: "20px"
-    }
-  }, [_vm._v("王菲")])]), _c('text', {
-    staticStyle: {
-      marginRight: "25px",
-      fontSize: "24px"
-    }
-  }, [_vm._v("2017-05-03")])]), _c('div', {
-    staticClass: ["News"]
-  }, [_c('image', {
-    staticClass: ["Nimg"],
-    attrs: {
-      "src": "../static/images/21091W492-0.jpg"
-    }
-  }), _c('text', {
-    staticClass: ["Ntext"]
-  }, [_vm._v("奥斑马：阅读是帮助我撑过白宫8年的秘密")])])])
-}]}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 41 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: ["top"]
-  }, [_c('image', {
-    staticClass: ["goback"],
-    attrs: {
-      "src": "../static/images/xs_pic_fh.png"
-    },
-    on: {
-      "click": _vm.goback
-    }
-  }), _c('text', {
-    staticClass: ["top_name"]
-  }, [_vm._v("我的消息")])]), _vm._l((_vm.msgList), function(item) {
-    return _c('div', {
-      staticClass: ["info"]
-    }, [_c('image', {
-      staticClass: ["info_img"],
-      attrs: {
-        "src": "../static/images/head.png"
-      }
-    }), _c('div', [_c('div', {
-      staticClass: ["name"]
-    }, [_c('text', {
-      staticStyle: {
-        color: "#70a1e8",
-        fontSize: "32px",
-        flex: "1"
-      }
-    }, [_vm._v(_vm._s(item.mark))]), _c('text', {
-      staticStyle: {
-        fontSize: "25px",
-        color: "#666",
-        marginTop: "4px",
-        flex: "1",
-        overflow: "hidden"
-      }
-    }, [_vm._v(_vm._s(item.createDate))])]), _vm._m(0, true)])])
-  })], 2)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["xx_main"]
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "32px",
-      color: "#666"
-    }
-  }, [_vm._v("一起阅读家长正式上线啦！")])])
-}]}
-module.exports.render._withStripped = true
-
-/***/ }),
-/* 42 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -6810,6 +6425,379 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
+/* 38 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    on: {
+      "androidback": _vm.back
+    }
+  }, [_c('router-view', {
+    staticStyle: {
+      flex: "1"
+    }
+  })], 1)
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticStyle: {
+      backgroundColor: "#fafafa"
+    }
+  }, [_vm._m(0), _c('div', {
+    staticClass: ["topMain"],
+    staticStyle: {
+      backgroundColor: "#fff"
+    },
+    on: {
+      "click": function($event) {
+        _vm.jump('/main/grxx')
+      }
+    }
+  }, [_c('image', {
+    staticClass: ["info_img"],
+    attrs: {
+      "src": _vm.avatar
+    }
+  }), _c('div', [_c('div', {
+    staticStyle: {
+      flexDirection: "row"
+    }
+  }, [_c('text', {
+    staticClass: ["name"]
+  }, [_vm._v(_vm._s(_vm.studentName) + " ")])]), _c('text', {
+    staticClass: ["name"],
+    staticStyle: {
+      fontSize: "32px",
+      fontWeight: "normal"
+    }
+  }, [_vm._v(_vm._s(_vm.schoolName))])])]), _c('div', {
+    staticClass: ["j_f"]
+  }, [_c('div', {
+    staticClass: ["j_f_i"]
+  }, [_c('text', {
+    staticClass: ["j_fName"]
+  }, [_vm._v(_vm._s(_vm.words) + "万字")]), _c('text', {
+    staticClass: ["j_fName1"]
+  }, [_vm._v("阅读量")])]), _c('div', {
+    staticClass: ["j_f_i"]
+  }, [_c('text', {
+    staticClass: ["j_fName"]
+  }, [_vm._v(_vm._s(_vm.score))]), _c('text', {
+    staticClass: ["j_fName1"]
+  }, [_vm._v("积分")])])]), _c('div', {
+    staticClass: ["main"]
+  }, [_c('div', {
+    staticClass: ["main_list"],
+    staticStyle: {
+      marginBottom: "20px"
+    },
+    on: {
+      "click": function($event) {
+        _vm.jump('/main/wdxx')
+      }
+    }
+  }, [_vm._m(1), _c('image', {
+    staticClass: ["more"],
+    attrs: {
+      "src": "../static/images/wd_09.png"
+    }
+  })]), _c('div', {
+    staticClass: ["main_list"],
+    on: {
+      "click": function($event) {
+        _vm.jump('/main/sz')
+      }
+    }
+  }, [_vm._m(2), _vm._m(3)])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["top"]
+  }, [_c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v("我的")])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["main_list_l"]
+  }, [_c('image', {
+    staticClass: ["main_pic"],
+    attrs: {
+      "src": "../static/images/xs_wd_tz.png"
+    }
+  }), _c('text', {
+    staticClass: ["main_title"]
+  }, [_vm._v("消息中心")])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["main_list_l"]
+  }, [_c('image', {
+    staticClass: ["main_pic"],
+    attrs: {
+      "src": "../static/images/xs_wd_sz.png"
+    }
+  }), _c('text', {
+    staticClass: ["main_title"]
+  }, [_vm._v("设置")])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('image', {
+    staticClass: ["more"],
+    attrs: {
+      "src": "../static/images/wd_09.png"
+    }
+  })])
+}]}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('div', {
+    staticClass: ["top"]
+  }, [_c('image', {
+    staticClass: ["goback"],
+    attrs: {
+      "src": "../static/images/xs_pic_fh.png"
+    },
+    on: {
+      "click": _vm.goback
+    }
+  }), _c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v("我的设置")])]), _c('div', {
+    staticClass: ["del"],
+    on: {
+      "click": function($event) {
+        _vm.xgmm('/main/xgmm/')
+      }
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "36px"
+    }
+  }, [_vm._v("修改密码")]), _vm._m(0)]), _vm._m(1), _vm._m(2), _c('div', {
+    staticClass: ["footers"],
+    on: {
+      "click": _vm.quit
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "40px",
+      color: "red"
+    }
+  }, [_vm._v("退出账号")])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["delSize"]
+  }, [_c('image', {
+    staticClass: ["more"],
+    attrs: {
+      "src": "../static/images/wd_09.png"
+    }
+  })])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["del"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "36px"
+    }
+  }, [_vm._v("清缓存")]), _c('div', {
+    staticClass: ["delSize"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "36px"
+    }
+  }, [_vm._v("0.00")]), _c('image', {
+    staticClass: ["more"],
+    attrs: {
+      "src": "../static/images/wd_09.png"
+    }
+  })])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["del"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "36px"
+    }
+  }, [_vm._v("关于")]), _c('image', {
+    staticClass: ["more"],
+    attrs: {
+      "src": "../static/images/wd_09.png"
+    }
+  })])
+}]}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('div', {
+    staticClass: ["top"]
+  }, [_c('image', {
+    staticClass: ["goback"],
+    attrs: {
+      "src": "../static/images/xs_pic_fh.png"
+    },
+    on: {
+      "click": _vm.goback
+    }
+  }), _c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v("我的消息")])]), _vm._l((_vm.msgList), function(item) {
+    return _c('div', {
+      staticClass: ["info"]
+    }, [_c('image', {
+      staticClass: ["info_img"],
+      attrs: {
+        "src": "../static/images/head.png"
+      }
+    }), _c('div', [_c('div', {
+      staticClass: ["name"]
+    }, [_c('text', {
+      staticStyle: {
+        color: "#70a1e8",
+        fontSize: "32px",
+        flex: "1"
+      }
+    }, [_vm._v(_vm._s(item.mark))]), _c('text', {
+      staticStyle: {
+        fontSize: "25px",
+        color: "#666",
+        marginTop: "4px",
+        flex: "1",
+        overflow: "hidden"
+      }
+    }, [_vm._v(_vm._s(item.createDate))])]), _vm._m(0, true)])])
+  })], 2)
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["xx_main"]
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "32px",
+      color: "#666"
+    }
+  }, [_vm._v("一起阅读家长正式上线啦！")])])
+}]}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('div', {
+    staticClass: ["top"]
+  }, [_c('image', {
+    staticClass: ["goback"],
+    attrs: {
+      "src": "../static/images/xs_pic_fh.png"
+    },
+    on: {
+      "click": _vm.goback
+    }
+  }), _c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v("我的分享")])]), _vm._m(0), _vm._m(1), _vm._m(2)])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["sear"]
+  }, [_c('div', {
+    staticClass: ["searMain"]
+  }, [_c('image', {
+    staticClass: ["look"],
+    attrs: {
+      "src": "../static/images/ico_look.png"
+    }
+  }), _c('input', {
+    staticClass: ["pot_input"],
+    attrs: {
+      "type": "text",
+      "name": "",
+      "placeholder": "搜索"
+    }
+  })])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["fenx"]
+  }, [_c('div', {
+    staticClass: ["Img"]
+  }, [_c('div', {
+    staticClass: ["tx"]
+  }, [_c('image', {
+    staticClass: ["txImg"],
+    attrs: {
+      "src": "../static/images/head.png"
+    }
+  }), _c('text', {
+    staticStyle: {
+      color: "#79a8ec",
+      fontSize: "32px",
+      marginLeft: "20px"
+    }
+  }, [_vm._v("王菲")])]), _c('text', {
+    staticStyle: {
+      marginRight: "25px",
+      fontSize: "24px"
+    }
+  }, [_vm._v("2017-05-03")])]), _c('div', {
+    staticClass: ["News"]
+  }, [_c('image', {
+    staticClass: ["Nimg"],
+    attrs: {
+      "src": "../static/images/21091W492-0.jpg"
+    }
+  }), _c('text', {
+    staticClass: ["Ntext"]
+  }, [_vm._v("奥斑马：阅读是帮助我撑过白宫8年的秘密")])])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["fenx"]
+  }, [_c('div', {
+    staticClass: ["Img"]
+  }, [_c('div', {
+    staticClass: ["tx"]
+  }, [_c('image', {
+    staticClass: ["txImg"],
+    attrs: {
+      "src": "../static/images/head.png"
+    }
+  }), _c('text', {
+    staticStyle: {
+      color: "#79a8ec",
+      fontSize: "32px",
+      marginLeft: "20px"
+    }
+  }, [_vm._v("王菲")])]), _c('text', {
+    staticStyle: {
+      marginRight: "25px",
+      fontSize: "24px"
+    }
+  }, [_vm._v("2017-05-03")])]), _c('div', {
+    staticClass: ["News"]
+  }, [_c('image', {
+    staticClass: ["Nimg"],
+    attrs: {
+      "src": "../static/images/21091W492-0.jpg"
+    }
+  }), _c('text', {
+    staticClass: ["Ntext"]
+  }, [_vm._v("奥斑马：阅读是帮助我撑过白宫8年的秘密")])])])
+}]}
+module.exports.render._withStripped = true
+
+/***/ }),
 /* 43 */
 /***/ (function(module, exports) {
 
@@ -6912,69 +6900,82 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _c('text', {
     staticClass: ["top_name"]
-  }, [_vm._v("我的设置")])]), _c('div', {
-    staticClass: ["del"],
-    on: {
-      "click": function($event) {
-        _vm.xgmm('/main/xgmm/')
+  }, [_vm._v("我的分享")])]), _vm._m(0), _vm._l((_vm.List), function(item, v) {
+    return _c('div', [_c('scroller', {
+      staticClass: ["scroll"],
+      staticStyle: {
+        flexDirection: "row"
+      },
+      attrs: {
+        "scrollDirection": "horizontal"
       }
-    }
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "36px"
-    }
-  }, [_vm._v("修改密码")]), _vm._m(0)]), _vm._m(1), _vm._m(2), _c('div', {
-    staticClass: ["footers"],
-    on: {
-      "click": _vm.quit
-    }
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "40px",
-      color: "red"
-    }
-  }, [_vm._v("退出账号")])])])
+    }, [_c('div', {
+      staticStyle: {
+        flexDirection: "row"
+      }
+    }, [_c('div', {
+      staticClass: ["fenx"]
+    }, [_c('div', {
+      staticClass: ["Img"]
+    }, [_c('div', {
+      staticClass: ["tx"]
+    }, [_c('image', {
+      staticClass: ["txImg"],
+      attrs: {
+        "src": item.url
+      }
+    }), _c('text', {
+      staticStyle: {
+        color: "#79a8ec",
+        fontSize: "32px",
+        marginLeft: "20px"
+      }
+    }, [_vm._v(_vm._s(item.name))])]), _c('text', {
+      staticStyle: {
+        marginRight: "25px",
+        fontSize: "24px"
+      }
+    }, [_vm._v(_vm._s(item.dataTimg))])]), _c('div', {
+      staticClass: ["News"]
+    }, [_c('image', {
+      staticClass: ["Nimg"],
+      attrs: {
+        "src": item.NewsImg
+      }
+    }), _c('text', {
+      staticClass: ["Ntext"]
+    }, [_vm._v(_vm._s(item.NewsCont))])])])]), _c('div', {
+      staticClass: ["Delete"]
+    }, [_c('image', {
+      staticClass: ["deList"],
+      attrs: {
+        "src": "../static/images/delete.png"
+      },
+      on: {
+        "click": function($event) {
+          _vm.DeleteFX(v)
+        }
+      }
+    })])])])
+  })], 2)
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: ["delSize"]
+    staticClass: ["sear"]
+  }, [_c('div', {
+    staticClass: ["searMain"]
   }, [_c('image', {
-    staticClass: ["more"],
+    staticClass: ["look"],
     attrs: {
-      "src": "../static/images/wd_09.png"
+      "src": "../static/images/ico_look.png"
     }
-  })])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["del"]
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "36px"
-    }
-  }, [_vm._v("清缓存")]), _c('div', {
-    staticClass: ["delSize"]
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "36px"
-    }
-  }, [_vm._v("0.00")]), _c('image', {
-    staticClass: ["more"],
+  }), _c('input', {
+    staticClass: ["pot_input"],
     attrs: {
-      "src": "../static/images/wd_09.png"
+      "type": "text",
+      "name": "",
+      "placeholder": "搜索"
     }
   })])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["del"]
-  }, [_c('text', {
-    staticStyle: {
-      fontSize: "36px"
-    }
-  }, [_vm._v("关于")]), _c('image', {
-    staticClass: ["more"],
-    attrs: {
-      "src": "../static/images/wd_09.png"
-    }
-  })])
 }]}
 module.exports.render._withStripped = true
 
