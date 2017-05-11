@@ -7,14 +7,22 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.client.android.CaptureActivity;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
@@ -36,7 +44,11 @@ import cn.kiway.yqyd.R;
 import cn.kiway.yqyd.dialog.LoginDialog;
 import cn.kiway.yqyd.utils.HanderMessageWhat;
 import cn.kiway.yqyd.utils.HttpUploadFile;
+import cn.kiway.yqyd.utils.Logger;
 import cn.kiway.yqyd.utils.SharedPreferencesUtil;
+import cn.kiway.yqyd.utils.sound.AudioRecoderUtils;
+import cn.kiway.yqyd.utils.sound.PopupWindowFactory;
+import cn.kiway.yqyd.utils.sound.TimeUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -44,6 +56,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static cn.kiway.yqyd.utils.HanderMessageWhat.ResultMessage888;
+import static cn.kiway.yqyd.utils.HanderMessageWhat.ResultMessage999;
 import static cn.kiway.yqyd.utils.HanderMessageWhat.messageWhat1;
 import static cn.kiway.yqyd.utils.HttpUploadFile.updateUserInfoUrl;
 
@@ -53,6 +67,18 @@ public class WebViewActivity2 extends Activity implements Callback {
     private String uploadBackUrl = "";
     private LoginDialog loginDialog;
     App app;
+    private boolean isImg;
+    /**
+     * 录音
+     */
+    private ImageView mImageView;
+    private TextView mTextView;
+    private AudioRecoderUtils mAudioRecoderUtils;
+    private Button SoundRecord;
+    private PopupWindowFactory mPop;
+    private RelativeLayout rl;
+
+    float x1, y1, x2, y2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +89,9 @@ public class WebViewActivity2 extends Activity implements Callback {
         app = (App) getApplicationContext();
         initData();
         load();
-        checkVersionUp();
+        initSoundRecord();
     }
 
-    private void checkVersionUp() {
-        //静默更新
-    }
 
     private void initData() {
         //跨域问题
@@ -156,24 +179,31 @@ public class WebViewActivity2 extends Activity implements Callback {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == ImagePicker.RESULT_CODE_ITEMS) {
-            if (data != null && requestCode == 888) {
+            if (data != null && requestCode == ResultMessage888) {
                 ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker
                         .EXTRA_RESULT_ITEMS);
-                try {
-                    uploadUserPic(images.get(0).path);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                uploadUserPic(images.get(0).path, HttpUploadFile.FileType
+                        .Image, true);
             } else {
                 Toast.makeText(this, "更新失败", Toast.LENGTH_SHORT).show();
             }
         }
+        if (requestCode == ResultMessage999 && data != null) { //扫描二维码返回
+            String result = data.getStringExtra("result");
+            Toast.makeText(WebViewActivity2.this, result, Toast.LENGTH_SHORT).show();
+        }
     }
 
-    void uploadUserPic(String fileName) throws UnsupportedEncodingException {
+    void uploadUserPic(String fileName, String fileType, boolean isImg) {
         if (loginDialog != null)
             loginDialog.show();
-        app.mOkHttpClient.newCall(HttpUploadFile.returnUploadImgRequser(new File(fileName))).enqueue(this);
+        this.isImg = isImg;
+        try {
+            app.mOkHttpClient.newCall(HttpUploadFile.returnUploadImgRequser(new File(fileName), fileType)).enqueue
+                    (this);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -193,17 +223,22 @@ public class WebViewActivity2 extends Activity implements Callback {
         if (call.request().url().toString().equals(HttpUploadFile.uploadUserPicUrl)) {
             try {
                 JSONObject data = new JSONObject(response.body().string());
+                Logger.log("------------" + data);
                 if (data.optInt("status") == 200) {
-                    uploadBackUrl = data.optJSONObject("result").optString("url");
-                    RequestBody requestBodyPost = new FormBody.Builder()
-                            .add("loginAccount", SharedPreferencesUtil.getString(this, "userName"))
-                            .add("avatar", uploadBackUrl)
-                            .build();
-                    Request request = new Request.Builder()
-                            .url(updateUserInfoUrl)
-                            .post(requestBodyPost)
-                            .build();
-                    app.mOkHttpClient.newCall(request).enqueue(this);
+                    if (isImg) {
+                        uploadBackUrl = data.optJSONObject("result").optString("url");
+                        RequestBody requestBodyPost = new FormBody.Builder()
+                                .add("loginAccount", SharedPreferencesUtil.getString(this, "userName"))
+                                .add("avatar", uploadBackUrl)
+                                .build();
+                        Request request = new Request.Builder()
+                                .url(updateUserInfoUrl)
+                                .post(requestBodyPost)
+                                .build();
+                        app.mOkHttpClient.newCall(request).enqueue(this);
+                    } else {
+                        Logger.log("---------------------语音");
+                    }
                 } else {
                     Message message = new Message();
                     message.obj = "上传失败";
@@ -218,7 +253,7 @@ public class WebViewActivity2 extends Activity implements Callback {
                 JSONObject data = new JSONObject(response.body().string());
                 Message message = new Message();
                 if (data.optInt("status") == 200) {
-                    message.obj = uploadBackUrl;
+                    message.obj = "javascript:changeUserImg('" + uploadBackUrl + "')";
                     message.what = messageWhat1;
                 } else {
                     message.obj = "更新失败";
@@ -238,7 +273,7 @@ public class WebViewActivity2 extends Activity implements Callback {
                 case HanderMessageWhat.messageWhat1:
                     if (loginDialog != null)
                         loginDialog.close();
-                    wv.loadUrl("javascript:changeUserImg('" + msg.obj.toString() + "')");
+                    wv.loadUrl((String) msg.obj);
                     break;
                 case HanderMessageWhat.messageWhat2:
                     if (loginDialog != null)
@@ -264,6 +299,7 @@ public class WebViewActivity2 extends Activity implements Callback {
         @JavascriptInterface
         public void scan() {
             //扫码的功能
+            startActivityForResult(new Intent(WebViewActivity2.this, CaptureActivity.class), ResultMessage999);
         }
 
         @JavascriptInterface
@@ -290,8 +326,80 @@ public class WebViewActivity2 extends Activity implements Callback {
             imagePicker.setStyle(CropImageView.Style.RECTANGLE);// 方形
             imagePicker.setShowCamera(true);// 是否显示摄像
             Intent intent = new Intent(WebViewActivity2.this, ImageGridActivity.class);
-            WebViewActivity2.this.startActivityForResult(intent, 888);
+            WebViewActivity2.this.startActivityForResult(intent, ResultMessage888);
+        }
+
+        @JavascriptInterface
+        public void SoundRecording() {
+            //录音上传
         }
     }
 
+    /**
+     * 录音
+     */
+    void initSoundRecord() {
+        rl = (RelativeLayout) findViewById(R.id.rl);
+        //PopupWindow的布局文件
+        final View view = View.inflate(this, R.layout.layout_microphone, null);
+        mPop = new PopupWindowFactory(this, view);
+        //PopupWindow布局文件里面的控件
+        mImageView = (ImageView) view.findViewById(R.id.iv_recording_icon);
+        mTextView = (TextView) view.findViewById(R.id.tv_recording_time);
+        SoundRecord = (Button) findViewById(R.id.SoundRecord);
+        mAudioRecoderUtils = new AudioRecoderUtils();
+        //录音回调
+        mAudioRecoderUtils.setOnAudioStatusUpdateListener(new AudioRecoderUtils.OnAudioStatusUpdateListener() {
+            //录音中....db为声音分贝，time为录音时长
+            @Override
+            public void onUpdate(double db, long time) {
+                mImageView.getDrawable().setLevel((int) (3000 + 6000 * db / 100));
+                if (TimeUtils.long2String(time).equals("01:00")) {
+                    mPop.dismiss();
+                    SoundRecord.setText("按住说话");
+                    mAudioRecoderUtils.stopRecord();        //结束录音（保存录音文件）
+                } else {
+                    mTextView.setText(TimeUtils.long2String(time));
+                }
+            }
+
+            //录音结束，filePath为保存路径
+            @Override
+            public void onStop(String filePath) {
+                mTextView.setText(TimeUtils.long2String(0));
+                uploadUserPic(filePath, HttpUploadFile.FileType
+                        .Mp3, false);
+            }
+        });
+        //Button的touch监听
+        SoundRecord.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        //当手指按下的时候
+                        x1 = event.getX();
+                        y1 = event.getY();
+                        mPop.showAtLocation(rl, Gravity.CENTER, 0, 0);
+                        SoundRecord.setText("松开保存,上滑取消");
+                        mAudioRecoderUtils.startRecord();
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        //当手指离开的时候
+                        x2 = event.getX();
+                        y2 = event.getY();
+                        if (y1 - y2 > 50) {
+                            mAudioRecoderUtils.cancelRecord();    //取消录音（不保存录音文件）
+                        } else {
+                            mAudioRecoderUtils.stopRecord();        //结束录音（保存录音文件）
+                        }
+                        mPop.dismiss();
+                        SoundRecord.setText("按住说话");
+                        break;
+                }
+                return true;
+            }
+        });
+    }
 }
