@@ -1,6 +1,7 @@
 package com.zk.myweex.extend.component;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -8,7 +9,6 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.dom.WXDomObject;
@@ -21,6 +21,11 @@ public class MyWebView2 extends WXComponent<WebView> {
 
     public MyWebView2(WXSDKInstance instance, WXDomObject dom, WXVContainer parent) {
         super(instance, dom, parent);
+    }
+
+    @Override
+    protected void initView() {
+
     }
 
     @SuppressLint({"JavascriptInterface", "SetJavaScriptEnabled"})
@@ -36,6 +41,7 @@ public class MyWebView2 extends WXComponent<WebView> {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
+        settings.setTextZoom(300);
 
         wv.setWebViewClient(new WebViewClient() {
             @Override
@@ -61,7 +67,7 @@ public class MyWebView2 extends WXComponent<WebView> {
     public void setContent(String content) {
         Log.d("test", "content = " + content);
         String txt = content;//WXFileUtils.loadAsset("test3.txt", getContext());
-        txt = txt.replaceAll("font-size: 16px", "font-size: 34px").replaceAll("font-size: 12px", "font-size: 34px");
+//        txt = txt.replaceAll("font-size: 16px", "font-size: 38px").replaceAll("font-size: 12px", "font-size: 36px");
         txt = txt.replaceAll("<img", "<img style='width:90%;height:auto'");
         txt = "<html>" + txt + "</html>";
         wv.loadDataWithBaseURL(null, txt, "text/html", "utf-8", null);
@@ -70,7 +76,20 @@ public class MyWebView2 extends WXComponent<WebView> {
     private class JavaScriptObject {
         @JavascriptInterface
         public void openImage(String txt) {
-            Toast.makeText(getContext(), txt, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), txt, Toast.LENGTH_SHORT).show();
+        }
+
+        @JavascriptInterface
+        public void getContentHeight(final String value) {
+            ((Activity) getContext()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("test", "height = " + value);
+                    int width = getHostView().getWidth();  //ScreenUtil.getDisplayWidth((AppCompatActivity) getContext());
+                    int height = Integer.parseInt(value);
+                    MyWebView2.this.setHostLayoutParams(getHostView(), width, height, 0, 0, 0, 0);
+                }
+            });
         }
     }
 }
