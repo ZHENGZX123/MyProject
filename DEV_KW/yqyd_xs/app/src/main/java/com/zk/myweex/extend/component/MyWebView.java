@@ -1,22 +1,20 @@
 package com.zk.myweex.extend.component;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXComponentProp;
 import com.taobao.weex.ui.component.WXVContainer;
-import com.zk.myweex.utils.ScreenUtil;
 
 public class MyWebView extends WXComponent<WebView> {
     private WebView wv;
@@ -29,6 +27,7 @@ public class MyWebView extends WXComponent<WebView> {
     @Override
     protected WebView initComponentHostView(@NonNull Context context) {
         wv = new WebView(context);
+
 
         WebSettings settings = wv.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -65,11 +64,16 @@ public class MyWebView extends WXComponent<WebView> {
     private class JavaScriptObject {
 
         @JavascriptInterface
-        public void getContentHeight(String value) {
-            Toast.makeText(getContext(), "ContentWidth of webpage is: " + value + "px", Toast.LENGTH_SHORT).show();
-            int width = ScreenUtil.getDisplayWidth((AppCompatActivity) getContext());
-            int height = Integer.parseInt(value);
-            MyWebView.this.setHostLayoutParams(getHostView(), width, height, 0, 0, 0, 0);
+        public void getContentHeight(final String value) {
+            ((Activity) getContext()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("test", "height = " + value);
+                    int width = getHostView().getWidth();  //ScreenUtil.getDisplayWidth((AppCompatActivity) getContext());
+                    int height = Integer.parseInt(value);
+                    MyWebView.this.setHostLayoutParams(getHostView(), width, height, 0, 0, 0, 0);
+                }
+            });
         }
     }
 }
