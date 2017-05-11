@@ -45,7 +45,7 @@ import cn.kiway.yiqiyuedu.R;
 public class MainActivity2 extends TabActivity {
 
     private TabHost tabhost;
-    private LinearLayout bottom;
+    public LinearLayout bottom;
     private ArrayList<LinearLayout> lls = new ArrayList<>();
     public static MainActivity2 main;
 
