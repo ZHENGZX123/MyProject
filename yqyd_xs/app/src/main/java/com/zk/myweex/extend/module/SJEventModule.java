@@ -75,8 +75,7 @@ public class SJEventModule extends WXModule {
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("username", username).commit();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
-        //ScreenManager.getScreenManager().popAllActivityExceptOne(MainActivity2.class);
-        finish();
+        ScreenManager.getScreenManager().popAllActivityExceptOne(MainActivity2.class);
     }
 
     @JSMethod(uiThread = true)

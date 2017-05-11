@@ -94,13 +94,6 @@ dependencies {
     compile 'com.facebook.fresco:fresco:0.12.0'
     //腾讯bugly
     compile 'com.tencent.bugly:crashreport:latest.release'
-    //IM
-
-    //    compile project(':IM')
-
-    //teaching
-
-    //    compile project(':Yjpty')
     compile project(':ImagePicker')
     //    compile project(':pay')
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:1.0.2'
