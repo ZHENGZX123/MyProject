@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "cn.kiway.yqyd"
         minSdkVersion 15
-        targetSdkVersion 22
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
     }
@@ -22,8 +22,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/zip4j_1.3.1.jar')
     compile project(':wjc_ImagePicker')
-    compile files('libs/android-async-http-1.4.5.jar')
-    compile files('libs/org.apache.http.legacy.jar')
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.squareup.okhttp3:okhttp:3.0.1'
