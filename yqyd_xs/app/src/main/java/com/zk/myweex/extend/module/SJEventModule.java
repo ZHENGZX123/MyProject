@@ -37,7 +37,6 @@ import com.zk.myweex.regionselector.RegionSelectActivity;
 import com.zk.myweex.regionselector.util.DBCopyUtil;
 import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.ScreenManager;
-import com.zk.myweex.utils.Utils;
 
 import org.json.JSONObject;
 
@@ -86,25 +85,6 @@ public class SJEventModule extends WXModule {
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
         ScreenManager.getScreenManager().popAllActivityExceptOne(LoginActivity.class);
-    }
-
-    @JSMethod(uiThread = true)
-    public void makeQRCode(String dic, JSCallback callback) {
-        Log.d("test", "makeQRCode = " + dic);
-        //生成一个二维码，保存在本地，把路径callback回去。
-        try {
-            org.json.JSONObject obj = new org.json.JSONObject(dic);
-            String classId = obj.getString("classId");
-            String className = obj.getString("className");
-            String schoolId = obj.getString("schoolId");
-            String code = "http://www.yuertong.com/yjpts/?&ref=class&classid=" + classId + "&schoolId=" + schoolId + "&classname=" + className;
-            Bitmap b = Utils.createQRImage(code, 400, 400);
-            String filepath = Utils.saveMyBitmap(b, "myweex");
-            callback.invoke("file://" + filepath);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @JSMethod(uiThread = true)
