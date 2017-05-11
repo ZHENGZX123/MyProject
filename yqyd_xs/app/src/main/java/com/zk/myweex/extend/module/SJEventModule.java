@@ -2,6 +2,7 @@ package com.zk.myweex.extend.module;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -246,6 +247,8 @@ public class SJEventModule extends WXModule {
         start = System.currentTimeMillis();
     }
 
+    private ProgressDialog pd;
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -256,6 +259,9 @@ public class SJEventModule extends WXModule {
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             Log.d("test", "images count = " + images.size());
 
+            pd = new ProgressDialog(mWXSDKInstance.getContext());
+            pd.setMessage("上传中请稍等");
+            pd.show();
             doUploadImage(images);
         } else if (requestCode == 100 && resultCode == 200) {
             String province = data.getStringExtra(RegionSelectActivity.REGION_PROVINCE);
@@ -306,8 +312,19 @@ public class SJEventModule extends WXModule {
                 HashMap map = new HashMap();
                 map.put("url", url);//urls
                 pickerCallback.invoke(map);
+
+                hidePD();
             }
         }.start();
+    }
+
+    private void hidePD() {
+        ((Activity) mWXSDKInstance.getContext()).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pd.dismiss();
+            }
+        });
     }
 
     @JSMethod(uiThread = true)
