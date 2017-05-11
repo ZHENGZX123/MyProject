@@ -4620,6 +4620,7 @@ exports.default = {
 							//storage.removeItem('username', function (e) {});
 						}
 						//self.$router.replace('/index');
+
 						if (true) {
 							//if(true){
 							var sjevent = weex.requireModule('SJevent');
