@@ -82,12 +82,8 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.2.0'
     //multidex
     compile 'com.android.support:multidex:1.0.1'
-    //fresco
-    compile 'com.facebook.fresco:fresco:0.12.0'
     //腾讯bugly
     compile 'com.tencent.bugly:crashreport:latest.release'
-
-//    compile 'com.github.nanchen2251:CompressHelper:1.0.5'
     compile project(':ImagePicker')
     compile project(':photoview')
     compile project(':zxing')
@@ -104,7 +100,6 @@ dependencies {
     compile files('libs/ShareSDK-Wechat-Moments-2.8.3.jar')
     compile files('libs/MobTools-2017.0412.1554.jar')
     compile files('libs/MobCommons-2017.0412.1554.jar')
-
-
+    compile files('libs/image_compress.jar')
 }
 
