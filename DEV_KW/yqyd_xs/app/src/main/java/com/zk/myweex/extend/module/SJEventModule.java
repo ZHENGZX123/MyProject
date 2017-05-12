@@ -23,6 +23,7 @@ import com.lzy.imagepicker.loader.GlideImageLoader;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.ui.ImagePreviewActivity;
 import com.lzy.imagepicker.view.CropImageView;
+import com.nanchen.compresshelper.CompressHelper;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.Configuration;
 import com.qiniu.android.storage.UpCompletionHandler;
@@ -229,6 +230,7 @@ public class SJEventModule extends WXModule {
 
     private ProgressDialog pd;
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -239,11 +241,13 @@ public class SJEventModule extends WXModule {
             boolean isOrig = data.getBooleanExtra(ImagePreviewActivity.ISORIGIN, false);
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             Log.d("test", "images count = " + images.size());
-
             if (!isOrig) {
-
+                for (ImageItem ii : images) {
+                    File newFile = CompressHelper.getDefault(mWXSDKInstance.getContext()).compressToFile(new File(ii.path));
+                    ii.path = newFile.getAbsolutePath();
+                    ii.size = newFile.length();
+                }
             }
-
             pd = new ProgressDialog(mWXSDKInstance.getContext());
             pd.setMessage("上传中请稍等");
             pd.show();
