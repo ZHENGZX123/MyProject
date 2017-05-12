@@ -211,14 +211,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteFullException;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.taobao.weex.common.WXThread;
 import com.taobao.weex.utils.WXLogUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -235,30 +233,22 @@ public class DefaultWXStorage implements IWXStorageAdapter {
             mExecutorService = Executors.newSingleThreadExecutor();
         }
 
-        if (runnable != null) {
+        if(runnable != null) {
             mExecutorService.execute(WXThread.secure(runnable));
         }
     }
 
-    private Context mContext;
-
     public DefaultWXStorage(Context context) {
         this.mDatabaseSupplier = new WXSQLiteOpenHelper(context);
-        this.mContext = context;
     }
 
 
     @Override
     public void setItem(final String key, final String value, final OnResultReceivedListener listener) {
-        Log.d("storage", "set key = " + key + " , value = " + value);
         execute(new Runnable() {
             @Override
             public void run() {
-//                Map<String, Object> data = StorageResultHandler.setItemResult(performSetItem(key, value, false, true));
-                mContext.getSharedPreferences("kiway", 0).edit().putString(key, value).commit();
-                Map<String, Object> data = new HashMap<String, Object>();
-                data.put("data", "undefined");
-                data.put("result", "success");
+                Map<String, Object> data = StorageResultHandler.setItemResult(performSetItem(key, value, false, true));
                 if (listener == null) {
                     return;
                 }
@@ -272,13 +262,7 @@ public class DefaultWXStorage implements IWXStorageAdapter {
         execute(new Runnable() {
             @Override
             public void run() {
-//                String value = performGetItem(key);
-//                Log.d("storage", "get key = " + key + " , value = " + value);
-//                Map<String, Object> data = StorageResultHandler.getItemResult(value);
-                String value = mContext.getSharedPreferences("kiway", 0).getString(key, "");
-                Map<String, Object> data = new HashMap<String, Object>();
-                data.put("result", "success");
-                data.put("data", value);
+                Map<String, Object> data = StorageResultHandler.getItemResult(performGetItem(key));
                 if (listener == null) {
                     return;
                 }
@@ -292,11 +276,7 @@ public class DefaultWXStorage implements IWXStorageAdapter {
         execute(new Runnable() {
             @Override
             public void run() {
-//                Map<String, Object> data = StorageResultHandler.removeItemResult(performRemoveItem(key));
-                mContext.getSharedPreferences("kiway", 0).edit().putString(key, "").commit();
-                Map<String, Object> data = new HashMap<String, Object>();
-                data.put("result", "success");
-                data.put("data", "undefined");
+                Map<String, Object> data = StorageResultHandler.removeItemResult(performRemoveItem(key));
                 if (listener == null) {
                     return;
                 }
@@ -392,7 +372,7 @@ public class DefaultWXStorage implements IWXStorageAdapter {
 
             return false;
         } finally {
-            if (statement != null) {
+            if(statement != null) {
                 statement.close();
             }
         }
@@ -400,7 +380,7 @@ public class DefaultWXStorage implements IWXStorageAdapter {
 
     /**
      * remove 10% of total record(at most) ordered by timestamp.
-     */
+     * */
     private boolean trimToSize() {
         SQLiteDatabase database = mDatabaseSupplier.getDatabase();
         if (database == null) {
@@ -505,7 +485,7 @@ public class DefaultWXStorage implements IWXStorageAdapter {
             WXLogUtils.e(WXSQLiteOpenHelper.TAG_STORAGE, "DefaultWXStorage occurred an exception when execute getLength:" + e.getMessage());
             return 0;
         } finally {
-            if (statement != null) {
+            if(statement != null) {
                 statement.close();
             }
         }
