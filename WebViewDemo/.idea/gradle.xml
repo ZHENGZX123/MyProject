@@ -10,7 +10,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/wjc_ImagePicker" />
-            <option value="$PROJECT_DIR$/zxing" />
+            <option value="$PROJECT_DIR$/zxingScan" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

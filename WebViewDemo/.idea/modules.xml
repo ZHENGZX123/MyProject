@@ -5,7 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/WebViewDemo.iml" filepath="$PROJECT_DIR$/WebViewDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/wjc_ImagePicker/wjc_ImagePicker.iml" filepath="$PROJECT_DIR$/wjc_ImagePicker/wjc_ImagePicker.iml" />
-      <module fileurl="file://$PROJECT_DIR$/zxing/zxing.iml" filepath="$PROJECT_DIR$/zxing/zxing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zxingScan/zxingScan.iml" filepath="$PROJECT_DIR$/zxingScan/zxingScan.iml" />
     </modules>
   </component>
 </project>
