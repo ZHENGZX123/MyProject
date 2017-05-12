@@ -21,6 +21,7 @@ import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
 import com.lzy.imagepicker.ui.ImageGridActivity;
+import com.lzy.imagepicker.ui.ImagePreviewActivity;
 import com.lzy.imagepicker.view.CropImageView;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.Configuration;
@@ -232,8 +233,13 @@ public class SJEventModule extends WXModule {
             if (data == null) {
                 return;
             }
+            boolean isOrig = data.getBooleanExtra(ImagePreviewActivity.ISORIGIN, false);
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             Log.d("test", "images count = " + images.size());
+
+            if (!isOrig){
+
+            }
 
             pd = new ProgressDialog(mWXSDKInstance.getContext());
             pd.setMessage("上传中请稍等");
