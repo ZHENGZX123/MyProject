@@ -163,9 +163,13 @@ public class SJEventModule extends WXModule {
     }
 
     private void stopRecord() {
-        if (recordFile != null) {
+        if (recordFile == null) {
+            return;
+        }
+        if (mediaRecorder == null) {
             mediaRecorder.stop();
             mediaRecorder.release();
+            return;
         }
 
         final int duration = (int) (System.currentTimeMillis() - start) / 1000;
@@ -196,30 +200,29 @@ public class SJEventModule extends WXModule {
     }
 
     private void startRecord() {
-        //录音并上传
-        // 判断，若当前文件已存在，则删除
-        String path = "/mnt/sdcard/voice/";
-        if (!new File(path).exists()) {
-            new File(path).mkdirs();
-        }
-
-        recordFile = new File(path + System.currentTimeMillis() + ".mp3");
-        mediaRecorder = new MediaRecorder();
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setAudioChannels(2);
-        mediaRecorder.setAudioSamplingRate(44100);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);//输出格式
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);//编码格式
-        mediaRecorder.setAudioEncodingBitRate(16);
-        mediaRecorder.setOutputFile(recordFile.getAbsolutePath());
         try {
+            //录音并上传
+            // 判断，若当前文件已存在，则删除
+            String path = "/mnt/sdcard/voice/";
+            if (!new File(path).exists()) {
+                new File(path).mkdirs();
+            }
+            recordFile = new File(path + System.currentTimeMillis() + ".mp3");
+            mediaRecorder = new MediaRecorder();
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mediaRecorder.setAudioChannels(2);
+            mediaRecorder.setAudioSamplingRate(44100);
+            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);//输出格式
+            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);//编码格式
+            mediaRecorder.setAudioEncodingBitRate(16);
+            mediaRecorder.setOutputFile(recordFile.getAbsolutePath());
+
             // 准备好开始录音
             mediaRecorder.prepare();
             mediaRecorder.start();
-        } catch (IllegalStateException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            toast("录制声音失败，请检查SDcard");
         }
         start = System.currentTimeMillis();
     }
@@ -237,7 +240,7 @@ public class SJEventModule extends WXModule {
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             Log.d("test", "images count = " + images.size());
 
-            if (!isOrig){
+            if (!isOrig) {
 
             }
 
