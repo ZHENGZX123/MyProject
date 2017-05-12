@@ -2,6 +2,7 @@ package com.zk.myweex;
 
 import android.app.Activity;
 import android.app.Application;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -134,8 +135,9 @@ public class WXApplication extends Application {
         // // 空uri的情况
         displayImageOptionsBuilder.cacheInMemory(false); // 缓存在内存
         displayImageOptionsBuilder.cacheOnDisc(true); // 缓存在磁盘
+        displayImageOptionsBuilder.bitmapConfig(Bitmap.Config.ARGB_8888);
         displayImageOptionsBuilder
-                .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2);
+                .imageScaleType(ImageScaleType.NONE);
 
         File cacheDir = StorageUtils.getOwnCacheDirectory(this,
                 "imageloader/weex");
@@ -144,7 +146,7 @@ public class WXApplication extends Application {
                 .memoryCacheExtraOptions(displayMetrics.widthPixels,
                         displayMetrics.heightPixels)
                 // maxwidth, max height，即保存的每个缓存文件的最大长宽
-                .threadPoolSize(5)
+                .threadPoolSize(10)
                 // 线程池内加载的数量
                 .threadPriority(Thread.NORM_PRIORITY - 1)
                 .denyCacheImageMultipleSizesInMemory()
