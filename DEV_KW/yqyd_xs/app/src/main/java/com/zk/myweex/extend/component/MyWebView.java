@@ -59,6 +59,7 @@ public class MyWebView extends WXComponent<WebView> {
         Log.d("test", "content = " + content);
         String txt = content;
         wv.loadDataWithBaseURL(null, txt, "text/html", "utf-8", null);
+
     }
 
     private class JavaScriptObject {
