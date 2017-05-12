@@ -101,7 +101,6 @@ public class SJEventModule extends WXModule {
 
             Intent intent = new Intent(mWXSDKInstance.getContext(), ImageGridActivity.class);
             ((Activity) mWXSDKInstance.getContext()).startActivityForResult(intent, 888);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -266,6 +265,7 @@ public class SJEventModule extends WXModule {
                 String path = "";
                 for (int i = 0; i < count; i++) {
                     ImageItem ii = images.get(i);
+                    Log.d("test", "ii.size = " + ii.size);
                     String key = System.currentTimeMillis() + ".jpg";
                     File file = new File(ii.path);
                     Configuration config = new Configuration.Builder().connectTimeout(10).build();
