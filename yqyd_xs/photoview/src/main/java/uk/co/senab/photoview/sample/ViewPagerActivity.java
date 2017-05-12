@@ -16,6 +16,7 @@
 package uk.co.senab.photoview.sample;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
@@ -24,6 +25,7 @@ import android.view.ViewGroup.LayoutParams;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import uk.co.senab.photoview.PhotoView;
 
@@ -80,6 +82,9 @@ public class ViewPagerActivity extends Activity {
     public static DisplayImageOptions getLoaderOptions() {
         DisplayImageOptions.Builder displayImageOptionsBuilder = new DisplayImageOptions.Builder();
         // displayImageOptionsBuilder.showImageForEmptyUri(R.drawable.loading);
+        displayImageOptionsBuilder.bitmapConfig(Bitmap.Config.ARGB_8888);
+        displayImageOptionsBuilder
+                .imageScaleType(ImageScaleType.NONE);
         displayImageOptionsBuilder.cacheInMemory(false);
         displayImageOptionsBuilder.cacheOnDisc(true);
         // RoundedBitmapDisplayer displayer = new RoundedBitmapDisplayer(10);
