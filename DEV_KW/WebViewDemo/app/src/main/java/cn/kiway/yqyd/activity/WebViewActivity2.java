@@ -22,7 +22,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.zxing.client.android.CaptureActivity;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
@@ -39,6 +38,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import cn.bingoogolapple.qrcode.zxingdemo.ScanActivity;
 import cn.kiway.yqyd.App;
 import cn.kiway.yqyd.R;
 import cn.kiway.yqyd.dialog.LoginDialog;
@@ -299,7 +299,7 @@ public class WebViewActivity2 extends Activity implements Callback {
         @JavascriptInterface
         public void scan() {
             //扫码的功能
-            startActivityForResult(new Intent(WebViewActivity2.this, CaptureActivity.class), ResultMessage999);
+            startActivityForResult(new Intent(WebViewActivity2.this, ScanActivity.class), ResultMessage999);
         }
 
         @JavascriptInterface
