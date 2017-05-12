@@ -22,7 +22,6 @@ import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.view.CropImageView;
-import com.qiniu.android.common.Zone;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.Configuration;
 import com.qiniu.android.storage.UpCompletionHandler;
@@ -71,7 +70,6 @@ public class SJEventModule extends WXModule {
     @JSMethod(uiThread = true)
     public void loginSuccess(final String username) {
         Log.d("test", "loginSuccess username = " + username);
-
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("username", username).commit();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
@@ -176,7 +174,7 @@ public class SJEventModule extends WXModule {
             return;
         }
         String key = recordFile.getName();
-        Configuration config = new Configuration.Builder().zone(Zone.zone2).connectTimeout(10).build();
+        Configuration config = new Configuration.Builder().connectTimeout(10).build();
         UploadManager uploadManager = new UploadManager(config);
         uploadManager.put(recordFile, key, getQiniuToken(),
                 new UpCompletionHandler() {
@@ -265,11 +263,12 @@ public class SJEventModule extends WXModule {
                 int successCount = 0;
                 int count = images.size();
                 String url = "";
+                String path = "";
                 for (int i = 0; i < count; i++) {
                     ImageItem ii = images.get(i);
                     String key = System.currentTimeMillis() + ".jpg";
                     File file = new File(ii.path);
-                    Configuration config = new Configuration.Builder().zone(Zone.zone2).connectTimeout(10).build();
+                    Configuration config = new Configuration.Builder().connectTimeout(10).build();
                     UploadManager uploadManager = new UploadManager(config);
                     ResponseInfo result = uploadManager.syncPut(file, key, getQiniuToken(), null);
                     Log.d("test", "result = " + result.toString());
@@ -278,8 +277,10 @@ public class SJEventModule extends WXModule {
                         String after = "http://ooy49eq1n.bkt.clouddn.com/" + key;
                         if (i == count - 1) {
                             url = url + after;
+                            path = path + ii.path;
                         } else {
                             url = url + after + ",";
+                            path = path + ii.path + ",";
                         }
                     }
                 }
@@ -289,7 +290,8 @@ public class SJEventModule extends WXModule {
                 }
                 Log.d("test", "url = " + url);
                 HashMap map = new HashMap();
-                map.put("url", url);//urls
+                map.put("url", url);
+                map.put("path", path);
                 pickerCallback.invoke(map);
 
                 hidePD();
