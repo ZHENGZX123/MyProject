@@ -14,27 +14,46 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="3e8781d6-0820-4c82-bfbc-0d013c986019" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_https.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_https.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_person.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_person.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ic_https.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ic_https.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ic_person.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ic_person.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi/ic_https.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi/ic_https.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi/ic_person.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi/ic_person.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-xxhdpi/ic_https.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxhdpi/ic_https.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-xxhdpi/ic_person.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxhdpi/ic_person.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/java/cn" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/java/cn/bingoogolapple" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/java/cn/bingoogolapple/qrcode" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/java/cn/bingoogolapple/qrcode/zxingdemo" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/drawable-xxhdpi" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/drawable-xxhdpi/scan_icon_scanline.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/drawable" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/layout" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/mipmap-hdpi" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/mipmap-hdpi/ic_launcher.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/mipmap-mdpi" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/mipmap-mdpi/ic_launcher.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/mipmap-xhdpi" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/mipmap-xhdpi/ic_launcher.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/mipmap-xxhdpi" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/mipmap-xxhdpi/custom_grid_scan_line.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/mipmap-xxhdpi/custom_scan_line.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/mipmap-xxhdpi/holder.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/mipmap-xxhdpi/ic_launcher.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/mipmap-xxhdpi/logo.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/mipmap-xxhdpi/test_isbn.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/values" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/AndroidManifest.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/java/cn/bingoogolapple/qrcode/zxingdemo/ScanActivity.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/drawable/selector_btn_orange.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/layout/activity_main.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/layout/activity_test_generate.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/layout/activity_test_scan.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/layout/toolbar.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/layout/view_control.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/values/colors.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/values/strings.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/values/styles.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zxingScan/src/main/res/values/styles_base.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/cn/kiway/yqyd/activity/WebViewActivity2.java" afterPath="$PROJECT_DIR$/app/src/main/java/cn/kiway/yqyd/activity/WebViewActivity2.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable/_3fcc8a_bg_val.xml" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/_3fcc8a_bg_val.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable/_3fcc8a_line_val.xml" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/_3fcc8a_line_val.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable/_47a378_bg_val.xml" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/_47a378_bg_val.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activiy_boot.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activiy_boot.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/settings.gradle" afterPath="$PROJECT_DIR$/settings.gradle" />
     </list>
     <list id="bcdeb4d6-a5d9-4c82-b36f-ffcd2494f64f" name="Failed commit: Default" comment="Failed commit: Default" />
     <ignored path="WebViewDemo.iws" />
@@ -4837,19 +4856,9 @@
               <option name="myItemId" value="WebViewDemo" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
-          </PATH>
-          <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="WebViewDemo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="wjc_ImagePicker" />
+              <option name="myItemId" value="zxingScan" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -4858,8 +4867,22 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="wjc_ImagePicker" />
+              <option name="myItemId" value="zxingScan" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="zxingdemo" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WebViewDemo" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -5413,7 +5436,14 @@
       <option name="project" value="LOCAL" />
       <updated>1494496693486</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009">
+      <created>1494579119877</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1494579119877</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TodoView">
