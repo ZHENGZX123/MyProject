@@ -1,7 +1,6 @@
 package com.zk.myweex.extend.component;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -77,19 +76,6 @@ public class MyWebView2 extends WXComponent<WebView> {
         @JavascriptInterface
         public void openImage(String txt) {
 //            Toast.makeText(getContext(), txt, Toast.LENGTH_SHORT).show();
-        }
-
-        @JavascriptInterface
-        public void getContentHeight(final String value) {
-            ((Activity) getContext()).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d("test", "height = " + value);
-                    int width = getHostView().getWidth();  //ScreenUtil.getDisplayWidth((AppCompatActivity) getContext());
-                    int height = Integer.parseInt(value);
-                    MyWebView2.this.setHostLayoutParams(getHostView(), width, height, 0, 0, 0, 0);
-                }
-            });
         }
     }
 }
