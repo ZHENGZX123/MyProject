@@ -67,8 +67,6 @@ public class PopupWindowFactory {
                 }
                 return false;
             }});
-
-
     }
 
     public PopupWindow getPopupWindow(){

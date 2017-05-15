@@ -68,6 +68,13 @@ public class LoginActivity extends Activity implements Callback {
 
     @Override
     public void onFailure(Call call, IOException e) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadButton.setText("登录");
+                error.setText("登录失败");
+            }
+        });
     }
 
     @Override
@@ -93,5 +100,4 @@ public class LoginActivity extends Activity implements Callback {
             e.printStackTrace();
         }
     }
-
 }
