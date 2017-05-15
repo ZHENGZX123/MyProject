@@ -70,6 +70,7 @@ public class WXApplication extends Application {
 
         //注册自定义组件
         try {
+            WXSDKEngine.registerComponent("myvideo", MyWebView.class);
             WXSDKEngine.registerComponent("mywebview", MyWebView.class);
             WXSDKEngine.registerComponent("mywebview2", MyWebView2.class);
             WXSDKEngine.registerComponent("myedittext", MyEditText.class);

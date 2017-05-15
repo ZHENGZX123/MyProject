@@ -57,8 +57,8 @@ public class MainActivity2 extends TabActivity {
         main = this;
         Utils.checkNetWork(this);
 
-        checkRemoteService();
-        checkZipVersion();
+//        checkRemoteService();
+//        checkZipVersion();
 
         ArrayList<TabEntity> tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
         Log.d("test", "main initView");
