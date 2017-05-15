@@ -188,10 +188,10 @@ public class MainActivity2 extends TabActivity {
             }
 //            if (i == position) {
 //                tv.setTextColor(getResources().getColor(R.color.orange));
-//                ImageLoader.getInstance().displayImage(getTabImage(tabs, i, true), iv, getLoaderOptions());
+//                ImageLoader.getInstance().displayImage(getTabImage(tabs, i, true), tv, getLoaderOptions());
 //            } else {
 //                tv.setTextColor(getResources().getColor(R.color.lightblack));
-//                ImageLoader.getInstance().displayImage(getTabImage(tabs, i, false), iv, getLoaderOptions());
+//                ImageLoader.getInstance().displayImage(getTabImage(tabs, i, false), tv, getLoaderOptions());
 //            }
         }
     }

@@ -7,14 +7,25 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.google.zxing.client.android.CaptureActivity;
 import com.lzy.imagepicker.ImagePicker;
@@ -36,8 +47,10 @@ import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
 import com.zk.myweex.regionselector.RegionSelectActivity;
 import com.zk.myweex.regionselector.util.DBCopyUtil;
+import com.zk.myweex.utils.DensityUtil;
 import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.ScreenManager;
+import com.zk.myweex.utils.ScreenUtil;
 
 import org.json.JSONObject;
 
@@ -62,12 +75,6 @@ import static com.zk.myweex.utils.Utils.getQiniuToken;
 public class SJEventModule extends WXModule {
 
     private MediaPlayer mPlayer;
-
-
-    @JSMethod(uiThread = true)
-    public void showLog(String tag, String log) {
-        Log.d(tag, log);
-    }
 
     @JSMethod(uiThread = true)
     public void loginSuccess(final String username) {
@@ -577,6 +584,100 @@ public class SJEventModule extends WXModule {
             mWXSDKInstance.getContext().startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+
+    @JSMethod(uiThread = true)
+    public void showDropDown(String list, float x, float y, float width, final JSCallback callback) {
+        Log.d("test", "list = " + list);
+        int screenwidth = ScreenUtil.getDisplayWidth((AppCompatActivity) mWXSDKInstance.getContext());
+        int screenheight = ScreenUtil.getDisplayHeight((AppCompatActivity) mWXSDKInstance.getContext());
+        String[] splits = list.split(",");
+        int showlenght = splits.length > 6 ? 6 : splits.length;
+        int height = showlenght * DensityUtil.dip2px(mWXSDKInstance.getContext(), 30);
+        View contentView = LayoutInflater.from(mWXSDKInstance.getContext()).inflate(
+                R.layout.pop_dropdown, null);
+        final PopupWindow popupWindow = new PopupWindow(contentView,
+                (int) (screenwidth * width), height, true);
+        popupWindow.setFocusable(true);//这里必须设置为true才能点击区域外或者消失
+        popupWindow.setTouchable(true);//这个控制PopupWindow内部控件的点击事件
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.update();
+
+        Activity a = (Activity) mWXSDKInstance.getContext();
+        View root = a.getWindow().getDecorView();
+
+
+        popupWindow.showAtLocation(root, Gravity.TOP | Gravity.LEFT, (int) (x), (int)
+                (y));
+
+        ListView lv = (ListView) contentView.findViewById(R.id.lv);
+        MyAdapter adapter = new MyAdapter();
+        lv.setAdapter(adapter);
+
+        items.clear();
+        for (int i = 0; i < splits.length; i++) {
+            items.add(splits[i]);
+        }
+        adapter.notifyDataSetChanged();
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                HashMap map = new HashMap();
+                map.put("position", i);
+                map.put("value", items.get(i));
+                callback.invoke(map);
+                popupWindow.dismiss();
+            }
+        });
+    }
+
+    private ArrayList<String> items = new ArrayList<>();
+
+    private class MyAdapter extends BaseAdapter {
+
+        private final LayoutInflater inflater;
+
+        public MyAdapter() {
+            inflater = LayoutInflater.from(mWXSDKInstance.getContext());
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View rowView = convertView;
+            ViewHolder holder;
+            if (rowView == null) {
+                rowView = inflater.inflate(R.layout.item_dropdown, null);
+                holder = new ViewHolder();
+                holder.tv = (TextView) rowView.findViewById(R.id.tv);
+                rowView.setTag(holder);
+            } else {
+                holder = (ViewHolder) rowView.getTag();
+            }
+            holder.tv.setText(items.get(position));
+            return rowView;
+        }
+
+        public class ViewHolder {
+            public TextView tv;
+        }
+
+        @Override
+        public int getCount() {
+            return items.size();
+        }
+
+        @Override
+        public String getItem(int arg0) {
+            return items.get(arg0);
+        }
+
+        @Override
+        public long getItemId(int arg0) {
+            return arg0;
         }
     }
 }
