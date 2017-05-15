@@ -609,7 +609,6 @@ public class SJEventModule extends WXModule {
         Activity a = (Activity) mWXSDKInstance.getContext();
         View root = a.getWindow().getDecorView();
 
-
         popupWindow.showAtLocation(root, Gravity.TOP | Gravity.LEFT, (int) (x), (int)
                 (y));
 
