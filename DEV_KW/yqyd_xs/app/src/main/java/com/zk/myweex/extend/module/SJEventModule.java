@@ -78,7 +78,6 @@ public class SJEventModule extends WXModule {
     public void loginSuccess(final String username) {
         Log.d("test", "loginSuccess username = " + username);
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
-        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("username", username).commit();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
         ScreenManager.getScreenManager().popAllActivityExceptOne(MainActivity2.class);
     }
