@@ -45,8 +45,6 @@ import com.taobao.weex.common.WXModule;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
-import com.zk.myweex.regionselector.RegionSelectActivity;
-import com.zk.myweex.regionselector.util.DBCopyUtil;
 import com.zk.myweex.utils.DensityUtil;
 import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.ScreenManager;
@@ -259,11 +257,6 @@ public class SJEventModule extends WXModule {
             pd.setMessage("上传中请稍等");
             pd.show();
             doUploadImage(images);
-        } else if (requestCode == 100 && resultCode == 200) {
-            String province = data.getStringExtra(RegionSelectActivity.REGION_PROVINCE);
-            String city = data.getStringExtra(RegionSelectActivity.REGION_CITY);
-            String area = data.getStringExtra(RegionSelectActivity.REGION_AREA);
-            selectCallback.invoke(province + city + area);
         } else if (requestCode == 999) {
             //扫描二维码返回
             if (data == null) {
@@ -346,16 +339,6 @@ public class SJEventModule extends WXModule {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-
-    private JSCallback selectCallback;
-
-    @JSMethod(uiThread = true)
-    public void selectRegion(JSCallback callback) {
-        this.selectCallback = callback;
-        DBCopyUtil.copyDataBaseFromAssets(mWXSDKInstance.getContext(), "region.db");
-        ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), RegionSelectActivity.class), 100);
     }
 
     @JSMethod(uiThread = true)
