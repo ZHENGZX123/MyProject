@@ -23,7 +23,6 @@ import com.taobao.weex.common.WXException;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.zk.myweex.extend.adapter.UniversalImageAdapter;
 import com.zk.myweex.extend.component.MyEditText;
-import com.zk.myweex.extend.component.MyWebView;
 import com.zk.myweex.extend.component.MyWebView2;
 import com.zk.myweex.extend.module.SJEventModule;
 
@@ -70,8 +69,6 @@ public class WXApplication extends Application {
 
         //注册自定义组件
         try {
-            WXSDKEngine.registerComponent("myvideo", MyWebView.class);
-            WXSDKEngine.registerComponent("mywebview", MyWebView.class);
             WXSDKEngine.registerComponent("mywebview2", MyWebView2.class);
             WXSDKEngine.registerComponent("myedittext", MyEditText.class);
             WXSDKEngine.registerModule("SJevent", SJEventModule.class);
