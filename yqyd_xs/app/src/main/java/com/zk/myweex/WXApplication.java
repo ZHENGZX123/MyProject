@@ -46,6 +46,10 @@ public class WXApplication extends Application {
 
     public static String PATH_PATCH = ROOT + "patch/";
 
+    public static String PATH_APK = ROOT + "apk/";
+
+
+
     public Activity currentActivity;
 
     public static long time;
