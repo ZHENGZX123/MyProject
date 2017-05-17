@@ -172,10 +172,10 @@ public class SJEventModule extends WXModule {
             return;
         }
         if (mediaRecorder == null) {
-            mediaRecorder.stop();
-            mediaRecorder.release();
             return;
         }
+
+        mediaRecorder.stop();
 
         final int duration = (int) (System.currentTimeMillis() - start) / 1000;
         if (duration < 1) {
