@@ -38,7 +38,8 @@ public class WXFileUtils {
 
     /**
      * Load file in device directory, if not exist, load from asset directory.
-     * @param path FilePath
+     *
+     * @param path    FilePath
      * @param context Weex Context
      * @return the Content of the file
      */
@@ -61,7 +62,8 @@ public class WXFileUtils {
 
     /**
      * Load file in asset directory.
-     * @param path FilePath
+     *
+     * @param path    FilePath
      * @param context Weex Context
      * @return the Content of the file
      */
@@ -215,7 +217,7 @@ public class WXFileUtils {
         }
     }
 
-    public static String findLoginJS(String path) {
+    public static String findLoginJS(String path, String findFile) {
         File file = new File(path);
         File[] lists = file.listFiles();
         for (int i = 0; i < lists.length; i++) {
@@ -234,7 +236,7 @@ public class WXFileUtils {
                         System.out.println("directory = " + ze.getName());
                     } else {
                         System.out.println("file = " + ze.getName());
-                        if (ze.getName().contains("login.js")) {
+                        if (ze.getName().contains(findFile)) {
                             return lists[i].getAbsolutePath() + "/" + ze.getName();
                         }
                     }
