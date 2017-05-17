@@ -1,0 +1,161 @@
+-- Merging decision tree log ---
+manifest
+ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:2:1-48:12
+	package
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:4:11-34
+		INJECTED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml
+	xmlns:tools
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:3:11-57
+	xmlns:android
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:2:11-69
+	android:versionCode
+		INJECTED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml
+uses-permission#android.permission.INTERNET
+ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:6:5-66
+	android:name
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:6:22-64
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:7:5-80
+MERGED from [gzxtkt:wjc_ImagePicker:unspecified] F:\kiway_xm\gzxtkt\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:8:5-81
+	android:name
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:7:22-78
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:8:5-79
+MERGED from [gzxtkt:wjc_ImagePicker:unspecified] F:\kiway_xm\gzxtkt\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:10:5-80
+	android:name
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:8:22-77
+uses-permission#android.permission.RECORD_AUDIO
+ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:9:5-87
+	android:name
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:9:22-68
+uses-permission#android.permission.MOUNT_UNMOUNT_FILESYSTEMS
+ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:10:5-83
+MERGED from [gzxtkt:wjc_ImagePicker:unspecified] F:\kiway_xm\gzxtkt\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:6:5-84
+	android:name
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:10:22-81
+uses-permission#android.permission.CALL_PHONE
+ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:11:5-68
+	android:name
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:11:22-66
+application
+ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:12:5-46:19
+MERGED from [gzxtkt:wjc_ImagePicker:unspecified] F:\kiway_xm\gzxtkt\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:12:5-23:19
+MERGED from [com.android.support:appcompat-v7:25.0.1] C:\Users\Administrator\.android\build-cache\75d7dd713e125d8aceb2a68fe27116987b08cd89\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:support-v4:25.0.1] C:\Users\Administrator\.android\build-cache\680f3b3047042086c585ab9df02cabc17fc85072\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:support-fragment:25.0.1] C:\Users\Administrator\.android\build-cache\d3baa58719e2b260d72bf17353517f71a4428e1f\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:support-media-compat:25.0.1] C:\Users\Administrator\.android\build-cache\c90a34bef520971ba1a5b313911a28afe34f7191\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:support-core-ui:25.0.1] C:\Users\Administrator\.android\build-cache\0883a46419ffe17e7c2739ae138919fa26dfb942\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:support-core-utils:25.0.1] C:\Users\Administrator\.android\build-cache\89bb4ae5632be8e922c93e7c9244ca9b893d7951\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:animated-vector-drawable:25.0.1] C:\Users\Administrator\.android\build-cache\63be889c8c264f6d18652ac57ec23e8231e31b90\output\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:support-vector-drawable:25.0.1] C:\Users\Administrator\.android\build-cache\2eb34cfc9d63880a98324d93945e704e8ca81510\output\AndroidManifest.xml:23:5-20
+MERGED from [com.android.support:support-compat:25.0.1] C:\Users\Administrator\.android\build-cache\9d4c01c452d53f52ec8945aa4d19fde3ff563420\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Administrator\.android\build-cache\0f39971a2f439f398b6c782b244725406f26f03a\output\AndroidManifest.xml:9:5-20
+	android:label
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:16:9-41
+	android:supportsRtl
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:17:9-35
+	android:allowBackup
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:14:9-35
+	android:icon
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:15:9-43
+	android:theme
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:18:9-56
+	tools:replace
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:19:9-67
+	android:name
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:13:9-28
+activity#cn.kiway.yqyd.activity.WebViewActivity2
+ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:21:9-26:61
+	android:screenOrientation
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:26:13-49
+	android:label
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:24:13-45
+	android:launchMode
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:25:13-43
+	android:configChanges
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:23:13-63
+	android:name
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:22:13-67
+activity#cn.kiway.yqyd.activity.LoginActivity
+ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:27:9-33:25
+	android:screenOrientation
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:32:13-49
+	android:label
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:30:13-45
+	android:launchMode
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:31:13-43
+	android:configChanges
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:29:13-63
+	android:name
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:28:13-64
+activity#cn.kiway.yqyd.activity.BootActivity
+ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:34:9-45:20
+	android:screenOrientation
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:39:13-49
+	android:label
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:37:13-45
+	android:launchMode
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:38:13-43
+	android:configChanges
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:36:13-63
+	android:name
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:35:13-63
+intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
+ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:40:13-44:29
+action#android.intent.action.MAIN
+ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:41:17-68
+	android:name
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:41:25-66
+category#android.intent.category.LAUNCHER
+ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:43:17-76
+	android:name
+		ADDED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:43:27-74
+uses-sdk
+INJECTED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+MERGED from [com.android.support:appcompat-v7:25.0.1] C:\Users\Administrator\.android\build-cache\75d7dd713e125d8aceb2a68fe27116987b08cd89\output\AndroidManifest.xml:21:5-23:78
+MERGED from [com.android.support:support-v4:25.0.1] C:\Users\Administrator\.android\build-cache\680f3b3047042086c585ab9df02cabc17fc85072\output\AndroidManifest.xml:21:5-23:54
+MERGED from [com.android.support:support-fragment:25.0.1] C:\Users\Administrator\.android\build-cache\d3baa58719e2b260d72bf17353517f71a4428e1f\output\AndroidManifest.xml:21:5-23:60
+MERGED from [com.android.support:support-media-compat:25.0.1] C:\Users\Administrator\.android\build-cache\c90a34bef520971ba1a5b313911a28afe34f7191\output\AndroidManifest.xml:21:5-23:63
+MERGED from [com.android.support:support-core-ui:25.0.1] C:\Users\Administrator\.android\build-cache\0883a46419ffe17e7c2739ae138919fa26dfb942\output\AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support:support-core-utils:25.0.1] C:\Users\Administrator\.android\build-cache\89bb4ae5632be8e922c93e7c9244ca9b893d7951\output\AndroidManifest.xml:21:5-23:61
+MERGED from [com.android.support:animated-vector-drawable:25.0.1] C:\Users\Administrator\.android\build-cache\63be889c8c264f6d18652ac57ec23e8231e31b90\output\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:25.0.1] C:\Users\Administrator\.android\build-cache\2eb34cfc9d63880a98324d93945e704e8ca81510\output\AndroidManifest.xml:21:5-43
+MERGED from [com.android.support:support-compat:25.0.1] C:\Users\Administrator\.android\build-cache\9d4c01c452d53f52ec8945aa4d19fde3ff563420\output\AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Administrator\.android\build-cache\0f39971a2f439f398b6c782b244725406f26f03a\output\AndroidManifest.xml:5:5-7:41
+	tools:overrideLibrary
+		ADDED from [com.android.support:appcompat-v7:25.0.1] C:\Users\Administrator\.android\build-cache\75d7dd713e125d8aceb2a68fe27116987b08cd89\output\AndroidManifest.xml:23:9-75
+	android:targetSdkVersion
+		INJECTED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml
+activity#com.lzy.imagepicker.ui.ImageBaseActivity
+ADDED from [gzxtkt:wjc_ImagePicker:unspecified] F:\kiway_xm\gzxtkt\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:13:9-77
+	android:name
+		ADDED from [gzxtkt:wjc_ImagePicker:unspecified] F:\kiway_xm\gzxtkt\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:13:19-74
+activity#com.lzy.imagepicker.ui.ImageGridActivity
+ADDED from [gzxtkt:wjc_ImagePicker:unspecified] F:\kiway_xm\gzxtkt\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:14:9-16:55
+	android:theme
+		ADDED from [gzxtkt:wjc_ImagePicker:unspecified] F:\kiway_xm\gzxtkt\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:16:13-52
+	android:name
+		ADDED from [gzxtkt:wjc_ImagePicker:unspecified] F:\kiway_xm\gzxtkt\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:15:13-68
+activity#com.lzy.imagepicker.ui.ImageCropActivity
+ADDED from [gzxtkt:wjc_ImagePicker:unspecified] F:\kiway_xm\gzxtkt\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:17:9-19:55
+	android:theme
+		ADDED from [gzxtkt:wjc_ImagePicker:unspecified] F:\kiway_xm\gzxtkt\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:19:13-52
+	android:name
+		ADDED from [gzxtkt:wjc_ImagePicker:unspecified] F:\kiway_xm\gzxtkt\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:18:13-68
+activity#com.lzy.imagepicker.ui.ImagePreviewActivity
+ADDED from [gzxtkt:wjc_ImagePicker:unspecified] F:\kiway_xm\gzxtkt\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:20:9-22:65
+	android:theme
+		ADDED from [gzxtkt:wjc_ImagePicker:unspecified] F:\kiway_xm\gzxtkt\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:22:13-62
+	android:name
+		ADDED from [gzxtkt:wjc_ImagePicker:unspecified] F:\kiway_xm\gzxtkt\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:21:13-71
+uses-permission#android.permission.READ_PHONE_STATE
+IMPLIED from F:\kiway_xm\gzxtkt\app\src\main\AndroidManifest.xml:2:1-48:12 reason: com.lzy.imagepicker has a targetSdkVersion < 4

@@ -1,0 +1,30 @@
+[
+    {
+        "merged": "F:\\kiway_xm\\gzxtkt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\scan_line.png",
+        "source": "F:\\kiway_xm\\gzxtkt\\app\\src\\main\\res\\drawable-mdpi\\scan_line.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\gzxtkt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\ic_person.png",
+        "source": "F:\\kiway_xm\\gzxtkt\\app\\src\\main\\res\\drawable-mdpi\\ic_person.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\gzxtkt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\ic_toggle_radio_button_on.png",
+        "source": "F:\\kiway_xm\\gzxtkt\\app\\src\\main\\res\\drawable-mdpi\\ic_toggle_radio_button_on.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\gzxtkt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\capture.png",
+        "source": "F:\\kiway_xm\\gzxtkt\\app\\src\\main\\res\\drawable-mdpi\\capture.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\gzxtkt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\scan_mask.png",
+        "source": "F:\\kiway_xm\\gzxtkt\\app\\src\\main\\res\\drawable-mdpi\\scan_mask.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\gzxtkt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\ic_https.png",
+        "source": "F:\\kiway_xm\\gzxtkt\\app\\src\\main\\res\\drawable-mdpi\\ic_https.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\gzxtkt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\ic_toggle_radio_button_off.png",
+        "source": "F:\\kiway_xm\\gzxtkt\\app\\src\\main\\res\\drawable-mdpi\\ic_toggle_radio_button_off.png"
+    }
+]

@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "F:\\kiway_xm\\gzxtkt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\ic_https.png",
+        "source": "F:\\kiway_xm\\gzxtkt\\app\\src\\main\\res\\drawable-xxhdpi\\ic_https.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\gzxtkt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\ic_toggle_radio_button_off.png",
+        "source": "F:\\kiway_xm\\gzxtkt\\app\\src\\main\\res\\drawable-xxhdpi\\ic_toggle_radio_button_off.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\gzxtkt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\ic_person.png",
+        "source": "F:\\kiway_xm\\gzxtkt\\app\\src\\main\\res\\drawable-xxhdpi\\ic_person.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\gzxtkt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\record_top.png",
+        "source": "F:\\kiway_xm\\gzxtkt\\app\\src\\main\\res\\drawable-xxhdpi\\record_top.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\gzxtkt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\record_bottom.png",
+        "source": "F:\\kiway_xm\\gzxtkt\\app\\src\\main\\res\\drawable-xxhdpi\\record_bottom.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\gzxtkt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\ic_toggle_radio_button_on.png",
+        "source": "F:\\kiway_xm\\gzxtkt\\app\\src\\main\\res\\drawable-xxhdpi\\ic_toggle_radio_button_on.png"
+    }
+]
