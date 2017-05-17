@@ -7,12 +7,18 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
+import com.taobao.weex.WXSDKEngine;
+import com.taobao.weex.utils.WXFileUtils;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.entity.TabEntity;
 import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.utils.FileUtils;
 import com.zk.myweex.utils.MyDBHelper;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,6 +43,7 @@ public class WelcomeActivity extends WXBaseActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                checkHttpConf();
                 if (getSharedPreferences("kiway", 0).getBoolean("login", false)) {
                     startActivity(new Intent(WelcomeActivity.this, MainActivity2.class));
                 } else {
@@ -77,6 +84,39 @@ public class WelcomeActivity extends WXBaseActivity {
             finish();
         }
     };
+
+    private void checkHttpConf() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String httpcacheFile = WXFileUtils.findLoginJS(WXApplication.PATH, "conf.txt");
+                    Log.d("test", "httpcacheFile = " + httpcacheFile);
+                    if (httpcacheFile == null) {
+                        return;
+                    }
+                    String content = WXFileUtils.readFileInZip(httpcacheFile);
+                    Log.d("test", "cache = " + content);
+                    JSONObject o = new JSONObject(content);
+                    JSONArray hc = o.getJSONArray("http_caches");
+                    JSONArray ot = o.getJSONArray("offline_task");
+                    ArrayList hcs = new ArrayList();
+                    ArrayList ots = new ArrayList();
+                    for (int i = 0; i < hc.length(); i++) {
+                        String url = hc.getJSONObject(i).getString("url");
+                        hcs.add(url);
+                    }
+                    for (int i = 0; i < ot.length(); i++) {
+                        String url = ot.getJSONObject(i).getString("url");
+                        ots.add(url);
+                    }
+                    WXSDKEngine.setHttpConfig(hcs, ots);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
 
     private void checkIsFirst() {
         if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
