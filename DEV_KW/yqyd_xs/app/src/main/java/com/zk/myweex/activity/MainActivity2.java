@@ -21,6 +21,10 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.taobao.weex.WXSDKInstance;
+import com.taobao.weex.http.WXStreamModule;
+import com.taobao.weex.utils.cache.OfflineTask;
+import com.taobao.weex.utils.cache.WXDBHelper;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.entity.TabEntity;
 import com.zk.myweex.utils.HttpDownload;
@@ -342,31 +346,27 @@ public class MainActivity2 extends TabActivity {
             } else {
                 rl_nonet.setVisibility(View.GONE);
                 //2.check offline task
-//                checkOfflineTask();
+                checkOfflineTask();
             }
         }
     };
 
-//    private void checkOfflineTask() {
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                ArrayList<OfflineTask> tasks = new WXDBHelper(getApplicationContext()).getAllOfflineTask();
-//                int count = tasks.size();
-//                Log.d("stream", "tasks count = " + count);
-//                for (OfflineTask task : tasks) {
-//                    Log.d("stream", "dotask , task.id = " + task.id);
-//                    if (task.request.contains("classes")) {
-//                        doQzqTask(task);
-//                    } else {
-//                        WXStreamModule stream = new WXStreamModule();
-//                        stream.mWXSDKInstance = new WXSDKInstance(getApplicationContext());
-//                        stream.fetch(task.request, null, null);
-//                    }
-//                }
-//            }
-//        }.start();
-//    }
+    private void checkOfflineTask() {
+        new Thread() {
+            @Override
+            public void run() {
+                ArrayList<OfflineTask> tasks = new WXDBHelper(getApplicationContext()).getAllOfflineTask();
+                int count = tasks.size();
+                Log.d("stream", "tasks count = " + count);
+                for (OfflineTask task : tasks) {
+                    Log.d("stream", "dotask , task.id = " + task.id);
+                    WXStreamModule stream = new WXStreamModule();
+                    stream.mWXSDKInstance = new WXSDKInstance(getApplicationContext());
+                    stream.fetch(task.request, null, null);
+                }
+            }
+        }.start();
+    }
 
 
 //    private void doQzqTask(final OfflineTask task) {

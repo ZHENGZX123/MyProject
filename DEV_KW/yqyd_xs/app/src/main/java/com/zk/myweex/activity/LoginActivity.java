@@ -14,7 +14,7 @@ public class LoginActivity extends WXBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String loginPath = WXFileUtils.findLoginJS(WXApplication.PATH);
+        String loginPath = WXFileUtils.findLoginJS(WXApplication.PATH, "login.js");
         Log.d("test", "loginPath = " + loginPath);
         renderPage(WXFileUtils.readFileInZip(loginPath),
                 "file://" + loginPath.replace("login.js", ""),
