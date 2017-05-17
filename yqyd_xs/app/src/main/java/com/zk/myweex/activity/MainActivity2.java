@@ -21,17 +21,11 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.SyncHttpClient;
-import com.loopj.android.http.TextHttpResponseHandler;
-import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.http.WXStreamModule;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.entity.TabEntity;
 import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.MyDBHelper;
 import com.zk.myweex.utils.ScreenManager;
-import com.zk.myweex.utils.UploadUtil;
 import com.zk.myweex.utils.Utils;
 import com.zk.myweex.utils.VersionUpManager;
 
@@ -39,8 +33,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -105,15 +97,18 @@ public class MainActivity2 extends TabActivity {
                         apkUrl = matcher2.group().replace("<apkUrl>", "")
                                 .replace("</apkUrl>", "");
                     }
+                    Log.d("test", "current = " + getCurrentVersion());
                     if (getCurrentVersion().compareTo(version) < 0) {
                         //download
-                        Log.d("test", "download");
+                        Log.d("test", "download new version");
                         HttpDownload httpDownload = new HttpDownload();
                         int downFile = httpDownload.downFile(apkUrl, WXApplication.PATH_APK, "yqyd.apk");
                         if (downFile == -1) {
                             return;
                         }
                         showNewVersionDialog();
+                    } else {
+                        Log.d("test", "not download new version");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -128,7 +123,7 @@ public class MainActivity2 extends TabActivity {
             @Override
             public void run() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity2.this, AlertDialog.THEME_HOLO_LIGHT);
-                AlertDialog dialog_download = builder.setMessage("有新的版本，请安装，过程不消耗流量").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                AlertDialog dialog_download = builder.setTitle("提示").setMessage("有新的版本，请安装，过程不消耗流量").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
