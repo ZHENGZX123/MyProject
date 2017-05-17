@@ -1,226 +1,42 @@
-/**
- *
- *                                  Apache License
- *                            Version 2.0, January 2004
- *                         http://www.apache.org/licenses/
- *
- *    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
- *
- *    1. Definitions.
- *
- *       "License" shall mean the terms and conditions for use, reproduction,
- *       and distribution as defined by Sections 1 through 9 of this document.
- *
- *       "Licensor" shall mean the copyright owner or entity authorized by
- *       the copyright owner that is granting the License.
- *
- *       "Legal Entity" shall mean the union of the acting entity and all
- *       other entities that control, are controlled by, or are under common
- *       control with that entity. For the purposes of this definition,
- *       "control" means (i) the power, direct or indirect, to cause the
- *       direction or management of such entity, whether by contract or
- *       otherwise, or (ii) ownership of fifty percent (50%) or more of the
- *       outstanding shares, or (iii) beneficial ownership of such entity.
- *
- *       "You" (or "Your") shall mean an individual or Legal Entity
- *       exercising permissions granted by this License.
- *
- *       "Source" form shall mean the preferred form for making modifications,
- *       including but not limited to software source code, documentation
- *       source, and configuration files.
- *
- *       "Object" form shall mean any form resulting from mechanical
- *       transformation or translation of a Source form, including but
- *       not limited to compiled object code, generated documentation,
- *       and conversions to other media types.
- *
- *       "Work" shall mean the work of authorship, whether in Source or
- *       Object form, made available under the License, as indicated by a
- *       copyright notice that is included in or attached to the work
- *       (an example is provided in the Appendix below).
- *
- *       "Derivative Works" shall mean any work, whether in Source or Object
- *       form, that is based on (or derived from) the Work and for which the
- *       editorial revisions, annotations, elaborations, or other modifications
- *       represent, as a whole, an original work of authorship. For the purposes
- *       of this License, Derivative Works shall not include works that remain
- *       separable from, or merely link (or bind by name) to the interfaces of,
- *       the Work and Derivative Works thereof.
- *
- *       "Contribution" shall mean any work of authorship, including
- *       the original version of the Work and any modifications or additions
- *       to that Work or Derivative Works thereof, that is intentionally
- *       submitted to Licensor for inclusion in the Work by the copyright owner
- *       or by an individual or Legal Entity authorized to submit on behalf of
- *       the copyright owner. For the purposes of this definition, "submitted"
- *       means any form of electronic, verbal, or written communication sent
- *       to the Licensor or its representatives, including but not limited to
- *       communication on electronic mailing lists, source code control systems,
- *       and issue tracking systems that are managed by, or on behalf of, the
- *       Licensor for the purpose of discussing and improving the Work, but
- *       excluding communication that is conspicuously marked or otherwise
- *       designated in writing by the copyright owner as "Not a Contribution."
- *
- *       "Contributor" shall mean Licensor and any individual or Legal Entity
- *       on behalf of whom a Contribution has been received by Licensor and
- *       subsequently incorporated within the Work.
- *
- *    2. Grant of Copyright License. Subject to the terms and conditions of
- *       this License, each Contributor hereby grants to You a perpetual,
- *       worldwide, non-exclusive, no-charge, royalty-free, irrevocable
- *       copyright license to reproduce, prepare Derivative Works of,
- *       publicly display, publicly perform, sublicense, and distribute the
- *       Work and such Derivative Works in Source or Object form.
- *
- *    3. Grant of Patent License. Subject to the terms and conditions of
- *       this License, each Contributor hereby grants to You a perpetual,
- *       worldwide, non-exclusive, no-charge, royalty-free, irrevocable
- *       (except as stated in this section) patent license to make, have made,
- *       use, offer to sell, sell, import, and otherwise transfer the Work,
- *       where such license applies only to those patent claims licensable
- *       by such Contributor that are necessarily infringed by their
- *       Contribution(s) alone or by combination of their Contribution(s)
- *       with the Work to which such Contribution(s) was submitted. If You
- *       institute patent litigation against any entity (including a
- *       cross-claim or counterclaim in a lawsuit) alleging that the Work
- *       or a Contribution incorporated within the Work constitutes direct
- *       or contributory patent infringement, then any patent licenses
- *       granted to You under this License for that Work shall terminate
- *       as of the date such litigation is filed.
- *
- *    4. Redistribution. You may reproduce and distribute copies of the
- *       Work or Derivative Works thereof in any medium, with or without
- *       modifications, and in Source or Object form, provided that You
- *       meet the following conditions:
- *
- *       (a) You must give any other recipients of the Work or
- *           Derivative Works a copy of this License; and
- *
- *       (b) You must cause any modified files to carry prominent notices
- *           stating that You changed the files; and
- *
- *       (c) You must retain, in the Source form of any Derivative Works
- *           that You distribute, all copyright, patent, trademark, and
- *           attribution notices from the Source form of the Work,
- *           excluding those notices that do not pertain to any part of
- *           the Derivative Works; and
- *
- *       (d) If the Work includes a "NOTICE" text file as part of its
- *           distribution, then any Derivative Works that You distribute must
- *           include a readable copy of the attribution notices contained
- *           within such NOTICE file, excluding those notices that do not
- *           pertain to any part of the Derivative Works, in at least one
- *           of the following places: within a NOTICE text file distributed
- *           as part of the Derivative Works; within the Source form or
- *           documentation, if provided along with the Derivative Works; or,
- *           within a display generated by the Derivative Works, if and
- *           wherever such third-party notices normally appear. The contents
- *           of the NOTICE file are for informational purposes only and
- *           do not modify the License. You may add Your own attribution
- *           notices within Derivative Works that You distribute, alongside
- *           or as an addendum to the NOTICE text from the Work, provided
- *           that such additional attribution notices cannot be construed
- *           as modifying the License.
- *
- *       You may add Your own copyright statement to Your modifications and
- *       may provide additional or different license terms and conditions
- *       for use, reproduction, or distribution of Your modifications, or
- *       for any such Derivative Works as a whole, provided Your use,
- *       reproduction, and distribution of the Work otherwise complies with
- *       the conditions stated in this License.
- *
- *    5. Submission of Contributions. Unless You explicitly state otherwise,
- *       any Contribution intentionally submitted for inclusion in the Work
- *       by You to the Licensor shall be under the terms and conditions of
- *       this License, without any additional terms or conditions.
- *       Notwithstanding the above, nothing herein shall supersede or modify
- *       the terms of any separate license agreement you may have executed
- *       with Licensor regarding such Contributions.
- *
- *    6. Trademarks. This License does not grant permission to use the trade
- *       names, trademarks, service marks, or product names of the Licensor,
- *       except as required for reasonable and customary use in describing the
- *       origin of the Work and reproducing the content of the NOTICE file.
- *
- *    7. Disclaimer of Warranty. Unless required by applicable law or
- *       agreed to in writing, Licensor provides the Work (and each
- *       Contributor provides its Contributions) on an "AS IS" BASIS,
- *       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- *       implied, including, without limitation, any warranties or conditions
- *       of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
- *       PARTICULAR PURPOSE. You are solely responsible for determining the
- *       appropriateness of using or redistributing the Work and assume any
- *       risks associated with Your exercise of permissions under this License.
- *
- *    8. Limitation of Liability. In no event and under no legal theory,
- *       whether in tort (including negligence), contract, or otherwise,
- *       unless required by applicable law (such as deliberate and grossly
- *       negligent acts) or agreed to in writing, shall any Contributor be
- *       liable to You for damages, including any direct, indirect, special,
- *       incidental, or consequential damages of any character arising as a
- *       result of this License or out of the use or inability to use the
- *       Work (including but not limited to damages for loss of goodwill,
- *       work stoppage, computer failure or malfunction, or any and all
- *       other commercial damages or losses), even if such Contributor
- *       has been advised of the possibility of such damages.
- *
- *    9. Accepting Warranty or Additional Liability. While redistributing
- *       the Work or Derivative Works thereof, You may choose to offer,
- *       and charge a fee for, acceptance of support, warranty, indemnity,
- *       or other liability obligations and/or rights consistent with this
- *       License. However, in accepting such obligations, You may act only
- *       on Your own behalf and on Your sole responsibility, not on behalf
- *       of any other Contributor, and only if You agree to indemnify,
- *       defend, and hold each Contributor harmless for any liability
- *       incurred by, or claims asserted against, such Contributor by reason
- *       of your accepting any such warranty or additional liability.
- *
- *    END OF TERMS AND CONDITIONS
- *
- *    APPENDIX: How to apply the Apache License to your work.
- *
- *       To apply the Apache License to your work, attach the following
- *       boilerplate notice, with the fields enclosed by brackets "[]"
- *       replaced with your own identifying information. (Don't include
- *       the brackets!)  The text should be enclosed in the appropriate
- *       comment syntax for the file format. We also recommend that a
- *       file or class name and description of purpose be included on the
- *       same "printed page" as the copyright notice for easier
- *       identification within third-party archives.
- *
- *    Copyright 2016 Alibaba Group
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 package com.taobao.weex.ui.component.list;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.taobao.weex.WXEnvironment;
@@ -228,7 +44,7 @@ import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.OnWXScrollListener;
-import com.taobao.weex.common.WXRuntimeException;
+import com.taobao.weex.dom.ImmutableDomObject;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.component.AppearanceHelper;
 import com.taobao.weex.ui.component.Scrollable;
@@ -268,7 +84,7 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
   public static final String LOADMOREOFFSET = "loadmoreoffset";
   private String TAG = "BasicListComponent";
   private int mListCellCount = 0;
-  private String mLoadMoreRetry = "";
+  private boolean mForceLoadmoreNextTime = false;
   private ArrayList<ListBaseViewHolder> recycleViewList = new ArrayList<>();
   private static final Pattern transformPattern = Pattern.compile("([a-z]+)\\(([0-9\\.]+),?([0-9\\.]+)?\\)");
 
@@ -283,10 +99,21 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
   private static boolean mAllowCacheViewHolder = true;
   private static boolean mDownForBidCacheViewHolder = false;
 
+
+  protected int mLayoutType = WXRecyclerView.TYPE_LINEAR_LAYOUT;
+  protected int mColumnCount = 1;
+  protected float mColumnGap = 0;
+  protected float mColumnWidth = 0;
+
+  private int mOffsetAccuracy = 10;
+  private Point mLastReport = new Point(-1, -1);
+
+  private RecyclerView.ItemAnimator mItemAnimator;
+
   /**
    * Map for storing component that is sticky.
    **/
-  private Map<String, HashMap<String, WXComponent>> mStickyMap = new HashMap<>();
+  private Map<String, Map<String, WXComponent>> mStickyMap = new HashMap<>();
   private WXStickyHelper stickyHelper;
 
 
@@ -307,7 +134,7 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
     int screenH = WXViewUtils.getScreenHeight(WXEnvironment.sApplication);
     int weexH = WXViewUtils.getWeexHeight(getInstanceId());
     int outHeight = height > (weexH >= screenH ? screenH : weexH) ? weexH - getAbsoluteY() : height;
-    return super.measure(width, outHeight);
+    return super.measure((int)(width+mColumnGap), outHeight);
   }
 
   public int getOrientation() {
@@ -402,6 +229,8 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
       bounceRecyclerView.getInnerView().addItemDecoration(parseTransforms(transforms));
     }
 
+    mItemAnimator=bounceRecyclerView.getInnerView().getItemAnimator();
+
     RecyclerViewBaseAdapter recyclerViewBaseAdapter = new RecyclerViewBaseAdapter<>(this);
     recyclerViewBaseAdapter.setHasStableIds(true);
     bounceRecyclerView.setRecyclerViewBaseAdapter(recyclerViewBaseAdapter);
@@ -418,7 +247,7 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
             if (holder != null
                 && holder.getComponent() != null
                 && !holder.getComponent().isUsing()) {
-              recycleImage(holder.getView());
+               holder.recycled();
             }
           }
           recycleViewList.clear();
@@ -486,7 +315,7 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
       return null;
     }
 
-    if (parent instanceof WXListComponent) {
+    if (parent instanceof BasicListComponent) {
       return comp;
     }
 
@@ -502,6 +331,10 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
         boolean scrollable = WXUtils.getBoolean(param, true);
         setScrollable(scrollable);
         return true;
+      case Constants.Name.OFFSET_ACCURACY:
+        int accuracy = WXUtils.getInteger(param, 10);
+        setOffsetAccuracy(accuracy);
+        return true;
     }
     return super.setProperty(key, param);
   }
@@ -513,6 +346,12 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
     if(inner != null) {
       inner.setScrollable(scrollable);
     }
+  }
+
+  @WXComponentProp(name = Constants.Name.OFFSET_ACCURACY)
+  public void setOffsetAccuracy(int accuracy) {
+    float real = WXViewUtils.getRealPxByWidth(accuracy, getInstance().getInstanceViewPortWidth());
+    this.mOffsetAccuracy = (int) real;
   }
 
   @Override
@@ -559,7 +398,24 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
   }
 
   @Override
-  public void scrollTo(WXComponent component, final int offset) {
+  public void scrollTo(WXComponent component, Map<String, Object> options) {
+    float offsetFloat = 0;
+    boolean smooth = true;
+
+    if (options != null) {
+      String offsetStr = options.get(Constants.Name.OFFSET) == null ? "0" : options.get(Constants.Name.OFFSET).toString();
+      smooth = WXUtils.getBoolean(options.get(Constants.Name.ANIMATED), true);
+      if (offsetStr != null) {
+        try {
+          offsetFloat = WXViewUtils.getRealPxByWidth(Float.parseFloat(offsetStr), getInstance().getInstanceViewPortWidth());
+        }catch (Exception e ){
+          WXLogUtils.e("Float parseFloat error :"+e.getMessage());
+        }
+      }
+    }
+
+    final int offset = (int) offsetFloat;
+
     T bounceRecyclerView = getHostView();
     if (bounceRecyclerView == null) {
       return;
@@ -574,31 +430,39 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
       }
       parent = parent.getParent();
     }
+
     if (cell != null) {
-      int pos = mChildren.indexOf(cell);
+      final int pos = mChildren.indexOf(cell);
       final WXRecyclerView view = bounceRecyclerView.getInnerView();
-      view.scrollToPosition(pos);
-      final WXComponent cellComp = cell;
-      //scroll cell to top
-      view.postDelayed(new Runnable() {
-        @Override
-        public void run() {
-          if (cellComp.getHostView() == null) {
-            return;
-          }
-          View cellView = cellComp.getHostView();
-          if (getOrientation() == Constants.Orientation.VERTICAL) {
-            int scrollY = cellView.getTop() + offset;
-            view.smoothScrollBy(0, scrollY);
-          } else {
-            int scrollX = cellView.getLeft() + offset;
-            view.smoothScrollBy(scrollX, 0);
-          }
+
+      if (!smooth) {
+        RecyclerView.LayoutManager layoutManager = view.getLayoutManager();
+        if (layoutManager instanceof LinearLayoutManager) {
+          //GridLayoutManager is also instance of LinearLayoutManager
+          ((LinearLayoutManager) layoutManager).scrollToPositionWithOffset(pos, -offset);
+        } else if (layoutManager instanceof StaggeredGridLayoutManager) {
+          ((StaggeredGridLayoutManager) layoutManager).scrollToPositionWithOffset(pos, -offset);
         }
-      }, 50);
-
+        //Any else?
+      } else {
+        view.smoothScrollToPosition(pos);
+        if (offset != 0) {
+          view.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+              if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (getOrientation() == Constants.Orientation.VERTICAL) {
+                  recyclerView.smoothScrollBy(0, offset);
+                } else {
+                  recyclerView.smoothScrollBy(offset, 0);
+                }
+                recyclerView.removeOnScrollListener(this);
+              }
+            }
+          });
+        }
+      }
     }
-
   }
 
   @Override
@@ -607,13 +471,14 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
     if (mStickyMap == null || bounceRecyclerView == null) {
       return;
     }
-    HashMap<String, WXComponent> stickyMap = mStickyMap.get(getRef());
+    Map<String, WXComponent> stickyMap = mStickyMap.get(getRef());
     if (stickyMap == null) {
       return;
     }
     Iterator<Map.Entry<String, WXComponent>> iterator = stickyMap.entrySet().iterator();
     Map.Entry<String, WXComponent> entry;
     WXComponent stickyComponent;
+    int currentStickyPos = -1;
     while (iterator.hasNext()) {
       entry = iterator.next();
       stickyComponent = entry.getValue();
@@ -626,16 +491,23 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
           return;
         }
 
-        if (stickyComponent != null && stickyComponent.getDomObject() != null
-            && stickyComponent instanceof WXCell) {
-          if (stickyComponent.getHostView() == null) {
-            return;
-          }
-
           RecyclerView.LayoutManager layoutManager;
           boolean beforeFirstVisibleItem = false;
-          if ((layoutManager = getHostView().getInnerView().getLayoutManager()) instanceof LinearLayoutManager) {
+          layoutManager = getHostView().getInnerView().getLayoutManager();
+          if (layoutManager instanceof LinearLayoutManager || layoutManager instanceof GridLayoutManager) {
             int fVisible = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+            int pos = mChildren.indexOf(cell);
+            cell.setScrollPositon(pos);
+
+            if (pos <= fVisible) {
+              beforeFirstVisibleItem = true;
+              if(pos > currentStickyPos) {
+                currentStickyPos = pos;
+              }
+            }
+          } else if(layoutManager instanceof StaggeredGridLayoutManager){
+            int [] firstItems= new int[3];
+            int fVisible = ((StaggeredGridLayoutManager) layoutManager).findFirstVisibleItemPositions(firstItems)[0];
             int pos = mChildren.indexOf(cell);
 
             if (pos <= fVisible) {
@@ -659,7 +531,10 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
           }
           cell.setLocationFromStart(top);
         }
-      }
+    }
+
+    if(currentStickyPos>=0){
+      bounceRecyclerView.updateStickyView(currentStickyPos);
     }
   }
 
@@ -676,7 +551,7 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
   }
 
   /**
-   * Append a child component to the end of WXListComponent. This will not refresh the underlying
+   * Append a child component to the end of list. This will not refresh the underlying
    * view immediately. The message of index of the inserted child is given to the adapter, and the
    * adapter will determine when to refresh. The default implementation of adapter will push the
    * message into a message and refresh the view in a period of time.
@@ -712,9 +587,54 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
     int adapterPosition = index == -1 ? mChildren.size() - 1 : index;
     T view = getHostView();
     if (view != null) {
-      view.getRecyclerViewBaseAdapter().notifyItemInserted(adapterPosition);
+      boolean isAddAnimation = isAddAnimation(child);
+      if (isAddAnimation) {
+        view.getInnerView().setItemAnimator(mItemAnimator);
+      } else {
+        view.getInnerView().setItemAnimator(null);
+      }
+      boolean isKeepScrollPosition = isKeepScrollPosition(child,index);
+      if (isKeepScrollPosition) {
+        int last=((LinearLayoutManager)view.getInnerView().getLayoutManager()).findLastVisibleItemPosition();
+        view.getInnerView().getLayoutManager().scrollToPosition(last);
+        view.getRecyclerViewBaseAdapter().notifyItemInserted(adapterPosition);
+      } else {
+        view.getRecyclerViewBaseAdapter().notifyItemChanged(adapterPosition);
+      }
     }
     relocateAppearanceHelper();
+  }
+
+  /**
+   * To determine whether an animation is needed
+   * @param child
+   * @return
+   */
+  private boolean isAddAnimation(WXComponent child) {
+    ImmutableDomObject domObject = child.getDomObject();
+    if (domObject != null) {
+      Object attr = domObject.getAttrs().get(Constants.Name.INSERT_CELL_ANIMATION);
+      if (Constants.Value.DEFAULT.equals(attr)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Determine if the component needs to be fixed at the time of insertion
+   * @param child Need to insert the component
+   * @return fixed=true
+   */
+  private boolean isKeepScrollPosition(WXComponent child,int index) {
+    ImmutableDomObject domObject = child.getDomObject();
+    if (domObject != null) {
+      Object attr = domObject.getAttrs().get(Constants.Name.KEEP_SCROLL_POSITION);
+      if (WXUtils.getBoolean(attr, false) && index <= getChildCount() && index>-1) {
+        return true;
+      }
+    }
+    return false;
   }
 
 
@@ -741,7 +661,7 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
   }
 
   /**
-   * Remove the child from WXListComponent. This method will use {@link
+   * Remove the child from list. This method will use {@link
    * java.util.List#indexOf(Object)} to retrieve the component to be deleted. Like {@link
    * #addChild(WXComponent)}, this method will not refresh the view immediately, the adapter will
    * decide when to refresh.
@@ -760,11 +680,35 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
     if (view == null) {
       return;
     }
+
+    boolean isRemoveAnimation = isRemoveAnimation(child);
+    if (isRemoveAnimation) {
+      view.getInnerView().setItemAnimator(mItemAnimator);
+    } else {
+      view.getInnerView().setItemAnimator(null);
+    }
+
     view.getRecyclerViewBaseAdapter().notifyItemRemoved(index);
     if (WXEnvironment.isApkDebugable()) {
       WXLogUtils.d(TAG, "removeChild child at " + index);
     }
     super.remove(child, destroy);
+  }
+
+  /**
+   * To determine whether an animation is needed
+   * @param child
+   * @return
+   */
+  private boolean isRemoveAnimation(WXComponent child) {
+    ImmutableDomObject domObject = child.getDomObject();
+    if (domObject != null) {
+      Object attr = domObject.getAttrs().get(Constants.Name.DELETE_CELL_ANIMATION);
+      if (Constants.Value.DEFAULT.equals(attr)) {
+        return true;
+      }
+    }
+    return false;
   }
 
 
@@ -783,8 +727,13 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
   @Override
   public void onViewRecycled(ListBaseViewHolder holder) {
     long begin = System.currentTimeMillis();
+
     holder.setComponentUsing(false);
-    recycleViewList.add(holder);
+    if(holder.canRecycled()) {
+      recycleViewList.add(holder);
+    } else {
+      WXLogUtils.w(TAG, "this holder can not be allowed to  recycled" );
+    }
     if (WXEnvironment.isApkDebugable()) {
       WXLogUtils.d(TAG, "Recycle holder " + (System.currentTimeMillis() - begin) + "  Thread:" + Thread.currentThread().getName());
     }
@@ -794,7 +743,7 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
    * Bind the component of the position to the holder. Then flush the view.
    *
    * @param holder   viewHolder, which holds reference to the view
-   * @param position position of component in WXListComponent
+   * @param position position of component in list
    */
   @Override
   public void onBindViewHolder(ListBaseViewHolder holder, int position) {
@@ -813,15 +762,21 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
     }
 
     if (holder.getComponent() != null && holder.getComponent() instanceof WXCell) {
-      holder.getComponent().bindData(component);
-//              holder.getComponent().refreshData(component);
+      if(holder.isRecycled()) {
+        holder.bindData(component);
+      }
     }
 
   }
 
+  protected void markComponentUsable(){
+    for (WXComponent component : mChildren){
+      component.setUsing(false);
+    }
+  }
   /**
    * Create an instance of {@link ListBaseViewHolder} for the given viewType (not for the given
-   * index). This method will look up for the first component that fits the viewType requirement and
+   * index). This  markComponentUsable();method will look up for the first component that fits the viewType requirement and
    * doesn't be used. Then create the certain type of view, detach the view f[rom the component.
    *
    * @param parent   the ViewGroup into which the new view will be inserted
@@ -1012,18 +967,15 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
       if (TextUtils.isEmpty(offset)) {
         offset = "0";
       }
+      float offsetParsed = WXViewUtils.getRealPxByWidth(Integer.parseInt(offset),getInstance().getInstanceViewPortWidth());
 
-      if (offScreenY < Integer.parseInt(offset)) {
-        String loadMoreRetry = getDomObject().getAttrs().getLoadMoreRetry();
-        if (loadMoreRetry == null) {
-          loadMoreRetry = mLoadMoreRetry;
-        }
+      if (offScreenY < offsetParsed) {
 
         if (mListCellCount != mChildren.size()
-            || mLoadMoreRetry == null || !mLoadMoreRetry.equals(loadMoreRetry)) {
+            || mForceLoadmoreNextTime) {
           fireEvent(Constants.Event.LOADMORE);
           mListCellCount = mChildren.size();
-          mLoadMoreRetry = loadMoreRetry;
+          mForceLoadmoreNextTime = false;
         }
       }
     } catch (Exception e) {
@@ -1069,25 +1021,6 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
     }
   }
 
-  private void recycleImage(View view) {
-    if (view instanceof ImageView) {
-      if (getInstance().getImgLoaderAdapter() != null) {
-        getInstance().getImgLoaderAdapter().setImage(null, (ImageView) view,
-            null, null);
-      } else {
-        if (WXEnvironment.isApkDebugable()) {
-          throw new WXRuntimeException("getImgLoaderAdapter() == null");
-        }
-        WXLogUtils.e("Error getImgLoaderAdapter() == null");
-      }
-
-    } else if (view instanceof ViewGroup) {
-      for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-        recycleImage(((ViewGroup) view).getChildAt(i));
-      }
-    }
-  }
-
   @NonNull
   private ListBaseViewHolder createVHForFakeComponent(int viewType) {
     FrameLayout view = new FrameLayout(getContext());
@@ -1107,6 +1040,57 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
 
   @JSMethod
   public void resetLoadmore() {
-    mLoadMoreRetry = "";
+    mForceLoadmoreNextTime = true;
+    mListCellCount = 0;
+  }
+
+  @Override
+  public void addEvent(String type) {
+    super.addEvent(type);
+    if (Constants.Event.SCROLL.equals(type) && getHostView() != null && getHostView().getInnerView() != null) {
+      WXRecyclerView innerView = getHostView().getInnerView();
+      innerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+          super.onScrolled(recyclerView, dx, dy);
+          int offsetX = recyclerView.computeHorizontalScrollOffset();
+          int offsetY = recyclerView.computeVerticalScrollOffset();
+          if (shouldReport(offsetX, offsetY)) {
+            int contentWidth = recyclerView.getMeasuredWidth() + recyclerView.computeHorizontalScrollRange();
+            int contentHeight = recyclerView.computeVerticalScrollRange();
+
+            Map<String, Object> event = new HashMap<>(2);
+            Map<String, Object> contentSize = new HashMap<>(2);
+            Map<String, Object> contentOffset = new HashMap<>(2);
+
+            contentSize.put(Constants.Name.WIDTH, WXViewUtils.getWebPxByWidth(contentWidth, getInstance().getInstanceViewPortWidth()));
+            contentSize.put(Constants.Name.HEIGHT, WXViewUtils.getWebPxByWidth(contentHeight, getInstance().getInstanceViewPortWidth()));
+
+            contentOffset.put(Constants.Name.X, - WXViewUtils.getWebPxByWidth(offsetX, getInstance().getInstanceViewPortWidth()));
+            contentOffset.put(Constants.Name.Y, - WXViewUtils.getWebPxByWidth(offsetY, getInstance().getInstanceViewPortWidth()));
+            event.put(Constants.Name.CONTENT_SIZE, contentSize);
+            event.put(Constants.Name.CONTENT_OFFSET, contentOffset);
+
+            fireEvent(Constants.Event.SCROLL, event);
+          }
+        }
+      });
+    }
+  }
+
+  private boolean shouldReport(int offsetX, int offsetY) {
+    if (mLastReport.x == -1 && mLastReport.y == -1) {
+      mLastReport.x = offsetX;
+      mLastReport.y = offsetY;
+      return true;
+    }
+
+    if (Math.abs(mLastReport.x - offsetX) >= mOffsetAccuracy || Math.abs(mLastReport.y - offsetY) >= mOffsetAccuracy) {
+      mLastReport.x = offsetX;
+      mLastReport.y = offsetY;
+      return true;
+    }
+
+    return false;
   }
 }
