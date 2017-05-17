@@ -290,6 +290,7 @@ public class Constants {
     String FILTER = "filter";
     String QUALITY = "quality";
     String SRC = "src";
+    String IMAGEURL = "imageurl";
     String PLACE_HOLDER = "placeHolder";
     String RESIZE_MODE = "resizeMode";
     String SHOW_INDICATORS = "showIndicators";
