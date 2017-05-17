@@ -95,6 +95,9 @@ public class WelcomeActivity extends WXBaseActivity {
             if (!new File(WXApplication.PATH_TMP).exists()) {
                 new File(WXApplication.PATH_TMP).mkdirs();
             }
+            if (!new File(WXApplication.PATH_APK).exists()) {
+                new File(WXApplication.PATH_APK).mkdirs();
+            }
             //2.拷贝。。。
             FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab0.zip");
             FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab1.zip");
