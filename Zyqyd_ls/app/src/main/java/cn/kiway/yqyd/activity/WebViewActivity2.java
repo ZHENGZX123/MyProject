@@ -125,6 +125,7 @@ public class WebViewActivity2 extends Activity implements Callback {
         wv.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Logger.log(":::::::::::::::::::" + url);
                 view.loadUrl(url);
                 return true;
             }
@@ -139,11 +140,14 @@ public class WebViewActivity2 extends Activity implements Callback {
         if (CheckVersionUtil.returnVersion(CheckVersionUtil.readFromAsset(WebViewActivity2.this), CheckVersionUtil
                 .readFileSdcard()) > 0) {//assect版本号大于本地，用assect
             wv.loadUrl(IContants.accetsUrl + token);
+            Logger.log(":::::::::::::::::::" + IContants.accetsUrl + token);
         } else {//本地文件没有，用assect
             if (new File(IContants.sdUrl).exists()) {
                 wv.loadUrl(IContants.fileSdUrl + token);
+                Logger.log(":::::::::::::::::::" + IContants.fileSdUrl + token);
             } else {
                 wv.loadUrl(IContants.accetsUrl + token);
+                Logger.log(":::::::::::::::::::" + IContants.accetsUrl + token);
             }
         }
     }
@@ -323,6 +327,7 @@ public class WebViewActivity2 extends Activity implements Callback {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            Logger.log(":::::::::::::::::::" + da.toString());
             return da.toString();
         }
 

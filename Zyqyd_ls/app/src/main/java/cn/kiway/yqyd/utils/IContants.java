@@ -17,4 +17,6 @@ public class IContants {
     public final static String accetsUrl = "file:///android_asset/yqyd(teacher)" + baseUrl + "?token=";
     public final static String sdUrl = Environment.getExternalStorageDirectory() + "/yqyd" + baseUrl;
     public final static String fileSdUrl = "file:///" + sdUrl + "?token=";
+
+
 }

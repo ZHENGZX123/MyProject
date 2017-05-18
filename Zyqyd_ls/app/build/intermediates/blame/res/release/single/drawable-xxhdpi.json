@@ -1,18 +1,18 @@
 [
     {
-        "merged": "F:\\kiway_xm\\WebViewDemo\\app\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\record_bottom.png",
-        "source": "F:\\kiway_xm\\WebViewDemo\\app\\src\\main\\res\\drawable-xxhdpi\\record_bottom.png"
+        "merged": "F:\\kiway_xm\\Zyqyd_ls\\app\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\ic_person.png",
+        "source": "F:\\kiway_xm\\Zyqyd_ls\\app\\src\\main\\res\\drawable-xxhdpi\\ic_person.png"
     },
     {
-        "merged": "F:\\kiway_xm\\WebViewDemo\\app\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\ic_person.png",
-        "source": "F:\\kiway_xm\\WebViewDemo\\app\\src\\main\\res\\drawable-xxhdpi\\ic_person.png"
+        "merged": "F:\\kiway_xm\\Zyqyd_ls\\app\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\record_top.png",
+        "source": "F:\\kiway_xm\\Zyqyd_ls\\app\\src\\main\\res\\drawable-xxhdpi\\record_top.png"
     },
     {
-        "merged": "F:\\kiway_xm\\WebViewDemo\\app\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\record_top.png",
-        "source": "F:\\kiway_xm\\WebViewDemo\\app\\src\\main\\res\\drawable-xxhdpi\\record_top.png"
+        "merged": "F:\\kiway_xm\\Zyqyd_ls\\app\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\ic_https.png",
+        "source": "F:\\kiway_xm\\Zyqyd_ls\\app\\src\\main\\res\\drawable-xxhdpi\\ic_https.png"
     },
     {
-        "merged": "F:\\kiway_xm\\WebViewDemo\\app\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\ic_https.png",
-        "source": "F:\\kiway_xm\\WebViewDemo\\app\\src\\main\\res\\drawable-xxhdpi\\ic_https.png"
+        "merged": "F:\\kiway_xm\\Zyqyd_ls\\app\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\record_bottom.png",
+        "source": "F:\\kiway_xm\\Zyqyd_ls\\app\\src\\main\\res\\drawable-xxhdpi\\record_bottom.png"
     }
 ]
