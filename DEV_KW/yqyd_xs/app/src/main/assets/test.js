@@ -6522,12 +6522,7 @@ exports.default = {
 		openIndex: function openIndex() {
 			var self = this;
 
-			sjevent.showDropDown('test1,test2,test3,test4,test5,test6' , 0 , 300 , 0.5 , function (ret) {
-                                                      					modal.alert({
-                                                                        					message: ret.position + ' ' + ret.value ,
-                                                                        					okTitle: '好的'
-                                                                        				}, function () {});
-                                                      				} );
+			sjevent.loginElsewhere();
 
 			if(true){
 			    return;

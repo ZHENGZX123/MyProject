@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +14,7 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -77,7 +79,7 @@ public class SJEventModule extends WXModule {
     @JSMethod(uiThread = true)
     public void loginSuccess(final String username) {
         Log.d("test", "loginSuccess username = " + username);
-        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
+        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).apply();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
         ScreenManager.getScreenManager().popAllActivityExceptOne(MainActivity2.class);
     }
@@ -85,9 +87,27 @@ public class SJEventModule extends WXModule {
     @JSMethod(uiThread = true)
     public void logoutSuccess() {
         Log.d("test", "logoutSuccess");
-        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
+        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).apply();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
         ScreenManager.getScreenManager().popAllActivityExceptOne(LoginActivity.class);
+    }
+
+    @JSMethod(uiThread = true)
+    public void loginElsewhere() {
+        Log.d("test", "loginElsewhere");
+        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).apply();
+        AlertDialog.Builder builder = new AlertDialog.Builder(mWXSDKInstance.getContext());
+        builder.setMessage("您的帐号已经在别处登录，请您退出APP");
+        builder.setTitle("提示");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                android.os.Process.killProcess(android.os.Process.myPid());
+            }
+        });
+        builder.setCancelable(false);
+        builder.create().show();
     }
 
     @JSMethod(uiThread = true)
