@@ -25,6 +25,7 @@ import cn.kiway.yqyd.utils.CheckVersionUtil;
 import cn.kiway.yqyd.utils.DownLoadZip;
 import cn.kiway.yqyd.utils.FileUtils;
 import cn.kiway.yqyd.utils.HanderMessageWhat;
+import cn.kiway.yqyd.utils.IContants;
 import cn.kiway.yqyd.utils.Logger;
 import cn.kiway.yqyd.utils.SharedPreferencesUtil;
 import okhttp3.Call;
@@ -44,6 +45,7 @@ public class BootActivity extends Activity implements Animation.AnimationListene
     private App app;
     private LoginDialog loginDialog;
     private JSONObject da;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +60,7 @@ public class BootActivity extends Activity implements Animation.AnimationListene
     void setAnimmation(View view) {
         //动画效果参数直接定义
         Animation animation = new AlphaAnimation(0.1f, 1.0f);
-        if (SharedPreferencesUtil.getString(this, "userName").equals("")) {
+        if (SharedPreferencesUtil.getString(this,IContants.userName).equals("")) {
             animation.setDuration(2000);
         } else {
             animation.setDuration(1000);
@@ -67,9 +69,11 @@ public class BootActivity extends Activity implements Animation.AnimationListene
         view.setAnimation(animation);
     }
 
-    public void loading(String userName, String password, String type) {
+    public void loading() {
         final Request request = new Request.Builder()
-                .url(loginUrl.replace("{userName}", userName).replace("{type}", type) + password)
+                .url(loginUrl.replace("{userName}", SharedPreferencesUtil.getString(this, IContants.userName))
+                        .replace("{type}", SharedPreferencesUtil.getString(this, IContants.type)) +
+                        SharedPreferencesUtil.getString(this, IContants.passWord))
                 .build();
         Call call = app.mOkHttpClient.newCall(request);
         call.enqueue(this);
@@ -112,14 +116,14 @@ public class BootActivity extends Activity implements Animation.AnimationListene
                     DownLoadZip.downoalZip(data.optString("zipUrl"), app, this, mHandler);
                 } else {
                     //不需要更新
-                    loading(SharedPreferencesUtil.getString(this, "userName"), SharedPreferencesUtil.getString(this,
-                            "passWord"),SharedPreferencesUtil.getString(this, "type"));
+                    loading();
                 }
             } else {
                 final JSONObject data = new JSONObject(response.body().string());
                 if (data.optInt("StatusCode") == 200) {
-                    startActivity(new Intent(this, WebViewActivity2.class).putExtra("token", SharedPreferencesUtil
-                            .getString(this, "userName")));
+                    startActivity(new Intent(this, WebViewActivity2.class).putExtra(IContants.token,
+                            SharedPreferencesUtil
+                            .getString(this, IContants.userName)));
                     finish();
                 } else {
                     startLoadingActivity("登录失败");
@@ -139,8 +143,7 @@ public class BootActivity extends Activity implements Animation.AnimationListene
         if (SharedPreferencesUtil.getString(this, "userName").equals("")) {
             startLoadingActivity(null);
         } else {
-            loading(SharedPreferencesUtil.getString(this, "userName"), SharedPreferencesUtil.getString(this,
-                    "passWord"), SharedPreferencesUtil.getString(this, "type"));
+            loading();
         }
     }
 
@@ -163,20 +166,17 @@ public class BootActivity extends Activity implements Animation.AnimationListene
             switch (msg.what) {
                 case HanderMessageWhat.messageWhat1:
                     loginDialog.setTitle(msg.obj.toString());
+
                     break;
                 case FileUtils.CompressStatus.COMPLETED:
                     loginDialog.close();
                     FileUtils.writeFileData(da.toString());//解压成功后写入当前版本号
                     Toast.makeText(BootActivity.this, "更新成功", Toast.LENGTH_SHORT).show();
-                    loading(SharedPreferencesUtil.getString(BootActivity.this, "userName"), SharedPreferencesUtil
-                            .getString(BootActivity.this,
-                                    "passWord"),SharedPreferencesUtil.getString(BootActivity.this, "userName"));
+                    loading();
                     break;
                 case FileUtils.CompressStatus.ERROR:
                     loginDialog.close();
-                    loading(SharedPreferencesUtil.getString(BootActivity.this, "userName"), SharedPreferencesUtil
-                            .getString(BootActivity.this,
-                                    "passWord"),SharedPreferencesUtil.getString(BootActivity.this, "userName"));
+                    loading();
                     Toast.makeText(BootActivity.this, "解压失败", Toast.LENGTH_SHORT).show();
                     break;
                 case FileUtils.CompressStatus.HANDLING:
