@@ -319,7 +319,7 @@ public class WebViewActivity2 extends Activity implements Callback {
             JSONObject da = new JSONObject();
             try {
                 da.put("userName", SharedPreferencesUtil.getString(WebViewActivity2.this, IContants.userName));
-                da.put("schoolCode", SharedPreferencesUtil.getString(WebViewActivity2.this, IContants.passWord));
+                da.put("schoolCode", SharedPreferencesUtil.getString(WebViewActivity2.this, IContants.schoolCode));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
