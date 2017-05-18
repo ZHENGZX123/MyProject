@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -46,6 +47,7 @@ public class LoginActivity extends Activity implements Callback {
     }
 
     public void clickLogin(View v) {
+        hideKeyboard();
         error.setText("");
         if (userName.getText().length() <= 0) {
             error.setText("请输入用户名");
@@ -86,7 +88,8 @@ public class LoginActivity extends Activity implements Callback {
                 SharedPreferencesUtil.save(this, IContants.userName, userName.getText().toString());
                 SharedPreferencesUtil.save(this, IContants.passWord, password.getText().toString());
                 SharedPreferencesUtil.save(this, IContants.schoolCode, data.optString("schoolCode"));
-                startActivity(new Intent(this, WebViewActivity2.class).putExtra(IContants.token, userName.getText().toString
+                startActivity(new Intent(this, WebViewActivity2.class).putExtra(IContants.token, userName.getText()
+                        .toString
                         ()));
                 finish();
             } else {
@@ -99,6 +102,22 @@ public class LoginActivity extends Activity implements Callback {
                 });
             }
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 隐藏软键盘
+     */
+    void hideKeyboard() {
+        try {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+            View view = getCurrentFocus();
+            if (view != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

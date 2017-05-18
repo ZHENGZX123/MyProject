@@ -1,22 +1,22 @@
 [
     {
-        "merged": "F:\\kiway_xm\\WebViewDemo\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\scan_line.png",
-        "source": "F:\\kiway_xm\\WebViewDemo\\app\\src\\main\\res\\drawable-mdpi\\scan_line.png"
+        "merged": "F:\\kiway_xm\\Zyqyd_ls\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\ic_https.png",
+        "source": "F:\\kiway_xm\\Zyqyd_ls\\app\\src\\main\\res\\drawable-mdpi\\ic_https.png"
     },
     {
-        "merged": "F:\\kiway_xm\\WebViewDemo\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\ic_https.png",
-        "source": "F:\\kiway_xm\\WebViewDemo\\app\\src\\main\\res\\drawable-mdpi\\ic_https.png"
+        "merged": "F:\\kiway_xm\\Zyqyd_ls\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\scan_mask.png",
+        "source": "F:\\kiway_xm\\Zyqyd_ls\\app\\src\\main\\res\\drawable-mdpi\\scan_mask.png"
     },
     {
-        "merged": "F:\\kiway_xm\\WebViewDemo\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\ic_person.png",
-        "source": "F:\\kiway_xm\\WebViewDemo\\app\\src\\main\\res\\drawable-mdpi\\ic_person.png"
+        "merged": "F:\\kiway_xm\\Zyqyd_ls\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\capture.png",
+        "source": "F:\\kiway_xm\\Zyqyd_ls\\app\\src\\main\\res\\drawable-mdpi\\capture.png"
     },
     {
-        "merged": "F:\\kiway_xm\\WebViewDemo\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\capture.png",
-        "source": "F:\\kiway_xm\\WebViewDemo\\app\\src\\main\\res\\drawable-mdpi\\capture.png"
+        "merged": "F:\\kiway_xm\\Zyqyd_ls\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\scan_line.png",
+        "source": "F:\\kiway_xm\\Zyqyd_ls\\app\\src\\main\\res\\drawable-mdpi\\scan_line.png"
     },
     {
-        "merged": "F:\\kiway_xm\\WebViewDemo\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\scan_mask.png",
-        "source": "F:\\kiway_xm\\WebViewDemo\\app\\src\\main\\res\\drawable-mdpi\\scan_mask.png"
+        "merged": "F:\\kiway_xm\\Zyqyd_ls\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi\\ic_person.png",
+        "source": "F:\\kiway_xm\\Zyqyd_ls\\app\\src\\main\\res\\drawable-mdpi\\ic_person.png"
     }
 ]

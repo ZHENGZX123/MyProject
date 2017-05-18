@@ -1,48 +1,48 @@
 -- Merging decision tree log ---
 manifest
-ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:2:1-48:12
+ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:2:1-48:12
 	package
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:4:11-34
-		INJECTED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml
-		INJECTED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:4:11-34
+		INJECTED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml
 	android:versionName
-		INJECTED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml
-		INJECTED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml
 	xmlns:tools
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:3:11-57
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:3:11-57
 	xmlns:android
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:2:11-69
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:2:11-69
 	android:versionCode
-		INJECTED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml
-		INJECTED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml
 uses-permission#android.permission.INTERNET
-ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:6:5-66
+ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:6:5-66
 	android:name
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:6:22-64
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:6:22-64
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:7:5-80
-MERGED from [WebViewDemo:wjc_ImagePicker:unspecified] F:\kiway_xm\WebViewDemo\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:8:5-81
-MERGED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:18:5-81
+ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:7:5-80
+MERGED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:8:5-81
+MERGED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:18:5-81
 	android:name
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:7:22-78
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:7:22-78
 uses-permission#android.permission.READ_EXTERNAL_STORAGE
-ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:8:5-79
-MERGED from [WebViewDemo:wjc_ImagePicker:unspecified] F:\kiway_xm\WebViewDemo\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:10:5-80
+ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:8:5-79
+MERGED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:10:5-80
 	android:name
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:8:22-77
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:8:22-77
 uses-permission#android.permission.RECORD_AUDIO
-ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:9:5-87
+ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:9:5-87
 	android:name
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:9:22-68
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:9:22-68
 uses-permission#android.permission.MOUNT_UNMOUNT_FILESYSTEMS
-ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:10:5-83
-MERGED from [WebViewDemo:wjc_ImagePicker:unspecified] F:\kiway_xm\WebViewDemo\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:6:5-84
+ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:10:5-83
+MERGED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:6:5-84
 	android:name
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:10:22-81
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:10:22-81
 application
-ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:12:5-46:19
-MERGED from [WebViewDemo:wjc_ImagePicker:unspecified] F:\kiway_xm\WebViewDemo\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:12:5-23:19
-MERGED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:20:5-30:19
+ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:12:5-46:19
+MERGED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:12:5-23:19
+MERGED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:20:5-30:19
 MERGED from [pub.devrel:easypermissions:0.1.7] C:\Users\Administrator\.android\build-cache\31975a3344587551dd92e26420c43bf0f16b14e6\output\AndroidManifest.xml:12:5-20
 MERGED from [com.android.support:appcompat-v7:25.0.1] C:\Users\Administrator\.android\build-cache\75d7dd713e125d8aceb2a68fe27116987b08cd89\output\AndroidManifest.xml:25:5-20
 MERGED from [com.android.support:support-v4:25.0.1] C:\Users\Administrator\.android\build-cache\680f3b3047042086c585ab9df02cabc17fc85072\output\AndroidManifest.xml:25:5-20
@@ -55,71 +55,71 @@ MERGED from [com.android.support:support-vector-drawable:25.0.1] C:\Users\Admini
 MERGED from [com.android.support:support-compat:25.0.1] C:\Users\Administrator\.android\build-cache\9d4c01c452d53f52ec8945aa4d19fde3ff563420\output\AndroidManifest.xml:25:5-20
 MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Administrator\.android\build-cache\0f39971a2f439f398b6c782b244725406f26f03a\output\AndroidManifest.xml:9:5-20
 	android:label
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:16:9-41
-		REJECTED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:23:9-41
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:16:9-41
+		REJECTED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:23:9-41
 	android:supportsRtl
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:17:9-35
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:17:9-35
 	android:allowBackup
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:14:9-35
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:14:9-35
 	android:icon
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:15:9-43
-		REJECTED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:22:9-43
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:15:9-43
+		REJECTED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:22:9-43
 	android:theme
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:18:9-56
-		REJECTED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:24:9-56
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:18:9-56
+		REJECTED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:24:9-56
 	tools:replace
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:19:9-67
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:19:9-67
 	android:name
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:13:9-28
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:13:9-28
 activity#cn.kiway.yqyd.activity.WebViewActivity2
-ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:21:9-26:61
+ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:21:9-26:61
 	android:screenOrientation
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:26:13-49
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:26:13-49
 	android:label
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:24:13-45
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:24:13-45
 	android:launchMode
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:25:13-43
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:25:13-43
 	android:configChanges
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:23:13-63
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:23:13-63
 	android:name
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:22:13-67
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:22:13-67
 activity#cn.kiway.yqyd.activity.LoginActivity
-ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:27:9-33:25
+ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:27:9-33:25
 	android:screenOrientation
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:32:13-49
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:32:13-49
 	android:label
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:30:13-45
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:30:13-45
 	android:launchMode
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:31:13-43
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:31:13-43
 	android:configChanges
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:29:13-63
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:29:13-63
 	android:name
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:28:13-64
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:28:13-64
 activity#cn.kiway.yqyd.activity.BootActivity
-ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:34:9-45:20
+ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:34:9-45:20
 	android:screenOrientation
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:39:13-49
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:39:13-49
 	android:label
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:37:13-45
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:37:13-45
 	android:launchMode
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:38:13-43
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:38:13-43
 	android:configChanges
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:36:13-63
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:36:13-63
 	android:name
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:35:13-63
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:35:13-63
 intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
-ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:40:13-44:29
+ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:40:13-44:29
 action#android.intent.action.MAIN
-ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:41:17-68
+ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:41:17-68
 	android:name
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:41:25-66
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:41:25-66
 category#android.intent.category.LAUNCHER
-ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:43:17-76
+ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:43:17-76
 	android:name
-		ADDED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:43:27-74
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:43:27-74
 uses-sdk
-INJECTED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
-MERGED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:10:5-13:105
+INJECTED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+MERGED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:10:5-13:105
 MERGED from [pub.devrel:easypermissions:0.1.7] C:\Users\Administrator\.android\build-cache\31975a3344587551dd92e26420c43bf0f16b14e6\output\AndroidManifest.xml:8:5-10:41
 MERGED from [cn.bingoogolapple:bga-qrcodecore:1.1.7] C:\Users\Administrator\.android\build-cache\4ada9098ca763e0296ab5c3d00ec345b545b1339\output\AndroidManifest.xml:6:5-8:41
 MERGED from [cn.bingoogolapple:bga-zxing:1.1.7] C:\Users\Administrator\.android\build-cache\54d315c0a6dd625ace3051b566cc412f0a65678f\output\AndroidManifest.xml:6:5-8:41
@@ -136,54 +136,54 @@ MERGED from [com.android.support:support-vector-drawable:25.0.1] C:\Users\Admini
 MERGED from [com.android.support:support-compat:25.0.1] C:\Users\Administrator\.android\build-cache\9d4c01c452d53f52ec8945aa4d19fde3ff563420\output\AndroidManifest.xml:21:5-23:58
 MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Administrator\.android\build-cache\0f39971a2f439f398b6c782b244725406f26f03a\output\AndroidManifest.xml:5:5-7:41
 	tools:overrideLibrary
-		ADDED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:13:9-102
+		ADDED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:13:9-102
 	android:targetSdkVersion
-		INJECTED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml
-		INJECTED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml
-		INJECTED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml
 activity#com.lzy.imagepicker.ui.ImageBaseActivity
-ADDED from [WebViewDemo:wjc_ImagePicker:unspecified] F:\kiway_xm\WebViewDemo\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:13:9-77
+ADDED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:13:9-77
 	android:name
-		ADDED from [WebViewDemo:wjc_ImagePicker:unspecified] F:\kiway_xm\WebViewDemo\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:13:19-74
+		ADDED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:13:19-74
 activity#com.lzy.imagepicker.ui.ImageGridActivity
-ADDED from [WebViewDemo:wjc_ImagePicker:unspecified] F:\kiway_xm\WebViewDemo\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:14:9-16:55
+ADDED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:14:9-16:55
 	android:theme
-		ADDED from [WebViewDemo:wjc_ImagePicker:unspecified] F:\kiway_xm\WebViewDemo\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:16:13-52
+		ADDED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:16:13-52
 	android:name
-		ADDED from [WebViewDemo:wjc_ImagePicker:unspecified] F:\kiway_xm\WebViewDemo\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:15:13-68
+		ADDED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:15:13-68
 activity#com.lzy.imagepicker.ui.ImageCropActivity
-ADDED from [WebViewDemo:wjc_ImagePicker:unspecified] F:\kiway_xm\WebViewDemo\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:17:9-19:55
+ADDED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:17:9-19:55
 	android:theme
-		ADDED from [WebViewDemo:wjc_ImagePicker:unspecified] F:\kiway_xm\WebViewDemo\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:19:13-52
+		ADDED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:19:13-52
 	android:name
-		ADDED from [WebViewDemo:wjc_ImagePicker:unspecified] F:\kiway_xm\WebViewDemo\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:18:13-68
+		ADDED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:18:13-68
 activity#com.lzy.imagepicker.ui.ImagePreviewActivity
-ADDED from [WebViewDemo:wjc_ImagePicker:unspecified] F:\kiway_xm\WebViewDemo\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:20:9-22:65
+ADDED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:20:9-22:65
 	android:theme
-		ADDED from [WebViewDemo:wjc_ImagePicker:unspecified] F:\kiway_xm\WebViewDemo\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:22:13-62
+		ADDED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:22:13-62
 	android:name
-		ADDED from [WebViewDemo:wjc_ImagePicker:unspecified] F:\kiway_xm\WebViewDemo\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:21:13-71
+		ADDED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:21:13-71
 uses-permission#android.permission.READ_PHONE_STATE
-IMPLIED from F:\kiway_xm\WebViewDemo\app\src\main\AndroidManifest.xml:2:1-48:12 reason: com.lzy.imagepicker has a targetSdkVersion < 4
+IMPLIED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:2:1-48:12 reason: com.lzy.imagepicker has a targetSdkVersion < 4
 uses-permission#android.permission.CAMERA
-ADDED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:15:5-65
+ADDED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:15:5-65
 	android:name
-		ADDED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:15:22-62
+		ADDED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:15:22-62
 uses-permission#android.permission.VIBRATE
-ADDED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:16:5-66
+ADDED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:16:5-66
 	android:name
-		ADDED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:16:22-63
+		ADDED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:16:22-63
 uses-permission#android.permission.FLASHLIGHT
-ADDED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:17:5-69
+ADDED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:17:5-69
 	android:name
-		ADDED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:17:22-66
+		ADDED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:17:22-66
 activity#cn.bingoogolapple.qrcode.zxingdemo.ScanActivity
-ADDED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:25:9-29:20
+ADDED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:25:9-29:20
 	android:screenOrientation
-		ADDED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:27:13-49
+		ADDED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:27:13-49
 	android:theme
-		ADDED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:28:13-69
+		ADDED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:28:13-69
 	android:name
-		ADDED from [WebViewDemo:zxingScan:unspecified] F:\kiway_xm\WebViewDemo\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:26:13-75
+		ADDED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:26:13-75
