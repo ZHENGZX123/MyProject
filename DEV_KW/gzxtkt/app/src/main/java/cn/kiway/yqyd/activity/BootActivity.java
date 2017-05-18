@@ -40,8 +40,8 @@ import static cn.kiway.yqyd.utils.HttpUploadFile.loginUrl;
  */
 
 public class BootActivity extends Activity implements Animation.AnimationListener, Callback {
-    ImageView Img;
-    App app;
+    private ImageView Img;
+    private App app;
     private LoginDialog loginDialog;
     private JSONObject da;
     @Override

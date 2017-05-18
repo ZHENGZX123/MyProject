@@ -13,7 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import cn.kiway.yqyd.App;
 import cn.kiway.yqyd.R;
@@ -28,12 +27,12 @@ import okhttp3.Response;
 import static cn.kiway.yqyd.utils.HttpUploadFile.loginUrl;
 
 public class LoginActivity extends Activity implements Callback {
-    App app;
-    EditText userName, password;
-    String type;
-    TextView error;
-    Button loadButton;
-    RadioButton rb1;
+    private App app;
+    private EditText userName, password;
+    private String type;
+    private TextView error;
+    private Button loadButton;
+    private RadioButton rb1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
