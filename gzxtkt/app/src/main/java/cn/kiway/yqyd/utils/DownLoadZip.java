@@ -26,9 +26,7 @@ public class DownLoadZip {
         app.mOkHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                activity.loading(SharedPreferencesUtil.getString(activity, "userName"), SharedPreferencesUtil
-                        .getString(activity,
-                                "passWord"), SharedPreferencesUtil.getString(activity, "type"));
+                activity.loading();
             }
 
             @Override
@@ -68,9 +66,7 @@ public class DownLoadZip {
                     msg.what = HanderMessageWhat.messageWhat1;
                     msg.obj = "文件下载失败,取消更新，重新登录";
                     mHandler.sendMessage(msg);
-                    activity.loading(SharedPreferencesUtil.getString(activity, "userName"), SharedPreferencesUtil
-                            .getString(activity,
-                                    "passWord"), SharedPreferencesUtil.getString(activity, "type"));
+                    activity.loading();
                 } finally {
                     try {
                         if (is != null)

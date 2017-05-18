@@ -35,6 +35,7 @@ import cn.kiway.yqyd.R;
 import cn.kiway.yqyd.dialog.LoginDialog;
 import cn.kiway.yqyd.utils.HanderMessageWhat;
 import cn.kiway.yqyd.utils.HttpUploadFile;
+import cn.kiway.yqyd.utils.IContants;
 import cn.kiway.yqyd.utils.Logger;
 import cn.kiway.yqyd.utils.SharedPreferencesUtil;
 import okhttp3.Call;
@@ -109,7 +110,7 @@ public class WebViewActivity2 extends Activity implements Callback {
     private void load() {
         //String token = getIntent().getStringExtra("token");
         //  wv.loadUrl("file:///android_asset/txkt_teacher/yqyd/yqyd/index/index.html?token=" + token);
-        wv.loadUrl("file:///android_asset/txkt_teacher/gzxtkt/wx/index.html");
+        wv.loadUrl(IContants.accetsUrl);
     }
 
 
@@ -122,7 +123,7 @@ public class WebViewActivity2 extends Activity implements Callback {
             String url = wv.getUrl();
             String page = url.substring(url.lastIndexOf("/") + 1);
             //Toast.makeText(this, page, Toast.LENGTH_SHORT).show();
-            if (page.contains("file:///android_asset/txkt_teacher/gzxtkt/wx/index.html") || page
+            if (page.contains(IContants.accetsUrl) || page
                     .endsWith("sc") || page.endsWith("main") || page.endsWith("/class/myclass")) {
                 long t = System.currentTimeMillis();
                 if (t - time >= 2000) {
@@ -208,8 +209,8 @@ public class WebViewActivity2 extends Activity implements Callback {
         @JavascriptInterface
         public void logout() {
             //退出
-            SharedPreferencesUtil.save(WebViewActivity2.this, "userName", "");
-            SharedPreferencesUtil.save(WebViewActivity2.this, "passWord", "");
+            SharedPreferencesUtil.save(WebViewActivity2.this, IContants.userName, "");
+            SharedPreferencesUtil.save(WebViewActivity2.this, IContants.passWord, "");
             startActivity(new Intent(WebViewActivity2.this, LoginActivity.class));
             finish();
         }
@@ -236,7 +237,7 @@ public class WebViewActivity2 extends Activity implements Callback {
         @JavascriptInterface
         public void playVideo(String url) {
             Intent intent = new Intent(WebViewActivity2.this, VideoActivity.class);
-            intent.putExtra("url", url);
+            intent.putExtra(IContants.url, url);
             startActivity(intent);
         }
 
@@ -247,8 +248,9 @@ public class WebViewActivity2 extends Activity implements Callback {
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(intent, ResultMessage777);
         }
+
         @JavascriptInterface
-        public  void showPhoto(ArrayList<String> list){
+        public void showPhoto(ArrayList<String> list) {
         }
     }
 

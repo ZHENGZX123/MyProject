@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import cn.kiway.yqyd.App;
 import cn.kiway.yqyd.R;
+import cn.kiway.yqyd.utils.IContants;
 import cn.kiway.yqyd.utils.Logger;
 import cn.kiway.yqyd.utils.Md5Util;
 import cn.kiway.yqyd.utils.SharedPreferencesUtil;
@@ -94,10 +95,11 @@ public class LoginActivity extends Activity implements Callback {
             final JSONObject data = new JSONObject(response.body().string());
             Logger.log(":::::::::::::::::::" + data);
             if (data.optInt("StatusCode") == 300) {
-                SharedPreferencesUtil.save(this, "userName", userName.getText().toString());
-                SharedPreferencesUtil.save(this, "passWord", Md5Util.Md5(password.getText().toString()));
-                SharedPreferencesUtil.save(this, "type", type);
-                startActivity(new Intent(this, WebViewActivity2.class).putExtra("token", userName.getText().toString
+                SharedPreferencesUtil.save(this, IContants.userName, userName.getText().toString());
+                SharedPreferencesUtil.save(this, IContants.passWord, Md5Util.Md5(password.getText().toString()));
+                SharedPreferencesUtil.save(this, IContants.type, type);
+                startActivity(new Intent(this, WebViewActivity2.class).putExtra(IContants.token, userName.getText()
+                        .toString
                         ()));
                 finish();
             } else {
