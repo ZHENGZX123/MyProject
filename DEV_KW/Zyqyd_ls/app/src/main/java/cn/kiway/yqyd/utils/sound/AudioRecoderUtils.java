@@ -25,11 +25,11 @@ public class AudioRecoderUtils {
     private OnAudioStatusUpdateListener audioStatusUpdateListener;
 
     /**
-     * 文件存储默认sdcard/record
+     * 文件存储默认/yqyd/sound/
      */
     public AudioRecoderUtils(){
 
-        //默认保存路径为/sdcard/record/下
+        //默认保存路径为/yqyd/sound/下
         this(Environment.getExternalStorageDirectory()+"/yqyd/sound/");
     }
 
