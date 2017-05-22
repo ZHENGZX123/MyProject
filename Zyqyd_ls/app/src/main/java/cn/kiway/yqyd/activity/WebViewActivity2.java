@@ -322,6 +322,7 @@ public class WebViewActivity2 extends Activity implements Callback {
 
         @JavascriptInterface
         public String getSessionObj() {//js获取用户名
+            Log.d("test", "getSessionObj is called");
             JSONObject da = new JSONObject();
             try {
                 da.put("userName", SharedPreferencesUtil.getString(WebViewActivity2.this, IContants.userName));
@@ -330,6 +331,7 @@ public class WebViewActivity2 extends Activity implements Callback {
                 e.printStackTrace();
             }
             Logger.log(":::::::::::::::::::" + da.toString());
+            Log.d("test", "da = " + da.toString());
             return da.toString();
         }
 

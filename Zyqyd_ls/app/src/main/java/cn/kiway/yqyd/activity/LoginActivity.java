@@ -3,6 +3,7 @@ package cn.kiway.yqyd.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -84,13 +85,14 @@ public class LoginActivity extends Activity implements Callback {
     public void onResponse(Call call, Response response) throws IOException {
         try {
             final JSONObject data = new JSONObject(response.body().string());
+            Log.d("test", "data = " + data.toString());
             if (data.optInt("errcode") == 200) {
                 SharedPreferencesUtil.save(this, IContants.userName, userName.getText().toString());
                 SharedPreferencesUtil.save(this, IContants.passWord, password.getText().toString());
                 SharedPreferencesUtil.save(this, IContants.schoolCode, data.optString("schoolCode"));
                 startActivity(new Intent(this, WebViewActivity2.class).putExtra(IContants.token, userName.getText()
                         .toString
-                        ()));
+                                ()));
                 finish();
             } else {
                 runOnUiThread(new Runnable() {
