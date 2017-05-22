@@ -1,7 +1,5 @@
 package com.zk.myweex.utils;
 
-import com.zk.myweex.utils.FileUtils;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -67,6 +65,9 @@ public class HttpDownload {
      * @return
      */
     public int downFile(String urlStr, String path, String fileName) {
+        if (new File(path + fileName).exists()) {
+            return 0;
+        }
         try {
             FileUtils fileUtils = new FileUtils();
             inputStream = getInputStreamFromURL(urlStr);

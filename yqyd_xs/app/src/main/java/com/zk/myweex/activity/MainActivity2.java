@@ -29,6 +29,7 @@ import com.zk.myweex.WXApplication;
 import com.zk.myweex.entity.TabEntity;
 import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.MyDBHelper;
+import com.zk.myweex.utils.NetworkUtil;
 import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.Utils;
 import com.zk.myweex.utils.VersionUpManager;
@@ -64,8 +65,8 @@ public class MainActivity2 extends TabActivity {
         main = this;
         Utils.checkNetWork(this);
 
-//        checkPackageService();
-//        checkZipVersion();
+        checkPackageService();
+        checkZipVersion();
         checkApkVersion();
 
         ArrayList<TabEntity> tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
@@ -78,13 +79,20 @@ public class MainActivity2 extends TabActivity {
         new Thread() {
             @Override
             public void run() {
+                long refuse = getSharedPreferences("kiway", 0).getLong("refuse", 0);
+                long now = System.currentTimeMillis();
+                long between = now - refuse;
+                Log.d("test", "between = " + between);
+                if (between <= 24 * 60 * 60 * 1000) {
+                    Log.d("test", "24小时检查一次");
+                    return;
+                }
                 try {
                     HttpGet httpRequest = new HttpGet("http://yqyd.qgjydd.com/yqyd/static/version/version_xs.xml");
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
                     Log.d("test", "ret = " + ret);
-
                     String expression = "<serverCode>.*</serverCode>";
                     Pattern pattern = Pattern.compile(expression);
                     Matcher matcher = pattern.matcher(ret);
@@ -104,9 +112,15 @@ public class MainActivity2 extends TabActivity {
                     Log.d("test", "current = " + getCurrentVersion());
                     if (getCurrentVersion().compareTo(version) < 0) {
                         //download
+                        if (!NetworkUtil.isWifi(MainActivity2.this)) {
+                            Log.d("test", "不是wifi");
+                            return;
+                        }
                         Log.d("test", "download new version");
                         HttpDownload httpDownload = new HttpDownload();
-                        int downFile = httpDownload.downFile(apkUrl, WXApplication.PATH_APK, "yqyd.apk");
+
+                        String filename = "yqyd_" + version + ".apk";
+                        int downFile = httpDownload.downFile(apkUrl, WXApplication.PATH_APK, filename);
                         if (downFile == -1) {
                             return;
                         }
@@ -117,7 +131,6 @@ public class MainActivity2 extends TabActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
         }.start();
     }
@@ -127,20 +140,29 @@ public class MainActivity2 extends TabActivity {
             @Override
             public void run() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity2.this, AlertDialog.THEME_HOLO_LIGHT);
-                AlertDialog dialog_download = builder.setTitle("提示").setMessage("有新的版本，请安装，过程不消耗流量").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                AlertDialog dialog_download = builder.setTitle("提示").setMessage("有新的版本，是否安装新版本，过程不消耗流量").
+                        setNegativeButton("安装", new DialogInterface.OnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        String savedFilePath = WXApplication.PATH_APK + "yqyd.apk";
-                        Intent intent = new Intent();
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.setAction(Intent.ACTION_VIEW);
-                        intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
-                        startActivity(intent);
-                        finish();
-                    }
-                }).create();
-                dialog_download.setCancelable(false);
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                getSharedPreferences("kiway", 0).edit().putLong("refuse", 0).apply();
+                                String savedFilePath = WXApplication.PATH_APK + "yqyd.apk";
+                                Intent intent = new Intent();
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.setAction(Intent.ACTION_VIEW);
+                                intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+                        .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                getSharedPreferences("kiway", 0).edit().putLong("refuse", System.currentTimeMillis()).apply();
+                            }
+                        })
+                        .setCancelable(false)
+                        .create();
                 dialog_download.show();
             }
         });
