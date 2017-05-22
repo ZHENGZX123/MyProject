@@ -94,7 +94,6 @@ public class WebViewActivity2 extends Activity implements Callback {
         initSoundRecord();
     }
 
-
     private void initData() {
         //跨域问题
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -206,6 +205,7 @@ public class WebViewActivity2 extends Activity implements Callback {
         if (requestCode == ResultMessage999 && data != null) { //扫描二维码返回
             String result = data.getStringExtra("result");
             Toast.makeText(WebViewActivity2.this, result, Toast.LENGTH_SHORT).show();
+            wv.loadUrl("javascript:scanResult('" + result + "')");
         }
     }
 
@@ -253,6 +253,8 @@ public class WebViewActivity2 extends Activity implements Callback {
                         app.mOkHttpClient.newCall(request).enqueue(this);
                     } else {
                         Logger.log("---------------------语音");
+                        uploadBackUrl = data.optJSONObject("result").optString("url");
+                        wv.loadUrl("javascript:recordResult('" + uploadBackUrl + "')");
                     }
                 } else {
                     Message message = new Message();
@@ -350,6 +352,7 @@ public class WebViewActivity2 extends Activity implements Callback {
         @JavascriptInterface
         public void SoundRecording() {
             //录音上传
+            mPop.showAtLocation(rl, Gravity.CENTER, 0, 0);
         }
     }
 
