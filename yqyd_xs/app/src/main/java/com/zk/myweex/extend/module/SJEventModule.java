@@ -326,6 +326,8 @@ public class SJEventModule extends WXModule {
                 map.put("path", path);
                 pickerCallback.invoke(map);
 
+                //如果是头像的话，还要调用修改头像。。。
+
                 hidePD();
             }
         }.start();
