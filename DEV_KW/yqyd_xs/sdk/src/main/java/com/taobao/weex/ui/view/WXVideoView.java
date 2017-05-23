@@ -133,8 +133,8 @@ public class WXVideoView extends VideoView implements WXGestureObservable {
             mImageView = new ImageView(context);
 //            mImageView.setBackgroundResource(R.drawable.bg_video);
             FrameLayout.LayoutParams ivLayoutParams =
-                    new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
-                            FrameLayout.LayoutParams.WRAP_CONTENT);
+                    new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+                            FrameLayout.LayoutParams.MATCH_PARENT);
             mImageView.setLayoutParams(ivLayoutParams);
             pLayoutParams.gravity = Gravity.CENTER;
             addView(mImageView);

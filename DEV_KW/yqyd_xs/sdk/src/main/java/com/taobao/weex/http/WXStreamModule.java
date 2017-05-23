@@ -236,7 +236,7 @@ public class WXStreamModule extends WXModule {
 
                     //其他的只能取缓存
                     String cache = getCacheFromDB(optionsStr);
-                    Log.d("stream", "use cache = " + cache);
+                    //Log.d("stream", "use cache = " + cache);
                     if (cache == null) {
                         invoke(callback, resp);
                         return;
@@ -247,7 +247,7 @@ public class WXStreamModule extends WXModule {
                     resp.put("data", cache);//JSONObject.parse(cache)
                     invoke(callback, resp);
                 } else {
-                    Log.d("stream", "use http");
+                    //Log.d("stream", "use http");
                     invoke(callback, resp);
                     if (checkOfflineTaskConf(url)) {
                         //check offline task db , if exsit , delete it
