@@ -235,7 +235,7 @@ public class DefaultWXStorage implements IWXStorageAdapter {
         return true;
     }
 
-    private String performGetItem(String key) {
+    public String performGetItem(String key) {
         SQLiteDatabase database = mDatabaseSupplier.getDatabase();
         if (database == null) {
             return null;
