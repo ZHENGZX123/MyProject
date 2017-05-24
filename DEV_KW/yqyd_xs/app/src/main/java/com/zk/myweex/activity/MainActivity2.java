@@ -1,12 +1,7 @@
 package com.zk.myweex.activity;
 
-import android.app.AlertDialog;
 import android.app.TabActivity;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,29 +20,20 @@ import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.http.WXStreamModule;
 import com.taobao.weex.utils.cache.OfflineTask;
 import com.taobao.weex.utils.cache.WXDBHelper;
-import com.zk.myweex.WXApplication;
 import com.zk.myweex.entity.TabEntity;
-import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.MyDBHelper;
-import com.zk.myweex.utils.NetworkUtil;
 import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.Utils;
 import com.zk.myweex.utils.VersionUpManager;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.module.Module;
 import cn.kiway.yiqiyuedu.R;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
 
 
 public class MainActivity2 extends TabActivity {
@@ -56,6 +42,7 @@ public class MainActivity2 extends TabActivity {
     public LinearLayout bottom;
     private ArrayList<LinearLayout> lls = new ArrayList<>();
     public static MainActivity2 main;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,116 +54,11 @@ public class MainActivity2 extends TabActivity {
 
         checkPackageService();
         checkZipVersion();
-        checkApkVersion();
-
+        
         ArrayList<TabEntity> tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
         Log.d("test", "main initView");
         tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
         initView(tabs);
-    }
-
-    private void checkApkVersion() {
-        new Thread() {
-            @Override
-            public void run() {
-                long refuse = getSharedPreferences("kiway", 0).getLong("refuse", 0);
-                long now = System.currentTimeMillis();
-                long between = now - refuse;
-                Log.d("test", "between = " + between);
-                if (between <= 24 * 60 * 60 * 1000) {
-                    Log.d("test", "24小时检查一次");
-                    return;
-                }
-                try {
-                    HttpGet httpRequest = new HttpGet("http://yqyd.qgjydd.com/yqyd/static/version/version_xs.xml");
-                    DefaultHttpClient client = new DefaultHttpClient();
-                    HttpResponse response = client.execute(httpRequest);
-                    String ret = EntityUtils.toString(response.getEntity());
-                    Log.d("test", "ret = " + ret);
-                    String expression = "<serverCode>.*</serverCode>";
-                    Pattern pattern = Pattern.compile(expression);
-                    Matcher matcher = pattern.matcher(ret);
-                    String version = "1.0.0";
-                    String apkUrl = "";
-                    if (matcher.find()) {
-                        version = matcher.group().replace("<serverCode>", "")
-                                .replace("</serverCode>", "");
-                    }
-                    String expression2 = "<apkUrl>.*</apkUrl>";
-                    Pattern pattern2 = Pattern.compile(expression2);
-                    Matcher matcher2 = pattern2.matcher(ret);
-                    if (matcher2.find()) {
-                        apkUrl = matcher2.group().replace("<apkUrl>", "")
-                                .replace("</apkUrl>", "");
-                    }
-                    Log.d("test", "current = " + getCurrentVersion());
-                    if (getCurrentVersion().compareTo(version) < 0) {
-                        //download
-                        if (!NetworkUtil.isWifi(MainActivity2.this)) {
-                            Log.d("test", "不是wifi");
-                            return;
-                        }
-                        Log.d("test", "download new version");
-                        HttpDownload httpDownload = new HttpDownload();
-
-                        String filename = "yqyd_" + version + ".apk";
-                        int downFile = httpDownload.downFile(apkUrl, WXApplication.PATH_APK, filename);
-                        if (downFile == -1) {
-                            return;
-                        }
-                        showNewVersionDialog();
-                    } else {
-                        Log.d("test", "not download new version");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
-
-    private void showNewVersionDialog() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity2.this, AlertDialog.THEME_HOLO_LIGHT);
-                AlertDialog dialog_download = builder.setTitle("提示").setMessage("有新的版本，是否安装新版本，过程不消耗流量").
-                        setNegativeButton("安装", new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                getSharedPreferences("kiway", 0).edit().putLong("refuse", 0).apply();
-                                String savedFilePath = WXApplication.PATH_APK + "yqyd.apk";
-                                Intent intent = new Intent();
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.setAction(Intent.ACTION_VIEW);
-                                intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
-                                startActivity(intent);
-                                finish();
-                            }
-                        })
-                        .setPositiveButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                getSharedPreferences("kiway", 0).edit().putLong("refuse", System.currentTimeMillis()).apply();
-                            }
-                        })
-                        .setCancelable(false)
-                        .create();
-                dialog_download.show();
-            }
-        });
-    }
-
-    public String getCurrentVersion() {
-        String versionName = "1.0.0";
-        try {
-            PackageInfo pkg = getPackageManager().getPackageInfo(getPackageName(), 0);
-            versionName = pkg.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return versionName;
     }
 
     private void checkPackageService() {

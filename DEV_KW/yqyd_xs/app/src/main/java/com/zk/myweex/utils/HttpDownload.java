@@ -65,9 +65,9 @@ public class HttpDownload {
      * @return
      */
     public int downFile(String urlStr, String path, String fileName) {
-        if (new File(path + fileName).exists()) {
-            return 0;
-        }
+//        if (new File(path + fileName).exists()) {
+//            return 0;
+//        }
         try {
             FileUtils fileUtils = new FileUtils();
             inputStream = getInputStreamFromURL(urlStr);

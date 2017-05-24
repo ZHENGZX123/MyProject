@@ -117,6 +117,10 @@ public class VersionUpManager {
 
     //全量包
     protected void downloadFull(final String downloadUrl, final String zipName, final String version) {
+//        if (!NetworkUtil.isWifi(context)) {
+//            Log.d("version", "不是wifi，不下载");
+//            return;
+//        }
         HttpDownload httpDownload = new HttpDownload();
         int ret = httpDownload.downFile(downloadUrl, WXApplication.PATH_TMP, zipName);
         Log.d("version", "下载返回值 ret = " + ret);

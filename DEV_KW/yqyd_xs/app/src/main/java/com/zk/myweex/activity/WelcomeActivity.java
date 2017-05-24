@@ -1,9 +1,18 @@
 package com.zk.myweex.activity;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -15,35 +24,49 @@ import com.zk.myweex.WXApplication;
 import com.zk.myweex.entity.TabEntity;
 import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.utils.FileUtils;
+import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.MyDBHelper;
+import com.zk.myweex.utils.NetworkUtil;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cn.kiway.yiqiyuedu.R;
 
 public class WelcomeActivity extends WXBaseActivity {
 
+    private boolean isSuccess = false;
+    private boolean isJump = false;
+    private Dialog dialog_download;
+    private ProgressDialog pd;
+    private int lastProgress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
     }
 
     private void jump() {
         new Thread() {
             @Override
             public void run() {
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                checkHttpConf();
                 if (getSharedPreferences("kiway", 0).getBoolean("login", false)) {
                     startActivity(new Intent(WelcomeActivity.this, MainActivity2.class));
                 } else {
@@ -52,6 +75,228 @@ public class WelcomeActivity extends WXBaseActivity {
                 finish();
             }
         }.start();
+    }
+
+    public void checkNewVersion() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    checkTimeout();
+                    HttpGet httpRequest = new HttpGet("http://yqyd.qgjydd.com/yqyd/static/version/version_xs.xml");
+                    DefaultHttpClient client = new DefaultHttpClient();
+                    HttpResponse response = client.execute(httpRequest);
+                    String ret = EntityUtils.toString(response.getEntity());
+                    Log.d("test", "new version = " + ret);
+                    Message msg = new Message();
+                    msg.what = 2;
+                    msg.obj = ret;
+                    mHandler.sendMessage(msg);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    mHandler.sendEmptyMessage(3);
+                }
+            }
+        }.start();
+    }
+
+    private Handler mHandler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            if (isJump) {
+                return;
+            }
+            isSuccess = true;
+            if (msg.what == 2) {
+                String ret = (String) msg.obj;
+                try {
+                    Log.d("test", "新版本返回值" + ret);
+                    String expression = "<serverCode>.*</serverCode>";
+                    Pattern pattern = Pattern.compile(expression);
+                    Matcher matcher = pattern.matcher(ret);
+                    String version = "1.0.0";
+                    String apkUrl = "";
+                    if (matcher.find()) {
+                        version = matcher.group().replace("<serverCode>", "")
+                                .replace("</serverCode>", "");
+                    }
+                    String expression2 = "<apkUrl>.*</apkUrl>";
+                    Pattern pattern2 = Pattern.compile(expression2);
+                    Matcher matcher2 = pattern2.matcher(ret);
+                    if (matcher2.find()) {
+                        apkUrl = matcher2.group().replace("<apkUrl>", "")
+                                .replace("</apkUrl>", "");
+                    }
+                    Log.d("test", "current = " + getCurrentVersion());
+                    if (getCurrentVersion().compareTo(version) < 0) {
+                        showUpdateConfirmDialog(apkUrl);
+                    } else {
+                        jump();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    jump();
+                }
+            } else if (msg.what == 3) {
+                jump();
+            } else if (msg.what == 4) {
+                pd.dismiss();
+                toast(R.string.downloadsuccess);
+                // 下载完成后安装
+                String savedFilePath = (String) msg.obj;
+                Intent intent = new Intent();
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setAction(android.content.Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
+                startActivity(intent);
+                finish();
+            } else if (msg.what == 5) {
+                pd.dismiss();
+                toast(R.string.downloadfailure);
+                jump();
+            } else if (msg.what == 6) {
+                pd.setProgress(msg.arg1);
+            }
+        }
+    };
+
+    protected void showUpdateConfirmDialog(final String url) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+        dialog_download = builder.setMessage(R.string.getnewversion).setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                dialog_download.dismiss();
+                downloadNewVersion(url);
+            }
+        }).setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                jump();
+            }
+        }).create();
+        dialog_download.setCancelable(false);
+        dialog_download.show();
+    }
+
+    protected void downloadNewVersion(final String urlString) {
+        pd.setMessage(getString(R.string.downloading));
+        pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        pd.show();
+        pd.setCancelable(false);
+        pd.setProgress(0);
+
+        new Thread() {
+            @SuppressWarnings("resource")
+            public void run() {
+                try {
+                    InputStream input = null;
+                    HttpURLConnection urlConn = null;
+                    URL url = new URL(urlString);
+                    urlConn = (HttpURLConnection) url.openConnection();
+                    urlConn.setRequestProperty("Accept-Encoding", "identity");
+                    urlConn.setReadTimeout(10000);
+                    urlConn.setConnectTimeout(10000);
+                    input = urlConn.getInputStream();
+                    int total = urlConn.getContentLength();
+                    File file = null;
+                    OutputStream output = null;
+                    if (!new File(Environment.getExternalStorageDirectory().getPath() + "/cache").exists()) {
+                        new File(Environment.getExternalStorageDirectory().getPath() + "/cache").mkdirs();
+                    }
+                    String savedFilePath = Environment.getExternalStorageDirectory().getPath() + "/cache/yqyd.apk";
+                    file = new File(savedFilePath);
+                    output = new FileOutputStream(file);
+                    byte[] buffer = new byte[1024];
+                    int temp = 0;
+                    int read = 0;
+                    while ((temp = input.read(buffer)) != -1) {
+                        output.write(buffer, 0, temp);
+                        read += temp;
+                        float progress = ((float) read) / total;
+                        int progress_int = (int) (progress * 100);
+                        if (lastProgress != progress_int) {
+                            lastProgress = progress_int;
+                            Message msg = new Message();
+                            msg.what = 6;// downloading
+                            msg.arg1 = progress_int;
+                            mHandler.sendMessage(msg);
+                        } else {
+                            // do not send msg
+                        }
+                    }
+                    output.flush();
+                    output.close();
+                    input.close();
+                    Message msg = new Message();
+                    msg.what = 4;
+                    msg.obj = savedFilePath;
+                    mHandler.sendMessage(msg);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    mHandler.sendEmptyMessage(5);
+                }
+            }
+        }.start();
+    }
+
+    protected void checkTimeout() {
+        new Thread() {
+            public void run() {
+                try {
+                    sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (isSuccess) {
+                    return;
+                }
+                jump();
+            }
+        }.start();
+    }
+
+    private void showNewVersionDialog(final String filename) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeActivity.this, AlertDialog.THEME_HOLO_LIGHT);
+                AlertDialog dialog_download = builder.setTitle("提示").setMessage("有新的版本，是否安装新版本，过程不消耗流量").
+                        setNegativeButton("安装", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                getSharedPreferences("kiway", 0).edit().putLong("refuse", 0).apply();
+                                String savedFilePath = WXApplication.PATH_APK + filename;
+                                Intent intent = new Intent();
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.setAction(Intent.ACTION_VIEW);
+                                intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+                        .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                getSharedPreferences("kiway", 0).edit().putLong("refuse", System.currentTimeMillis()).apply();
+                            }
+                        })
+                        .setCancelable(false)
+                        .create();
+                dialog_download.show();
+            }
+        });
+    }
+
+    public String getCurrentVersion() {
+        String versionName = "1.0.0";
+        try {
+            PackageInfo pkg = getPackageManager().getPackageInfo(getPackageName(), 0);
+            versionName = pkg.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionName;
     }
 
     @Override
@@ -75,7 +320,8 @@ public class WelcomeActivity extends WXBaseActivity {
         public void onGranted() {
             toast("所有权限被接受");
             checkIsFirst();
-            jump();
+            checkHttpConf();
+            checkNewVersion();
         }
 
         @Override
@@ -160,17 +406,17 @@ public class WelcomeActivity extends WXBaseActivity {
             ZipPackage zip0 = new ZipPackage();
             zip0.name = "yqydTab0.zip";
             zip0.indexPath = "yqyd/dist/tab0.js";
-            zip0.version = "2.0.4";
+            zip0.version = "2.0.6";
             zip0.patchs = "";
             ZipPackage zip1 = new ZipPackage();
             zip1.name = "yqydTab1.zip";
             zip1.indexPath = "yqyd/dist/tab1.js";
-            zip1.version = "2.0.4";
+            zip1.version = "2.0.6";
             zip1.patchs = "";
             ZipPackage zip2 = new ZipPackage();
             zip2.name = "yqydTab2.zip";
             zip2.indexPath = "yqyd/dist/tab2.js";
-            zip2.version = "2.0.4";
+            zip2.version = "2.0.6";
             zip2.patchs = "";
             new MyDBHelper(getApplicationContext()).addZipPackage(zip0);
             new MyDBHelper(getApplicationContext()).addZipPackage(zip1);
@@ -198,7 +444,8 @@ public class WelcomeActivity extends WXBaseActivity {
             ActivityCompat.requestPermissions(this, permissionList.toArray(new String[permissionList.size()]), REQUEST_CODE);
         } else {
             checkIsFirst();
-            jump();
+            checkHttpConf();
+            checkNewVersion();
         }
     }
 

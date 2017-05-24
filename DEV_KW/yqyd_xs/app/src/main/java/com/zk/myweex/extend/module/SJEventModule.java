@@ -42,6 +42,7 @@ import com.qiniu.android.storage.Configuration;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
 import com.taobao.weex.annotation.JSMethod;
+import com.taobao.weex.appfram.storage.DefaultWXStorage;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
 import com.zk.myweex.WXApplication;
@@ -49,15 +50,19 @@ import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity2;
 import com.zk.myweex.utils.DensityUtil;
 import com.zk.myweex.utils.HttpDownload;
+import com.zk.myweex.utils.HttpUploadFile;
+import com.zk.myweex.utils.Logger;
 import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.ScreenUtil;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -67,19 +72,31 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 import cn.sharesdk.onekeyshare.ShareContentCustomizeCallback;
 import cn.sharesdk.sina.weibo.SinaWeibo;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
+import static com.zk.myweex.utils.HttpUploadFile.updateUserInfoUrl;
 import static com.zk.myweex.utils.Utils.getQiniuToken;
 
 
-public class SJEventModule extends WXModule {
+public class SJEventModule extends WXModule implements Callback {
 
     private MediaPlayer mPlayer;
+
+    OkHttpClient mOkHttpClient = new OkHttpClient();
+    private String uploadBackUrl;
 
     @JSMethod(uiThread = true)
     public void loginSuccess(final String username) {
         Log.d("test", "loginSuccess username = " + username);
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).apply();
+        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("username", username).apply();
         mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
         ScreenManager.getScreenManager().popAllActivityExceptOne(MainActivity2.class);
     }
@@ -126,7 +143,7 @@ public class SJEventModule extends WXModule {
             imagePicker.setShowCamera(true);// 是否显示摄像
 
             Intent intent = new Intent(mWXSDKInstance.getContext(), ImageGridActivity.class);
-            ((Activity) mWXSDKInstance.getContext()).startActivityForResult(intent, 888);
+            ((Activity) mWXSDKInstance.getContext()).startActivityForResult(intent, 8888);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -276,6 +293,21 @@ public class SJEventModule extends WXModule {
             pd.setMessage("上传中请稍等");
             pd.show();
             doUploadImage(images);
+        } else if (requestCode == 8888 && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
+            if (data == null) {
+                return;
+            }
+            boolean isOrig = data.getBooleanExtra(ImagePreviewActivity.ISORIGIN, false);
+            ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+            Log.d("test", "images count = " + images.size());
+            if (!isOrig) {
+                for (ImageItem ii : images) {
+                    File newFile = CompressHelper.getDefault(mWXSDKInstance.getContext()).compressToFile(new File(ii.path));
+                    ii.path = newFile.getAbsolutePath();
+                    ii.size = newFile.length();
+                }
+            }
+            uploadUserPic(images.get(0).path, HttpUploadFile.FileType.Image);
         } else if (requestCode == 999) {
             //扫描二维码返回
             if (data == null) {
@@ -284,6 +316,16 @@ public class SJEventModule extends WXModule {
             String result = data.getStringExtra("result");
             Log.d("test", "result = " + result);
             scanCallback.invoke(result);
+        }
+    }
+
+    void uploadUserPic(String fileName, String fileType) {
+        try {
+            String token = new DefaultWXStorage(mWXSDKInstance.getContext()).performGetItem("token");
+            mOkHttpClient.newCall(HttpUploadFile.returnUploadImgRequser(new File(fileName), fileType, token)).enqueue
+                    (this);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
     }
 
@@ -325,8 +367,6 @@ public class SJEventModule extends WXModule {
                 map.put("url", url);
                 map.put("path", path);
                 pickerCallback.invoke(map);
-
-                //如果是头像的话，还要调用修改头像。。。
 
                 hidePD();
             }
@@ -639,6 +679,58 @@ public class SJEventModule extends WXModule {
     }
 
     private ArrayList<String> items = new ArrayList<>();
+
+    @Override
+    public void onFailure(Call call, IOException e) {
+        toast("上传失败");
+    }
+
+    @Override
+    public void onResponse(Call call, Response response) throws IOException {
+        if (call.request().url().toString().equals(HttpUploadFile.uploadUserPicUrl)) {
+            try {
+                String token = new DefaultWXStorage(mWXSDKInstance.getContext()).performGetItem("token");
+
+                JSONObject data = new JSONObject(response.body().string());
+                Logger.log("------------" + data);
+                if (data.optInt("status") == 200) {
+                    String username = mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).getString("username", "");
+                    uploadBackUrl = data.optJSONObject("result").optString("url");
+                    RequestBody requestBodyPost = new FormBody.Builder()
+                            .add("loginAccount", username)
+                            .add("avatar", uploadBackUrl)
+                            .add("token", token)
+                            .build();
+                    Request request = new Request.Builder()
+                            .url(updateUserInfoUrl)
+                            .post(requestBodyPost)
+                            .build();
+                    mOkHttpClient.newCall(request).enqueue(this);
+                    Logger.log("------call------");
+                } else {
+                    toast("上传失败");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else if (call.request().url().toString().equals(updateUserInfoUrl))
+            try {
+                String s = response.body().string();
+                Logger.log("----lllll--------" + s);
+                JSONObject data = new JSONObject(s);
+                Logger.log("----lllll--------" + data);
+                if (data.optInt("status") == 200) {
+                    toast("更新成功");
+                    HashMap map = new HashMap();
+                    map.put("url", uploadBackUrl);
+                    pickerCallback.invoke(map);
+                } else {
+                    toast("更新失败");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+    }
 
     private class MyAdapter extends BaseAdapter {
 
