@@ -107,6 +107,7 @@ public class Constants {
     String QUALITY = "quality";
     String SRC = "src";
     String IMAGEURL = "imageurl";
+    String HIDE = "hide";
     String PLACE_HOLDER = "placeHolder";
     String RESIZE_MODE = "resizeMode";
     String SHOW_INDICATORS = "showIndicators";
