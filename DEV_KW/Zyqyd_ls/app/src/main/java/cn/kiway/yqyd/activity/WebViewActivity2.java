@@ -12,7 +12,9 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
+import android.webkit.MimeTypeMap;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -33,16 +35,21 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import cn.bingoogolapple.qrcode.zxingdemo.ScanActivity;
 import cn.kiway.yqyd.App;
 import cn.kiway.yqyd.R;
 import cn.kiway.yqyd.dialog.LoginDialog;
 import cn.kiway.yqyd.utils.CheckVersionUtil;
+import cn.kiway.yqyd.utils.DownLoadZip;
+import cn.kiway.yqyd.utils.EncryptUtil;
+import cn.kiway.yqyd.utils.FileUtils;
 import cn.kiway.yqyd.utils.HanderMessageWhat;
 import cn.kiway.yqyd.utils.HttpUploadFile;
 import cn.kiway.yqyd.utils.IContants;
@@ -61,13 +68,15 @@ import okhttp3.Response;
 import static cn.kiway.yqyd.utils.HanderMessageWhat.ResultMessage888;
 import static cn.kiway.yqyd.utils.HanderMessageWhat.ResultMessage999;
 import static cn.kiway.yqyd.utils.HanderMessageWhat.messageWhat1;
+import static cn.kiway.yqyd.utils.HttpUploadFile.getTokenUrl;
 import static cn.kiway.yqyd.utils.HttpUploadFile.updateUserInfoUrl;
+import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
 
 public class WebViewActivity2 extends Activity implements Callback {
 
     private WebView wv;
     private String uploadBackUrl = "";
-    private LoginDialog loginDialog;
+    public LoginDialog loginDialog;
     App app;
     private boolean isImg;
     /**
@@ -79,19 +88,37 @@ public class WebViewActivity2 extends Activity implements Callback {
     private Button SoundRecord;
     private PopupWindowFactory mPop;
     private RelativeLayout rl;
+    private String token;
+    private String httpToken;
+    private float x1, y1, x2, y2;
 
-    float x1, y1, x2, y2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview2);
+        token = getIntent().getStringExtra(IContants.token);
         wv = (WebView) findViewById(R.id.wv);
         loginDialog = new LoginDialog(this);
         app = (App) getApplicationContext();
         initData();
         load();
-        initSoundRecord();
+        // initSoundRecord();
+        loadToken();
+    }
+
+    void loadToken() {
+        String timestamp = System.currentTimeMillis() + "";
+        RequestBody requestBodyPost = new FormBody.Builder()
+                .add("loginAccount", SharedPreferencesUtil.getString(this, "userName"))
+                .add("timestamp", timestamp)
+                .add("sign", EncryptUtil.md5(SharedPreferencesUtil.getString(this, "userName") + timestamp))
+                .build();
+        Request request = new Request.Builder()
+                .url(getTokenUrl)
+                .post(requestBodyPost)
+                .build();
+        app.mOkHttpClient.newCall(request).enqueue(this);
     }
 
     private void initData() {
@@ -122,31 +149,71 @@ public class WebViewActivity2 extends Activity implements Callback {
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
         wv.setWebViewClient(new WebViewClient() {
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Logger.log(":::::::::::::::::::" + url);
+                Logger.log("shouldOverrideUrlLoading***********" + url);
                 view.loadUrl(url);
                 return true;
+            }
+
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                Logger.log("shouldInterceptRequest***********" + url);
+                if (url.startsWith("http://yqyd.qgjydd.com/yqyd/static/version/teacher.zip")) {
+                    String mimeType = getMimeType(url);
+                    Log.i(TAG, "尝试本地加载文件：" + url + "||mime:" + mimeType);
+                    InputStream is = null;
+                    try {
+                        String loginrl = url.replace("http://yqyd.qgjydd.com/yqyd/static/version/teacher.zip", "yqyd" +
+                                "(teacher)");
+                        Logger.log("***********" + loginrl);
+                        is = getIS(loginrl);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return new WebResourceResponse(mimeType, "utf-8", is);
+                }
+                return super.shouldInterceptRequest(view, url);
             }
         });
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new WebChromeClient());
-        wv.addJavascriptInterface(new JsAndroidIntetface(), "js");
+        wv.addJavascriptInterface(new JsAndroidInterface(), "js");
+    }
+
+    private InputStream getIS(String localUrl) throws IOException {
+        InputStream in = getAssets().open(localUrl);
+        return in;
+    }
+
+    private String getMimeType(String url) {
+        String type = null;
+        if (url.toLowerCase(Locale.CHINA).endsWith(".w")) {
+            type = "text/html";
+        } else {
+            String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+            if (extension != null) {
+                MimeTypeMap mime = MimeTypeMap.getSingleton();
+                type = mime.getMimeTypeFromExtension(extension);
+            }
+        }
+        return type;
     }
 
     private void load() {
-        String token = getIntent().getStringExtra(IContants.token);
+        // wv.loadUrl("http://yqyd.qgjydd.com/yqyd/static/version/teacher.zip" + baseUrl);
         if (CheckVersionUtil.returnVersion(CheckVersionUtil.readFromAsset(WebViewActivity2.this), CheckVersionUtil
-                .readFileSdcard()) > 0) {//assect版本号大于本地，用assect
+                .readFileSdcard()) >= 0) {//assect版本号大于本地，用assect
             wv.loadUrl(IContants.accetsUrl + token);
-            Logger.log(":::::::::::::::::::" + IContants.accetsUrl + token);
+            Logger.log(":::::::::::::::::::assetsindex" + IContants.accetsUrl + token);
         } else {//本地文件没有，用assect
             if (new File(IContants.sdUrl).exists()) {
                 wv.loadUrl(IContants.fileSdUrl + token);
-                Logger.log(":::::::::::::::::::" + IContants.fileSdUrl + token);
+                Logger.log(":::::::::::::::::::有index" + IContants.fileSdUrl + token);
             } else {
                 wv.loadUrl(IContants.accetsUrl + token);
-                Logger.log(":::::::::::::::::::" + IContants.accetsUrl + token);
+                Logger.log(":::::::::::::::::::没有index" + IContants.accetsUrl + token);
             }
         }
     }
@@ -214,8 +281,9 @@ public class WebViewActivity2 extends Activity implements Callback {
             loginDialog.show();
         this.isImg = isImg;
         try {
-            app.mOkHttpClient.newCall(HttpUploadFile.returnUploadImgRequser(new File(fileName), fileType)).enqueue
-                    (this);
+            app.mOkHttpClient.newCall(HttpUploadFile.returnUploadImgRequser(new File(fileName), fileType, httpToken))
+                    .enqueue
+                            (this);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -245,6 +313,7 @@ public class WebViewActivity2 extends Activity implements Callback {
                         RequestBody requestBodyPost = new FormBody.Builder()
                                 .add("loginAccount", SharedPreferencesUtil.getString(this, "userName"))
                                 .add("avatar", uploadBackUrl)
+                                .add("token", httpToken)
                                 .build();
                         Request request = new Request.Builder()
                                 .url(updateUserInfoUrl)
@@ -265,7 +334,7 @@ public class WebViewActivity2 extends Activity implements Callback {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else if (call.request().url().toString().equals(updateUserInfoUrl))
+        } else if (call.request().url().toString().equals(updateUserInfoUrl)) {
             try {
                 JSONObject data = new JSONObject(response.body().string());
                 Message message = new Message();
@@ -280,29 +349,24 @@ public class WebViewActivity2 extends Activity implements Callback {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-    }
-
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case HanderMessageWhat.messageWhat1:
-                    if (loginDialog != null)
-                        loginDialog.close();
-                    wv.loadUrl((String) msg.obj);
-                    break;
-                case HanderMessageWhat.messageWhat2:
-                    if (loginDialog != null)
-                        loginDialog.close();
-                    Toast.makeText(WebViewActivity2.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
-                    break;
+        } else if (call.request().url().toString().equals(getTokenUrl)) {
+            try {
+                JSONObject data = new JSONObject(response.body().string());
+                if (data.optInt("status") == 667) {
+                    httpToken = data.optString("message");
+                } else if (data.optInt("status") == 200) {
+                    httpToken = data.optString("result");
+                }
+                Logger.log("---------------------Token" + data);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
-    };
+    }
 
-    public class JsAndroidIntetface {
-        public JsAndroidIntetface() {
+
+    public class JsAndroidInterface {
+        public JsAndroidInterface() {
         }
 
         @JavascriptInterface
@@ -322,7 +386,6 @@ public class WebViewActivity2 extends Activity implements Callback {
 
         @JavascriptInterface
         public String getSessionObj() {//js获取用户名
-            Log.d("test", "getSessionObj is called");
             JSONObject da = new JSONObject();
             try {
                 da.put("userName", SharedPreferencesUtil.getString(WebViewActivity2.this, IContants.userName));
@@ -330,14 +393,14 @@ public class WebViewActivity2 extends Activity implements Callback {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Logger.log(":::::::::::::::::::" + da.toString());
-            Log.d("test", "da = " + da.toString());
             return da.toString();
         }
 
-        @JavascriptInterface
-        public void updateUserInfo() {
+        @android.webkit.JavascriptInterface
+        public void updateUserInfo(final String httpToken) {
+            Logger.log("*******************" + httpToken);
             //imagepicker
+            WebViewActivity2.this.httpToken = httpToken;
             ImagePicker imagePicker = ImagePicker.getInstance();
             imagePicker.setImageLoader(new GlideImageLoader());// 图片加载器
             imagePicker.setSelectLimit(1);// 设置可以选择几张
@@ -356,7 +419,56 @@ public class WebViewActivity2 extends Activity implements Callback {
             //录音上传
             mPop.showAtLocation(rl, Gravity.CENTER, 0, 0);
         }
+
+        @JavascriptInterface
+        public void downLoadFile(String dowaloadUrl, String fileName, String fileType) {
+            Logger.log("***********" + dowaloadUrl);
+            Logger.log("***********" + fileName);
+            Logger.log("***********" + fileType);
+            String fileNamePath = fileName + "." + fileType;
+            File file = new File(FileUtils.createDocFloder(), fileNamePath);
+            if (!file.exists()) {
+                Message msg = handler.obtainMessage();
+                msg.what = HanderMessageWhat.messageWhat4;
+                msg.obj = "文件正在下载\n0%";
+                handler.sendMessage(msg);
+                DownLoadZip.downoalFile(dowaloadUrl, app, handler, fileNamePath);
+            } else {
+                FileUtils.openFile(app.getApplicationContext(), file.getAbsolutePath());
+            }
+        }
+
+        @JavascriptInterface
+        public String getVersionCode() {
+            return CheckVersionUtil.getAppInfo(WebViewActivity2.this);
+        }
     }
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case HanderMessageWhat.messageWhat1:
+                    if (loginDialog != null)
+                        loginDialog.close();
+                    wv.loadUrl((String) msg.obj);
+                    break;
+                case HanderMessageWhat.messageWhat2:
+                    if (loginDialog != null)
+                        loginDialog.close();
+                    Toast.makeText(WebViewActivity2.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+                    break;
+                case HanderMessageWhat.messageWhat3:
+                    loginDialog.setTitle(msg.obj.toString());
+                    break;
+                case HanderMessageWhat.messageWhat4:
+                    loginDialog.setTitle(msg.obj.toString());
+                    loginDialog.show();
+                    break;
+            }
+        }
+    };
 
     /**
      * 录音
@@ -425,4 +537,5 @@ public class WebViewActivity2 extends Activity implements Callback {
             }
         });
     }
+
 }

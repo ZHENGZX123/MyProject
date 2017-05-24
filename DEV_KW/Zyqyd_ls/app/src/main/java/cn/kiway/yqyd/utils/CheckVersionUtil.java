@@ -16,6 +16,7 @@ import java.io.InputStream;
 public class CheckVersionUtil {
 
     public static String yqydPack = "yqyd";
+
     /**
      * 读取asset下面的版本号
      */
@@ -76,5 +77,16 @@ public class CheckVersionUtil {
                 return assetsVersion;
         }
         return "0.0.0";
+    }
+
+    public static String getAppInfo(Context context) {
+        try {
+            String pkName = context.getPackageName();
+            String versionName = context.getPackageManager().getPackageInfo(
+                    pkName, 0).versionName;
+            return versionName;
+        } catch (Exception e) {
+        }
+        return null;
     }
 }

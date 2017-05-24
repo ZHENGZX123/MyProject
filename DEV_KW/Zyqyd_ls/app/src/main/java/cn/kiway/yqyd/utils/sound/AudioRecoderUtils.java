@@ -113,9 +113,7 @@ public class AudioRecoderUtils {
             File file = new File(filePath);
             if (file.exists())
                 file.delete();
-
             filePath = "";
-
         }
 
         return endTime - startTime;

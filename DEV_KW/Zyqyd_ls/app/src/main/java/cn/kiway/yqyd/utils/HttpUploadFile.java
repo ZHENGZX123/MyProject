@@ -22,7 +22,8 @@ public class HttpUploadFile {
     public static String loginUrl = BaseUrl + "app/teaLogin?username={userName}&password=";//登录
     public static String updateUserInfoUrl = BaseUrl + "v1/app/uc/editPersonalInfo";//更新用户头像
     public static String uploadUserPicUrl = BaseUrl + "v1/app/upload";//上传图像
-    public static String checkVersion = BaseUrl + "static/version/zip_ls.json";
+    public static String checkVersion = BaseUrl + "static/version/zip_ls.json";//检查更新
+    public static String getTokenUrl = BaseUrl + "v1/app/token";//获取token
     ///public static String uploadUserPicUrl = "http://192.168.8.45:8070/v1/app/upload";
 
     public static RequestBody createCustomRequestBody(final MediaType contentType, final File file) {
@@ -53,7 +54,8 @@ public class HttpUploadFile {
         };
     }
 
-    public static Request returnUploadImgRequser(File fileName, String fileType) throws UnsupportedEncodingException {
+    public static Request returnUploadImgRequser(File fileName, String fileType, String httpToken) throws
+            UnsupportedEncodingException {
         Logger.log("图片地址：：：" + fileName.getPath());
         Logger.log("图片地址：：：：" + fileName.getName());
         Logger.log("图片地址：：：" + fileName.length() / 1024 + "K");
@@ -61,8 +63,8 @@ public class HttpUploadFile {
         builder.addFormDataPart("file", fileName.getName(), createCustomRequestBody(MediaType.parse
                         (fileType),
                 fileName));
+        builder.addFormDataPart("token", httpToken);
         MultipartBody requestBody = builder.build();
-
         return new Request.Builder()
                 .url(uploadUserPicUrl)//地址
                 .post(requestBody)//添加请求体

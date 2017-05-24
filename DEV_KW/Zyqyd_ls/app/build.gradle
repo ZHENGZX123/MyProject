@@ -2,12 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
-        kiway {
-            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
-            storePassword 'kiway123'
-            keyAlias 'kiway'
-            keyPassword 'kiway123'
-        }
+
     }
     compileSdkVersion 25
     buildToolsVersion '25.0.1'
@@ -16,16 +11,12 @@ android {
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
-        versionName "1.0.4"
+        versionName "1.0.3"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.kiway
-        }
-        debug {
-            signingConfig signingConfigs.kiway
         }
     }
 }

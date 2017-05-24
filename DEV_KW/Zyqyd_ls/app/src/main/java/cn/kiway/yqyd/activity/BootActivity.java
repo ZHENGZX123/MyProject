@@ -118,8 +118,7 @@ public class BootActivity extends Activity implements Animation.AnimationListene
             if (call.request().url().toString().equals(checkVersion)) {
                 final JSONObject data = new JSONObject(response.body().string());
                 Logger.log("检查更新：：：：：：" + data);
-                if (CheckVersionUtil.returnVersion(data.optString("zipCode"), CheckVersionUtil.returnPkVersion
-                        (BootActivity.this)) > 0) {
+                if (CheckVersionUtil.returnVersion(data.optString("apkCode"), CheckVersionUtil.getAppInfo(this)) > 0) {
                     //需要更新
                     runOnUiThread(new Runnable() {
                         @Override
@@ -128,10 +127,23 @@ public class BootActivity extends Activity implements Animation.AnimationListene
                         }
                     });
                     da = data;
-                    DownLoadZip.downoalZip(data.optString("zipUrl"), app, this, mHandler);
+                    DownLoadZip.downoalZip(data.optString("apkUrl"), app, this, mHandler, true);
                 } else {
-                    //不需要更新
-                    loading();
+                    if (CheckVersionUtil.returnVersion(data.optString("zipCode"), CheckVersionUtil.returnPkVersion
+                            (BootActivity.this)) > 0) {
+                        //需要更新
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                loginDialog.show();
+                            }
+                        });
+                        da = data;
+                        DownLoadZip.downoalZip(data.optString("zipUrl"), app, this, mHandler, false);
+                    } else {
+                        //不需要更新
+                        loading();
+                    }
                 }
             } else {
                 final JSONObject data = new JSONObject(response.body().string());
