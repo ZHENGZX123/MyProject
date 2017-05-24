@@ -18,11 +18,12 @@ public class LoginDialog extends Dialog implements OnDismissListener {
     LVCircularRing mLoadingView;
     Dialog mLoadingDialog;
     TextView loadingText;
+    Context context;
 
     @SuppressLint("InflateParams")
     public LoginDialog(Context context) {
         super(context);
-        // 首先得到整个View
+        this.context=context;
         View view = LayoutInflater.from(context).inflate(R.layout.login_dialog,
                 null);
         // 获取整个布局
@@ -58,7 +59,6 @@ public class LoginDialog extends Dialog implements OnDismissListener {
         if (mLoadingDialog != null) {
             mLoadingView.stopAnim();
             mLoadingDialog.dismiss();
-            //mLoadingDialog = null;
         }
     }
 

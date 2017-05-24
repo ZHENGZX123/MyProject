@@ -91,8 +91,7 @@ public class LoginActivity extends Activity implements Callback {
                 SharedPreferencesUtil.save(this, IContants.passWord, password.getText().toString());
                 SharedPreferencesUtil.save(this, IContants.schoolCode, data.optString("schoolCode"));
                 startActivity(new Intent(this, WebViewActivity2.class).putExtra(IContants.token, userName.getText()
-                        .toString
-                                ()));
+                        .toString()));
                 finish();
             } else {
                 runOnUiThread(new Runnable() {

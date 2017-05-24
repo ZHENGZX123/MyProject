@@ -1,4 +1,4 @@
-#Thu May 18 15:54:59 CST 2017
+#Wed May 24 16:04:16 CST 2017
 base.0=F\:\\kiway_xm\\Zyqyd_ls\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main
 renamed.0=classes.dex
 file.0=F\:\\kiway_xm\\Zyqyd_ls\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main\\classes.dex

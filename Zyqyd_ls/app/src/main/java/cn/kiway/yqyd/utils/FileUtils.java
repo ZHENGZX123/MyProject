@@ -1,6 +1,8 @@
 package cn.kiway.yqyd.utils;
 
-import android.os.Bundle;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -35,25 +37,34 @@ public class FileUtils {
             e.printStackTrace();
         }
     }
+
     //创建私有文件夹
     public static String createZipFloder() {
         File file = new File(Environment.getExternalStorageDirectory(),
                 "yqyd");
         if (!file.exists())
             file.mkdirs();
+        File file1 = new File(Environment.getExternalStorageDirectory(), ".nomedia");
+        if (!file1.exists())
+            file1.mkdirs();
         return file.getAbsolutePath();
     }
+
+    //创建私有文件夹
+    public static String createDocFloder() {
+        File file1 = new File(createZipFloder(), "doc");
+        if (!file1.exists())
+            file1.mkdirs();
+        return file1.getAbsolutePath();
+    }
+
     //解压文件
     public static void unZipFileWithProgress(String zipFilePath, final String filePath, final Handler handler,
-                                             final boolean isDeleteZip) {
+                                             boolean isDeleteZip) {
         final File zipFile = new File(zipFilePath);
         ZipFile zFile = null;
         try {
             zFile = new ZipFile(zipFile);
-            zFile.setFileNameCharset("GBK");
-            if (!zFile.isValidZipFile()) { //
-                throw new ZipException("exception!");
-            }
         } catch (ZipException e) {
             e.printStackTrace();
         }
@@ -65,7 +76,6 @@ public class FileUtils {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                Bundle bundle = null;
                 Message msg = null;
                 try {
                     if (handler == null) {
@@ -83,23 +93,60 @@ public class FileUtils {
                             break;
                         }
                     }
-                    handler.sendEmptyMessage(CompressStatus.COMPLETED);
+                    handler.sendEmptyMessageDelayed(CompressStatus.COMPLETED, 1500);
                 } catch (InterruptedException e) {
                     handler.sendEmptyMessage(CompressStatus.ERROR);
                     e.printStackTrace();
-                } finally {
-                    if (isDeleteZip) {
-                        zipFile.delete();//将原压缩文件删除
-                    }
                 }
             }
         });
         thread.start();
-        zFile.setRunInThread(true); //true 在子线程中进行解压 , false主线程中解压
+        zFile.setRunInThread(false); //true 在子线程中进行解压 , false主线程中解压
         try {
             zFile.extractAll(filePath); //将压缩文件解压到filePath中...
         } catch (ZipException e) {
             e.printStackTrace();
+        } finally {
+            if (isDeleteZip) {
+                zipFile.delete();//将原压缩文件删除
+            }
+        }
+    }
+
+    public static void openFile(Context context, String filePath) {
+
+        String type = filePath.split("\\.")[1].toLowerCase();
+        String typeOpenFile = "*";
+        Logger.log("*****************" + filePath);
+        Logger.log("*****************" + type);
+        if (type.equals("pdf"))
+            typeOpenFile = "application/pdf";
+        else if (type.equals("ppt") || type.equals("pptx"))
+            typeOpenFile = "application/vnd.ms-powerpoint";
+        else if (type.equals("doc") || type.equals("docx") || type.equals("docm") || type.equals("dotx") || type
+                .equals("dotm"))
+            typeOpenFile = "application/msword";
+        else if (type.equals("xlsx") || type.equals("xlsm") || type.equals("xltx"))
+            typeOpenFile = "application/vnd.ms-excel";
+        else if (type.equals("mp3") || type.equals("amr") || type.equals("ogg") || type.equals("wav")) {
+            typeOpenFile = "";
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse(filePath), "audio/*");
+            context.startActivity(intent);
+        } else if (type.equals("mp4") || type.equals("3gp") || type.equals("avi") || type.equals("rmvb") || type
+                .equals("mpg") | type.equals("rm") || type.equals("flv")) {
+            typeOpenFile = "";
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse(filePath), "video/*");
+            context.startActivity(intent);
+        }
+        if (!typeOpenFile.equals("")) {
+            Intent intent = new Intent("android.intent.action.VIEW");
+            intent.addCategory("android.intent.category.DEFAULT");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Uri uri = Uri.fromFile(new File(filePath));
+            intent.setDataAndType(uri, typeOpenFile);
+            context.startActivity(intent);
         }
     }
 
