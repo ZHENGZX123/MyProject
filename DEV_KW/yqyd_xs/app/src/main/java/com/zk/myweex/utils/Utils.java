@@ -1,6 +1,8 @@
 package com.zk.myweex.utils;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -26,6 +28,16 @@ import java.util.Hashtable;
  */
 
 public class Utils {
+    public static String getCurrentVersion(Context c) {
+        String versionName = "1.0.0";
+        try {
+            PackageInfo pkg = c.getPackageManager().getPackageInfo(c.getPackageName(), 0);
+            versionName = pkg.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionName;
+    }
 
     public static String getQiniuToken() {
         String accessKey = "SQWC77eBEVRT_5_3XntqEBfL1SDgwxluAaZxRnKZ";

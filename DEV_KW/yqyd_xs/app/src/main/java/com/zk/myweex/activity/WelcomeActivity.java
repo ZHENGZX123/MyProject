@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,9 +23,7 @@ import com.zk.myweex.WXApplication;
 import com.zk.myweex.entity.TabEntity;
 import com.zk.myweex.entity.ZipPackage;
 import com.zk.myweex.utils.FileUtils;
-import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.MyDBHelper;
-import com.zk.myweex.utils.NetworkUtil;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -48,6 +45,8 @@ import java.util.regex.Pattern;
 
 import cn.kiway.yiqiyuedu.R;
 
+import static com.zk.myweex.utils.Utils.getCurrentVersion;
+
 public class WelcomeActivity extends WXBaseActivity {
 
     private boolean isSuccess = false;
@@ -61,6 +60,8 @@ public class WelcomeActivity extends WXBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
+
+
     }
 
     private void jump() {
@@ -126,8 +127,8 @@ public class WelcomeActivity extends WXBaseActivity {
                         apkUrl = matcher2.group().replace("<apkUrl>", "")
                                 .replace("</apkUrl>", "");
                     }
-                    Log.d("test", "current = " + getCurrentVersion());
-                    if (getCurrentVersion().compareTo(version) < 0) {
+                    Log.d("test", "current = " + getCurrentVersion(getApplicationContext()));
+                    if (getCurrentVersion(getApplicationContext()).compareTo(version) < 0) {
                         showUpdateConfirmDialog(apkUrl);
                     } else {
                         jump();
@@ -286,17 +287,6 @@ public class WelcomeActivity extends WXBaseActivity {
                 dialog_download.show();
             }
         });
-    }
-
-    public String getCurrentVersion() {
-        String versionName = "1.0.0";
-        try {
-            PackageInfo pkg = getPackageManager().getPackageInfo(getPackageName(), 0);
-            versionName = pkg.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return versionName;
     }
 
     @Override

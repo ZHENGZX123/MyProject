@@ -37,10 +37,6 @@ import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.ui.ImagePreviewActivity;
 import com.lzy.imagepicker.view.CropImageView;
 import com.nanchen.compresshelper.CompressHelper;
-import com.qiniu.android.http.ResponseInfo;
-import com.qiniu.android.storage.Configuration;
-import com.qiniu.android.storage.UpCompletionHandler;
-import com.qiniu.android.storage.UploadManager;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.appfram.storage.DefaultWXStorage;
 import com.taobao.weex.bridge.JSCallback;
@@ -82,10 +78,16 @@ import okhttp3.Response;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static com.zk.myweex.utils.HttpUploadFile.updateUserInfoUrl;
-import static com.zk.myweex.utils.Utils.getQiniuToken;
+import static com.zk.myweex.utils.Utils.getCurrentVersion;
 
 
 public class SJEventModule extends WXModule implements Callback {
+
+
+    @JSMethod(uiThread = true)
+    public void getVersion(JSCallback callback) {
+        callback.invoke(getCurrentVersion(mWXSDKInstance.getContext()));
+    }
 
     private MediaPlayer mPlayer;
 
@@ -219,26 +221,45 @@ public class SJEventModule extends WXModule implements Callback {
             toast("太短了");
             return;
         }
-        String key = recordFile.getName();
-        Configuration config = new Configuration.Builder().connectTimeout(10).build();
-        UploadManager uploadManager = new UploadManager(config);
-        uploadManager.put(recordFile, key, getQiniuToken(),
-                new UpCompletionHandler() {
-                    @Override
-                    public void complete(String key, ResponseInfo info, JSONObject res) {
-                        if (info.isOK()) {
-                            Log.i("qiniu", "Upload Success");
-                            String url = "http://ooy49eq1n.bkt.clouddn.com/" + key;
-                            HashMap map = new HashMap();
-                            map.put("duration", duration);
-                            map.put("url", url);
-                            pickerCallback.invoke(map);
-                        } else {
-                            Log.i("qiniu", "Upload Fail");
-                            toast("上传失败，请稍后再试");
-                        }
-                    }
-                }, null);
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String token = new DefaultWXStorage(mWXSDKInstance.getContext()).performGetItem("token");
+                    Call call = mOkHttpClient.newCall(HttpUploadFile.returnUploadImgRequser(recordFile, HttpUploadFile.FileType.Mp3, token));
+                    Response response = call.execute();
+                    String ret = response.body().string();
+                    Log.d("test", "upload ret  = " + ret);
+                    String after = new JSONObject(ret).getJSONObject("result").getString("url");
+                    HashMap map = new HashMap();
+                    map.put("duration", duration);
+                    map.put("url", after);
+                    pickerCallback.invoke(map);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    toast("上传失败，请稍后再试");
+                }
+            }
+        }.start();
+//        Configuration config = new Configuration.Builder().connectTimeout(10).build();
+//        UploadManager uploadManager = new UploadManager(config);
+//        uploadManager.put(recordFile, key, getQiniuToken(),
+//                new UpCompletionHandler() {
+//                    @Override
+//                    public void complete(String key, ResponseInfo info, JSONObject res) {
+//                        if (info.isOK()) {
+//                            Log.i("qiniu", "Upload Success");
+//                            String url = "http://ooy49eq1n.bkt.clouddn.com/" + key;
+//                            HashMap map = new HashMap();
+//                            map.put("duration", duration);
+//                            map.put("url", url);
+//                            pickerCallback.invoke(map);
+//                        } else {
+//                            Log.i("qiniu", "Upload Fail");
+//                            toast("上传失败，请稍后再试");
+//                        }
+//                    }
+//                }, null);
     }
 
     private void startRecord() {
@@ -292,6 +313,7 @@ public class SJEventModule extends WXModule implements Callback {
             pd = new ProgressDialog(mWXSDKInstance.getContext());
             pd.setMessage("上传中请稍等");
             pd.show();
+
             doUploadImage(images);
         } else if (requestCode == 8888 && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
             if (data == null) {
@@ -301,11 +323,9 @@ public class SJEventModule extends WXModule implements Callback {
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             Log.d("test", "images count = " + images.size());
             if (!isOrig) {
-                for (ImageItem ii : images) {
-                    File newFile = CompressHelper.getDefault(mWXSDKInstance.getContext()).compressToFile(new File(ii.path));
-                    ii.path = newFile.getAbsolutePath();
-                    ii.size = newFile.length();
-                }
+                File newFile = CompressHelper.getDefault(mWXSDKInstance.getContext()).compressToFile(new File(images.get(0).path));
+                images.get(0).path = newFile.getAbsolutePath();
+                images.get(0).size = newFile.length();
             }
             uploadUserPic(images.get(0).path, HttpUploadFile.FileType.Image);
         } else if (requestCode == 999) {
@@ -342,13 +362,18 @@ public class SJEventModule extends WXModule implements Callback {
                     Log.d("test", "ii.size = " + ii.size);
                     String key = System.currentTimeMillis() + ".jpg";
                     File file = new File(ii.path);
-                    Configuration config = new Configuration.Builder().connectTimeout(10).build();
-                    UploadManager uploadManager = new UploadManager(config);
-                    ResponseInfo result = uploadManager.syncPut(file, key, getQiniuToken(), null);
-                    Log.d("test", "result = " + result.toString());
-                    if (result.isOK()) {
+//                    Configuration config = new Configuration.Builder().connectTimeout(10).build();
+//                    UploadManager uploadManager = new UploadManager(config);
+//                    ResponseInfo result = uploadManager.syncPut(file, key, getQiniuToken(), null);
+//                    Log.d("test", "result = " + result.toString());
+                    try {
+                        String token = new DefaultWXStorage(mWXSDKInstance.getContext()).performGetItem("token");
+                        Call call = mOkHttpClient.newCall(HttpUploadFile.returnUploadImgRequser(file, HttpUploadFile.FileType.Image, token));
+                        Response response = call.execute();
+                        String ret = response.body().string();
+                        Log.d("test", "upload ret  = " + ret);
                         successCount++;
-                        String after = "http://ooy49eq1n.bkt.clouddn.com/" + key;
+                        String after = new JSONObject(ret).getJSONObject("result").getString("url");
                         if (i == count - 1) {
                             url = url + after;
                             path = path + ii.path;
@@ -356,6 +381,8 @@ public class SJEventModule extends WXModule implements Callback {
                             url = url + after + ",";
                             path = path + ii.path + ",";
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
                 if (successCount != images.size()) {
@@ -367,7 +394,6 @@ public class SJEventModule extends WXModule implements Callback {
                 map.put("url", url);
                 map.put("path", path);
                 pickerCallback.invoke(map);
-
                 hidePD();
             }
         }.start();
@@ -690,7 +716,6 @@ public class SJEventModule extends WXModule implements Callback {
         if (call.request().url().toString().equals(HttpUploadFile.uploadUserPicUrl)) {
             try {
                 String token = new DefaultWXStorage(mWXSDKInstance.getContext()).performGetItem("token");
-
                 JSONObject data = new JSONObject(response.body().string());
                 Logger.log("------------" + data);
                 if (data.optInt("status") == 200) {

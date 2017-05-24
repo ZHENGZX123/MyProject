@@ -24,7 +24,6 @@ public class HttpUploadFile {
     public static String updateUserInfoUrl = "http://yqyd.qgjydd.com/yqyd/v1/app/student/uc/updatePersonalInfo";//BaseUrl + "v1/app/student/uc/editPersonalInfo";//更新用户头像
     public static String uploadUserPicUrl = BaseUrl + "v1/app/upload";//上传图像
     public static String checkVersion = BaseUrl + "static/version/zip_ls.json";
-    ///public static String uploadUserPicUrl = "http://192.168.8.45:8070/v1/app/upload";
 
     public static RequestBody createCustomRequestBody(final MediaType contentType, final File file) {
         return new RequestBody() {
