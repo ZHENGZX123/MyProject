@@ -261,8 +261,6 @@ public class WXVideo extends WXComponent<FrameLayout> {
         Log.d("test", "hide = " + hide);
         if (hide) {
             mWrapper.getMediaController().hide();
-        } else {
-            mWrapper.getMediaController().show(3);
         }
     }
 
