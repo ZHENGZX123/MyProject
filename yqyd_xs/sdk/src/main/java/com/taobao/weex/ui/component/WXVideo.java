@@ -216,6 +216,11 @@ public class WXVideo extends WXComponent<FrameLayout> {
                     setImageUrl(imageurl);
                 }
                 return true;
+            case Constants.Name.HIDE:
+                //先试试这个办法，不行的话就把mediacontroller去掉
+                boolean hide = WXUtils.getBoolean(param, null);
+                setHide(hide);
+                return true;
         }
         return super.setProperty(key, param);
     }
@@ -249,6 +254,16 @@ public class WXVideo extends WXComponent<FrameLayout> {
         }
         Log.d("test", "imageurl = " + imageurl);
         ImageLoader.getInstance().displayImage(imageurl, mWrapper.getImageView(), getLoaderOptions());
+    }
+
+    @WXComponentProp(name = Constants.Name.HIDE)
+    public void setHide(boolean hide) {
+        Log.d("test", "hide = " + hide);
+        if (hide) {
+            mWrapper.getMediaController().hide();
+        } else {
+            mWrapper.getMediaController().show(3);
+        }
     }
 
     private boolean mStopped;
