@@ -133,12 +133,7 @@ public class WXStreamModule extends WXModule {
 
     @JSMethod(uiThread = false)
     public void fetch(final String optionsStr, final JSCallback callback, final JSCallback progressCallback) {
-//        Log.d("stream", "stream lastOptions = " + optionsStr);
         Log.d("stream", "stream optionsStr = " + optionsStr);
-        if (lastOptions.contains("book/search") && lastOptions.equals(optionsStr)) {
-            return;
-        }
-        lastOptions = optionsStr;
         JSONObject optionsObj = null;
         try {
             optionsObj = JSON.parseObject(optionsStr);
