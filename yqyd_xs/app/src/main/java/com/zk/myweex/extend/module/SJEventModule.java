@@ -103,8 +103,9 @@ public class SJEventModule extends WXModule implements Callback {
     }
 
     @JSMethod(uiThread = true)
-    public void clearCache() {
+    public void clearCache(JSCallback callback) {
         DataCleanManager.cleanInternalCache(mWXSDKInstance.getContext());
+        callback.invoke("0M");
     }
 
     private MediaPlayer mPlayer;

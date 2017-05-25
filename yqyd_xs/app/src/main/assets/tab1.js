@@ -404,17 +404,8 @@ Utils.fetch = function (options) {
                   method: options.method || method,
                   type: 'json',
                   success: function success(rets) {
-                    var modal = weex.requireModule('modal');
-                    modal.alert({
-                        message: rets.data
-
-                    }, function(){
-
-                        options.success(rets.data);
-                    })
-
-
-
+                    console.log(rets);
+                    options.success(rets);
                   }
                 });
               });
@@ -428,14 +419,15 @@ Utils.fetch = function (options) {
               var sjevent = weex.requireModule('SJevent');
               sjevent.logoutSuccess();
             });
+          } else {
+            var datas = {
+              status: response.status,
+              headers: response.headers,
+              data: data // 用于手机 端
+              // data :response.data //  用于PC端
+            };
+            options.success(datas);
           }
-          var datas = {
-            status: response.status,
-            headers: response.headers,
-            data: data // 用于手机 端
-            // data :response.data //  用于PC端
-          };
-          options.success(datas);
         }
       }
     }, function (response) {
@@ -915,9 +907,9 @@ exports.default = new _vueRouter2.default({
 
   /*--------------------login begin------------------*/
   /* { path: '/login', name: 'login', component: require('./components/login.vue')},
-      { path: '/wjmm', name: 'wjmm', component: require('./components/forget_pwd.vue')},
-     // { path: '/wjzh', name: 'wjzh', component: require('./components/forget_admin.vue')},
-     /*-------------------login end----------------*/
+     { path: '/wjmm', name: 'wjmm', component: require('./components/forget_pwd.vue')},
+    // { path: '/wjzh', name: 'wjzh', component: require('./components/forget_admin.vue')},
+    /*-------------------login end----------------*/
 
   /*------------------index begin--------------------*/
 
@@ -5606,7 +5598,7 @@ exports.default = {
 		},
 		search: function search(e) {
 			//this.$router.push('/sk/sm_search?title='+e.content);
-			this.searchResult();
+			this.searchResult(e.content);
 		},
 
 		praise: function praise(sc, tabsId) {
@@ -5644,7 +5636,7 @@ exports.default = {
 					//从缓存中取userId
 					self.schoolId = e.data;
 					_Utils2.default.fetch({
-						url: '/app/book/search?loginAccount=' + self.Account + '&keywords=' + self.title + '&isbn=' + self.isbn + '&page=' + self.page + '&pageSize=8&schoolCode=' + self.schoolId,
+						url: '/app/book/search?loginAccount=' + self.Account + '&keywords=' + self.ss + '&isbn=' + self.isbn + '&page=' + self.page + '&pageSize=8&schoolCode=' + self.schoolId,
 						method: 'POST',
 						type: 'json',
 						self: self,
@@ -5673,22 +5665,30 @@ exports.default = {
 		searchResult: function searchResult() {
 			var self = this;
 			self.isbn = this.$route.query.isbn;
-			self.title = this.$route.query.title;
 			// var titles;
 			if (self.isbn) {
 				self.ss = self.isbn;
 				self.title = "";
 				this.dataLoad();
 			}
-			if (self.title) {
-				self.ss = self.title;
+			if (arguments[0]) {
+				self.ss = arguments[0];
 				self.isbn = "";
 				this.dataLoad();
 			}
+		},
+
+		close: function close() {
+			this.sc_list = [];
 		}
 	},
 	created: function created() {
-		this.searchResult();
+		self.title = this.$route.query.title;
+		if (self.title) {
+			self.ss = self.title;
+			self.isbn = "";
+			this.dataLoad();
+		}
 	}
 };
 
@@ -6436,7 +6436,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     on: {
       "cancel": _vm.cancel,
-      "search": _vm.search
+      "search": _vm.search,
+      "close": _vm.close
     }
   }), _c('scroller', [_vm._l((_vm.sc_list), function(sc) {
     return _c('div', {
@@ -6552,7 +6553,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     on: {
       "cancel": _vm.cancel,
-      "search": _vm.search
+      "search": _vm.search,
+      "close": _vm.close
     }
   }), _c('div', {
     staticClass: ["main"]
