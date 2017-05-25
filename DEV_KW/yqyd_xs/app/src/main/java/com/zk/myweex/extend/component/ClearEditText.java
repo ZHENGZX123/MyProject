@@ -86,6 +86,9 @@ public class ClearEditText extends EditText implements View.OnFocusChangeListene
     public void onTextChanged(CharSequence s, int start, int count, int after) {
         if (hasFocus) {
             setDrawableVisible(s.length() > 0);
+            if (s.length() == 0) {
+                this.input.fireEvent("close", new HashMap());
+            }
         }
     }
 

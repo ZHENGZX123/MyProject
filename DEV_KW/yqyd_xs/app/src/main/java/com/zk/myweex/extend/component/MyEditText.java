@@ -84,4 +84,13 @@ public class MyEditText extends WXComponent<View> {
         map.put("content", content);
         fireEvent("search", map);
     }
+
+    @WXComponentProp(name = "placeholder")
+    public void setPlaceholder(String placeholder) {
+        Log.d("test", this.toString() + " placeholder = " + placeholder);
+        if (TextUtils.isEmpty(placeholder)) {
+            return;
+        }
+        input.setHint(placeholder);
+    }
 }

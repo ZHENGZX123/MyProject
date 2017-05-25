@@ -403,8 +403,9 @@ Utils.fetch = function (options) {
                   url: options.url,
                   method: options.method || method,
                   type: 'json',
-                  success: function success(ret) {
-                    options.success(datas);
+                  success: function success(rets) {
+                    console.log(rets);
+                    options.success(rets);
                   }
                 });
               });
@@ -418,14 +419,15 @@ Utils.fetch = function (options) {
               var sjevent = weex.requireModule('SJevent');
               sjevent.logoutSuccess();
             });
+          } else {
+            var datas = {
+              status: response.status,
+              headers: response.headers,
+              data: data // 用于手机 端
+              // data :response.data //  用于PC端
+            };
+            options.success(datas);
           }
-          var datas = {
-            status: response.status,
-            headers: response.headers,
-            data: data // 用于手机 端
-            // data :response.data //  用于PC端
-          };
-          options.success(datas);
         }
       }
     }, function (response) {
@@ -904,7 +906,81 @@ exports.default = new _vueRouter2.default({
   routes: [
 
   /*--------------------login begin------------------*/
-  { path: '/login', name: 'login', component: __webpack_require__(16) }, { path: '/wjmm', name: 'wjmm', component: __webpack_require__(15) }]
+  /* { path: '/login', name: 'login', component: require('./components/login.vue')},
+     { path: '/wjmm', name: 'wjmm', component: require('./components/forget_pwd.vue')},
+    // { path: '/wjzh', name: 'wjzh', component: require('./components/forget_admin.vue')},
+    /*-------------------login end----------------*/
+
+  /*------------------index begin--------------------*/
+
+  /* { path: '/index', name: 'index', component: require('./components/index.vue')},
+      // 阅读任务
+      { path: '/ydrw', name: 'ydrw', component: require('./components/ydrw.vue')},
+  
+      // 任务详情
+      { path: '/ydrw/ckjh', name: 'ydrw_jh', component: require('./components/ydrw_jh.vue')},
+       // 阅读任务详情
+      { path: '/ydrw_xq', name: 'ydrw_xq', component: require('./components/ydrw_xq.vue')},
+  
+      // 阅读任务 写读后感
+      { path: '/ydrw/xdhg', name: 'ydrw_xdhg', component: require('./components/ydrw_xdhg.vue')},
+       // 阅读任务 我的读后感
+      { path: '/ydrw/wddhg', name: 'ydrw_wddhg', component: require('./components/ydrw_wddhg.vue')},
+  
+      // 阅读任务 开始闯关
+      { path: '/ydrw/kscg', name: 'ydrw_kscg', component: require('./components/ydrw_kscg.vue')},
+      // 阅读任务 我的闯关
+      { path: '/ydrw/wdcg', name: 'ydrw_wdcg', component: require('./components/ydrw_wdcg.vue')},
+  
+  
+      //考试提分宝
+    //   { path: '/kstfb', name: 'kstfb', component: require('./components/kstfb.vue')},
+  
+  
+      // 阅读任务 闯关结果
+      { path: '/ydrw/cgjg', name: 'ydrw_cgjg', component: require('./components/kstfb_tjh.vue')},
+       // 阅读任务 每日一练
+      { path: '/wdrw_mryl', name: 'wdrw_mryl', component: require('./components/wdrw_mryl.vue')},
+  
+      // 学习报告
+      { path: '/ydbg', name: 'ydbg', component: require('./components/xxbg.vue')},
+      // 学习报告 阅读报告
+      { path: '/ydbg/rwbg', name: 'ckbg_rwbg', component: require('./components/ydbg_rwbg.vue')},
+      // 学习报告 查看详情
+      { path: '/ydrw/ckxq', name: 'ckxq', component: require('./components/ydrw_ckxq.vue')},
+      // 学习报告 报告闯关详情
+      { path: '/ydrw/cgsb', name: 'ydrw_cgsb', component: require('./components/ydrw_cgsb.vue')},
+      // 学习报告 任务详情
+  //    { path: '/ydbg_rwxq', name: 'ydbg_rwxq', component: require('./components/ydbg_rwxq.vue')},
+      //学习报告 每日一练详情
+       { path: '/ydrw/mryl', name: 'ydrw_mril', component: require('./components/ydrw_mryl.vue')},
+        //我的闯关
+       { path: '/ydrw_mryl', name: 'ydrw_mryl', component: require('./components/ydrw_mryl.vue')},
+        //提交
+       { path: '/ydrw_tj', name: 'ydrw_tj', component: require('./components/ydrw_tj.vue')},
+      //完成
+     { path: '/kstfb_tjh', name: 'kstfb_tjh', component: require('./components/kstfb_tjh.vue')},
+     //学习报告 开始闯关
+     { path: '/ydbg_wdcg', name: 'ydbg_wdcg', component: require('./components/ydbg_wdcg.vue')},
+  
+      //考试提分宝
+       { path: '/kstfb', name: 'kstfb', component: require('./components/kstfb.vue')},
+      //考试提分宝 每日一练
+   //    { path: '/kstfb/mryl', name: 'kstfb_mril', component: require('./components/kstfb_mryl.vue')},
+  
+  
+      // 书香榜
+      { path: '/sxb', name: 'sxb', component: require('./components/sxb.vue')},
+       // // 阅读资讯
+      { path: '/ydzx', name: 'ydzx', component: require('./components/ydzx.vue')},
+      // 阅读资讯 详情
+      { path: '/ydzx/xq', name: 'ydzx_xq', component: require('./components/ydzx_xq.vue')},
+  
+  /*----------------index end---------------*/
+
+  /*----------------sk begin---------------*/
+  // // 书库
+  { path: '/sc', name: 'sc', component: __webpack_require__(15) }, { path: '/sk/xq', name: 'sk_xq', component: __webpack_require__(17) }, { path: '/sk/sk_search', name: 'sk_search', component: __webpack_require__(16) }, { path: '/sk/sm_search', name: 'sm_search', component: __webpack_require__(18) }]
 
 });
 
@@ -1105,10 +1181,10 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* script */
-__vue_exports__ = __webpack_require__(17)
+__vue_exports__ = __webpack_require__(19)
 
 /* template */
-var __vue_template__ = __webpack_require__(22)
+var __vue_template__ = __webpack_require__(28)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -1231,7 +1307,7 @@ Vue.mixin(_mixins2.default);
 // making them available everywhere as `this.$router` and `this.$store`.
 new Vue(Vue.util.extend({ el: '#root', router: _router2.default, store: _store2.default }, _App2.default));
 
-_router2.default.push('/login');
+_router2.default.push('/sc');
 
 /***/ }),
 /* 9 */
@@ -4702,14 +4778,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(20)
+__vue_styles__.push(__webpack_require__(27)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(18)
+__vue_exports__ = __webpack_require__(20)
 
 /* template */
-var __vue_template__ = __webpack_require__(23)
+var __vue_template__ = __webpack_require__(32)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4721,10 +4797,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "D:\\svn_project\\yqyd\\yqyd_xs\\project\\src\\components\\forget_pwd.vue"
+__vue_options__.__file = "D:\\svn_project\\yqyd\\yqyd_xs\\project\\src\\components\\sc.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-745f5312"
+__vue_options__._scopeId = "data-v-ebef4f48"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4746,14 +4822,14 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(21)
+__vue_styles__.push(__webpack_require__(26)
 )
 
 /* script */
-__vue_exports__ = __webpack_require__(19)
+__vue_exports__ = __webpack_require__(21)
 
 /* template */
-var __vue_template__ = __webpack_require__(24)
+var __vue_template__ = __webpack_require__(31)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -4765,10 +4841,10 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "D:\\svn_project\\yqyd\\yqyd_xs\\project\\src\\components\\login.vue"
+__vue_options__.__file = "D:\\svn_project\\yqyd\\yqyd_xs\\project\\src\\components\\sk_search.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-fb283ce6"
+__vue_options__._scopeId = "data-v-d97acada"
 __vue_options__.style = __vue_options__.style || {}
 __vue_styles__.forEach(function (module) {
   for (var name in module) {
@@ -4784,6 +4860,94 @@ module.exports = __vue_exports__
 
 /***/ }),
 /* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_exports__, __vue_options__
+var __vue_styles__ = []
+
+/* styles */
+__vue_styles__.push(__webpack_require__(24)
+)
+
+/* script */
+__vue_exports__ = __webpack_require__(22)
+
+/* template */
+var __vue_template__ = __webpack_require__(29)
+__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+if (
+  typeof __vue_exports__.default === "object" ||
+  typeof __vue_exports__.default === "function"
+) {
+if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+__vue_options__ = __vue_exports__ = __vue_exports__.default
+}
+if (typeof __vue_options__ === "function") {
+  __vue_options__ = __vue_options__.options
+}
+__vue_options__.__file = "D:\\svn_project\\yqyd\\yqyd_xs\\project\\src\\components\\sk_xq.vue"
+__vue_options__.render = __vue_template__.render
+__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+__vue_options__._scopeId = "data-v-635754e4"
+__vue_options__.style = __vue_options__.style || {}
+__vue_styles__.forEach(function (module) {
+  for (var name in module) {
+    __vue_options__.style[name] = module[name]
+  }
+})
+if (typeof __register_static_styles__ === "function") {
+  __register_static_styles__(__vue_options__._scopeId, __vue_styles__)
+}
+
+module.exports = __vue_exports__
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_exports__, __vue_options__
+var __vue_styles__ = []
+
+/* styles */
+__vue_styles__.push(__webpack_require__(25)
+)
+
+/* script */
+__vue_exports__ = __webpack_require__(23)
+
+/* template */
+var __vue_template__ = __webpack_require__(30)
+__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+if (
+  typeof __vue_exports__.default === "object" ||
+  typeof __vue_exports__.default === "function"
+) {
+if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+__vue_options__ = __vue_exports__ = __vue_exports__.default
+}
+if (typeof __vue_options__ === "function") {
+  __vue_options__ = __vue_options__.options
+}
+__vue_options__.__file = "D:\\svn_project\\yqyd\\yqyd_xs\\project\\src\\components\\sm_search.vue"
+__vue_options__.render = __vue_template__.render
+__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+__vue_options__._scopeId = "data-v-bab4355e"
+__vue_options__.style = __vue_options__.style || {}
+__vue_styles__.forEach(function (module) {
+  for (var name in module) {
+    __vue_options__.style[name] = module[name]
+  }
+})
+if (typeof __register_static_styles__ === "function") {
+  __register_static_styles__(__vue_options__._scopeId, __vue_styles__)
+}
+
+module.exports = __vue_exports__
+
+
+/***/ }),
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4808,7 +4972,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4824,6 +4988,70 @@ var _Utils2 = _interopRequireDefault(_Utils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4841,179 +5069,640 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 
+// import f from './footer.vue'
 var storage = weex.requireModule('storage');
 var modal = weex.requireModule('modal');
+
+var animation = weex.requireModule('animation');
 exports.default = {
 	data: function data() {
-		return {
-			// 活动列表
-			ydzxXq: {}
-		};
+		var _ref;
+
+		return _ref = {
+			checkes: '../static/images/ico_heart.png',
+			checkYes: '../static/images/ico_heart_yes.png',
+			allSubject: '全部',
+			allGrade: '全部',
+			willShow: false,
+			willShow2: false,
+			statusId: '0',
+			grade: [],
+			subject: [],
+			isShow: false,
+			flagSrc: '../static/images/Selected.png',
+			arrowSrc: '../static/images/down.png',
+			// 阅读教研 列表
+			sc_list: [
+				/*{title: '飞来的伤心梅', img:'../static/images/book01.png', tabImg:'../static/images/pic_pause.png',href: '/sk/xq',see:'4万',praise:'200' ,state:'完成阅读', isbn: '9787547705063'}*/
+			],
+			typeData: [{ name: '书城', bj: '#d9e8fd', color: '#6fa1e8', id: 1 }, { name: '老师推荐', bj: '', color: '#666', id: 2 }, { name: '专家推荐', bj: '', color: '#666', id: 1 }],
+			flag: 0,
+			subjId: '',
+			njName: '',
+			tabsId: 0,
+			tabsIndex: 0,
+			page: 1,
+			schoolId: ''
+		}, _defineProperty(_ref, 'flag', false), _defineProperty(_ref, 'showLoading', 'hide'), _defineProperty(_ref, 'Account', ''), _defineProperty(_ref, 'nextpage', true), _ref;
 	},
 
-	name: 'ydzx_xq',
+	name: 'sc',
 	methods: {
-		goback: function goback() {
-			this.$router.go(-1);
-		}
-	}
-};
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _Utils = __webpack_require__(0);
-
-var _Utils2 = _interopRequireDefault(_Utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-var sjevent = weex.requireModule('SJevent');
-var storage = weex.requireModule('storage');
-var modal = weex.requireModule('modal');
-exports.default = {
-	data: function data() {
-		return {
-			username: '',
-			password: '',
-			schoolCode: '',
-			checkes: '../static/images/checkbox_no.png',
-			checkYes: '../static/images/checkbox_yes.png',
-			checkNo: '../static/images/checkbox_no.png'
-		};
-	},
-
-	name: 'ydzx_xq',
-	methods: {
-		checkClick: function checkClick() {
-			if (this.checkes == this.checkYes) {
-				this.checkes = this.checkNo;
+		gradese: function gradese(id, name) {
+			if (this.willShow == true) {
+				this.willShow = false;
 			} else {
-				this.checkes = this.checkYes;
+				this.willShow = true;
 			}
-		},
-		openIndex: function openIndex() {
 			var self = this;
-			if (self.username == "") {
-				modal.alert({
-					message: '账号不能为空，请输入',
-					okTitle: '好的'
-				}, function () {});
-				return;
-			}
-			if (self.password == '') {
-				modal.alert({
-					message: '密码不能为空，请输入',
-					okTitle: '好的'
-				}, function () {});
-				return;
-			}
 			_Utils2.default.fetch({
-				url: 'http://yqyd.qgjydd.com/yqyd/app/stuLogin?username=' + self.username + "&password=" + self.password,
+				url: '/app/book/grade',
 				method: 'POST',
 				type: 'json',
 				self: self,
-				ip: true,
 				success: function success(ret) {
-					console.log(ret);
-					if (ret && ret.data.errcode == 200) {
-						storage.setItem('username', self.username);
-						storage.setItem('schoolCode', ret.data.schoolCode, function (e) {});
-						//debugger
-						if (self.checkes == self.checkYes) {
-							storage.setItem('password', self.password, function (e) {});
-							storage.setItem('checkes', self.checkes, function (e) {});
-						} else {
-							storage.removeItem('password', function (e) {});
-							storage.removeItem('checkes', function (e) {});
-						}
-						//self.$router.replace('/index');
-						var timestamp = new Date().getTime();
-						var sign = _Utils2.default.MD5(self.username + timestamp);
-						var params = 'loginAccount=' + self.username + '&timestamp=' + timestamp + '&sign=' + sign;
-						_Utils2.default.getAccessToken(params, function () {
-							if (true) {
-								sjevent.loginSuccess(self.username);
-							} else {
-								self.$router.replace('/index');
-							}
-						});
-					} else {
-						modal.toast({
-							message: ret.data.errmsg,
-							duration: 0.3,
-							okTitle: '好的'
-						});
-					}
+					var grades = ret.data.grade;
+					self.grade = eval(grades);
 				}
 			});
 		},
-		/*openAdmin(){
-  	this.$router.push('/wjzh');
-  },*/
-		openPwd: function openPwd() {
-			this.$router.push('/wjmm');
-		}
-	},
-	created: function created() {
-		var self = this;
-		var pwd, acct, imgPic;
-		storage.getItem('checkes', function (e) {
-			//从缓存中取password
-			imgPic = e.data;
-			if (imgPic != 'undefined') {
-				self.checkes = imgPic;
-				if (imgPic == self.checkYes) {
-					storage.getItem('password', function (e) {
-						//从缓存中取password
-						pwd = e.data;
-						self.password = pwd;
-					});
-					storage.getItem('username', function (e) {
-						//从缓存中取username
-						acct = e.data;
-						self.username = acct;
-					});
+		subj: function subj(id, name) {
+			if (this.willShow2 == true) {
+				this.willShow2 = false;
+			} else {
+				this.willShow2 = true;
+			}
+			var self = this;
+			_Utils2.default.fetch({
+				url: '/app/book/module',
+				method: 'POST',
+				type: 'json',
+				self: self,
+				success: function success(ret) {
+					var subj = ret.data.modules;
+					self.subject = eval(subj);
+				}
+			});
+		},
+		optGrade: function optGrade(name) {
+			this.njName = name;
+			this.allGrade = name;
+			if (this.allGrade == "") {
+				this.allGrade = "全部年级";
+			}
+			this.willShow = false;
+			this.light(this.tabsIndex, this.tabsId);
+		},
+		optSubject: function optSubject(id, name) {
+			this.subjId = id;
+			this.allSubject = name;
+			this.willShow2 = false;
+			this.light(this.tabsIndex, this.tabsId);
+		},
+		light: function light(index, id) {
+			// debugger
+			this.tabsId = id;
+			this.tabsIndex = index;
+
+			if (!this.flag) {
+				this.sc_list = [];
+				this.page = 1;
+			}
+			var self = this;
+
+			for (var i in self.typeData) {
+				self.typeData[i].bj = '';
+				self.typeData[i].color = '#666';
+				if (i == index) {
+					self.typeData[index].bj = '#d9e8fd';
+					self.typeData[index].color = "#6fa1e8";
 				}
 			}
+			// modal.alert({message: self.njName});
+			var njname = encodeURI(self.njName);
+			if (this.tabsId == 1) {
+				this.schoolId = "";
+				_Utils2.default.fetch({
+					url: '/app/book/list?loginAccount=' + self.Account + '&moduleId=' + self.subjId + '&grade=' + njname + '&type=' + self.tabsId + '&page=' + self.page + '&pageSize=8&schoolCode=' + self.schoolId,
+					method: 'POST',
+					type: 'json',
+					self: self,
+					success: function success(ret) {
+						var datas = ret.data.books || [];
+						self.nextpage = ret.data.nextPage;
+						if (ret.data.statusCode == 200 && datas.length != 0) {
+							for (var _i = 0; _i < datas.length; _i++) {
+								self.sc_list.push(datas[_i]);
+							}
+						}
+						if (!self.nextpage && ret.data.status == 200) {
+							modal.toast({ message: '数据已全部加载', duration: 1 });
+						}
+						if (ret.data.status == 404) {
+							modal.toast({ message: '暂无数据', duration: 1 });
+						}
+						self.flag = false;
+						self.showLoading = 'hide';
+					}
+
+				});
+			} else {
+				storage.getItem('schoolCode', function (e) {
+					//从缓存中取userId
+					self.schoolId = e.data;
+					_Utils2.default.fetch({
+						url: '/app/book/list?loginAccount=' + self.Account + '&moduleId=' + self.subjId + '&grade=' + self.njName + '&type=' + self.tabsId + '&page=' + self.page + '&pageSize=8&schoolCode=' + self.schoolId,
+						method: 'POST',
+						type: 'json',
+						self: self,
+						success: function success(ret) {
+							var datas = ret.data.books || [];
+							if (ret.data.statusCode == 200 && datas.length != 0) {
+								for (var _i2 = 0; _i2 < datas.length; _i2++) {
+									self.sc_list.push(datas[_i2]);
+								}
+							} else if (ret.data.statusCode == 404 && datas.length == 0) {
+								modal.toast({ message: '已到底部', duration: 1 });
+							}
+							self.flag = false;
+							self.showLoading = 'hide';
+						}
+
+					});
+				});
+			}
+		},
+		praise: function praise(sc, tabsId) {
+			var self = this;
+			if (sc.isZan == 0) {
+				_Utils2.default.fetch({
+					url: '/app/book/zan?bookId=' + sc.id + '&loginAccount=' + self.Account + '&bookType=' + tabsId,
+					method: 'POST',
+					type: 'json',
+					self: self,
+					success: function success(ret) {
+						sc.isZan = 1;
+						sc.toast = sc.toast + 1;
+					}
+				});
+			}
+		},
+		goback: function goback() {
+			this.$router.push('/sk/sk_search');
+		},
+		scan: function scan() {
+			var self = this;
+			var sjevent = weex.requireModule('SJevent');
+			if (sjevent) {
+				sjevent.QRScan(function (isbn) {
+					self.$router.push('/sk/sm_search?isbn=' + isbn +'&fromQR=1');
+				});
+			}
+		},
+		onpeScxq: function onpeScxq(path) {
+			this.$router.push(path);
+		},
+		onloading: function onloading(event) {
+			this.page += 1;
+			this.flag = true;
+			// modal.toast({ message: 'loading', duration: 1 })
+			this.showLoading = 'show';
+			this.light(this.tabsIndex, this.tabsId);
+		}
+	},
+	// components: {
+	// 	'foot': f, // 添加底部导航组件
+	// },
+	created: function created() {
+		var self = this;
+
+		storage.getItem('username', function (e) {
+			//从缓存中取userId
+			self.Account = e.data;
+			self.light(0, 1);
 		});
 	}
 };
 
 /***/ }),
-/* 20 */
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+var storage = weex.requireModule('storage');
+var modal = weex.requireModule('modal');
+exports.default = {
+	data: function data() {
+		return {
+			ss: '',
+			searchList: {},
+			title: ''
+		};
+	},
+
+	methods: {
+		selectes: function selectes(e) {
+			this.title = e;
+		},
+		cancel: function cancel(e) {
+			this.$router.go(-1);
+		},
+		search: function search(e) {
+			this.$router.push('/sk/sm_search?title=' + e.content);
+		}
+	},
+	created: function created() {
+		var self = this;
+		console.log(self.$route.query.type);
+		_Utils2.default.fetch({
+			url: '/app/book/hot',
+			method: 'POST',
+			type: 'json',
+			self: self,
+			success: function success(ret) {
+				var datas = ret.data.result;
+				self.searchList = eval(datas);
+				console.log(self.searchList);
+			}
+		});
+	}
+
+};
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+var storage = weex.requireModule('storage');
+var modal = weex.requireModule('modal');
+exports.default = {
+	data: function data() {
+		return {
+			isCollect: 0,
+			b_syn: true,
+			lt: false,
+			book: {/*src: '../static/images/book02.png', btime: '2017-01-01', etime: '2017-01-02', bname: '飞来的伤心梅', bath: '张琴声', bpre: '北京邮电',isbn:'9787547705063'*/}
+		};
+	},
+
+	methods: {
+		_sc: function _sc() {
+			if (this.isCollect == 0) {
+				this.isCollect = 1;
+				var self = this;
+				storage.getItem('username', function (e) {
+					_Utils2.default.fetch({
+						url: '/app/book/collect?bookId=' + self.$route.query.id + '&loginAccount=' + e.data + '&type=' + self.$route.query.type,
+						method: 'POST',
+						type: 'json',
+						self: self,
+						success: function success(ret) {
+							// console.log(ret);
+							//console.log(self.book);
+						}
+					});
+				});
+			}
+		},
+		goback: function goback() {
+			this.$router.go(-1);
+		},
+		onstart: function onstart(event) {
+			var self = this;
+			_Utils2.default.fetch({
+				url: '/app/book/play?guideId=' + self.book.guideId,
+				method: 'POST',
+				type: 'json',
+				self: self,
+				success: function success(ret) {
+					// console.log(ret);
+					//console.log(self.book);
+				}
+			});
+		}
+	},
+	created: function created() {
+		var self = this;
+		storage.getItem('username', function (e) {
+			_Utils2.default.fetch({
+				url: '/app/book/' + self.$route.query.id + '?type=' + self.$route.query.type + '&loginAccount=' + e.data,
+				method: 'GET',
+				type: 'json',
+				self: self,
+				success: function success(ret) {
+					console.log(ret);
+					var books = ret.data.result;
+					self.isCollect = ret.data.result.isCollect;
+					self.book = eval(books);
+					//console.log(self.book);
+				}
+			});
+		});
+	},
+	filters: {
+		filterHTMLs: function filterHTMLs(val) {
+			if (val) {
+				var newVal = val.replace(/<p>/g, '').replace(/<\/p>/g, '').replace(/<br\/>/g, '');
+				return newVal;
+			}
+		}
+	},
+	computed: {
+		hearImg: function hearImg() {
+			if (this.isCollect == 0) {
+				return '../static/images/ico_heart01.png';
+			} else {
+				return '../static/images/ico_heart_show.png';
+			}
+		}
+	}
+};
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _Utils = __webpack_require__(0);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+var storage = weex.requireModule('storage');
+var modal = weex.requireModule('modal');
+
+var animation = weex.requireModule('animation');
+exports.default = {
+	data: function data() {
+		var _ref;
+
+		return _ref = {
+			checkes: '../static/images/ico_heart.png',
+			checkYes: '../static/images/ico_heart_yes.png',
+			isShow: false,
+			/*flagSrc: '../static/images/Selected.png',
+   arrowSrc: '../static/images/down.png',*/
+			// 阅读教研 列表
+			sc_list: [],
+			flag: 0,
+			subjId: '',
+			njName: '',
+			tabsId: 0,
+			tabsIndex: 0,
+			page: 1,
+			schoolId: ''
+		}, _defineProperty(_ref, 'flag', false), _defineProperty(_ref, 'showLoading', 'hide'), _defineProperty(_ref, 'Account', ''), _defineProperty(_ref, 'title', ''), _defineProperty(_ref, 'isbn', ''), _defineProperty(_ref, 'ss', ''), _defineProperty(_ref, 'nextpage', true), _ref;
+	},
+
+	name: 'sc',
+	methods: {
+		cancel: function cancel(e) {
+			this.$router.go(-1);
+		},
+		search: function search(e) {
+			//this.$router.push('/sk/sm_search?title='+e.content);
+			this.title=e.content;
+			this.isbn=e.content;
+			this.sc_list = [];
+			this.searchResult(e.content);
+		},
+
+		praise: function praise(sc, tabsId) {
+			var self = this;
+			if (sc.isZan == 0) {
+				_Utils2.default.fetch({
+					url: '/app/book/zan?bookId=' + sc.id + '&loginAccount=' + self.Account + '&bookType=' + tabsId,
+					method: 'POST',
+					type: 'json',
+					self: self,
+					success: function success(ret) {
+						sc.isZan = 1;
+						sc.toast = sc.toast + 1;
+					}
+				});
+			}
+		},
+		onpeScxq: function onpeScxq(path) {
+			this.$router.push(path);
+		},
+		onloading: function onloading(event) {
+			this.page += 1;
+			this.flag = true;
+			this.showLoading = 'show';
+			this.light(this.tabsIndex, this.tabsId);
+		},
+		dataLoad: function dataLoad() {
+			var self = this;
+			/*self.isbn= this.$route.query.isbn;
+   self.title= this.$route.query.title;*/
+			storage.getItem('username', function (e) {
+				//从缓存中取userId
+				self.Account = e.data;
+				storage.getItem('schoolCode', function (e) {
+					//从缓存中取userId
+					self.schoolId = e.data;
+					_Utils2.default.fetch({
+						url: '/app/book/search?loginAccount=' + self.Account + '&keywords=' + self.title + '&isbn=' + self.isbn + '&page=' + self.page + '&pageSize=8&schoolCode=' + self.schoolId,
+						method: 'POST',
+						type: 'json',
+						self: self,
+						success: function success(ret) {
+							var datas = ret.data.result || [];
+							self.nextpage = ret.data.nextPage;
+							if (ret.data.status == 200 && datas.length != 0) {
+								for (var i = 0; i < datas.length; i++) {
+									self.sc_list.push(datas[i]);
+								}
+							}
+							if (!self.nextpage && ret.data.status == 200) {
+								modal.toast({ message: '数据已全部加载', duration: 1 });
+							}
+							if (ret.data.status == 404) {
+								modal.toast({ message: '暂无数据', duration: 1 });
+							}
+							self.flag = false;
+							self.showLoading = 'hide';
+						}
+
+					});
+				});
+			});
+		},
+		searchResult: function searchResult() {
+			var self = this;
+			if (arguments[0]) {
+			    if(this.$route.query.fromQR==1){
+                    self.ss = arguments[0];
+                    self.title = "";
+                    this.dataLoad();
+				}else{
+                    self.ss = arguments[0];
+                    self.isbn = "";
+                    this.dataLoad();
+				}
+			}
+		},
+
+		close: function close() {
+			this.sc_list = [];
+		}
+	},
+	created: function created() {
+
+		this.title = this.$route.query.title;
+		if (this.title) {
+			this.ss = this.title;
+			this.isbn = "";
+			this.dataLoad();
+		}
+
+        this.isbn = this.$route.query.isbn;
+        // var titles;
+        if (this.isbn) {
+            this.ss = this.isbn;
+        }
+	}
+};
+
+/***/ }),
+/* 24 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -5026,104 +5715,597 @@ module.exports = {
     "justifyContent": "center"
   },
   "top_name": {
-    "width": 550,
-    "marginLeft": 100,
-    "marginRight": 100,
-    "textOverflow": "ellipsis",
-    "lines": 1,
     "fontSize": 36,
-    "color": "#ffffff",
-    "textAlign": "center"
+    "color": "#ffffff"
   },
   "goback": {
     "position": "absolute",
-    "top": 25,
+    "top": 22,
     "left": 25,
-    "width": 37,
-    "height": 37
+    "width": 44,
+    "height": 44
   },
-  "main": {
-    "width": 650,
-    "margin": 50,
-    "marginTop": 280,
+  "goback_r": {
+    "position": "absolute",
+    "top": 22,
+    "right": 25,
+    "width": 44,
+    "height": 44
+  },
+  "book": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "width": 750,
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#f1f1ee",
+    "borderBottomStyle": "solid",
+    "paddingBottom": 24,
+    "paddingTop": 24,
+    "paddingRight": 30,
+    "paddingLeft": 30,
+    "overflow": "hidden",
+    "backgroundColor": "#ffffff"
+  },
+  "b_img": {
+    "width": 180,
+    "height": 220,
+    "marginRight": 30
+  },
+  "b_info": {
+    "width": 500
+  },
+  "b_main": {
+    "fontSize": 34,
+    "color": "#666666",
+    "marginTop": 20,
+    "lineHeight": 40
+  },
+  "b_list": {
+    "fontSize": 30,
+    "color": "#666666",
+    "lineHeight": 55
+  },
+  "b_name": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#e7f1ff",
     "flexDirection": "row",
     "alignItems": "center",
     "justifyContent": "center"
-  }
-}
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "bj_pic": {
+  },
+  "b_syn": {
     "width": 750,
-    "height": 1280,
-    "maxHeight": 1480,
-    "position": "absolute"
+    "backgroundColor": "#ffffff"
   },
-  "main": {
-    "position": "relative",
-    "zIndex": 999,
-    "paddingTop": 150,
+  "b_cnt": {
     "width": 750,
-    "flexDirection": "column",
-    "alignItems": "center",
-    "justifyContent": "center"
+    "borderBottomWidth": 1,
+    "borderBottomColor": "#f1f1ee",
+    "borderBottomStyle": "solid",
+    "paddingBottom": 60,
+    "paddingTop": 60,
+    "paddingRight": 30,
+    "paddingLeft": 30
   },
-  "inputK": {
-    "width": 620,
-    "height": 100,
-    "marginTop": 50,
-    "color": "#ffffff",
-    "backgroundColor": "rgba(255,255,255,0.2)",
-    "zoom": 1,
-    "borderRadius": 55,
-    "borderColor": "#6fa1e8",
-    "borderStyle": "solid",
-    "borderWidth": 1
-  },
-  "input": {
-    "width": 620,
-    "height": 100,
+  "b_title": {
+    "textAlign": "left",
     "fontSize": 36,
-    "paddingLeft": 40,
-    "paddingRight": 20,
-    "position": "relative",
-    "color": "#6fa1e8",
-    "borderRadius": 55,
-    "border": "none"
+    "color": "#79a8ec"
   },
-  "mm_line": {
-    "width": 620,
-    "height": 120,
+  "jyzx": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#ffffff",
+    "marginTop": 20,
+    "borderColor": "#e7e7e7",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "paddingRight": 20,
+    "paddingLeft": 20,
     "flexDirection": "row",
     "alignItems": "center"
   },
-  "name": {
-    "flex": 1,
-    "fontSize": 34,
-    "color": "#6fa1e8"
+  "jyzx_title": {
+    "color": "#70a1e8",
+    "fontSize": 36
   },
-  "btn": {
-    "width": 620,
-    "marginTop": 30,
-    "textAlign": "center",
-    "paddingTop": 25,
-    "paddingBottom": 25,
-    "borderRadius": 55,
-    "color": "#6fa1e8",
-    "fontSize": 40,
-    "backgroundColor": "rgba(255,255,255,0.2)",
-    "borderColor": "#6fa1e8",
-    "borderStyle": "solid",
-    "borderWidth": 1
+  "ts_label": {
+    "fontSize": 26,
+    "backgroundColor": "#d9e8fd",
+    "color": "#666666",
+    "paddingRight": 15,
+    "paddingLeft": 15,
+    "paddingTop": 4,
+    "paddingBottom": 4,
+    "margin": 10,
+    "marginLeft": 0,
+    "borderRadius": 5
   }
 }
 
 /***/ }),
-/* 22 */
+/* 25 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "loading": {
+    "width": 750,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "indicator": {
+    "color": "#888888",
+    "fontSize": 42,
+    "paddingTop": 20,
+    "paddingBottom": 20,
+    "textAlign": "center"
+  },
+  "main": {
+    "backgroundColor": "#ffffff",
+    "paddingBottom": 30
+  },
+  "goback_r": {
+    "position": "absolute",
+    "top": 30,
+    "right": 25,
+    "width": 100,
+    "height": 37,
+    "textAlign": "center",
+    "color": "#666666",
+    "fontSize": 34
+  },
+  "nav": {
+    "width": 750,
+    "height": 88,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "borderColor": "#e7e7e7",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "backgroundColor": "#ffffff"
+  },
+  "ydjy_list": {
+    "width": 750,
+    "height": 290,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "backgroundColor": "#ffffff",
+    "borderColor": "#ececec",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "position": "relative",
+    "zIndex": 1
+  },
+  "ydjy_l": {
+    "width": 240,
+    "height": 240,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "ydjy_lPic": {
+    "width": 190,
+    "height": 240
+  },
+  "ydjy_r": {
+    "height": 240,
+    "width": 455
+  },
+  "play": {
+    "position": "absolute",
+    "backgroundColor": "#000000",
+    "width": 191,
+    "height": 240,
+    "top": 0,
+    "left": 22,
+    "zIndex": 88,
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "filter": "alpha(opacity=30)",
+    "MozOpacity": 0.3,
+    "opacity": 0.3
+  },
+  "record": {
+    "width": 455,
+    "height": 50,
+    "fontSize": 30,
+    "flexDirection": "row",
+    "color": "#999999"
+  },
+  "ico_22": {
+    "width": 60,
+    "height": 60,
+    "position": "absolute",
+    "top": 100,
+    "left": 85,
+    "zIndex": 99
+  },
+  "b_list": {
+    "flexDirection": "row",
+    "fontSize": 30,
+    "color": "#666666",
+    "lineHeight": 55
+  },
+  "record_li": {
+    "flex": 1,
+    "flexDirection": "row",
+    "alignItems": "center"
+  },
+  "pic_see": {
+    "width": 38,
+    "height": 27
+  },
+  "pic_praise": {
+    "width": 32,
+    "height": 28
+  },
+  "hdzq_titil": {
+    "flexDirection": "row",
+    "color": "#333333",
+    "fontSize": 36,
+    "height": 60,
+    "textOverflow": "ellipsis",
+    "lines": 1
+  },
+  "ts_label": {
+    "fontSize": 26,
+    "backgroundColor": "#d9e8fd",
+    "color": "#666666",
+    "paddingTop": 4,
+    "paddingBottom": 4,
+    "paddingLeft": 15,
+    "paddingRight": 15,
+    "margin": 10,
+    "marginLeft": 0,
+    "borderRadius": 5
+  },
+  "ydjy_state": {
+    "backgroundColor": "#ff6600",
+    "color": "#ffffff",
+    "fontSize": 22,
+    "position": "absolute",
+    "left": 22,
+    "top": 10,
+    "paddingRight": 15,
+    "paddingLeft": 15,
+    "paddingTop": 8,
+    "paddingBottom": 8,
+    "zIndex": 89,
+    "borderTopRightRadius": 20,
+    "borderBottomRightRadius": 20
+  },
+  "author": {
+    "flexDirection": "row",
+    "lineHeight": 40
+  },
+  "fontSize": {
+    "fontSize": 32,
+    "color": "#666666"
+  }
+}
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "top": {
+    "width": 750,
+    "height": 98,
+    "backgroundColor": "#ffffff",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "borderColor": "#e7e7e7"
+  },
+  "topMain": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "fontSize": 36,
+    "lineHeight": 88,
+    "width": 600,
+    "backgroundColor": "#f0f0f0",
+    "borderRadius": 8,
+    "marginBottom": 12,
+    "marginTop": 12,
+    "marginLeft": 20,
+    "marginRight": 20
+  },
+  "pot_input": {
+    "width": 490,
+    "height": 70,
+    "fontSize": 32,
+    "backgroundColor": "#f0f0f0",
+    "border": "none"
+  },
+  "look": {
+    "width": 48,
+    "height": 48,
+    "marginLeft": 20,
+    "marginRight": 20
+  },
+  "main": {
+    "backgroundColor": "#ffffff",
+    "paddingBottom": 30
+  },
+  "goback_r": {
+    "position": "absolute",
+    "top": 30,
+    "right": 25,
+    "width": 100,
+    "height": 37,
+    "textAlign": "center",
+    "color": "#666666",
+    "fontSize": 34
+  },
+  "hot_list": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "borderBottomStyle": "solid",
+    "borderBottomColor": "#e7e7e7",
+    "borderBottomWidth": 1,
+    "height": 88,
+    "marginLeft": 30,
+    "color": "#666666"
+  },
+  "hot": {
+    "width": 40,
+    "height": 40,
+    "marginRight": 20,
+    "fontSize": 30
+  },
+  "orange": {
+    "color": "#ff6600"
+  }
+}
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "loading": {
+    "width": 750,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "indicator": {
+    "color": "#888888",
+    "fontSize": 42,
+    "paddingTop": 20,
+    "paddingBottom": 20,
+    "textAlign": "center"
+  },
+  "top": {
+    "width": 750,
+    "height": 88,
+    "backgroundColor": "#6fa1e8",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "top_name": {
+    "fontSize": 36,
+    "color": "#ffffff"
+  },
+  "goback": {
+    "position": "absolute",
+    "top": 22,
+    "left": 25,
+    "width": 44,
+    "height": 44
+  },
+  "goback_r": {
+    "position": "absolute",
+    "top": 22,
+    "right": 25,
+    "width": 44,
+    "height": 44
+  },
+  "nav": {
+    "width": 750,
+    "height": 88,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "borderColor": "#e7e7e7",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "backgroundColor": "#ffffff"
+  },
+  "navYes": {
+    "backgroundColor": "#5f94df",
+    "color": "#ffffff",
+    "padding": 1,
+    "paddingRight": 25,
+    "paddingLeft": 25,
+    "borderRadius": 8
+  },
+  "nav_li": {
+    "flex": 1,
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "nav1": {
+    "width": 750,
+    "height": 88,
+    "borderColor": "#e7e7e7",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "position": "relative"
+  },
+  "nav1_li": {
+    "position": "relative",
+    "flex": 1,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "space-between",
+    "borderRightColor": "#e7e7e7",
+    "borderRightWidth": 1,
+    "borderRightStyle": "solid",
+    "paddingLeft": 20,
+    "paddingRight": 20
+  },
+  "nav_name": {
+    "fontSize": 34,
+    "borderRadius": 5,
+    "color": "#666666",
+    "paddingLeft": 20,
+    "paddingTop": 8,
+    "paddingBottom": 8,
+    "paddingRight": 20
+  },
+  "s_class": {
+    "position": "absolute",
+    "zIndex": 9999,
+    "top": 264,
+    "paddingLeft": 36,
+    "paddingRight": 36,
+    "width": 375,
+    "height": 500,
+    "borderColor": "#e6e6e6",
+    "borderStyle": "solid",
+    "borderWidth": 1,
+    "backgroundColor": "#ffffff"
+  },
+  "s_class_opt": {
+    "color": "#666666",
+    "fontSize": 32,
+    "width": 302,
+    "height": 80,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "borderBottomColor": "#e6e6e6",
+    "borderBottomStyle": "solid",
+    "borderBottomWidth": 1
+  },
+  "ydjy_list": {
+    "width": 750,
+    "height": 290,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "backgroundColor": "#ffffff",
+    "borderColor": "#ececec",
+    "borderBottomWidth": 1,
+    "borderStyle": "solid",
+    "position": "relative",
+    "zIndex": 1
+  },
+  "ydjy_l": {
+    "width": 240,
+    "height": 240,
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "center"
+  },
+  "ydjy_lPic": {
+    "width": 190,
+    "height": 240
+  },
+  "ydjy_r": {
+    "height": 240,
+    "width": 455
+  },
+  "play": {
+    "position": "absolute",
+    "backgroundColor": "#000000",
+    "width": 191,
+    "height": 240,
+    "top": 0,
+    "left": 22,
+    "zIndex": 88,
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "filter": "alpha(opacity=30)",
+    "MozOpacity": 0.3,
+    "opacity": 0.3
+  },
+  "record": {
+    "width": 455,
+    "height": 50,
+    "fontSize": 30,
+    "flexDirection": "row",
+    "color": "#999999"
+  },
+  "ico_22": {
+    "width": 60,
+    "height": 60,
+    "position": "absolute",
+    "top": 100,
+    "left": 85,
+    "zIndex": 99
+  },
+  "b_list": {
+    "flexDirection": "row",
+    "fontSize": 30,
+    "color": "#666666",
+    "lineHeight": 65
+  },
+  "record_li": {
+    "flex": 1,
+    "flexDirection": "row",
+    "alignItems": "center"
+  },
+  "pic_see": {
+    "width": 38,
+    "height": 27
+  },
+  "pic_praise": {
+    "width": 32,
+    "height": 28
+  },
+  "hdzq_titil": {
+    "flexDirection": "row",
+    "color": "#333333",
+    "fontSize": 36,
+    "height": 60,
+    "textOverflow": "ellipsis",
+    "lines": 1
+  },
+  "ts_label": {
+    "fontSize": 26,
+    "backgroundColor": "#d9e8fd",
+    "color": "#666666",
+    "paddingTop": 4,
+    "paddingBottom": 4,
+    "paddingLeft": 15,
+    "paddingRight": 15,
+    "marginRight": 10,
+    "borderRadius": 5
+  },
+  "ydjy_state": {
+    "backgroundColor": "#ff6600",
+    "color": "#ffffff",
+    "fontSize": 22,
+    "position": "absolute",
+    "left": 22,
+    "top": 10,
+    "paddingRight": 15,
+    "paddingLeft": 15,
+    "paddingTop": 8,
+    "paddingBottom": 8,
+    "zIndex": 89,
+    "borderTopRightRadius": 20,
+    "borderBottomRightRadius": 20
+  },
+  "author": {
+    "flexDirection": "row",
+    "lineHeight": 40
+  },
+  "fontSize": {
+    "fontSize": 30,
+    "color": "#666666"
+  }
+}
+
+/***/ }),
+/* 28 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -5140,17 +6322,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 23 */
+/* 29 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticStyle: {
-      backgroundColor: "#fafafa",
-      fontFamily: "黑体"
-    },
-    attrs: {
-      "id": "ydzx"
+      backgroundColor: "#fafafa"
     }
   }, [_c('div', {
     staticClass: ["top"]
@@ -5164,111 +6342,499 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _c('text', {
     staticClass: ["top_name"]
-  }, [_vm._v("忘记密码")])]), _vm._m(0)])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: ["main"]
-  }, [_c('image', {
-    staticStyle: {
-      width: "175px",
-      height: "240px"
-    },
+  }, [_vm._v(_vm._s(_vm.book.bookName))]), _c('image', {
+    staticClass: ["goback_r"],
     attrs: {
-      "src": "../static/images/pic_Wxts.png"
+      "src": _vm.hearImg
+    },
+    on: {
+      "click": _vm._sc
     }
-  }), _c('div', {
-    staticStyle: {
-      padding: "30px"
-    }
+  })]), _c('scroller', [_c('div', {
+    staticClass: ["b_name"]
   }, [_c('text', {
     staticStyle: {
-      fontSize: "36px",
-      color: "#666"
+      color: "#666",
+      fontSize: "36px"
     }
-  }, [_vm._v("忘记密码请联系老师,")]), _c('text', {
+  }, [_vm._v(_vm._s(_vm.book.bookName))])]), _c('div', {
+    staticClass: ["book"]
+  }, [_c('image', {
+    staticClass: ["b_img"],
+    attrs: {
+      "src": _vm.book.bookPic
+    }
+  }), _c('div', {
+    staticClass: ["b_info"]
+  }, [_c('text', {
+    staticClass: ["b_list"]
+  }, [_vm._v("作者：" + _vm._s(_vm.book.author) + "/著 ")]), _c('text', {
+    staticClass: ["b_list"]
+  }, [_vm._v("出版社：" + _vm._s(_vm.book.press))]), _c('text', {
+    staticClass: ["b_list"]
+  }, [_vm._v("ISBN: " + _vm._s(_vm.book.isbn) + " ")]), _c('div', {
     staticStyle: {
-      fontSize: "36px",
-      color: "#666"
+      flexDirection: "row",
+      justifyContent: "left",
+      alignItems: "center"
     }
-  }, [_vm._v("老师是你的好帮手！")])])])
+  }, [_c('text', {
+    staticClass: ["ts_label"]
+  }, [_vm._v(_vm._s(_vm.book.bookType))])])])]), _vm._m(0), _c('div', {
+    staticClass: ["b_syn"]
+  }, [_c('video', {
+    staticStyle: {
+      width: "750px",
+      height: "400px"
+    },
+    attrs: {
+      "src": encodeURI(_vm.book.guideVoice),
+      "imageurl": _vm.book.guideImage,
+      "controls": ""
+    },
+    on: {
+      "start": _vm.onstart
+    }
+  }), _c('div', {
+    staticClass: ["b_cnt"]
+  }, [_c('text', {
+    staticClass: ["b_title"]
+  }, [_vm._v("编辑推荐")]), _c('text', {
+    staticClass: ["b_main"]
+  }, [_vm._v(_vm._s(_vm._f("filterHTMLs")(_vm.book.editorIntro)))])]), _c('div', {
+    staticClass: ["b_cnt"]
+  }, [_c('text', {
+    staticClass: ["b_title"]
+  }, [_vm._v("内容简介")]), _c('text', {
+    staticClass: ["b_main"]
+  }, [_vm._v(_vm._s(_vm._f("filterHTMLs")(_vm.book.desc)))])]), _c('div', {
+    staticClass: ["b_cnt"]
+  }, [_c('text', {
+    staticClass: ["b_title"]
+  }, [_vm._v("作者简介")]), _c('text', {
+    staticClass: ["b_main"]
+  }, [_vm._v(_vm._s(_vm._f("filterHTMLs")(_vm.book.authorDesc)))])])], 1)])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["jyzx"]
+  }, [_c('text', {
+    staticClass: ["jyzx_title"]
+  }, [_vm._v("专家导读")])])
 }]}
 module.exports.render._withStripped = true
 
 /***/ }),
-/* 24 */
+/* 30 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticStyle: {
-      backgroundColor: "#6fa1e8"
+      backgroundColor: "#fff"
     },
     attrs: {
-      "id": "ydzx"
+      "id": "sc"
     }
-  }, [_c('image', {
-    staticClass: ["bj_pic"],
+  }, [_c('myedittext', {
+    staticStyle: {
+      height: "100px",
+      width: "750px"
+    },
     attrs: {
-      "src": "../static/images/login01.png"
+      "content": _vm.ss
+    },
+    on: {
+      "cancel": _vm.cancel,
+      "search": _vm.search,
+      "close": _vm.close
+    }
+  }), _c('scroller', [_vm._l((_vm.sc_list), function(sc) {
+    return _c('div', {
+      staticClass: ["ydjy_list"]
+    }, [_c('div', {
+      staticClass: ["ydjy_l"],
+      on: {
+        "click": function($event) {
+          _vm.onpeScxq('/sk/xq?id=' + sc.id + '&type=' + sc.type)
+        }
+      }
+    }, [_c('image', {
+      staticClass: ["ydjy_lPic"],
+      staticStyle: {
+        position: "relative"
+      },
+      attrs: {
+        "src": sc.pic
+      }
+    })]), _c('div', {
+      staticClass: ["ydjy_r"]
+    }, [_c('div', {
+      on: {
+        "click": function($event) {
+          _vm.onpeScxq('/sk/xq?id=' + sc.id + '&type=' + sc.type)
+        }
+      }
+    }, [_c('text', {
+      staticClass: ["hdzq_titil"]
+    }, [_vm._v(_vm._s(sc.name))]), _c('div', {
+      staticClass: ["author"]
+    }, [_c('text', {
+      staticClass: ["fontSize"]
+    }, [_vm._v(_vm._s(sc.author))]), _c('text', {
+      staticStyle: {
+        fontSize: "30px",
+        color: "#666"
+      }
+    }, [_vm._v("著")])]), _c('div', {
+      staticClass: ["b_list"]
+    }, [_c('text', {
+      staticClass: ["fontSize"]
+    }, [_vm._v("ISBN:")]), _c('text', {
+      staticStyle: {
+        fontSize: "32px",
+        color: "#666"
+      }
+    }, [_vm._v(_vm._s(sc.isbn))])]), _c('div', {
+      staticStyle: {
+        flexDirection: "row",
+        justifyContent: "left",
+        alignItems: "center"
+      }
+    }, [_c('text', {
+      staticClass: ["ts_label"]
+    }, [_vm._v(_vm._s(sc.bookType))])])]), _c('div', {
+      staticClass: ["record"]
+    }, [_c('div', {
+      staticClass: ["record_li"]
+    }, [_c('image', {
+      staticClass: ["pic_see"],
+      attrs: {
+        "src": "../static/images/ico_see.png"
+      }
+    }), _vm._v("  "), _c('text', [_vm._v(_vm._s(sc.view))])]), _c('div', {
+      staticClass: ["record_li"],
+      on: {
+        "click": function($event) {
+          _vm.praise(sc, _vm.tabsId)
+        }
+      }
+    }, [(sc.isZan == 1) ? _c('image', {
+      staticClass: ["pic_praise"],
+      attrs: {
+        "src": _vm.checkYes
+      }
+    }) : _vm._e(), (sc.isZan == 0) ? _c('image', {
+      staticClass: ["pic_praise"],
+      attrs: {
+        "src": _vm.checkes
+      }
+    }) : _vm._e(), _vm._v("  "), _c('text', [_vm._v(_vm._s(sc.toast))])])])])])
+  }), _c('loading', {
+    staticClass: ["loading"],
+    attrs: {
+      "display": _vm.showLoading
+    },
+    on: {
+      "loading": _vm.onloading
+    }
+  }, [_c('text', {
+    staticClass: ["indicator"]
+  }, [_vm._v("加载更多 ...")])])], 2)], 1)
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticStyle: {
+      backgroundColor: "#fafafa"
+    }
+  }, [_c('myedittext', {
+    staticStyle: {
+      height: "100px",
+      width: "750px"
+    },
+    attrs: {
+      "content": _vm.title
+    },
+    on: {
+      "cancel": _vm.cancel,
+      "search": _vm.search,
+      "close": _vm.close
     }
   }), _c('div', {
     staticClass: ["main"]
-  }, [_c('div', {
-    staticClass: ["inputK"]
-  }, [_c('input', {
-    staticClass: ["input"],
-    attrs: {
-      "type": "text",
-      "placeholder": "请输入账号",
-      "value": (_vm.username)
-    },
-    on: {
-      "input": function($event) {
-        _vm.username = $event.target.attr.value
+  }, [_vm._m(0), _vm._l((_vm.searchList), function(ssList, index) {
+    return _c('div', {
+      staticClass: ["hot_list"],
+      on: {
+        "click": function($event) {
+          _vm.selectes(ssList.word)
+        }
       }
-    }
-  })]), _c('div', {
-    staticClass: ["inputK"]
-  }, [_c('input', {
-    staticClass: ["input"],
-    attrs: {
-      "type": "password",
-      "placeholder": "请输入密码",
-      "value": (_vm.password)
-    },
-    on: {
-      "input": function($event) {
-        _vm.password = $event.target.attr.value
+    }, [_c('text', {
+      staticClass: ["hot", "orange"]
+    }, [_vm._v(_vm._s(index + 1))]), _c('text', {
+      staticStyle: {
+        fontSize: "32px"
       }
-    }
-  })]), _c('div', {
-    staticClass: ["mm_line"],
-    on: {
-      "click": _vm.checkClick
-    }
+    }, [_vm._v(_vm._s(ssList.word))])])
+  })], 2)], 1)
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: ["hot_list"]
   }, [_c('image', {
-    staticStyle: {
-      width: "45px",
-      height: "45px"
-    },
+    staticClass: ["hot"],
     attrs: {
-      "src": _vm.checkes
+      "src": "../static/images/pic_hot.png"
     }
   }), _c('text', {
-    staticClass: ["name"]
-  }, [_vm._v(" 记住密码？")])]), _c('text', {
-    staticClass: ["btn"],
-    on: {
-      "click": _vm.openIndex
+    staticStyle: {
+      fontSize: "32px"
     }
-  }, [_vm._v("登   录")]), _c('div', {
-    staticClass: ["mm_line"]
+  }, [_vm._v("热门搜索")])])
+}]}
+module.exports.render._withStripped = true
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticStyle: {
+      backgroundColor: "#fff"
+    },
+    attrs: {
+      "id": "sc"
+    }
+  }, [_c('div', {
+    staticClass: ["top"]
+  }, [_c('image', {
+    staticClass: ["goback"],
+    attrs: {
+      "src": "../static/images/pic_ss.png"
+    },
+    on: {
+      "click": _vm.goback
+    }
+  }), _c('text', {
+    staticClass: ["top_name"]
+  }, [_vm._v("书库")]), _c('image', {
+    staticClass: ["goback_r"],
+    attrs: {
+      "src": "../static/images/ico_18.png"
+    },
+    on: {
+      "click": function($event) {
+        _vm.scan()
+      }
+    }
+  })]), _c('div', {
+    staticClass: ["nav"]
+  }, _vm._l((_vm.typeData), function(item, index) {
+    return _c('div', {
+      staticClass: ["nav_li"],
+      on: {
+        "click": function($event) {
+          _vm.light(index, item.id)
+        }
+      }
+    }, [_c('text', {
+      staticClass: ["nav_name"],
+      style: {
+        backgroundColor: item.bj,
+        color: item.color
+      }
+    }, [_vm._v(_vm._s(item.name))])])
+  })), _c('div', {
+    staticClass: ["nav1"]
+  }, [_c('div', {
+    staticClass: ["nav1_li"],
+    on: {
+      "click": _vm.gradese
+    }
   }, [_c('text', {
-    staticClass: ["name"],
-    on: {
-      "click": _vm.openPwd
+    staticClass: ["fontSize"]
+  }, [_vm._v("年级：" + _vm._s(_vm.allGrade))]), _c('image', {
+    staticStyle: {
+      width: "35px",
+      height: "18px"
+    },
+    attrs: {
+      "src": "../static/images/ico_17.png"
     }
-  }, [_vm._v("忘记密码？")])])])])
+  })]), _c('div', {
+    staticClass: ["nav1_li"],
+    on: {
+      "click": _vm.subj
+    }
+  }, [_c('text', {
+    staticClass: ["fontSize"]
+  }, [_vm._v("书目：" + _vm._s(_vm.allSubject))]), _c('image', {
+    staticStyle: {
+      width: "35px",
+      height: "18px"
+    },
+    attrs: {
+      "src": "../static/images/ico_17.png"
+    }
+  })])]), _c('scroller', [_vm._l((_vm.sc_list), function(sc, index) {
+    return _c('div', {
+      staticClass: ["ydjy_list"]
+    }, [_c('div', {
+      staticClass: ["ydjy_l"],
+      on: {
+        "click": function($event) {
+          _vm.onpeScxq('/sk/xq?id=' + sc.id + '&type=' + _vm.tabsId)
+        }
+      }
+    }, [_c('image', {
+      staticClass: ["ydjy_lPic"],
+      attrs: {
+        "src": sc.pic
+      }
+    })]), _c('div', {
+      staticClass: ["ydjy_r"]
+    }, [_c('div', {
+      on: {
+        "click": function($event) {
+          _vm.onpeScxq('/sk/xq?id=' + sc.id + '&type=' + _vm.tabsId)
+        }
+      }
+    }, [_c('text', {
+      staticClass: ["hdzq_titil"]
+    }, [_vm._v(_vm._s(sc.name))]), _c('div', {
+      staticClass: ["author"]
+    }, [_c('text', {
+      staticClass: ["fontSize"]
+    }, [_vm._v(_vm._s(sc.author))]), _c('text', {
+      staticStyle: {
+        fontSize: "30px",
+        color: "#666"
+      }
+    }, [_vm._v(" 著")])]), _c('div', {
+      staticClass: ["b_list"],
+      staticStyle: {
+        marginTop: "10px",
+        marginBottom: "10px"
+      }
+    }, [_c('text', {
+      staticClass: ["fontSize"]
+    }, [_vm._v("ISBN:")]), _c('text', {
+      staticStyle: {
+        fontSize: "32px",
+        color: "#666"
+      }
+    }, [_vm._v(_vm._s(sc.isbn))])]), _c('div', {
+      staticStyle: {
+        flexDirection: "row",
+        justifyContent: "left",
+        alignItems: "center"
+      }
+    }, [_c('text', {
+      staticClass: ["ts_label"]
+    }, [_vm._v(_vm._s(sc.bookType))])])]), _c('div', {
+      staticClass: ["record"]
+    }, [_c('div', {
+      staticClass: ["record_li"]
+    }, [_c('image', {
+      staticClass: ["pic_see"],
+      attrs: {
+        "src": "../static/images/ico_see.png"
+      }
+    }), _vm._v("  "), _c('text', [_vm._v(_vm._s(sc.view))])]), _c('div', {
+      staticClass: ["record_li"],
+      on: {
+        "click": function($event) {
+          _vm.praise(sc, _vm.tabsId)
+        }
+      }
+    }, [(sc.isZan == 1) ? _c('image', {
+      staticClass: ["pic_praise"],
+      attrs: {
+        "src": _vm.checkYes
+      }
+    }) : _vm._e(), (sc.isZan == 0) ? _c('image', {
+      staticClass: ["pic_praise"],
+      attrs: {
+        "src": _vm.checkes
+      }
+    }) : _vm._e(), _vm._v("  "), _c('text', [_vm._v(_vm._s(sc.toast))])])])])])
+  }), _c('loading', {
+    staticClass: ["loading"],
+    attrs: {
+      "display": _vm.showLoading
+    },
+    on: {
+      "loading": _vm.onloading
+    }
+  }, [_c('text', {
+    staticClass: ["indicator"]
+  }, [_vm._v("加载更多 ...")])])], 2), (_vm.willShow) ? _c('div', {
+    staticClass: ["s_class"],
+    staticStyle: {
+      left: "0px"
+    }
+  }, [_c('scroller', [_c('div', {
+    staticClass: ["s_class_opt"],
+    on: {
+      "click": function($event) {
+        _vm.optGrade('', $event)
+      }
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "34px"
+    }
+  }, [_vm._v("全部年级")])]), _vm._l((_vm.grade), function(nj) {
+    return _c('div', {
+      staticClass: ["s_class_opt"],
+      on: {
+        "click": function($event) {
+          _vm.optGrade(nj.name, $event)
+        }
+      }
+    }, [_c('text', {
+      staticStyle: {
+        fontSize: "34px",
+        color: "#666"
+      }
+    }, [_vm._v(_vm._s(nj.name))])])
+  })], 2)]) : _vm._e(), (_vm.willShow2) ? _c('div', {
+    staticClass: ["s_class"],
+    staticStyle: {
+      left: "375px"
+    }
+  }, [_c('scroller', [_c('div', {
+    staticClass: ["s_class_opt"],
+    on: {
+      "click": function($event) {
+        _vm.optSubject('', '全部书目', $event)
+      }
+    }
+  }, [_c('text', {
+    staticStyle: {
+      fontSize: "34px"
+    }
+  }, [_vm._v("全部书目")])]), _vm._l((_vm.subject), function(subj) {
+    return _c('div', {
+      staticClass: ["s_class_opt"],
+      on: {
+        "click": function($event) {
+          _vm.optSubject(subj.id, subj.name, $event)
+        }
+      }
+    }, [_c('text', {
+      staticStyle: {
+        fontSize: "34px",
+        color: "#666"
+      }
+    }, [_vm._v(_vm._s(subj.name))])])
+  })], 2)]) : _vm._e()])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 
