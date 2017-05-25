@@ -14,6 +14,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 
+import java.util.HashMap;
+
 import cn.kiway.yiqiyuedu.R;
 
 @SuppressLint("AppCompatCustomView")
@@ -63,6 +65,7 @@ public class ClearEditText extends EditText implements View.OnFocusChangeListene
                 boolean available = (event.getX() > start) && (event.getX() < end);
                 if (available) {
                     this.setText("");
+                    this.input.fireEvent("close", new HashMap());
                 }
             }
         }
@@ -99,4 +102,9 @@ public class ClearEditText extends EditText implements View.OnFocusChangeListene
         setCompoundDrawables(getCompoundDrawables()[0], getCompoundDrawables()[1], right, getCompoundDrawables()[3]);
     }
 
+    private MyEditText input;
+
+    public void setCallback(MyEditText myEditText) {
+        this.input = myEditText;
+    }
 }

@@ -83,7 +83,6 @@ import static com.zk.myweex.utils.Utils.getCurrentVersion;
 
 public class SJEventModule extends WXModule implements Callback {
 
-
     @JSMethod(uiThread = true)
     public void getVersion(JSCallback callback) {
         callback.invoke(getCurrentVersion(mWXSDKInstance.getContext()));
