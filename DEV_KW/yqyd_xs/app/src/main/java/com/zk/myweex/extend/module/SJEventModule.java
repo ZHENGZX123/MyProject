@@ -43,7 +43,7 @@ import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXModule;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.activity.LoginActivity;
-import com.zk.myweex.activity.MainActivity2;
+import com.zk.myweex.activity.MainActivity;
 import com.zk.myweex.utils.DensityUtil;
 import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.HttpUploadFile;
@@ -98,9 +98,8 @@ public class SJEventModule extends WXModule implements Callback {
     public void loginSuccess(final String username) {
         Log.d("test", "loginSuccess username = " + username);
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", true).apply();
-        mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putString("username", username).apply();
-        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
-        ScreenManager.getScreenManager().popAllActivityExceptOne(MainActivity2.class);
+        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity.class));
+        ScreenManager.getScreenManager().popAllActivityExceptOne(MainActivity.class);
     }
 
     @JSMethod(uiThread = true)
@@ -411,7 +410,7 @@ public class SJEventModule extends WXModule implements Callback {
     @JSMethod(uiThread = true)
     public void backToMain() {
         Log.d("test", "backToMain is called");
-        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity2.class));
+        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), MainActivity.class));
     }
 
     @JSMethod(uiThread = true)
@@ -498,7 +497,7 @@ public class SJEventModule extends WXModule implements Callback {
     @JSMethod(uiThread = true)
     public void ShowTabbar() {
         try {
-            MainActivity2.main.bottom.setVisibility(View.VISIBLE);
+            MainActivity.main.bottom.setVisibility(View.VISIBLE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -507,7 +506,7 @@ public class SJEventModule extends WXModule implements Callback {
     @JSMethod(uiThread = true)
     public void HideTabbar() {
         try {
-            MainActivity2.main.bottom.setVisibility(View.GONE);
+            MainActivity.main.bottom.setVisibility(View.GONE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -719,7 +718,7 @@ public class SJEventModule extends WXModule implements Callback {
                 JSONObject data = new JSONObject(response.body().string());
                 Logger.log("------------" + data);
                 if (data.optInt("status") == 200) {
-                    String username = mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).getString("username", "");
+                    String username = new DefaultWXStorage(mWXSDKInstance.getContext()).performGetItem("username");
                     uploadBackUrl = data.optJSONObject("result").optString("url");
                     RequestBody requestBodyPost = new FormBody.Builder()
                             .add("loginAccount", username)

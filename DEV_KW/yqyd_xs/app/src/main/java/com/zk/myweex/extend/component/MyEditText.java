@@ -71,7 +71,7 @@ public class MyEditText extends WXComponent<View> {
 
     @WXComponentProp(name = "content")
     public void setContent(String content) {
-        Log.d("test", "content = " + content);
+        Log.d("test", this.toString() + " content = " + content);
         if (TextUtils.isEmpty(content)) {
             return;
         }
