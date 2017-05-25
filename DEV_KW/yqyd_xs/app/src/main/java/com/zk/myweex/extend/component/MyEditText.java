@@ -35,6 +35,8 @@ public class MyEditText extends WXComponent<View> {
         input = (ClearEditText) view.findViewById(R.id.input);
         cancel = (Button) view.findViewById(R.id.cancel);
 
+        input.setCallback(this);
+
         input.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
