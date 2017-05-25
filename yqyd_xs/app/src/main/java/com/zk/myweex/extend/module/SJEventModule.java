@@ -44,6 +44,7 @@ import com.taobao.weex.common.WXModule;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity;
+import com.zk.myweex.utils.DataCleanManager;
 import com.zk.myweex.utils.DensityUtil;
 import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.HttpUploadFile;
@@ -86,6 +87,24 @@ public class SJEventModule extends WXModule implements Callback {
     @JSMethod(uiThread = true)
     public void getVersion(JSCallback callback) {
         callback.invoke(getCurrentVersion(mWXSDKInstance.getContext()));
+    }
+
+
+    @JSMethod(uiThread = true)
+    public void getCacheSize(JSCallback callback) {
+        try {
+            String cache = DataCleanManager.getCacheSize(mWXSDKInstance.getContext().getCacheDir());
+            Log.d("test", "cache = " + cache);
+            callback.invoke(cache);
+        } catch (Exception e) {
+            e.printStackTrace();
+            callback.invoke("0M");
+        }
+    }
+
+    @JSMethod(uiThread = true)
+    public void clearCache() {
+        DataCleanManager.cleanInternalCache(mWXSDKInstance.getContext());
     }
 
     private MediaPlayer mPlayer;
