@@ -74,15 +74,19 @@
                 <data android:scheme="wxpage" />
             </intent-filter>
         </activity>
-        <activity android:name="com.zk.myweex.activity.MyTabActivity" />
         <activity
-            android:name="com.zk.myweex.activity.MainActivity2"
-            android:launchMode="singleTask"></activity>
+            android:name="com.zk.myweex.activity.MyTabActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.zk.myweex.activity.MainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
 
 
         <activity
             android:name="com.zk.myweex.activity.LoginActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
 
         <receiver android:name="com.zk.myweex.broadcast.NetChangeReceiver">
             <intent-filter>
@@ -92,6 +96,7 @@
 
         <activity
             android:name="com.zk.myweex.activity.WelcomeActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppStartLoadTranslucent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -100,15 +105,22 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.zk.myweex.activity.TestActivity"></activity>
+        <activity
+            android:name="com.zk.myweex.activity.TestActivity"
+            android:screenOrientation="portrait">
 
-        <activity android:name="com.zk.myweex.activity.NoNetActivity"></activity>
+        </activity>
+
+        <activity
+            android:name="com.zk.myweex.activity.NoNetActivity"
+            android:screenOrientation="portrait"></activity>
 
 
         <!--sharesdk-->
         <activity
             android:name="com.mob.tools.MobUIShell"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="stateHidden|adjustResize">
 

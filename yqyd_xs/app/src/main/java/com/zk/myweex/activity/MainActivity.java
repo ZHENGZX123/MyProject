@@ -32,22 +32,20 @@ import java.util.List;
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.module.Module;
 import cn.kiway.yiqiyuedu.R;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
 
 
-public class MainActivity2 extends TabActivity {
+public class MainActivity extends TabActivity {
 
     private TabHost tabhost;
     public LinearLayout bottom;
     private ArrayList<LinearLayout> lls = new ArrayList<>();
-    public static MainActivity2 main;
+    public static MainActivity main;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main);
         ScreenManager.getScreenManager().pushActivity(this);
         main = this;
         Utils.checkNetWork(this);
@@ -224,7 +222,7 @@ public class MainActivity2 extends TabActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(MainActivity2.this, id, Toast.LENGTH_SHORT)
+                Toast.makeText(MainActivity.this, id, Toast.LENGTH_SHORT)
                         .show();
             }
         });
@@ -234,7 +232,7 @@ public class MainActivity2 extends TabActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(MainActivity2.this, id, Toast.LENGTH_SHORT)
+                Toast.makeText(MainActivity.this, id, Toast.LENGTH_SHORT)
                         .show();
             }
         });

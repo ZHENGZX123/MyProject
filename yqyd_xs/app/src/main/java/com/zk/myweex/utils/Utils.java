@@ -15,7 +15,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.qiniu.util.Auth;
-import com.zk.myweex.activity.MainActivity2;
+import com.zk.myweex.activity.MainActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -66,7 +66,7 @@ public class Utils {
                 msg.arg1 = 0;
                 msg.obj = "手机没有任何网络...";
             }
-            MainActivity2.main.mHandler.sendMessage(msg);
+            MainActivity.main.mHandler.sendMessage(msg);
         } catch (Exception e) {
             e.printStackTrace();
         }

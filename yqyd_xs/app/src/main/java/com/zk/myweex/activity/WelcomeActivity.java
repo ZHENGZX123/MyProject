@@ -69,7 +69,7 @@ public class WelcomeActivity extends WXBaseActivity {
             @Override
             public void run() {
                 if (getSharedPreferences("kiway", 0).getBoolean("login", false)) {
-                    startActivity(new Intent(WelcomeActivity.this, MainActivity2.class));
+                    startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
                 } else {
                     startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
                 }
@@ -396,17 +396,17 @@ public class WelcomeActivity extends WXBaseActivity {
             ZipPackage zip0 = new ZipPackage();
             zip0.name = "yqydTab0.zip";
             zip0.indexPath = "yqyd/dist/tab0.js";
-            zip0.version = "2.0.6";
+            zip0.version = "2.0.7";
             zip0.patchs = "";
             ZipPackage zip1 = new ZipPackage();
             zip1.name = "yqydTab1.zip";
             zip1.indexPath = "yqyd/dist/tab1.js";
-            zip1.version = "2.0.6";
+            zip1.version = "2.0.7";
             zip1.patchs = "";
             ZipPackage zip2 = new ZipPackage();
             zip2.name = "yqydTab2.zip";
             zip2.indexPath = "yqyd/dist/tab2.js";
-            zip2.version = "2.0.6";
+            zip2.version = "2.0.7";
             zip2.patchs = "";
             new MyDBHelper(getApplicationContext()).addZipPackage(zip0);
             new MyDBHelper(getApplicationContext()).addZipPackage(zip1);
