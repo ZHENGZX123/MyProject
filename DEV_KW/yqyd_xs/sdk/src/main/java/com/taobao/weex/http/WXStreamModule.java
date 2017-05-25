@@ -110,27 +110,35 @@ public class WXStreamModule extends WXModule {
 
     /**
      * @param optionsStr       request options include:
-     *                         method: GET 、POST、PUT、DELETE、HEAD、PATCH
-     *                         headers：object，请求header
-     *                         url:
-     *                         body: "Any body that you want to add to your request"
-     *                         type: json、text、jsonp（native实现时等价与json）
+     * method: GET 、POST、PUT、DELETE、HEAD、PATCH
+     * headers：object，请求header
+     * url:
+     * body: "Any body that you want to add to your request"
+     * type: json、text、jsonp（native实现时等价与json）
      * @param callback         finished callback,response object:
-     *                         status：status code
-     *                         ok：boolean 是否成功，等价于status200～299
-     *                         statusText：状态消息，用于定位具体错误原因
-     *                         data: 响应数据，当请求option中type为json，时data为object，否则data为string类型
-     *                         headers: object 响应头
+     * status：status code
+     * ok：boolean 是否成功，等价于status200～299
+     * statusText：状态消息，用于定位具体错误原因
+     * data: 响应数据，当请求option中type为json，时data为object，否则data为string类型
+     * headers: object 响应头
      * @param progressCallback in progress callback,for download progress and request state,response object:
-     *                         readyState: number 请求状态，1 OPENED，开始连接；2 HEADERS_RECEIVED；3 LOADING
-     *                         status：status code
-     *                         length：当前获取的字节数，总长度从headers里「Content-Length」获取
-     *                         statusText：状态消息，用于定位具体错误原因
-     *                         headers: object 响应头
+     * readyState: number 请求状态，1 OPENED，开始连接；2 HEADERS_RECEIVED；3 LOADING
+     * status：status code
+     * length：当前获取的字节数，总长度从headers里「Content-Length」获取
+     * statusText：状态消息，用于定位具体错误原因
+     * headers: object 响应头
      */
+
+    private String lastOptions = "";
+
     @JSMethod(uiThread = false)
     public void fetch(final String optionsStr, final JSCallback callback, final JSCallback progressCallback) {
+//        Log.d("stream", "stream lastOptions = " + optionsStr);
         Log.d("stream", "stream optionsStr = " + optionsStr);
+        if (lastOptions.contains("book/search") && lastOptions.equals(optionsStr)) {
+            return;
+        }
+        lastOptions = optionsStr;
         JSONObject optionsObj = null;
         try {
             optionsObj = JSON.parseObject(optionsStr);
@@ -149,7 +157,6 @@ public class WXStreamModule extends WXModule {
         }
         final String url = optionsObj.getString("url");
         final String method = optionsObj.getString("method").toUpperCase();
-        Log.d("stream", "stream url = " + url);
         JSONObject headers = optionsObj.getJSONObject("headers");
         String body = optionsObj.getString("body");
         String type = optionsObj.getString("type");
@@ -324,7 +331,7 @@ public class WXStreamModule extends WXModule {
 
     private void saveCacheToDB(String optionsStr, String respData) {
         try {
-            Log.d("stream", "saveCacheToDB");
+//            Log.d("stream", "saveCacheToDB");
             HTTPCache a = new WXDBHelper(mWXSDKInstance.getContext()).getHttpCacheByRequest(optionsStr);
             // if existed , update
             if (a == null) {
@@ -516,9 +523,8 @@ public class WXStreamModule extends WXModule {
             if (mCallback != null) {
                 mCallback.onResponse(response, mRespHeaders);
             }
-
             if (WXEnvironment.isApkDebugable()) {
-                WXLogUtils.d("WXStreamModule", response != null && response.originalData != null ? new String(response.originalData) : "response data is NUll!");
+                //WXLogUtils.d("WXStreamModule", response != null && response.originalData != null ? new String(response.originalData) : "response data is NUll!");
             }
         }
     }
