@@ -2,6 +2,8 @@ package com.zk.myweex.activity;
 
 import android.app.TabActivity;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -52,7 +54,7 @@ public class MainActivity extends TabActivity {
 
         checkPackageService();
         checkZipVersion();
-        
+
         ArrayList<TabEntity> tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
         Log.d("test", "main initView");
         tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
@@ -354,4 +356,15 @@ public class MainActivity extends TabActivity {
         super.onDestroy();
         ScreenManager.getScreenManager().popActivity(this);
     }
+
+    @Override
+    public Resources getResources() {
+        Resources resources = super.getResources();
+        Configuration configuration = new Configuration();
+        configuration.setToDefaults();
+        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
+        return resources;
+    }
+
+
 }

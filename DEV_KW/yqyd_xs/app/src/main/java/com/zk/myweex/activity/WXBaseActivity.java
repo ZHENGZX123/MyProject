@@ -204,6 +204,8 @@
 package com.zk.myweex.activity;
 
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -495,4 +497,14 @@ public abstract class WXBaseActivity extends AppCompatActivity implements IWXRen
         super.onActivityResult(requestCode, resultCode, data);
         mInstance.onActivityResult(requestCode, resultCode, data);
     }
+
+    @Override
+    public Resources getResources() {
+        Resources resources = super.getResources();
+        Configuration configuration = new Configuration();
+        configuration.setToDefaults();
+        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
+        return resources;
+    }
+
 }
