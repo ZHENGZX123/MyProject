@@ -41,7 +41,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.kiway.yiqiyuedu.R;
+import cn.kiway.baoantong.R;
 
 import static com.zk.myweex.utils.Utils.getCurrentVersion;
 

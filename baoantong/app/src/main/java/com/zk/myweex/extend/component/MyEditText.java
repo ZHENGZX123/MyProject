@@ -18,7 +18,7 @@ import com.taobao.weex.ui.component.WXVContainer;
 
 import java.util.HashMap;
 
-import cn.kiway.yiqiyuedu.R;
+import cn.kiway.baoantong.R;
 
 public class MyEditText extends WXComponent<View> {
     private View view;

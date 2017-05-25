@@ -16,7 +16,7 @@ import android.widget.EditText;
 
 import java.util.HashMap;
 
-import cn.kiway.yiqiyuedu.R;
+import cn.kiway.baoantong.R;
 
 @SuppressLint("AppCompatCustomView")
 public class ClearEditText extends EditText implements View.OnFocusChangeListener, TextWatcher {

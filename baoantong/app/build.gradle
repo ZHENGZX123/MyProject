@@ -12,7 +12,7 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
     defaultConfig {
-        applicationId "cn.kiway.yiqiyuedu"
+        applicationId "cn.kiway.baoantong"
         multiDexEnabled = true
         minSdkVersion 15
         targetSdkVersion 23
