@@ -33,7 +33,7 @@ import java.util.List;
 
 import cn.kiway.baas.sdk.KWQuery;
 import cn.kiway.baas.sdk.model.module.Module;
-import cn.kiway.yiqiyuedu.R;
+import cn.kiway.baoantong.R;
 
 
 public class MainActivity extends TabActivity {
