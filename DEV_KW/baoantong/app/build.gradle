@@ -1,0 +1,105 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        kiway {
+            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+            storePassword 'kiway123'
+            keyAlias 'kiway'
+            keyPassword 'kiway123'
+        }
+    }
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+    defaultConfig {
+        applicationId "cn.kiway.yiqiyuedu"
+        multiDexEnabled = true
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0.9"
+        ndk {
+            abiFilters "x86"
+            abiFilters "armeabi"
+        }
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "arm64_v8a"
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.kiway
+        }
+        debug {
+            signingConfig signingConfigs.kiway
+        }
+    }
+    sourceSets {
+        main {
+            //jni库的调用会到资源文件夹下libs里面找so文件
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
+    testOptions {
+        reportDir = "$project.buildDir/test/report"
+    }
+}
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.taobao.android:dexposed:0.1.8'
+    //    compile 'com.loopj.android:android-async-http:1.4.9@aar'
+    compile 'com.squareup.okhttp:okhttp:2.3.0'
+    compile 'com.squareup.okhttp:okhttp-ws:2.3.0'
+    compile 'com.squareup.okio:okio:1.0.1'
+    //    compile 'com.alibaba:fastjson:1.1.46.android'
+    compile 'com.android.support:support-v4:23.2.1'
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:design:23.2.1'
+    compile 'com.android.support:support-annotations:23.2.1'
+    compile 'com.jakewharton.scalpel:scalpel:1.1.2'
+    compile 'com.taobao.android.weex_inspection:urlconnection_interceptor:1.0.0'
+    compile 'com.android.support.test.espresso:espresso-idling-resource:2.2.2'
+    compile 'com.taobao.android:weex_inspector:0.10.0.3@aar'
+    compile project(':sdk')
+    //原common包
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    //sdk
+    compile files('libs/jdeferred-core-1.2.4.jar')
+    compile files('libs/org.apache.http.legacy.jar')
+    compile 'com.alibaba:fastjson:1.2.24'
+    compile 'org.slf4j:slf4j-android:1.7.24'
+    compile files('libs/android-async-http-1.4.5.jar')
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    compile 'com.squareup.retrofit2:converter-scalars:2.2.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
+    //multidex
+    compile 'com.android.support:multidex:1.0.1'
+    //腾讯bugly
+    compile 'com.tencent.bugly:crashreport:latest.release'
+    compile project(':ImagePicker')
+    compile project(':photoview')
+    compile project(':zxing')
+    compile files('libs/sdk-0.0.3.jar')
+    //qiniu
+    compile 'com.qiniu:qiniu-android-sdk:7.3.+'
+    compile 'com.qiniu:qiniu-java-sdk:7.2.+'
+    compile files('libs/ShareSDK-Core-2.8.3.jar')
+    compile files('libs/ShareSDK-QQ-2.8.3.jar')
+    compile files('libs/ShareSDK-QZone-2.8.3.jar')
+    compile files('libs/ShareSDK-SinaWeibo-2.8.3.jar')
+    compile files('libs/ShareSDK-Wechat-2.8.3.jar')
+    compile files('libs/ShareSDK-Wechat-Core-2.8.3.jar')
+    compile files('libs/ShareSDK-Wechat-Moments-2.8.3.jar')
+    compile files('libs/MobTools-2017.0412.1554.jar')
+    compile files('libs/MobCommons-2017.0412.1554.jar')
+    compile files('libs/image_compress.jar')
+}
+

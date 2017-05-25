@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/IM/IM.iml" filepath="$PROJECT_DIR$/IM/IM.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ImagePicker/ImagePicker.iml" filepath="$PROJECT_DIR$/ImagePicker/ImagePicker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MyWeex.iml" filepath="$PROJECT_DIR$/MyWeex.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Yjpty/Yjpty.iml" filepath="$PROJECT_DIR$/Yjpty/Yjpty.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/photoview/photoview.iml" filepath="$PROJECT_DIR$/photoview/photoview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sdk/sdk.iml" filepath="$PROJECT_DIR$/sdk/sdk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/yqyd_xs.iml" filepath="$PROJECT_DIR$/yqyd_xs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zxing/zxing.iml" filepath="$PROJECT_DIR$/zxing/zxing.iml" />
+    </modules>
+  </component>
+</project>
