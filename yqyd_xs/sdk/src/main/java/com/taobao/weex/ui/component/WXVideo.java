@@ -218,7 +218,7 @@ public class WXVideo extends WXComponent<FrameLayout> {
                 return true;
             case Constants.Name.HIDE:
                 //先试试这个办法，不行的话就把mediacontroller去掉
-                boolean hide = WXUtils.getBoolean(param, null);
+                String hide = WXUtils.getString(param, null);
                 setHide(hide);
                 return true;
         }
@@ -257,11 +257,9 @@ public class WXVideo extends WXComponent<FrameLayout> {
     }
 
     @WXComponentProp(name = Constants.Name.HIDE)
-    public void setHide(boolean hide) {
+    public void setHide(String hide) {
         Log.d("test", "hide = " + hide);
-        if (hide) {
-            mWrapper.getMediaController().hide();
-        }
+        mWrapper.getMediaController().hide();
     }
 
     private boolean mStopped;
