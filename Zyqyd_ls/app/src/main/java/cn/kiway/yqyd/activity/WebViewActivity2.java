@@ -450,10 +450,11 @@ public class WebViewActivity2 extends Activity implements Callback {
 
         @JavascriptInterface
         public void downLoadFile(String dowaloadUrl, String fileName, String fileType) {
-            Logger.log("***********" + dowaloadUrl);
-            Logger.log("***********" + fileName);
-            Logger.log("***********" + fileType);
-            String fileNamePath = fileName + "." + fileType;
+            Logger.log("*****下载路径******" + dowaloadUrl);
+            Logger.log("******文件名*****" + fileName);
+            Logger.log("*****文件类型******" + fileType);
+
+            String fileNamePath = fileName + "." + fileType.toLowerCase();
             File file = new File(FileUtils.createDocFloder(), fileNamePath);
             if (!file.exists()) {
                 Message msg = handler.obtainMessage();
@@ -462,7 +463,12 @@ public class WebViewActivity2 extends Activity implements Callback {
                 handler.sendMessage(msg);
                 DownLoadZip.downoalFile(dowaloadUrl, app, handler, fileNamePath);
             } else {
-                FileUtils.openFile(app.getApplicationContext(), file.getAbsolutePath());
+                try {
+                    FileUtils.openFile(app.getApplicationContext(), file.getAbsolutePath());
+                } catch (Exception e) {
+                    Toast.makeText(app.getApplicationContext(), "打开失败", Toast.LENGTH_SHORT).show();
+                }
+
             }
         }
 

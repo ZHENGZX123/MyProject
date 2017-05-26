@@ -1,6 +1,6 @@
 -- Merging decision tree log ---
 manifest
-ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:2:1-48:12
+ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:2:1-49:12
 	package
 		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:4:11-34
 		INJECTED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml
@@ -40,7 +40,7 @@ MERGED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_Imag
 	android:name
 		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:10:22-81
 application
-ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:12:5-46:19
+ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:12:5-47:19
 MERGED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:12:5-23:19
 MERGED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:20:5-30:19
 MERGED from [pub.devrel:easypermissions:0.1.7] C:\Users\Administrator\.android\build-cache\31975a3344587551dd92e26420c43bf0f16b14e6\output\AndroidManifest.xml:12:5-20
@@ -117,6 +117,10 @@ category#android.intent.category.LAUNCHER
 ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:43:17-76
 	android:name
 		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:43:27-74
+activity#cn.kiway.yqyd.activity.VideoAcitivy
+ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:46:9-71
+	android:name
+		ADDED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:46:19-69
 uses-sdk
 INJECTED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 MERGED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:10:5-13:105
@@ -166,7 +170,7 @@ ADDED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_Image
 	android:name
 		ADDED from [Zyqyd_ls:wjc_ImagePicker:unspecified] F:\kiway_xm\Zyqyd_ls\wjc_ImagePicker\build\intermediates\bundles\default\AndroidManifest.xml:21:13-71
 uses-permission#android.permission.READ_PHONE_STATE
-IMPLIED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:2:1-48:12 reason: com.lzy.imagepicker has a targetSdkVersion < 4
+IMPLIED from F:\kiway_xm\Zyqyd_ls\app\src\main\AndroidManifest.xml:2:1-49:12 reason: com.lzy.imagepicker has a targetSdkVersion < 4
 uses-permission#android.permission.CAMERA
 ADDED from [Zyqyd_ls:zxingScan:unspecified] F:\kiway_xm\Zyqyd_ls\zxingScan\build\intermediates\bundles\default\AndroidManifest.xml:15:5-65
 	android:name

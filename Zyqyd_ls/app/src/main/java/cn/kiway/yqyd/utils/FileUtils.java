@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.Toast;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -114,7 +115,7 @@ public class FileUtils {
     }
 
     public static void openFile(Context context, String filePath) {
-        //filePath="file://"+filePath;
+        filePath = "file://" + filePath;
         String type = filePath.split("\\.")[1].toLowerCase();
         String typeOpenFile = "*";
         Logger.log("*****************" + filePath);
@@ -129,27 +130,43 @@ public class FileUtils {
         else if (type.equals("xlsx") || type.equals("xlsm") || type.equals("xltx"))
             typeOpenFile = "application/vnd.ms-excel";
         else if (type.equals("mp3") || type.equals("amr") || type.equals("ogg") || type.equals("wav")) {
-            typeOpenFile = "";
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.parse(filePath), "audio/*");
-            context.startActivity(intent);
+            typeOpenFile = "audio/*";
+//            Intent intent = new Intent(Intent.ACTION_VIEW);
+//            intent.setDataAndType(Uri.parse(filePath), "audio/*");
+//            context.startActivity(intent);
+//            Intent intent = new Intent(context, VideoAcitivy.class);
+//            intent.putExtra("url", filePath);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            context.startActivity(intent);
         } else if (type.equals("mp4") || type.equals("3gp") || type.equals("avi") || type.equals("rmvb") || type
                 .equals("mpg") | type.equals("rm") || type.equals("flv")) {
-            typeOpenFile = "";
-            Intent intent = new Intent("android.intent.action.VIEW");
-            intent.addCategory("android.intent.category.DEFAULT");
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Uri uri = Uri.parse(filePath);
-            intent.setDataAndType(uri, "video/*");
-            context.startActivity(intent);
+            typeOpenFile = "video/*";
+//            Intent intent = new Intent(Intent.ACTION_VIEW);
+//            intent.addCategory(Intent.CATEGORY_DEFAULT);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            Uri uri = Uri.parse(filePath);
+//            intent.setDataAndType(uri, "video/*");
+//            context.startActivity(intent);
+//            Intent intent = new Intent(context, VideoAcitivy.class);
+//            intent.putExtra("url", filePath);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            context.startActivity(intent);
         }
         if (!typeOpenFile.equals("")) {
-            Intent intent = new Intent("android.intent.action.VIEW");
-            intent.addCategory("android.intent.category.DEFAULT");
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Uri uri = Uri.fromFile(new File(filePath));
-            intent.setDataAndType(Uri.parse(filePath), typeOpenFile);
-            context.startActivity(intent);
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setDataAndType(Uri.parse(filePath), typeOpenFile);
+                context.startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (typeOpenFile.equals("video/*") || typeOpenFile.equals("audio/*"))
+                    Toast.makeText(context, "手机没有安装相关的播放器，请下载安装", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(context, "手机没有安装相关的办公软件，请下载安装", Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
 
