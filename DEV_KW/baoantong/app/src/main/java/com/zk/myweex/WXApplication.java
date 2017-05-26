@@ -62,7 +62,7 @@ public class WXApplication extends Application {
         Configure.getInstance().setHost("zip.kiway.cn");
         Configure.getInstance().setPort(3000);
         Configure.getInstance().setRoot("api");
-        Configure.init("5b4e6117143c2abd97a51a04303987bc", "3a13696a633e49d20ee6bf4bee9f5874c64aa57b", "");
+        Configure.init("e84923d4841d82a47924e47b56b950a4", "41ede4c738018d8615c09518ea13684799603a26", "");
 
         //universal-image-loader初始化
         initImageCache();
