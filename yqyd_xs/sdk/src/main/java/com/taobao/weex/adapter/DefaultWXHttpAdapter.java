@@ -115,7 +115,6 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
     connection.setReadTimeout(request.timeoutMs);
     connection.setUseCaches(false);
     connection.setDoInput(true);
-
     if (request.paramMap != null) {
       Set<String> keySets = request.paramMap.keySet();
       for (String key : keySets) {
