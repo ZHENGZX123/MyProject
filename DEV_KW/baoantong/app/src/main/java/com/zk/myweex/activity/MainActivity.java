@@ -50,7 +50,6 @@ public class MainActivity extends TabActivity {
     private ArrayList<LinearLayout> lls = new ArrayList<>();
     public static MainActivity main;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
