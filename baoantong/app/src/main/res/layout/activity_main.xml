@@ -4,11 +4,11 @@
     android:layout_height="fill_parent">
 
     <RelativeLayout
-        android:onClick="clickNetwork"
         android:id="@+id/rl_nonet"
-        android:background="#fec7de"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:background="#fec7de"
+        android:onClick="clickNetwork"
         android:visibility="gone">
 
         <TextView
@@ -56,7 +56,8 @@
                 android:layout_height="49dp"
                 android:background="#ffffff"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"></LinearLayout>
+                android:orientation="horizontal"
+                android:visibility="gone"></LinearLayout>
         </LinearLayout>
     </TabHost>
 

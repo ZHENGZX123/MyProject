@@ -506,23 +506,25 @@ public class SJEventModule extends WXModule implements Callback {
         ((Activity) mWXSDKInstance.getContext()).startActivityForResult(new Intent(mWXSDKInstance.getContext(), CaptureActivity.class), 999);
     }
 
-    @JSMethod(uiThread = true)
-    public void ShowTabbar() {
-        try {
-            MainActivity.main.bottom.setVisibility(View.VISIBLE);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @JSMethod(uiThread = true)
-    public void HideTabbar() {
-        try {
-            MainActivity.main.bottom.setVisibility(View.GONE);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    @JSMethod(uiThread = true)
+//    public void ShowTabbar() {
+//        try {
+//            Log.d("test", "ShowTabbar");
+//            MainActivity.main.bottom.setVisibility(View.VISIBLE);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    @JSMethod(uiThread = true)
+//    public void HideTabbar() {
+//        try {
+//            Log.d("test", "HideTabbar");
+//            MainActivity.main.bottom.setVisibility(View.GONE);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
     @JSMethod(uiThread = true)
