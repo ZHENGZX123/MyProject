@@ -1,33 +1,40 @@
 package com.zk.myweex.activity;
 
+import android.Manifest;
 import android.app.TabActivity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.http.WXStreamModule;
 import com.taobao.weex.utils.cache.OfflineTask;
 import com.taobao.weex.utils.cache.WXDBHelper;
+import com.zk.myweex.WXApplication;
 import com.zk.myweex.entity.TabEntity;
+import com.zk.myweex.entity.ZipPackage;
+import com.zk.myweex.utils.FileUtils;
 import com.zk.myweex.utils.MyDBHelper;
 import com.zk.myweex.utils.ScreenManager;
 import com.zk.myweex.utils.Utils;
 import com.zk.myweex.utils.VersionUpManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,8 +57,65 @@ public class MainActivity extends TabActivity {
         setContentView(R.layout.activity_main);
         ScreenManager.getScreenManager().pushActivity(this);
         main = this;
-        Utils.checkNetWork(this);
+    }
 
+    interface IPermission {
+        //权限被允许时的回调
+        void onGranted();
+
+        //权限被拒绝时的回调， 参数：被拒绝权限的集合
+        void onDenied(List<String> deniedPermissions);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        requestRunTimePermission(
+                new String[]{
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.RECORD_AUDIO,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_PHONE_STATE
+                },
+                mListener);
+    }
+
+    private final int REQUEST_CODE = 1;
+    private IPermission mListener = new IPermission() {
+        @Override
+        public void onGranted() {
+            toast("所有权限被接受");
+            checkIsFirst();
+            init();
+        }
+
+        @Override
+        public void onDenied(List<String> deniedPermissions) {
+            toast("有权限被拒绝");
+            finish();
+        }
+    };
+
+    //申请权限的方法
+    public void requestRunTimePermission(String[] permissions, IPermission listener) {
+        List<String> permissionList = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                permissionList.add(permission);
+            }
+        }
+        if (permissionList.size() > 0) {
+            ActivityCompat.requestPermissions(this, permissionList.toArray(new String[permissionList.size()]), REQUEST_CODE);
+        } else {
+            checkIsFirst();
+            init();
+        }
+    }
+
+    private void init() {
+        Utils.checkNetWork(this);
         checkPackageService();
         checkZipVersion();
 
@@ -59,6 +123,69 @@ public class MainActivity extends TabActivity {
         Log.d("test", "main initView");
         tabs = new MyDBHelper(getApplicationContext()).getAllTabEntity();
         initView(tabs);
+    }
+
+    //当用户拒绝或者同意权限时的回调
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_CODE:
+                if (grantResults.length > 0) {
+                    List<String> deniedPermissions = new ArrayList<>();
+                    for (int i = 0; i < grantResults.length; i++) {
+                        int grantResult = grantResults[i];
+                        String permission = permissions[i];
+                        if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                            deniedPermissions.add(permission);
+                        }
+                    }
+                    if (deniedPermissions.isEmpty()) {
+                        mListener.onGranted();
+                    } else {
+                        mListener.onDenied(deniedPermissions);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void checkIsFirst() {
+        if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
+            getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", false).commit();
+
+            //1.mkdirs
+            if (new File(WXApplication.ROOT).exists()) {
+                FileUtils.delFolder(WXApplication.ROOT);
+            }
+            if (!new File(WXApplication.PATH).exists()) {
+                new File(WXApplication.PATH).mkdirs();
+            }
+            if (!new File(WXApplication.PATH_BACKUP).exists()) {
+                new File(WXApplication.PATH_BACKUP).mkdirs();
+            }
+            if (!new File(WXApplication.PATH_TMP).exists()) {
+                new File(WXApplication.PATH_TMP).mkdirs();
+            }
+            if (!new File(WXApplication.PATH_APK).exists()) {
+                new File(WXApplication.PATH_APK).mkdirs();
+            }
+            //2.拷贝。。。
+            FileUtils.copyRawToSdcard(this, R.raw.bat, "batTab0.zip");
+            //3.插入数据库
+            TabEntity tab0 = new TabEntity();
+            tab0.name = "首页";
+            tab0.idStr = "batTab0";
+            new MyDBHelper(getApplicationContext()).addTabEntity(tab0);
+            ZipPackage zip0 = new ZipPackage();
+            zip0.name = "batTab0.zip";
+            zip0.indexPath = "bat/dist/tab0.js";
+            zip0.version = "1.0.0";
+            zip0.patchs = "";
+            new MyDBHelper(getApplicationContext()).addZipPackage(zip0);
+        }
     }
 
     private void checkPackageService() {
@@ -132,93 +259,11 @@ public class MainActivity extends TabActivity {
                 @Override
                 public void onClick(View arg0) {
                     tabhost.setCurrentTab(ii);
-                    refreshUI(ii, tabs);
                 }
             });
         }
-        refreshUI(0, tabs);
     }
 
-    private void refreshUI(int position, ArrayList<TabEntity> tabs) {
-        Log.d("test", "refreshUI = " + position);
-        for (int i = 0; i < lls.size(); i++) {
-            LinearLayout ll = lls.get(i);
-            ImageView iv = (ImageView) ll.findViewById(R.id.iv);
-            TextView tv = (TextView) ll.findViewById(R.id.tv);
-            tv.setText(tabs.get(i).name);
-
-            if (position == 0) {
-                if (i == 0) {
-                    iv.setImageResource(R.drawable.tab12);
-                    tv.setTextColor(getResources().getColor(R.color.orange));
-                } else if (i == 1) {
-                    iv.setImageResource(R.drawable.tab21);
-                    tv.setTextColor(getResources().getColor(R.color.lightblack));
-                } else if (i == 2) {
-                    iv.setImageResource(R.drawable.tab31);
-                    tv.setTextColor(getResources().getColor(R.color.lightblack));
-                }
-            } else if (position == 1) {
-                if (i == 0) {
-                    iv.setImageResource(R.drawable.tab11);
-                    tv.setTextColor(getResources().getColor(R.color.lightblack));
-                } else if (i == 1) {
-                    iv.setImageResource(R.drawable.tab22);
-                    tv.setTextColor(getResources().getColor(R.color.orange));
-                } else if (i == 2) {
-                    iv.setImageResource(R.drawable.tab31);
-                    tv.setTextColor(getResources().getColor(R.color.lightblack));
-                }
-            } else if (position == 2) {
-                if (i == 0) {
-                    iv.setImageResource(R.drawable.tab11);
-                    tv.setTextColor(getResources().getColor(R.color.lightblack));
-                } else if (i == 1) {
-                    iv.setImageResource(R.drawable.tab21);
-                    tv.setTextColor(getResources().getColor(R.color.lightblack));
-                } else if (i == 2) {
-                    iv.setImageResource(R.drawable.tab32);
-                    tv.setTextColor(getResources().getColor(R.color.orange));
-                }
-            }
-//            if (i == position) {
-//                tv.setTextColor(getResources().getColor(R.color.orange));
-//                ImageLoader.getInstance().displayImage(getTabImage(tabs, i, true), tv, getLoaderOptions());
-//            } else {
-//                tv.setTextColor(getResources().getColor(R.color.lightblack));
-//                ImageLoader.getInstance().displayImage(getTabImage(tabs, i, false), tv, getLoaderOptions());
-//            }
-        }
-    }
-
-    private String getTabImage(ArrayList<TabEntity> tabs, int position, boolean select) {
-        String url = "";
-        if (select) {
-            url = tabs.get(position).image_selected;
-        } else {
-            url = tabs.get(position).image_default;
-        }
-        if (url == null || url.equals("")) {
-            if (select) {
-                if (position == 0) {
-                    url = "drawable://" + R.drawable.tab12;
-                } else if (position == 1) {
-                    url = "drawable://" + R.drawable.tab22;
-                } else if (position == 2) {
-                    url = "drawable://" + R.drawable.tab32;
-                }
-            } else {
-                if (position == 0) {
-                    url = "drawable://" + R.drawable.tab11;
-                } else if (position == 1) {
-                    url = "drawable://" + R.drawable.tab21;
-                } else if (position == 2) {
-                    url = "drawable://" + R.drawable.tab31;
-                }
-            }
-        }
-        return url;
-    }
 
     protected void toast(final String id) {
         runOnUiThread(new Runnable() {
