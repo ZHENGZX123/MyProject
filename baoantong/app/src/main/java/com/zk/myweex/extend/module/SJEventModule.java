@@ -582,7 +582,7 @@ public class SJEventModule extends WXModule implements Callback {
     }
 
     private void doShare(String imagePath, final String text, final String jumpUrl) {
-        final String title = "一起阅读";
+        final String title = "宝安通";
         final String imageUrl = "http://120.24.84.206/ic_launcher.png";
 
         // 分享到其他平台.

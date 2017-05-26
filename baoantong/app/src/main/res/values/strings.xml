@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">一起阅读</string>
+    <string name="app_name">宝安通</string>
     <string name="downloadsuccess">下载成功</string>
     <string name="downloadfailure">下载失败，请稍后再试</string>
     <string name="getnewversion">发现新的版本，是否更新？</string>

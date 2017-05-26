@@ -18,7 +18,7 @@ public class LoginActivity extends WXBaseActivity {
         Log.d("test", "loginPath = " + loginPath);
         renderPage(WXFileUtils.readFileInZip(loginPath),
                 "file://" + loginPath.replace("login.js", ""),
-                "yqydTab0.zip");
+                "batTab0.zip");
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
