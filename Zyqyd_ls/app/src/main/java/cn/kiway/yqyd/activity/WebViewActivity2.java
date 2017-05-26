@@ -468,7 +468,6 @@ public class WebViewActivity2 extends Activity implements Callback {
                 } catch (Exception e) {
                     Toast.makeText(app.getApplicationContext(), "打开失败", Toast.LENGTH_SHORT).show();
                 }
-
             }
         }
 
