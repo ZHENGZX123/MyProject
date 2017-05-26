@@ -114,7 +114,7 @@ public class FileUtils {
     }
 
     public static void openFile(Context context, String filePath) {
-
+        //filePath="file://"+filePath;
         String type = filePath.split("\\.")[1].toLowerCase();
         String typeOpenFile = "*";
         Logger.log("*****************" + filePath);
@@ -136,8 +136,11 @@ public class FileUtils {
         } else if (type.equals("mp4") || type.equals("3gp") || type.equals("avi") || type.equals("rmvb") || type
                 .equals("mpg") | type.equals("rm") || type.equals("flv")) {
             typeOpenFile = "";
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.parse(filePath), "video/*");
+            Intent intent = new Intent("android.intent.action.VIEW");
+            intent.addCategory("android.intent.category.DEFAULT");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Uri uri = Uri.parse(filePath);
+            intent.setDataAndType(uri, "video/*");
             context.startActivity(intent);
         }
         if (!typeOpenFile.equals("")) {
@@ -145,7 +148,7 @@ public class FileUtils {
             intent.addCategory("android.intent.category.DEFAULT");
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Uri uri = Uri.fromFile(new File(filePath));
-            intent.setDataAndType(uri, typeOpenFile);
+            intent.setDataAndType(Uri.parse(filePath), typeOpenFile);
             context.startActivity(intent);
         }
     }
