@@ -148,6 +148,8 @@ public class WebViewActivity2 extends Activity implements Callback {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
+        settings.setSupportZoom(true);
+        settings.setTextSize(WebSettings.TextSize.NORMAL);
         wv.setWebViewClient(new WebViewClient() {
 
             @Override
@@ -175,7 +177,30 @@ public class WebViewActivity2 extends Activity implements Callback {
                     return new WebResourceResponse(mimeType, "utf-8", is);
                 }
                 return super.shouldInterceptRequest(view, url);
+//                WebResourceResponse response = super.shouldInterceptRequest(view, url);
+//                Log.i("webview","load intercept request:" + url);
+//                if (url != null && url.contains("zhu.ttf")) {
+//                    String assertPath ="fonts/zhu.ttf";
+//                    try {
+//                        response = new WebResourceResponse("application/x-font-ttf","UTF8", getAssets().open
+// (assertPath));
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                return response;
             }
+
+//            @Override///****/fonts/myfont.ttf  //这里的* 号是为了让它走：shouldInterceptRequest
+//            public void onPageFinished(WebView view, String url) {
+//                view.loadUrl("javascript:!function(){" +
+//                        "s=document.createElement('style');s.innerHTML="
+//                        + "\"@font-face{font-family:myhyqh;src:url('****/fonts/zhu.ttf');}*{font-family:myhyqh
+// !important;}\";"
+//                        + "document.getElementsByTagName('head')[0].appendChild(s);" +
+//                        "document.getElementsByTagName('body')[0].style.fontFamily = \"myhyqh\";}()");
+//                super.onPageFinished(view, url);
+//            }
         });
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new WebChromeClient());
@@ -206,14 +231,14 @@ public class WebViewActivity2 extends Activity implements Callback {
         if (CheckVersionUtil.returnVersion(CheckVersionUtil.readFromAsset(WebViewActivity2.this), CheckVersionUtil
                 .readFileSdcard()) >= 0) {//assect版本号大于本地，用assect
             wv.loadUrl(IContants.accetsUrl + token);
-            Logger.log(":::::::::::::::::::assetsindex" + IContants.accetsUrl + token);
+            Logger.log(":::::::::::::::::::加载assetindex" + IContants.accetsUrl + token);
         } else {//本地文件没有，用assect
             if (new File(IContants.sdUrl).exists()) {
                 wv.loadUrl(IContants.fileSdUrl + token);
-                Logger.log(":::::::::::::::::::有index" + IContants.fileSdUrl + token);
+                Logger.log(":::::::::::::::::::有本地index" + IContants.fileSdUrl + token);
             } else {
                 wv.loadUrl(IContants.accetsUrl + token);
-                Logger.log(":::::::::::::::::::没有index" + IContants.accetsUrl + token);
+                Logger.log(":::::::::::::::::::没有本地index" + IContants.accetsUrl + token);
             }
         }
     }
@@ -272,18 +297,21 @@ public class WebViewActivity2 extends Activity implements Callback {
         if (requestCode == ResultMessage999 && data != null) { //扫描二维码返回
             String result = data.getStringExtra("result");
             Toast.makeText(WebViewActivity2.this, result, Toast.LENGTH_SHORT).show();
-            wv.loadUrl("javascript:scanResult('" + result + "')");
+            Message message = new Message();
+            message.obj = "javascript:scanResult('" + result + "')";
+            message.what = messageWhat1;
+            handler.sendMessage(message);
         }
     }
 
     void uploadUserPic(String fileName, String fileType, boolean isImg) {
         if (loginDialog != null)
             loginDialog.show();
+        loginDialog.setTitle("正在上传，请稍后");
         this.isImg = isImg;
         try {
             app.mOkHttpClient.newCall(HttpUploadFile.returnUploadImgRequser(new File(fileName), fileType, httpToken))
-                    .enqueue
-                            (this);
+                    .enqueue(this);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -328,7 +356,7 @@ public class WebViewActivity2 extends Activity implements Callback {
                 } else {
                     Message message = new Message();
                     message.obj = "上传失败";
-                    message.what = 2;
+                    message.what = HanderMessageWhat.messageWhat2;
                     handler.sendMessage(message);
                 }
             } catch (JSONException e) {

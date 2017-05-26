@@ -119,7 +119,7 @@ public class BootActivity extends Activity implements Animation.AnimationListene
                 final JSONObject data = new JSONObject(response.body().string());
                 Logger.log("检查更新：：：：：：" + data);
                 if (CheckVersionUtil.returnVersion(data.optString("apkCode"), CheckVersionUtil.getAppInfo(this)) > 0) {
-                    //需要更新
+                    //apk需要更新
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -131,7 +131,7 @@ public class BootActivity extends Activity implements Animation.AnimationListene
                 } else {
                     if (CheckVersionUtil.returnVersion(data.optString("zipCode"), CheckVersionUtil.returnPkVersion
                             (BootActivity.this)) > 0) {
-                        //需要更新
+                        //zip需要更新
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

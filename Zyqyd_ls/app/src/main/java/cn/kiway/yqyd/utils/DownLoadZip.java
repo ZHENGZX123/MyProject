@@ -105,10 +105,10 @@ public class DownLoadZip {
         app.mOkHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-//                Message msg = mHandler.obtainMessage();
-//                msg.what = HanderMessageWhat.messageWhat2;
-//                msg.obj = "文件下载失败";
-//                mHandler.sendMessage(msg);
+                Message msg = mHandler.obtainMessage();
+                msg.what = HanderMessageWhat.messageWhat2;
+                msg.obj = "文件下载失败";
+                mHandler.sendMessage(msg);
             }
 
             @Override

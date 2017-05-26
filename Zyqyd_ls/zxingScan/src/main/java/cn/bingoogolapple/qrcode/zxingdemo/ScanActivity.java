@@ -24,7 +24,7 @@ public class ScanActivity extends Activity implements QRCodeView.Delegate {
         setContentView(R.layout.activity_test_scan);
         mQRCodeView = (ZXingView) findViewById(R.id.zxingview);
         mQRCodeView.setDelegate(this);
-        mQRCodeView.changeToScanBarcodeStyle();
+        mQRCodeView.changeToScanQRCodeStyle();
     }
 
     @Override
