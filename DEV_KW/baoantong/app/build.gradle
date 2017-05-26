@@ -17,7 +17,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0.9"
+        versionName "1.0.0"
         ndk {
             abiFilters "x86"
             abiFilters "armeabi"
@@ -91,15 +91,6 @@ dependencies {
     //qiniu
     compile 'com.qiniu:qiniu-android-sdk:7.3.+'
     compile 'com.qiniu:qiniu-java-sdk:7.2.+'
-    compile files('libs/ShareSDK-Core-2.8.3.jar')
-    compile files('libs/ShareSDK-QQ-2.8.3.jar')
-    compile files('libs/ShareSDK-QZone-2.8.3.jar')
-    compile files('libs/ShareSDK-SinaWeibo-2.8.3.jar')
-    compile files('libs/ShareSDK-Wechat-2.8.3.jar')
-    compile files('libs/ShareSDK-Wechat-Core-2.8.3.jar')
-    compile files('libs/ShareSDK-Wechat-Moments-2.8.3.jar')
-    compile files('libs/MobTools-2017.0412.1554.jar')
-    compile files('libs/MobCommons-2017.0412.1554.jar')
     compile files('libs/image_compress.jar')
 }
 
