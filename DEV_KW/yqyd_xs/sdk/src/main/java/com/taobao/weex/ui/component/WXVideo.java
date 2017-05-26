@@ -259,7 +259,11 @@ public class WXVideo extends WXComponent<FrameLayout> {
     @WXComponentProp(name = Constants.Name.HIDE)
     public void setHide(String hide) {
         Log.d("test", "hide = " + hide);
-        mWrapper.getMediaController().hide();
+        try {
+            mWrapper.getMediaController().hide();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean mStopped;

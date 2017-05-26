@@ -40,6 +40,7 @@ import com.taobao.weex.utils.cache.OfflineTask;
 import com.taobao.weex.utils.cache.WXDBHelper;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -150,14 +151,20 @@ public class WXStreamModule extends WXModule {
             }
             return;
         }
-        final String url = optionsObj.getString("url");
+        String u = null;
+        try {
+            u = optionsObj.getString("url");
+            u = encode(u, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        final String url = u;
+
         final String method = optionsObj.getString("method").toUpperCase();
         JSONObject headers = optionsObj.getJSONObject("headers");
         String body = optionsObj.getString("body");
         String type = optionsObj.getString("type");
         int timeout = optionsObj.getIntValue("timeout");
-
-        readCookie(url, headers);
 
         Options.Builder builder = new Options.Builder()
                 .setMethod(!"GET".equals(method)
@@ -197,9 +204,6 @@ public class WXStreamModule extends WXModule {
                         respData = readAsString(response.originalData, headers != null ? getHeader(headers, "Content-Type") : "");
                         Log.d("stream", "headers = " + headers);
                         Log.d("stream", "http data = " + respData);
-
-                        //save cookie
-                        saveCookie(headers);
 
                         try {
                             resp.put("data", parseData(respData, options.getType()));
@@ -293,35 +297,6 @@ public class WXStreamModule extends WXModule {
             return;
         }
         callback.invoke(resp);
-    }
-
-
-    private void saveCookie(Map<String, String> headers) {
-        //JSESSIONID=2b1ccd02-4eb4-49d8-8760-f4e67c1e5bc7; Path=/yjpt; HttpOnly
-        try {
-            if (headers != null && headers.containsKey("Set-Cookie")) {
-                String value = headers.get("Set-Cookie");
-                String[] splits = value.split(";");
-                String jsessionid = splits[0].trim();
-                String path = splits[1].trim().replace("Path=", "");
-                if (value.contains("JSESSIONID")) {
-                    mWXSDKInstance.getContext().getSharedPreferences("kiway_cookie", 0).edit().putString(path, jsessionid).commit();
-                }
-            }
-        } catch (Exception e) {
-            Log.d("stream", "save cookie exception  e = " + e.toString());
-        }
-    }
-
-    private void readCookie(String url, JSONObject headers) {
-        Map<String, String> all = (Map<String, String>) mWXSDKInstance.getContext().getSharedPreferences("kiway_cookie", 0).getAll();
-        for (String key : all.keySet()) {
-            //Login donot need set cookie
-            if (url.contains(key) && !url.contains("login")) {
-                String value = all.get(key);
-                headers.put("Cookie", value);
-            }
-        }
     }
 
     private void saveCacheToDB(String optionsStr, String respData) {
@@ -522,6 +497,20 @@ public class WXStreamModule extends WXModule {
                 //WXLogUtils.d("WXStreamModule", response != null && response.originalData != null ? new String(response.originalData) : "response data is NUll!");
             }
         }
+    }
+
+    private String zhPattern = "[\u4e00-\u9fa5]+";
+
+    public String encode(String str, String charset)
+            throws UnsupportedEncodingException {
+        Pattern p = Pattern.compile(zhPattern);
+        Matcher m = p.matcher(str);
+        StringBuffer b = new StringBuffer();
+        while (m.find()) {
+            m.appendReplacement(b, URLEncoder.encode(m.group(0), charset));
+        }
+        m.appendTail(b);
+        return b.toString();
     }
 
 }
