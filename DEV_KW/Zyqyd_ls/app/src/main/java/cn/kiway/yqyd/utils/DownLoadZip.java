@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -142,7 +143,12 @@ public class DownLoadZip {
                     msg.obj = "文件下载成功";
                     mHandler.sendMessage(msg);
                     //下载成功后做什么
-                    FileUtils.openFile(app.getApplicationContext(), file.getAbsolutePath());
+                    try {
+                        FileUtils.openFile(app.getApplicationContext(), file.getAbsolutePath());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(app.getApplicationContext(),"打开失败",Toast.LENGTH_SHORT).show();
+                    }
                 } catch (Exception e) {
                     Log.d("h_bl", "文件下载失败");
                     Message msg = mHandler.obtainMessage();

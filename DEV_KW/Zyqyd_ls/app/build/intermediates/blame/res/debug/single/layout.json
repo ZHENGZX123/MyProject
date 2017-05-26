@@ -124,6 +124,10 @@
         "source": "F:\\kiway_xm\\Zyqyd_ls\\app\\src\\main\\res\\layout\\activity_webview2.xml"
     },
     {
+        "merged": "F:\\kiway_xm\\Zyqyd_ls\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_video.xml",
+        "source": "F:\\kiway_xm\\Zyqyd_ls\\app\\src\\main\\res\\layout\\activity_video.xml"
+    },
+    {
         "merged": "F:\\kiway_xm\\Zyqyd_ls\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_image_preview.xml",
         "source": "F:\\kiway_xm\\Zyqyd_ls\\wjc_ImagePicker\\build\\intermediates\\bundles\\default\\res\\layout\\activity_image_preview.xml"
     },

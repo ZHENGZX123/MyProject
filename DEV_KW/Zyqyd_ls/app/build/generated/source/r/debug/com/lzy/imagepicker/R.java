@@ -61,14 +61,14 @@ public final class R {
         public static final int text_indicator = 0x7f02007c;
     }
     public static final class id {
-        public static final int action_settings = 0x7f0b00cb;
+        public static final int action_settings = 0x7f0b00cc;
         public static final int bottom_bar = 0x7f0b0074;
-        public static final int btn_back = 0x7f0b009b;
-        public static final int btn_del = 0x7f0b009e;
+        public static final int btn_back = 0x7f0b009c;
+        public static final int btn_del = 0x7f0b009f;
         public static final int btn_dir = 0x7f0b0071;
-        public static final int btn_ok = 0x7f0b009d;
+        public static final int btn_ok = 0x7f0b009e;
         public static final int btn_preview = 0x7f0b0072;
-        public static final int camera = 0x7f0b0094;
+        public static final int camera = 0x7f0b0095;
         public static final int cb_check = 0x7f0b0076;
         public static final int cb_origin = 0x7f0b0075;
         public static final int circle = 0x7f0b0031;
@@ -76,29 +76,29 @@ public final class R {
         public static final int cv_crop_image = 0x7f0b006d;
         public static final int footer_bar = 0x7f0b0070;
         public static final int gridview = 0x7f0b000c;
-        public static final int iv_cover = 0x7f0b0095;
-        public static final int iv_folder_check = 0x7f0b0098;
-        public static final int iv_thumb = 0x7f0b0099;
-        public static final int listView = 0x7f0b00bb;
-        public static final int margin = 0x7f0b00bc;
-        public static final int mask = 0x7f0b009a;
-        public static final int masker = 0x7f0b00ba;
+        public static final int iv_cover = 0x7f0b0096;
+        public static final int iv_folder_check = 0x7f0b0099;
+        public static final int iv_thumb = 0x7f0b009a;
+        public static final int listView = 0x7f0b00bc;
+        public static final int margin = 0x7f0b00bd;
+        public static final int mask = 0x7f0b009b;
+        public static final int masker = 0x7f0b00bb;
         public static final int rectangle = 0x7f0b0032;
         public static final int top_bar = 0x7f0b006f;
-        public static final int tv_des = 0x7f0b009c;
-        public static final int tv_folder_name = 0x7f0b0096;
-        public static final int tv_image_count = 0x7f0b0097;
+        public static final int tv_des = 0x7f0b009d;
+        public static final int tv_folder_name = 0x7f0b0097;
+        public static final int tv_image_count = 0x7f0b0098;
         public static final int viewpager = 0x7f0b0073;
     }
     public static final class layout {
         public static final int activity_image_crop = 0x7f04001a;
         public static final int activity_image_grid = 0x7f04001b;
         public static final int activity_image_preview = 0x7f04001c;
-        public static final int adapter_camera_item = 0x7f040026;
-        public static final int adapter_folder_list_item = 0x7f040027;
-        public static final int adapter_image_list_item = 0x7f040028;
-        public static final int include_top_bar = 0x7f040029;
-        public static final int pop_folder = 0x7f04003b;
+        public static final int adapter_camera_item = 0x7f040027;
+        public static final int adapter_folder_list_item = 0x7f040028;
+        public static final int adapter_image_list_item = 0x7f040029;
+        public static final int include_top_bar = 0x7f04002a;
+        public static final int pop_folder = 0x7f04003c;
     }
     public static final class menu {
         public static final int main = 0x7f0d0000;
