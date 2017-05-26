@@ -111,22 +111,6 @@ public class WelcomeActivity extends WXBaseActivity {
                     Log.d("test", "新版本返回值" + ret);
                     String version = new JSONObject(ret).getString("apkCode");
                     String apkUrl = new JSONObject(ret).getString("apkUrl");
-//                    String expression = "<serverCode>.*</serverCode>";
-//                    Pattern pattern = Pattern.compile(expression);
-//                    Matcher matcher = pattern.matcher(ret);
-//                    String version = "1.0.0";
-//                    String apkUrl = "";
-//                    if (matcher.find()) {
-//                        version = matcher.group().replace("<serverCode>", "")
-//                                .replace("</serverCode>", "");
-//                    }
-//                    String expression2 = "<apkUrl>.*</apkUrl>";
-//                    Pattern pattern2 = Pattern.compile(expression2);
-//                    Matcher matcher2 = pattern2.matcher(ret);
-//                    if (matcher2.find()) {
-//                        apkUrl = matcher2.group().replace("<apkUrl>", "")
-//                                .replace("</apkUrl>", "");
-//                    }
                     Log.d("test", "current = " + getCurrentVersion(getApplicationContext()));
                     if (getCurrentVersion(getApplicationContext()).compareTo(version) < 0) {
                         showUpdateConfirmDialog(apkUrl);
@@ -204,7 +188,7 @@ public class WelcomeActivity extends WXBaseActivity {
                     if (!new File(Environment.getExternalStorageDirectory().getPath() + "/cache").exists()) {
                         new File(Environment.getExternalStorageDirectory().getPath() + "/cache").mkdirs();
                     }
-                    String savedFilePath = Environment.getExternalStorageDirectory().getPath() + "/cache/yqyd.apk";
+                    String savedFilePath = Environment.getExternalStorageDirectory().getPath() + "/cache/bat.apk";
                     file = new File(savedFilePath);
                     output = new FileOutputStream(file);
                     byte[] buffer = new byte[1024];
@@ -375,38 +359,38 @@ public class WelcomeActivity extends WXBaseActivity {
                 new File(WXApplication.PATH_APK).mkdirs();
             }
             //2.拷贝。。。
-            FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab0.zip");
-            FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab1.zip");
-            FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab2.zip");
+            FileUtils.copyRawToSdcard(this, R.raw.bat, "batTab0.zip");
+            FileUtils.copyRawToSdcard(this, R.raw.bat, "batTab1.zip");
+            FileUtils.copyRawToSdcard(this, R.raw.bat, "batTab2.zip");
 
             //3.插入数据库
             TabEntity tab0 = new TabEntity();
             tab0.name = "首页";
-            tab0.idStr = "yqydTab0";
+            tab0.idStr = "batTab0";
             TabEntity tab1 = new TabEntity();
             tab1.name = "书库";
-            tab1.idStr = "yqydTab1";
+            tab1.idStr = "batTab1";
             TabEntity tab2 = new TabEntity();
             tab2.name = "我的";
-            tab2.idStr = "yqydTab2";
+            tab2.idStr = "batTab2";
             new MyDBHelper(getApplicationContext()).addTabEntity(tab0);
             new MyDBHelper(getApplicationContext()).addTabEntity(tab1);
             new MyDBHelper(getApplicationContext()).addTabEntity(tab2);
 
             ZipPackage zip0 = new ZipPackage();
-            zip0.name = "yqydTab0.zip";
-            zip0.indexPath = "yqyd/dist/tab0.js";
-            zip0.version = "2.0.8";
+            zip0.name = "batTab0.zip";
+            zip0.indexPath = "bat/dist/tab0.js";
+            zip0.version = "1.0.0";
             zip0.patchs = "";
             ZipPackage zip1 = new ZipPackage();
-            zip1.name = "yqydTab1.zip";
-            zip1.indexPath = "yqyd/dist/tab1.js";
-            zip1.version = "2.0.8";
+            zip1.name = "batTab1.zip";
+            zip1.indexPath = "bat/dist/tab1.js";
+            zip1.version = "1.0.0";
             zip1.patchs = "";
             ZipPackage zip2 = new ZipPackage();
-            zip2.name = "yqydTab2.zip";
-            zip2.indexPath = "yqyd/dist/tab2.js";
-            zip2.version = "2.0.8";
+            zip2.name = "batTab2.zip";
+            zip2.indexPath = "bat/dist/tab2.js";
+            zip2.version = "1.0.0";
             zip2.patchs = "";
             new MyDBHelper(getApplicationContext()).addZipPackage(zip0);
             new MyDBHelper(getApplicationContext()).addZipPackage(zip1);

@@ -67,7 +67,7 @@ public class MainActivity extends TabActivity {
             public void run() {
                 List<Module> services = null;
                 try {
-                    services = new Module().find(new KWQuery().like("id", "yqydTab%"));
+                    services = new Module().find(new KWQuery().like("id", "batTab%"));
                     Log.d("test", "services count  = " + services.size());
                     for (Module s : services) {
                         Log.d("test", "service  = " + s.toString());

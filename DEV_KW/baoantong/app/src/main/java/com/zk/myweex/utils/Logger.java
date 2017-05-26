@@ -7,7 +7,7 @@ import android.util.Log;
  */
 
 public class Logger {
-    static String packName = "cn.kiway.yqyd";
+    static String packName = "cn.kiway.bat";
     static boolean isLog = true;
 
     public static void log(Object message) {
