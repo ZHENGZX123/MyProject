@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mcxtzhang.swipemenulib.SwipeMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:clickable="true"
+    android:paddingBottom="1dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+
+        <ImageView
+            android:id="@+id/iv"
+            android:layout_width="100dp"
+            android:layout_height="130dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/ic_launcher" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/iv"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/iv"
+            android:text="11111111111"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/iv"
+            android:text="某某 著"
+
+            />
+
+        <TextView
+            android:id="@+id/chubanshe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/author"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/iv"
+            android:text="出版社" />
+
+        <TextView
+            android:id="@+id/isbn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/chubanshe"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/iv"
+            android:text="110119" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/isbn"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/iv"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ico_see" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2000" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ico_heart_yes" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2000" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btnDelete"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/delete"
+        android:textColor="@android:color/white" />
+
+</com.mcxtzhang.swipemenulib.SwipeMenuLayout>

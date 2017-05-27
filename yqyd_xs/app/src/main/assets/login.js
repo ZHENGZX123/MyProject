@@ -85,7 +85,7 @@ var Utils = {
   // ip:'http://yqyd.qgjydd.com/yqyd/v1'
   //ip : 'http://192.168.8.6:8881/v1'
   sType: true, // true 为打包 false 为测试
-  rType: 'sc' // route 打包路径
+  rType: 'login' // route 打包路径
 };
 if (Utils.sType) {
   Utils.ip = 'http://yqyd.qgjydd.com/yqyd/v1';
@@ -7306,8 +7306,7 @@ exports.default = {
 						var sign = _Utils2.default.MD5(self.username + timestamp);
 						var params = 'loginAccount=' + self.username + '&timestamp=' + timestamp + '&sign=' + sign;
 						_Utils2.default.getAccessToken(params, function () {
-							if (false) {
-								//if(true){
+							if (true) {
 								sjevent.loginSuccess(self.username);
 							} else {
 								self.$router.replace('/index');

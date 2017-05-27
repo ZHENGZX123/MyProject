@@ -85,7 +85,7 @@ var Utils = {
   // ip:'http://yqyd.qgjydd.com/yqyd/v1'
   //ip : 'http://192.168.8.6:8881/v1'
   sType: true, // true 为打包 false 为测试
-  rType: 'sc' // route 打包路径
+  rType: 'mine' // route 打包路径
 };
 if (Utils.sType) {
   Utils.ip = 'http://yqyd.qgjydd.com/yqyd/v1';

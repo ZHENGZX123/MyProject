@@ -182,6 +182,7 @@ public class DataCleanManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        size = size / 6;
         return size;
     }
 

@@ -23,6 +23,7 @@ import com.taobao.weex.common.WXException;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.zk.myweex.extend.adapter.UniversalImageAdapter;
 import com.zk.myweex.extend.component.MyEditText;
+import com.zk.myweex.extend.component.MyListView;
 import com.zk.myweex.extend.component.MyWebView2;
 import com.zk.myweex.extend.module.SJEventModule;
 
@@ -49,7 +50,6 @@ public class WXApplication extends Application {
     public static String PATH_APK = ROOT + "apk/";
 
 
-
     public Activity currentActivity;
 
     public static long time;
@@ -73,6 +73,7 @@ public class WXApplication extends Application {
 
         //注册自定义组件
         try {
+            WXSDKEngine.registerComponent("mylistview", MyListView.class);
             WXSDKEngine.registerComponent("mywebview2", MyWebView2.class);
             WXSDKEngine.registerComponent("myedittext", MyEditText.class);
             WXSDKEngine.registerModule("SJevent", SJEventModule.class);
