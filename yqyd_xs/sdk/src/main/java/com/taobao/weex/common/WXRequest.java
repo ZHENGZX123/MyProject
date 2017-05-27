@@ -48,5 +48,5 @@ public class WXRequest {
   /**
    * The default timeout
    */
-  public static final int DEFAULT_TIMEOUT_MS = 3000;
+  public static final int DEFAULT_TIMEOUT_MS = 10000;
 }
