@@ -11,6 +11,7 @@ img { border: 0;}
 table { border-spacing: 0; border-collapse: collapse;}
 input,textarea { -webkit-user-select: text;}
 select,textarea { font-size: 100%; -webkit-appearance: none;appearance: none;}
+button{outline: none;}
 /*IOS <input>去除默认样式*/
 input[type=text]{ -webkit-appearance: none;appearance: none;border-radius: 0px;}
 /*======================底部导航======================*/
