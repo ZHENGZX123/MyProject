@@ -46,8 +46,7 @@
 -ignorewarnings
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 
-
- -keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
+-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
 
 # 保持 native 方法不被混淆
 -keepclasseswithmembernames class * {
@@ -82,3 +81,4 @@
 -keep class de.greenrobot.** {*;}
 -keep class com.github.flavienlaurent.datetimepicker.** {*;}
 -keep class gun0912.ted.** {*;}
+-keep class org.apache.** {*;}

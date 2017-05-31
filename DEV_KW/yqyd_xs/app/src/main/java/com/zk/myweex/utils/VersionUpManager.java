@@ -73,6 +73,7 @@ public class VersionUpManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d("version", "exception e = " + e.toString());
         }
     }
 
