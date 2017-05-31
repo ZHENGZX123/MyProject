@@ -35,3 +35,50 @@
 ##bugly
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
+
+-optimizationpasses 5
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-dontpreverify
+-verbose
+-dontwarn
+-dontskipnonpubliclibraryclassmembers
+-ignorewarnings
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+
+
+ -keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
+
+# 保持 native 方法不被混淆
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet);
+}
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+}
+
+
+# 泛型与反射
+-keepattributes Signature
+-keepattributes EnclosingMethod
+-keepattributes *Annotation*
+
+-keep class com.alibaba.sdk.android.** {*;}
+-keep class com.squareup.okhttp.** {*;}
+-keep class com.squareup.okhttp3.** {*;}
+-keep class com.squareup.retrofit2.** {*;}
+-keep class com.jakewharton.** {*;}
+-keep class io.reactivex.** {*;}
+-keep class rx.** {*;}
+-keep class com.jakewharton.rxbinding.** {*;}
+-keep class com.facebook.** {*;}
+-keep class com.butterknife.** {*;}
+-keep class com.google.code.gson.** {*;}
+-keep class com.orhanobut.** {*;}
+-dontwarn de.greenrobot.daogenerator.**
+-keep class de.greenrobot.** {*;}
+-keep class com.github.flavienlaurent.datetimepicker.** {*;}
+-keep class gun0912.ted.** {*;}
