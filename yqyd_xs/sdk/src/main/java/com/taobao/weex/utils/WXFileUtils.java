@@ -208,7 +208,7 @@ public class WXFileUtils {
                 }
             }
             zin.closeEntry();
-            System.out.println("sb = " + sb.toString());
+//            System.out.println("sb = " + sb.toString());
             return sb.toString();
         } catch (Exception e) {
             e.printStackTrace();
