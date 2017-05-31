@@ -111,22 +111,6 @@ public class WelcomeActivity extends WXBaseActivity {
                     Log.d("test", "新版本返回值" + ret);
                     String version = new JSONObject(ret).getString("apkCode");
                     String apkUrl = new JSONObject(ret).getString("apkUrl");
-//                    String expression = "<serverCode>.*</serverCode>";
-//                    Pattern pattern = Pattern.compile(expression);
-//                    Matcher matcher = pattern.matcher(ret);
-//                    String version = "1.0.0";
-//                    String apkUrl = "";
-//                    if (matcher.find()) {
-//                        version = matcher.group().replace("<serverCode>", "")
-//                                .replace("</serverCode>", "");
-//                    }
-//                    String expression2 = "<apkUrl>.*</apkUrl>";
-//                    Pattern pattern2 = Pattern.compile(expression2);
-//                    Matcher matcher2 = pattern2.matcher(ret);
-//                    if (matcher2.find()) {
-//                        apkUrl = matcher2.group().replace("<apkUrl>", "")
-//                                .replace("</apkUrl>", "");
-//                    }
                     Log.d("test", "current = " + getCurrentVersion(getApplicationContext()));
                     if (getCurrentVersion(getApplicationContext()).compareTo(version) < 0) {
                         showUpdateConfirmDialog(apkUrl);
