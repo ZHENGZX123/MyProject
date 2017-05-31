@@ -17,38 +17,13 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
-    <!-- bugly -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_LOGS" />
-
-    <!-- 录音 -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-
-    <!--sharesdk-->
-    <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <!-- 蓝牙分享所需的权限 -->
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
-        android:name="com.zk.myweex.WXApplication"
+        android:name="cn.kiway.baoantong.WXApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -56,7 +31,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup,android:icon,android:label,android:name">
         <activity
-            android:name="com.zk.myweex.activity.WXPageActivity"
+            android:name="cn.kiway.baoantong.activity.WXPageActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
@@ -75,10 +50,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.zk.myweex.activity.MyTabActivity"
+            android:name="cn.kiway.baoantong.activity.MyTabActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.zk.myweex.activity.MainActivity"
+            android:name="cn.kiway.baoantong.activity.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -89,18 +64,18 @@
         </activity>
 
 
-        <receiver android:name="com.zk.myweex.broadcast.NetChangeReceiver">
+        <receiver android:name="cn.kiway.baoantong.broadcast.NetChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
 
         <activity
-            android:name="com.zk.myweex.activity.TestActivity"
+            android:name="cn.kiway.baoantong.activity.TestActivity"
             android:screenOrientation="portrait"></activity>
 
         <activity
-            android:name="com.zk.myweex.activity.NoNetActivity"
+            android:name="cn.kiway.baoantong.activity.NoNetActivity"
             android:screenOrientation="portrait"></activity>
 
 

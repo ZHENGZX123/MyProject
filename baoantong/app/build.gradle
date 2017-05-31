@@ -22,17 +22,16 @@ android {
             abiFilters "x86"
             abiFilters "armeabi"
         }
-        ndk {
-            abiFilters "armeabi", "armeabi-v7a", "x86", "arm64_v8a"
-        }
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.kiway
         }
         debug {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.kiway
         }
     }
@@ -67,30 +66,20 @@ dependencies {
     compile 'com.jakewharton.scalpel:scalpel:1.1.2'
     compile 'com.taobao.android.weex_inspection:urlconnection_interceptor:1.0.0'
     compile 'com.android.support.test.espresso:espresso-idling-resource:2.2.2'
-    compile 'com.taobao.android:weex_inspector:0.10.0.3@aar'
+    compile 'com.taobao.android:weex_inspector:0.10.0.5@aar'
     compile project(':sdk')
     //原common包
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-    //sdk
+    //xizhou sdk
     compile files('libs/jdeferred-core-1.2.4.jar')
     compile files('libs/org.apache.http.legacy.jar')
     compile 'com.alibaba:fastjson:1.2.24'
     compile 'org.slf4j:slf4j-android:1.7.24'
+    compile files('libs/sdk-0.0.3.jar')
+
     compile files('libs/android-async-http-1.4.5.jar')
-    compile 'com.squareup.retrofit2:retrofit:2.2.0'
-    compile 'com.squareup.retrofit2:converter-scalars:2.2.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
-    //multidex
-    compile 'com.android.support:multidex:1.0.1'
-    //腾讯bugly
-    compile 'com.tencent.bugly:crashreport:latest.release'
     compile project(':ImagePicker')
     compile project(':photoview')
     compile project(':zxing')
-    compile files('libs/sdk-0.0.3.jar')
-    //qiniu
-    compile 'com.qiniu:qiniu-android-sdk:7.3.+'
-    compile 'com.qiniu:qiniu-java-sdk:7.2.+'
-    compile files('libs/image_compress.jar')
 }
 

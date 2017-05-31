@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.zk.myweex.extend.component.ClearEditText
+    <cn.kiway.baoantong.extend.component.ClearEditText
         android:id="@+id/input"
         android:layout_width="match_parent"
         android:layout_height="38dp"

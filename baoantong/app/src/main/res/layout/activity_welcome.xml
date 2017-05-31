@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context="com.zk.myweex.activity.WelcomeActivity">
+    tools:context="cn.kiway.baoantong.activity.WelcomeActivity">
 
     <ImageView
         android:layout_width="100dp"
