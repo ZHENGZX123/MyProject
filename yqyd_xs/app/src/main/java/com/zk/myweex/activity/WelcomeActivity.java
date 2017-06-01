@@ -366,6 +366,9 @@ public class WelcomeActivity extends WXBaseActivity {
             FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab1.zip");
             FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab2.zip");
 
+            //3.删除缓存
+            FileUtils.delFolder("/mnt/sdcard/image");
+
             int count = new MyDBHelper(getApplicationContext()).getAllTabEntity().size();
             if (count != 0) {
                 return;
