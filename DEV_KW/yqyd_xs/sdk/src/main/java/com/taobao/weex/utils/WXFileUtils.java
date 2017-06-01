@@ -174,14 +174,16 @@ public class WXFileUtils {
     }
 
     public static String readFileInZip(String file) {
-        int index = file.indexOf("zip");
-        String zipPath = file.substring(0, index + 3);
-        System.out.println(zipPath);
-
-        String targetFile = file.replace(zipPath, "");
-        System.out.println(targetFile);
-
         try {
+
+
+            int index = file.indexOf("zip");
+            String zipPath = file.substring(0, index + 3);
+            System.out.println(zipPath);
+
+            String targetFile = file.replace(zipPath, "");
+            System.out.println(targetFile);
+
             ZipFile zf = new ZipFile(zipPath);
             System.out.println(zf.size());
             InputStream in = new BufferedInputStream(new FileInputStream(
@@ -212,19 +214,18 @@ public class WXFileUtils {
             return sb.toString();
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("e = " + e.toString());
-            return "";
         }
+        return "";
     }
 
     public static String findLoginJS(String path, String findFile) {
-        File file = new File(path);
-        File[] lists = file.listFiles();
-        for (int i = 0; i < lists.length; i++) {
-            if (!lists[i].getName().endsWith("zip")) {
-                continue;
-            }
-            try {
+        try {
+            File file = new File(path);
+            File[] lists = file.listFiles();
+            for (int i = 0; i < lists.length; i++) {
+                if (!lists[i].getName().endsWith("zip")) {
+                    continue;
+                }
                 ZipFile zf = new ZipFile(lists[i]);
                 InputStream in = new BufferedInputStream(new FileInputStream(
                         lists[i]));
@@ -242,10 +243,9 @@ public class WXFileUtils {
                     }
                 }
                 zin.closeEntry();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "";
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return "";
     }
