@@ -2,6 +2,7 @@ package com.zk.myweex.utils;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import com.taobao.weex.utils.WXLogUtils;
 import com.zk.myweex.WXApplication;
@@ -215,5 +216,6 @@ public class FileUtils {
             e.printStackTrace();
         }
     }
+
 }
 
