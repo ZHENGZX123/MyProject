@@ -106,10 +106,11 @@ public class SJEventModule extends WXModule implements Callback {
 
     @JSMethod(uiThread = true)
     public void clearCache(JSCallback callback) {
-        //1.内部
-        DataCleanManager.cleanInternalCache(mWXSDKInstance.getContext());
-        //2.外部
+        //1.外部
         FileUtils.delFolder("/mnt/sdcard/image");
+        //2.内部
+        DataCleanManager.cleanInternalCache(mWXSDKInstance.getContext());
+        //3.callback
         callback.invoke("0M");
     }
 

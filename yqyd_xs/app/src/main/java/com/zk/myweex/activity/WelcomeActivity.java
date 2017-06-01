@@ -339,6 +339,8 @@ public class WelcomeActivity extends WXBaseActivity {
     }
 
     private void checkIsFirst() {
+        String inner = "2.1.2";
+
         String loginPath = WXFileUtils.findLoginJS(WXApplication.PATH, "login.js");
         if (TextUtils.isEmpty(loginPath)) {
             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
@@ -366,9 +368,6 @@ public class WelcomeActivity extends WXBaseActivity {
             FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab1.zip");
             FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab2.zip");
 
-            //3.删除缓存
-            FileUtils.delFolder("/mnt/sdcard/image");
-
             int count = new MyDBHelper(getApplicationContext()).getAllTabEntity().size();
             if (count != 0) {
                 return;
@@ -390,22 +389,40 @@ public class WelcomeActivity extends WXBaseActivity {
             ZipPackage zip0 = new ZipPackage();
             zip0.name = "yqydTab0.zip";
             zip0.indexPath = "yqyd/dist/tab0.js";
-            zip0.version = "2.1.1";
+            zip0.version = inner;
             zip0.patchs = "";
             ZipPackage zip1 = new ZipPackage();
             zip1.name = "yqydTab1.zip";
             zip1.indexPath = "yqyd/dist/tab1.js";
-            zip1.version = "2.1.1";
+            zip1.version = inner;
             zip1.patchs = "";
             ZipPackage zip2 = new ZipPackage();
             zip2.name = "yqydTab2.zip";
             zip2.indexPath = "yqyd/dist/tab2.js";
-            zip2.version = "2.1.1";
+            zip2.version = inner;
             zip2.patchs = "";
             new MyDBHelper(getApplicationContext()).addZipPackage(zip0);
             new MyDBHelper(getApplicationContext()).addZipPackage(zip1);
             new MyDBHelper(getApplicationContext()).addZipPackage(zip2);
         }
+
+        String dbversion = new MyDBHelper(getApplicationContext()).getAllZipPackages().get(0).version;
+        if (inner.compareTo(dbversion) > 0) {
+            Log.d("test", "replace zip");
+            //1.检查apk内部的zip版本
+            FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab0.zip");
+            FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab1.zip");
+            FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab2.zip");
+
+            new MyDBHelper(getApplicationContext()).updateZipPackageVersion(inner, "yqydTab0.zip");
+            new MyDBHelper(getApplicationContext()).updateZipPackageVersion(inner, "yqydTab1.zip");
+            new MyDBHelper(getApplicationContext()).updateZipPackageVersion(inner, "yqydTab2.zip");
+
+            //2.如果版本升级，删除缓存
+            FileUtils.delFolder("/mnt/sdcard/image");
+        }
+
+
     }
 
     interface IPermission {
