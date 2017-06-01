@@ -15,6 +15,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.taobao.weex.WXSDKEngine;
@@ -58,8 +59,6 @@ public class WelcomeActivity extends WXBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
-
-
     }
 
     private void jump() {
@@ -81,6 +80,7 @@ public class WelcomeActivity extends WXBaseActivity {
             @Override
             public void run() {
                 try {
+                    sleep(1000);
                     checkTimeout();
                     HttpGet httpRequest = new HttpGet("http://yqyd.qgjydd.com/yqyd/static/version/zip_xs.json");
                     DefaultHttpClient client = new DefaultHttpClient();
@@ -339,9 +339,12 @@ public class WelcomeActivity extends WXBaseActivity {
     }
 
     private void checkIsFirst() {
+        String loginPath = WXFileUtils.findLoginJS(WXApplication.PATH, "login.js");
+        if (TextUtils.isEmpty(loginPath)) {
+            getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
+        }
         if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", false).commit();
-
             //1.mkdirs
             if (new File(WXApplication.ROOT).exists()) {
                 FileUtils.delFolder(WXApplication.ROOT);
@@ -363,6 +366,10 @@ public class WelcomeActivity extends WXBaseActivity {
             FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab1.zip");
             FileUtils.copyRawToSdcard(this, R.raw.yqyd, "yqydTab2.zip");
 
+            int count = new MyDBHelper(getApplicationContext()).getAllTabEntity().size();
+            if (count != 0) {
+                return;
+            }
             //3.插入数据库
             TabEntity tab0 = new TabEntity();
             tab0.name = "首页";
@@ -380,17 +387,17 @@ public class WelcomeActivity extends WXBaseActivity {
             ZipPackage zip0 = new ZipPackage();
             zip0.name = "yqydTab0.zip";
             zip0.indexPath = "yqyd/dist/tab0.js";
-            zip0.version = "2.1.0";
+            zip0.version = "2.1.1";
             zip0.patchs = "";
             ZipPackage zip1 = new ZipPackage();
             zip1.name = "yqydTab1.zip";
             zip1.indexPath = "yqyd/dist/tab1.js";
-            zip1.version = "2.1.0";
+            zip1.version = "2.1.1";
             zip1.patchs = "";
             ZipPackage zip2 = new ZipPackage();
             zip2.name = "yqydTab2.zip";
             zip2.indexPath = "yqyd/dist/tab2.js";
-            zip2.version = "2.1.0";
+            zip2.version = "2.1.1";
             zip2.patchs = "";
             new MyDBHelper(getApplicationContext()).addZipPackage(zip0);
             new MyDBHelper(getApplicationContext()).addZipPackage(zip1);

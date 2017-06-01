@@ -44,8 +44,10 @@ import com.taobao.weex.common.WXModule;
 import com.zk.myweex.WXApplication;
 import com.zk.myweex.activity.LoginActivity;
 import com.zk.myweex.activity.MainActivity;
+import com.zk.myweex.activity.WelcomeActivity;
 import com.zk.myweex.utils.DataCleanManager;
 import com.zk.myweex.utils.DensityUtil;
+import com.zk.myweex.utils.FileUtils;
 import com.zk.myweex.utils.HttpDownload;
 import com.zk.myweex.utils.HttpUploadFile;
 import com.zk.myweex.utils.Logger;
@@ -104,7 +106,10 @@ public class SJEventModule extends WXModule implements Callback {
 
     @JSMethod(uiThread = true)
     public void clearCache(JSCallback callback) {
+        //1.内部
         DataCleanManager.cleanInternalCache(mWXSDKInstance.getContext());
+        //2.外部
+        FileUtils.delFolder("/mnt/sdcard/image");
         callback.invoke("0M");
     }
 
@@ -125,7 +130,7 @@ public class SJEventModule extends WXModule implements Callback {
     public void logoutSuccess() {
         Log.d("test", "logoutSuccess");
         mWXSDKInstance.getContext().getSharedPreferences("kiway", 0).edit().putBoolean("login", false).apply();
-        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), LoginActivity.class));
+        mWXSDKInstance.getContext().startActivity(new Intent(mWXSDKInstance.getContext(), WelcomeActivity.class));
         ScreenManager.getScreenManager().popAllActivityExceptOne(LoginActivity.class);
     }
 
