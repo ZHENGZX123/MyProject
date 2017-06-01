@@ -107,8 +107,7 @@
 
         <activity
             android:name="com.zk.myweex.activity.TestActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name="com.zk.myweex.activity.NoNetActivity"
