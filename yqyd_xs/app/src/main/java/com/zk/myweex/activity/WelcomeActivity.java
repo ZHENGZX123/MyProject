@@ -339,7 +339,7 @@ public class WelcomeActivity extends WXBaseActivity {
     }
 
     private void checkIsFirst() {
-        String inner = "2.1.2";
+        String inner = "2.1.3";
 
         String loginPath = WXFileUtils.findLoginJS(WXApplication.PATH, "login.js");
         if (TextUtils.isEmpty(loginPath)) {
