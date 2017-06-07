@@ -47,9 +47,8 @@ public class MainActivity extends TabActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        PackageManager p = getPackageManager();
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.bat_activity_main);
         ScreenManager.getScreenManager().pushActivity(this);
         main = this;
     }
@@ -65,6 +64,8 @@ public class MainActivity extends TabActivity {
     @Override
     public void onResume() {
         super.onResume();
+        String token = getIntent().getStringExtra("token");
+        Log.d("test", "token = " + token);
         requestRunTimePermission(
                 new String[]{
                         Manifest.permission.CAMERA,
