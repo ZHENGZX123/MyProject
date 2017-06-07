@@ -3,27 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="cn.kiway.baoantong">
 
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
-
     <application
-        android:name="cn.kiway.baoantong.WXApplication"
+        android:name=".WXApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -31,7 +24,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup,android:icon,android:label,android:name">
         <activity
-            android:name="cn.kiway.baoantong.activity.WXPageActivity"
+            android:name=".activity.WXPageActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
@@ -50,10 +43,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="cn.kiway.baoantong.activity.MyTabActivity"
+            android:name=".activity.MyTabActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="cn.kiway.baoantong.activity.MainActivity"
+            android:name=".activity.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -63,22 +56,19 @@
             </intent-filter>
         </activity>
 
-
-        <receiver android:name="cn.kiway.baoantong.broadcast.NetChangeReceiver">
+        <receiver android:name=".broadcast.NetChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
 
         <activity
-            android:name="cn.kiway.baoantong.activity.TestActivity"
-            android:screenOrientation="portrait"></activity>
-
+            android:name=".activity.TestActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:name="cn.kiway.baoantong.activity.NoNetActivity"
-            android:screenOrientation="portrait"></activity>
-
-
+            android:name=".activity.NoNetActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.LoginActivity"></activity>
     </application>
 
 </manifest>
