@@ -29,8 +29,6 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         requestRunTimePermission(
                 new String[]{
@@ -215,6 +213,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    //这个函数有问题。。。
     public boolean isRunningForeground(Context context) {
         ActivityManager am = (ActivityManager) context
                 .getSystemService(Context.ACTIVITY_SERVICE);
