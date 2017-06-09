@@ -1,8 +1,11 @@
 package cn.kiway.launcher.utils;
 
 import android.app.ActivityManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -12,7 +15,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Properties;
+
 
 /**
  * Created by Administrator on 2017/6/8.
@@ -87,13 +92,28 @@ public class Utils {
     public static boolean checkCurrentApp(Context context) {
         String packageName = "";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
+            UsageStatsManager m = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+            if (m != null) {
+                long now = System.currentTimeMillis();
+                //获取60秒之内的应用数据
+                List<UsageStats> stats = m.queryUsageStats(UsageStatsManager.INTERVAL_BEST, now - 10 * 1000, now);//60
+                //取得最近运行的一个app，即当前运行的app
+                if ((stats != null) && (!stats.isEmpty())) {
+                    int j = 0;
+                    for (int i = 0; i < stats.size(); i++) {
+                        if (stats.get(i).getLastTimeUsed() > stats.get(j).getLastTimeUsed()) {
+                            j = i;
+                        }
+                    }
+                    packageName = stats.get(j).getPackageName();
+                }
+            }
         } else {
             ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
             ComponentName cn = activityManager.getRunningTasks(1).get(0).topActivity;
             packageName = cn.getPackageName();
-            Log.d("test", "packageName = " + packageName);
         }
+        Log.d("aaa", "packageName = " + packageName);
         if (TextUtils.isEmpty(packageName)) {
             return false;
         }
