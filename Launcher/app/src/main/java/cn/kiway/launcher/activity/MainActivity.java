@@ -181,6 +181,7 @@ public class MainActivity extends BaseActivity {
                     if (!ret) {
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     }
+                    locked = getSharedPreferences("kiway", 0).getBoolean("locked", false);
                 }
             }
         }.start();
