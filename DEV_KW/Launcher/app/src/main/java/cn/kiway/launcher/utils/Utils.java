@@ -1,4 +1,4 @@
-package cn.kiway.launcher;
+package cn.kiway.launcher.utils;
 
 import android.os.Environment;
 
