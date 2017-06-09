@@ -10,12 +10,16 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import java.lang.reflect.Method;
+import java.util.List;
+
+import static cn.kiway.launcher.Utils.SYS_EMUI;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,11 +43,21 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent paramIntent = new Intent("android.intent.action.MAIN");
-                paramIntent.setComponent(new ComponentName("android", "com.android.internal.app.ResolverActivity"));
-                paramIntent.addCategory("android.intent.category.DEFAULT");
-                paramIntent.addCategory("android.intent.category.HOME");
-                startActivity(paramIntent);
+                String SYS = Utils.getSystem();
+                Log.d("test", "SYS  = " + SYS);
+                if (SYS.equals(SYS_EMUI)) {
+                    Intent paramIntent = new Intent("android.intent.action.MAIN");
+                    paramIntent.setComponent(new ComponentName("com.huawei.android.internal.app", "com.huawei.android.internal.app.HwResolverActivity"));
+                    paramIntent.addCategory("android.intent.category.DEFAULT");
+                    paramIntent.addCategory("android.intent.category.HOME");
+                    startActivity(paramIntent);
+                } else {
+                    Intent paramIntent = new Intent("android.intent.action.MAIN");
+                    paramIntent.setComponent(new ComponentName("android", "com.android.internal.app.ResolverActivity"));
+                    paramIntent.addCategory("android.intent.category.DEFAULT");
+                    paramIntent.addCategory("android.intent.category.HOME");
+                    startActivity(paramIntent);
+                }
             }
         });
         builder.create().show();
@@ -57,15 +71,22 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, "开始锁定", Toast.LENGTH_SHORT).show();
         flag = true;
         startThread();
+        //3.清除后台app
+        clearOtherApp();
     }
 
     public void clickButton3(View v) {
+        //进入APP列表
+    }
+
+    public void clickButton4(View v) {
         if (!flag) {
             Toast.makeText(MainActivity.this, "当前未锁定", Toast.LENGTH_SHORT).show();
             return;
         }
         //弹出密码框，密码正确就解锁
         final EditText et = new EditText(this);
+        et.setText("123456");
         et.setSingleLine();
         new AlertDialog.Builder(this).setTitle("请输入解锁密码").setIcon(
                 android.R.drawable.ic_dialog_info).setView(et
@@ -83,15 +104,52 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Toast.makeText(MainActivity.this, "已经解锁", Toast.LENGTH_SHORT).show();
                 flag = false;
-                //回到默认桌面
 
-                Intent paramIntent = new Intent("android.intent.action.MAIN");
-                paramIntent.setComponent(new ComponentName("android", "com.android.internal.app.ResolverActivity"));
-                paramIntent.addCategory("android.intent.category.DEFAULT");
-                paramIntent.addCategory("android.intent.category.HOME");
-                startActivity(paramIntent);
+                doclear();
+
             }
         }).show();
+    }
+
+    private void doclear() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("请选择您的原始桌面，并点击“始终”");
+        builder.setTitle("提示");
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String SYS = Utils.getSystem();
+                Log.d("test", "SYS  = " + SYS);
+
+                if (SYS.equals(SYS_EMUI)) {
+                    Intent paramIntent = new Intent("android.intent.action.MAIN");
+                    paramIntent.setComponent(new ComponentName("com.huawei.android.internal.app", "com.huawei.android.internal.app.HwResolverActivity"));
+                    paramIntent.addCategory("android.intent.category.DEFAULT");
+                    paramIntent.addCategory("android.intent.category.HOME");
+                    startActivity(paramIntent);
+                } else {
+                    Intent paramIntent = new Intent("android.intent.action.MAIN");
+                    paramIntent.setComponent(new ComponentName("android", "com.android.internal.app.ResolverActivity"));
+                    paramIntent.addCategory("android.intent.category.DEFAULT");
+                    paramIntent.addCategory("android.intent.category.HOME");
+                    startActivity(paramIntent);
+                }
+            }
+        });
+        builder.create().show();
+
+        //清除当前默认launcher,有时候会闪退。。。
+//                ArrayList<IntentFilter> intentList = new ArrayList<IntentFilter>();
+//                ArrayList<ComponentName> cnList = new ArrayList<ComponentName>();
+//                getPackageManager().getPreferredActivities(intentList, cnList, null);
+//                IntentFilter dhIF;
+//                for (int i = 0; i < cnList.size(); i++) {
+//                    dhIF = intentList.get(i);
+//                    if (dhIF.hasAction(Intent.ACTION_MAIN) &&
+//                            dhIF.hasCategory(Intent.CATEGORY_HOME)) {
+//                        getPackageManager().clearPackagePreferredActivities(cnList.get(i).getPackageName());
+//                    }
+//                }
     }
 
     private boolean flag = false;
@@ -118,6 +176,29 @@ public class MainActivity extends AppCompatActivity {
         }.start();
     }
 
+    private void clearOtherApp() {
+       /* //To change body of implemented methods use File | Settings | File Templates.
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> infoList = am.getRunningAppProcesses();
+        if (infoList != null) {
+            for (int i = 0; i < infoList.size(); ++i) {
+                ActivityManager.RunningAppProcessInfo appProcessInfo = infoList.get(i);
+                Log.d("test", "process name : " + appProcessInfo.processName);
+                //importance 该进程的重要程度  分为几个级别，数值越低就越重要。
+                Log.d("test", "importance : " + appProcessInfo.importance);
+                // 一般数值大于RunningAppProcessInfo.IMPORTANCE_SERVICE的进程都长时间没用或者空进程了
+                // 一般数值大于RunningAppProcessInfo.IMPORTANCE_VISIBLE的进程都是非可见进程，也就是在后台运行着
+                if (appProcessInfo.importance > ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE) {
+                    String[] pkgList = appProcessInfo.pkgList;
+                    for (int j = 0; j < pkgList.length; ++j) {//pkgList 得到该进程下运行的包名
+                        Log.d("test", "It will be killed, package name : " + pkgList[j]);
+                        am.killBackgroundProcesses(pkgList[j]);
+                    }
+                }
+            }
+        }*/
+    }
+
     public void collapse() {
         try {
             Object service = getSystemService("statusbar");
@@ -139,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
                 .getSystemService(Context.ACTIVITY_SERVICE);
         ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
         String currentPackageName = cn.getPackageName();
-//        Log.d("test", "currentPackageName = " + currentPackageName);
+        Log.d("aaa", "currentPackageName = " + currentPackageName);
         if (!TextUtils.isEmpty(currentPackageName)
                 && currentPackageName.equals("cn.kiway.launcher")) {
             return true;
@@ -154,4 +235,6 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onBackPressed();
     }
+
+
 }

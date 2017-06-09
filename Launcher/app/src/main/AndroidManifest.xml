@@ -3,8 +3,8 @@
     package="cn.kiway.launcher">
 
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="KILL_BACKGROUND_PROCESSES"></uses-permission>
 
     <application
         android:allowBackup="true"
