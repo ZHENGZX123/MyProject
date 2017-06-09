@@ -21,7 +21,6 @@ import cn.kiway.launcher.R;
 import cn.kiway.launcher.utils.Constant;
 import cn.kiway.launcher.utils.Utils;
 
-import static cn.kiway.launcher.KWApp.t;
 import static cn.kiway.launcher.utils.Utils.SYS_EMUI;
 
 public class MainActivity extends BaseActivity {
@@ -37,6 +36,7 @@ public class MainActivity extends BaseActivity {
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 },
                 mListener);
+
 
         //开机后，立马锁定
         locked = getSharedPreferences("kiway", 0).getBoolean("locked", false);
@@ -161,16 +161,11 @@ public class MainActivity extends BaseActivity {
     private boolean locked;
 
     private void startThread() {
-        //单例
-        if (t != null) {
-            return;
-        }
-        //检查Locked
+        //检查locked
         if (!locked) {
             return;
         }
-
-        t = new Thread() {
+        new Thread() {
             @Override
             public void run() {
                 while (locked) {
@@ -188,9 +183,7 @@ public class MainActivity extends BaseActivity {
                     }
                 }
             }
-        };
-        t.start();
-
+        }.start();
     }
 
     private void clearOtherApp() {
@@ -260,5 +253,9 @@ public class MainActivity extends BaseActivity {
         return;
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("test", "Main onDestroy");
+    }
 }

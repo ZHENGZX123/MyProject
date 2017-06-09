@@ -8,8 +8,6 @@ import android.app.Application;
 
 public class KWApp extends Application {
 
-    public static Thread t;
-
     @Override
     public void onCreate() {
         super.onCreate();
