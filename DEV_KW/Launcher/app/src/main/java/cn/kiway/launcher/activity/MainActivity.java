@@ -1,24 +1,16 @@
 package cn.kiway.launcher.activity;
 
 import android.Manifest;
-import android.app.ActivityManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import java.lang.reflect.Method;
-
-import cn.kiway.launcher.KWApp;
 import cn.kiway.launcher.R;
-import cn.kiway.launcher.utils.Constant;
 import cn.kiway.launcher.utils.Utils;
 
 import static cn.kiway.launcher.utils.Utils.SYS_EMUI;
@@ -175,11 +167,11 @@ public class MainActivity extends BaseActivity {
                         e.printStackTrace();
                     }
                     //1.收回状态栏
-                    collapse();
-                    //2.收回程序栈
-                    boolean ret = isRunningForeground(getApplicationContext());
+                    Utils.collapse(getApplicationContext());
+                    //2.判断当前运行的app
+                    boolean ret = Utils.checkCurrentApp(getApplicationContext());
                     if (!ret) {
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        startActivity(new Intent(getApplicationContext(), cn.kiway.launcher.activity.MainActivity.class));
                     }
                     locked = getSharedPreferences("kiway", 0).getBoolean("locked", false);
                 }
@@ -208,40 +200,6 @@ public class MainActivity extends BaseActivity {
                 }
             }
         }*/
-    }
-
-    public void collapse() {
-        try {
-            Object service = getSystemService("statusbar");
-            Class<?> statusbarManager = Class.forName("android.app.StatusBarManager");
-            if (Build.VERSION.SDK_INT <= 16) {
-                Method collapse = statusbarManager.getMethod("collapse");
-                collapse.invoke(service);
-            } else {
-                Method collapse2 = statusbarManager.getMethod("collapsePanels");
-                collapse2.invoke(service);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    //这个函数有问题。。。
-    public boolean isRunningForeground(Context context) {
-        ActivityManager am = (ActivityManager) context
-                .getSystemService(Context.ACTIVITY_SERVICE);
-        ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
-        String currentPackageName = cn.getPackageName();
-        Log.d("aaa", "currentPackageName = " + currentPackageName);
-        if (TextUtils.isEmpty(currentPackageName)) {
-            return false;
-        }
-        for (String packageName : Constant.apps) {
-            if (currentPackageName.equals(packageName)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
