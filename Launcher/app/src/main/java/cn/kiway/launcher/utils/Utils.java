@@ -115,7 +115,7 @@ public class Utils {
         }
         Log.d("aaa", "packageName = " + packageName);
         if (TextUtils.isEmpty(packageName)) {
-            return false;
+            return true;//false
         }
         for (String temp : Constant.apps) {
             if (temp.equals(packageName)) {

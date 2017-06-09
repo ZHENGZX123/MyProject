@@ -16,5 +16,8 @@ public class Constant {
             "cn.kiway.yqyd",         //一起阅读
             "cn.kiway.yiqiyuedu",
             "cn.kiway.klzy",       //快乐作业
+
+
+            //com.google.android.talk  com.google.android.dialer
     };
 }
