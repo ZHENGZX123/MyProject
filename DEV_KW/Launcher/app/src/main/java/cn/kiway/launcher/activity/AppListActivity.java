@@ -1,6 +1,11 @@
 package cn.kiway.launcher.activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cn.kiway.launcher.R;
 import cn.kiway.launcher.entity.App;
@@ -34,23 +40,46 @@ public class AppListActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //跳转到其他APK
+                try {
+                    App a = apps.get(position);
+                    String packageName = a.packageName;
+                    if (TextUtils.isEmpty(packageName)) {
+                        toast("包名错误");
+                        return;
+                    }
+                    //1.判断app是否安装
+                    boolean installed = isAppInstalled(getApplicationContext(), packageName);
+                    if (!installed) {
+                        toast("该APP未安装");
+                        return;
+                    }
+                    Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    toast("启动异常");
+                }
             }
         });
 
         App a1 = new App();
         a1.name = "幼教平台";
+        a1.packageName = "cn.kiway.Yjptj";
         apps.add(a1);
         App a2 = new App();
         a2.name = "一起阅读";
+        a2.packageName = "cn.kiway.yiqiyuedu";
         apps.add(a2);
         App a3 = new App();
         a3.name = "快乐作业";
+        a3.packageName = "cn.kiway.klzy";
         apps.add(a3);
         App a4 = new App();
         a4.name = "宝安通";
+        a4.packageName = "cn.kiway.baoantong_vue";
         apps.add(a4);
         App a5 = new App();
         a5.name = "家校通";
+        a5.packageName = "";
         apps.add(a5);
         adapter.notifyDataSetChanged();
     }
@@ -82,7 +111,6 @@ public class AppListActivity extends BaseActivity {
             App app = apps.get(position);
             holder.name.setText(app.name);
 
-
             return rowView;
         }
 
@@ -105,5 +133,18 @@ public class AppListActivity extends BaseActivity {
         public long getItemId(int arg0) {
             return arg0;
         }
+    }
+
+    public boolean isAppInstalled(Context context, String packageName) {
+        final PackageManager packageManager = context.getPackageManager();
+        List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);
+        List<String> pName = new ArrayList<String>();
+        if (pinfo != null) {
+            for (int i = 0; i < pinfo.size(); i++) {
+                String pn = pinfo.get(i).packageName;
+                pName.add(pn);
+            }
+        }
+        return pName.contains(packageName);
     }
 }
