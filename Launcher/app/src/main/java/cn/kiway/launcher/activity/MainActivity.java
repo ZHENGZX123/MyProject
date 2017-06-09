@@ -1,4 +1,4 @@
-package cn.kiway.launcher;
+package cn.kiway.launcher.activity;
 
 import android.app.ActivityManager;
 import android.content.ComponentName;
@@ -17,11 +17,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
-import static cn.kiway.launcher.Utils.SYS_EMUI;
+import cn.kiway.launcher.R;
+import cn.kiway.launcher.utils.Utils;
 
-public class MainActivity extends AppCompatActivity {
+import static cn.kiway.launcher.utils.Utils.SYS_EMUI;
+
+public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,21 +45,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String SYS = Utils.getSystem();
-                Log.d("test", "SYS  = " + SYS);
-                if (SYS.equals(SYS_EMUI)) {
-                    Intent paramIntent = new Intent("android.intent.action.MAIN");
-                    paramIntent.setComponent(new ComponentName("com.huawei.android.internal.app", "com.huawei.android.internal.app.HwResolverActivity"));
-                    paramIntent.addCategory("android.intent.category.DEFAULT");
-                    paramIntent.addCategory("android.intent.category.HOME");
-                    startActivity(paramIntent);
-                } else {
-                    Intent paramIntent = new Intent("android.intent.action.MAIN");
-                    paramIntent.setComponent(new ComponentName("android", "com.android.internal.app.ResolverActivity"));
-                    paramIntent.addCategory("android.intent.category.DEFAULT");
-                    paramIntent.addCategory("android.intent.category.HOME");
-                    startActivity(paramIntent);
-                }
+                selectLauncher();
             }
         });
         builder.create().show();
@@ -77,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void clickButton3(View v) {
         //进入APP列表
+        startActivity(new Intent(this, AppListActivity.class));
     }
 
     public void clickButton4(View v) {
@@ -105,40 +94,19 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "已经解锁", Toast.LENGTH_SHORT).show();
                 flag = false;
 
-                doclear();
+                //选择回原始的桌面
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("请选择您的原始桌面，并点击“始终”");
+                builder.setTitle("提示");
+                builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        selectLauncher();
+                    }
+                });
+                builder.create().show();
 
-            }
-        }).show();
-    }
-
-    private void doclear() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("请选择您的原始桌面，并点击“始终”");
-        builder.setTitle("提示");
-        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String SYS = Utils.getSystem();
-                Log.d("test", "SYS  = " + SYS);
-
-                if (SYS.equals(SYS_EMUI)) {
-                    Intent paramIntent = new Intent("android.intent.action.MAIN");
-                    paramIntent.setComponent(new ComponentName("com.huawei.android.internal.app", "com.huawei.android.internal.app.HwResolverActivity"));
-                    paramIntent.addCategory("android.intent.category.DEFAULT");
-                    paramIntent.addCategory("android.intent.category.HOME");
-                    startActivity(paramIntent);
-                } else {
-                    Intent paramIntent = new Intent("android.intent.action.MAIN");
-                    paramIntent.setComponent(new ComponentName("android", "com.android.internal.app.ResolverActivity"));
-                    paramIntent.addCategory("android.intent.category.DEFAULT");
-                    paramIntent.addCategory("android.intent.category.HOME");
-                    startActivity(paramIntent);
-                }
-            }
-        });
-        builder.create().show();
-
-        //清除当前默认launcher,有时候会闪退。。。
+                //清除当前默认launcher,有时候会闪退。。。
 //                ArrayList<IntentFilter> intentList = new ArrayList<IntentFilter>();
 //                ArrayList<ComponentName> cnList = new ArrayList<ComponentName>();
 //                getPackageManager().getPreferredActivities(intentList, cnList, null);
@@ -150,7 +118,29 @@ public class MainActivity extends AppCompatActivity {
 //                        getPackageManager().clearPackagePreferredActivities(cnList.get(i).getPackageName());
 //                    }
 //                }
+            }
+        }).show();
     }
+
+    private void selectLauncher() {
+        String SYS = Utils.getSystem();
+        Log.d("test", "SYS  = " + SYS);
+
+        if (SYS.equals(SYS_EMUI)) {
+            Intent paramIntent = new Intent("android.intent.action.MAIN");
+            paramIntent.setComponent(new ComponentName("com.huawei.android.internal.app", "com.huawei.android.internal.app.HwResolverActivity"));
+            paramIntent.addCategory("android.intent.category.DEFAULT");
+            paramIntent.addCategory("android.intent.category.HOME");
+            startActivity(paramIntent);
+        } else {
+            Intent paramIntent = new Intent("android.intent.action.MAIN");
+            paramIntent.setComponent(new ComponentName("android", "com.android.internal.app.ResolverActivity"));
+            paramIntent.addCategory("android.intent.category.DEFAULT");
+            paramIntent.addCategory("android.intent.category.HOME");
+            startActivity(paramIntent);
+        }
+    }
+
 
     private boolean flag = false;
 

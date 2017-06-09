@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="cn.kiway.launcher.MainActivity">
+    tools:context="cn.kiway.launcher.activity.MainActivity">
 
 
     <Button
@@ -33,7 +33,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button3"
+        android:layout_alignParentBottom="true"
         android:onClick="clickButton4"
         android:text="解锁并恢复原始桌面" />
 
