@@ -19,6 +19,7 @@ import android.widget.Toast;
 import java.lang.reflect.Method;
 
 import cn.kiway.launcher.R;
+import cn.kiway.launcher.utils.Constant;
 import cn.kiway.launcher.utils.Utils;
 
 import static cn.kiway.launcher.utils.Utils.SYS_EMUI;
@@ -220,9 +221,13 @@ public class MainActivity extends BaseActivity {
         ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
         String currentPackageName = cn.getPackageName();
         Log.d("aaa", "currentPackageName = " + currentPackageName);
-        if (!TextUtils.isEmpty(currentPackageName)
-                && currentPackageName.equals("cn.kiway.launcher")) {
-            return true;
+        if (TextUtils.isEmpty(currentPackageName)) {
+            return false;
+        }
+        for (String packageName : Constant.apps) {
+            if (currentPackageName.equals(packageName)) {
+                return true;
+            }
         }
         return false;
     }
