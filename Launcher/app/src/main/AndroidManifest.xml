@@ -39,6 +39,8 @@
         <activity
             android:name=".activity.WelcomeActivity"
             android:screenOrientation="portrait"></activity>
+
+        <service android:name=".service.KWService"></service>
     </application>
 
 </manifest>
