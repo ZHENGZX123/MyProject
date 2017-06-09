@@ -1,5 +1,6 @@
 package cn.kiway.launcher.activity;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,7 +9,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -32,11 +32,16 @@ public class MainActivity extends BaseActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        requestRunTimePermission(
+                new String[]{
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                },
+                mListener);
     }
 
     public void clickButton1(View v) {
         if (flag) {
-            Toast.makeText(this, "请先解锁再执行该操作", Toast.LENGTH_SHORT).show();
+            toast("请先解锁再执行该操作");
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -53,10 +58,10 @@ public class MainActivity extends BaseActivity {
 
     public void clickButton2(View v) {
         if (flag) {
-            Toast.makeText(MainActivity.this, "当前已锁定", Toast.LENGTH_SHORT).show();
+            toast("当前已锁定");
             return;
         }
-        Toast.makeText(MainActivity.this, "开始锁定", Toast.LENGTH_SHORT).show();
+        toast("开始锁定");
         //1.开启线程
         flag = true;
         startThread();
@@ -66,12 +71,16 @@ public class MainActivity extends BaseActivity {
 
     public void clickButton3(View v) {
         //进入APP列表
+        if (!flag) {
+            toast("请先锁定再进入学习园地");
+            return;
+        }
         startActivity(new Intent(this, AppListActivity.class));
     }
 
     public void clickButton4(View v) {
         if (!flag) {
-            Toast.makeText(MainActivity.this, "当前未锁定", Toast.LENGTH_SHORT).show();
+            toast("当前未锁定");
             return;
         }
         //弹出密码框，密码正确就解锁
@@ -85,14 +94,14 @@ public class MainActivity extends BaseActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String input = et.getText().toString();
                 if (input.equals("")) {
-                    Toast.makeText(MainActivity.this, "请输入解锁密码", Toast.LENGTH_SHORT).show();
+                    toast("请输入解锁密码");
                     return;
                 }
                 if (!input.equals("123456")) {
-                    Toast.makeText(MainActivity.this, "解锁密码错误", Toast.LENGTH_SHORT).show();
+                    toast("解锁密码错误");
                     return;
                 }
-                Toast.makeText(MainActivity.this, "已经解锁", Toast.LENGTH_SHORT).show();
+                toast("已经解锁");
                 flag = false;
 
                 //选择回原始的桌面
@@ -124,9 +133,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void selectLauncher() {
+        //华为手机要特殊处理。。。
         String SYS = Utils.getSystem();
         Log.d("test", "SYS  = " + SYS);
-
         if (SYS.equals(SYS_EMUI)) {
             Intent paramIntent = new Intent("android.intent.action.MAIN");
             paramIntent.setComponent(new ComponentName("com.huawei.android.internal.app", "com.huawei.android.internal.app.HwResolverActivity"));
@@ -221,10 +230,12 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (flag) {
-            return;
-        }
-        super.onBackPressed();
+//        if (flag) {
+//            return;
+//        }
+//        super.onBackPressed();
+        //一直锁定返回键好了，不然感觉怪怪的
+        return;
     }
 
 
