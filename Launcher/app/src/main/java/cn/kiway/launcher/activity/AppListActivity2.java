@@ -1,17 +1,19 @@
 package cn.kiway.launcher.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +23,7 @@ import java.util.List;
 
 import cn.kiway.launcher.R;
 import cn.kiway.launcher.entity.App;
+import cn.kiway.launcher.utils.Utils;
 
 public class AppListActivity2 extends BaseActivity {
 
@@ -40,20 +43,6 @@ public class AppListActivity2 extends BaseActivity {
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"));
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                } else {
-                    Uri uri2 = Uri.parse("smsto:");
-                    Intent intentMessage = new Intent(Intent.ACTION_VIEW, uri2);
-                    startActivity(intentMessage);
-                }
-                
-                if (true) {
-                    return;
-                }
-                //跳转到其他APK
                 try {
                     App a = apps.get(position);
                     String packageName = a.packageName;
@@ -74,16 +63,48 @@ public class AppListActivity2 extends BaseActivity {
                 }
             }
         });
+    }
 
-        App a1 = new App();
-        a1.name = "电话";
-        a1.packageName = "";
-        apps.add(a1);
-        App a2 = new App();
-        a2.name = "短信";
-        a2.packageName = "";
-        apps.add(a2);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String selectedApp = getSharedPreferences("kiway", 0).getString("app", "");
+        if (TextUtils.isEmpty(selectedApp)) {
+            return;
+        }
+        apps.clear();
+        String[] splits = selectedApp.substring(0, selectedApp.length() - 1).split(",");
+        for (String s : splits) {
+            App a = Utils.getAppByPackageName(getPackageManager(), s);
+            if (a != null) {
+                apps.add(a);
+            }
+        }
         adapter.notifyDataSetChanged();
+    }
+
+    public void clickButton1(View view) {
+        final EditText et = new EditText(this);
+        et.setText("123456");
+        et.setSingleLine();
+        new AlertDialog.Builder(this).setTitle("请输入密码").setIcon(
+                android.R.drawable.ic_dialog_info).setView(et
+        ).setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String input = et.getText().toString();
+                if (input.equals("")) {
+                    toast("密码不能为空");
+                    return;
+                }
+                if (!input.equals("123456")) {
+                    toast("密码错误");
+                    return;
+                }
+
+                startActivity(new Intent(AppListActivity2.this, AppListActivity3.class));
+            }
+        }).show();
     }
 
     private class MyAdapter extends BaseAdapter {

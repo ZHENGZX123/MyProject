@@ -46,12 +46,11 @@ public class KWService extends Service {
                 boolean ret = Utils.checkCurrentApp(context);
                 if (!ret) {
                     context.startActivity(new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                    mHandler.sendEmptyMessage(0);
+                    //mHandler.sendEmptyMessage(0);体验不太好
                 }
                 locked = context.getSharedPreferences("kiway", 0).getBoolean("locked", false);
             }
         }
-
     }
 
     private Handler mHandler = new Handler() {

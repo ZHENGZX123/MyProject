@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="cn.kiway.launcher.activity.AppListActivity">
+    tools:context="cn.kiway.launcher.activity.AppListActivity3">
 
     <Button
-        android:id="@+id/button1"
+        android:onClick="clickButton1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="clickButton1"
-        android:text="选择应用" />
+        android:layout_gravity="right"
+        android:text="完成" />
 
-    <GridView
-        android:id="@+id/gv"
+    <ListView
+        android:id="@+id/lv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="10dp"
-        android:horizontalSpacing="10dp"
-        android:numColumns="4"
-        android:verticalSpacing="10dp"></GridView>
-
+        android:layout_height="match_parent"></ListView>
 
 </LinearLayout>

@@ -32,6 +32,8 @@ public class AppListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_list);
 
+        findViewById(R.id.button1).setVisibility(View.GONE);
+
         gv = (GridView) findViewById(R.id.gv);
         adapter = new MyAdapter();
         gv.setAdapter(adapter);

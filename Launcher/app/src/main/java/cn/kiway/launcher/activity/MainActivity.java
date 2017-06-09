@@ -1,11 +1,11 @@
 package cn.kiway.launcher.activity;
 
-import android.Manifest;
 import android.app.AppOpsManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -14,10 +14,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 import cn.kiway.launcher.R;
 import cn.kiway.launcher.service.KWService;
 import cn.kiway.launcher.utils.Utils;
 
+import static android.Manifest.permission.CALL_PHONE;
+import static android.Manifest.permission.SEND_SMS;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static cn.kiway.launcher.utils.Utils.SYS_EMUI;
 
 public class MainActivity extends BaseActivity {
@@ -32,7 +37,9 @@ public class MainActivity extends BaseActivity {
 
         requestRunTimePermission(
                 new String[]{
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        WRITE_EXTERNAL_STORAGE,
+                        CALL_PHONE,
+                        SEND_SMS
                 },
                 mListener);
 
@@ -57,6 +64,18 @@ public class MainActivity extends BaseActivity {
         //开机后，立马锁定
         locked = getSharedPreferences("kiway", 0).getBoolean("locked", false);
         startThread();
+
+        //判断电话和短信app是哪个
+        ArrayList<IntentFilter> intentList = new ArrayList<>();
+        ArrayList<ComponentName> cnList = new ArrayList<>();
+        getPackageManager().getPreferredActivities(intentList, cnList, null);
+        for (int i = 0; i < cnList.size(); i++) {
+            IntentFilter dhIF = intentList.get(i);
+            if (dhIF.hasAction(Intent.ACTION_CALL)) {
+                String name = cnList.get(i).getPackageName();
+                Log.d("test", "name = " + name);
+            }
+        }
     }
 
     public void clickButton1(View v) {
@@ -110,18 +129,18 @@ public class MainActivity extends BaseActivity {
         final EditText et = new EditText(this);
         et.setText("123456");
         et.setSingleLine();
-        new AlertDialog.Builder(this).setTitle("请输入解锁密码").setIcon(
+        new AlertDialog.Builder(this).setTitle("请输入密码").setIcon(
                 android.R.drawable.ic_dialog_info).setView(et
         ).setPositiveButton("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String input = et.getText().toString();
                 if (input.equals("")) {
-                    toast("请输入解锁密码");
+                    toast("密码不能为空");
                     return;
                 }
                 if (!input.equals("123456")) {
-                    toast("解锁密码错误");
+                    toast("密码错误");
                     return;
                 }
                 toast("已经解锁");
