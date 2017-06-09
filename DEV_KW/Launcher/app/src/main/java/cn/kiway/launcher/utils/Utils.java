@@ -5,7 +5,9 @@ import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -15,8 +17,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import cn.kiway.launcher.entity.App;
+
+import static cn.kiway.launcher.service.KWService.TAG;
+import static cn.kiway.launcher.utils.Constant.apps;
 
 
 /**
@@ -117,11 +125,52 @@ public class Utils {
         if (TextUtils.isEmpty(packageName)) {
             return true;//false
         }
-        for (String temp : Constant.apps) {
+        for (String temp : apps) {
             if (temp.equals(packageName)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public static ArrayList<App> scanLocalInstallAppList(PackageManager packageManager) {
+        ArrayList<App> apps = new ArrayList<>();
+        try {
+            List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
+            for (int i = 0; i < packageInfos.size(); i++) {
+                PackageInfo packageInfo = packageInfos.get(i);
+                //过滤掉系统app
+//            if ((ApplicationInfo.FLAG_SYSTEM & packageInfo.applicationInfo.flags) != 0) {
+//                continue;
+//            }
+                App a = new App();
+                a.name = packageInfo.applicationInfo.loadLabel(packageManager).toString();
+                a.packageName = packageInfo.packageName;
+                a.icon = (packageInfo.applicationInfo.loadIcon(packageManager));
+                apps.add(a);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "===============获取应用包信息失败");
+        }
+        return apps;
+    }
+
+    public static App getAppByPackageName(PackageManager packageManager, String packageName) {
+        try {
+            List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
+            for (int i = 0; i < packageInfos.size(); i++) {
+                PackageInfo packageInfo = packageInfos.get(i);
+                if (packageInfo.packageName.equals(packageName)) {
+                    App a = new App();
+                    a.name = packageInfo.applicationInfo.loadLabel(packageManager).toString();
+                    a.packageName = packageInfo.packageName;
+                    a.icon = (packageInfo.applicationInfo.loadIcon(packageManager));
+                    return a;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
