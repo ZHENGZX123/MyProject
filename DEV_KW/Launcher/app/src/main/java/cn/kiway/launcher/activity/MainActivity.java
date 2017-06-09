@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import cn.kiway.launcher.R;
+import cn.kiway.launcher.service.KWService;
 import cn.kiway.launcher.utils.Utils;
 
 import static cn.kiway.launcher.utils.Utils.SYS_EMUI;
@@ -97,10 +98,10 @@ public class MainActivity extends BaseActivity {
     }
 
     public void clickButton4(View v) {
-        if (!locked) {
-            toast("当前未锁定");
-            return;
-        }
+//        if (!locked) {
+//            toast("当前未锁定");
+//            return;
+//        }
         //弹出密码框，密码正确就解锁
         final EditText et = new EditText(this);
         et.setText("123456");
@@ -162,30 +163,13 @@ public class MainActivity extends BaseActivity {
     private boolean locked;
 
     private void startThread() {
-        //检查locked
+        //1.检查locked
         if (!locked) {
             return;
         }
-        new Thread() {
-            @Override
-            public void run() {
-                while (locked) {
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    //1.收回状态栏
-                    Utils.collapse(getApplicationContext());
-                    //2.判断当前运行的app
-                    boolean ret = Utils.checkCurrentApp(getApplicationContext());
-                    if (!ret) {
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                    }
-                    locked = getSharedPreferences("kiway", 0).getBoolean("locked", false);
-                }
-            }
-        }.start();
+        //2.开启服务
+        Intent intent = new Intent(MainActivity.this, KWService.class);
+        startService(intent);
     }
 
     @Override
