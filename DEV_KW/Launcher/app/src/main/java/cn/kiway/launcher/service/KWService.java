@@ -3,9 +3,12 @@ package cn.kiway.launcher.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import cn.kiway.launcher.activity.MainActivity;
 import cn.kiway.launcher.utils.Utils;
@@ -20,7 +23,7 @@ public class KWService extends Service {
     public static final String TAG = "test";
     private MyThread myThread = null;
 
-    private static class MyThread extends Thread {
+    private class MyThread extends Thread {
 
         private Context context;
 
@@ -43,10 +46,24 @@ public class KWService extends Service {
                 boolean ret = Utils.checkCurrentApp(context);
                 if (!ret) {
                     context.startActivity(new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    mHandler.sendEmptyMessage(0);
                 }
                 locked = context.getSharedPreferences("kiway", 0).getBoolean("locked", false);
             }
         }
+
+    }
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Toast.makeText(getApplicationContext(), "锁定期间不能执行该操作", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private void toast(String txt) {
+
     }
 
     @Nullable

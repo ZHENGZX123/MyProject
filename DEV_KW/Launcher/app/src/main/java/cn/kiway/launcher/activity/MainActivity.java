@@ -98,6 +98,10 @@ public class MainActivity extends BaseActivity {
     }
 
     public void clickButton4(View v) {
+        startActivity(new Intent(this, AppListActivity2.class));
+    }
+
+    public void clickButton5(View v) {
 //        if (!locked) {
 //            toast("当前未锁定");
 //            return;
@@ -199,6 +203,7 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS) {
             if (!hasPermission()) {
+                toast("请务必设置权限");
                 //若用户未开启权限，则引导用户开启“Apps with usage access”权限
                 startActivityForResult(
                         new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
