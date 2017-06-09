@@ -12,16 +12,16 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.lang.reflect.Method;
 
+import cn.kiway.launcher.KWApp;
 import cn.kiway.launcher.R;
 import cn.kiway.launcher.utils.Constant;
 import cn.kiway.launcher.utils.Utils;
 
+import static cn.kiway.launcher.KWApp.t;
 import static cn.kiway.launcher.utils.Utils.SYS_EMUI;
 
 public class MainActivity extends BaseActivity {
@@ -30,16 +30,21 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("test", "Main onCreate");
 
         requestRunTimePermission(
                 new String[]{
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 },
                 mListener);
+
+        //开机后，立马锁定
+        locked = getSharedPreferences("kiway", 0).getBoolean("locked", false);
+        startThread();
     }
 
     public void clickButton1(View v) {
-        if (flag) {
+        if (locked) {
             toast("请先解锁再执行该操作");
             return;
         }
@@ -56,13 +61,14 @@ public class MainActivity extends BaseActivity {
     }
 
     public void clickButton2(View v) {
-        if (flag) {
+        if (locked) {
             toast("当前已锁定");
             return;
         }
         toast("开始锁定");
         //1.开启线程
-        flag = true;
+        locked = true;
+        getSharedPreferences("kiway", 0).edit().putBoolean("locked", true).commit();
         startThread();
         //2.清除后台app
         clearOtherApp();
@@ -70,7 +76,7 @@ public class MainActivity extends BaseActivity {
 
     public void clickButton3(View v) {
         //进入APP列表
-        if (!flag) {
+        if (!locked) {
             toast("请先锁定再进入学习园地");
             return;
         }
@@ -78,7 +84,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void clickButton4(View v) {
-        if (!flag) {
+        if (!locked) {
             toast("当前未锁定");
             return;
         }
@@ -101,7 +107,8 @@ public class MainActivity extends BaseActivity {
                     return;
                 }
                 toast("已经解锁");
-                flag = false;
+                locked = false;
+                getSharedPreferences("kiway", 0).edit().putBoolean("locked", false).commit();
 
                 //选择回原始的桌面
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -151,13 +158,22 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    private boolean flag = false;
+    private boolean locked;
 
     private void startThread() {
-        new Thread() {
+        //单例
+        if (t != null) {
+            return;
+        }
+        //检查Locked
+        if (!locked) {
+            return;
+        }
+
+        t = new Thread() {
             @Override
             public void run() {
-                while (flag) {
+                while (locked) {
                     try {
                         sleep(100);
                     } catch (InterruptedException e) {
@@ -172,7 +188,9 @@ public class MainActivity extends BaseActivity {
                     }
                 }
             }
-        }.start();
+        };
+        t.start();
+
     }
 
     private void clearOtherApp() {
@@ -234,7 +252,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-//        if (flag) {
+//        if (locked) {
 //            return;
 //        }
 //        super.onBackPressed();
