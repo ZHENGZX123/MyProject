@@ -1,6 +1,12 @@
 package cn.kiway.launcher.utils;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
+import android.content.Context;
+import android.os.Build;
 import android.os.Environment;
+import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -60,5 +66,42 @@ public class Utils {
         } catch (Exception e) {
         }
         return defaultValue;
+    }
+
+    public static void collapse(Context context) {
+        try {
+            Object service = context.getSystemService("statusbar");
+            Class<?> statusbarManager = Class.forName("android.app.StatusBarManager");
+            if (Build.VERSION.SDK_INT <= 16) {
+                Method collapse = statusbarManager.getMethod("collapse");
+                collapse.invoke(service);
+            } else {
+                Method collapse2 = statusbarManager.getMethod("collapsePanels");
+                collapse2.invoke(service);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean checkCurrentApp(Context context) {
+        String packageName = "";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+        } else {
+            ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            ComponentName cn = activityManager.getRunningTasks(1).get(0).topActivity;
+            packageName = cn.getPackageName();
+            Log.d("test", "packageName = " + packageName);
+        }
+        if (TextUtils.isEmpty(packageName)) {
+            return false;
+        }
+        for (String temp : Constant.apps) {
+            if (temp.equals(packageName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
