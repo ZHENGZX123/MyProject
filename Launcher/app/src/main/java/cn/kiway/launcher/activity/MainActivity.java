@@ -57,9 +57,10 @@ public class MainActivity extends BaseActivity {
             return;
         }
         Toast.makeText(MainActivity.this, "开始锁定", Toast.LENGTH_SHORT).show();
+        //1.开启线程
         flag = true;
         startThread();
-        //3.清除后台app
+        //2.清除后台app
         clearOtherApp();
     }
 
