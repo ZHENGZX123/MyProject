@@ -36,7 +36,7 @@ public class KWService extends Service {
             boolean locked = context.getSharedPreferences("kiway", 0).getBoolean("locked", false);
             while (locked) {
                 try {
-                    sleep(500);
+                    sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -50,6 +50,7 @@ public class KWService extends Service {
                 }
                 locked = context.getSharedPreferences("kiway", 0).getBoolean("locked", false);
             }
+            myThread = null;
         }
     }
 
@@ -77,6 +78,9 @@ public class KWService extends Service {
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
         Log.i(TAG, "Service is start.");
+        if (myThread != null) {
+            return;
+        }
         myThread = new MyThread(this);
         myThread.start();
     }
