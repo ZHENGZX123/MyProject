@@ -28,6 +28,7 @@ import static cn.kiway.launcher.utils.Utils.SYS_EMUI;
 public class MainActivity extends BaseActivity {
 
     private static final int MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS = 1101;
+    private static final int MY_PERMISSIONS_USB_DEBUG = 1102;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         Log.d("test", "Main onCreate");
 
+        //1、6.0系统权限申请
         requestRunTimePermission(
                 new String[]{
                         WRITE_EXTERNAL_STORAGE,
@@ -43,6 +45,7 @@ public class MainActivity extends BaseActivity {
                 },
                 mListener);
 
+        //2.允许使用访问记录
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (!hasPermission()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -61,10 +64,31 @@ public class MainActivity extends BaseActivity {
             }
         }
 
-        //开机后，立马锁定
+        //3.USB调试模式
+        boolean enableAdb = (Settings.Secure.getInt(getContentResolver(), Settings.Secure.ADB_ENABLED, 0) > 0);
+        if (enableAdb) {
+            if (true) {
+                return;
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("请您关闭USB调试功能");
+            builder.setTitle("提示");
+            builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    startActivityForResult(
+                            new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS),
+                            MY_PERMISSIONS_USB_DEBUG);
+                }
+            });
+            builder.setCancelable(false);
+            builder.create().show();
+        }
+
+        //4.开机后，立马锁定
         startThread();
 
-        //otherApps
+        //5.otherApps
         setOtherApps();
     }
 
@@ -223,6 +247,14 @@ public class MainActivity extends BaseActivity {
                 startActivityForResult(
                         new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
                         MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS);
+            }
+        } else if (requestCode == MY_PERMISSIONS_USB_DEBUG) {
+            boolean enableAdb = (Settings.Secure.getInt(getContentResolver(), Settings.Secure.ADB_ENABLED, 0) > 0);
+            if (enableAdb) {
+                toast("请务必关闭usb调试");
+                startActivityForResult(
+                        new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS),
+                        MY_PERMISSIONS_USB_DEBUG);
             }
         }
     }
