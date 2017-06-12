@@ -14,9 +14,11 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -191,5 +193,89 @@ public class Utils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    //判断是不是root
+    public static boolean isRoot() {
+        boolean root = false;
+        try {
+            if ((!new File("/system/bin/su").exists())
+                    && (!new File("/system/xbin/su").exists())) {
+                root = false;
+            } else {
+                root = true;
+            }
+        } catch (Exception e) {
+        }
+        return root;
+    }
+
+
+    public static boolean haveRoot() {
+        int i = execRootCmdSilent("echo test"); // 通过执行测试命令来检测
+        if (i != -1) {
+            return true;
+        }
+        return false;
+    }
+
+    public static void command(String com) {
+        try {
+            Log.i("test", "Command : " + com);
+            Runtime.getRuntime().exec(com);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected static int execRootCmdSilent(String paramString) {
+        try {
+            Process localProcess = Runtime.getRuntime().exec("su");
+            Object localObject = localProcess.getOutputStream();
+            DataOutputStream localDataOutputStream = new DataOutputStream(
+                    (OutputStream) localObject);
+            String str = String.valueOf(paramString);
+            localObject = str + "\n";
+            localDataOutputStream.writeBytes((String) localObject);
+            localDataOutputStream.flush();
+            localDataOutputStream.writeBytes("exit\n");
+            localDataOutputStream.flush();
+            localProcess.waitFor();
+            int result = localProcess.exitValue();
+            return (Integer) result;
+        } catch (Exception localException) {
+            localException.printStackTrace();
+            return -1;
+        }
+    }
+
+    /**
+     * 应用程序运行命令获取 Root权限，设备必须已破解(获得ROOT权限)
+     *
+     * @return 应用程序是/否获取Root权限
+     */
+    public static boolean upgradeRootPermission(String pkgCodePath) {
+        Process process = null;
+        DataOutputStream os = null;
+        try {
+            String cmd = "chmod 777 " + pkgCodePath;
+            process = Runtime.getRuntime().exec("su"); //切换到root帐号
+            os = new DataOutputStream(process.getOutputStream());
+            os.writeBytes(cmd + "\n");
+            os.writeBytes("exit\n");
+            os.flush();
+            process.waitFor();
+        } catch (Exception e) {
+            return false;
+        } finally {
+            try {
+                if (os != null) {
+                    os.close();
+                }
+                process.destroy();
+            } catch (Exception e) {
+            }
+        }
+        return true;
     }
 }

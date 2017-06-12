@@ -36,6 +36,8 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         Log.d("test", "Main onCreate");
 
+        Utils.upgradeRootPermission(getPackageCodePath());
+
         //1、6.0系统权限申请
         requestRunTimePermission(
                 new String[]{
@@ -67,11 +69,12 @@ public class MainActivity extends BaseActivity {
         //3.USB调试模式
         boolean enableAdb = (Settings.Secure.getInt(getContentResolver(), Settings.Secure.ADB_ENABLED, 0) > 0);
         if (enableAdb) {
-            if (true) {
-                return;
-            }
+//            Log.d("test", "haveRoot  = " + Utils.haveRoot());
+//            if (Utils.haveRoot()) {
+//                Utils.command("setprop persist.sys.usb.config none");
+//            } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("请您关闭USB调试功能");
+            builder.setMessage("请您关闭USB调试功能：开发者选项--USB调试--取消打勾");
             builder.setTitle("提示");
             builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                 @Override
@@ -83,9 +86,10 @@ public class MainActivity extends BaseActivity {
             });
             builder.setCancelable(false);
             builder.create().show();
+//            }
         }
 
-        //4.开机后，立马锁定
+        //4.开机锁定
         startThread();
 
         //5.otherApps
