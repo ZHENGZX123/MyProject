@@ -121,7 +121,8 @@ public class AppListActivity2 extends BaseActivity {
                     toast("密码不能为空");
                     return;
                 }
-                if (!input.equals("123456")) {
+                String password = getSharedPreferences("kiway", 0).getString("password", "");
+                if (!input.equals(password)) {
                     toast("密码错误");
                     return;
                 }
