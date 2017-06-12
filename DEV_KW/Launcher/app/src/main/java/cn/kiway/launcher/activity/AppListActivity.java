@@ -83,6 +83,14 @@ public class AppListActivity extends BaseActivity {
         a5.name = "家校通";
         a5.packageName = "";
         apps.add(a5);
+        App a6 = new App();
+        a6.name = "协同课堂";
+        a6.packageName = "cn.kiway.txkt";
+        apps.add(a6);
+        App a7 = new App();
+        a7.name = "童趣玩";
+        a7.packageName = "";
+        apps.add(a7);
         adapter.notifyDataSetChanged();
     }
 

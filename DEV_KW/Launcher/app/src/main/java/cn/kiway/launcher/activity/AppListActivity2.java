@@ -59,6 +59,7 @@ public class AppListActivity2 extends BaseActivity {
                     Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
                     startActivity(intent);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     toast("启动异常");
                 }
             }
