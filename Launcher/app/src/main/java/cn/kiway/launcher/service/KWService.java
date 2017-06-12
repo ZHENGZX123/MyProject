@@ -36,7 +36,7 @@ public class KWService extends Service {
             boolean locked = context.getSharedPreferences("kiway", 0).getBoolean("locked", false);
             while (locked) {
                 try {
-                    sleep(1000);
+                    sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -60,10 +60,6 @@ public class KWService extends Service {
             Toast.makeText(getApplicationContext(), "锁定期间不能执行该操作", Toast.LENGTH_SHORT).show();
         }
     };
-
-    private void toast(String txt) {
-
-    }
 
     @Nullable
     @Override

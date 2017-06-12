@@ -5,24 +5,25 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import java.util.ArrayList;
-
 import cn.kiway.launcher.R;
+import cn.kiway.launcher.entity.App;
 import cn.kiway.launcher.service.KWService;
 import cn.kiway.launcher.utils.Utils;
 
 import static android.Manifest.permission.CALL_PHONE;
 import static android.Manifest.permission.SEND_SMS;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static cn.kiway.launcher.utils.Constant.apps;
+import static cn.kiway.launcher.utils.Constant.otherApps;
 import static cn.kiway.launcher.utils.Utils.SYS_EMUI;
 
 public class MainActivity extends BaseActivity {
@@ -65,15 +66,21 @@ public class MainActivity extends BaseActivity {
         locked = getSharedPreferences("kiway", 0).getBoolean("locked", false);
         startThread();
 
-        //判断电话和短信app是哪个
-        ArrayList<IntentFilter> intentList = new ArrayList<>();
-        ArrayList<ComponentName> cnList = new ArrayList<>();
-        getPackageManager().getPreferredActivities(intentList, cnList, null);
-        for (int i = 0; i < cnList.size(); i++) {
-            IntentFilter dhIF = intentList.get(i);
-            if (dhIF.hasAction(Intent.ACTION_CALL)) {
-                String name = cnList.get(i).getPackageName();
-                Log.d("test", "name = " + name);
+        //otherApps
+        setOtherApps();
+    }
+
+    private void setOtherApps() {
+        String selectedApp = getSharedPreferences("kiway", 0).getString("app", "");
+        if (TextUtils.isEmpty(selectedApp)) {
+            return;
+        }
+        otherApps.clear();
+        String[] splits = selectedApp.substring(0, selectedApp.length() - 1).split(",");
+        for (String s : splits) {
+            App a = Utils.getAppByPackageName(getPackageManager(), s);
+            if (a != null) {
+                otherApps.add(a);
             }
         }
     }

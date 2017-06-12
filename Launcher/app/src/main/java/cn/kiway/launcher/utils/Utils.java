@@ -25,6 +25,7 @@ import cn.kiway.launcher.entity.App;
 
 import static cn.kiway.launcher.service.KWService.TAG;
 import static cn.kiway.launcher.utils.Constant.apps;
+import static cn.kiway.launcher.utils.Constant.otherApps;
 
 
 /**
@@ -127,6 +128,11 @@ public class Utils {
         }
         for (String temp : apps) {
             if (temp.equals(packageName)) {
+                return true;
+            }
+        }
+        for (int i = 0; i < otherApps.size(); i++) {
+            if (otherApps.get(i).packageName.equals(packageName)) {
                 return true;
             }
         }
