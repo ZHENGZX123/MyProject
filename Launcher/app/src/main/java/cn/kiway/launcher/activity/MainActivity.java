@@ -67,6 +67,9 @@ public class MainActivity extends BaseActivity {
         //3.USB调试模式
         boolean enableAdb = (Settings.Secure.getInt(getContentResolver(), Settings.Secure.ADB_ENABLED, 0) > 0);
         if (enableAdb) {
+            if (true) {
+                return;
+            }
             Log.d("test", "hasRoot  = " + Utils.hasRoot());
             if (Utils.hasRoot()) {
                 Utils.execRootCmdSilent("setprop persist.sys.usb.config none");
@@ -243,7 +246,7 @@ public class MainActivity extends BaseActivity {
         } else if (requestCode == MY_PERMISSIONS_USB_DEBUG) {
             boolean enableAdb = (Settings.Secure.getInt(getContentResolver(), Settings.Secure.ADB_ENABLED, 0) > 0);
             if (enableAdb) {
-                toast("请务必关闭usb调试");
+                toast("请务必关闭USB调试");
                 startActivityForResult(
                         new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS),
                         MY_PERMISSIONS_USB_DEBUG);

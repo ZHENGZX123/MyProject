@@ -66,6 +66,12 @@ public class AppListActivity3 extends BaseActivity {
             return;
         }
         String temp = "";
+        for (int i = 0; i < apps.size(); i++) {
+            App a = apps.get(i);
+            if (a.selected) {
+                temp += a.packageName + ",";
+            }
+        }
         //1.存入db
         getSharedPreferences("kiway", 0).edit().putString("apps", temp).commit();
         //2.apps
