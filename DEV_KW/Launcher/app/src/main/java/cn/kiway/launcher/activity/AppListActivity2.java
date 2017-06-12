@@ -49,6 +49,7 @@ public class AppListActivity2 extends BaseActivity {
                 try {
                     App a = apps.get(position);
                     String packageName = a.packageName;
+                    Log.d("test", "packageName = " + packageName);
                     if (TextUtils.isEmpty(packageName)) {
                         toast("包名错误");
                         return;
