@@ -22,7 +22,6 @@ import cn.kiway.launcher.utils.Utils;
 import static android.Manifest.permission.CALL_PHONE;
 import static android.Manifest.permission.SEND_SMS;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static cn.kiway.launcher.utils.Constant.apps;
 import static cn.kiway.launcher.utils.Constant.otherApps;
 import static cn.kiway.launcher.utils.Utils.SYS_EMUI;
 
@@ -71,7 +70,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setOtherApps() {
-        String selectedApp = getSharedPreferences("kiway", 0).getString("app", "");
+        String selectedApp = getSharedPreferences("kiway", 0).getString("apps", "");
         if (TextUtils.isEmpty(selectedApp)) {
             return;
         }
@@ -86,10 +85,6 @@ public class MainActivity extends BaseActivity {
     }
 
     public void clickButton1(View v) {
-        if (locked) {
-            toast("请先解锁再执行该操作");
-            return;
-        }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("请选择“开维教育桌面”，并点击“始终”");
         builder.setTitle("提示");

@@ -19,7 +19,8 @@ public class Constant {
             "cn.kiway.baoantong_vue",
             "cn.kiway.yqyd",         //一起阅读
             "cn.kiway.yiqiyuedu",
-            "cn.kiway.klzy"        //快乐作业
+            "cn.kiway.klzy",        //快乐作业
+            "android"               //launcher选择框
     };
 
     public static ArrayList<App> otherApps = new ArrayList<>();

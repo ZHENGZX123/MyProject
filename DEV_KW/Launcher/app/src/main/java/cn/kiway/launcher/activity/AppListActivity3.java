@@ -43,6 +43,14 @@ public class AppListActivity3 extends BaseActivity {
             }
         });
         apps = Utils.scanLocalInstallAppList(getPackageManager());
+        //
+        for (App a: apps){
+            for (App b : otherApps){
+                if(a.packageName.equals(b.packageName)){
+                    a.selected = true;
+                }
+            }
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -67,7 +75,7 @@ public class AppListActivity3 extends BaseActivity {
             }
         }
         //1.存入db
-        getSharedPreferences("kiway", 0).edit().putString("app", temp).commit();
+        getSharedPreferences("kiway", 0).edit().putString("apps", temp).commit();
         //2.apps
         finish();
     }
