@@ -5,9 +5,10 @@ import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -18,8 +19,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import cn.kiway.launcher.entity.App;
 
@@ -143,12 +146,22 @@ public class Utils {
         ArrayList<App> apps = new ArrayList<>();
         try {
             List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
+
+            Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
+            resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+            // 通过getPackageManager()的queryIntentActivities方法遍历,得到所有能打开的app的packageName
+            List<ResolveInfo> resolveinfoList = packageManager
+                    .queryIntentActivities(resolveIntent, 0);
+            Set<String> allowPackages = new HashSet();
+            for (ResolveInfo resolveInfo : resolveinfoList) {
+                allowPackages.add(resolveInfo.activityInfo.packageName);
+            }
             for (int i = 0; i < packageInfos.size(); i++) {
                 PackageInfo packageInfo = packageInfos.get(i);
-                //过滤掉系统app
-//            if ((ApplicationInfo.FLAG_SYSTEM & packageInfo.applicationInfo.flags) != 0) {
-//                continue;
-//            }
+                if (!allowPackages.contains(packageInfo.packageName)) {
+                    continue;
+                }
                 App a = new App();
                 a.name = packageInfo.applicationInfo.loadLabel(packageManager).toString();
                 a.packageName = packageInfo.packageName;

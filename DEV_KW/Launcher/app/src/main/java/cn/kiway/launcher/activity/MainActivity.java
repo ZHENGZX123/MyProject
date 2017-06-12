@@ -62,7 +62,6 @@ public class MainActivity extends BaseActivity {
         }
 
         //开机后，立马锁定
-        locked = getSharedPreferences("kiway", 0).getBoolean("locked", false);
         startThread();
 
         //otherApps
@@ -98,20 +97,19 @@ public class MainActivity extends BaseActivity {
     }
 
     public void clickButton2(View v) {
-        if (locked) {
+        if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
             toast("当前已锁定");
             return;
         }
         toast("开始锁定");
         //开启线程
-        locked = true;
         getSharedPreferences("kiway", 0).edit().putBoolean("locked", true).commit();
         startThread();
     }
 
     public void clickButton3(View v) {
         //进入APP列表
-        if (!locked) {
+        if (!getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
             toast("请先锁定再进入学习园地");
             return;
         }
@@ -119,6 +117,10 @@ public class MainActivity extends BaseActivity {
     }
 
     public void clickButton4(View v) {
+        if (!getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+            toast("请先锁定再进入其他应用");
+            return;
+        }
         startActivity(new Intent(this, AppListActivity2.class));
     }
 
@@ -146,7 +148,6 @@ public class MainActivity extends BaseActivity {
                     return;
                 }
                 toast("已经解锁");
-                locked = false;
                 getSharedPreferences("kiway", 0).edit().putBoolean("locked", false).commit();
 
                 //选择回原始的桌面
@@ -185,14 +186,7 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    private boolean locked;
-
     private void startThread() {
-        //1.检查locked
-        if (!locked) {
-            return;
-        }
-        //2.开启服务
         Intent intent = new Intent(MainActivity.this, KWService.class);
         startService(intent);
     }
