@@ -44,9 +44,9 @@ public class AppListActivity3 extends BaseActivity {
         });
         apps = Utils.scanLocalInstallAppList(getPackageManager());
         //
-        for (App a: apps){
-            for (App b : otherApps){
-                if(a.packageName.equals(b.packageName)){
+        for (App a : apps) {
+            for (App b : otherApps) {
+                if (a.packageName.equals(b.packageName)) {
                     a.selected = true;
                 }
             }
@@ -66,14 +66,6 @@ public class AppListActivity3 extends BaseActivity {
             return;
         }
         String temp = "";
-        otherApps.clear();
-        for (int i = 0; i < apps.size(); i++) {
-            App a = apps.get(i);
-            if (a.selected) {
-                otherApps.add(a);
-                temp += a.packageName + ",";
-            }
-        }
         //1.存入db
         getSharedPreferences("kiway", 0).edit().putString("apps", temp).commit();
         //2.apps

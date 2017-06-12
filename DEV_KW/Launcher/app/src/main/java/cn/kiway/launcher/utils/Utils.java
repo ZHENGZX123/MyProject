@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -195,7 +196,22 @@ public class Utils {
         return null;
     }
 
-    //判断是不是root
+    public static Drawable getIconByPackageName(PackageManager packageManager, App app) {
+        try {
+            List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
+            for (int i = 0; i < packageInfos.size(); i++) {
+                PackageInfo packageInfo = packageInfos.get(i);
+                if (packageInfo.packageName.equals(app.packageName)) {
+                    return (packageInfo.applicationInfo.loadIcon(packageManager));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    //判断有没有su文件
     public static boolean isRoot() {
         boolean root = false;
         try {
@@ -211,7 +227,7 @@ public class Utils {
     }
 
 
-    public static boolean haveRoot() {
+    public static boolean hasRoot() {
         int i = execRootCmdSilent("echo test"); // 通过执行测试命令来检测
         if (i != -1) {
             return true;
@@ -219,16 +235,8 @@ public class Utils {
         return false;
     }
 
-    public static void command(String com) {
-        try {
-            Log.i("test", "Command : " + com);
-            Runtime.getRuntime().exec(com);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    protected static int execRootCmdSilent(String paramString) {
+    public static int execRootCmdSilent(String paramString) {
         try {
             Process localProcess = Runtime.getRuntime().exec("su");
             Object localObject = localProcess.getOutputStream();
