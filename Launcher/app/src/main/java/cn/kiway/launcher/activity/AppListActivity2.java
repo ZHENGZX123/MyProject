@@ -69,7 +69,7 @@ public class AppListActivity2 extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        String selectedApp = getSharedPreferences("kiway", 0).getString("app", "");
+        String selectedApp = getSharedPreferences("kiway", 0).getString("apps", "");
         if (TextUtils.isEmpty(selectedApp)) {
             return;
         }
