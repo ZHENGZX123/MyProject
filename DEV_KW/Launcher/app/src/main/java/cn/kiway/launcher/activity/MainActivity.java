@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -33,7 +34,6 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         Log.d("test", "Main onCreate");
 
-        Utils.upgradeRootPermission(getPackageCodePath());
 
         //1、6.0系统权限申请
         requestRunTimePermission(
@@ -63,6 +63,30 @@ public class MainActivity extends BaseActivity {
             }
         }
 
+        //4.设置初始密码
+        String password = getSharedPreferences("kiway", 0).getString("password", "");
+        Log.d("test", "pasword = " + password);
+        if (TextUtils.isEmpty(password)) {
+            final EditText et = new EditText(this);
+            et.setText("123456");
+            et.setSelection(et.getText().toString().length());
+            et.setSingleLine();
+            new AlertDialog.Builder(this).setTitle("请设置初始密码").setIcon(
+                    android.R.drawable.ic_dialog_info).setView(et
+            ).setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String input = et.getText().toString();
+                    if (input.equals("")) {
+                        toast("密码不能为空");
+                        return;
+                    }
+                    getSharedPreferences("kiway", 0).edit().putString("password", input).commit();
+                }
+            }).setCancelable(false).show();
+        }
+
+        Utils.upgradeRootPermission(getPackageCodePath());
 
         //3.USB调试模式
         boolean enableAdb = (Settings.Secure.getInt(getContentResolver(), Settings.Secure.ADB_ENABLED, 0) > 0);
@@ -90,7 +114,8 @@ public class MainActivity extends BaseActivity {
             }
         }
 
-        //4.开机锁定
+
+        //5.开机锁定
         startThread();
     }
 
@@ -162,7 +187,8 @@ public class MainActivity extends BaseActivity {
                     toast("密码不能为空");
                     return;
                 }
-                if (!input.equals("123456")) {
+                String password = getSharedPreferences("kiway", 0).getString("password", "");
+                if (!input.equals(password)) {
                     toast("密码错误");
                     return;
                 }
