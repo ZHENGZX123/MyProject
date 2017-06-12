@@ -9,20 +9,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 import cn.kiway.launcher.R;
-import cn.kiway.launcher.entity.App;
 import cn.kiway.launcher.service.KWService;
 import cn.kiway.launcher.utils.Utils;
 
 import static android.Manifest.permission.CALL_PHONE;
 import static android.Manifest.permission.SEND_SMS;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static cn.kiway.launcher.utils.Constant.otherApps;
 import static cn.kiway.launcher.utils.Utils.SYS_EMUI;
 
 public class MainActivity extends BaseActivity {
@@ -66,49 +63,40 @@ public class MainActivity extends BaseActivity {
             }
         }
 
+
         //3.USB调试模式
         boolean enableAdb = (Settings.Secure.getInt(getContentResolver(), Settings.Secure.ADB_ENABLED, 0) > 0);
         if (enableAdb) {
-//            Log.d("test", "haveRoot  = " + Utils.haveRoot());
-//            if (Utils.haveRoot()) {
-//                Utils.command("setprop persist.sys.usb.config none");
-//            } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("请您关闭USB调试功能：开发者选项--USB调试--取消打勾");
-            builder.setTitle("提示");
-            builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    startActivityForResult(
-                            new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS),
-                            MY_PERMISSIONS_USB_DEBUG);
-                }
-            });
-            builder.setCancelable(false);
-            builder.create().show();
-//            }
+            Log.d("test", "hasRoot  = " + Utils.hasRoot());
+            if (Utils.hasRoot()) {
+                Utils.execRootCmdSilent("setprop persist.sys.usb.config none");
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("请您关闭USB调试功能：开发者选项--USB调试--取消打勾");
+                builder.setTitle("提示");
+                builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivityForResult(
+                                new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS),
+                                MY_PERMISSIONS_USB_DEBUG);
+                    }
+                });
+                builder.setCancelable(false);
+                builder.create().show();
+            }
         }
 
         //4.开机锁定
         startThread();
-
-        //5.otherApps
-        setOtherApps();
     }
 
-    private void setOtherApps() {
-        String selectedApp = getSharedPreferences("kiway", 0).getString("apps", "");
-        if (TextUtils.isEmpty(selectedApp)) {
-            return;
-        }
-        otherApps.clear();
-        String[] splits = selectedApp.substring(0, selectedApp.length() - 1).split(",");
-        for (String s : splits) {
-            App a = Utils.getAppByPackageName(getPackageManager(), s);
-            if (a != null) {
-                otherApps.add(a);
-            }
-        }
+    public void clickON(View v) {
+        Utils.execRootCmdSilent("setprop persist.sys.usb.config mtp,adb");
+    }
+
+    public void clickOFF(View v) {
+        Utils.execRootCmdSilent("setprop persist.sys.usb.config none");
     }
 
     public void clickButton1(View v) {

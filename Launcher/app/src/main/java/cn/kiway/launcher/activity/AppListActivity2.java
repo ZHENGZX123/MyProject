@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,8 @@ import java.util.List;
 import cn.kiway.launcher.R;
 import cn.kiway.launcher.entity.App;
 import cn.kiway.launcher.utils.Utils;
+
+import static cn.kiway.launcher.utils.Constant.otherApps;
 
 public class AppListActivity2 extends BaseActivity {
 
@@ -69,6 +72,9 @@ public class AppListActivity2 extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        setOtherApps();
+
         String selectedApp = getSharedPreferences("kiway", 0).getString("apps", "");
         if (TextUtils.isEmpty(selectedApp)) {
             return;
@@ -82,6 +88,22 @@ public class AppListActivity2 extends BaseActivity {
             }
         }
         adapter.notifyDataSetChanged();
+    }
+
+    private void setOtherApps() {
+        String selectedApp = getSharedPreferences("kiway", 0).getString("apps", "");
+        if (TextUtils.isEmpty(selectedApp)) {
+            return;
+        }
+        otherApps.clear();
+        String[] splits = selectedApp.substring(0, selectedApp.length() - 1).split(",");
+        for (String s : splits) {
+            App a = Utils.getAppByPackageName(getPackageManager(), s);
+            if (a != null) {
+                otherApps.add(a);
+            }
+        }
+        Log.d("test", "setOtherApps , count = " + otherApps.size());
     }
 
     public void clickButton1(View view) {
@@ -134,6 +156,7 @@ public class AppListActivity2 extends BaseActivity {
 
             App app = apps.get(position);
             holder.name.setText(app.name);
+            holder.iv.setImageDrawable(app.icon);
 
             return rowView;
         }

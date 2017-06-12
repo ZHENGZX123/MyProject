@@ -36,7 +36,7 @@ public class KWService extends Service {
             boolean locked = context.getSharedPreferences("kiway", 0).getBoolean("locked", false);
             while (locked) {
                 try {
-                    sleep(100);
+                    sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

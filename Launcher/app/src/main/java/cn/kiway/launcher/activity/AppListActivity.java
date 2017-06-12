@@ -20,6 +20,7 @@ import java.util.List;
 
 import cn.kiway.launcher.R;
 import cn.kiway.launcher.entity.App;
+import cn.kiway.launcher.utils.Utils;
 
 public class AppListActivity extends BaseActivity {
 
@@ -66,30 +67,37 @@ public class AppListActivity extends BaseActivity {
         App a1 = new App();
         a1.name = "幼教平台";
         a1.packageName = "cn.kiway.Yjptj";
+        a1.icon = Utils.getIconByPackageName(getPackageManager(), a1);
         apps.add(a1);
         App a2 = new App();
         a2.name = "一起阅读";
         a2.packageName = "cn.kiway.yiqiyuedu";
+        a2.icon = Utils.getIconByPackageName(getPackageManager(), a2);
         apps.add(a2);
         App a3 = new App();
         a3.name = "快乐作业";
         a3.packageName = "cn.kiway.klzy";
+        a3.icon = Utils.getIconByPackageName(getPackageManager(), a3);
         apps.add(a3);
         App a4 = new App();
         a4.name = "宝安通";
         a4.packageName = "cn.kiway.baoantong_vue";
+        a4.icon = Utils.getIconByPackageName(getPackageManager(), a4);
         apps.add(a4);
         App a5 = new App();
         a5.name = "家校通";
         a5.packageName = "";
+        a5.icon = Utils.getIconByPackageName(getPackageManager(), a5);
         apps.add(a5);
         App a6 = new App();
         a6.name = "协同课堂";
         a6.packageName = "cn.kiway.txkt";
+        a6.icon = Utils.getIconByPackageName(getPackageManager(), a6);
         apps.add(a6);
         App a7 = new App();
         a7.name = "童趣玩";
         a7.packageName = "";
+        a7.icon = Utils.getIconByPackageName(getPackageManager(), a7);
         apps.add(a7);
         adapter.notifyDataSetChanged();
     }
@@ -120,6 +128,11 @@ public class AppListActivity extends BaseActivity {
 
             App app = apps.get(position);
             holder.name.setText(app.name);
+            if (app.icon == null) {
+                holder.iv.setImageResource(R.mipmap.ic_launcher);
+            } else {
+                holder.iv.setImageDrawable(app.icon);
+            }
 
             return rowView;
         }
