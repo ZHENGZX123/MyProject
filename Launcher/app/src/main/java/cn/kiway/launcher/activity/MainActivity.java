@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.EditText;
 
 import cn.kiway.launcher.R;
-import cn.kiway.launcher.service.KWService;
 import cn.kiway.launcher.utils.Utils;
 
 import static android.Manifest.permission.CALL_PHONE;
@@ -86,14 +85,18 @@ public class MainActivity extends BaseActivity {
             }).setCancelable(false).show();
         }
 
+        //5.开机锁定
+        startThread();
+
         Utils.upgradeRootPermission(getPackageCodePath());
 
         //3.USB调试模式
         boolean enableAdb = (Settings.Secure.getInt(getContentResolver(), Settings.Secure.ADB_ENABLED, 0) > 0);
         if (enableAdb) {
-            if (true) {
-                return;
-            }
+//            if (true) {
+//                return;
+//            }
+
             Log.d("test", "hasRoot  = " + Utils.hasRoot());
             if (Utils.hasRoot()) {
                 Utils.execRootCmdSilent("setprop persist.sys.usb.config none");
@@ -115,8 +118,6 @@ public class MainActivity extends BaseActivity {
         }
 
 
-        //5.开机锁定
-        startThread();
     }
 
     public void clickON(View v) {
@@ -232,8 +233,8 @@ public class MainActivity extends BaseActivity {
 
 
     private void startThread() {
-        Intent intent = new Intent(MainActivity.this, KWService.class);
-        startService(intent);
+//        Intent intent = new Intent(MainActivity.this, KWService.class);
+//        startService(intent);
     }
 
     @Override

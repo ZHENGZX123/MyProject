@@ -165,6 +165,11 @@ public class Utils {
                 if (!allowPackages.contains(packageInfo.packageName)) {
                     continue;
                 }
+                //屏蔽掉系统设置
+                if (packageInfo.packageName.equals("com.android.settings")
+                        || packageInfo.packageName.equals("cn.kiway.launcher")) {
+                    continue;
+                }
                 App a = new App();
                 a.name = packageInfo.applicationInfo.loadLabel(packageManager).toString();
                 a.packageName = packageInfo.packageName;
