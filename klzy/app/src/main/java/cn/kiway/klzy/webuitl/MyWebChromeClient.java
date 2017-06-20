@@ -14,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.webkit.ConsoleMessage;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -43,6 +44,17 @@ public class MyWebChromeClient extends WebChromeClient implements EasyPermission
         this.activity = activity;
     }
 
+    @Override
+    public void onConsoleMessage(String message, int lineNumber, String sourceID) {
+        super.onConsoleMessage(message, lineNumber, sourceID);
+        Log.e("**********************",message);
+    }
+
+    @Override
+    public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+        Log.e("**********************",consoleMessage.message());
+        return super.onConsoleMessage(consoleMessage);
+    }
 
     @Override
     public void onProgressChanged(WebView view, int newProgress) {

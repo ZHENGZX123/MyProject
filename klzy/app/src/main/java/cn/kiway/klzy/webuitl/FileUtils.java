@@ -14,7 +14,6 @@ import java.io.File;
  */
 public class FileUtils {
 
-
     //创建私有文件夹
     public static String createZipFloder() {
         File file = new File(Environment.getExternalStorageDirectory(),
@@ -26,7 +25,7 @@ public class FileUtils {
             file1.mkdirs();
         return file.getAbsolutePath();
     }
-
+//
     //创建私有文件夹
     public static String createDocFloder() {
         File file1 = new File(createZipFloder(), "doc");

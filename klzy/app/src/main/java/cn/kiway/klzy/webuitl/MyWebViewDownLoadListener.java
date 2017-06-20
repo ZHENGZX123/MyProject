@@ -39,7 +39,6 @@ public class MyWebViewDownLoadListener implements DownloadListener {
 //        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 //        context.startActivity(intent);
         String fileName = url.split("/")[url.split("/").length - 1];
-
         File file = new File(FileUtils.createDocFloder(), fileName);
         if (!file.exists()) {
             Message msg = handler.obtainMessage();
