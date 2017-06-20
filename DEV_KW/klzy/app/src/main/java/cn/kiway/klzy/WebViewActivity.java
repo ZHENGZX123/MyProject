@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.WindowManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
@@ -83,12 +84,12 @@ public class WebViewActivity extends Activity {
         settings.setLoadWithOverviewMode(true);
         settings.setSupportZoom(true);
         settings.setTextSize(WebSettings.TextSize.NORMAL);
+        wv.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         wv.setWebViewClient(new WebViewClientUtil(this));
         wv.setDownloadListener(new MyWebViewDownLoadListener(this, handler, (App) getApplicationContext()));
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new MyWebChromeClient(this));
-        wv.addJavascriptInterface(new JsAndroidIntercrpt(this), "js");
-
+        wv.addJavascriptInterface(new JsAndroidIntercrpt(this), "wx");
     }
 
     /**
@@ -178,6 +179,5 @@ public class WebViewActivity extends Activity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         Log.i("axe.mg", "onConfigurationChanged");
-
     }
 }

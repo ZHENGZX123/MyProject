@@ -35,7 +35,6 @@ public class LVCircularRing extends View {
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
 		if (getMeasuredWidth() > getHeight())
 			mWidth = getMeasuredHeight();
 		else
@@ -83,12 +82,10 @@ public class LVCircularRing extends View {
 	private ValueAnimator startViewAnim(float startF, final float endF,
 			long time) {
 		valueAnimator = ValueAnimator.ofFloat(startF, endF);
-
 		valueAnimator.setDuration(time);
 		valueAnimator.setInterpolator(new LinearInterpolator());
 		valueAnimator.setRepeatCount(ValueAnimator.INFINITE);// 无限循环
 		valueAnimator.setRepeatMode(ValueAnimator.RESTART);//
-
 		valueAnimator
 				.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 					@Override
@@ -109,7 +106,6 @@ public class LVCircularRing extends View {
 		if (!valueAnimator.isRunning()) {
 			valueAnimator.start();
 		}
-
 		return valueAnimator;
 	}
 }
