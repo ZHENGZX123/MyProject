@@ -19,7 +19,7 @@
         android:theme="@android:style/Theme.NoTitleBar"
         tools:replace="android:icon, android:theme, android:label">
         <activity
-            android:name="cn.kiway.homework.activity.WebViewActivity"
+            android:name="cn.kiway.homework.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait">
 

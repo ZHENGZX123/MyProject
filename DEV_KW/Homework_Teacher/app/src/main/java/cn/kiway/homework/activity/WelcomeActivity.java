@@ -55,7 +55,7 @@ public class WelcomeActivity extends BaseActivity {
         new Thread() {
             @Override
             public void run() {
-                startActivity(new Intent(WelcomeActivity.this, WebViewActivity.class));
+                startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
                 finish();
             }
         }.start();
@@ -247,7 +247,6 @@ public class WelcomeActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
-
         checkNewVersion();
     }
 }
