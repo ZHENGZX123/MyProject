@@ -1,10 +1,22 @@
 package cn.kiway.homework.activity;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
+
+import cn.kiway.homework.APP;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -36,4 +48,14 @@ public class BaseActivity extends Activity {
         }
         return type;
     }
+
+    public InputStream getStreamByUrl(String url) {
+        InputStream is = null;
+        Bitmap b = ImageLoader.getInstance().loadImageSync(url, APP.getLoaderOptions());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        b.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        is = new ByteArrayInputStream(baos.toByteArray());
+        return is;
+    }
+
 }

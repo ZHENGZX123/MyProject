@@ -201,7 +201,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cn.kiway.homework;
+package cn.kiway.homework.util;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -210,6 +210,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+
+import cn.kiway.homework.entity.HTTPCache;
 
 public class WXDBHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "sdk.db";

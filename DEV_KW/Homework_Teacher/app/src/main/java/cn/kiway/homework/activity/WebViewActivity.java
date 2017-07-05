@@ -18,11 +18,12 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
 
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import cn.kiway.homework.HTTPCache;
-import cn.kiway.homework.WXDBHelper;
+import cn.kiway.homework.entity.HTTPCache;
+import cn.kiway.homework.util.WXDBHelper;
 import cn.kiway.homework.teacher.R;
 import cn.kiway.homework.util.NetworkUtil;
 
@@ -85,14 +86,14 @@ public class WebViewActivity extends BaseActivity {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
                 Log.d("test", "shouldInterceptRequest url = " + url);
-//                if (url.endsWith("jpg")) {
-//                    InputStream is = getAssets().open(localUrl);
-//                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
-//                }
+                if (url.endsWith("jpg") || url.endsWith("jpeg") || url.endsWith("JPG") || url.endsWith("JPEG")) {
+                    InputStream is = getStreamByUrl(url);
+                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
+                }
                 return super.shouldInterceptRequest(view, url);
             }
         });
-        
+
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new WebChromeClient());
         wv.addJavascriptInterface(new JsAndroidInterface(), "native");
@@ -217,9 +218,13 @@ public class WebViewActivity extends BaseActivity {
         new WXDBHelper(this).addHTTPCache(cache);
     }
 
-    private void callback(String url, String result) {
-        Log.d("test", "callback , url = " + url + " , result = " + result);
-        wv.loadUrl("javascript:httpRequestResult('" + result +
-                "')");
+    private void callback(final String url, final String result) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("test", "callback , url = " + url + " , result = " + result);
+                wv.loadUrl("javascript:httpRequestResult(\"" + result + "\")");
+            }
+        });
     }
 }

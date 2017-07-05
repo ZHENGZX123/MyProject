@@ -202,7 +202,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package cn.kiway.homework;
+package cn.kiway.homework.entity;
 
 /**
  * Created by Administrator on 2017/4/7.
