@@ -97,6 +97,9 @@ public class WelcomeActivity extends BaseActivity {
                     Log.d("test", "新版本返回值" + ret);
                     String version = new JSONObject(ret).getString("apkCode");
                     String apkUrl = new JSONObject(ret).getString("apkUrl");
+
+                    //1.apk更新
+                    //2.包更新
                     Log.d("test", "current = " + getCurrentVersion(getApplicationContext()));
                     if (getCurrentVersion(getApplicationContext()).compareTo(version) < 0) {
                         showUpdateConfirmDialog(apkUrl);
