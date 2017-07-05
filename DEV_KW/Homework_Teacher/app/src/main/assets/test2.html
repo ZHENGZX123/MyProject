@@ -18,12 +18,6 @@
         background-color: highlight;
         text-decoration: none;
     }
-
-
-
-
-
-
     </style>
 </head>
 
@@ -36,7 +30,7 @@
     }
     var aTag = document.getElementsByTagName('a')[0];
     aTag.addEventListener('click', function(){
-		native.httpRequest("http://www.baidu.com" , "param1=test" , "get" , "1");
+		native.httpRequest("http://www.baidu.com" , "{}" , "get" , "1");
         return false;
     }, false);
 

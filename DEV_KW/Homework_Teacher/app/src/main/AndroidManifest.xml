@@ -4,6 +4,7 @@
     package="cn.kiway.homework.teacher">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
@@ -17,7 +18,7 @@
         android:theme="@android:style/Theme.NoTitleBar"
         tools:replace="android:icon, android:theme, android:label">
         <activity
-            android:name="cn.kiway.yqyd.activity.WebViewActivity"
+            android:name="cn.kiway.homework.activity.WebViewActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait">
 
