@@ -18,24 +18,26 @@
         background-color: highlight;
         text-decoration: none;
     }
+
     </style>
 </head>
 
 <body>
 <a>html call native</a>
 <script>
+    document.getElementById("img").src="http://avatar.csdn.net/4/8/6/1_yangqingqo.jpg";
+
     function httpRequestResult(param){
     	document.getElementById("testID").innerHTML=param;
-    	document.getElementById("img").src=param;
     }
     var aTag = document.getElementsByTagName('a')[0];
     aTag.addEventListener('click', function(){
-		native.httpRequest("http://www.baidu.com" , "{}" , "get" , "1");
+		native.httpRequest("http://www.baidu.com" , "{}" , "get" , "0");
         return false;
     }, false);
 
 </script>
-<img id="img" src="file:///android_asset/a.jpg" width="100" height="100"/>
+<img id="img" src="" width="100" height="100"/>
 <div id="testID"></div>
 </body>
 </html>
