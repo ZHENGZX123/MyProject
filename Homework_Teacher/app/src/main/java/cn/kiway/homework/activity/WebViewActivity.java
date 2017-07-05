@@ -1,6 +1,5 @@
-package cn.kiway.yqyd.activity;
+package cn.kiway.homework.activity;
 
-import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,13 +11,21 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
+import org.json.JSONObject;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import cn.kiway.homework.teacher.R;
+import cn.kiway.homework.util.NetworkUtil;
 
 
-public class WebViewActivity extends Activity {
+public class WebViewActivity extends BaseActivity {
 
     private WebView wv;
 
@@ -33,7 +40,7 @@ public class WebViewActivity extends Activity {
     }
 
     private void load() {
-        wv.loadUrl("");
+        wv.loadUrl("file:///android_asset/test2.html");
     }
 
     private void initData() {
@@ -77,7 +84,7 @@ public class WebViewActivity extends Activity {
 
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new WebChromeClient());
-        wv.addJavascriptInterface(new JsAndroidInterface(), "js");
+        wv.addJavascriptInterface(new JsAndroidInterface(), "native");
     }
 
     private long time;
@@ -120,9 +127,40 @@ public class WebViewActivity extends Activity {
         }
 
         @JavascriptInterface
-        public void httpRequest(String url, String param, String method) {
-            Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method);
+        public void httpRequest(String url, String param, String method, String reload) {
+            Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , reload = " + reload);
 
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (!NetworkUtil.isNetworkAvailable(WebViewActivity.this)) {
+                            toast("没有网络");
+                            return;
+                        }
+                        AsyncHttpClient client = new AsyncHttpClient();
+                        client.setTimeout(10000);
+                        JSONObject jsonObject = new JSONObject();
+                        StringEntity stringEntity = new StringEntity(jsonObject.toString(), "utf-8");
+                        client.post(WebViewActivity.this, "http://120.25.237.116:8080/WJCServlet/servlet/GetIndexInfor", stringEntity, "application/json", new TextHttpResponseHandler() {
+
+                            @SuppressWarnings("deprecation")
+                            @Override
+                            public void onSuccess(int arg0, Header[] arg1, String ret) {
+                                Log.d("test", "onSuccess = " + ret);
+                            }
+
+                            @Override
+                            public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+                                Log.d("test", "onFailure = " + arg2);
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.d("test", "exception = " + e.toString());
+                    }
+                }
+            });
         }
     }
 }
