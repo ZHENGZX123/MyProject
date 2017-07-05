@@ -29,14 +29,14 @@ import cn.kiway.homework.teacher.R;
 import cn.kiway.homework.util.NetworkUtil;
 
 
-public class WebViewActivity extends BaseActivity {
+public class MainActivity extends BaseActivity {
 
     private WebView wv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_webview);
+        setContentView(R.layout.activity_main);
 
         wv = (WebView) findViewById(R.id.wv);
         initData();
@@ -150,7 +150,7 @@ public class WebViewActivity extends BaseActivity {
             } else {
                 //取缓存
                 String request = url + param + method;
-                HTTPCache cache = new WXDBHelper(WebViewActivity.this).getHttpCacheByRequest(request);
+                HTTPCache cache = new WXDBHelper(MainActivity.this).getHttpCacheByRequest(request);
                 if (cache == null) {
                     doHttpRequest(url, param, method);
                 } else {
@@ -165,7 +165,7 @@ public class WebViewActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    if (!NetworkUtil.isNetworkAvailable(WebViewActivity.this)) {
+                    if (!NetworkUtil.isNetworkAvailable(MainActivity.this)) {
                         toast("没有网络");
                         return;
                     }
@@ -173,7 +173,7 @@ public class WebViewActivity extends BaseActivity {
                     client.setTimeout(10000);
                     if (method.equalsIgnoreCase("POST")) {
                         StringEntity stringEntity = new StringEntity(param, "utf-8");
-                        client.post(WebViewActivity.this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                        client.post(MainActivity.this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
 
                             @Override
                             public void onSuccess(int arg0, Header[] arg1, String ret) {
@@ -189,7 +189,7 @@ public class WebViewActivity extends BaseActivity {
                             }
                         });
                     } else if (method.equalsIgnoreCase("GET")) {
-                        client.get(WebViewActivity.this, url, new TextHttpResponseHandler() {
+                        client.get(MainActivity.this, url, new TextHttpResponseHandler() {
                             @Override
                             public void onSuccess(int i, Header[] headers, String ret) {
                                 Log.d("test", "get onSuccess = " + ret);
