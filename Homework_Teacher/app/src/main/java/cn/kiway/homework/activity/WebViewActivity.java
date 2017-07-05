@@ -16,7 +16,6 @@ import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
-import org.json.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -127,7 +126,7 @@ public class WebViewActivity extends BaseActivity {
         }
 
         @JavascriptInterface
-        public void httpRequest(String url, String param, String method, String reload) {
+        public void httpRequest(final String url, final String param, final String method, String reload) {
             Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , reload = " + reload);
 
             runOnUiThread(new Runnable() {
@@ -140,21 +139,37 @@ public class WebViewActivity extends BaseActivity {
                         }
                         AsyncHttpClient client = new AsyncHttpClient();
                         client.setTimeout(10000);
-                        JSONObject jsonObject = new JSONObject();
-                        StringEntity stringEntity = new StringEntity(jsonObject.toString(), "utf-8");
-                        client.post(WebViewActivity.this, "http://120.25.237.116:8080/WJCServlet/servlet/GetIndexInfor", stringEntity, "application/json", new TextHttpResponseHandler() {
+                        if (method.equalsIgnoreCase("POST")) {
+                            StringEntity stringEntity = new StringEntity(param, "utf-8");
+                            client.post(WebViewActivity.this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
 
-                            @SuppressWarnings("deprecation")
-                            @Override
-                            public void onSuccess(int arg0, Header[] arg1, String ret) {
-                                Log.d("test", "onSuccess = " + ret);
-                            }
+                                @Override
+                                public void onSuccess(int arg0, Header[] arg1, String ret) {
+                                    Log.d("test", "post onSuccess = " + ret);
+                                    callback(url, "success");
+                                }
 
-                            @Override
-                            public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-                                Log.d("test", "onFailure = " + arg2);
-                            }
-                        });
+                                @Override
+                                public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+                                    Log.d("test", "post onFailure = " + arg2);
+                                    callback(url, "failure");
+                                }
+                            });
+                        } else if (method.equalsIgnoreCase("GET")) {
+                            client.get(WebViewActivity.this, url, new TextHttpResponseHandler() {
+                                @Override
+                                public void onSuccess(int i, Header[] headers, String s) {
+                                    Log.d("test", "get onSuccess = " + s);
+                                    callback(url, "success");
+                                }
+
+                                @Override
+                                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                                    Log.d("test", "get onFailure = " + s);
+                                    callback(url, "failure");
+                                }
+                            });
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                         Log.d("test", "exception = " + e.toString());
@@ -162,5 +177,10 @@ public class WebViewActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    private void callback(String url, String result) {
+        wv.loadUrl("javascript:httpRequestResult('" + result +
+                "')");
     }
 }
