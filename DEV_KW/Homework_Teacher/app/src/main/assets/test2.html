@@ -23,23 +23,22 @@
 
 
 
+
     </style>
 </head>
 
 <body>
 <a>html call native</a>
 <script>
-    function pickphotoResult(param){
+    function httpRequestResult(param){
     	document.getElementById("testID").innerHTML=param;
     	document.getElementById("img").src=param;
     }
     var aTag = document.getElementsByTagName('a')[0];
     aTag.addEventListener('click', function(){
-        //调用android本地方法
-		native.pickphoto(" pick a photo ");
+		native.httpRequest("http://www.baidu.com" , "param1=test" , "get" , "1");
         return false;
     }, false);
-
 
 </script>
 <img id="img" src="file:///android_asset/a.jpg" width="100" height="100"/>
