@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import cn.kiway.homework.WXApplication;
 import cn.kiway.homework.entity.HTTPCache;
 import cn.kiway.homework.util.WXDBHelper;
 import cn.kiway.homework.teacher.R;
@@ -43,8 +44,10 @@ public class WebViewActivity extends BaseActivity {
     }
 
     private void load() {
-        wv.loadUrl("file:///android_asset/test2.html");
+//        wv.loadUrl("file:///android_asset/test2.html");
+        wv.loadUrl("file://" + WXApplication.ROOT + "xtzy_teacher/dist/test2.html");
     }
+
 
     private void initData() {
         //跨域问题

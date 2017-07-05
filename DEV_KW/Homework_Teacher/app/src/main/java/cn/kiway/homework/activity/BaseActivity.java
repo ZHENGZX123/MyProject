@@ -9,14 +9,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 
-import cn.kiway.homework.APP;
+import cn.kiway.homework.WXApplication;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -24,6 +20,18 @@ import cn.kiway.homework.APP;
 
 public class BaseActivity extends Activity {
     public void toast(final String txt) {
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                Toast.makeText(BaseActivity.this, txt, Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+    }
+
+    public void toast(final int txt) {
         runOnUiThread(new Runnable() {
 
             @Override
@@ -51,7 +59,7 @@ public class BaseActivity extends Activity {
 
     public InputStream getStreamByUrl(String url) {
         InputStream is = null;
-        Bitmap b = ImageLoader.getInstance().loadImageSync(url, APP.getLoaderOptions());
+        Bitmap b = ImageLoader.getInstance().loadImageSync(url, WXApplication.getLoaderOptions());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         b.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         is = new ByteArrayInputStream(baos.toByteArray());
