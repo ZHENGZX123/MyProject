@@ -20,7 +20,9 @@ import java.io.File;
  * Created by Administrator on 2017/7/5.
  */
 
-public class APP extends Application {
+public class WXApplication extends Application {
+
+    public static String ROOT = "/mnt/sdcard/kiway/";
 
     @Override
     public void onCreate() {
