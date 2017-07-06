@@ -3,6 +3,7 @@ package cn.kiway.homework.activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,6 +11,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.storage.OnObbStateChangeListener;
+import android.os.storage.StorageManager;
 import android.util.Log;
 
 import net.lingala.zip4j.core.ZipFile;
@@ -42,14 +45,20 @@ public class WelcomeActivity extends BaseActivity {
     private Dialog dialog_download;
     private ProgressDialog pd;
     private int lastProgress;
+    private StorageManager storageManager;
+    private String filename;
+    private String key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
+
         checkIsFirst();
+        mountOBB();
     }
+
 
     private void jump() {
         new Thread() {
@@ -248,5 +257,48 @@ public class WelcomeActivity extends BaseActivity {
             }
         }
         checkNewVersion();
+    }
+
+    private void mountOBB() {
+        storageManager = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
+        key = "kiway123456789kiway";
+        obbListener o = new obbListener();
+        if (!storageManager.isObbMounted("/mnt/sdcard/xtzy_teacher.obb")) {
+            storageManager.mountObb("/mnt/sdcard/xtzy_teacher.obb", key, o);
+        }
+        if (!storageManager.isObbMounted("/mnt/sdcard/xtzy_teacher3.obb")) {
+            storageManager.mountObb("/mnt/sdcard/xtzy_teacher3.obb", key, o);
+        }
+    }
+
+    private class obbListener extends OnObbStateChangeListener {
+        @Override
+        public void onObbStateChange(String path, int state) {
+            super.onObbStateChange(path, state);
+            if (state == OnObbStateChangeListener.ERROR_ALREADY_MOUNTED) {
+                Log.e("test", "已经挂载");
+            }
+            if (state == OnObbStateChangeListener.ERROR_COULD_NOT_MOUNT) {
+                Log.e("test", "这个OBB不能挂在到系统");
+            }
+            if (state == OnObbStateChangeListener.ERROR_COULD_NOT_UNMOUNT) {
+                Log.e("test", "这个OBB不能反挂载");
+            }
+            if (state == OnObbStateChangeListener.ERROR_INTERNAL) {
+                Log.e("test", "一个内部的系统错误导致正在重试挂载obb");
+            }
+            if (state == OnObbStateChangeListener.ERROR_NOT_MOUNTED) {
+                Log.e("test", "一个反挂载调用执行时这个obb还没有挂在过");
+            }
+            if (state == OnObbStateChangeListener.ERROR_PERMISSION_DENIED) {
+                Log.e("test", "当前程序没有使用这个obb的权限");
+            }
+            if (state == OnObbStateChangeListener.MOUNTED) {
+                Log.e("test", "The obb容器已经挂载好了，可以使用了");
+            }
+            if (state == OnObbStateChangeListener.UNMOUNTED) {
+                Log.e("test", "The OBB容易现在反挂载完成，将无法再使用");
+            }
+        }
     }
 }
