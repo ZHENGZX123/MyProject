@@ -28,11 +28,12 @@
 <a>html call native</a>
 <script>
     function httpRequestResult(param){
+    alert(param);
     	document.getElementById("testID").innerHTML=param;
     }
     var aTag = document.getElementsByTagName('a')[0];
     aTag.addEventListener('click', function(){
-		native.httpRequest("http://192.168.8.224:9002/teacher/homework" , '{"key":"value"}', "post" , "0");
+		wx.httpRequest("http://192.168.8.224:9002/teacher/homework" , '{"key":"value"}', "post" , "0");
         return false;
     }, false);
 

@@ -215,5 +215,41 @@ public class FileUtils {
         }
     }
 
+    public static String readSDCardFile(String path, Context context) {
+        if (path == null || context == null) {
+            return null;
+        }
+        StringBuilder builder;
+        try {
+            File f = new File(path);
+
+            InputStream in = new FileInputStream(f);
+
+            builder = new StringBuilder(in.available() + 10);
+
+            BufferedReader localBufferedReader = new BufferedReader(new InputStreamReader(in));
+            char[] data = new char[2048];
+            int len = -1;
+            while ((len = localBufferedReader.read(data)) > 0) {
+                builder.append(data, 0, len);
+            }
+            localBufferedReader.close();
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    Log.e("WXFileUtils loadAsset: ", e.toString());
+                }
+            }
+            return builder.toString();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("", e.toString());
+        }
+
+        return "";
+    }
+
 }
 
