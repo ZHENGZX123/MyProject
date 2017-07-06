@@ -269,8 +269,11 @@ public class WelcomeActivity extends BaseActivity {
             }
             getSharedPreferences("kiway", 0).edit().putString("version_package", currentPackageVersion).commit();
 
-            //如果有资源包，资源包的版本号打在这里
-            ++
+            //如果有资源包，资源包的版本号打在这里，根据raw里的资源包来定。
+            getSharedPreferences("kiway", 0).edit().putString("version_grade1", "1.0.0").commit();
+            getSharedPreferences("kiway", 0).edit().putString("version_grade2", "1.0.0").commit();
+            getSharedPreferences("kiway", 0).edit().putString("version_grade3", "1.0.0").commit();
+            getSharedPreferences("kiway", 0).edit().putString("version_grade4", "1.0.0").commit();
         }
     }
 
