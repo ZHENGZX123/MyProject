@@ -98,7 +98,6 @@ public class WelcomeActivity extends BaseActivity {
 //                    String apkUrl = new JSONObject(ret).getString("apkUrl");
                     String apkVersion = "1.0.0";
                     String apkUrl = "xxxxxxxxxxxxxx";
-                    
                     if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
                         showUpdateConfirmDialog(apkUrl);
                     } else {
@@ -273,10 +272,7 @@ public class WelcomeActivity extends BaseActivity {
     }
 
     private boolean checkFileComplete() {
-        if (!new File(WXApplication.ROOT).exists()) {
-            return false;
-        }
-        if (!new File(WXApplication.ROOT + "xtzy_teacher/dist/index.html").exists()) {
+        if (!new File(WXApplication.ROOT + WXApplication.HTML).exists()) {
             return false;
         }
         return true;
