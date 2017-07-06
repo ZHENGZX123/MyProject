@@ -46,7 +46,7 @@ public class MainActivity extends BaseActivity {
     private void load() {
 //        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("file:///android_asset/test2.html");
-        wv.loadUrl("file://" + WXApplication.ROOT + "xtzy_teacher/dist/index.html");
+        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
 
 
@@ -95,6 +95,7 @@ public class MainActivity extends BaseActivity {
                     InputStream is = getStreamByUrl(url);
                     return new WebResourceResponse(getMimeType(url), "utf-8", is);
                 }
+                //des解密用
 //                else if (url.endsWith("js") || url.endsWith("css") || url.endsWith("html")) {
 //                    InputStream is = getStreamByUrl2(url.replace("file://", ""));
 //                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
