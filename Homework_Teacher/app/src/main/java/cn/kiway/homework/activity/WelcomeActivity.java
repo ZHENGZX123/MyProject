@@ -260,6 +260,8 @@ public class WelcomeActivity extends BaseActivity {
     }
 
     private void mountOBB() {
+        Log.d("test", "exist = " + new File("/mnt/sdcard/xtzy_teacher.obb").exists());
+
         storageManager = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
         key = "kiway123456789kiway";
         obbListener o = new obbListener();
