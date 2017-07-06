@@ -40,8 +40,10 @@ public class MainActivity extends BaseActivity {
         wv = (WebView) findViewById(R.id.wv);
         initData();
         load();
-    }
 
+        //测试用，资源包的下载和更新
+        checkResourceVersion();
+    }
 
     private void load() {
 //        wv.loadUrl("file:///android_asset/dist/index.html");
@@ -260,6 +262,16 @@ public class MainActivity extends BaseActivity {
                 wv.loadUrl("javascript:httpRequestResult(\"" + result + "\")");
             }
         });
+    }
+
+
+    private void checkResourceVersion() {
+        new Thread() {
+            @Override
+            public void run() {
+                
+            }
+        }.start();
     }
 
 }

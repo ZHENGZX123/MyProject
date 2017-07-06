@@ -22,8 +22,9 @@ import java.io.File;
 
 public class WXApplication extends Application {
 
-    public static String ROOT = "/mnt/sdcard/kiway/";
+    public static String ROOT = "/mnt/sdcard/kiway_teacher/";
     public static String HTML = "xtzy_teacher/dist/index.html";
+    public static String ZIP = "xtzy_teacher.zip";
 
     @Override
     public void onCreate() {
