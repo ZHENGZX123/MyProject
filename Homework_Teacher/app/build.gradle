@@ -35,8 +35,9 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.0.1'
     compile files('libs/android-async-http-1.4.5.jar')
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile files('libs/zip4j_1.3.1.jar')
+    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 }
