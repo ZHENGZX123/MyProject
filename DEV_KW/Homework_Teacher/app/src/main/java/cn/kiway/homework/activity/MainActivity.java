@@ -1,12 +1,9 @@
 package cn.kiway.homework.activity;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.storage.StorageManager;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
@@ -21,13 +18,13 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
 
-import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import cn.kiway.homework.WXApplication;
 import cn.kiway.homework.entity.HTTPCache;
 import cn.kiway.homework.teacher.R;
-import cn.kiway.homework.util.FileUtils;
 import cn.kiway.homework.util.NetworkUtil;
 import cn.kiway.homework.util.WXDBHelper;
 
@@ -47,19 +44,9 @@ public class MainActivity extends BaseActivity {
 
 
     private void load() {
-        StorageManager storageManager = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
-        String obbpath = storageManager.getMountedObbPath("/mnt/sdcard/xtzy_teacher.obb");
-        String path = obbpath + "/dist/index.html";
-        Log.d("test", "path = " + path);
-        File[] list = new File(obbpath + "/dist/static/js/").listFiles();
-        for (int i = 0; i < list.length; i++) {
-            String test = list[i].getAbsolutePath();
-            System.out.println("sb = " + FileUtils.readSDCardFile(test, this));
-        }
-        wv.loadUrl("file://" + path);
 //        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("file:///android_asset/test2.html");
-//        wv.loadUrl("file://" + WXApplication.ROOT + "xtzy_teacher/dist/index.html");
+        wv.loadUrl("file://" + WXApplication.ROOT + "xtzy_teacher/dist/index.html");
     }
 
 
@@ -103,11 +90,14 @@ public class MainActivity extends BaseActivity {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
                 Log.d("test", "shouldInterceptRequest url = " + url);
-//                if (url.endsWith("jpg") || url.endsWith("JPG") || url.endsWith("jpeg") || url.endsWith("JPEG")
-//                        || url.endsWith("png") || url.endsWith("PNG")) {
-//                    InputStream is = getStreamByUrl(url);
-//                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
-//                }
+                if (url.endsWith("jpg") || url.endsWith("JPG") || url.endsWith("jpeg") || url.endsWith("JPEG")
+                        || url.endsWith("png") || url.endsWith("PNG")) {
+                    InputStream is = getStreamByUrl(url);
+                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
+                } else if (url.endsWith("js") || url.endsWith("css") || url.endsWith("html")) {
+                    InputStream is = getStreamByUrl2(url.replace("file://", ""));
+                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
+                }
                 return super.shouldInterceptRequest(view, url);
             }
         });
@@ -125,8 +115,7 @@ public class MainActivity extends BaseActivity {
             Log.d("test", "click back = " + wv.getUrl());
             String url = wv.getUrl();
             String page = url.substring(url.lastIndexOf("/") + 1);
-            if (page.contains("yqyd/yqyd/index/index.html?token=") || page
-                    .endsWith("sc") || page.endsWith("main") || page.endsWith("/class/myclass")) {
+            if (page.endsWith("sc") || page.endsWith("main") || page.endsWith("/class/myclass")) {
                 long t = System.currentTimeMillis();
                 if (t - time >= 2000) {
                     time = t;
@@ -271,29 +260,4 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    public void clickOBB1(View v) {
-        StorageManager storageManager = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
-        String obbpath = storageManager.getMountedObbPath("/mnt/sdcard/xtzy_teacher.obb");
-        String path = obbpath + "/dist/index.html";
-        Log.d("test", "path = " + path);
-        File[] list = new File(obbpath + "/dist/static/js/").listFiles();
-        for (int i = 0; i < list.length; i++) {
-            String test = list[i].getAbsolutePath();
-            System.out.println("sb = " + FileUtils.readSDCardFile(test, this));
-        }
-        wv.loadUrl("file://" + path);
-    }
-
-    public void clickOBB2(View v) {
-        StorageManager storageManager = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
-        String obbpath = storageManager.getMountedObbPath("/mnt/sdcard/xtzy_teacher3.obb");
-        String path = obbpath + "/dist/index.html";
-        Log.d("test", "path = " + path);
-        File[] list = new File(obbpath + "/dist/static/js/").listFiles();
-        for (int i = 0; i < list.length; i++) {
-            String test = list[i].getAbsolutePath();
-            System.out.println("sb = " + FileUtils.readSDCardFile(test, this));
-        }
-        wv.loadUrl("file://" + path);
-    }
 }

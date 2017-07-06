@@ -56,7 +56,6 @@ public class WelcomeActivity extends BaseActivity {
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
 
         checkIsFirst();
-        mountOBB();
     }
 
 
@@ -259,48 +258,4 @@ public class WelcomeActivity extends BaseActivity {
         checkNewVersion();
     }
 
-    private void mountOBB() {
-        Log.d("test", "exist = " + new File("/mnt/sdcard/xtzy_teacher.obb").exists());
-
-        storageManager = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
-        key = "kiway123456789kiway";
-        obbListener o = new obbListener();
-        if (!storageManager.isObbMounted("/mnt/sdcard/xtzy_teacher.obb")) {
-            storageManager.mountObb("/mnt/sdcard/xtzy_teacher.obb", key, o);
-        }
-        if (!storageManager.isObbMounted("/mnt/sdcard/xtzy_teacher3.obb")) {
-            storageManager.mountObb("/mnt/sdcard/xtzy_teacher3.obb", key, o);
-        }
-    }
-
-    private class obbListener extends OnObbStateChangeListener {
-        @Override
-        public void onObbStateChange(String path, int state) {
-            super.onObbStateChange(path, state);
-            if (state == OnObbStateChangeListener.ERROR_ALREADY_MOUNTED) {
-                Log.e("test", "已经挂载");
-            }
-            if (state == OnObbStateChangeListener.ERROR_COULD_NOT_MOUNT) {
-                Log.e("test", "这个OBB不能挂在到系统");
-            }
-            if (state == OnObbStateChangeListener.ERROR_COULD_NOT_UNMOUNT) {
-                Log.e("test", "这个OBB不能反挂载");
-            }
-            if (state == OnObbStateChangeListener.ERROR_INTERNAL) {
-                Log.e("test", "一个内部的系统错误导致正在重试挂载obb");
-            }
-            if (state == OnObbStateChangeListener.ERROR_NOT_MOUNTED) {
-                Log.e("test", "一个反挂载调用执行时这个obb还没有挂在过");
-            }
-            if (state == OnObbStateChangeListener.ERROR_PERMISSION_DENIED) {
-                Log.e("test", "当前程序没有使用这个obb的权限");
-            }
-            if (state == OnObbStateChangeListener.MOUNTED) {
-                Log.e("test", "The obb容器已经挂载好了，可以使用了");
-            }
-            if (state == OnObbStateChangeListener.UNMOUNTED) {
-                Log.e("test", "The OBB容易现在反挂载完成，将无法再使用");
-            }
-        }
-    }
 }
