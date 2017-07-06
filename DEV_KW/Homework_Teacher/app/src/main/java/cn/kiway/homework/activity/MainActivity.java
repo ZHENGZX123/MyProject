@@ -94,10 +94,11 @@ public class MainActivity extends BaseActivity {
                         || url.endsWith("png") || url.endsWith("PNG")) {
                     InputStream is = getStreamByUrl(url);
                     return new WebResourceResponse(getMimeType(url), "utf-8", is);
-                } else if (url.endsWith("js") || url.endsWith("css") || url.endsWith("html")) {
-                    InputStream is = getStreamByUrl2(url.replace("file://", ""));
-                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
                 }
+//                else if (url.endsWith("js") || url.endsWith("css") || url.endsWith("html")) {
+//                    InputStream is = getStreamByUrl2(url.replace("file://", ""));
+//                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
+//                }
                 return super.shouldInterceptRequest(view, url);
             }
         });
