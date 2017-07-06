@@ -36,7 +36,7 @@ public class WelcomeActivity extends BaseActivity {
     private Dialog dialog_download;
     private ProgressDialog pd;
     private int lastProgress;
-    private String packageVersion = "1.0.1";
+    private String packageVersion = "1.0.0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,11 +107,10 @@ public class WelcomeActivity extends BaseActivity {
                         if (currentPackage.compareTo(packageVersion) < 0) {
                             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
                             checkIsFirst();
-                            getSharedPreferences("kiway", 0).edit().putString("inner_package", packageVersion).commit();
                         }
                         //替换完内置包之后，比较内置包和外包，如果版本号还是小了，更新外包
                         currentPackage = getSharedPreferences("kiway", 0).getString("inner_package", "1.0.0");
-                        String outer_package = "1.0.2";
+                        String outer_package = "1.0.0";
                         if (currentPackage.compareTo(outer_package) < 0) {
                             //提示有新的包，下载新的包
                             toast("有新包");
@@ -249,6 +248,10 @@ public class WelcomeActivity extends BaseActivity {
     }
 
     private void checkIsFirst() {
+        if (!checkFileComplete()) {
+            Log.d("test", "文件不完整");
+            getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
+        }
         if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", false).commit();
             if (new File(WXApplication.ROOT).exists()) {
@@ -265,7 +268,18 @@ public class WelcomeActivity extends BaseActivity {
             } catch (ZipException e) {
                 e.printStackTrace();
             }
+            getSharedPreferences("kiway", 0).edit().putString("inner_package", packageVersion).commit();
         }
+    }
+
+    private boolean checkFileComplete() {
+        if (!new File(WXApplication.ROOT).exists()) {
+            return false;
+        }
+        if (!new File(WXApplication.ROOT + "xtzy_teacher/dist/index.html").exists()) {
+            return false;
+        }
+        return true;
     }
 
 }
