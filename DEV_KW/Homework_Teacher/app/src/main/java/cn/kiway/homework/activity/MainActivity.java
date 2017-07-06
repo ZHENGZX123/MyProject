@@ -40,8 +40,6 @@ public class MainActivity extends BaseActivity {
         wv = (WebView) findViewById(R.id.wv);
         initData();
         load();
-
-        //测试用，资源包的下载和更新
         checkResourceVersion();
     }
 
@@ -264,14 +262,29 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-
-    private void checkResourceVersion() {
+    public void checkResourceVersion(/*View view*/) {
+        //startActivity(new Intent(this, CacheActivity.class));
+        //服务器版本
         new Thread() {
             @Override
             public void run() {
-                
+                //0.获取网络的资源版本号
+                String[] versions_remote = new String[]{"1.0.1", "1.0.1", "1.0.1"};
+                String[] grades = new String[]{"grade1", "grade2", "grade3"};
+                for (int i = 0; i < grades.length; i++) {
+                    String version_local = getSharedPreferences("kiway", 0).getString("version_" + grades[i], "1.0.0");
+                    if (version_local.compareTo(versions_remote[i]) < 0) {
+                        Log.d("test", "资源" + grades[i] + "有新版本");
+                        //1.下载
+//                        new HttpDownload().downFile("http", "/mnt/sdcard/temp/", "aaa.zip");
+                        //2.解压替换
+                        //3.修改版本号
+                        getSharedPreferences("kiway", 0).edit().putString("version_" + grades[i], versions_remote[i]).commit();
+                    }
+                }
             }
         }.start();
+
     }
 
 }

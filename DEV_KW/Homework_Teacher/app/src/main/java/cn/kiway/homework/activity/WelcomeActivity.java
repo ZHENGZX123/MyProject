@@ -36,7 +36,7 @@ public class WelcomeActivity extends BaseActivity {
     private Dialog dialog_download;
     private ProgressDialog pd;
     private int lastProgress;
-    private String packageVersion = "1.0.0";
+    private String currentPackageVersion = "1.0.0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,13 +102,13 @@ public class WelcomeActivity extends BaseActivity {
                         showUpdateConfirmDialog(apkUrl);
                     } else {
                         //如果APK没有最新版本，比较包的版本。如果内置包的版本号比较高，直接替换
-                        String currentPackage = getSharedPreferences("kiway", 0).getString("inner_package", "1.0.0");
-                        if (currentPackage.compareTo(packageVersion) < 0) {
+                        String currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "1.0.0");
+                        if (currentPackage.compareTo(currentPackageVersion) < 0) {
                             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
                             checkIsFirst();
                         }
                         //替换完内置包之后，比较内置包和外包，如果版本号还是小了，更新外包
-                        currentPackage = getSharedPreferences("kiway", 0).getString("inner_package", "1.0.0");
+                        currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "1.0.0");
                         String outer_package = "1.0.0";
                         if (currentPackage.compareTo(outer_package) < 0) {
                             //提示有新的包，下载新的包
@@ -146,7 +146,7 @@ public class WelcomeActivity extends BaseActivity {
     };
 
     private void updatePackage(String outer_package) {
-        getSharedPreferences("kiway", 0).edit().putString("inner_package", outer_package).commit();
+        getSharedPreferences("kiway", 0).edit().putString("version_package", outer_package).commit();
         jump();
     }
 
@@ -267,7 +267,10 @@ public class WelcomeActivity extends BaseActivity {
             } catch (ZipException e) {
                 e.printStackTrace();
             }
-            getSharedPreferences("kiway", 0).edit().putString("inner_package", packageVersion).commit();
+            getSharedPreferences("kiway", 0).edit().putString("version_package", currentPackageVersion).commit();
+
+            //如果有资源包，资源包的版本号打在这里
+            ++
         }
     }
 
