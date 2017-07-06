@@ -26,6 +26,7 @@ import cn.kiway.homework.WXApplication;
 import cn.kiway.homework.entity.HTTPCache;
 import cn.kiway.homework.teacher.R;
 import cn.kiway.homework.util.NetworkUtil;
+import cn.kiway.homework.util.ResourceUtil;
 import cn.kiway.homework.util.WXDBHelper;
 
 
@@ -151,20 +152,25 @@ public class MainActivity extends BaseActivity {
         public void httpRequest(final String url, final String param, final String method, String reload) {
             Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , reload = " + reload);
             if (reload.equals("1")) {
-                //重新获取
+                //1.重新获取
                 doHttpRequest(url, param, method);
             } else {
-                //取缓存
+                //2.取缓存
                 String request = url + param + method;
-                HTTPCache cache = new WXDBHelper(MainActivity.this).getHttpCacheByRequest(request);
-                if (cache == null) {
-                    doHttpRequest(url, param, method);
+                HTTPCache cache1 = new WXDBHelper(MainActivity.this).getHttpCacheByRequest(request);
+                if (cache1 == null) {
+                    //3.如果是查询题目的话，还要再查一下资源包
+                    HTTPCache cache2 = new ResourceUtil(MainActivity.this).searchResourceByRequest(request);
+                    if (cache2 == null) {
+                        doHttpRequest(url, param, method);
+                    } else {
+                        callback(url, cache2.response);
+                    }
                 } else {
-                    callback(url, cache.response);
+                    callback(url, cache1.response);
                 }
             }
         }
-
 
         @JavascriptInterface
         public void wxshare(String a) {
@@ -262,8 +268,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    public void checkResourceVersion(/*View view*/) {
-        //startActivity(new Intent(this, CacheActivity.class));
+    public void checkResourceVersion() {
         //服务器版本
         new Thread() {
             @Override
@@ -284,7 +289,6 @@ public class MainActivity extends BaseActivity {
                 }
             }
         }.start();
-
     }
 
 }
