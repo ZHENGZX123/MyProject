@@ -260,10 +260,10 @@ public class WelcomeActivity extends BaseActivity {
                 new File(WXApplication.ROOT).mkdirs();
             }
             //拷贝
-            FileUtils.copyRawToSdcard(this, R.raw.xtzy_teacher, "xtzy_teacher.zip");
+            FileUtils.copyRawToSdcard(this, R.raw.xtzy_teacher, WXApplication.ZIP);
             //解压
             try {
-                new ZipFile(WXApplication.ROOT + "xtzy_teacher.zip").extractAll(WXApplication.ROOT);
+                new ZipFile(WXApplication.ROOT + WXApplication.ZIP).extractAll(WXApplication.ROOT);
             } catch (ZipException e) {
                 e.printStackTrace();
             }
