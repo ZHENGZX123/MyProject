@@ -21,7 +21,7 @@
         tools:replace="android:allowBackup,android:icon,android:label,android:name">
         <activity
             android:name="cn.kiway.homework.activity.MainActivity"
-            android:configChanges="orientation|keyboardHidden"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"></activity>
         <activity
             android:name="cn.kiway.homework.activity.WelcomeActivity"
