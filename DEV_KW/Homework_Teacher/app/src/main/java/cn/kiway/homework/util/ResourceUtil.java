@@ -18,13 +18,13 @@ public class ResourceUtil {
 
     public HTTPCache searchResourceByRequest(String request) {
         HTTPCache cache = null;
-        //0.是不是查题目,如果不是，直接返回null
+        //0.url是不是查题目,如果不是，直接返回null
         if (!request.contains("searchxxx")) {
             return null;
         }
         //1.搜索题库，如果没有，返回null
 
-        //2.返回cache，其中cache.response要和服务器返回的一致。
+        //2.返回cache，其中cache.response要和服务器返回的一致。json
         return cache;
     }
 

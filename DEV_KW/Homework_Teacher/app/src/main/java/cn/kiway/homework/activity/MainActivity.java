@@ -1,5 +1,6 @@
 package cn.kiway.homework.activity;
 
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -118,7 +119,7 @@ public class MainActivity extends BaseActivity {
             Log.d("test", "click back = " + wv.getUrl());
             String url = wv.getUrl();
             String page = url.substring(url.lastIndexOf("/") + 1);
-            if (page.endsWith("sc") || page.endsWith("main") || page.endsWith("/class/myclass")) {
+            if (page.endsWith("login") || page.endsWith("main")) {
                 long t = System.currentTimeMillis();
                 if (t - time >= 2000) {
                     time = t;
@@ -149,7 +150,17 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
-        public void httpRequest(final String url, final String param, final String method, String reload) {
+        public void setRequestedOrientation(String screen) {
+            if (Integer.parseInt(screen) == 0) {
+                MainActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            } else {
+                MainActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            }
+        }
+
+        @JavascriptInterface
+        public void httpRequest(final String url, final String param,
+                                final String method, String reload) {
             Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , reload = " + reload);
             if (reload.equals("1")) {
                 //1.重新获取
@@ -164,10 +175,10 @@ public class MainActivity extends BaseActivity {
                     if (cache2 == null) {
                         doHttpRequest(url, param, method);
                     } else {
-                        callback(url, cache2.response);
+                        httpCallback(url, cache2.response);
                     }
                 } else {
-                    callback(url, cache1.response);
+                    httpCallback(url, cache1.response);
                 }
             }
         }
@@ -175,7 +186,6 @@ public class MainActivity extends BaseActivity {
         @JavascriptInterface
         public void wxshare(String a) {
             Log.d("test", "a = " + a);
-
             new Thread() {
                 @Override
                 public void run() {
@@ -184,7 +194,6 @@ public class MainActivity extends BaseActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -216,13 +225,13 @@ public class MainActivity extends BaseActivity {
                             public void onSuccess(int arg0, Header[] arg1, String ret) {
                                 Log.d("test", "post onSuccess = " + ret);
                                 saveDB(url, param, method, ret);
-                                callback(url, ret);
+                                httpCallback(url, ret);
                             }
 
                             @Override
                             public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
                                 Log.d("test", "post onFailure = " + arg2);
-                                callback(url, "failure");
+                                httpCallback(url, "failure");
                             }
                         });
                     } else if (method.equalsIgnoreCase("GET")) {
@@ -231,13 +240,13 @@ public class MainActivity extends BaseActivity {
                             public void onSuccess(int i, Header[] headers, String ret) {
                                 Log.d("test", "get onSuccess = " + ret);
                                 saveDB(url, param, method, ret);
-                                callback(url, ret);
+                                httpCallback(url, ret);
                             }
 
                             @Override
                             public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                                 Log.d("test", "get onFailure = " + s);
-                                callback(url, "failure");
+                                httpCallback(url, "failure");
                             }
                         });
                     }
@@ -258,16 +267,17 @@ public class MainActivity extends BaseActivity {
         new WXDBHelper(this).addHTTPCache(cache);
     }
 
-    private void callback(final String url, final String result) {
+    private void httpCallback(final String url, final String result) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.d("test", "callback , url = " + url + " , result = " + result);
+                Log.d("test", "httpCallback , url = " + url + " , result = " + result);
                 wv.loadUrl("javascript:httpRequestResult(\"" + result + "\")");
             }
         });
     }
 
+    //这个写法可能不要了。。。
     public void checkResourceVersion() {
         //服务器版本
         new Thread() {
