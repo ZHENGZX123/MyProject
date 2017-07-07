@@ -201,6 +201,7 @@ public class DemoMessageReceiver extends PushMessageReceiver {
         if (MiPushClient.COMMAND_REGISTER.equals(command)) {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
                 mRegId = cmdArg1;
+                Log.d("test", "regId = " + mRegId);
                 log = context.getString(R.string.register_success);
             } else {
                 log = context.getString(R.string.register_fail);
