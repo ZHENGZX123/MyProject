@@ -43,7 +43,9 @@ import cn.kiway.homework.entity.HTTPCache;
 import cn.kiway.homework.teacher.R;
 import cn.kiway.homework.util.NetworkUtil;
 import cn.kiway.homework.util.ResourceUtil;
+import cn.kiway.homework.util.Utils;
 import cn.kiway.homework.util.WXDBHelper;
+import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 
 public class MainActivity extends BaseActivity {
@@ -169,6 +171,30 @@ public class MainActivity extends BaseActivity {
 
     public class JsAndroidInterface {
         public JsAndroidInterface() {
+        }
+
+        @JavascriptInterface
+        public void showPhoto(String param1, String param2) {
+            try {
+                Log.d("test", "showPhoto param1 = " + param1);
+                Log.d("test", "showPhoto param2 = " + param2);
+                ViewPagerActivity.sDrawables = param1.replace("[", "").replace("]", "").replace("\"", "").split(",");
+                Intent intent = new Intent(MainActivity.this, ViewPagerActivity.class);
+                intent.putExtra("position", Integer.parseInt(param2));
+                startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @JavascriptInterface
+        public void share() {
+            Log.d("test", "前端来做");
+        }
+
+        @JavascriptInterface
+        public String getVersionCode() {
+            return Utils.getCurrentVersion(MainActivity.this);
         }
 
         @JavascriptInterface
