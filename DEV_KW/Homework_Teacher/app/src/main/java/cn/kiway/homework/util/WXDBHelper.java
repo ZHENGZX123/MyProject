@@ -222,6 +222,9 @@ public class WXDBHelper extends SQLiteOpenHelper {
             + "   (id integer primary key autoincrement,  request  text,  response  text ,  requesttime text ) ";
 
 
+
+
+
     private SQLiteDatabase db;
 
     public WXDBHelper(Context c) {
