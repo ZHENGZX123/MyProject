@@ -252,7 +252,8 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public void setRequestedOrientation(String screen) {
-            if (Integer.parseInt(screen) == 0) {
+            Log.d("test", "setRequestedOrientation = " + screen);
+            if (Integer.parseInt(screen) == 1) {
                 MainActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             } else {
                 MainActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
