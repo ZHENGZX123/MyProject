@@ -199,23 +199,28 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public void record() {
-            final Dialog dialog = new Dialog(MainActivity.this, R.style.popupDialog);
-            dialog.setContentView(R.layout.dialog_voice);
-            dialog.setCancelable(false);
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
-            final Button voice = (Button) dialog.findViewById(R.id.voice);
-            voice.setOnClickListener(new View.OnClickListener() {
-
+            runOnUiThread(new Runnable() {
                 @Override
-                public void onClick(View arg0) {
-                    if (voice.getText().toString().equals("开始")) {
-                        startRecord();
-                        voice.setText("结束");
-                    } else if (voice.getText().toString().equals("结束")) {
-                        stopRecord();
-                        dialog.dismiss();
-                    }
+                public void run() {
+                    final Dialog dialog = new Dialog(MainActivity.this, R.style.popupDialog);
+                    dialog.setContentView(R.layout.dialog_voice);
+                    dialog.setCancelable(false);
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
+                    final Button voice = (Button) dialog.findViewById(R.id.voice);
+                    voice.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View arg0) {
+                            if (voice.getText().toString().equals("开始")) {
+                                startRecord();
+                                voice.setText("结束");
+                            } else if (voice.getText().toString().equals("结束")) {
+                                stopRecord();
+                                dialog.dismiss();
+                            }
+                        }
+                    });
                 }
             });
         }
