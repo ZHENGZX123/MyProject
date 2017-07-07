@@ -173,6 +173,16 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
+        public String getCacheSize() {
+            return "1.5M";
+        }
+
+        @JavascriptInterface
+        public void clearCache() {
+            toast("清理完毕");
+        }
+
+        @JavascriptInterface
         public void showPhoto(String param1, String param2) {
             try {
                 Log.d("test", "showPhoto param1 = " + param1);
