@@ -187,7 +187,12 @@ public class MainActivity extends BaseActivity {
             try {
                 Log.d("test", "showPhoto param1 = " + param1);
                 Log.d("test", "showPhoto param2 = " + param2);
-                ViewPagerActivity.sDrawables = param1.replace("[", "").replace("]", "").replace("\"", "").split(",");
+                ViewPagerActivity.sDrawables = param1.replace("[", "").replace("]", "").split("\",\"");
+                for (String s : ViewPagerActivity.sDrawables) {
+                    s = s.replace("\"", "");
+                    Log.d("test", "s = " + s);
+                }
+                ViewPagerActivity.sDrawables = new String[]{"http://img.bimg.126.net/photo/DCi7Q__VN3NJ_63cq7sosA==/3439905690381537164.jpg"};
                 Intent intent = new Intent(MainActivity.this, ViewPagerActivity.class);
                 intent.putExtra("position", Integer.parseInt(param2));
                 startActivity(intent);
