@@ -1,29 +1,44 @@
 package cn.kiway.homework.activity;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.lzy.imagepicker.ImagePicker;
+import com.lzy.imagepicker.bean.ImageItem;
+import com.lzy.imagepicker.loader.GlideImageLoader;
+import com.lzy.imagepicker.ui.ImageGridActivity;
+import com.lzy.imagepicker.ui.ImagePreviewActivity;
+import com.lzy.imagepicker.view.CropImageView;
+import com.nanchen.compresshelper.CompressHelper;
 
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
 
+import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
-import cn.kiway.homework.WXApplication;
 import cn.kiway.homework.entity.HTTPCache;
 import cn.kiway.homework.teacher.R;
 import cn.kiway.homework.util.NetworkUtil;
@@ -46,9 +61,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void load() {
-//        wv.loadUrl("file:///android_asset/dist/index.html");
+        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("file:///android_asset/test2.html");
-        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
+//        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
 
 
@@ -145,8 +160,64 @@ public class MainActivity extends BaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
+    private static final int SNAPSHOT = 9999;
+    private static final int SELECT_PHOTO = 8888;
+    private MediaRecorder mediaRecorder;
+    private File recordFile;
+    private long start;
+    private String snapshotFile;
+
     public class JsAndroidInterface {
         public JsAndroidInterface() {
+        }
+
+        @JavascriptInterface
+        public void record() {
+            final Dialog dialog = new Dialog(MainActivity.this, R.style.popupDialog);
+            dialog.setContentView(R.layout.dialog_voice);
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+            final Button voice = (Button) dialog.findViewById(R.id.voice);
+            voice.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View arg0) {
+                    if (voice.getText().toString().equals("开始")) {
+                        startRecord();
+                        voice.setText("结束");
+                    } else if (voice.getText().toString().equals("结束")) {
+                        stopRecord();
+                        dialog.dismiss();
+                    }
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void selectPhoto() {
+            ImagePicker imagePicker = ImagePicker.getInstance();
+            imagePicker.setImageLoader(new GlideImageLoader());// 图片加载器
+            imagePicker.setSelectLimit(1);// 设置可以选择几张
+            imagePicker.setMultiMode(false);// 是否为多选
+            imagePicker.setCrop(true);// 是否剪裁
+            imagePicker.setFocusWidth(1000);// 需要剪裁的宽
+            imagePicker.setFocusHeight(1000);// 需要剪裁的高
+            imagePicker.setStyle(CropImageView.Style.RECTANGLE);// 方形
+            imagePicker.setShowCamera(true);// 是否显示摄像
+
+            Intent intent = new Intent(MainActivity.this, ImageGridActivity.class);
+            startActivityForResult(intent, SELECT_PHOTO);
+        }
+
+        @JavascriptInterface
+        public void snapshot() {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            snapshotFile = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
+            Uri uri = Uri.fromFile(new File(snapshotFile));
+            //为拍摄的图片指定一个存储的路径
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            startActivityForResult(intent, SNAPSHOT);
         }
 
         @JavascriptInterface
@@ -181,28 +252,6 @@ public class MainActivity extends BaseActivity {
                     httpCallback(url, cache1.response);
                 }
             }
-        }
-
-        @JavascriptInterface
-        public void wxshare(String a) {
-            Log.d("test", "a = " + a);
-            new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String result = "hello";
-                            wv.loadUrl("javascript:getShare('aaa')");
-                        }
-                    });
-                }
-            }.start();
         }
     }
 
@@ -272,9 +321,56 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 Log.d("test", "httpCallback , url = " + url + " , result = " + result);
-                wv.loadUrl("javascript:httpRequestResult(\"" + result + "\")");
+                wv.loadUrl("javascript:httpRequestCallback(\"" + url + "\" , \"" + result + "\")");
             }
         });
+    }
+
+    private void startRecord() {
+        try {
+            //录音并上传
+            // 判断，若当前文件已存在，则删除
+            String path = "/mnt/sdcard/voice/";
+            if (!new File(path).exists()) {
+                new File(path).mkdirs();
+            }
+            recordFile = new File(path + System.currentTimeMillis() + ".mp3");
+            mediaRecorder = new MediaRecorder();
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mediaRecorder.setAudioChannels(2);
+            mediaRecorder.setAudioSamplingRate(44100);
+            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);//输出格式
+            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);//编码格式
+            mediaRecorder.setAudioEncodingBitRate(16);
+            mediaRecorder.setOutputFile(recordFile.getAbsolutePath());
+
+            // 准备好开始录音
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+            toast("录制声音失败，请检查SDcard");
+        }
+        start = System.currentTimeMillis();
+    }
+
+    private void stopRecord() {
+        if (recordFile == null) {
+            return;
+        }
+        if (mediaRecorder == null) {
+            return;
+        }
+
+        mediaRecorder.stop();
+
+        final int duration = (int) (System.currentTimeMillis() - start) / 1000;
+        if (duration < 1) {
+            toast("太短了");
+            return;
+        }
+
+        wv.loadUrl("javascript:recordCallback('file://" + recordFile.getAbsolutePath() + "')");
     }
 
     //这个写法可能不要了。。。
@@ -299,6 +395,29 @@ public class MainActivity extends BaseActivity {
                 }
             }
         }.start();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SNAPSHOT && resultCode == RESULT_OK) {
+            Log.d("test", "snapshotCallback");
+            wv.loadUrl("javascript:snapshotCallback('file://" + snapshotFile + "')");
+        } else if (requestCode == SELECT_PHOTO && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
+            if (data == null) {
+                return;
+            }
+            boolean isOrig = data.getBooleanExtra(ImagePreviewActivity.ISORIGIN, false);
+            ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+            Log.d("test", "images count = " + images.size());
+            if (!isOrig) {
+                File newFile = CompressHelper.getDefault(this).compressToFile(new File(images.get(0).path));
+                images.get(0).path = newFile.getAbsolutePath();
+                images.get(0).size = newFile.length();
+            }
+            String path = images.get(0).path;
+            wv.loadUrl("javascript:selectPhotoCallback('" + path + "')");
+        }
     }
 
 }
