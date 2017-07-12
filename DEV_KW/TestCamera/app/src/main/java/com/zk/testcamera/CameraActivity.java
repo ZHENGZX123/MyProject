@@ -176,6 +176,10 @@ public class CameraActivity extends Activity implements Callback {
             fileOutputStream.close();
             toast("保存成功");
 
+//            Log.d("test", "压缩前大小" + new File(filePath).length());
+//            File newFile = CompressHelper.getDefault(this).compressToFile(new File(filePath));
+//            Log.d("test", "压缩后大小" + newFile.length());
+
             Intent i = new Intent(CameraActivity.this, SetPointActivity.class);
             i.putExtra("snapshot", filePath);
             startActivity(i);

@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import java.io.File;
 import java.io.FileOutputStream;
 
+//看效果用，test4和它一样
 public class Test3Activity extends AppCompatActivity {
     private int screenwidth;
     private int screenheight;
