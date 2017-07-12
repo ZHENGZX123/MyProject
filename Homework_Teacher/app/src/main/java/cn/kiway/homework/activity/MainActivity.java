@@ -7,6 +7,7 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -259,17 +260,16 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public void snapshot() {
-//            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//            snapshotFile = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
-//            Uri uri = Uri.fromFile(new File(snapshotFile));
-//            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-//            startActivityForResult(intent, SNAPSHOT);
-
-            Intent intent = new Intent("com.intsig.camscanner.ACTION_SCAN");
-            Uri uri = Uri.fromFile(new File("/sdcard/source.jpg"));
-            intent.putExtra(Intent.EXTRA_STREAM, uri);
-            intent.putExtra("scanned_image", "/sdcard/scanned.jpg");
-            startActivityForResult(intent, SAOMAWANG);
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            snapshotFile = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
+            Uri uri = Uri.fromFile(new File(snapshotFile));
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            startActivityForResult(intent, SNAPSHOT);
+//            Intent intent = new Intent("com.intsig.camscanner.ACTION_SCAN");
+//            Uri uri = Uri.fromFile(new File("/sdcard/source.jpg"));
+//            intent.putExtra(Intent.EXTRA_STREAM, uri);
+//            intent.putExtra("scanned_image", "/sdcard/scanned.jpg");
+//            startActivityForResult(intent, SAOMAWANG);
         }
 
         @JavascriptInterface
