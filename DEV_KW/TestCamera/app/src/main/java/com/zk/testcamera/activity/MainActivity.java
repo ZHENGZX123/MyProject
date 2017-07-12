@@ -1,4 +1,4 @@
-package com.zk.testcamera;
+package com.zk.testcamera.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.zk.testcamera.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickTest2(View view) {
-        startActivity(new Intent(this, Test2Activity.class));
+        startActivity(new Intent(this, Test3Activity.class));
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.zk.testcamera;
+package com.zk.testcamera.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+
+import com.zk.testcamera.R;
 
 import java.io.File;
 import java.io.FileOutputStream;

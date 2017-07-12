@@ -1,10 +1,12 @@
-package com.zk.testcamera;
+package com.zk.testcamera.activity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import com.zk.testcamera.R;
 
 import java.io.File;
 //没用了

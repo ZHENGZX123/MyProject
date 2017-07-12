@@ -1,4 +1,4 @@
-package com.zk.testcamera;
+package com.zk.testcamera.activity;
 
 import android.content.Context;
 import android.graphics.Bitmap;
