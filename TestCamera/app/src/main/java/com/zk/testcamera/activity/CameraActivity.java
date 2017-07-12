@@ -1,4 +1,4 @@
-package com.zk.testcamera;
+package com.zk.testcamera.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,6 +18,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import com.zk.testcamera.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

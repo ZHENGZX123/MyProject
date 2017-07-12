@@ -1,4 +1,4 @@
-package com.zk.testcamera;
+package com.zk.testcamera.util;
 
 import android.content.Context;
 

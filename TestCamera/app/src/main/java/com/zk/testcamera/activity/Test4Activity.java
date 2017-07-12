@@ -1,4 +1,4 @@
-package com.zk.testcamera;
+package com.zk.testcamera.activity;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -8,18 +8,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.zk.testcamera.R;
+import com.zk.testcamera.view.MatrixView;
+
 import java.io.File;
 import java.io.FileOutputStream;
 
 public class Test4Activity extends AppCompatActivity {
 
-    private MyView v;
+    private MatrixView v;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test4);
-        v = (MyView) findViewById(R.id.v);
-
+        v = (MatrixView) findViewById(R.id.v);
 
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         int screenwidth = wm.getDefaultDisplay().getWidth();

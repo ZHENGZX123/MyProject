@@ -1,4 +1,4 @@
-package com.zk.testcamera;
+package com.zk.testcamera.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,7 +13,8 @@ import android.view.View;
  * Created by Administrator on 2017/7/12.
  */
 
-public class MyView extends View {
+public class MatrixView extends View {
+
     private int screenwidth;
     private int screenheight;
     private Bitmap bitmap;
@@ -26,15 +27,15 @@ public class MyView extends View {
     private float x4;
     private float y4;
 
-    public MyView(Context context) {
+    public MatrixView(Context context) {
         super(context);
     }
 
-    public MyView(Context context, @Nullable AttributeSet attrs) {
+    public MatrixView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public MyView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public MatrixView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
