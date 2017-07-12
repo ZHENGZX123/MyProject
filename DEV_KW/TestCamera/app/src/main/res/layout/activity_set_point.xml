@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.zk.testcamera.SetPointActivity">
+
+    <ImageView
+        android:id="@+id/iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ImageView
+            android:id="@+id/ball1"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="20dp"
+            android:background="@mipmap/ic_launcher"
+            android:clickable="true"
+            android:tag="ball1" />
+
+        <ImageView
+            android:id="@+id/ball2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_margin="20dp"
+            android:background="@mipmap/ic_launcher"
+            android:clickable="true"
+            android:tag="ball2" />
+
+        <ImageView
+            android:id="@+id/ball3"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="20dp"
+            android:background="@mipmap/ic_launcher"
+            android:clickable="true"
+            android:tag="ball3" />
+
+        <ImageView
+            android:id="@+id/ball4"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="20dp"
+            android:background="@mipmap/ic_launcher"
+            android:clickable="true"
+            android:tag="ball4" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="20dp"
+            android:onClick="clickOK"
+            android:text="ok" />
+    </RelativeLayout>
+
+</RelativeLayout>
