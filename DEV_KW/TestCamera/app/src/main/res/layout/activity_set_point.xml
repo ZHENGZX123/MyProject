@@ -6,59 +6,10 @@
     android:layout_height="match_parent"
     tools:context="com.zk.testcamera.activity.SetPointActivity">
 
-    <ImageView
-        android:id="@+id/iv"
+    <com.zk.testcamera.view.DrawView
+        android:id="@+id/dv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <RelativeLayout
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-
-        <ImageView
-            android:id="@+id/ball1"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="20dp"
-            android:background="@mipmap/ic_launcher"
-            android:clickable="true"
-            android:tag="ball1" />
-
-        <ImageView
-            android:id="@+id/ball2"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_margin="20dp"
-            android:background="@mipmap/ic_launcher"
-            android:clickable="true"
-            android:tag="ball2" />
-
-        <ImageView
-            android:id="@+id/ball3"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="20dp"
-            android:background="@mipmap/ic_launcher"
-            android:clickable="true"
-            android:tag="ball3" />
-
-        <ImageView
-            android:id="@+id/ball4"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_margin="20dp"
-            android:background="@mipmap/ic_launcher"
-            android:clickable="true"
-            android:tag="ball4" />
-
-
-    </RelativeLayout>
+        android:layout_height="match_parent"></com.zk.testcamera.view.DrawView>
 
     <RelativeLayout
         android:id="@+id/cover"
