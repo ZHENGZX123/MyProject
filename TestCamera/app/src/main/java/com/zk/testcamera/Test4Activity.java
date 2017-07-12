@@ -3,11 +3,8 @@ package com.zk.testcamera;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -15,129 +12,54 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 public class Test4Activity extends AppCompatActivity {
-    private int screenwidth;
-    private int screenheight;
+
     private MyView v;
-    private Bitmap bitmap;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_test4);
+        v = (MyView) findViewById(R.id.v);
+
+
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        screenwidth = wm.getDefaultDisplay().getWidth();
-        screenheight = wm.getDefaultDisplay().getHeight();
+        int screenwidth = wm.getDefaultDisplay().getWidth();
+        int screenheight = wm.getDefaultDisplay().getHeight();
         String file = getIntent().getStringExtra("snapshot");
-        bitmap = BitmapFactory.decodeFile(file);
+        Bitmap bitmap = BitmapFactory.decodeFile(file);
 
         //initview
-        v = new MyView(this);
-        setContentView(v);
+        float x1 = getIntent().getFloatExtra("x1", 0.1f);
+        float y1 = getIntent().getFloatExtra("y1", 0.1f);
+        float x2 = getIntent().getFloatExtra("x2", 0.9f);
+        float y2 = getIntent().getFloatExtra("y2", 0.1f);
+        float x3 = getIntent().getFloatExtra("x3", 0.9f);
+        float y3 = getIntent().getFloatExtra("y3", 0.9f);
+        float x4 = getIntent().getFloatExtra("x4", 0.1f);
+        float y4 = getIntent().getFloatExtra("y4", 0.9f);
+
+        v.setParam(screenwidth, screenheight, bitmap, x1, y1, x2, y2, x3, y3, x4, y4);
     }
 
-    class MyView extends View {
-
-
-        public MyView(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected void onDraw(Canvas canvas) {
-            int width = bitmap.getWidth();
-            int height = bitmap.getHeight();
-            Log.d("test", "width = " + width);
-            Log.d("test", "height = " + height);
-
-            float x1 = getIntent().getFloatExtra("x1", 0.1f);
-            float y1 = getIntent().getFloatExtra("y1", 0.1f);
-            float x2 = getIntent().getFloatExtra("x2", 0.9f);
-            float y2 = getIntent().getFloatExtra("y2", 0.1f);
-            float x3 = getIntent().getFloatExtra("x3", 0.9f);
-            float y3 = getIntent().getFloatExtra("y3", 0.9f);
-            float x4 = getIntent().getFloatExtra("x4", 0.1f);
-            float y4 = getIntent().getFloatExtra("y4", 0.9f);
-
-            float[] src = new float[]{
-                    width * x1, height * y1,//左上角顶点。。。
-                    width * x2, height * y2,//右上
-                    width * x3, height * y3,//右下
-                    width * x4, height * y4
-            };
-
-            float[] dst = new float[]{0, 0,         //左上
-                    screenwidth, 0,//右上
-                    screenwidth, screenheight,//右下
-                    0, screenheight};//左下
-
-            Matrix mMatrix = new Matrix();
-            mMatrix.setPolyToPoly(src, 0, dst, 0, 4);
-            canvas.drawBitmap(bitmap, mMatrix, null);
-
-
-//            if (first) {
-//                first = false;
-//                screenshot();
-//            }
-        }
-
-        private boolean first = true;
-
-        private void screenshot() {
-            // 获取屏幕
-            View dView = v; //getRootView();//getWindow().getDecorView();
-            dView.setDrawingCacheEnabled(true);
-            dView.buildDrawingCache();
-            Bitmap bmp = dView.getDrawingCache();
-            String name = "xxx.png";
-            String filePath = "/mnt/sdcard/" + name;
-            if (bmp != null) {
-                try {
-                    // 图片文件路径
-                    File file = new File(filePath);
-                    FileOutputStream os = new FileOutputStream(file);
-                    bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
-                    os.flush();
-                    os.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+    public void clickOK(View view) {
+        // 获取屏幕
+        View dView = v; //getRootView();//getWindow().getDecorView();
+        dView.setDrawingCacheEnabled(true);
+        dView.buildDrawingCache();
+        Bitmap bmp = dView.getDrawingCache();
+        String name = "xxx.jpg";
+        String filePath = "/mnt/sdcard/" + name;
+        if (bmp != null) {
+            try {
+                // 图片文件路径
+                File file = new File(filePath);
+                FileOutputStream os = new FileOutputStream(file);
+                bmp.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                os.flush();
+                os.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-
-        //            Path path = new Path();
-//            path.moveTo(0, 0);
-//            path.lineTo(screenwidth, 0);
-//            path.lineTo(screenwidth, screenheight);
-//            path.lineTo(0, screenheight);
-//            path.lineTo(0, 0);
-//            canvas.clipPath(path);
-//            canvas.drawPath(path, new Paint());
-//            canvas.save(Canvas.ALL_SAVE_FLAG);
-//            canvas.restore();
-//            try {
-//                saveBitmapToJPG(bitmap, new File("/mnt/sdcard/aaa2.jpg"));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-
-//            try {
-//                Bitmap dstbmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
-//                        bitmap.getHeight(), mMatrix, true);
-//                saveBitmapToJPG(dstbmp, new File("/mnt/sdcard/aaa.jpg"));
-//
-//                Bitmap b = Bitmap.createBitmap(dstbmp, width * 129 / 583, height * 53 / 760, screenwidth, screenheight);
-//                saveBitmapToJPG(b, new File("/mnt/sdcard/aaa2.jpg"));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-
-//        public void saveBitmapToJPG(Bitmap bitmap, File photo) throws IOException {
-//            Bitmap newBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-//            Canvas canvas = new Canvas(newBitmap);
-//            canvas.drawColor(Color.WHITE);
-//            canvas.drawBitmap(bitmap, 0, 0, null);
-//            OutputStream stream = new FileOutputStream(photo);
-//            newBitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-//            stream.close();
-//        }
     }
+
 }
