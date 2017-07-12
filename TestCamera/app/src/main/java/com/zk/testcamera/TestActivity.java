@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import java.io.File;
-
+//没用了
 public class TestActivity extends AppCompatActivity {
 
     @Override

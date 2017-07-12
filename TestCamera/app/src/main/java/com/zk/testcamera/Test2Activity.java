@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import static com.zk.testcamera.R.id.imageView1;
 
+//没写好，不用了
 public class Test2Activity extends AppCompatActivity {
     private ImageView iv1;
     private ImageView iv2;
