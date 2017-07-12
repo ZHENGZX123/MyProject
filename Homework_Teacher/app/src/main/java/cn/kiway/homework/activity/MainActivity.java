@@ -44,7 +44,7 @@ import cn.kiway.homework.teacher.R;
 import cn.kiway.homework.util.NetworkUtil;
 import cn.kiway.homework.util.ResourceUtil;
 import cn.kiway.homework.util.Utils;
-import cn.kiway.homework.util.WXDBHelper;
+import cn.kiway.homework.util.MyDBHelper;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 
@@ -63,6 +63,7 @@ public class MainActivity extends BaseActivity {
 
     private void load() {
         wv.loadUrl("file:///mnt/sdcard/dist/index.html");
+//        wv.loadUrl("http://www.baidu.com");
 //        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("file:///android_asset/test2.html");
 //        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
@@ -292,7 +293,7 @@ public class MainActivity extends BaseActivity {
             } else {
                 //2.取缓存
                 String request = url + param + method;
-                HTTPCache cache1 = new WXDBHelper(MainActivity.this).getHttpCacheByRequest(request);
+                HTTPCache cache1 = new MyDBHelper(MainActivity.this).getHttpCacheByRequest(request);
                 if (cache1 == null) {
                     //3.如果是查询题目的话，还要再查一下资源包
                     HTTPCache cache2 = new ResourceUtil(MainActivity.this).searchResourceByRequest(request);
@@ -362,12 +363,21 @@ public class MainActivity extends BaseActivity {
 
     private void saveDB(String url, String param, String method, String ret, String tagname) {
         Log.d("test", "saveDB");
-        HTTPCache cache = new HTTPCache();
-        cache.request = url + param + method;
-        cache.response = ret;
-        cache.requesttime = "" + System.currentTimeMillis();
-        cache.tagname = tagname;
-        new WXDBHelper(this).addHTTPCache(cache);
+        String request = url + param + method;
+        HTTPCache cache = new MyDBHelper(this).getHttpCacheByRequest(request);
+        if (cache == null) {
+            cache = new HTTPCache();
+            cache.request = request;
+            cache.response = ret;
+            cache.requesttime = "" + System.currentTimeMillis();
+            cache.tagname = tagname;
+            new MyDBHelper(this).addHTTPCache(cache);
+        } else {
+            cache.response = ret;
+            cache.requesttime = "" + System.currentTimeMillis();
+            new MyDBHelper(this).updateHTTPCache(cache);
+        }
+
     }
 
     private void httpRequestCallback(final String tagname, final String result) {
@@ -377,16 +387,15 @@ public class MainActivity extends BaseActivity {
 //                wv.loadUrl("javascript:hCallBack('aaa')");
 //                wv.loadUrl("javascript:httpRequestCallback('aaa','bbb')");
 //                wv.loadUrl("javascript:httpRequestCallback(\"" + url + "\" , \"" + result + "\")");
-
                 Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + result);
                 wv.loadUrl("javascript:" + tagname + "('" + result + "')");
             }
         });
     }
 
+    //录音
     private void startRecord() {
         try {
-            //录音并上传
             // 判断，若当前文件已存在，则删除
             String path = "/mnt/sdcard/voice/";
             if (!new File(path).exists()) {

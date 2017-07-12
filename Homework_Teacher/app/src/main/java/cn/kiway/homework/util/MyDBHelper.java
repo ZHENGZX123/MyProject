@@ -211,7 +211,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import cn.kiway.homework.entity.HTTPCache;
 
-public class WXDBHelper extends SQLiteOpenHelper {
+public class MyDBHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "sdk.db";
 
     private static final String TABLE_HTTPCACHE = "HTTPCache";
@@ -222,7 +222,7 @@ public class WXDBHelper extends SQLiteOpenHelper {
 
     private SQLiteDatabase db;
 
-    public WXDBHelper(Context c) {
+    public MyDBHelper(Context c) {
         super(c, DB_NAME, null, 3);
     }
 
@@ -236,9 +236,7 @@ public class WXDBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int arg1, int arg2) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_HTTPCACHE);
         db.execSQL(CREATE_TABLE_HTTPCACHE);
-
     }
-
 
     public HTTPCache getHttpCacheByRequest(String request) {
         if (db == null)
@@ -267,7 +265,6 @@ public class WXDBHelper extends SQLiteOpenHelper {
         if (db == null)
             db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("id", a.id);
         values.put("request", a.request);
         values.put("response", a.response);
         values.put("requesttime", a.requesttime);
@@ -276,23 +273,17 @@ public class WXDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    //TODO
-    public void updateHTTPCache(HTTPCache tab) {
+    public void updateHTTPCache(HTTPCache cache) {
         if (db == null)
             db = getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put("request", tab.request);
-        cv.put("response", tab.response);
-        cv.put("requesttime", tab.requesttime);
-        cv.put("tagname", tab.tagname);
-        String[] args = {tab.id};
+        cv.put("request", cache.request);
+        cv.put("response", cache.response);
+        cv.put("requesttime", cache.requesttime);
+        cv.put("tagname", cache.tagname);
+        String[] args = {cache.id};
         db.update(TABLE_HTTPCACHE, cv, "id=?", args);
         db.close();
     }
 
-    public void closeDB() {
-        if (db != null) {
-            db.close();
-        }
-    }
 }
