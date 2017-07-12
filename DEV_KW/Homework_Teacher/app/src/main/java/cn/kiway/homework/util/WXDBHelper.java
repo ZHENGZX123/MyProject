@@ -209,8 +209,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.util.ArrayList;
-
 import cn.kiway.homework.entity.HTTPCache;
 
 public class WXDBHelper extends SQLiteOpenHelper {
@@ -219,16 +217,13 @@ public class WXDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_HTTPCACHE = "HTTPCache";
     private static final String CREATE_TABLE_HTTPCACHE = " create table  IF NOT EXISTS "
             + TABLE_HTTPCACHE
-            + "   (id integer primary key autoincrement,  request  text,  response  text ,  requesttime text ) ";
-
-
-
+            + "   (id integer primary key autoincrement,  request  text,  response  text ,  requesttime text  , tagname text) ";
 
 
     private SQLiteDatabase db;
 
     public WXDBHelper(Context c) {
-        super(c, DB_NAME, null, 1);
+        super(c, DB_NAME, null, 3);
     }
 
     @Override
@@ -244,28 +239,6 @@ public class WXDBHelper extends SQLiteOpenHelper {
 
     }
 
-    public ArrayList<HTTPCache> getAllHTTPCache() {
-        if (db == null)
-            db = getWritableDatabase();
-        Cursor cur = db.query(TABLE_HTTPCACHE, null, null, null, null, null, null);
-        ArrayList<HTTPCache> temp = new ArrayList<HTTPCache>();
-        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            String id = cur.getString(cur.getColumnIndex("id"));
-            String request = cur.getString(cur.getColumnIndex("request"));
-            String response = cur.getString(cur.getColumnIndex("response"));
-            String requesttime = cur.getString(cur.getColumnIndex("requesttime"));
-
-            HTTPCache a = new HTTPCache();
-            a.id = id;
-            a.request = request;
-            a.response = response;
-            a.requesttime = requesttime;
-            temp.add(a);
-        }
-        cur.close();
-        db.close();
-        return temp;
-    }
 
     public HTTPCache getHttpCacheByRequest(String request) {
         if (db == null)
@@ -277,12 +250,13 @@ public class WXDBHelper extends SQLiteOpenHelper {
             request = cur.getString(cur.getColumnIndex("request"));
             String response = cur.getString(cur.getColumnIndex("response"));
             String requesttime = cur.getString(cur.getColumnIndex("requesttime"));
-
+            String tagname = cur.getString(cur.getColumnIndex("tagname"));
             a = new HTTPCache();
             a.id = id;
             a.request = request;
             a.response = response;
             a.requesttime = requesttime;
+            a.tagname = tagname;
         }
         cur.close();
         db.close();
@@ -297,10 +271,12 @@ public class WXDBHelper extends SQLiteOpenHelper {
         values.put("request", a.request);
         values.put("response", a.response);
         values.put("requesttime", a.requesttime);
+        values.put("tagname", a.tagname);
         db.insert(TABLE_HTTPCACHE, null, values);
         db.close();
     }
 
+    //TODO
     public void updateHTTPCache(HTTPCache tab) {
         if (db == null)
             db = getWritableDatabase();
@@ -308,7 +284,7 @@ public class WXDBHelper extends SQLiteOpenHelper {
         cv.put("request", tab.request);
         cv.put("response", tab.response);
         cv.put("requesttime", tab.requesttime);
-
+        cv.put("tagname", tab.tagname);
         String[] args = {tab.id};
         db.update(TABLE_HTTPCACHE, cv, "id=?", args);
         db.close();
