@@ -31,13 +31,10 @@
             android:name=".activity.TestActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.Test2Activity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.Test3Activity"
             android:screenOrientation="portrait" />
         <activity android:name=".activity.CameraActivity2"></activity>
-        <activity android:name=".activity.SetPointActivity" />
+        <activity android:name=".activity.SetPointActivity"></activity>
         <activity android:name=".activity.Test4Activity"></activity>
     </application>
 
