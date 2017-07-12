@@ -7,7 +7,6 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -62,7 +61,8 @@ public class MainActivity extends BaseActivity {
     }
 
     private void load() {
-        wv.loadUrl("file:///android_asset/dist/index.html");
+        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
+//        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("file:///android_asset/test2.html");
 //        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
@@ -163,6 +163,8 @@ public class MainActivity extends BaseActivity {
 
     private static final int SNAPSHOT = 9999;
     private static final int SELECT_PHOTO = 8888;
+    private static final int SAOMAWANG = 7777;
+
     private MediaRecorder mediaRecorder;
     private File recordFile;
     private long start;
@@ -257,12 +259,17 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public void snapshot() {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            snapshotFile = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
-            Uri uri = Uri.fromFile(new File(snapshotFile));
-            //为拍摄的图片指定一个存储的路径
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-            startActivityForResult(intent, SNAPSHOT);
+//            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//            snapshotFile = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
+//            Uri uri = Uri.fromFile(new File(snapshotFile));
+//            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+//            startActivityForResult(intent, SNAPSHOT);
+
+            Intent intent = new Intent("com.intsig.camscanner.ACTION_SCAN");
+            Uri uri = Uri.fromFile(new File("/sdcard/source.jpg"));
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.putExtra("scanned_image", "/sdcard/scanned.jpg");
+            startActivityForResult(intent, SAOMAWANG);
         }
 
         @JavascriptInterface
@@ -277,11 +284,11 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public void httpRequest(final String url, final String param,
-                                final String method, String reload) {
-            Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , reload = " + reload);
+                                final String method, String reload, String tagname) {
+            Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , reload = " + reload + " , tagname = " + tagname);
             if (reload.equals("1")) {
                 //1.重新获取
-                doHttpRequest(url, param, method);
+                doHttpRequest(url, param, method, tagname);
             } else {
                 //2.取缓存
                 String request = url + param + method;
@@ -290,18 +297,18 @@ public class MainActivity extends BaseActivity {
                     //3.如果是查询题目的话，还要再查一下资源包
                     HTTPCache cache2 = new ResourceUtil(MainActivity.this).searchResourceByRequest(request);
                     if (cache2 == null) {
-                        doHttpRequest(url, param, method);
+                        doHttpRequest(url, param, method, tagname);
                     } else {
-                        httpCallback(url, cache2.response);
+                        httpRequestCallback(cache2.tagname, cache2.response);
                     }
                 } else {
-                    httpCallback(url, cache1.response);
+                    httpRequestCallback(cache1.tagname, cache1.response);
                 }
             }
         }
     }
 
-    private void doHttpRequest(final String url, final String param, final String method) {
+    private void doHttpRequest(final String url, final String param, final String method, final String tagname) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -319,14 +326,14 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onSuccess(int arg0, Header[] arg1, String ret) {
                                 Log.d("test", "post onSuccess = " + ret);
-                                saveDB(url, param, method, ret);
-                                httpCallback(url, ret);
+                                saveDB(url, param, method, ret, tagname);
+                                httpRequestCallback(tagname, ret);
                             }
 
                             @Override
                             public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
                                 Log.d("test", "post onFailure = " + arg2);
-                                httpCallback(url, "failure");
+                                httpRequestCallback(tagname, "failure");
                             }
                         });
                     } else if (method.equalsIgnoreCase("GET")) {
@@ -334,14 +341,14 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onSuccess(int i, Header[] headers, String ret) {
                                 Log.d("test", "get onSuccess = " + ret);
-                                saveDB(url, param, method, ret);
-                                httpCallback(url, ret);
+                                saveDB(url, param, method, ret, tagname);
+                                httpRequestCallback(tagname, ret);
                             }
 
                             @Override
                             public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                                 Log.d("test", "get onFailure = " + s);
-                                httpCallback(url, "failure");
+                                httpRequestCallback(tagname, "failure");
                             }
                         });
                     }
@@ -353,21 +360,26 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void saveDB(String url, String param, String method, String ret) {
+    private void saveDB(String url, String param, String method, String ret, String tagname) {
         Log.d("test", "saveDB");
         HTTPCache cache = new HTTPCache();
         cache.request = url + param + method;
         cache.response = ret;
         cache.requesttime = "" + System.currentTimeMillis();
+        cache.tagname = tagname;
         new WXDBHelper(this).addHTTPCache(cache);
     }
 
-    private void httpCallback(final String url, final String result) {
+    private void httpRequestCallback(final String tagname, final String result) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.d("test", "httpCallback , url = " + url + " , result = " + result);
-                wv.loadUrl("javascript:httpRequestCallback(\"" + url + "\" , \"" + result + "\")");
+//                wv.loadUrl("javascript:hCallBack('aaa')");
+//                wv.loadUrl("javascript:httpRequestCallback('aaa','bbb')");
+//                wv.loadUrl("javascript:httpRequestCallback(\"" + url + "\" , \"" + result + "\")");
+
+                Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + result);
+                wv.loadUrl("javascript:" + tagname + "('" + result + "')");
             }
         });
     }
@@ -416,7 +428,7 @@ public class MainActivity extends BaseActivity {
             return;
         }
 
-        wv.loadUrl("javascript:recordCallback('file://" + recordFile.getAbsolutePath() + "')");
+        wv.loadUrl("javascript:recordCallback ('file://" + recordFile.getAbsolutePath() + "')");
     }
 
     @Override
@@ -424,21 +436,32 @@ public class MainActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SNAPSHOT && resultCode == RESULT_OK) {
             Log.d("test", "snapshotCallback");
-            wv.loadUrl("javascript:snapshotCallback('file://" + snapshotFile + "')");
+//            wv.loadUrl("javascript:snapshotCallback('file://" + snapshotFile + "')");
+            Log.d("test", "压缩前大小" + new File(snapshotFile).length());
+            File newFile = CompressHelper.getDefault(this).compressToFile(new File(snapshotFile));
+            Log.d("test", "压缩后大小" + newFile.length());
+            wv.loadUrl("javascript:snapshotCallback('file://" + newFile.getAbsolutePath() + "')");
         } else if (requestCode == SELECT_PHOTO && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
             if (data == null) {
                 return;
             }
             boolean isOrig = data.getBooleanExtra(ImagePreviewActivity.ISORIGIN, false);
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-            Log.d("test", "images count = " + images.size());
             if (!isOrig) {
+                Log.d("test", "压缩前大小" + images.get(0).size);
                 File newFile = CompressHelper.getDefault(this).compressToFile(new File(images.get(0).path));
                 images.get(0).path = newFile.getAbsolutePath();
                 images.get(0).size = newFile.length();
+                Log.d("test", "压缩后大小" + images.get(0).size);
             }
             String path = images.get(0).path;
             wv.loadUrl("javascript:selectPhotoCallback('" + path + "')");
+        } else if (requestCode == SAOMAWANG) {
+            if (data == null) {
+                return;
+            }
+            int responseCode = data.getIntExtra("RESULT_OK", -1);
+            Log.d("test", "responseCode = " + responseCode);
         }
     }
 
