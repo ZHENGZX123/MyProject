@@ -63,12 +63,12 @@ public class DrawView extends View {
 
         // 创建画笔
         Paint p = new Paint();
-        p.setColor(Color.BLUE);
         p.setAntiAlias(true);
 
         //画图片，就是贴图
-        canvas.drawBitmap(bitmap, 0, 0, p);
+        canvas.drawBitmap(bitmap, 0, 0, new Paint());
 
+        p.setColor(Color.parseColor("#770000ff"));
         //画圆
         canvas.drawCircle(x1, y1, 20, p);
         canvas.drawCircle(x2, y2, 20, p);
