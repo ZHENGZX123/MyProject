@@ -77,7 +77,7 @@ public class DrawView extends View {
 
 
         p.setStyle(Paint.Style.STROKE);
-        p.setStrokeWidth(10);
+        p.setStrokeWidth(5);
         Path path1 = new Path();
         path1.moveTo(x1, y1);
         path1.lineTo(x2, y2);
