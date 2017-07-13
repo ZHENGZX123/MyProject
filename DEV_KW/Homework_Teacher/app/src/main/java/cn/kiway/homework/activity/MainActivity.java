@@ -207,15 +207,25 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
-        public void fileUpload(String a) {
-            Log.d("test", "fileUpload = " + a);
-
+        public void fileUpload() {
+            Log.d("test", "fileUpload");
+//            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//            intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
+//            intent.addCategory(Intent.CATEGORY_OPENABLE);
+//            startActivityForResult(intent, 1);
             new Thread() {
                 @Override
                 public void run() {
-                    File file = new File("/mnt/sdcard/DCIM/Camera/IMG_20170713_120738.jpg");
-                    String ret = UploadUtil.uploadFile(file, "http://192.168.8.162:8080/common/file", "icon");
+                    File file = new File("/mnt/sdcard/test.png");
+                    final String ret = UploadUtil.uploadFile(file, "http://192.168.8.162:8080/common/file", file.getName());
                     Log.d("test", "upload ret = " + ret);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            wv.loadUrl("javascript:fileUploadCallback(" + ret + ")");
+                        }
+                    });
                 }
             }.start();
         }
