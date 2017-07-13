@@ -211,7 +211,7 @@ public class HTTPCache {
 
     public String id;
     public String request;//url + header + param
-    public String response;//data
+    public String response;//return data
     public String requesttime;
     public String tagname;
 
