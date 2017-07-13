@@ -41,10 +41,11 @@ import java.util.ArrayList;
 
 import cn.kiway.homework.entity.HTTPCache;
 import cn.kiway.homework.teacher.R;
+import cn.kiway.homework.util.MyDBHelper;
 import cn.kiway.homework.util.NetworkUtil;
 import cn.kiway.homework.util.ResourceUtil;
+import cn.kiway.homework.util.UploadUtil;
 import cn.kiway.homework.util.Utils;
-import cn.kiway.homework.util.MyDBHelper;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 
@@ -62,9 +63,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void load() {
-        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
+//        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
-//        wv.loadUrl("file:///android_asset/dist/index.html");
+        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("file:///android_asset/test2.html");
 //        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
@@ -206,8 +207,17 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
-        public void share() {
-            Log.d("test", "前端来做");
+        public void fileUpload(String a) {
+            Log.d("test", "fileUpload = " + a);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    File file = new File("/mnt/sdcard/DCIM/Camera/IMG_20170713_120738.jpg");
+                    String ret = UploadUtil.uploadFile(file, "http://192.168.8.162:8080/common/file", "icon");
+                    Log.d("test", "upload ret = " + ret);
+                }
+            }.start();
         }
 
         @JavascriptInterface
