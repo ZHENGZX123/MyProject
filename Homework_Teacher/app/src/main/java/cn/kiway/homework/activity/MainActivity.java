@@ -63,9 +63,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void load() {
-        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
+//        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
-//        wv.loadUrl("file:///android_asset/dist/index.html");
+        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("file:///android_asset/test2.html");
 //        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
@@ -141,30 +141,29 @@ public class MainActivity extends BaseActivity {
             Log.d("test", "click back = " + wv.getUrl());
             String url = wv.getUrl();
             String page = url.substring(url.lastIndexOf("/") + 1);
-            if (page.endsWith("login") || page.endsWith("main")) {
-                long t = System.currentTimeMillis();
-                if (t - time >= 2000) {
-                    time = t;
-                    Toast.makeText(this, "再按一下退出", Toast.LENGTH_SHORT).show();
-                } else
-                    finish();
-                return true;
-            } else {
-                if (wv.canGoBack()) {
-                    wv.goBack();//返回上一页面
-                    return true;
-                } else {
-                    long t = System.currentTimeMillis();
-                    if (t - time >= 2000) {
-                        time = t;
-                        Toast.makeText(this, "再按一下退出", Toast.LENGTH_SHORT).show();
-                    } else
-                        finish();
-                }
+            Log.d("test", "page = " + page);
+            if (page.endsWith("login") || page.endsWith("exam") || page.endsWith("mine") || page.equals("")) {
+                doFinish();
                 return true;
             }
+            if (wv.canGoBack()) {
+                wv.goBack();
+                return true;
+            }
+            doFinish();
+            return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void doFinish() {
+        long t = System.currentTimeMillis();
+        if (t - time >= 2000) {
+            time = t;
+            Toast.makeText(this, "再按一下退出", Toast.LENGTH_SHORT).show();
+        } else {
+            finish();
+        }
     }
 
     private static final int SNAPSHOT = 9999;
