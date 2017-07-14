@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -34,29 +33,19 @@ public class WelcomeActivity extends BaseActivity {
     private boolean isSuccess = false;
     private boolean isJump = false;
     private Dialog dialog_download;
-    private ProgressDialog pd;
+    protected ProgressDialog pd;
     private int lastProgress;
     private String currentPackageVersion = "1.0.0";
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
-        pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_welcome);
+//    }
 
-        checkIsFirst();
-        checkNewVersion();
-    }
-
-
-    private void jump() {
-        new Thread() {
-            @Override
-            public void run() {
-                startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
-                finish();
-            }
-        }.start();
+    public void jump() {
+        startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+        finish();
     }
 
     public void checkNewVersion() {
@@ -64,7 +53,7 @@ public class WelcomeActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    sleep(1000);
+                    sleep(2000);
                     checkTimeout();
 //                    HttpGet httpRequest = new HttpGet("http://yqyd.qgjydd.com/yqyd/static/version/zip_xs.json");
 //                    DefaultHttpClient client = new DefaultHttpClient();
@@ -246,7 +235,7 @@ public class WelcomeActivity extends BaseActivity {
         }.start();
     }
 
-    private void checkIsFirst() {
+    protected void checkIsFirst() {
         if (!checkFileComplete()) {
             Log.d("test", "文件不完整");
             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
