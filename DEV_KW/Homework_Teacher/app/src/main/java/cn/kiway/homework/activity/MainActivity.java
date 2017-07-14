@@ -79,7 +79,7 @@ public class MainActivity extends WelcomeActivity {
     }
 
     private void load() {
-        wv.loadUrl("file:///android_asset/dist/index.html");
+        wv.loadUrl("file:///android_asset/dist_old/index.html");
 //        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
 //        wv.loadUrl("file:///android_asset/test2.html");
@@ -225,7 +225,7 @@ public class MainActivity extends WelcomeActivity {
         }
 
         @JavascriptInterface
-        public void fileUpload() {
+        public void fileUpload(final String filepath) {
             Log.d("test", "fileUpload");
 //            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 //            intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
@@ -234,7 +234,7 @@ public class MainActivity extends WelcomeActivity {
             new Thread() {
                 @Override
                 public void run() {
-                    File file = new File("/mnt/sdcard/test.png");
+                    File file = new File(filepath);
                     final String ret = UploadUtil.uploadFile(file, "http://192.168.8.162:8080/common/file", file.getName());
                     Log.d("test", "upload ret = " + ret);
 
