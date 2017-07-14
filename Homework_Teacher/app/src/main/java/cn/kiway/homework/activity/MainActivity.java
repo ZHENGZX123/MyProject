@@ -63,9 +63,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void load() {
-//        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
+        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
-        wv.loadUrl("file:///android_asset/dist/index.html");
+//        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("file:///android_asset/test2.html");
 //        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
@@ -114,6 +114,9 @@ public class MainActivity extends BaseActivity {
                 if (url.endsWith("jpg") || url.endsWith("JPG") || url.endsWith("jpeg") || url.endsWith("JPEG")
                         || url.endsWith("png") || url.endsWith("PNG")) {
                     InputStream is = getStreamByUrl(url);
+                    if (is == null) {
+                        return super.shouldInterceptRequest(view, url);
+                    }
                     return new WebResourceResponse(getMimeType(url), "utf-8", is);
                 }
                 //des解密用

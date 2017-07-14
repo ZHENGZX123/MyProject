@@ -66,12 +66,17 @@ public class BaseActivity extends Activity {
     }
 
     public InputStream getStreamByUrl(String url) {
-        InputStream is = null;
-        Bitmap b = ImageLoader.getInstance().loadImageSync(url, WXApplication.getLoaderOptions());
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        b.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        is = new ByteArrayInputStream(baos.toByteArray());
-        return is;
+        try {
+            InputStream is = null;
+            Bitmap b = ImageLoader.getInstance().loadImageSync(url, WXApplication.getLoaderOptions());
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            b.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            is = new ByteArrayInputStream(baos.toByteArray());
+            return is;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
