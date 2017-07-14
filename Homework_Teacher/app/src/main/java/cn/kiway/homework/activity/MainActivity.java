@@ -79,8 +79,8 @@ public class MainActivity extends WelcomeActivity {
     }
 
     private void load() {
-        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
-//        wv.loadUrl("file:///android_asset/dist/index.html");
+        wv.loadUrl("file:///android_asset/dist/index.html");
+//        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
 //        wv.loadUrl("file:///android_asset/test2.html");
 //        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
@@ -422,9 +422,6 @@ public class MainActivity extends WelcomeActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-//                wv.loadUrl("javascript:hCallBack('aaa')");
-//                wv.loadUrl("javascript:httpRequestCallback('aaa','bbb')");
-//                wv.loadUrl("javascript:httpRequestCallback(\"" + url + "\" , \"" + result + "\")");
                 Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + result);
                 wv.loadUrl("javascript:" + tagname + "(" + result + ")");
             }
