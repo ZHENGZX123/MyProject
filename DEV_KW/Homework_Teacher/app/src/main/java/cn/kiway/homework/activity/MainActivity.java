@@ -411,7 +411,7 @@ public class MainActivity extends BaseActivity {
 //                wv.loadUrl("javascript:httpRequestCallback('aaa','bbb')");
 //                wv.loadUrl("javascript:httpRequestCallback(\"" + url + "\" , \"" + result + "\")");
                 Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + result);
-                wv.loadUrl("javascript:" + tagname + "('" + result + "')");
+                wv.loadUrl("javascript:" + tagname + "(" + result + ")");
             }
         });
     }
