@@ -1,6 +1,7 @@
 package cn.kiway.homework.activity;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.MediaRecorder;
@@ -18,6 +19,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -49,23 +51,37 @@ import cn.kiway.homework.util.Utils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends WelcomeActivity {
+
 
     private WebView wv;
+    private LinearLayout layout_welcome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
         wv = (WebView) findViewById(R.id.wv);
+        layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
+        checkIsFirst();
         initData();
         load();
+        checkNewVersion();
+    }
+
+    @Override
+    public void jump() {
+        //TODO 注意更新包之后的操作。。。
+        layout_welcome.setVisibility(View.GONE);
+        wv.setVisibility(View.VISIBLE);
     }
 
     private void load() {
-//        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
+        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
+//        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
-        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("file:///android_asset/test2.html");
 //        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
