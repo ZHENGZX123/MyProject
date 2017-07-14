@@ -210,6 +210,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import cn.kiway.homework.entity.HTTPCache;
+import cn.kiway.homework.entity.KV;
 
 public class MyDBHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "sdk.db";
@@ -220,24 +221,36 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + "   (id integer primary key autoincrement,  request  text,  response  text ,  requesttime text  , tagname text) ";
 
 
+    private static final String TABLE_KV = "KV";
+    private static final String CREATE_TABLE_KV = " create table  IF NOT EXISTS "
+            + TABLE_KV
+            + "   (id integer primary key autoincrement,  k  text,  v  text ) ";
+
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 3);
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        this.db = db;
-        db.execSQL(CREATE_TABLE_HTTPCACHE);
+        super(c, DB_NAME, null, 8);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int arg1, int arg2) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_HTTPCACHE);
         db.execSQL(CREATE_TABLE_HTTPCACHE);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_KV);
+        db.execSQL(CREATE_TABLE_KV);
+        db.execSQL("CREATE UNIQUE INDEX index_k ON KV (k)");
     }
 
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        this.db = db;
+        db.execSQL(CREATE_TABLE_HTTPCACHE);
+        db.execSQL(CREATE_TABLE_KV);
+        db.execSQL("CREATE UNIQUE INDEX index_k ON KV (k)");
+    }
+
+    //-------------------------------httpcache-----------------------------
     public HTTPCache getHttpCacheByRequest(String request) {
         if (db == null)
             db = getWritableDatabase();
@@ -285,5 +298,39 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.update(TABLE_HTTPCACHE, cv, "id=?", args);
         db.close();
     }
+
+    //------------------------------------------kv----------------
+
+    public void addKV(KV a) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("k", a.k);
+        values.put("v", a.v);
+        db.insert(TABLE_KV, null, values);
+        db.close();
+    }
+
+    public KV getKVByK(String k) {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_KV, null, "k=?", new String[]{k}, null, null, null);
+        KV a = null;
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            String id = cur.getString(cur.getColumnIndex("id"));
+            k = cur.getString(cur.getColumnIndex("k"));
+            String v = cur.getString(cur.getColumnIndex("v"));
+
+            a = new KV();
+            a.id = id;
+            a.k = k;
+            a.v = v;
+
+        }
+        cur.close();
+        db.close();
+        return a;
+    }
+
 
 }
