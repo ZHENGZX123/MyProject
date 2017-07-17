@@ -314,7 +314,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     public KV getKVByK(String k) {
         if (db == null)
             db = getWritableDatabase();
-        Cursor cur = db.query(TABLE_KV, null, "k=?", new String[]{k}, null, null, null);
+        Cursor cur = db.query(TABLE_KV, null, "k like ?", new String[]{"%" + k}, null, null, null);
         KV a = null;
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             String id = cur.getString(cur.getColumnIndex("id"));

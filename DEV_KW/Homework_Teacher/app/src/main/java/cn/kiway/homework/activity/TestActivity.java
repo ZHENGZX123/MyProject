@@ -50,6 +50,9 @@ public class TestActivity extends BaseActivity {
         String url = "http://xxxxxxxxxx/id=" + r;
         KV a = new MyDBHelper(this).getKVByK(url);
         Log.d("test", "a == null " + (a == null));
+        if (a != null) {
+            Log.d("test", "a.v = " + a.v);
+        }
         Log.d("test", "search over , time = " + (System.currentTimeMillis() - start));
     }
 
