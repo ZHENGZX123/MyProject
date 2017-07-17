@@ -2,10 +2,17 @@ package cn.kiway.homework.activity;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,6 +28,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 import cn.kiway.homework.WXApplication;
+import cn.kiway.homework.util.HttpDownload;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -124,9 +132,48 @@ public class BaseActivity extends Activity {
     }
 
     public void getBooks() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.setTimeout(10000);
+        client.get(this, "http://202.104.136.9:8389/teacher/book", new TextHttpResponseHandler() {
+            @Override
+            public void onSuccess(int code, Header[] headers, String ret) {
+                Log.d("test", "get onSuccess = " + ret);
+                downloadZip(ret);
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                Log.d("test", "get onFailure = " + s);
+            }
+        });
+    }
+
+    private void downloadZip(final String ret) {
         new Thread() {
             @Override
             public void run() {
+                try {
+                    JSONArray array = new JSONObject(ret).getJSONArray("data");
+                    int count = array.length();
+                    for (int i = 0; i < count; i++) {
+                        JSONObject o = array.getJSONObject(i);
+                        String id = o.getString("id");
+                        Log.d("test", "id = " + id);
+                        //0.检查本地是否存在
+                        if (new File(WXApplication.BOOKS + id + ".zip").exists()) {
+                            continue;
+                        }
+                        //1.下载
+                        int ret = new HttpDownload().downFile("http://202.104.136.9:8389/resource/book/" + id, "/mnt/sdcard/books/", id + ".zip");
+                        Log.d("test", "下载结果 ret = " + ret);
+                        if (ret == 0) {
+                            //2.解压
+                            ++
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }.start();
     }

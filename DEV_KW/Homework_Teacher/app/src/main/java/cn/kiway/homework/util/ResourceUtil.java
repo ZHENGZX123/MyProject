@@ -24,7 +24,9 @@ public class ResourceUtil {
 //            return null;
 //        }
         //1.搜索题库，如果没有，返回null
-        KV a = new MyDBHelper(c).getKVByK(url);
+        //url==>key
+        String key = url.replace("", "");
+        KV a = new MyDBHelper(c).getKVByK(key);
         if (a == null) {
             return null;
         }
