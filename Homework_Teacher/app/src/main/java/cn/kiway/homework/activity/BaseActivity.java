@@ -10,6 +10,8 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import net.lingala.zip4j.core.ZipFile;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.SecureRandom;
+import java.util.Iterator;
 import java.util.Locale;
 
 import javax.crypto.Cipher;
@@ -28,7 +31,10 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 import cn.kiway.homework.WXApplication;
+import cn.kiway.homework.entity.KV;
+import cn.kiway.homework.util.FileUtils;
 import cn.kiway.homework.util.HttpDownload;
+import cn.kiway.homework.util.MyDBHelper;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -168,7 +174,25 @@ public class BaseActivity extends Activity {
                         Log.d("test", "下载结果 ret = " + ret);
                         if (ret == 0) {
                             //2.解压
-                            ++
+                            new ZipFile(WXApplication.BOOKS + id + ".zip").extractAll(WXApplication.BOOKS + id);
+                            //3.读取data.json文件
+                            String filepath = WXApplication.BOOKS + id + "/data.json";
+                            String content = FileUtils.readSDCardFile(filepath, getApplicationContext());
+                            Log.d("test", "content = " + content);
+                            JSONObject all = new JSONObject(content);
+                            Iterator<String> keys = all.keys();
+                            while (keys.hasNext()) {
+                                String key = keys.next();
+                                String value = all.getString(key);
+                                Log.d("test", "key = " + key);
+                                Log.d("test", "value = " + value);
+                                //4.插入数据库
+                                KV a = new KV();
+                                a.k = key;
+                                a.v = value;
+                                new MyDBHelper(getApplicationContext()).addKV(a);
+                            }
+                            Log.d("test", "book" + id + "插入sql完毕");
                         }
                     }
                 } catch (Exception e) {
