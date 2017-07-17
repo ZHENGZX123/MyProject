@@ -122,4 +122,12 @@ public class BaseActivity extends Activity {
         // 真正开始解密操作
         return cipher.doFinal(src);
     }
+
+    public void getBooks() {
+        new Thread() {
+            @Override
+            public void run() {
+            }
+        }.start();
+    }
 }
