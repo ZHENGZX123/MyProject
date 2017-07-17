@@ -35,6 +35,8 @@ public class WXApplication extends Application {
     public static String HTML = "xtzy_teacher/dist/index.html";
     public static String ZIP = "xtzy_teacher.zip";
 
+    public static String BOOKS = "/mnt/sdcard/books/";
+
 
     //小米推送用
     // user your appid the key.

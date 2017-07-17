@@ -47,12 +47,8 @@ public class TestActivity extends BaseActivity {
         Log.d("test", "start insert");
         long start = System.currentTimeMillis();
         int r = new Random().nextInt(1000);
-        String url = "http://xxxxxxxxxx/id=" + r;
-        KV a = new MyDBHelper(this).getKVByK(url);
+        KV a = new MyDBHelper(this).getKVByK("getquestion?id=" + r);
         Log.d("test", "a == null " + (a == null));
-        if (a != null) {
-            Log.d("test", "a.v = " + a.v);
-        }
         Log.d("test", "search over , time = " + (System.currentTimeMillis() - start));
     }
 
