@@ -29,5 +29,17 @@
         android:onClick="clickTest2"
         android:text="查询数据库" />
 
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button2"
+        android:layout_marginLeft="39dp"
+        android:layout_marginStart="39dp"
+        android:layout_toEndOf="@+id/button"
+        android:layout_toRightOf="@+id/button"
+        android:onClick="clickTest3"
+        android:text="席舟的zip测试" />
+
 
 </RelativeLayout>

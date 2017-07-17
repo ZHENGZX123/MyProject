@@ -229,7 +229,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 8);
+        super(c, DB_NAME, null, 9);
     }
 
     @Override

@@ -69,7 +69,9 @@ public class MainActivity extends WelcomeActivity {
         initData();
         load();
         checkNewVersion();
+        getBooks();
     }
+
 
     @Override
     public void jump() {
@@ -79,7 +81,7 @@ public class MainActivity extends WelcomeActivity {
     }
 
     private void load() {
-        wv.loadUrl("file:///android_asset/dist_old/index.html");
+        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
 //        wv.loadUrl("file:///android_asset/test2.html");
@@ -111,7 +113,6 @@ public class MainActivity extends WelcomeActivity {
         settings.setAppCacheEnabled(true);
         settings.setUseWideViewPort(true);
         settings.setDomStorageEnabled(true);
-        settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
         settings.setSupportZoom(true);
@@ -334,7 +335,7 @@ public class MainActivity extends WelcomeActivity {
                 HTTPCache cache1 = new MyDBHelper(MainActivity.this).getHttpCacheByRequest(request);
                 if (cache1 == null) {
                     //3.如果是查询题目的话，还要再查一下资源包
-                    HTTPCache cache2 = new ResourceUtil(MainActivity.this).searchResourceByRequest(request);
+                    HTTPCache cache2 = new ResourceUtil(MainActivity.this).searchResourceByUrl(url, tagname);
                     if (cache2 == null) {
                         doHttpRequest(url, param, method, tagname);
                     } else {
