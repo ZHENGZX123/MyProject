@@ -1,0 +1,30 @@
+[
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\default_image.png",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\src\\main\\res\\mipmap-xxhdpi\\default_image.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\grid_camera.png",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\src\\main\\res\\mipmap-xxhdpi\\grid_camera.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\list_selected.png",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\src\\main\\res\\mipmap-xxhdpi\\list_selected.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\text_indicator.png",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\src\\main\\res\\mipmap-xxhdpi\\text_indicator.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\checkbox_normal.png",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\src\\main\\res\\mipmap-xxhdpi\\checkbox_normal.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\checkbox_checked.png",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\src\\main\\res\\mipmap-xxhdpi\\checkbox_checked.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\ic_back.png",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\src\\main\\res\\mipmap-xxhdpi\\ic_back.png"
+    }
+]

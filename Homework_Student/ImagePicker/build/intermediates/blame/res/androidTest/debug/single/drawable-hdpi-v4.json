@@ -1,0 +1,50 @@
+[
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\text_indicator.png",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\text_indicator.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\a3.jpg",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\exploded-aar\\Homework_Student\\photoview\\unspecified\\res\\drawable-hdpi-v4\\a3.jpg"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\ic_launcher.png",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\a2.jpg",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\exploded-aar\\Homework_Student\\photoview\\unspecified\\res\\drawable-hdpi-v4\\a2.jpg"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\ic_del.png",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\ic_del.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\default_image.png",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\default_image.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\list_selected.png",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\list_selected.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\checkbox_checked.png",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\checkbox_checked.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\checkbox_normal.png",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\checkbox_normal.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\ic_back.png",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\ic_back.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\a1.jpg",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\exploded-aar\\Homework_Student\\photoview\\unspecified\\res\\drawable-hdpi-v4\\a1.jpg"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\grid_camera.png",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\grid_camera.png"
+    }
+]
