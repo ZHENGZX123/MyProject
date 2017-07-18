@@ -14,6 +14,12 @@ import android.util.Log;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -36,7 +42,7 @@ public class WelcomeActivity extends BaseActivity {
     private Dialog dialog_download;
     protected ProgressDialog pd;
     private int lastProgress;
-    private String currentPackageVersion = "1.0.0";
+    private String currentPackageVersion = "0.0.1";
 
 //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +50,7 @@ public class WelcomeActivity extends BaseActivity {
 //        setContentView(R.layout.activity_welcome);
 //    }
 
-    public void jump() {
+    public void jump(boolean refresh) {
         startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
         finish();
     }
@@ -56,14 +62,14 @@ public class WelcomeActivity extends BaseActivity {
                 try {
                     sleep(2000);
                     checkTimeout();
-//                    HttpGet httpRequest = new HttpGet("http://yqyd.qgjydd.com/yqyd/static/version/zip_xs.json");
-//                    DefaultHttpClient client = new DefaultHttpClient();
-//                    HttpResponse response = client.execute(httpRequest);
-//                    String ret = EntityUtils.toString(response.getEntity());
-//                    Log.d("test", "new version = " + ret);
+                    HttpGet httpRequest = new HttpGet("http://202.104.136.9:8389/download/version/zip_ls.json");
+                    DefaultHttpClient client = new DefaultHttpClient();
+                    HttpResponse response = client.execute(httpRequest);
+                    String ret = EntityUtils.toString(response.getEntity());
+                    Log.d("test", "new version = " + ret);
                     Message msg = new Message();
                     msg.what = 2;
-//                    msg.obj = ret;
+                    msg.obj = ret;
                     mHandler.sendMessage(msg);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -83,37 +89,40 @@ public class WelcomeActivity extends BaseActivity {
                 String ret = (String) msg.obj;
                 try {
                     //1.apk更新
-//                    Log.d("test", "新版本返回值" + ret);
-//                    String apkVersion = new JSONObject(ret).getString("apkCode");
-//                    String apkUrl = new JSONObject(ret).getString("apkUrl");
-                    String apkVersion = "1.0.0";
-                    String apkUrl = "xxxxxxxxxxxxxx";
+                    Log.d("test", "新版本返回值" + ret);
+                    String apkVersion = new JSONObject(ret).getString("apkCode");
+                    String apkUrl = new JSONObject(ret).getString("apkUrl");
+
+                    String zipCode = new JSONObject(ret).getString("zipCode");
+                    String zipUrl = new JSONObject(ret).getString("zipUrl");
+
                     if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
                         showUpdateConfirmDialog(apkUrl);
                     } else {
                         //如果APK没有最新版本，比较包的版本。如果内置包的版本号比较高，直接替换
-                        String currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "1.0.0");
+                        String currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
                         if (currentPackage.compareTo(currentPackageVersion) < 0) {
                             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
                             checkIsFirst();
                         }
                         //替换完内置包之后，比较内置包和外包，如果版本号还是小了，更新外包
-                        currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "1.0.0");
-                        String outer_package = "1.0.0";
+                        currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
+                        String outer_package = zipCode;
                         if (currentPackage.compareTo(outer_package) < 0) {
                             //提示有新的包，下载新的包
-                            toast("有新包");
-                            updatePackage(outer_package, "");
+                            Log.d("test", "下载新的H5包");
+                            updatePackage(outer_package, zipUrl);
                         } else {
-                            jump();
+                            Log.d("test", "H5包是最新的");
+                            jump(false);
                         }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    jump();
+                    jump(false);
                 }
             } else if (msg.what == 3) {
-                jump();
+                jump(false);
             } else if (msg.what == 4) {
                 pd.dismiss();
                 toast(R.string.downloadsuccess);
@@ -128,7 +137,7 @@ public class WelcomeActivity extends BaseActivity {
             } else if (msg.what == 5) {
                 pd.dismiss();
                 toast(R.string.downloadfailure);
-                jump();
+                jump(false);
             } else if (msg.what == 6) {
                 pd.setProgress(msg.arg1);
             }
@@ -139,13 +148,15 @@ public class WelcomeActivity extends BaseActivity {
         new Thread() {
             @Override
             public void run() {
-                int ret = new HttpDownload().downFile(downloadUrl, WXApplication.ROOT, WXApplication.ZIP);
-                if (ret == -1) {
-                    return;
-                }
+                final int ret = new HttpDownload().downFile(downloadUrl, WXApplication.ROOT, WXApplication.ZIP);
+                Log.d("test", "下载新包 ret = " + ret);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        if (ret == -1) {
+                            jump(false);
+                            return;
+                        }
                         if (new File(WXApplication.ROOT + "kiway_teacher").exists()) {
                             FileUtils.delFolder(WXApplication.ROOT + "kiway_teacher");
                         }
@@ -155,7 +166,7 @@ public class WelcomeActivity extends BaseActivity {
                             e.printStackTrace();
                         }
                         getSharedPreferences("kiway", 0).edit().putString("version_package", outer_package).commit();
-                        jump();
+                        jump(true);
                     }
                 });
             }
@@ -176,7 +187,7 @@ public class WelcomeActivity extends BaseActivity {
         }).setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                jump();
+                jump(false);
             }
         }).create();
         dialog_download.setCancelable(false);
@@ -255,7 +266,7 @@ public class WelcomeActivity extends BaseActivity {
                 if (isSuccess) {
                     return;
                 }
-                jump();
+                jump(false);
             }
         }.start();
     }
@@ -282,7 +293,6 @@ public class WelcomeActivity extends BaseActivity {
                 e.printStackTrace();
             }
             getSharedPreferences("kiway", 0).edit().putString("version_package", currentPackageVersion).commit();
-
         }
     }
 
