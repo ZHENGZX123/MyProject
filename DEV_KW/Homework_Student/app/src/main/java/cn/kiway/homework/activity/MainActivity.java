@@ -82,7 +82,7 @@ public class MainActivity extends BaseActivity {
     private Dialog dialog_download;
     protected ProgressDialog pd;
     private int lastProgress;
-    private String currentPackageVersion = "0.0.1";
+    private String currentPackageVersion = "0.0.3";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
