@@ -65,7 +65,6 @@ import cn.kiway.homework.teacher.R;
 import cn.kiway.homework.util.FileUtils;
 import cn.kiway.homework.util.HttpDownload;
 import cn.kiway.homework.util.MyDBHelper;
-import cn.kiway.homework.util.NetworkUtil;
 import cn.kiway.homework.util.ResourceUtil;
 import cn.kiway.homework.util.UploadUtil;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
@@ -355,39 +354,43 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public void httpRequest(final String url, final String param,
-                                final String method, String reload, String tagname) {
-            Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , reload = " + reload + " , tagname = " + tagname);
-            if (reload.equals("1")) {
+                                final String method, String time, String tagname) {
+            Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , time = " + time + " , tagname = " + tagname);
+            try {
+                Integer.parseInt(time);
+            } catch (Exception e) {
+                Log.d("test", "time 错误");
+                return;
+            }
+            if (time.equals("0")) {
                 //1.重新获取
-                doHttpRequest(url, param, method, tagname);
+                doHttpRequest(url, param, method, tagname, time);
             } else {
                 //2.取缓存
                 String request = url + param + method;
-                HTTPCache cache1 = new MyDBHelper(MainActivity.this).getHttpCacheByRequest(request);
+                HTTPCache cache1 = new MyDBHelper(MainActivity.this).getHttpCacheByRequest(request, Integer.parseInt(time));
                 if (cache1 == null) {
+                    Log.d("test", "没有缓存");
                     //3.如果是查询题目的话，还要再查一下资源包
                     HTTPCache cache2 = new ResourceUtil(MainActivity.this).searchResourceByUrl(url, tagname);
                     if (cache2 == null) {
-                        doHttpRequest(url, param, method, tagname);
+                        doHttpRequest(url, param, method, tagname, time);
                     } else {
                         httpRequestCallback(cache2.tagname, cache2.response);
                     }
                 } else {
+                    Log.d("test", "有缓存");
                     httpRequestCallback(cache1.tagname, cache1.response);
                 }
             }
         }
     }
 
-    private void doHttpRequest(final String url, final String param, final String method, final String tagname) {
+    private void doHttpRequest(final String url, final String param, final String method, final String tagname, final String time) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    if (!NetworkUtil.isNetworkAvailable(MainActivity.this)) {
-//                        toast("没有网络");
-                        return;
-                    }
                     AsyncHttpClient client = new AsyncHttpClient();
                     client.setTimeout(10000);
                     if (method.equalsIgnoreCase("POST")) {
@@ -397,7 +400,6 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onSuccess(int arg0, Header[] arg1, String ret) {
                                 Log.d("test", "post onSuccess = " + ret);
-                                saveDB(url, param, method, ret, tagname);
                                 httpRequestCallback(tagname, ret);
                             }
 
@@ -419,7 +421,13 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                                 Log.d("test", "get onFailure = " + s);
-                                httpRequestCallback(tagname, "failure");
+                                //如果是get，把缓存回它
+                                String request = url + param + method;
+                                HTTPCache cache = new MyDBHelper(getApplicationContext()).getHttpCacheByRequest(request);//time
+                                if (cache != null) {
+                                    httpRequestCallback(cache.tagname, cache.response);
+                                }
+//                                httpRequestCallback(tagname, "failure");
                             }
                         });
                     }

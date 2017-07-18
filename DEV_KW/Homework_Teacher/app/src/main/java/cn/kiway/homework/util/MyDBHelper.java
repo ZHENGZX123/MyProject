@@ -251,6 +251,34 @@ public class MyDBHelper extends SQLiteOpenHelper {
     }
 
     //-------------------------------httpcache-----------------------------
+    public HTTPCache getHttpCacheByRequest(String request, int time) {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_HTTPCACHE, null, "request=?", new String[]{request}, null, null, null);
+        HTTPCache a = null;
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            String id = cur.getString(cur.getColumnIndex("id"));
+            request = cur.getString(cur.getColumnIndex("request"));
+            String response = cur.getString(cur.getColumnIndex("response"));
+            String requesttime = cur.getString(cur.getColumnIndex("requesttime"));
+            String tagname = cur.getString(cur.getColumnIndex("tagname"));
+
+            long current = System.currentTimeMillis();
+            if (current - Long.parseLong(requesttime) > time * 60 * 1000) {
+                return null;
+            }
+            a = new HTTPCache();
+            a.id = id;
+            a.request = request;
+            a.response = response;
+            a.requesttime = requesttime;
+            a.tagname = tagname;
+        }
+        cur.close();
+        db.close();
+        return a;
+    }
+
     public HTTPCache getHttpCacheByRequest(String request) {
         if (db == null)
             db = getWritableDatabase();
@@ -262,6 +290,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
             String response = cur.getString(cur.getColumnIndex("response"));
             String requesttime = cur.getString(cur.getColumnIndex("requesttime"));
             String tagname = cur.getString(cur.getColumnIndex("tagname"));
+
+
             a = new HTTPCache();
             a.id = id;
             a.request = request;
