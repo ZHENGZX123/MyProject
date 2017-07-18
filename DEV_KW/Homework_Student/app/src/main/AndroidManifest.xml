@@ -43,13 +43,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="cn.kiway.homework.activity.WelcomeActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name="cn.kiway.homework.activity.TestActivity"></activity>
-
-
         <!-- 小米推送 -->
         <service
             android:name="com.xiaomi.push.service.XMPushService"
