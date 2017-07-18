@@ -1,0 +1,46 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        kiway {
+            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+            storePassword 'kiway123'
+            keyAlias 'kiway'
+            keyPassword 'kiway123'
+        }
+    }
+    useLibrary 'org.apache.http.legacy'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.1'
+    defaultConfig {
+        applicationId "cn.kiway.homework.student"
+        minSdkVersion 15
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.kiway
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.kiway
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile files('libs/android-async-http-1.4.5.jar')
+    compile files('libs/zip4j_1.3.1.jar')
+    compile project(':ImagePicker')
+    compile files('libs/image_compress.jar')
+    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile files('libs/MiPush_SDK_Client_3_2_2.jar')
+}

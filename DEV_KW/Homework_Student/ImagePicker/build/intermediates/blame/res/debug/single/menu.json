@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\debug\\menu\\main_menu.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\exploded-aar\\Homework_Student\\photoview\\unspecified\\res\\menu\\main_menu.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\build\\intermediates\\res\\merged\\debug\\menu\\main.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\Homework_Student\\ImagePicker\\src\\main\\res\\menu\\main.xml"
+    }
+]
