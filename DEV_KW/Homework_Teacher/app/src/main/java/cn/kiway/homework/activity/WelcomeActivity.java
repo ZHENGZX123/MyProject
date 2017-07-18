@@ -60,7 +60,7 @@ public class WelcomeActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    sleep(2000);
+                    sleep(1000);
                     checkTimeout();
                     HttpGet httpRequest = new HttpGet("http://202.104.136.9:8389/download/version/zip_ls.json");
                     DefaultHttpClient client = new DefaultHttpClient();
