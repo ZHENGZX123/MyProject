@@ -24,6 +24,7 @@ import java.net.URL;
 import cn.kiway.homework.WXApplication;
 import cn.kiway.homework.teacher.R;
 import cn.kiway.homework.util.FileUtils;
+import cn.kiway.homework.util.HttpDownload;
 
 import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
@@ -102,7 +103,7 @@ public class WelcomeActivity extends BaseActivity {
                         if (currentPackage.compareTo(outer_package) < 0) {
                             //提示有新的包，下载新的包
                             toast("有新包");
-                            updatePackage(outer_package);
+                            updatePackage(outer_package, "");
                         } else {
                             jump();
                         }
@@ -134,9 +135,33 @@ public class WelcomeActivity extends BaseActivity {
         }
     };
 
-    private void updatePackage(String outer_package) {
-        getSharedPreferences("kiway", 0).edit().putString("version_package", outer_package).commit();
-        jump();
+    private void updatePackage(final String outer_package, final String downloadUrl) {
+        new Thread() {
+            @Override
+            public void run() {
+                int ret = new HttpDownload().downFile(downloadUrl, WXApplication.ROOT, WXApplication.ZIP);
+                if (ret == -1) {
+                    return;
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (new File(WXApplication.ROOT + "kiway_teacher").exists()) {
+                            FileUtils.delFolder(WXApplication.ROOT + "kiway_teacher");
+                        }
+                        try {
+                            new ZipFile(WXApplication.ROOT + WXApplication.ZIP).extractAll(WXApplication.ROOT);
+                        } catch (ZipException e) {
+                            e.printStackTrace();
+                        }
+                        getSharedPreferences("kiway", 0).edit().putString("version_package", outer_package).commit();
+                        jump();
+                    }
+                });
+            }
+        }.start();
+
+
     }
 
     protected void showUpdateConfirmDialog(final String url) {

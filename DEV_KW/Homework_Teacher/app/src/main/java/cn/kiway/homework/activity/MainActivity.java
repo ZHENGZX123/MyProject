@@ -41,6 +41,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import cn.kiway.homework.WXApplication;
 import cn.kiway.homework.entity.HTTPCache;
 import cn.kiway.homework.teacher.R;
 import cn.kiway.homework.util.MyDBHelper;
@@ -80,11 +81,11 @@ public class MainActivity extends WelcomeActivity {
     }
 
     private void load() {
-        wv.loadUrl("file:///android_asset/dist/index.html");
+//        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
 //        wv.loadUrl("file:///android_asset/test2.html");
-//        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
+        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
 
 
