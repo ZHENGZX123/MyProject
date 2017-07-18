@@ -138,7 +138,7 @@ public class DemoMessageReceiver extends PushMessageReceiver {
                 log = context.getString(R.string.register_fail);
             }
             //设置别名
-//                MiPushClient.setAlias(context, "18626318013", null);
+            MiPushClient.setAlias(context, "18626318013", null);
         } else if (MiPushClient.COMMAND_SET_ALIAS.equals(command)) {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
                 mAlias = cmdArg1;
