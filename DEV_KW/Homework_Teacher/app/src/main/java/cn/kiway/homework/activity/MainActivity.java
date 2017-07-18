@@ -77,7 +77,6 @@ public class MainActivity extends WelcomeActivity {
     public void jump() {
         //TODO 注意更新包之后的操作。。。
         layout_welcome.setVisibility(View.GONE);
-        wv.setVisibility(View.VISIBLE);
     }
 
     private void load() {
@@ -228,6 +227,7 @@ public class MainActivity extends WelcomeActivity {
         @JavascriptInterface
         public void fileUpload(final String filepath) {
             Log.d("test", "fileUpload");
+            //选择图片
 //            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 //            intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
 //            intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -305,11 +305,6 @@ public class MainActivity extends WelcomeActivity {
             Uri uri = Uri.fromFile(new File(snapshotFile));
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             startActivityForResult(intent, SNAPSHOT);
-//            Intent intent = new Intent("com.intsig.camscanner.ACTION_SCAN");
-//            Uri uri = Uri.fromFile(new File("/sdcard/source.jpg"));
-//            intent.putExtra(Intent.EXTRA_STREAM, uri);
-//            intent.putExtra("scanned_image", "/sdcard/scanned.jpg");
-//            startActivityForResult(intent, SAOMAWANG);
         }
 
         @JavascriptInterface

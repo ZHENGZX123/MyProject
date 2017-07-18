@@ -103,6 +103,9 @@ public class DemoMessageReceiver extends PushMessageReceiver {
         String log = context.getString(R.string.arrive_notification_message, message.getContent());
 //        MainActivity.logList.add(0, getSimpleDate() + " " + log);
 
+        //保存messageId
+
+
         if (!TextUtils.isEmpty(message.getTopic())) {
             mTopic = message.getTopic();
         } else if (!TextUtils.isEmpty(message.getAlias())) {
