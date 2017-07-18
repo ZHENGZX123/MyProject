@@ -55,7 +55,6 @@ import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 public class MainActivity extends WelcomeActivity {
 
-
     private WebView wv;
     private LinearLayout layout_welcome;
 
@@ -77,17 +76,35 @@ public class MainActivity extends WelcomeActivity {
     protected void onResume() {
         super.onResume();
         Log.d("test", "onresume");
-        String event = getSharedPreferences("homework", 0).getString("event", "");
-        if (event.equals("notification")) {
-            Log.d("test", "取了一个event");
-            wv.loadUrl("javascript:notificationCallback('param')");
-            getSharedPreferences("homework", 0).edit().putString("event", "").commit();
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                checkNotification();
+            }
+        }.start();
+    }
+
+    private synchronized void checkNotification() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String event = getSharedPreferences("homework", 0).getString("event", "");
+                if (event.equals("notification")) {
+                    Log.d("test", "取了一个event");
+                    wv.loadUrl("javascript:notificationCallback('param')");
+                    getSharedPreferences("homework", 0).edit().putString("event", "").commit();
+                }
+            }
+        });
     }
 
     @Override
     public void jump(boolean refresh) {
-        //TODO 注意更新包之后的操作。。。
         layout_welcome.setVisibility(View.GONE);
         if (refresh) {
             load();
@@ -100,7 +117,6 @@ public class MainActivity extends WelcomeActivity {
 //        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
 //        wv.loadUrl("file:///android_asset/test2.html");
-
         wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
 
@@ -157,6 +173,10 @@ public class MainActivity extends WelcomeActivity {
                 return true;
             }
 
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+            }
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
