@@ -86,9 +86,12 @@ public class MainActivity extends WelcomeActivity {
     }
 
     @Override
-    public void jump() {
+    public void jump(boolean refresh) {
         //TODO 注意更新包之后的操作。。。
         layout_welcome.setVisibility(View.GONE);
+        if (refresh) {
+            load();
+        }
     }
 
     private void load() {
