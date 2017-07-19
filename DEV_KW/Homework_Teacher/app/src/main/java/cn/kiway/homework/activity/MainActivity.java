@@ -73,13 +73,13 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
+    private static final String currentPackageVersion = "0.0.3";
+
     private boolean isSuccess = false;
     private boolean isJump = false;
     private Dialog dialog_download;
     protected ProgressDialog pd;
     private int lastProgress;
-    private String currentPackageVersion = "0.0.3";
-
     private WebView wv;
     private LinearLayout layout_welcome;
 
