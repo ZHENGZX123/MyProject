@@ -99,9 +99,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void load() {
+//        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
 //        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("http://202.104.136.9:8280/weex/xtzy/dist/index.html");
-//        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
 //        wv.loadUrl("file:///android_asset/test2.html");
         wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
@@ -192,9 +192,7 @@ public class MainActivity extends BaseActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Log.d("test", "click back = " + wv.getUrl());
             String url = wv.getUrl();
-            String page = url.substring(url.lastIndexOf("/") + 1);
-            Log.d("test", "page = " + page);
-            if (page.endsWith("login") || page.endsWith("error") || page.endsWith("msdx") || page.endsWith("mine") || page.equals("")) {
+            if (url.endsWith("login") || url.endsWith("ctb/error") || url.endsWith("msdx") || url.endsWith("mine") || url.endsWith("index.html#/")) {
                 doFinish();
                 return true;
             }
@@ -357,9 +355,8 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
-        public void httpRequest(final String url, final String param,
-                                final String method, String time, String tagname) {
-            Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , time = " + time + " , tagname = " + tagname);
+        public void httpRequest(final String url, final String param, final String method, String time, String tagname, String related) {
+            Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , time = " + time + " , tagname = " + tagname + " , related = " + related);
             try {
                 Integer.parseInt(time);
             } catch (Exception e) {
@@ -368,7 +365,7 @@ public class MainActivity extends BaseActivity {
             }
             if (time.equals("0")) {
                 //1.重新获取
-                doHttpRequest(url, param, method, tagname, time);
+                doHttpRequest(url, param, method, tagname, time, related);
             } else {
                 //2.取缓存
                 String request = url + param + method;
@@ -378,7 +375,7 @@ public class MainActivity extends BaseActivity {
                     //3.如果是查询题目的话，还要再查一下资源包
                     HTTPCache cache2 = new ResourceUtil(MainActivity.this).searchResourceByRequest(request);
                     if (cache2 == null) {
-                        doHttpRequest(url, param, method, tagname, time);
+                        doHttpRequest(url, param, method, tagname, time, related);
                     } else {
                         httpRequestCallback(cache2.tagname, cache2.response);
                     }
@@ -390,7 +387,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void doHttpRequest(final String url, final String param, final String method, final String tagname, final String time) {
+    private void doHttpRequest(final String url, final String param, final String method, final String tagname, final String time, final String related) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -405,6 +402,8 @@ public class MainActivity extends BaseActivity {
                             public void onSuccess(int arg0, Header[] arg1, String ret) {
                                 Log.d("test", "post onSuccess = " + ret);
                                 httpRequestCallback(tagname, ret);
+                                //如果是post，related不为空，查找一下相关的缓存，并清除掉
+                                new MyDBHelper(getApplicationContext()).deleteHttpCache(related);
                             }
 
                             @Override
@@ -427,7 +426,7 @@ public class MainActivity extends BaseActivity {
                                 Log.d("test", "get onFailure = " + s);
                                 //如果是get，把缓存回它
                                 String request = url + param + method;
-                                HTTPCache cache = new MyDBHelper(getApplicationContext()).getHttpCacheByRequest(request);//time
+                                HTTPCache cache = new MyDBHelper(getApplicationContext()).getHttpCacheByRequest(request, Integer.parseInt(time));
                                 if (cache != null) {
                                     httpRequestCallback(cache.tagname, cache.response);
                                 }

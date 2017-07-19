@@ -208,6 +208,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
+import android.util.Log;
 
 import cn.kiway.homework.entity.HTTPCache;
 import cn.kiway.homework.entity.KV;
@@ -264,7 +266,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             String tagname = cur.getString(cur.getColumnIndex("tagname"));
 
             long current = System.currentTimeMillis();
-            if (current - Long.parseLong(requesttime) > time * 60  * 1000) {
+            if (current - Long.parseLong(requesttime) > time * 60 * 1000) {
                 return null;
             }
             a = new HTTPCache();
@@ -326,6 +328,17 @@ public class MyDBHelper extends SQLiteOpenHelper {
         cv.put("tagname", cache.tagname);
         String[] args = {cache.id};
         db.update(TABLE_HTTPCACHE, cv, "id=?", args);
+        db.close();
+    }
+
+    public void deleteHttpCache(String tagname) {
+        if (TextUtils.isEmpty(tagname)) {
+            return;
+        }
+        if (db == null)
+            db = getWritableDatabase();
+        Log.d("test", "删除记录:" + tagname);
+        db.delete(TABLE_HTTPCACHE, "tagname=?", new String[]{tagname});
         db.close();
     }
 
