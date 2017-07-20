@@ -26,6 +26,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -67,6 +68,7 @@ import cn.kiway.homework.util.HttpDownload;
 import cn.kiway.homework.util.MyDBHelper;
 import cn.kiway.homework.util.ResourceUtil;
 import cn.kiway.homework.util.UploadUtil;
+import cn.kiway.homework.util.Utils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static cn.kiway.homework.util.Utils.getCurrentVersion;
@@ -100,11 +102,11 @@ public class MainActivity extends BaseActivity {
 
 
     private void load() {
-        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
+//        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
 //        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
 //        wv.loadUrl("file:///android_asset/test2.html");
-//        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
+        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
 
     private void initData() {
@@ -162,14 +164,14 @@ public class MainActivity extends BaseActivity {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
                 Log.d("test", "shouldInterceptRequest url = " + url);
-                if ((url.startsWith("http") || url.startsWith("https"))
-                        && (url.endsWith("jpg") || url.endsWith("JPG") || url.endsWith("jpeg") || url.endsWith("JPEG") || url.endsWith("png") || url.endsWith("PNG"))) {
-                    InputStream is = getStreamByUrl(url);
-                    if (is == null) {
-                        return super.shouldInterceptRequest(view, url);
-                    }
-                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
-                }
+//                if ((url.startsWith("http") || url.startsWith("https"))
+//                        && (url.endsWith("jpg") || url.endsWith("JPG") || url.endsWith("jpeg") || url.endsWith("JPEG") || url.endsWith("png") || url.endsWith("PNG"))) {
+//                    InputStream is = getStreamByUrl(url);
+//                    if (is == null) {
+//                        return super.shouldInterceptRequest(view, url);
+//                    }
+//                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
+//                }
                 //des解密用
 //                else if (url.endsWith("js") || url.endsWith("css") || url.endsWith("html")) {
 //                    InputStream is = getStreamByUrl2(url.replace("file://", ""));
@@ -287,25 +289,43 @@ public class MainActivity extends BaseActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    startRecord();
                     final Dialog dialog = new Dialog(MainActivity.this, R.style.popupDialog);
                     dialog.setContentView(R.layout.dialog_voice);
                     dialog.setCancelable(false);
                     dialog.setCanceledOnTouchOutside(false);
                     dialog.show();
                     final Button voice = (Button) dialog.findViewById(R.id.voice);
+                    final TextView time = (TextView) dialog.findViewById(R.id.time);
                     voice.setOnClickListener(new View.OnClickListener() {
 
                         @Override
                         public void onClick(View arg0) {
-                            if (voice.getText().toString().equals("开始")) {
-                                startRecord();
-                                voice.setText("结束");
-                            } else if (voice.getText().toString().equals("结束")) {
-                                stopRecord();
-                                dialog.dismiss();
-                            }
+                            stopRecord();
+                            dialog.dismiss();
                         }
                     });
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            int duration = 0;
+                            while (dialog.isShowing()) {
+                                try {
+                                    sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                duration++;
+                                final int finalDuration = duration;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        time.setText(Utils.getTimeFormLong(finalDuration * 1000));
+                                    }
+                                });
+                            }
+                        }
+                    }.start();
                 }
             });
         }
