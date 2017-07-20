@@ -84,7 +84,7 @@ public class BaseActivity extends Activity {
             InputStream is = null;
             Bitmap b = ImageLoader.getInstance().loadImageSync(url, WXApplication.getLoaderOptions());
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            b.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            b.compress(Bitmap.CompressFormat.PNG, 100, baos);
             is = new ByteArrayInputStream(baos.toByteArray());
             return is;
         } catch (Exception e) {

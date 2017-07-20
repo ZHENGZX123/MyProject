@@ -1,9 +1,6 @@
 package cn.kiway.homework.broadcast;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.xiaomi.mipush.sdk.ErrorCode;
@@ -12,11 +9,8 @@ import com.xiaomi.mipush.sdk.MiPushCommandMessage;
 import com.xiaomi.mipush.sdk.MiPushMessage;
 import com.xiaomi.mipush.sdk.PushMessageReceiver;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
-import cn.kiway.homework.WXApplication;
 import cn.kiway.homework.teacher.R;
 
 /**
@@ -57,70 +51,26 @@ public class DemoMessageReceiver extends PushMessageReceiver {
     private String mAccount;
     private String mStartTime;
     private String mEndTime;
+    public static final String TAG = "xiaomi";
 
     @Override
     public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
-        Log.v(WXApplication.TAG,
-                "onReceivePassThroughMessage is called. " + message.toString());
-        String log = context.getString(R.string.recv_passthrough_message, message.getContent());
-//        MainActivity.logList.add(0, getSimpleDate() + " " + log);
-
-        if (!TextUtils.isEmpty(message.getTopic())) {
-            mTopic = message.getTopic();
-        } else if (!TextUtils.isEmpty(message.getAlias())) {
-            mAlias = message.getAlias();
-        }
-
-        Message msg = Message.obtain();
-        msg.obj = log;
-        WXApplication.getHandler().sendMessage(msg);
+        Log.v(TAG, "onReceivePassThroughMessage is called. " + message.toString());
     }
 
     @Override
     public void onNotificationMessageClicked(Context context, MiPushMessage message) {
-        Log.v(WXApplication.TAG,
-                "onNotificationMessageClicked is called. " + message.toString());
-        String log = context.getString(R.string.click_notification_message, message.getContent());
-//        MainActivity.logList.add(0, getSimpleDate() + " " + log);
-
-        if (!TextUtils.isEmpty(message.getTopic())) {
-            mTopic = message.getTopic();
-        } else if (!TextUtils.isEmpty(message.getAlias())) {
-            mAlias = message.getAlias();
-        }
-
-        Message msg = Message.obtain();
-        if (message.isNotified()) {
-            msg.obj = log;
-        }
-        WXApplication.getHandler().sendMessage(msg);
+        Log.v(TAG, "onNotificationMessageClicked is called. " + message.toString());
     }
 
     @Override
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
-        Log.v(WXApplication.TAG,
-                "onNotificationMessageArrived is called. " + message.toString());
-        String log = context.getString(R.string.arrive_notification_message, message.getContent());
-//        MainActivity.logList.add(0, getSimpleDate() + " " + log);
-
-        //保存messageId
-
-
-        if (!TextUtils.isEmpty(message.getTopic())) {
-            mTopic = message.getTopic();
-        } else if (!TextUtils.isEmpty(message.getAlias())) {
-            mAlias = message.getAlias();
-        }
-
-        Message msg = Message.obtain();
-        msg.obj = log;
-        WXApplication.getHandler().sendMessage(msg);
+        Log.v(TAG, "onNotificationMessageArrived is called. " + message.toString());
     }
 
     @Override
     public void onCommandResult(Context context, MiPushCommandMessage message) {
-        Log.v(WXApplication.TAG,
-                "onCommandResult is called. " + message.toString());
+        Log.v(TAG, "onCommandResult is called. " + message.toString());
         String command = message.getCommand();
         List<String> arguments = message.getCommandArguments();
         String cmdArg1 = ((arguments != null && arguments.size() > 0) ? arguments.get(0) : null);
@@ -186,17 +136,12 @@ public class DemoMessageReceiver extends PushMessageReceiver {
         } else {
             log = message.getReason();
         }
-//        MainActivity.logList.add(0, getSimpleDate() + "    " + log);
-
-        Message msg = Message.obtain();
-        msg.obj = log;
-        WXApplication.getHandler().sendMessage(msg);
+        Log.v(TAG, "onCommandResult is called. " + message.toString());
     }
 
     @Override
     public void onReceiveRegisterResult(Context context, MiPushCommandMessage message) {
-        Log.v(WXApplication.TAG,
-                "onReceiveRegisterResult is called. " + message.toString());
+        Log.v(TAG, "onReceiveRegisterResult is called. " + message.toString());
         String command = message.getCommand();
         List<String> arguments = message.getCommandArguments();
         String cmdArg1 = ((arguments != null && arguments.size() > 0) ? arguments.get(0) : null);
@@ -212,15 +157,6 @@ public class DemoMessageReceiver extends PushMessageReceiver {
         } else {
             log = message.getReason();
         }
-
-        Message msg = Message.obtain();
-        msg.obj = log;
-        WXApplication.getHandler().sendMessage(msg);
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    private static String getSimpleDate() {
-        return new SimpleDateFormat("MM-dd hh:mm:ss").format(new Date());
     }
 
 }
