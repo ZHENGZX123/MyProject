@@ -74,15 +74,15 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 public class MainActivity extends BaseActivity {
 
+    private static final String currentPackageVersion = "0.0.4";
+
     private WebView wv;
     private LinearLayout layout_welcome;
-
     private boolean isSuccess = false;
     private boolean isJump = false;
     private Dialog dialog_download;
     protected ProgressDialog pd;
     private int lastProgress;
-    private String currentPackageVersion = "0.0.3";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,12 +99,12 @@ public class MainActivity extends BaseActivity {
     }
 
     private void load() {
-//        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
+        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
 //        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("http://202.104.136.9:8280/weex/xtzy/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
 //        wv.loadUrl("file:///android_asset/test2.html");
-        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
+//        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
 
 
@@ -163,8 +163,9 @@ public class MainActivity extends BaseActivity {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
                 Log.d("test", "shouldInterceptRequest url = " + url);
-                if (url.endsWith("jpg") || url.endsWith("JPG") || url.endsWith("jpeg") || url.endsWith("JPEG")
-                        || url.endsWith("png") || url.endsWith("PNG")) {
+                //只有http图片才缓存
+                if ((url.startsWith("http") || url.startsWith("https"))
+                        && (url.endsWith("jpg") || url.endsWith("JPG") || url.endsWith("jpeg") || url.endsWith("JPEG") || url.endsWith("png") || url.endsWith("PNG"))) {
                     InputStream is = getStreamByUrl(url);
                     if (is == null) {
                         return super.shouldInterceptRequest(view, url);
@@ -244,12 +245,7 @@ public class MainActivity extends BaseActivity {
             try {
                 Log.d("test", "showPhoto param1 = " + param1);
                 Log.d("test", "showPhoto param2 = " + param2);
-                ViewPagerActivity.sDrawables = param1.replace("[", "").replace("]", "").split("\",\"");
-                for (String s : ViewPagerActivity.sDrawables) {
-                    s = s.replace("\"", "");
-                    Log.d("test", "s = " + s);
-                }
-                ViewPagerActivity.sDrawables = new String[]{"http://img.bimg.126.net/photo/DCi7Q__VN3NJ_63cq7sosA==/3439905690381537164.jpg"};
+                ViewPagerActivity.sDrawables = param1.replace("[", "").replace("]", "").replace("\"", "").split(",");
                 Intent intent = new Intent(MainActivity.this, ViewPagerActivity.class);
                 intent.putExtra("position", Integer.parseInt(param2));
                 startActivity(intent);
@@ -261,10 +257,6 @@ public class MainActivity extends BaseActivity {
         @JavascriptInterface
         public void fileUpload(final String filepath) {
             Log.d("test", "fileUpload");
-//            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//            intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
-//            intent.addCategory(Intent.CATEGORY_OPENABLE);
-//            startActivityForResult(intent, 1);
             new Thread() {
                 @Override
                 public void run() {
@@ -602,6 +594,7 @@ public class MainActivity extends BaseActivity {
                         boolean flag = false;
                         String currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
                         if (currentPackage.compareTo(currentPackageVersion) < 0) {
+                            Log.d("test", "内置包比较大，拷贝内置包");
                             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
                             checkIsFirst();
                             flag = true;
@@ -805,11 +798,16 @@ public class MainActivity extends BaseActivity {
         return true;
     }
 
-    public void jump(boolean refresh) {
-        layout_welcome.setVisibility(View.GONE);
-        if (refresh) {
-            load();
-        }
+    public void jump(final boolean refresh) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                layout_welcome.setVisibility(View.GONE);
+                if (refresh) {
+                    load();
+                }
+            }
+        });
     }
 
 }

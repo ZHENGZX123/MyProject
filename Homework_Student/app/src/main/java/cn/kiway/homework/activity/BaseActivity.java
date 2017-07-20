@@ -2,6 +2,7 @@ package cn.kiway.homework.activity;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
@@ -70,7 +71,7 @@ public class BaseActivity extends Activity {
             InputStream is = null;
             Bitmap b = ImageLoader.getInstance().loadImageSync(url, WXApplication.getLoaderOptions());
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            b.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            b.compress(Bitmap.CompressFormat.PNG, 100, baos);
             is = new ByteArrayInputStream(baos.toByteArray());
             return is;
         } catch (Exception e) {
@@ -81,6 +82,7 @@ public class BaseActivity extends Activity {
 
 
     public InputStream getStreamByUrl2(String url) {
+        long start = System.currentTimeMillis();
         try {
             File file = new File(url);
             InputStream is = new FileInputStream(file);
@@ -99,6 +101,7 @@ public class BaseActivity extends Activity {
             byte[] result = decrypt(read, "kiwaykiway123456abcdefghijklmnop");
             System.out.println("解密后：" + new String(result));
             InputStream is2 = new ByteArrayInputStream(result);
+            Log.d("test", "解密文件" + url + "，耗时:" + (System.currentTimeMillis() - start));
             return is2;
         } catch (Exception e) {
             e.printStackTrace();
