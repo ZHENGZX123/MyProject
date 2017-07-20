@@ -553,7 +553,7 @@ public class MainActivity extends BaseActivity {
                 Log.d("test", "压缩后大小" + images.get(0).size);
             }
             String path = images.get(0).path;
-            wv.loadUrl("javascript:selectPhotoCallback('" + path + "')");
+            wv.loadUrl("javascript:selectPhotoCallback('file://" + path + "')");
         } else if (requestCode == SAOMAWANG) {
             if (data == null) {
                 return;
