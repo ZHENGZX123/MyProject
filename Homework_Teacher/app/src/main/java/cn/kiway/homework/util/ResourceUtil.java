@@ -27,7 +27,7 @@ public class ResourceUtil {
         }
         //1.搜索题库，如果没有，返回null
         //TODO url==>key
-        String key = url.replace("", "");
+        String key = url.replace("http://202.104.136.9:8389", "");
         KV a = new MyDBHelper(c).getKVByK(key);
         if (a == null) {
             return null;

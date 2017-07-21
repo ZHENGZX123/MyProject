@@ -273,16 +273,17 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
-        public void fileUpload(final String filepath) {
-            Log.d("test", "fileUpload");
+        public void fileUpload(String filepath) {
+            filepath = filepath.replace("file://", "");
+            Log.d("test", "fileUpload , filepath = " + filepath);
             //选择图片
+            final String finalFilepath = filepath;
             new Thread() {
                 @Override
                 public void run() {
-                    File file = new File(filepath);
-                    final String ret = UploadUtil.uploadFile(file, "http://192.168.8.162:8080/common/file", file.getName());
+                    File file = new File(finalFilepath);
+                    final String ret = UploadUtil.uploadFile(file, "http://202.104.136.9:8389/common/file", file.getName());
                     Log.d("test", "upload ret = " + ret);
-
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -567,13 +568,14 @@ public class MainActivity extends BaseActivity {
             boolean isOrig = data.getBooleanExtra(ImagePreviewActivity.ISORIGIN, false);
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             if (!isOrig) {
-                Log.d("test", "压缩前大小" + images.get(0).size);
+                Log.d("test", "压缩前大小" + new File(images.get(0).path).length());
                 File newFile = CompressHelper.getDefault(this).compressToFile(new File(images.get(0).path));
                 images.get(0).path = newFile.getAbsolutePath();
                 images.get(0).size = newFile.length();
                 Log.d("test", "压缩后大小" + images.get(0).size);
             }
             String path = images.get(0).path;
+            Log.d("test", "path = " + path);
             wv.loadUrl("javascript:selectPhotoCallback('file://" + path + "')");
         } else if (requestCode == SAOMAWANG) {
             if (data == null) {
