@@ -49,7 +49,6 @@ public class CountlyUtil {
         Log.d("countly", "totalcount = " + totalcount);
         if (totalcount >= 50) {
             sendAll();
-            events.clear();
         }
     }
 
@@ -61,6 +60,7 @@ public class CountlyUtil {
             int count = (Integer) entry.getValue();
             Countly.sharedInstance().recordEvent(key, count);
         }
+        events.clear();
     }
 
 }
