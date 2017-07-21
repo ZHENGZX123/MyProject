@@ -21,6 +21,8 @@ import com.xiaomi.mipush.sdk.MiPushClient;
 import java.io.File;
 import java.util.List;
 
+import ly.count.android.api.Countly;
+
 /**
  * Created by Administrator on 2017/7/5.
  */
@@ -52,6 +54,9 @@ public class WXApplication extends Application {
         if (shouldInit()) {
             MiPushClient.registerPush(this, APP_ID, APP_KEY);
         }
+
+        //countly
+        Countly.sharedInstance().init(this, "http://192.168.8.61:80", "39e84dfb1fb6ce8c398d6f80810fdb7369f9f903");
     }
 
     private boolean shouldInit() {
