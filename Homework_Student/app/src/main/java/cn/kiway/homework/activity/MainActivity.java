@@ -81,7 +81,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.0.5";
+    private static final String currentPackageVersion = "0.0.6";
 
     private WebView wv;
     private LinearLayout layout_welcome;
@@ -120,12 +120,12 @@ public class MainActivity extends BaseActivity {
     }
 
     private void load() {
-        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
+//        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
 //        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("http://202.104.136.9:8280/weex/xtzy/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
 //        wv.loadUrl("file:///android_asset/test2.html");
-//        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
+        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
 
 
@@ -268,7 +268,7 @@ public class MainActivity extends BaseActivity {
                 Log.d("test", "showPhoto param2 = " + param2);
                 ViewPagerActivity.sDrawables = param1.replace("[", "").replace("]", "").replace("\"", "").split(",");
                 //ViewPagerActivity.sDrawables = new String[]{"https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=1897461257,834967576&fm=80&w=179&h=119&img.JPEG"};
-                //ViewPagerActivity.sDrawables = new String[]{"file:///mnt/sdcard/aaa2.jpg", "file:///mnt/sdcard/aaa.jpg"};
+                //ViewPagerActivity.sDrawables = new String[]{"file:///mnt/sdcard/aaa2.jpg", "file:///mnt/sdcard/aaa.jpg"};本地要有file://
                 Intent intent = new Intent(MainActivity.this, ViewPagerActivity.class);
                 intent.putExtra("position", Integer.parseInt(param2));
                 startActivity(intent);
