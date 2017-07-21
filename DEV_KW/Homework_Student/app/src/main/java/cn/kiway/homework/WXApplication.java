@@ -21,6 +21,8 @@ import com.xiaomi.mipush.sdk.MiPushClient;
 import java.io.File;
 import java.util.List;
 
+import ly.count.android.api.Countly;
+
 /**
  * Created by Administrator on 2017/7/5.
  */
@@ -30,6 +32,8 @@ public class WXApplication extends Application {
     public static String ROOT = "/mnt/sdcard/kiway_student/";
     public static String HTML = "xtzy_student/dist/index.html";
     public static String ZIP = "xtzy_student.zip";
+
+    public static String BOOKS = "/mnt/sdcard/books/";
 
 
     //小米推送用
@@ -51,6 +55,9 @@ public class WXApplication extends Application {
         if (shouldInit()) {
             MiPushClient.registerPush(this, APP_ID, APP_KEY);
         }
+
+        //countly
+        Countly.sharedInstance().init(this, "http://192.168.8.61:80", "482dd339784e8488a4680897ffb117f1e7d90baf");
     }
 
     private boolean shouldInit() {
