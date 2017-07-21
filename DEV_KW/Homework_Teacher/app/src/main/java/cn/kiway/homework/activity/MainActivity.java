@@ -380,12 +380,18 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
-        public void httpRequest(final String url, final String param, final String method, String time, String tagname, String related, String event) {
-            Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , time = " + time + " , tagname = " + tagname + " , related = " + related + " , event = " + event);
+        public void httpRequest(final String url, String param, final String method, String time, String tagname, String related, String event) {
             try {
                 Integer.parseInt(time);
+                param = param.replace("\\\"", "\"");
+                if (param.startsWith("\"")) {
+                    param = param.substring(1);
+                }
+                if (param.endsWith("\"")) {
+                    param = param.substring(0, param.length() - 1);
+                }
             } catch (Exception e) {
-                Log.d("test", "time 错误");
+                Log.d("test", "参数错误");
                 return;
             }
             CountlyUtil.getInstance().addEvent(event);
