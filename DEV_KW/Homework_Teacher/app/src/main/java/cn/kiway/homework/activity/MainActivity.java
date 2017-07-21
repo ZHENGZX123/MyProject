@@ -63,12 +63,14 @@ import java.util.ArrayList;
 import cn.kiway.homework.WXApplication;
 import cn.kiway.homework.entity.HTTPCache;
 import cn.kiway.homework.teacher.R;
+import cn.kiway.homework.util.CountlyUtil;
 import cn.kiway.homework.util.FileUtils;
 import cn.kiway.homework.util.HttpDownload;
 import cn.kiway.homework.util.MyDBHelper;
 import cn.kiway.homework.util.ResourceUtil;
 import cn.kiway.homework.util.UploadUtil;
 import cn.kiway.homework.util.Utils;
+import ly.count.android.api.Countly;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static cn.kiway.homework.util.Utils.getCurrentVersion;
@@ -97,16 +99,28 @@ public class MainActivity extends BaseActivity {
         initData();
         load();
         checkNewVersion();
-//        getBooks();
+        getBooks();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Countly.sharedInstance().onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        CountlyUtil.getInstance().sendAll();
+        Countly.sharedInstance().onStop();
+    }
 
     private void load() {
-//        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
+        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
 //        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
 //        wv.loadUrl("file:///android_asset/test2.html");
-        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
+//        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
 
     private void initData() {
@@ -366,14 +380,15 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
-        public void httpRequest(final String url, final String param, final String method, String time, String tagname, String related) {
-            Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , time = " + time + " , tagname = " + tagname + " , related = " + related);
+        public void httpRequest(final String url, final String param, final String method, String time, String tagname, String related, String event) {
+            Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , time = " + time + " , tagname = " + tagname + " , related = " + related + " , event = " + event);
             try {
                 Integer.parseInt(time);
             } catch (Exception e) {
                 Log.d("test", "time 错误");
                 return;
             }
+            CountlyUtil.getInstance().addEvent(event);
             if (time.equals("0")) {
                 //1.重新获取
                 doHttpRequest(url, param, method, tagname, time, related);
@@ -640,6 +655,7 @@ public class MainActivity extends BaseActivity {
                 pd.dismiss();
                 toast(R.string.downloadsuccess);
                 // 下载完成后安装
+                CountlyUtil.getInstance().addEvent("升级APP");
                 String savedFilePath = (String) msg.obj;
                 Intent intent = new Intent();
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -790,6 +806,7 @@ public class MainActivity extends BaseActivity {
             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
         }
         if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
+            CountlyUtil.getInstance().addEvent("安装APP");
             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", false).commit();
             if (new File(WXApplication.ROOT).exists()) {
                 FileUtils.delFolder(WXApplication.ROOT);
