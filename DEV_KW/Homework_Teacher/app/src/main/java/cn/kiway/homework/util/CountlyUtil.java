@@ -48,7 +48,6 @@ public class CountlyUtil {
         //3.攒够50条，发出去
         if (totalcount >= 50) {
             sendAll();
-            events.clear();
         }
     }
 
@@ -60,6 +59,7 @@ public class CountlyUtil {
             int count = (Integer) entry.getValue();
             Countly.sharedInstance().recordEvent(key, count);
         }
+        events.clear();
     }
 
 }
