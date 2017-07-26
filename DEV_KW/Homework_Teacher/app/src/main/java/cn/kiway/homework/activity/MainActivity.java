@@ -48,6 +48,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -77,7 +78,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.0.6";
+    private static final String currentPackageVersion = "0.0.7";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -207,7 +208,7 @@ public class MainActivity extends BaseActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             String url = wv.getUrl();
             Log.d("test", "url = " + url);
-            if (url.endsWith("login") || url.endsWith("exam") || url.endsWith("mine") || url.endsWith("index.html#/")) {
+            if (url.endsWith("login") || url.endsWith("exam") || url.endsWith("mine") || url.endsWith("message") || url.endsWith("index")) {
                 doFinish();
                 return true;
             }
@@ -242,6 +243,23 @@ public class MainActivity extends BaseActivity {
 
     public class JsAndroidInterface {
         public JsAndroidInterface() {
+        }
+
+        @JavascriptInterface
+        public void login(String param) {
+//            {"username":"老师145","password":"123456","accessToken":"299b8e104f1411e79aa8119000060031"}
+            Log.d("test", " login param = " + param);
+            try {
+                String accessToken = new JSONObject(param).getString("accessToken");
+                getSharedPreferences("homework", 0).edit().putString("token", accessToken).commit();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @JavascriptInterface
+        public void logout() {
+            getSharedPreferences("homework", 0).edit().putString("token", "").commit();
         }
 
         @JavascriptInterface
@@ -281,8 +299,10 @@ public class MainActivity extends BaseActivity {
             new Thread() {
                 @Override
                 public void run() {
+                    String token = getSharedPreferences("homework", 0).getString("token", "");
+                    Log.d("test", "取出token=" + token);
                     File file = new File(finalFilepath);
-                    final String ret = UploadUtil.uploadFile(file, "http://202.104.136.9:8389/common/file", file.getName());
+                    final String ret = UploadUtil.uploadFile(file, "http://202.104.136.9:8389/common/file?access_token=" + token, file.getName());
                     Log.d("test", "upload ret = " + ret);
                     runOnUiThread(new Runnable() {
                         @Override
