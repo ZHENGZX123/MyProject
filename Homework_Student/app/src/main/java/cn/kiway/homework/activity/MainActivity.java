@@ -82,7 +82,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.0.7";
+    private static final String currentPackageVersion = "0.0.8";
 
     private WebView wv;
     private LinearLayout layout_welcome;
