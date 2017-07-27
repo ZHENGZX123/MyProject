@@ -48,7 +48,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,11 +60,9 @@ import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import cn.kiway.homework.WXApplication;
 import cn.kiway.homework.entity.HTTPCache;
-import cn.kiway.homework.entity.KV;
 import cn.kiway.homework.student.R;
 import cn.kiway.homework.util.CountlyUtil;
 import cn.kiway.homework.util.FileUtils;
@@ -82,7 +79,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.0.8";
+    private static final String currentPackageVersion = "0.0.9";
 
     private WebView wv;
     private LinearLayout layout_welcome;
@@ -215,7 +212,7 @@ public class MainActivity extends BaseActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Log.d("test", "click back = " + wv.getUrl());
             String url = wv.getUrl();
-            if (url.endsWith("login") || url.endsWith("ctb/error") || url.endsWith("msdx") || url.endsWith("mine") || url.endsWith("index.html#/")) {
+            if (url.endsWith("login") || url.endsWith("ctb/error") || url.endsWith("msdx") || url.endsWith("mine") || url.endsWith("index")) {
                 doFinish();
                 return true;
             }
@@ -262,6 +259,7 @@ public class MainActivity extends BaseActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            getBooks();
         }
 
         @JavascriptInterface
@@ -458,6 +456,8 @@ public class MainActivity extends BaseActivity {
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
                     client.setTimeout(10000);
+                    String token = getSharedPreferences("homework", 0).getString("token", "");
+                    client.addHeader("X-Auth-Token", token);
                     if (method.equalsIgnoreCase("POST")) {
                         StringEntity stringEntity = new StringEntity(param, "utf-8");
                         client.post(MainActivity.this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
@@ -883,71 +883,6 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
-    }
-
-    public void getBooks() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.setTimeout(10000);
-        client.get(this, "http://202.104.136.9:8389/teacher/book", new TextHttpResponseHandler() {
-            @Override
-            public void onSuccess(int code, Header[] headers, String ret) {
-                Log.d("test", "get onSuccess = " + ret);
-                downloadZip(ret);
-            }
-
-            @Override
-            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                Log.d("test", "get onFailure = " + s);
-            }
-        });
-    }
-
-    private void downloadZip(final String ret) {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    JSONArray array = new JSONObject(ret).getJSONArray("data");
-                    int count = array.length();
-                    for (int i = 0; i < count; i++) {
-                        JSONObject o = array.getJSONObject(i);
-                        String id = o.getString("id");
-                        Log.d("test", "id = " + id);
-                        //0.检查本地是否存在
-                        if (new File(WXApplication.BOOKS + id + ".zip").exists()) {
-                            continue;
-                        }
-                        //1.下载
-                        int ret = new HttpDownload().downFile("http://202.104.136.9:8389/resource/book/" + id, "/mnt/sdcard/books/", id + ".zip");
-                        Log.d("test", "下载结果 ret = " + ret);
-                        if (ret == 0) {
-                            //2.解压
-                            new ZipFile(WXApplication.BOOKS + id + ".zip").extractAll(WXApplication.BOOKS + id);
-                            //3.读取data.json文件
-                            String filepath = WXApplication.BOOKS + id + "/data.json";
-                            String content = FileUtils.readSDCardFile(filepath, getApplicationContext());
-                            Log.d("test", "content = " + content);
-                            JSONObject all = new JSONObject(content);
-                            Iterator<String> keys = all.keys();
-                            while (keys.hasNext()) {
-                                String key = keys.next();
-                                String value = all.getString(key);
-                                Log.d("test", "key = " + key);
-                                Log.d("test", "value = " + value);
-                                //4.插入数据库
-                                KV a = new KV();
-                                a.k = key;
-                                a.v = value;
-                                new MyDBHelper(getApplicationContext()).addKV(a);
-                            }
-                            Log.d("test", "book" + id + "插入sql完毕");
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
     }
 
 }
