@@ -140,6 +140,8 @@ public class BaseActivity extends Activity {
     public void getBooks() {
         AsyncHttpClient client = new AsyncHttpClient();
         client.setTimeout(10000);
+        String token = getSharedPreferences("homework", 0).getString("token", "");
+        client.addHeader("X-Auth-Token", token);
         client.get(this, "http://202.104.136.9:8389/teacher/book", new TextHttpResponseHandler() {
             @Override
             public void onSuccess(int code, Header[] headers, String ret) {
