@@ -78,7 +78,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.0.7";
+    private static final String currentPackageVersion = "0.0.9";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -448,6 +448,8 @@ public class MainActivity extends BaseActivity {
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
                     client.setTimeout(10000);
+                    String token = getSharedPreferences("homework", 0).getString("token", "");
+                    client.addHeader("X-Auth-Token", token);
                     if (method.equalsIgnoreCase("POST")) {
                         StringEntity stringEntity = new StringEntity(param, "utf-8");
                         client.post(MainActivity.this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
