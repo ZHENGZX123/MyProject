@@ -103,6 +103,7 @@ public class MainActivity extends BaseActivity {
         checkNewVersion();
         getBooks();
         huaweiPush();
+        Utils.getSystem();
     }
 
     @Override
