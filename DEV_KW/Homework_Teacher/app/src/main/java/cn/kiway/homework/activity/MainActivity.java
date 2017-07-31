@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.client.android.CaptureActivity;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.lzy.imagepicker.ImagePicker;
@@ -117,11 +118,11 @@ public class MainActivity extends BaseActivity {
     }
 
     private void load() {
-//        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
+        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
 //        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
 //        wv.loadUrl("file:///android_asset/test2.html");
-        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
+//        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
 
     private void initData() {
@@ -235,6 +236,8 @@ public class MainActivity extends BaseActivity {
     private static final int SNAPSHOT = 9999;
     private static final int SELECT_PHOTO = 8888;
     private static final int SAOMAWANG = 7777;
+    private static final int QRSCAN = 6666;
+
 
     private MediaRecorder mediaRecorder;
     private File recordFile;
@@ -243,6 +246,11 @@ public class MainActivity extends BaseActivity {
 
     public class JsAndroidInterface {
         public JsAndroidInterface() {
+        }
+
+        @JavascriptInterface
+        public void scanQR() {
+            startActivityForResult(new Intent(MainActivity.this, CaptureActivity.class), QRSCAN);
         }
 
         @JavascriptInterface
@@ -571,7 +579,7 @@ public class MainActivity extends BaseActivity {
             return;
         }
 
-        wv.loadUrl("javascript:recordCallback ('file://" + recordFile.getAbsolutePath() + "')");
+        wv.loadUrl("javascript:recordCallback('file://" + recordFile.getAbsolutePath() + "')");
     }
 
     @Override
@@ -606,6 +614,13 @@ public class MainActivity extends BaseActivity {
             }
             int responseCode = data.getIntExtra("RESULT_OK", -1);
             Log.d("test", "responseCode = " + responseCode);
+        } else if (requestCode == QRSCAN) {
+            if (data == null) {
+                return;
+            }
+            String result = data.getStringExtra("result");
+            Log.d("test", "result = " + result);
+            wv.loadUrl("javascript:scanQRCallback('" + result + "')");
         }
     }
 
