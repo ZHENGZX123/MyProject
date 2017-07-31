@@ -6,6 +6,7 @@ import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
+import com.huawei.android.pushagent.api.PushManager;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -41,6 +42,11 @@ import cn.kiway.homework.util.MyDBHelper;
  */
 
 public class BaseActivity extends Activity {
+    public void huaweiPush() {
+        PushManager.requestToken(this);
+        Log.i("huawei", "try to get Token ,current packageName is " + this.getPackageName());
+    }
+
     public void toast(final String txt) {
         runOnUiThread(new Runnable() {
 

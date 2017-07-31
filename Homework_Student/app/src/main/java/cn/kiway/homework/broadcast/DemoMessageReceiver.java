@@ -1,6 +1,7 @@
 package cn.kiway.homework.broadcast;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.xiaomi.mipush.sdk.ErrorCode;
@@ -11,6 +12,7 @@ import com.xiaomi.mipush.sdk.PushMessageReceiver;
 
 import java.util.List;
 
+import cn.kiway.homework.activity.MainActivity;
 import cn.kiway.homework.student.R;
 
 
@@ -62,6 +64,9 @@ public class DemoMessageReceiver extends PushMessageReceiver {
     @Override
     public void onNotificationMessageClicked(Context context, MiPushMessage message) {
         Log.v(TAG, "onNotificationMessageClicked is called. " + message.toString());
+        Log.d("test", "存了一个event");
+        context.getSharedPreferences("homework", 0).edit().putString("event", "notification").commit();
+        context.startActivity(new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     @Override

@@ -79,7 +79,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.0.9";
+    private static final String currentPackageVersion = "0.1.0";
 
     private WebView wv;
     private LinearLayout layout_welcome;
@@ -102,6 +102,38 @@ public class MainActivity extends BaseActivity {
         load();
         checkNewVersion();
         getBooks();
+        huaweiPush();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("test", "onresume");
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    sleep(3000);//如果从外面进来，3秒才够。如果本身在里面，就不用3秒。
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                checkNotification();
+            }
+        }.start();
+    }
+
+    private synchronized void checkNotification() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String event = getSharedPreferences("homework", 0).getString("event", "");
+                if (event.equals("notification")) {
+                    Log.d("test", "取了一个event");
+                    wv.loadUrl("javascript:notificationCallback('param')");
+                    getSharedPreferences("homework", 0).edit().putString("event", "").commit();
+                }
+            }
+        });
     }
 
     @Override
@@ -579,7 +611,7 @@ public class MainActivity extends BaseActivity {
             return;
         }
 
-        wv.loadUrl("javascript:recordCallback ('file://" + recordFile.getAbsolutePath() + "')");
+        wv.loadUrl("javascript:recordCallback('file://" + recordFile.getAbsolutePath() + "')");
     }
 
     @Override
