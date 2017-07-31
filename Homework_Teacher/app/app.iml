@@ -122,6 +122,7 @@
     <orderEntry type="library" exported="" name="appcompat-v7-25.0.1" level="project" />
     <orderEntry type="library" exported="" name="image_compress" level="project" />
     <orderEntry type="library" exported="" name="support-core-utils-25.0.1" level="project" />
+    <orderEntry type="module" module-name="zxing" exported="" />
     <orderEntry type="module" module-name="ImagePicker" exported="" />
     <orderEntry type="library" exported="" name="org.apache.http.legacy-android-25" level="project" />
     <orderEntry type="library" exported="" name="support-v4-18.0.0" level="project" />
