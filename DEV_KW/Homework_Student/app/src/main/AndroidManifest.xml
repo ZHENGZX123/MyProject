@@ -88,7 +88,7 @@
         </receiver>
 
         <receiver
-            android:name="cn.kiway.homework.broadcast.DemoMessageReceiver"
+            android:name="cn.kiway.homework.broadcast.XiaomiMessageReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE" />
@@ -104,7 +104,7 @@
 
         <!-- 华为推送 -->
         <!-- 第三方相关 :接收Push消息（注册、Push消息、Push连接状态、标签，LBS上报结果）广播 -->
-        <receiver android:name="cn.kiway.homework.broadcast.MyReceiver" >
+        <receiver android:name="cn.kiway.homework.broadcast.HuaweiMessageReceiver" >
             <intent-filter>
                 <!-- 必须,用于接收token-->
                 <action android:name="com.huawei.android.push.intent.REGISTRATION" />
