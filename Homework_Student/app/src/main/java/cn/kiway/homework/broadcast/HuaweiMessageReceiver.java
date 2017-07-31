@@ -11,7 +11,7 @@ import com.huawei.android.pushagent.api.PushEventReceiver;
 /*
  * 接收Push所有消息的广播接收器
  */
-public class MyReceiver extends PushEventReceiver {
+public class HuaweiMessageReceiver extends PushEventReceiver {
 
     @Override
     public void onToken(Context context, String token, Bundle extras) {

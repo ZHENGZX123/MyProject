@@ -46,7 +46,7 @@ import cn.kiway.homework.student.R;
  *
  * @author mayixiang
  */
-public class DemoMessageReceiver extends PushMessageReceiver {
+public class XiaomiMessageReceiver extends PushMessageReceiver {
 
     private String mRegId;
     private String mTopic;
