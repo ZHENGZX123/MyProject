@@ -79,7 +79,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.1.1";
+    private static final String currentPackageVersion = "0.1.2";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -764,14 +764,17 @@ public class MainActivity extends BaseActivity {
                             jump(false);
                             return;
                         }
-                        if (new File(WXApplication.ROOT + "kiway_teacher").exists()) {
-                            FileUtils.delFolder(WXApplication.ROOT + "kiway_teacher");
+                        Log.d("test", "删除旧包");
+                        if (new File(WXApplication.ROOT + "xtzy_teacher").exists()) {
+                            FileUtils.delFolder(WXApplication.ROOT + "xtzy_teacher");
                         }
                         try {
+                            Log.d("test", "解压新包");
                             new ZipFile(WXApplication.ROOT + WXApplication.ZIP).extractAll(WXApplication.ROOT);
                         } catch (ZipException e) {
                             e.printStackTrace();
                         }
+                        Log.d("test", "解压完毕");
                         getSharedPreferences("kiway", 0).edit().putString("version_package", outer_package).commit();
                         jump(true);
                     }
