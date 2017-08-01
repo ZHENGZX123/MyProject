@@ -79,7 +79,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.1.0";
+    private static final String currentPackageVersion = "0.1.1";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -150,11 +150,11 @@ public class MainActivity extends BaseActivity {
     }
 
     private void load() {
-        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
+//        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
 //        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
 //        wv.loadUrl("file:///android_asset/test2.html");
-//        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
+        wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
 
     private void initData() {
