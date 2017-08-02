@@ -1,0 +1,339 @@
+[
+    {
+        "outputFile": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values\\values.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 40,
+                    "endOffset": 91
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\colors.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 3,
+                    "startColumn": 4,
+                    "startOffset": 96,
+                    "endColumn": 59,
+                    "endOffset": 151
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\colors.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 4,
+                    "startColumn": 4,
+                    "startOffset": 156,
+                    "endColumn": 42,
+                    "endOffset": 194
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\colors.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 5,
+                    "startColumn": 4,
+                    "startOffset": 199,
+                    "endColumn": 63,
+                    "endOffset": 258
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\colors.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 6,
+                    "startColumn": 4,
+                    "startOffset": 263,
+                    "endColumn": 64,
+                    "endOffset": 323
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\colors.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 7,
+                    "startColumn": 4,
+                    "startOffset": 328,
+                    "endColumn": 57,
+                    "endOffset": 381
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\dimens.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 8,
+                    "startColumn": 4,
+                    "startOffset": 386,
+                    "endColumn": 55,
+                    "endOffset": 437
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\dimens.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 9,
+                    "startColumn": 4,
+                    "startOffset": 442,
+                    "endColumn": 49,
+                    "endOffset": 487
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\dimens.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 10,
+                    "startColumn": 4,
+                    "startOffset": 492,
+                    "endColumn": 53,
+                    "endOffset": 541
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\dimens.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 11,
+                    "startColumn": 4,
+                    "startOffset": 546,
+                    "endColumn": 52,
+                    "endOffset": 594
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\dimens.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 12,
+                    "startColumn": 4,
+                    "startOffset": 599,
+                    "endColumn": 42,
+                    "endOffset": 637
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\dimens.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 13,
+                    "startColumn": 4,
+                    "startOffset": 642,
+                    "endColumn": 52,
+                    "endOffset": 690
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\strings.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 14,
+                    "startColumn": 4,
+                    "startOffset": 695,
+                    "endColumn": 48,
+                    "endOffset": 739
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\strings.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 15,
+                    "startColumn": 4,
+                    "startOffset": 744,
+                    "endColumn": 49,
+                    "endOffset": 789
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\strings.xml",
+                    "position": {
+                        "startLine": 12,
+                        "startColumn": 4,
+                        "startOffset": 448,
+                        "endColumn": 49,
+                        "endOffset": 493
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 16,
+                    "startColumn": 4,
+                    "startOffset": 794,
+                    "endColumn": 49,
+                    "endOffset": 839
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\strings.xml",
+                    "position": {
+                        "startLine": 9,
+                        "startColumn": 4,
+                        "startOffset": 324,
+                        "endColumn": 49,
+                        "endOffset": 369
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 17,
+                    "startColumn": 4,
+                    "startOffset": 844,
+                    "endColumn": 35,
+                    "endOffset": 875
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\strings.xml",
+                    "position": {
+                        "startLine": 7,
+                        "startColumn": 4,
+                        "startOffset": 251,
+                        "endColumn": 35,
+                        "endOffset": 282
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 18,
+                    "startColumn": 4,
+                    "startOffset": 880,
+                    "endColumn": 52,
+                    "endOffset": 928
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\strings.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 19,
+                    "startColumn": 4,
+                    "startOffset": 933,
+                    "endColumn": 39,
+                    "endOffset": 968
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\strings.xml",
+                    "position": {
+                        "startLine": 11,
+                        "startColumn": 4,
+                        "startOffset": 408,
+                        "endColumn": 39,
+                        "endOffset": 443
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 20,
+                    "startColumn": 4,
+                    "startOffset": 973,
+                    "endColumn": 42,
+                    "endOffset": 1011
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\strings.xml",
+                    "position": {
+                        "startLine": 13,
+                        "startColumn": 4,
+                        "startOffset": 498,
+                        "endColumn": 42,
+                        "endOffset": 536
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 21,
+                    "startColumn": 4,
+                    "startOffset": 1016,
+                    "endColumn": 71,
+                    "endOffset": 1083
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\strings.xml",
+                    "position": {
+                        "startLine": 14,
+                        "startColumn": 4,
+                        "startOffset": 541,
+                        "endColumn": 71,
+                        "endOffset": 608
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 22,
+                    "startColumn": 4,
+                    "startOffset": 1088,
+                    "endColumn": 33,
+                    "endOffset": 1117
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\strings.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 23,
+                    "startColumn": 4,
+                    "startOffset": 1122,
+                    "endColumn": 36,
+                    "endOffset": 1154
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\strings.xml",
+                    "position": {
+                        "startLine": 8,
+                        "startColumn": 4,
+                        "startOffset": 287,
+                        "endColumn": 36,
+                        "endOffset": 319
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 24,
+                    "startColumn": 4,
+                    "startOffset": 1159,
+                    "endColumn": 39,
+                    "endOffset": 1194
+                },
+                "from": {
+                    "file": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\values\\strings.xml",
+                    "position": {
+                        "startLine": 6,
+                        "startColumn": 4,
+                        "startOffset": 211,
+                        "endColumn": 39,
+                        "endOffset": 246
+                    }
+                }
+            }
+        ]
+    }
+]

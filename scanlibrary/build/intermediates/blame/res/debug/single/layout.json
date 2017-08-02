@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\res\\merged\\debug\\layout\\scan_fragment_layout.xml",
+        "source": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\layout\\scan_fragment_layout.xml"
+    },
+    {
+        "merged": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\res\\merged\\debug\\layout\\result_layout.xml",
+        "source": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\layout\\result_layout.xml"
+    },
+    {
+        "merged": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\res\\merged\\debug\\layout\\scan_layout.xml",
+        "source": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\layout\\scan_layout.xml"
+    },
+    {
+        "merged": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\res\\merged\\debug\\layout\\pick_image_fragment.xml",
+        "source": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\layout\\pick_image_fragment.xml"
+    }
+]

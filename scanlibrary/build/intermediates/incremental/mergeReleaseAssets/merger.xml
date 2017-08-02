@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="F:\MyProject\AndroidScannerDemo-master\ScanDemoExample\scanlibrary\src\main\assets"/><source path="F:\MyProject\AndroidScannerDemo-master\ScanDemoExample\scanlibrary\build\generated\assets\shaders\release"/></dataSet><dataSet config="release"><source path="F:\MyProject\AndroidScannerDemo-master\ScanDemoExample\scanlibrary\src\release\assets"/></dataSet></merger>
