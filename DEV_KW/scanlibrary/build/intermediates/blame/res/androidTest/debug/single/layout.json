@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\scan_fragment_layout.xml",
+        "source": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\bundles\\debug\\res\\layout\\scan_fragment_layout.xml"
+    },
+    {
+        "merged": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\pick_image_fragment.xml",
+        "source": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\bundles\\debug\\res\\layout\\pick_image_fragment.xml"
+    },
+    {
+        "merged": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\scan_layout.xml",
+        "source": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\bundles\\debug\\res\\layout\\scan_layout.xml"
+    },
+    {
+        "merged": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\result_layout.xml",
+        "source": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\bundles\\debug\\res\\layout\\result_layout.xml"
+    }
+]

@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\ic_enhamce_image.png",
+        "source": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\drawable-xxhdpi\\ic_enhamce_image.png"
+    },
+    {
+        "merged": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\ic_image.png",
+        "source": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\drawable-xxhdpi\\ic_image.png"
+    },
+    {
+        "merged": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\ic_launcher.png",
+        "source": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\drawable-xxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\ic_gray.png",
+        "source": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\drawable-xxhdpi\\ic_gray.png"
+    },
+    {
+        "merged": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\ic_black_and_white.png",
+        "source": "F:\\MyProject\\AndroidScannerDemo-master\\ScanDemoExample\\scanlibrary\\src\\main\\res\\drawable-xxhdpi\\ic_black_and_white.png"
+    }
+]

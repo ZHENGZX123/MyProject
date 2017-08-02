@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\.android\build-cache\46dd0bd7f9cae1299cf7709ee1f401bf12dd46e1\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="F:\MyProject\AndroidScannerDemo-master\ScanDemoExample\app\build\intermediates\pre-dexed\debug\classes_e3d227a177c69d5c0685e602fcc1a24be3404af4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="F:\MyProject\AndroidScannerDemo-master\ScanDemoExample\scanlibrary\build\intermediates\bundles\default\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="fa9f16d5503796b61be10ea647ac77959995ccff">
+        <dex dex="F:\MyProject\AndroidScannerDemo-master\ScanDemoExample\app\build\intermediates\pre-dexed\debug\classes_d6b159c156861ae7f2136c1356d28e9fa938cfe3.jar" />
+    </item>
+
+</items>
