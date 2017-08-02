@@ -14,7 +14,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -184,22 +183,7 @@ public class MainActivity extends BaseActivity {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
-        int screenDensity = getResources().getDisplayMetrics().densityDpi;
-        WebSettings.ZoomDensity zoomDensity = WebSettings.ZoomDensity.MEDIUM;
-        switch (screenDensity) {
-            case DisplayMetrics.DENSITY_LOW:
-                zoomDensity = WebSettings.ZoomDensity.CLOSE;
-                break;
-            case DisplayMetrics.DENSITY_MEDIUM:
-                zoomDensity = WebSettings.ZoomDensity.MEDIUM;
-                break;
-            case DisplayMetrics.DENSITY_HIGH:
-                zoomDensity = WebSettings.ZoomDensity.FAR;
-                break;
-        }
-        settings.setDefaultZoom(zoomDensity);
-        //settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        wv.setInitialScale(25);
+        settings.setTextSize(WebSettings.TextSize.NORMAL);
 
         wv.setWebViewClient(new WebViewClient() {
 
