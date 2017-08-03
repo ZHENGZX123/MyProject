@@ -10,7 +10,6 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -101,7 +100,7 @@ public class MainActivity extends BaseActivity {
         initData();
         load();
         checkNewVersion();
-        getBooks();
+//        getBooks();
         huaweiPush();
         Utils.getSystem();
     }
@@ -277,7 +276,7 @@ public class MainActivity extends BaseActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            getBooks();
+//            getBooks();
         }
 
         @JavascriptInterface
@@ -337,7 +336,14 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public String getVersionCode() {
-            return getCurrentVersion(MainActivity.this);
+            //return getCurrentVersion(MainActivity.this);
+            Log.d("test", "getVersionCode");
+            return getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
+        }
+
+        @JavascriptInterface
+        public void checkNewVersion() {
+            Log.d("test", "checkNewVersion");
         }
 
         @JavascriptInterface
@@ -681,7 +687,7 @@ public class MainActivity extends BaseActivity {
                     String zipUrl = new JSONObject(ret).getString("zipUrl");
 
                     if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
-                        showUpdateConfirmDialog(apkUrl);
+                        showUpdateConfirmDialog(true, apkUrl);
                     } else {
                         //如果APK没有最新版本，比较包的版本。如果内置包的版本号比较高，直接替换
                         boolean flag = false;
@@ -729,6 +735,9 @@ public class MainActivity extends BaseActivity {
                 jump(false);
             } else if (msg.what == 6) {
                 pd.setProgress(msg.arg1);
+            } else if (msg.what == 7) {
+                Log.d("test", "删除旧包");
+                //包更新，没做好
             }
         }
     };
@@ -767,14 +776,14 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    protected void showUpdateConfirmDialog(final String url) {
+    protected void showUpdateConfirmDialog(final boolean apk, final String url) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
         dialog_download = builder.setMessage(R.string.getnewversion).setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
                 dialog_download.dismiss();
-                downloadNewVersion(url);
+                downloadNewVersion(apk, url);
             }
         }).setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
@@ -786,7 +795,7 @@ public class MainActivity extends BaseActivity {
         dialog_download.show();
     }
 
-    protected void downloadNewVersion(final String urlString) {
+    protected void downloadNewVersion(final boolean apk, final String urlString) {
         pd.setMessage(getString(R.string.downloading));
         pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         pd.show();
@@ -794,7 +803,6 @@ public class MainActivity extends BaseActivity {
         pd.setProgress(0);
 
         new Thread() {
-            @SuppressWarnings("resource")
             public void run() {
                 try {
                     InputStream input = null;
@@ -808,10 +816,15 @@ public class MainActivity extends BaseActivity {
                     int total = urlConn.getContentLength();
                     File file = null;
                     OutputStream output = null;
-                    if (!new File(Environment.getExternalStorageDirectory().getPath() + "/cache").exists()) {
-                        new File(Environment.getExternalStorageDirectory().getPath() + "/cache").mkdirs();
+                    if (!new File("/mnt/sdcard/cache/").exists()) {
+                        new File("/mnt/sdcard/cache/").mkdirs();
                     }
-                    String savedFilePath = Environment.getExternalStorageDirectory().getPath() + "/cache/xtzy.apk";
+                    String savedFilePath = "";
+                    if (apk) {
+                        savedFilePath = "/mnt/sdcard/cache/xtzy.apk";
+                    } else {
+                        savedFilePath = WXApplication.ROOT + WXApplication.ZIP;
+                    }
                     file = new File(savedFilePath);
                     output = new FileOutputStream(file);
                     byte[] buffer = new byte[1024];
@@ -835,13 +848,25 @@ public class MainActivity extends BaseActivity {
                     output.flush();
                     output.close();
                     input.close();
-                    Message msg = new Message();
-                    msg.what = 4;
-                    msg.obj = savedFilePath;
-                    mHandler.sendMessage(msg);
+                    if (apk) {
+                        Message msg = new Message();
+                        msg.what = 4;
+                        msg.obj = savedFilePath;
+                        mHandler.sendMessage(msg);
+                    } else {
+                        //下载包完成
+                        Message msg = new Message();
+                        msg.what = 7;
+                        msg.obj = savedFilePath;
+                        mHandler.sendMessage(msg);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    mHandler.sendEmptyMessage(5);
+                    if (apk) {
+                        mHandler.sendEmptyMessage(5);//APK失败
+                    } else {
+                        toast("下载失败，请稍后再试");
+                    }
                 }
             }
         }.start();
@@ -906,6 +931,35 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private void doCheckNewPackage() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    HttpGet httpRequest = new HttpGet("http://202.104.136.9:8389/download/version/zip_xs.json");
+                    DefaultHttpClient client = new DefaultHttpClient();
+                    HttpResponse response = client.execute(httpRequest);
+                    String ret = EntityUtils.toString(response.getEntity());
+                    Log.d("test", "new version = " + ret);
+                    String zipCode = new JSONObject(ret).getString("zipCode");
+                    String zipUrl = new JSONObject(ret).getString("zipUrl");
+                    String currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
+                    Log.d("test", "currentPackage = " + currentPackage);
+                    String outer_package = zipCode;
+                    if (currentPackage.compareTo(outer_package) < 0) {
+                        //提示有新的包，下载新的包
+                        Log.d("test", "下载新的H5包");
+                        showUpdateConfirmDialog(false, zipUrl);
+                    } else {
+                        toast("当前已经是最新版本");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
 }
