@@ -78,7 +78,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.1.5";
+    private static final String currentPackageVersion = "0.1.6";
 
     private WebView wv;
     private LinearLayout layout_welcome;
@@ -493,8 +493,47 @@ public class MainActivity extends BaseActivity {
                                 httpRequestCallback(tagname, "failure");
                             }
                         });
+                    } else if (method.equalsIgnoreCase("PUT")) {
+                        StringEntity stringEntity = new StringEntity(param, "utf-8");
+                        client.put(MainActivity.this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+
+                            @Override
+                            public void onSuccess(int arg0, Header[] arg1, String ret) {
+                                Log.d("test", "put onSuccess = " + ret);
+                                httpRequestCallback(tagname, ret);
+                                //如果是post，related不为空，查找一下相关的缓存，并清除掉
+                                new MyDBHelper(getApplicationContext()).deleteHttpCache(related);
+                            }
+
+                            @Override
+                            public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+                                Log.d("test", "put onFailure = " + arg2);
+                                httpRequestCallback(tagname, "failure");
+                            }
+                        });
                     } else if (method.equalsIgnoreCase("GET")) {
                         client.get(MainActivity.this, url, new TextHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int i, Header[] headers, String ret) {
+                                Log.d("test", "get onSuccess = " + ret);
+                                saveDB(url, param, method, ret, tagname);
+                                httpRequestCallback(tagname, ret);
+                            }
+
+                            @Override
+                            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                                Log.d("test", "get onFailure = " + s);
+                                //如果是get，把缓存回它
+                                String request = url + param + method;
+                                HTTPCache cache = new MyDBHelper(getApplicationContext()).getHttpCacheByRequest(request, Integer.parseInt(time));
+                                if (cache != null) {
+                                    httpRequestCallback(cache.tagname, cache.response);
+                                }
+//                                httpRequestCallback(tagname, "failure");
+                            }
+                        });
+                    } else if (method.equalsIgnoreCase("DELETE")) {
+                        client.delete(MainActivity.this, url, new TextHttpResponseHandler() {
                             @Override
                             public void onSuccess(int i, Header[] headers, String ret) {
                                 Log.d("test", "get onSuccess = " + ret);
