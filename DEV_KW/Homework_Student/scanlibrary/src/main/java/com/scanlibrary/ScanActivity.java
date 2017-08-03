@@ -43,7 +43,7 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         fragment.setArguments(bundle);
         android.app.FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.content, fragment);
+        fragmentTransaction.replace(R.id.content, fragment);//add
         fragmentTransaction.addToBackStack(ScanFragment.class.toString());
         fragmentTransaction.commit();
     }
