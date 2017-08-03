@@ -340,7 +340,9 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public String getVersionCode() {
-            return getCurrentVersion(MainActivity.this);
+            //return getCurrentVersion(MainActivity.this);
+            Log.d("test", "getVersionCode");
+            return getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
         }
 
         @JavascriptInterface
