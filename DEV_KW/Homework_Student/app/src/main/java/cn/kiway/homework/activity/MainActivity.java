@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -37,6 +36,8 @@ import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.ui.ImagePreviewActivity;
 import com.lzy.imagepicker.view.CropImageView;
 import com.nanchen.compresshelper.CompressHelper;
+import com.scanlibrary.ScanActivity;
+import com.scanlibrary.ScanConstants;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -78,7 +79,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.1.3";
+    private static final String currentPackageVersion = "0.1.5";
 
     private WebView wv;
     private LinearLayout layout_welcome;
@@ -403,16 +404,14 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public void snapshot() {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            snapshotFile = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
-            Uri uri = Uri.fromFile(new File(snapshotFile));
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+//            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//            snapshotFile = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
+//            Uri uri = Uri.fromFile(new File(snapshotFile));
+//            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+//            startActivityForResult(intent, SNAPSHOT);
+            Intent intent = new Intent(MainActivity.this, ScanActivity.class);
+            intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, ScanConstants.OPEN_CAMERA);
             startActivityForResult(intent, SNAPSHOT);
-//            Intent intent = new Intent("com.intsig.camscanner.ACTION_SCAN");
-//            Uri uri = Uri.fromFile(new File("/sdcard/source.jpg"));
-//            intent.putExtra(Intent.EXTRA_STREAM, uri);
-//            intent.putExtra("scanned_image", "/sdcard/scanned.jpg");
-//            startActivityForResult(intent, SAOMAWANG);
         }
 
         @JavascriptInterface
@@ -547,7 +546,9 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + result);
-                wv.loadUrl("javascript:" + tagname + "(" + result + ")");
+                String r = result.replace("null", "\"\"");
+                Log.d("test", "r = " + r);
+                wv.loadUrl("javascript:" + tagname + "(" + r + ")");
             }
         });
     }
@@ -604,11 +605,13 @@ public class MainActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SNAPSHOT && resultCode == RESULT_OK) {
             Log.d("test", "snapshotCallback");
-//            wv.loadUrl("javascript:snapshotCallback('file://" + snapshotFile + "')");
-            Log.d("test", "压缩前大小" + new File(snapshotFile).length());
-            File newFile = CompressHelper.getDefault(this).compressToFile(new File(snapshotFile));
-            Log.d("test", "压缩后大小" + newFile.length());
-            wv.loadUrl("javascript:snapshotCallback('file://" + newFile.getAbsolutePath() + "')");
+//            Log.d("test", "压缩前大小" + new File(snapshotFile).length());
+//            File newFile = CompressHelper.getDefault(this).compressToFile(new File(snapshotFile));
+//            Log.d("test", "压缩后大小" + newFile.length());
+//            wv.loadUrl("javascript:snapshotCallback('file://" + newFile.getAbsolutePath() + "')");
+            Uri uri = data.getExtras().getParcelable(ScanConstants.SCANNED_RESULT);
+            Log.d("test", "uri = " + uri.toString());
+            wv.loadUrl("javascript:snapshotCallback('file://" + uri.toString() + "')");
         } else if (requestCode == SELECT_PHOTO && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
             if (data == null) {
                 return;
