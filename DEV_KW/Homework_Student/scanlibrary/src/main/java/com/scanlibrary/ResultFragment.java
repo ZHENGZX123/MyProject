@@ -5,6 +5,8 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,9 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Created by jhansi on 29/03/15.
@@ -93,8 +97,9 @@ public class ResultFragment extends Fragment {
                         if (bitmap == null) {
                             bitmap = original;
                         }
-                        Uri uri = Utils.getUri(getActivity(), bitmap);
-                        data.putExtra(ScanConstants.SCANNED_RESULT, uri);
+                        saveBitmapToJPG(bitmap, new File("/mnt/sdcard/xxx.jpg"));
+//                        Uri uri = Utils.getUri(getActivity(), bitmap);
+//                        data.putExtra(ScanConstants.SCANNED_RESULT, uri);
                         getActivity().setResult(Activity.RESULT_OK, data);
                         original.recycle();
                         System.gc();
@@ -111,6 +116,16 @@ public class ResultFragment extends Fragment {
                 }
             });
         }
+    }
+
+    public void saveBitmapToJPG(Bitmap bitmap, File photo) throws IOException {
+        Bitmap newBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(newBitmap);
+        canvas.drawColor(Color.WHITE);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+        OutputStream stream = new FileOutputStream(photo);
+        newBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        stream.close();
     }
 
     private class BWButtonClickListener implements View.OnClickListener {
