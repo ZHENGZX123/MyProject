@@ -100,7 +100,7 @@ public class MainActivity extends BaseActivity {
         initData();
         load();
         checkNewVersion();
-        getBooks();
+//        getBooks();
         huaweiPush();
     }
 
