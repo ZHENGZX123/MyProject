@@ -78,7 +78,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.1.3";
+    private static final String currentPackageVersion = "0.1.5";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -538,7 +538,6 @@ public class MainActivity extends BaseActivity {
             cache.requesttime = "" + System.currentTimeMillis();
             new MyDBHelper(this).updateHTTPCache(cache);
         }
-
     }
 
     private void httpRequestCallback(final String tagname, final String result) {
@@ -546,7 +545,9 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + result);
-                wv.loadUrl("javascript:" + tagname + "(" + result + ")");
+                String r = result.replace("null", "\"\"");
+                Log.d("test", "r = " + r);
+                wv.loadUrl("javascript:" + tagname + "(" + r + ")");
             }
         });
     }
