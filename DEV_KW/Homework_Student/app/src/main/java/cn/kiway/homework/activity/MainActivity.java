@@ -342,11 +342,6 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
-        public void checkNewVersion() {
-            Log.d("test", "checkNewVersion");
-        }
-
-        @JavascriptInterface
         public void record() {
             runOnUiThread(new Runnable() {
                 @Override
@@ -931,35 +926,6 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
-    }
-
-    private void doCheckNewPackage() {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    HttpGet httpRequest = new HttpGet("http://202.104.136.9:8389/download/version/zip_xs.json");
-                    DefaultHttpClient client = new DefaultHttpClient();
-                    HttpResponse response = client.execute(httpRequest);
-                    String ret = EntityUtils.toString(response.getEntity());
-                    Log.d("test", "new version = " + ret);
-                    String zipCode = new JSONObject(ret).getString("zipCode");
-                    String zipUrl = new JSONObject(ret).getString("zipUrl");
-                    String currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
-                    Log.d("test", "currentPackage = " + currentPackage);
-                    String outer_package = zipCode;
-                    if (currentPackage.compareTo(outer_package) < 0) {
-                        //提示有新的包，下载新的包
-                        Log.d("test", "下载新的H5包");
-                        showUpdateConfirmDialog(false, zipUrl);
-                    } else {
-                        toast("当前已经是最新版本");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
     }
 
 }
