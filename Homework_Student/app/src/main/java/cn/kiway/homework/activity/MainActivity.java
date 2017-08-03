@@ -548,7 +548,7 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + result);
                 String r = result.replace("null", "\"\"");
-                Log.d("test", "r = " + r);
+                //Log.d("test", "r = " + r);
                 wv.loadUrl("javascript:" + tagname + "(" + r + ")");
             }
         });
@@ -610,9 +610,15 @@ public class MainActivity extends BaseActivity {
 //            File newFile = CompressHelper.getDefault(this).compressToFile(new File(snapshotFile));
 //            Log.d("test", "压缩后大小" + newFile.length());
 //            wv.loadUrl("javascript:snapshotCallback('file://" + newFile.getAbsolutePath() + "')");
-            Uri uri = data.getExtras().getParcelable(ScanConstants.SCANNED_RESULT);
-            Log.d("test", "uri = " + uri.toString());
-            wv.loadUrl("javascript:snapshotCallback('file://" + uri.toString() + "')");
+//            Uri uri = data.getExtras().getParcelable(ScanConstants.SCANNED_RESULT);
+//            Log.d("test", "uri = " + uri.toString());
+//            String path = getRealFilePath(this, uri);
+//            Log.d("test", "path = " + path);
+            String path = "/mnt/sdcard/xxx.jpg";
+            Log.d("test", "压缩前大小" + new File(path).length());
+            File newFile = CompressHelper.getDefault(this).compressToFile(new File(path));
+            Log.d("test", "压缩后大小" + newFile.length());
+            wv.loadUrl("javascript:snapshotCallback('file://" + newFile.getAbsolutePath() + "')");
         } else if (requestCode == SELECT_PHOTO && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
             if (data == null) {
                 return;
