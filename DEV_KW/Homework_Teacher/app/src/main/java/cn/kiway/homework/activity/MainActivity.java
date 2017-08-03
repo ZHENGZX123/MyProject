@@ -548,7 +548,7 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + result);
                 String r = result.replace("null", "\"\"");
-                Log.d("test", "r = " + r);
+                //Log.d("test", "r = " + r);
                 wv.loadUrl("javascript:" + tagname + "(" + r + ")");
             }
         });
