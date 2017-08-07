@@ -47,7 +47,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -100,9 +99,14 @@ public class MainActivity extends BaseActivity {
         initData();
         load();
         checkNewVersion();
-//        getBooks();
         huaweiPush();
-        Utils.getSystem();
+
+//        getBooks();
+        try {
+            installationPush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -113,7 +117,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    sleep(3000);//如果从外面进来，3秒才够。如果本身在里面，就不用3秒。
+                    sleep(2000);//如果从外面进来，3秒才够。如果本身在里面，就不用3秒。
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -266,22 +270,32 @@ public class MainActivity extends BaseActivity {
         public JsAndroidInterface() {
         }
 
+        //1.正常登录、后台偷偷登录都要调用这个哦
         @JavascriptInterface
         public void login(String param) {
-//            {"username":"老师145","password":"123456","accessToken":"299b8e104f1411e79aa8119000060031"}
+            //{"username":"老师145","password":"123456","accessToken":"299b8e104f1411e79aa8119000060031"}
+            //用户id
             Log.d("test", " login param = " + param);
             try {
                 String accessToken = new JSONObject(param).getString("accessToken");
-                getSharedPreferences("homework", 0).edit().putString("token", accessToken).commit();
-            } catch (JSONException e) {
+                String userId = new JSONObject(param).getString("userId");
+                getSharedPreferences("homework", 0).edit().putString("accessToken", accessToken).commit();
+                getSharedPreferences("homework", 0).edit().putString("userId", userId).commit();
+//                getBooks();
+                installationPush();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-//            getBooks();
         }
 
+        //注销的时候要调用这个
         @JavascriptInterface
         public void logout() {
-            getSharedPreferences("homework", 0).edit().putString("token", "").commit();
+            getSharedPreferences("homework", 0).edit().putString("accessToken", "").commit();
+            getSharedPreferences("homework", 0).edit().putString("userId", "").commit();
+            getSharedPreferences("homework", 0).edit().putString("xiaomitoken", "").commit();
+            getSharedPreferences("homework", 0).edit().putString("huaweitoken", "").commit();
+            getSharedPreferences("homework", 0).edit().putString("othertoken", "").commit();
         }
 
         @JavascriptInterface
@@ -319,7 +333,7 @@ public class MainActivity extends BaseActivity {
             new Thread() {
                 @Override
                 public void run() {
-                    String token = getSharedPreferences("homework", 0).getString("token", "");
+                    String token = getSharedPreferences("homework", 0).getString("accessToken", "");
                     Log.d("test", "取出token=" + token);
                     File file = new File(finalFilepath);
                     final String ret = UploadUtil.uploadFile(file, "http://202.104.136.9:8389/common/file?access_token=" + token, file.getName());
@@ -473,7 +487,7 @@ public class MainActivity extends BaseActivity {
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
                     client.setTimeout(10000);
-                    String token = getSharedPreferences("homework", 0).getString("token", "");
+                    String token = getSharedPreferences("homework", 0).getString("accessToken", "");
                     client.addHeader("X-Auth-Token", token);
                     if (method.equalsIgnoreCase("POST")) {
                         StringEntity stringEntity = new StringEntity(param, "utf-8");
