@@ -15,6 +15,7 @@ import java.util.List;
 import cn.kiway.homework.activity.MainActivity;
 import cn.kiway.homework.teacher.R;
 
+
 /**
  * 1、PushMessageReceiver 是个抽象类，该类继承了 BroadcastReceiver。<br/>
  * 2、需要将自定义的 DemoMessageReceiver 注册在 AndroidManifest.xml 文件中：
@@ -47,7 +48,7 @@ import cn.kiway.homework.teacher.R;
  */
 public class XiaomiMessageReceiver extends PushMessageReceiver {
 
-    private String mRegId;
+    private String token;
     private String mTopic;
     private String mAlias;
     private String mAccount;
@@ -83,7 +84,7 @@ public class XiaomiMessageReceiver extends PushMessageReceiver {
         String log;
         if (MiPushClient.COMMAND_REGISTER.equals(command)) {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
-                mRegId = cmdArg1;
+                token = cmdArg1;
                 log = context.getString(R.string.register_success);
             } else {
                 log = context.getString(R.string.register_fail);
@@ -153,8 +154,9 @@ public class XiaomiMessageReceiver extends PushMessageReceiver {
         String log;
         if (MiPushClient.COMMAND_REGISTER.equals(command)) {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
-                mRegId = cmdArg1;
-                Log.d("test", "regId = " + mRegId);
+                token = cmdArg1;
+                Log.d("test", "regId = " + token);
+                context.getSharedPreferences("homework", 0).edit().putString("xiaomitoken", token).commit();
                 log = context.getString(R.string.register_success);
             } else {
                 log = context.getString(R.string.register_fail);
