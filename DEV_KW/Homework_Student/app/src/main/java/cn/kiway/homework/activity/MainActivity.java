@@ -100,13 +100,6 @@ public class MainActivity extends BaseActivity {
         load();
         checkNewVersion();
         huaweiPush();
-
-//        getBooks();
-        try {
-            installationPush();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -270,12 +263,9 @@ public class MainActivity extends BaseActivity {
         public JsAndroidInterface() {
         }
 
-        //1.正常登录、后台偷偷登录都要调用这个哦
         @JavascriptInterface
         public void login(String param) {
-            //{"username":"老师145","password":"123456","accessToken":"299b8e104f1411e79aa8119000060031"}
-            //用户id
-            Log.d("test", " login param = " + param);
+            Log.d("test", "login param = " + param);
             try {
                 String accessToken = new JSONObject(param).getString("accessToken");
                 String userId = new JSONObject(param).getString("userId");
@@ -291,11 +281,12 @@ public class MainActivity extends BaseActivity {
         //注销的时候要调用这个
         @JavascriptInterface
         public void logout() {
+            Log.d("test", "logout");
             getSharedPreferences("homework", 0).edit().putString("accessToken", "").commit();
             getSharedPreferences("homework", 0).edit().putString("userId", "").commit();
-            getSharedPreferences("homework", 0).edit().putString("xiaomitoken", "").commit();
-            getSharedPreferences("homework", 0).edit().putString("huaweitoken", "").commit();
-            getSharedPreferences("homework", 0).edit().putString("othertoken", "").commit();
+
+            //TODO注销推送平台。
+//            installationPush();
         }
 
         @JavascriptInterface
