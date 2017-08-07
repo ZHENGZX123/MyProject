@@ -77,7 +77,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.1.7";
+    private static final String currentPackageVersion = "0.1.8";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
