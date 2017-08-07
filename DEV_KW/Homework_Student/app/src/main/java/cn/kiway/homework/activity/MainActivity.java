@@ -78,7 +78,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.1.6";
+    private static final String currentPackageVersion = "0.1.7";
 
     private WebView wv;
     private LinearLayout layout_welcome;
@@ -488,9 +488,9 @@ public class MainActivity extends BaseActivity {
                             }
 
                             @Override
-                            public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-                                Log.d("test", "post onFailure = " + arg2);
-                                httpRequestCallback(tagname, "failure");
+                            public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                                Log.d("test", "post onFailure = " + ret);
+                                httpRequestCallback(tagname, ret);
                             }
                         });
                     } else if (method.equalsIgnoreCase("PUT")) {
@@ -506,9 +506,9 @@ public class MainActivity extends BaseActivity {
                             }
 
                             @Override
-                            public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-                                Log.d("test", "put onFailure = " + arg2);
-                                httpRequestCallback(tagname, "failure");
+                            public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                                Log.d("test", "put onFailure = " + ret);
+                                httpRequestCallback(tagname, ret);
                             }
                         });
                     } else if (method.equalsIgnoreCase("GET")) {
@@ -521,15 +521,16 @@ public class MainActivity extends BaseActivity {
                             }
 
                             @Override
-                            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                                Log.d("test", "get onFailure = " + s);
+                            public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
+                                Log.d("test", "get onFailure = " + ret);
                                 //如果是get，把缓存回它
                                 String request = url + param + method;
                                 HTTPCache cache = new MyDBHelper(getApplicationContext()).getHttpCacheByRequest(request, Integer.parseInt(time));
                                 if (cache != null) {
                                     httpRequestCallback(cache.tagname, cache.response);
+                                } else {
+                                    httpRequestCallback(tagname, ret);
                                 }
-//                                httpRequestCallback(tagname, "failure");
                             }
                         });
                     } else if (method.equalsIgnoreCase("DELETE")) {
@@ -542,15 +543,16 @@ public class MainActivity extends BaseActivity {
                             }
 
                             @Override
-                            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                                Log.d("test", "get onFailure = " + s);
+                            public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
+                                Log.d("test", "get onFailure = " + ret);
                                 //如果是get，把缓存回它
                                 String request = url + param + method;
                                 HTTPCache cache = new MyDBHelper(getApplicationContext()).getHttpCacheByRequest(request, Integer.parseInt(time));
                                 if (cache != null) {
                                     httpRequestCallback(cache.tagname, cache.response);
+                                } else {
+                                    httpRequestCallback(tagname, ret);
                                 }
-//                                httpRequestCallback(tagname, "failure");
                             }
                         });
                     }
@@ -586,7 +588,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + result);
-                String r = result.replace("null", "\"\"");
+                String r = result.replace("null", "\"\"").replace("\"\"\"\"", "\"\"");
                 //Log.d("test", "r = " + r);
                 wv.loadUrl("javascript:" + tagname + "(" + r + ")");
             }
