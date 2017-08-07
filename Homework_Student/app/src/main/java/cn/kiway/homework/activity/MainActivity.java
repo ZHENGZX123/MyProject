@@ -592,10 +592,14 @@ public class MainActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + result);
-                String r = result.replace("null", "\"\"").replace("\"\"\"\"", "\"\"");
-                //Log.d("test", "r = " + r);
-                wv.loadUrl("javascript:" + tagname + "(" + r + ")");
+                try {
+                    Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + result);
+                    String r = result.replace("null", "\"\"").replace("\"\"\"\"", "\"\"");
+                    //Log.d("test", "r = " + r);
+                    wv.loadUrl("javascript:" + tagname + "(" + r + ")");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
