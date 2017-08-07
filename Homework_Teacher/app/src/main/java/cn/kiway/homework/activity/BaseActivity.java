@@ -14,6 +14,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import net.lingala.zip4j.core.ZipFile;
 
 import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -147,7 +148,7 @@ public class BaseActivity extends Activity {
     public void getBooks() {
         AsyncHttpClient client = new AsyncHttpClient();
         client.setTimeout(10000);
-        String token = getSharedPreferences("homework", 0).getString("token", "");
+        String token = getSharedPreferences("homework", 0).getString("accessToken", "");
         client.addHeader("X-Auth-Token", token);
         client.get(this, "http://202.104.136.9:8389/teacher/book", new TextHttpResponseHandler() {
             @Override
@@ -209,5 +210,38 @@ public class BaseActivity extends Activity {
                 }
             }
         }.start();
+    }
+
+    public void installationPush() {
+        try {
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            String accessToken = getSharedPreferences("homework", 0).getString("accessToken", "");
+            String userId = getSharedPreferences("homework", 0).getString("userId", "");
+            String xiaomitoken = getSharedPreferences("homework", 0).getString("xiaomitoken", "");
+            String huaweitoken = getSharedPreferences("homework", 0).getString("huaweitoken", "");
+            String othertoken = getSharedPreferences("homework", 0).getString("othertoken", "");
+            client.addHeader("X-Auth-Token", accessToken);
+            JSONObject param = new JSONObject();
+            param.put("appId", "xizhou_appid");
+            param.put("deviceId", xiaomitoken);
+            param.put("type", "xiaomi");
+            param.put("userId", userId);
+            Log.d("push", "param = " + param.toString());
+            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+            client.post(this, "http://192.168.8.162:8080/push/installation", stringEntity, "application/json", new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("push", "installationPush onSuccess = " + ret);
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("push", "installationPush onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            Log.d("push", "e = " + e.toString());
+        }
     }
 }

@@ -13,6 +13,7 @@ import com.huawei.android.pushagent.api.PushEventReceiver;
  */
 public class HuaweiMessageReceiver extends PushEventReceiver {
 
+
     @Override
     public void onToken(Context context, String token, Bundle extras) {
         String belongId = extras.getString("belongId");
@@ -22,6 +23,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
         TelephonyManager tm = (TelephonyManager) context
                 .getSystemService(Context.TELEPHONY_SERVICE);
         Log.d("huawei", "imei = " + tm.getDeviceId());
+
+        context.getSharedPreferences("homework", 0).edit().putString("huaweitoken", token).commit();
     }
 
 
