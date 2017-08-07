@@ -22,10 +22,10 @@ import java.util.Properties;
 
 public class Utils {
 
-    public static final String SYS_EMUI = "sys_emui";
-    public static final String SYS_MIUI = "sys_miui";
+    public static final String SYS_EMUI = "huawei";//sys_emui
+    public static final String SYS_MIUI = "xiaomi";//sys_miui
     public static final String SYS_FLYME = "sys_flyme";
-    public static final String SYS_OTHER = "sys_other";
+    public static final String SYS_OTHER = "other";//sys_other
 
     private static final String KEY_MIUI_VERSION_CODE = "ro.miui.ui.version.code";
     private static final String KEY_MIUI_VERSION_NAME = "ro.miui.ui.version.name";
@@ -47,9 +47,10 @@ public class Utils {
                     || prop.getProperty(KEY_EMUI_VERSION, null) != null
                     || prop.getProperty(KEY_EMUI_CONFIG_HW_SYS_VERSION, null) != null) {
                 SYS = SYS_EMUI;//华为
-            } else if (getMeizuFlymeOSFlag().toLowerCase().contains("flyme")) {
-                SYS = SYS_FLYME;//魅族
             }
+//            else if (getMeizuFlymeOSFlag().toLowerCase().contains("flyme")) {
+//                SYS = SYS_FLYME;//魅族
+//            }
         } catch (IOException e) {
             e.printStackTrace();
         }
