@@ -21,6 +21,7 @@ import com.xiaomi.mipush.sdk.MiPushClient;
 import java.io.File;
 import java.util.List;
 
+import cn.jpush.android.api.JPushInterface;
 import ly.count.android.api.Countly;
 
 /**
@@ -58,6 +59,10 @@ public class WXApplication extends Application {
 
         //countly
         Countly.sharedInstance().init(this, "http://192.168.8.61:80", "482dd339784e8488a4680897ffb117f1e7d90baf");
+
+        //jpush
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
     }
 
     private boolean shouldInit() {

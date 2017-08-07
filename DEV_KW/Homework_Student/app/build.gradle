@@ -31,6 +31,11 @@ android {
             signingConfig signingConfigs.kiway
         }
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {
@@ -46,4 +51,6 @@ dependencies {
     compile 'ly.count:sdk-android:14.12'
     compile files('libs/HwPush_SDK_V2705.jar')
     compile project(':scanlibrary')
+    compile files('libs/jcore-android-1.1.6.jar')
+    compile files('libs/jpush-android-3.0.8.jar')
 }
