@@ -2,7 +2,9 @@ package cn.kiway.homework.broadcast;
 
 import android.content.Context;
 
+
 import cn.jpush.android.api.JPushMessage;
+import cn.jpush.android.service.JPushMessageReceiver;
 
 
 /**
