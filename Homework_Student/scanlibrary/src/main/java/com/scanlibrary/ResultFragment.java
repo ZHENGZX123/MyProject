@@ -97,9 +97,9 @@ public class ResultFragment extends Fragment {
                         if (bitmap == null) {
                             bitmap = original;
                         }
-                        saveBitmapToJPG(bitmap, new File("/mnt/sdcard/xxx.jpg"));
-//                        Uri uri = Utils.getUri(getActivity(), bitmap);
-//                        data.putExtra(ScanConstants.SCANNED_RESULT, uri);
+                        String path = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
+                        saveBitmapToJPG(bitmap, new File(path));
+                        data.putExtra(ScanConstants.SCANNED_RESULT, path);
                         getActivity().setResult(Activity.RESULT_OK, data);
                         original.recycle();
                         System.gc();
