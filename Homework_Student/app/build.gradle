@@ -18,6 +18,9 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "0.1.6"
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a" , "armeabi-v8a"
+        }
     }
     buildTypes {
         release {
@@ -36,6 +39,7 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+
 }
 
 dependencies {

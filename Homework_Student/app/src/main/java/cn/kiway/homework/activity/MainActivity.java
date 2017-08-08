@@ -285,8 +285,8 @@ public class MainActivity extends BaseActivity {
             getSharedPreferences("homework", 0).edit().putString("accessToken", "").commit();
             getSharedPreferences("homework", 0).edit().putString("userId", "").commit();
 
-            //TODO注销推送平台。
-//            installationPush();
+            //TODO 注销推送平台。
+//            unInstallationPush();
         }
 
         @JavascriptInterface
@@ -660,11 +660,8 @@ public class MainActivity extends BaseActivity {
 //            File newFile = CompressHelper.getDefault(this).compressToFile(new File(snapshotFile));
 //            Log.d("test", "压缩后大小" + newFile.length());
 //            wv.loadUrl("javascript:snapshotCallback('file://" + newFile.getAbsolutePath() + "')");
-//            Uri uri = data.getExtras().getParcelable(ScanConstants.SCANNED_RESULT);
-//            Log.d("test", "uri = " + uri.toString());
-//            String path = getRealFilePath(this, uri);
-//            Log.d("test", "path = " + path);
-            String path = "/mnt/sdcard/xxx.jpg";
+            String path = data.getExtras().getString(ScanConstants.SCANNED_RESULT);
+            Log.d("test", "path = " + path);
             Log.d("test", "压缩前大小" + new File(path).length());
             File newFile = CompressHelper.getDefault(this).compressToFile(new File(path));
             Log.d("test", "压缩后大小" + newFile.length());
