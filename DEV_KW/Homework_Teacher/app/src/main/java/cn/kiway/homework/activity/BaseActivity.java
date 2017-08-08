@@ -37,6 +37,7 @@ import cn.kiway.homework.entity.KV;
 import cn.kiway.homework.util.FileUtils;
 import cn.kiway.homework.util.HttpDownload;
 import cn.kiway.homework.util.MyDBHelper;
+import cn.kiway.homework.util.Utils;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -222,10 +223,26 @@ public class BaseActivity extends Activity {
             String huaweitoken = getSharedPreferences("homework", 0).getString("huaweitoken", "");
             String othertoken = getSharedPreferences("homework", 0).getString("othertoken", "");
             client.addHeader("X-Auth-Token", accessToken);
+
+            String type = Utils.getSystem();
+            String deviceId = "";
+            switch (type) {
+                case Utils.SYS_MIUI:
+                    deviceId = xiaomitoken;
+                    break;
+                case Utils.SYS_EMUI:
+                    deviceId = huaweitoken;
+                    break;
+                case Utils.SYS_OTHER:
+                    deviceId = othertoken;
+                    break;
+            }
+
             JSONObject param = new JSONObject();
-            param.put("appId", "xizhou_appid");
-            param.put("deviceId", xiaomitoken);
-            param.put("type", "xiaomi");
+            param.put("appId", "c77b6c47dbcee47d7ffbc9461da0c82a");
+            param.put("deviceId", deviceId);
+            param.put("module", "teacher");
+            param.put("type", type);
             param.put("userId", userId);
             Log.d("push", "param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
