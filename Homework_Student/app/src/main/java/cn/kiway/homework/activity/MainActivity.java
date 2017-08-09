@@ -77,7 +77,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.1.8";
+    private static final String currentPackageVersion = "0.1.9";
 
     private WebView wv;
     private LinearLayout layout_welcome;
@@ -924,7 +924,7 @@ public class MainActivity extends BaseActivity {
         new Thread() {
             public void run() {
                 try {
-                    sleep(5000);
+                    sleep(3500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
