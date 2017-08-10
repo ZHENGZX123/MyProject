@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -125,6 +126,13 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 String event = getSharedPreferences("homework", 0).getString("event", "");
                 Log.d("test", "取了一个event");
+                if (TextUtils.isEmpty(event)) {
+                    return;
+                }
+                //1.先清掉缓存
+                new MyDBHelper(getApplicationContext()).deleteHttpCache("getHomework");
+                new MyDBHelper(getApplicationContext()).deleteHttpCache("receiveInfo");
+                //2.再告诉前端做动作。
                 wv.loadUrl("javascript:notificationCallback('" + event + "')");
                 getSharedPreferences("homework", 0).edit().putString("event", "").commit();
             }
@@ -283,6 +291,7 @@ public class MainActivity extends BaseActivity {
             getSharedPreferences("homework", 0).edit().putString("accessToken", "").commit();
             getSharedPreferences("homework", 0).edit().putString("userId", "").commit();
 
+            new MyDBHelper(getApplicationContext()).deleteAllHttpCache();
             //TODO 注销推送平台。
 //            unInstallationPush();
         }
@@ -440,6 +449,7 @@ public class MainActivity extends BaseActivity {
                     param = param.substring(0, param.length() - 1);
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 Log.d("test", "参数错误");
                 return;
             }

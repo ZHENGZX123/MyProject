@@ -376,4 +376,10 @@ public class MyDBHelper extends SQLiteOpenHelper {
     }
 
 
+    public void deleteAllHttpCache() {
+        if (db == null)
+            db = getWritableDatabase();
+        db.delete(TABLE_HTTPCACHE, null, null);
+        db.close();
+    }
 }
