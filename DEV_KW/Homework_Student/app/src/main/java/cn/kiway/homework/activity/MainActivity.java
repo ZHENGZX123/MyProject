@@ -77,7 +77,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.1.9";
+    private static final String currentPackageVersion = "0.2.0";
 
     private WebView wv;
     private LinearLayout layout_welcome;
@@ -124,11 +124,9 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 String event = getSharedPreferences("homework", 0).getString("event", "");
-                if (event.equals("notification")) {
-                    Log.d("test", "取了一个event");
-                    wv.loadUrl("javascript:notificationCallback('param')");
-                    getSharedPreferences("homework", 0).edit().putString("event", "").commit();
-                }
+                Log.d("test", "取了一个event");
+                wv.loadUrl("javascript:notificationCallback('" + event + "')");
+                getSharedPreferences("homework", 0).edit().putString("event", "").commit();
             }
         });
     }
