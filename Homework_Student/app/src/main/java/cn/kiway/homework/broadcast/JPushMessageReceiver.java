@@ -50,7 +50,7 @@ public class JPushMessageReceiver extends BroadcastReceiver {
 
             } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
                 Log.d(TAG, "[MyReceiver] 用户点击打开了通知");
-//                //打开自定义的Activity
+                Log.d(TAG, "extra = " + bundle.getString(JPushInterface.EXTRA_EXTRA));
                 Log.d("test", "存了一个event");
                 context.getSharedPreferences("homework", 0).edit().putString("event", "notification").commit();
                 Intent i = new Intent(context, MainActivity.class);
