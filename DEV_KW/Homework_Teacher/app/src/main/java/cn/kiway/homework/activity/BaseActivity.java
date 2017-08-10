@@ -222,6 +222,10 @@ public class BaseActivity extends Activity {
             String xiaomitoken = getSharedPreferences("homework", 0).getString("xiaomitoken", "");
             String huaweitoken = getSharedPreferences("homework", 0).getString("huaweitoken", "");
             String othertoken = getSharedPreferences("homework", 0).getString("othertoken", "");
+            Log.d("test", "xiaomitoken = " + xiaomitoken);
+            Log.d("test", "huaweitoken = " + huaweitoken);
+            Log.d("test", "othertoken = " + othertoken);
+
             client.addHeader("X-Auth-Token", accessToken);
 
             String type = Utils.getSystem();
