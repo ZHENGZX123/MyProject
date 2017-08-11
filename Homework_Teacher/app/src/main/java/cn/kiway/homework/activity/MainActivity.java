@@ -124,6 +124,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 String event = getSharedPreferences("homework", 0).getString("event", "");
+                //TODO 要改
                 if (event.equals("notification")) {
                     Log.d("test", "取了一个event");
                     wv.loadUrl("javascript:notificationCallback('param')");
@@ -288,6 +289,7 @@ public class MainActivity extends BaseActivity {
             getSharedPreferences("homework", 0).edit().putString("accessToken", "").commit();
             getSharedPreferences("homework", 0).edit().putString("userId", "").commit();
 
+            new MyDBHelper(getApplicationContext()).deleteAllHttpCache();
             //TODO注销推送平台。
 //            installationPush();
         }
