@@ -14,6 +14,7 @@ import java.util.Iterator;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.kiway.homework.activity.MainActivity;
+import cn.kiway.homework.util.MyDBHelper;
 
 /**
  * 自定义接收器
@@ -46,6 +47,13 @@ public class JPushMessageReceiver extends BroadcastReceiver {
                 Log.d(TAG, "[MyReceiver] 接收到推送下来的通知");
                 int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
                 Log.d(TAG, "[MyReceiver] 接收到推送下来的通知的ID: " + notifactionId);
+                //TODO 接到通知的时候就应该清掉了,但是怎么刷新页面呢。
+                new MyDBHelper(context).deleteHttpCache("getHomework");
+                new MyDBHelper(context).deleteHttpCache("receiveInfo");
+                if (MainActivity.instance == null) {
+                    return;
+                }
+                //如果是refreshHomework，彭毅要刷新页面
             } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
                 Log.d(TAG, "[MyReceiver] 用户点击打开了通知");
                 String extra = bundle.getString(JPushInterface.EXTRA_EXTRA);
@@ -53,7 +61,6 @@ public class JPushMessageReceiver extends BroadcastReceiver {
                 Log.d("test", "存了一个event");
                 context.getSharedPreferences("homework", 0).edit().putString("event", extra).commit();
                 Intent i = new Intent(context, MainActivity.class);
-                i.putExtras(bundle);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(i);
             } else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction())) {
