@@ -229,7 +229,6 @@ public class BaseActivity extends Activity {
             Log.d("test", "xiaomitoken = " + xiaomitoken);
             Log.d("test", "huaweitoken = " + huaweitoken);
             Log.d("test", "othertoken = " + othertoken);
-
             String type = Utils.getSystem();
             String deviceId = "";
             switch (type) {
