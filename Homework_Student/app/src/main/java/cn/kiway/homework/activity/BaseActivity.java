@@ -232,7 +232,7 @@ public class BaseActivity extends Activity {
             Log.d("test", "xiaomitoken = " + xiaomitoken);
             Log.d("test", "huaweitoken = " + huaweitoken);
             Log.d("test", "othertoken = " + othertoken);
-            String type = SYS_MIUI;//Utils.getSystem();
+            String type = Utils.getSystem();
             String deviceId = "";
             switch (type) {
                 case Utils.SYS_MIUI:
