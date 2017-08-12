@@ -34,10 +34,12 @@ import javax.crypto.spec.DESKeySpec;
 
 import cn.kiway.homework.WXApplication;
 import cn.kiway.homework.entity.KV;
+import cn.kiway.homework.util.CountlyUtil;
 import cn.kiway.homework.util.FileUtils;
 import cn.kiway.homework.util.HttpDownload;
 import cn.kiway.homework.util.MyDBHelper;
 import cn.kiway.homework.util.Utils;
+import ly.count.android.api.Countly;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -249,7 +251,7 @@ public class BaseActivity extends Activity {
             param.put("userId", userId);
             Log.d("push", "param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            client.post(this, "http://192.168.8.162:8080/push/installation", stringEntity, "application/json", new TextHttpResponseHandler() {
+            client.post(this, "http://192.168.8.226:8080/push/installation", stringEntity, "application/json", new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("push", "installationPush onSuccess = " + ret);
@@ -263,5 +265,19 @@ public class BaseActivity extends Activity {
         } catch (Exception e) {
             Log.d("push", "e = " + e.toString());
         }
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Countly.sharedInstance().onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        CountlyUtil.getInstance().sendAll();
+        Countly.sharedInstance().onStop();
     }
 }
