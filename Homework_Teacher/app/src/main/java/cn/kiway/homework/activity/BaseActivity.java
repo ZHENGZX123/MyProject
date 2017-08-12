@@ -224,12 +224,10 @@ public class BaseActivity extends Activity {
             String xiaomitoken = getSharedPreferences("homework", 0).getString("xiaomitoken", "");
             String huaweitoken = getSharedPreferences("homework", 0).getString("huaweitoken", "");
             String othertoken = getSharedPreferences("homework", 0).getString("othertoken", "");
+            client.addHeader("X-Auth-Token", accessToken);
             Log.d("test", "xiaomitoken = " + xiaomitoken);
             Log.d("test", "huaweitoken = " + huaweitoken);
             Log.d("test", "othertoken = " + othertoken);
-
-            client.addHeader("X-Auth-Token", accessToken);
-
             String type = Utils.getSystem();
             String deviceId = "";
             switch (type) {
@@ -243,16 +241,15 @@ public class BaseActivity extends Activity {
                     deviceId = othertoken;
                     break;
             }
-
             JSONObject param = new JSONObject();
             param.put("appId", "c77b6c47dbcee47d7ffbc9461da0c82a");
             param.put("deviceId", deviceId);
-            param.put("module", "teacher");
             param.put("type", type);
+            param.put("module", "student");
             param.put("userId", userId);
             Log.d("push", "param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            client.post(this, "http://192.168.8.162:8080/push/installation", stringEntity, "application/json", new TextHttpResponseHandler() {
+            client.post(this, "http://192.168.8.226:8080/push/installation", stringEntity, "application/json", new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("push", "installationPush onSuccess = " + ret);
