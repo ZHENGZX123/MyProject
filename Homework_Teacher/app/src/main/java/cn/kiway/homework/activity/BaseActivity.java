@@ -104,7 +104,6 @@ public class BaseActivity extends Activity {
         }
     }
 
-
     public InputStream getStreamByUrl2(String url) {
         try {
             File file = new File(url);
@@ -245,7 +244,7 @@ public class BaseActivity extends Activity {
             param.put("appId", "c77b6c47dbcee47d7ffbc9461da0c82a");
             param.put("deviceId", deviceId);
             param.put("type", type);
-            param.put("module", "student");
+            param.put("module", "teacher");
             param.put("userId", userId);
             Log.d("push", "param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
