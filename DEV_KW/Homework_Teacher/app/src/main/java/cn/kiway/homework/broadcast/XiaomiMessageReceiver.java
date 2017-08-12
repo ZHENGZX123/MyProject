@@ -64,8 +64,9 @@ public class XiaomiMessageReceiver extends PushMessageReceiver {
     @Override
     public void onNotificationMessageClicked(Context context, MiPushMessage message) {
         Log.v(TAG, "onNotificationMessageClicked is called. " + message.toString());
-        Log.d("test", "存了一个event");
-        context.getSharedPreferences("homework", 0).edit().putString("event", "notification").commit();
+        String value = message.getExtra().get("extras");
+        Log.d("test", "value = " + value); //{"operation":"refreshHomework"}
+        context.getSharedPreferences("homework", 0).edit().putString("event", value).commit();
         context.startActivity(new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 

@@ -70,7 +70,6 @@ import cn.kiway.homework.util.MyDBHelper;
 import cn.kiway.homework.util.ResourceUtil;
 import cn.kiway.homework.util.UploadUtil;
 import cn.kiway.homework.util.Utils;
-import ly.count.android.api.Countly;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static cn.kiway.homework.util.Utils.getCurrentVersion;
@@ -81,6 +80,7 @@ public class MainActivity extends BaseActivity {
 
     private boolean isSuccess = false;
     private boolean isJump = false;
+    private boolean checking = false;
     private Dialog dialog_download;
     protected ProgressDialog pd;
     private int lastProgress;
@@ -105,18 +105,32 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("test", "onresume");
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    sleep(2000);//如果从外面进来，3秒才够。如果本身在里面，就不用3秒。
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        Log.d("test", "onresume checking = " + checking);
+        if (checking) {
+            new Thread() {
+                @Override
+                public void run() {
+                    while (checking) {
+                        Log.d("test", "checking loop...");
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    Log.d("test", "checking loop end");
+                    try {
+                        sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    checkNotification();
                 }
-                checkNotification();
-            }
-        }.start();
+            }.start();
+        } else {
+            //如果当前打开，直接跳转
+            checkNotification();
+        }
     }
 
     private synchronized void checkNotification() {
@@ -132,19 +146,6 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Countly.sharedInstance().onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        CountlyUtil.getInstance().sendAll();
-        Countly.sharedInstance().onStop();
     }
 
     private void load() {
@@ -483,7 +484,7 @@ public class MainActivity extends BaseActivity {
                     AsyncHttpClient client = new AsyncHttpClient();
                     client.setTimeout(10000);
                     String token = getSharedPreferences("homework", 0).getString("accessToken", "");
-//                    client.addHeader("X-Auth-Token", token);
+                    client.addHeader("X-Auth-Token", token);
                     if (method.equalsIgnoreCase("POST")) {
                         StringEntity stringEntity = new StringEntity(param, "utf-8");
                         client.post(MainActivity.this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
@@ -598,7 +599,7 @@ public class MainActivity extends BaseActivity {
                 try {
                     Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + result);
                     String r = result.replace("null", "\"\"").replace("\"\"\"\"", "\"\"");
-                    //Log.d("test", "r = " + r);
+
                     wv.loadUrl("javascript:" + tagname + "(" + r + ")");
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -699,6 +700,7 @@ public class MainActivity extends BaseActivity {
 
     //下面是版本更新相关
     public void checkNewVersion() {
+        checking = true;
         new Thread() {
             @Override
             public void run() {
@@ -962,6 +964,8 @@ public class MainActivity extends BaseActivity {
                 if (refresh) {
                     load();
                 }
+                //更新完成完成
+                checking = false;
             }
         });
     }
