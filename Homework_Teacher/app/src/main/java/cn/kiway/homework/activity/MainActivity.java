@@ -86,12 +86,13 @@ public class MainActivity extends BaseActivity {
     private int lastProgress;
     private WebView wv;
     private LinearLayout layout_welcome;
+    public static MainActivity instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        instance = this;
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
         wv = (WebView) findViewById(R.id.wv);
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
