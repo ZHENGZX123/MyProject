@@ -49,8 +49,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             String content = "收到通知附加消息： " + extras.getString(BOUND_KEY.pushMsgKey);
             Log.d("huawei", content);
             Log.d("test", "存了一个event");
-            context.getSharedPreferences("homework", 0).edit().putString("event", "notification").commit();
-
+            context.getSharedPreferences("homework", 0).edit().putString("event", content.replace("[", "").replace("]", "")).commit();
         } else if (Event.PLUGINRSP.equals(event)) {
             final int TYPE_LBS = 1;
             final int TYPE_TAG = 2;

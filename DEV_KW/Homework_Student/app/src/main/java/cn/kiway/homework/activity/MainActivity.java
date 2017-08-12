@@ -70,7 +70,6 @@ import cn.kiway.homework.util.MyDBHelper;
 import cn.kiway.homework.util.ResourceUtil;
 import cn.kiway.homework.util.UploadUtil;
 import cn.kiway.homework.util.Utils;
-import ly.count.android.api.Countly;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static cn.kiway.homework.util.Utils.getCurrentVersion;
@@ -84,6 +83,7 @@ public class MainActivity extends BaseActivity {
     private LinearLayout layout_welcome;
     private boolean isSuccess = false;
     private boolean isJump = false;
+    private boolean checking = false;
     private Dialog dialog_download;
     protected ProgressDialog pd;
     private int lastProgress;
@@ -106,50 +106,52 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("test", "onresume");
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    sleep(2000);//如果从外面进来，3秒才够。如果本身在里面，就不用3秒。
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        Log.d("test", "onresume checking = " + checking);
+        if (checking) {
+            new Thread() {
+                @Override
+                public void run() {
+                    while (checking) {
+                        Log.d("test", "checking loop...");
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    Log.d("test", "checking loop end");
+                    try {
+                        sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    checkNotification();
                 }
-                checkNotification();
-            }
-        }.start();
+            }.start();
+        } else {
+            //如果当前打开，直接跳转
+            checkNotification();
+        }
     }
 
     private synchronized void checkNotification() {
+        Log.d("test", "checkNotification");
+        final String event = getSharedPreferences("homework", 0).getString("event", "");
+        Log.d("test", "取了一个event = " + event);
+        if (TextUtils.isEmpty(event)) {
+            return;
+        }
+        getSharedPreferences("homework", 0).edit().putString("event", "").commit();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                String event = getSharedPreferences("homework", 0).getString("event", "");
-                Log.d("test", "取了一个event");
-                if (TextUtils.isEmpty(event)) {
-                    return;
-                }
-                //1.先清掉缓存
+                //1.先清掉缓存 TODO 接到通知的时候就应该清掉了
                 new MyDBHelper(getApplicationContext()).deleteHttpCache("getHomework");
                 new MyDBHelper(getApplicationContext()).deleteHttpCache("receiveInfo");
                 //2.再告诉前端做动作。
                 wv.loadUrl("javascript:notificationCallback('" + event + "')");
-                getSharedPreferences("homework", 0).edit().putString("event", "").commit();
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Countly.sharedInstance().onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        CountlyUtil.getInstance().sendAll();
-        Countly.sharedInstance().onStop();
     }
 
     private void load() {
@@ -192,6 +194,11 @@ public class MainActivity extends BaseActivity {
         settings.setTextSize(WebSettings.TextSize.NORMAL);
 
         wv.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+            }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -550,22 +557,15 @@ public class MainActivity extends BaseActivity {
                         client.delete(MainActivity.this, url, new TextHttpResponseHandler() {
                             @Override
                             public void onSuccess(int i, Header[] headers, String ret) {
-                                Log.d("test", "get onSuccess = " + ret);
+                                Log.d("test", "delete onSuccess = " + ret);
                                 saveDB(url, param, method, ret, tagname);
                                 httpRequestCallback(tagname, ret);
                             }
 
                             @Override
                             public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
-                                Log.d("test", "get onFailure = " + ret);
-                                //如果是get，把缓存回它
-                                String request = url + param + method;
-                                HTTPCache cache = new MyDBHelper(getApplicationContext()).getHttpCacheByRequest(request, Integer.parseInt(time));
-                                if (cache != null) {
-                                    httpRequestCallback(cache.tagname, cache.response);
-                                } else {
-                                    httpRequestCallback(tagname, ret);
-                                }
+                                Log.d("test", "delete onFailure = " + ret);
+                                httpRequestCallback(tagname, ret);
                             }
                         });
                     }
@@ -604,6 +604,29 @@ public class MainActivity extends BaseActivity {
                     Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + result);
                     String r = result.replace("null", "\"\"").replace("\"\"\"\"", "\"\"");
                     //Log.d("test", "r = " + r);
+//                    if (tagname.equals("getHomework")) {
+//                        JSONObject o = new JSONObject();
+//                        o.put("statusCode", "200");
+//                        o.put("errorMsg", "");
+//                        JSONObject data = new JSONObject();
+//                        data.put("currentPage", "1");
+//                        data.put("pageSize", "10");
+//                        data.put("totalCount", "44");
+//                        data.put("totalPage", "5");
+//                        data.put("data", "server error");
+//                        o.put("data", data);
+//                        r = o.toString();
+//                        Log.d("test", "假的1 r = " + r);
+//                    } else if (tagname.equals("doCourse")) {
+//                        JSONObject o = new JSONObject();
+//                        o.put("statusCode", "200");
+//                        o.put("errorMsg", "");
+//                        JSONObject data = new JSONObject();
+//                        o.put("data", data);
+//                        data.put("data", "server error");
+//                        r = o.toString();
+//                        Log.d("test", "假的2 r = " + r);
+//                    }
                     wv.loadUrl("javascript:" + tagname + "(" + r + ")");
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -702,6 +725,7 @@ public class MainActivity extends BaseActivity {
 
     //下面是版本检测相关代码
     public void checkNewVersion() {
+        checking = true;
         new Thread() {
             @Override
             public void run() {
@@ -791,9 +815,6 @@ public class MainActivity extends BaseActivity {
                 jump(false);
             } else if (msg.what == 6) {
                 pd.setProgress(msg.arg1);
-            } else if (msg.what == 7) {
-                Log.d("test", "删除旧包");
-                //包更新，没做好
             }
         }
     };
@@ -985,6 +1006,8 @@ public class MainActivity extends BaseActivity {
                 if (refresh) {
                     load();
                 }
+                //更新完成完成
+                checking = false;
             }
         });
     }

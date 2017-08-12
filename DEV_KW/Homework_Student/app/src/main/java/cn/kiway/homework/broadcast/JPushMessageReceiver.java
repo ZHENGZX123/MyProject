@@ -46,13 +46,12 @@ public class JPushMessageReceiver extends BroadcastReceiver {
                 Log.d(TAG, "[MyReceiver] 接收到推送下来的通知");
                 int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
                 Log.d(TAG, "[MyReceiver] 接收到推送下来的通知的ID: " + notifactionId);
-
-
             } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
                 Log.d(TAG, "[MyReceiver] 用户点击打开了通知");
-                Log.d(TAG, "extra = " + bundle.getString(JPushInterface.EXTRA_EXTRA));
+                String extra = bundle.getString(JPushInterface.EXTRA_EXTRA);
+                Log.d(TAG, "extra = " + extra);
                 Log.d("test", "存了一个event");
-                context.getSharedPreferences("homework", 0).edit().putString("event", "notification").commit();
+                context.getSharedPreferences("homework", 0).edit().putString("event", extra).commit();
                 Intent i = new Intent(context, MainActivity.class);
                 i.putExtras(bundle);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
