@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -135,16 +136,18 @@ public class MainActivity extends BaseActivity {
     }
 
     private synchronized void checkNotification() {
+        Log.d("test", "checkNotification");
+        final String event = getSharedPreferences("homework", 0).getString("event", "");
+        Log.d("test", "取了一个event = " + event);
+        if (TextUtils.isEmpty(event)) {
+            return;
+        }
+        getSharedPreferences("homework", 0).edit().putString("event", "").commit();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                String event = getSharedPreferences("homework", 0).getString("event", "");
-                //TODO 要改
-                if (event.equals("notification")) {
-                    Log.d("test", "取了一个event");
-                    wv.loadUrl("javascript:notificationCallback('param')");
-                    getSharedPreferences("homework", 0).edit().putString("event", "").commit();
-                }
+                //告诉前端做动作。
+                wv.loadUrl("javascript:notificationCallback(" + event + ")");
             }
         });
     }
@@ -187,6 +190,12 @@ public class MainActivity extends BaseActivity {
         settings.setTextSize(WebSettings.TextSize.NORMAL);
 
         wv.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                Log.d("test", "onPageFinished url = " + url);
+            }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
