@@ -2,11 +2,14 @@ package cn.kiway.homework.broadcast;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.huawei.android.pushagent.api.PushEventReceiver;
+
+import cn.kiway.homework.activity.MainActivity;
 
 /*
  * 接收Push所有消息的广播接收器
@@ -40,6 +43,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
     }
 
     public void onEvent(Context context, Event event, Bundle extras) {
+        Log.d("huawei", "event = " + event);
         if (Event.NOTIFICATION_OPENED.equals(event) || Event.NOTIFICATION_CLICK_BTN.equals(event)) {
             int notifyId = extras.getInt(BOUND_KEY.pushNotifyId, 0);
             if (0 != notifyId) {
@@ -50,6 +54,10 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             Log.d("huawei", content);
             Log.d("test", "存了一个event");
             context.getSharedPreferences("homework", 0).edit().putString("event", content.replace("[", "").replace("]", "")).commit();
+            //恶心华为必须这么干。。。
+            Intent i = new Intent(context, MainActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            context.startActivity(i);
         } else if (Event.PLUGINRSP.equals(event)) {
             final int TYPE_LBS = 1;
             final int TYPE_TAG = 2;

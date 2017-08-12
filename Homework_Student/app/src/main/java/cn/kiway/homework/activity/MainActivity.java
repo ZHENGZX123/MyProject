@@ -87,12 +87,14 @@ public class MainActivity extends BaseActivity {
     private Dialog dialog_download;
     protected ProgressDialog pd;
     private int lastProgress;
+    public static MainActivity instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("test", "onCreate");
+        instance = this;
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
         wv = (WebView) findViewById(R.id.wv);
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
@@ -145,11 +147,8 @@ public class MainActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                //1.先清掉缓存 TODO 接到通知的时候就应该清掉了
-                new MyDBHelper(getApplicationContext()).deleteHttpCache("getHomework");
-                new MyDBHelper(getApplicationContext()).deleteHttpCache("receiveInfo");
-                //2.再告诉前端做动作。
-                wv.loadUrl("javascript:notificationCallback('" + event + "')");
+                //告诉前端做动作。
+                wv.loadUrl("javascript:notificationCallback(" + event + ")");
             }
         });
     }
