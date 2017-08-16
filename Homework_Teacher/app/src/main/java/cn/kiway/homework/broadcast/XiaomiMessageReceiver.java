@@ -76,8 +76,7 @@ public class XiaomiMessageReceiver extends PushMessageReceiver {
         Log.v(TAG, "onNotificationMessageArrived is called. " + message.toString());
 
         //TODO 接到通知的时候就应该清掉了,但是怎么刷新页面呢。
-        new MyDBHelper(context).deleteHttpCache("getHomework");
-        new MyDBHelper(context).deleteHttpCache("receiveInfo");
+        new MyDBHelper(context).deleteHttpCache("getTeacherInMsg");
         if (MainActivity.instance == null) {
             return;
         }
