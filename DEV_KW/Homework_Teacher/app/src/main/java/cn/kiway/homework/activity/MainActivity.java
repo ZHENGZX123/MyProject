@@ -68,6 +68,7 @@ import cn.kiway.homework.util.CountlyUtil;
 import cn.kiway.homework.util.FileUtils;
 import cn.kiway.homework.util.HttpDownload;
 import cn.kiway.homework.util.MyDBHelper;
+import cn.kiway.homework.util.NetworkUtil;
 import cn.kiway.homework.util.ResourceUtil;
 import cn.kiway.homework.util.UploadUtil;
 import cn.kiway.homework.util.Utils;
@@ -462,6 +463,12 @@ public class MainActivity extends BaseActivity {
             }
             Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , time = " + time + " , tagname = " + tagname + " , related = " + related + ", event = " + event);
             CountlyUtil.getInstance().addEvent(event);
+
+            //0.检查网络
+            if (!method.equalsIgnoreCase("GET") && !NetworkUtil.isNetworkAvailable(getApplicationContext())) {
+                toast("没有网络，请检查网络稍后再试");
+                return;
+            }
             if (time.equals("0")) {
                 //1.重新获取
                 doHttpRequest(url, param, method, tagname, time, related);
@@ -560,19 +567,14 @@ public class MainActivity extends BaseActivity {
                                 Log.d("test", "get onSuccess = " + ret);
                                 saveDB(url, param, method, ret, tagname);
                                 httpRequestCallback(tagname, ret);
+                                //如果是post，related不为空，查找一下相关的缓存，并清除掉
+                                new MyDBHelper(getApplicationContext()).deleteHttpCache(related);
                             }
 
                             @Override
                             public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
                                 Log.d("test", "get onFailure = " + ret);
-                                //如果是get，把缓存回它
-                                String request = url + param + method;
-                                HTTPCache cache = new MyDBHelper(getApplicationContext()).getHttpCacheByRequest(request, Integer.parseInt(time));
-                                if (cache != null) {
-                                    httpRequestCallback(cache.tagname, cache.response);
-                                } else {
-                                    httpRequestCallback(tagname, ret);
-                                }
+                                httpRequestCallback(tagname, ret);
                             }
                         });
                     }
