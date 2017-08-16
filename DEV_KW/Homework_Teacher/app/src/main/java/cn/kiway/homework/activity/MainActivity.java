@@ -136,7 +136,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private synchronized void checkNotification() {
-        Log.d("test", "checkNotification");
         final String event = getSharedPreferences("homework", 0).getString("event", "");
         Log.d("test", "取了一个event = " + event);
         if (TextUtils.isEmpty(event)) {
@@ -147,7 +146,8 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 //告诉前端做动作。
-                wv.loadUrl("javascript:notificationCallback(" + event + ")");
+                Log.d("test", "notificationCallback");
+                wv.loadUrl("javascript:notificationCallback('" + event + "')");
             }
         });
     }
