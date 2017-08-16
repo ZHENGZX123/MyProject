@@ -42,7 +42,6 @@ import cn.kiway.homework.util.Utils;
 import ly.count.android.api.Countly;
 
 import static cn.kiway.homework.util.Utils.SYS_EMUI;
-import static cn.kiway.homework.util.Utils.SYS_MIUI;
 
 /**
  * Created by Administrator on 2017/7/5.
