@@ -15,7 +15,7 @@ android {
     defaultConfig {
         applicationId "cn.kiway.homework.student"
         minSdkVersion 15
-        targetSdkVersion 22
+        targetSdkVersion 20
         versionCode 1
         versionName "0.1.8"
         ndk {
