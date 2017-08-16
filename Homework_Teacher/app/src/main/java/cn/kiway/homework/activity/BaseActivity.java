@@ -41,6 +41,9 @@ import cn.kiway.homework.util.MyDBHelper;
 import cn.kiway.homework.util.Utils;
 import ly.count.android.api.Countly;
 
+import static cn.kiway.homework.util.Utils.SYS_EMUI;
+import static cn.kiway.homework.util.Utils.SYS_MIUI;
+
 /**
  * Created by Administrator on 2017/7/5.
  */
@@ -230,10 +233,10 @@ public class BaseActivity extends Activity {
             String type = Utils.getSystem();
             String deviceId = "";
             switch (type) {
-                case Utils.SYS_MIUI:
+                case SYS_MIUI:
                     deviceId = xiaomitoken;
                     break;
-                case Utils.SYS_EMUI:
+                case SYS_EMUI:
                     deviceId = huaweitoken;
                     break;
                 case Utils.SYS_OTHER:
