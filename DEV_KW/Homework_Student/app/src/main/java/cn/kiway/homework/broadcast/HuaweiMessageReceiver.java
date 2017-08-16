@@ -10,6 +10,7 @@ import android.util.Log;
 import com.huawei.android.pushagent.api.PushEventReceiver;
 
 import cn.kiway.homework.activity.MainActivity;
+import cn.kiway.homework.util.MyDBHelper;
 
 /*
  * 接收Push所有消息的广播接收器
@@ -54,7 +55,10 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             Log.d("huawei", content);
             Log.d("test", "存了一个event");
             context.getSharedPreferences("homework", 0).edit().putString("event", content.replace("[", "").replace("]", "")).commit();
-            //恶心华为必须这么干。。。
+            //没有接收消息的event，只好暂时放这里了 TODO
+            new MyDBHelper(context).deleteHttpCache("getHomework");
+            new MyDBHelper(context).deleteHttpCache("receiveInfo");
+            //华为必须重新打开页面，因为event竟然比onresume还慢
             Intent i = new Intent(context, MainActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             context.startActivity(i);

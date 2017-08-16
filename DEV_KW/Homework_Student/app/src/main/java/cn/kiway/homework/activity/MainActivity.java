@@ -137,7 +137,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private synchronized void checkNotification() {
-        Log.d("test", "checkNotification");
         final String event = getSharedPreferences("homework", 0).getString("event", "");
         Log.d("test", "取了一个event = " + event);
         if (TextUtils.isEmpty(event)) {
@@ -148,7 +147,8 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 //告诉前端做动作。
-                wv.loadUrl("javascript:notificationCallback(" + event + ")");
+                Log.d("test", "notificationCallback");
+                wv.loadUrl("javascript:notificationCallback('aaa')");
             }
         });
     }
@@ -603,29 +603,6 @@ public class MainActivity extends BaseActivity {
                     Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + result);
                     String r = result.replace("null", "\"\"").replace("\"\"\"\"", "\"\"");
                     //Log.d("test", "r = " + r);
-//                    if (tagname.equals("getHomework")) {
-//                        JSONObject o = new JSONObject();
-//                        o.put("statusCode", "200");
-//                        o.put("errorMsg", "");
-//                        JSONObject data = new JSONObject();
-//                        data.put("currentPage", "1");
-//                        data.put("pageSize", "10");
-//                        data.put("totalCount", "44");
-//                        data.put("totalPage", "5");
-//                        data.put("data", "server error");
-//                        o.put("data", data);
-//                        r = o.toString();
-//                        Log.d("test", "假的1 r = " + r);
-//                    } else if (tagname.equals("doCourse")) {
-//                        JSONObject o = new JSONObject();
-//                        o.put("statusCode", "200");
-//                        o.put("errorMsg", "");
-//                        JSONObject data = new JSONObject();
-//                        o.put("data", data);
-//                        data.put("data", "server error");
-//                        r = o.toString();
-//                        Log.d("test", "假的2 r = " + r);
-//                    }
                     wv.loadUrl("javascript:" + tagname + "(" + r + ")");
                 } catch (Exception e) {
                     e.printStackTrace();
