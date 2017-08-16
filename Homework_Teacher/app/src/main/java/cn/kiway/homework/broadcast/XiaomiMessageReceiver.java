@@ -14,6 +14,7 @@ import java.util.List;
 
 import cn.kiway.homework.activity.MainActivity;
 import cn.kiway.homework.teacher.R;
+import cn.kiway.homework.util.BadgeUtil;
 import cn.kiway.homework.util.MyDBHelper;
 
 
@@ -74,9 +75,9 @@ public class XiaomiMessageReceiver extends PushMessageReceiver {
     @Override
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
         Log.v(TAG, "onNotificationMessageArrived is called. " + message.toString());
-
         //TODO 接到通知的时候就应该清掉了,但是怎么刷新页面呢。
         new MyDBHelper(context).deleteHttpCache("getTeacherInMsg");
+        BadgeUtil.sendBadgeNumber(context , "1");
         if (MainActivity.instance == null) {
             return;
         }

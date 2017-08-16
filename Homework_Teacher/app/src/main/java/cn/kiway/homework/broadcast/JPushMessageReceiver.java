@@ -14,6 +14,7 @@ import java.util.Iterator;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.kiway.homework.activity.MainActivity;
+import cn.kiway.homework.util.BadgeUtil;
 import cn.kiway.homework.util.MyDBHelper;
 
 /**
@@ -49,6 +50,7 @@ public class JPushMessageReceiver extends BroadcastReceiver {
                 Log.d(TAG, "[MyReceiver] 接收到推送下来的通知的ID: " + notifactionId);
                 //TODO 接到通知的时候就应该清掉了,但是怎么刷新页面呢。
                 new MyDBHelper(context).deleteHttpCache("getTeacherInMsg");
+                BadgeUtil.sendBadgeNumber(context , "1");
                 if (MainActivity.instance == null) {
                     return;
                 }
