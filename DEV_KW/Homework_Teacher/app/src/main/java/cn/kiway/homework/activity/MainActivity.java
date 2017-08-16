@@ -160,6 +160,7 @@ public class MainActivity extends BaseActivity {
 //        wv.loadUrl("file:///android_asset/dist/index.html");
 //        wv.loadUrl("http://www.baidu.com");
 //        wv.loadUrl("file:///android_asset/test2.html");
+        wv.clearCache(true);
         wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
 
@@ -350,6 +351,10 @@ public class MainActivity extends BaseActivity {
                     File file = new File(finalFilepath);
                     final String ret = UploadUtil.uploadFile(file, "http://202.104.136.9:8389/common/file?access_token=" + token, file.getName());
                     Log.d("test", "upload ret = " + ret);
+                    if (TextUtils.isEmpty(ret)) {
+                        toast("上传图片失败，请稍后再试");
+                        return;
+                    }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
