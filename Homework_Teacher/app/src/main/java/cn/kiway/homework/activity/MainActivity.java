@@ -602,14 +602,17 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void httpRequestCallback(final String tagname, final String result) {
+    private void httpRequestCallback(final String tagname, String result) {
+        if (result == null) {
+            result = "";
+        }
+        final String finalResult = result;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + result);
-                    String r = result.replace("null", "\"\"").replace("\"\"\"\"", "\"\"");
-
+                    Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + finalResult);
+                    String r = finalResult.replace("null", "\"\"").replace("\"\"\"\"", "\"\"");
                     wv.loadUrl("javascript:" + tagname + "(" + r + ")");
                 } catch (Exception e) {
                     e.printStackTrace();
