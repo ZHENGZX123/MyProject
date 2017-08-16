@@ -51,7 +51,7 @@ public class CountlyUtil {
         }
     }
 
-    public static void sendAll() {
+    public static synchronized void sendAll() {
         Iterator iterator = events.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
