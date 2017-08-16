@@ -14,6 +14,7 @@ import java.util.List;
 
 import cn.kiway.homework.activity.MainActivity;
 import cn.kiway.homework.student.R;
+import cn.kiway.homework.util.BadgeUtil;
 import cn.kiway.homework.util.MyDBHelper;
 
 
@@ -78,6 +79,7 @@ public class XiaomiMessageReceiver extends PushMessageReceiver {
         //TODO 接到通知的时候就应该清掉了,但是怎么刷新页面呢。
         new MyDBHelper(context).deleteHttpCache("getHomework");
         new MyDBHelper(context).deleteHttpCache("receiveInfo");
+        BadgeUtil.sendBadgeNumber(context , "1");
         if (MainActivity.instance == null) {
             return;
         }

@@ -63,6 +63,7 @@ import java.util.ArrayList;
 import cn.kiway.homework.WXApplication;
 import cn.kiway.homework.entity.HTTPCache;
 import cn.kiway.homework.student.R;
+import cn.kiway.homework.util.BadgeUtil;
 import cn.kiway.homework.util.CountlyUtil;
 import cn.kiway.homework.util.FileUtils;
 import cn.kiway.homework.util.HttpDownload;
@@ -109,6 +110,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        BadgeUtil.sendBadgeNumber(getApplicationContext(), "0");
         Log.d("test", "onresume checking = " + checking);
         if (checking) {
             new Thread() {
