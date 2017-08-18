@@ -79,7 +79,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.2.1";
+    private static final String currentPackageVersion = "0.2.3";
 
     private WebView wv;
     private LinearLayout layout_welcome;
@@ -165,7 +165,6 @@ public class MainActivity extends BaseActivity {
         wv.clearCache(true);
         wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
-
 
     private void initData() {
         //跨域问题
@@ -473,6 +472,7 @@ public class MainActivity extends BaseActivity {
             //0.检查网络
             if (!method.equalsIgnoreCase("GET") && !NetworkUtil.isNetworkAvailable(getApplicationContext())) {
                 toast("没有网络，请检查网络稍后再试");
+                httpRequestCallback(tagname, "");
                 return;
             }
             if (time.equals("0")) {
