@@ -474,6 +474,7 @@ public class MainActivity extends BaseActivity {
             //0.检查网络
             if (!method.equalsIgnoreCase("GET") && !NetworkUtil.isNetworkAvailable(getApplicationContext())) {
                 toast("没有网络，请检查网络稍后再试");
+                httpRequestCallback(tagname, "");
                 return;
             }
             if (time.equals("0")) {
