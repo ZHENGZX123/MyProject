@@ -49,6 +49,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -358,7 +359,15 @@ public class MainActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            wv.loadUrl("javascript:fileUploadCallback(" + ret + ")");
+                            try {
+                                JSONObject obj = new JSONObject(ret);
+                                String url = "http://202.104.136.9:8389" + obj.getJSONObject("data").getString("url");
+                                obj.getJSONObject("data").put("url", url);
+                                Log.d("test", "obj = " + obj.toString());
+                                wv.loadUrl("javascript:fileUploadCallback(" + obj.toString() + ")");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
                 }
