@@ -531,7 +531,7 @@ public class MainActivity extends BaseActivity {
 
                             @Override
                             public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
-                                Log.d("test", "post onFailure = " + ret);
+//                                Log.d("test", "post onFailure = " + ret);
                                 httpRequestCallback(tagname, ret);
                             }
                         });
@@ -629,10 +629,8 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-
                     Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + finalResult);
                     String r = finalResult.replace("null", "\"\"").replace("\"\"\"\"", "\"\"");
-                    //Log.d("test", "r = " + r);
                     wv.loadUrl("javascript:" + tagname + "(" + r + ")");
                 } catch (Exception e) {
                     e.printStackTrace();
