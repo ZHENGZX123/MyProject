@@ -854,6 +854,8 @@ public class MainActivity extends BaseActivity {
                         } catch (ZipException e) {
                             e.printStackTrace();
                         }
+                        //解压完毕，删掉zip文件
+                        new File(WXApplication.ROOT + WXApplication.ZIP).delete();
                         Log.d("test", "解压完毕");
                         getSharedPreferences("kiway", 0).edit().putString("version_package", outer_package).commit();
                         jump(true);
@@ -983,6 +985,8 @@ public class MainActivity extends BaseActivity {
             } catch (ZipException e) {
                 e.printStackTrace();
             }
+            //解压完毕，删掉zip文件
+            new File(WXApplication.ROOT + WXApplication.ZIP).delete();
             getSharedPreferences("kiway", 0).edit().putString("version_package", currentPackageVersion).commit();
         }
     }
