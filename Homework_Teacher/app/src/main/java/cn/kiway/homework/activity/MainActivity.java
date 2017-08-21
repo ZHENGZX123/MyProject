@@ -140,12 +140,12 @@ public class MainActivity extends BaseActivity {
     }
 
     private synchronized void checkNotification() {
-        final String event = getSharedPreferences("homework", 0).getString("event", "");
+        final String event = getSharedPreferences("kiway", 0).getString("event", "");
         Log.d("test", "取了一个event = " + event);
         if (TextUtils.isEmpty(event)) {
             return;
         }
-        getSharedPreferences("homework", 0).edit().putString("event", "").commit();
+        getSharedPreferences("kiway", 0).edit().putString("event", "").commit();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -290,8 +290,8 @@ public class MainActivity extends BaseActivity {
             try {
                 String accessToken = new JSONObject(param).getString("accessToken");
                 String userId = new JSONObject(param).getString("userId");
-                getSharedPreferences("homework", 0).edit().putString("accessToken", accessToken).commit();
-                getSharedPreferences("homework", 0).edit().putString("userId", userId).commit();
+                getSharedPreferences("kiway", 0).edit().putString("accessToken", accessToken).commit();
+                getSharedPreferences("kiway", 0).edit().putString("userId", userId).commit();
 //                getBooks();
                 installationPush();
             } catch (Exception e) {
@@ -302,8 +302,8 @@ public class MainActivity extends BaseActivity {
         @JavascriptInterface
         public void logout() {
             Log.d("test", "logout");
-            getSharedPreferences("homework", 0).edit().putString("accessToken", "").commit();
-            getSharedPreferences("homework", 0).edit().putString("userId", "").commit();
+            getSharedPreferences("kiway", 0).edit().putString("accessToken", "").commit();
+            getSharedPreferences("kiway", 0).edit().putString("userId", "").commit();
 
             new MyDBHelper(getApplicationContext()).deleteAllHttpCache();
             //TODO注销推送平台。
@@ -347,7 +347,7 @@ public class MainActivity extends BaseActivity {
             new Thread() {
                 @Override
                 public void run() {
-                    String token = getSharedPreferences("homework", 0).getString("accessToken", "");
+                    String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
                     Log.d("test", "取出token=" + token);
                     File file = new File(finalFilepath);
                     final String ret = UploadUtil.uploadFile(file, WXApplication.url + "/common/file?access_token=" + token, file.getName());
@@ -523,7 +523,7 @@ public class MainActivity extends BaseActivity {
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
                     client.setTimeout(10000);
-                    String token = getSharedPreferences("homework", 0).getString("accessToken", "");
+                    String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
                     client.addHeader("X-Auth-Token", token);
                     if (method.equalsIgnoreCase("POST")) {
                         StringEntity stringEntity = new StringEntity(param, "utf-8");

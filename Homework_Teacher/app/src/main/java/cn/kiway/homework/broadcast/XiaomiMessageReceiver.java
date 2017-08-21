@@ -68,7 +68,7 @@ public class XiaomiMessageReceiver extends PushMessageReceiver {
         Log.v(TAG, "onNotificationMessageClicked is called. " + message.toString());
         String value = message.getExtra().get("extras");
         Log.d("test", "value = " + value);
-        context.getSharedPreferences("homework", 0).edit().putString("event", value).commit();
+        context.getSharedPreferences("kiway", 0).edit().putString("event", value).commit();
         context.startActivity(new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
@@ -166,7 +166,7 @@ public class XiaomiMessageReceiver extends PushMessageReceiver {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
                 token = cmdArg1;
                 Log.d("test", "regId = " + token);
-                context.getSharedPreferences("homework", 0).edit().putString("xiaomitoken", token).commit();
+                context.getSharedPreferences("kiway", 0).edit().putString("xiaomitoken", token).commit();
                 log = context.getString(R.string.register_success);
             } else {
                 log = context.getString(R.string.register_fail);
