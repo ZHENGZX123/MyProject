@@ -75,8 +75,6 @@ import cn.kiway.homework.util.UploadUtil;
 import cn.kiway.homework.util.Utils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static cn.kiway.homework.util.Utils.getCurrentVersion;
-
 
 public class MainActivity extends BaseActivity {
 
@@ -91,6 +89,7 @@ public class MainActivity extends BaseActivity {
     protected ProgressDialog pd;
     private int lastProgress;
     public static MainActivity instance;
+    private Button kill;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +99,7 @@ public class MainActivity extends BaseActivity {
         instance = this;
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
         wv = (WebView) findViewById(R.id.wv);
+        kill = (Button) findViewById(R.id.kill);
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
         checkIsFirst();
         initData();
@@ -158,11 +158,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void load() {
-//        wv.loadUrl("file:///mnt/sdcard/dist/index.html");
-//        wv.loadUrl("file:///android_asset/dist/index.html");
-//        wv.loadUrl("http://202.104.136.9:8280/weex/xtzy/dist/index.html");
-//        wv.loadUrl("http://www.baidu.com");
-//        wv.loadUrl("file:///android_asset/test2.html");
         wv.clearCache(true);
         wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
@@ -280,6 +275,11 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
+        public String isTest() {
+            return WXApplication.isTest ? "1" : "0";
+        }
+
+        @JavascriptInterface
         public void login(String param) {
             Log.d("test", "login param = " + param);
             try {
@@ -287,7 +287,6 @@ public class MainActivity extends BaseActivity {
                 String userId = new JSONObject(param).getString("userId");
                 getSharedPreferences("homework", 0).edit().putString("accessToken", accessToken).commit();
                 getSharedPreferences("homework", 0).edit().putString("userId", userId).commit();
-//                getBooks();
                 installationPush();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -344,7 +343,7 @@ public class MainActivity extends BaseActivity {
                     String token = getSharedPreferences("homework", 0).getString("accessToken", "");
                     Log.d("test", "取出token=" + token);
                     File file = new File(finalFilepath);
-                    final String ret = UploadUtil.uploadFile(file, "http://202.104.136.9:8389/common/file?access_token=" + token, file.getName());
+                    final String ret = UploadUtil.uploadFile(file, WXApplication.url + "/common/file?access_token=" + token, file.getName());
                     Log.d("test", "upload ret = " + ret);
                     if (TextUtils.isEmpty(ret)) {
                         toast("上传图片失败，请稍后再试");
@@ -355,7 +354,7 @@ public class MainActivity extends BaseActivity {
                         public void run() {
                             try {
                                 JSONObject obj = new JSONObject(ret);
-                                String url = "http://202.104.136.9:8389" + obj.getJSONObject("data").getString("url");
+                                String url = WXApplication.url + obj.getJSONObject("data").getString("url");
                                 obj.getJSONObject("data").put("url", url);
                                 Log.d("test", "obj = " + obj.toString());
                                 wv.loadUrl("javascript:fileUploadCallback(" + obj.toString() + ")");
@@ -370,7 +369,6 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public String getVersionCode() {
-            //return getCurrentVersion(MainActivity.this);
             Log.d("test", "getVersionCode");
             return getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
         }
@@ -460,7 +458,12 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
-        public void httpRequest(final String url, String param, final String method, String time, String tagname, String related, String event) {
+        public void httpRequest(String url, String param, final String method, String time, String tagname, String related, String event) {
+            if (WXApplication.isTest) {
+                url = url.replace("http://202.104.136.9:8389", WXApplication.ceshiUrl);
+            } else {
+                url = url.replace("http://202.104.136.9:8389", WXApplication.zhengshiUrl);
+            }
             try {
                 Integer.parseInt(time);
                 param = param.replace("\\\"", "\"");
@@ -601,7 +604,15 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    public void clickSetToken(View view) {
+        getSharedPreferences("homework", 0).edit().putString("accessToken", "123456").commit();
+    }
+
+
     private void saveDB(String url, String param, String method, String ret, String tagname) {
+        if (kill.getVisibility() == View.VISIBLE) {
+            return;
+        }
         Log.d("test", "saveDB");
         String request = url + param + method;
         HTTPCache cache = new MyDBHelper(this).getHttpCacheByRequest(request);
@@ -736,7 +747,7 @@ public class MainActivity extends BaseActivity {
                 try {
                     sleep(1500);
                     checkTimeout();
-                    HttpGet httpRequest = new HttpGet("http://202.104.136.9:8389/download/version/zip_xs.json");
+                    HttpGet httpRequest = new HttpGet(WXApplication.url + "/download/version/zip_xs.json");
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
@@ -770,8 +781,8 @@ public class MainActivity extends BaseActivity {
                     String zipCode = new JSONObject(ret).getString("zipCode");
                     String zipUrl = new JSONObject(ret).getString("zipUrl");
 
-                    if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
-                        showUpdateConfirmDialog(true, apkUrl);
+                    if (Utils.getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
+                        showUpdateConfirmDialog(apkUrl);
                     } else {
                         //如果APK没有最新版本，比较包的版本。如果内置包的版本号比较高，直接替换
                         boolean flag = false;
@@ -857,14 +868,14 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    protected void showUpdateConfirmDialog(final boolean apk, final String url) {
+    protected void showUpdateConfirmDialog(final String url) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
         dialog_download = builder.setMessage(R.string.getnewversion).setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
                 dialog_download.dismiss();
-                downloadNewVersion(apk, url);
+                downloadNewVersion(url);
             }
         }).setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
@@ -876,7 +887,7 @@ public class MainActivity extends BaseActivity {
         dialog_download.show();
     }
 
-    protected void downloadNewVersion(final boolean apk, final String urlString) {
+    protected void downloadNewVersion(final String urlString) {
         pd.setMessage(getString(R.string.downloading));
         pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         pd.show();
@@ -901,11 +912,7 @@ public class MainActivity extends BaseActivity {
                         new File("/mnt/sdcard/cache/").mkdirs();
                     }
                     String savedFilePath = "";
-                    if (apk) {
-                        savedFilePath = "/mnt/sdcard/cache/xtzy.apk";
-                    } else {
-                        savedFilePath = WXApplication.ROOT + WXApplication.ZIP;
-                    }
+                    savedFilePath = "/mnt/sdcard/cache/xtzy.apk";
                     file = new File(savedFilePath);
                     output = new FileOutputStream(file);
                     byte[] buffer = new byte[1024];
@@ -929,25 +936,13 @@ public class MainActivity extends BaseActivity {
                     output.flush();
                     output.close();
                     input.close();
-                    if (apk) {
-                        Message msg = new Message();
-                        msg.what = 4;
-                        msg.obj = savedFilePath;
-                        mHandler.sendMessage(msg);
-                    } else {
-                        //下载包完成
-                        Message msg = new Message();
-                        msg.what = 7;
-                        msg.obj = savedFilePath;
-                        mHandler.sendMessage(msg);
-                    }
+                    Message msg = new Message();
+                    msg.what = 4;
+                    msg.obj = savedFilePath;
+                    mHandler.sendMessage(msg);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if (apk) {
-                        mHandler.sendEmptyMessage(5);//APK失败
-                    } else {
-                        toast("下载失败，请稍后再试");
-                    }
+                    mHandler.sendEmptyMessage(5);//APK失败
                 }
             }
         }.start();
