@@ -38,7 +38,7 @@ public class JPushMessageReceiver extends BroadcastReceiver {
                 Log.d(TAG, "[MyReceiver] 接收Registration Id : " + regId);
 
                 //send the Registration Id to your server...
-                context.getSharedPreferences("homework", 0).edit().putString("othertoken", regId).commit();
+                context.getSharedPreferences("kiway", 0).edit().putString("othertoken", regId).commit();
 
             } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
                 Log.d(TAG, "[MyReceiver] 接收到推送下来的自定义消息: " + bundle.getString(JPushInterface.EXTRA_MESSAGE));
@@ -61,7 +61,7 @@ public class JPushMessageReceiver extends BroadcastReceiver {
                 String extra = bundle.getString(JPushInterface.EXTRA_EXTRA);
                 Log.d(TAG, "extra = " + extra);
                 Log.d("test", "存了一个event");
-                context.getSharedPreferences("homework", 0).edit().putString("event", extra).commit();
+                context.getSharedPreferences("kiway", 0).edit().putString("event", extra).commit();
                 Intent i = new Intent(context, MainActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(i);
