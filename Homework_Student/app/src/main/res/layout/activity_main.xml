@@ -16,8 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="clickSetToken"
-        android:text="杀死"
-        android:visibility="gone" />
+        android:text="杀死" />
 
     <LinearLayout
         android:id="@+id/layout_welcome"

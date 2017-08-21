@@ -147,11 +147,11 @@ public class BaseActivity extends Activity {
         try {
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            String accessToken = getSharedPreferences("homework", 0).getString("accessToken", "");
-            String userId = getSharedPreferences("homework", 0).getString("userId", "");
-            String xiaomitoken = getSharedPreferences("homework", 0).getString("xiaomitoken", "");
-            String huaweitoken = getSharedPreferences("homework", 0).getString("huaweitoken", "");
-            String othertoken = getSharedPreferences("homework", 0).getString("othertoken", "");
+            String accessToken = getSharedPreferences("kiway", 0).getString("accessToken", "");
+            String userId = getSharedPreferences("kiway", 0).getString("userId", "");
+            String xiaomitoken = getSharedPreferences("kiway", 0).getString("xiaomitoken", "");
+            String huaweitoken = getSharedPreferences("kiway", 0).getString("huaweitoken", "");
+            String othertoken = getSharedPreferences("kiway", 0).getString("othertoken", "");
             client.addHeader("X-Auth-Token", accessToken);
             Log.d("test", "xiaomitoken = " + xiaomitoken);
             Log.d("test", "huaweitoken = " + huaweitoken);

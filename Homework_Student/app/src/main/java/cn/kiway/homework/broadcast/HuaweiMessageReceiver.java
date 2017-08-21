@@ -28,7 +28,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 .getSystemService(Context.TELEPHONY_SERVICE);
         Log.d("huawei", "imei = " + tm.getDeviceId());
 
-        context.getSharedPreferences("homework", 0).edit().putString("huaweitoken", token).commit();
+        context.getSharedPreferences("kiway", 0).edit().putString("huaweitoken", token).commit();
     }
 
 
@@ -54,7 +54,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             String content = "收到通知附加消息： " + extras.getString(BOUND_KEY.pushMsgKey);
             Log.d("huawei", content);
             Log.d("test", "存了一个event");
-            context.getSharedPreferences("homework", 0).edit().putString("event", content.replace("[", "").replace("]", "")).commit();
+            context.getSharedPreferences("kiway", 0).edit().putString("event", content.replace("[", "").replace("]", "")).commit();
             //没有接收消息的event，只好暂时放这里了 TODO
             new MyDBHelper(context).deleteHttpCache("getHomework");
             new MyDBHelper(context).deleteHttpCache("receiveInfo");
