@@ -91,6 +91,7 @@ public class MainActivity extends BaseActivity {
     private WebView wv;
     private LinearLayout layout_welcome;
     public static MainActivity instance;
+    private Button kill;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +100,7 @@ public class MainActivity extends BaseActivity {
         instance = this;
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
         wv = (WebView) findViewById(R.id.wv);
+        kill = (Button) findViewById(R.id.kill);
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
         checkIsFirst();
         initData();
@@ -462,6 +464,11 @@ public class MainActivity extends BaseActivity {
             }
         }
 
+        @JavascriptInterface
+        public String isTest() {
+            Log.d("test", "isTest is called");
+            return WXApplication.isTest ? "1" : "0";
+        }
 
         @JavascriptInterface
         public void httpRequest(String url, String param, final String method, String time, String tagname, String related, String event) {
@@ -610,6 +617,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void saveDB(String url, String param, String method, String ret, String tagname) {
+        if (kill.getVisibility() == View.VISIBLE) {
+            return;
+        }
         Log.d("test", "saveDB");
         String request = url + param + method;
         HTTPCache cache = new MyDBHelper(this).getHttpCacheByRequest(request);

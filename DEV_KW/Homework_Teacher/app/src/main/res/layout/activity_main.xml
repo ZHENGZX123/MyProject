@@ -10,6 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"></WebView>
 
+    <Button
+        android:id="@+id/kill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="clickSetToken"
+        android:text="杀死" />
+
     <LinearLayout
         android:id="@+id/layout_welcome"
         android:layout_width="match_parent"
