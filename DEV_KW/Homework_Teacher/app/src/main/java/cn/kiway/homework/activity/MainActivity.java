@@ -350,7 +350,7 @@ public class MainActivity extends BaseActivity {
                     String token = getSharedPreferences("homework", 0).getString("accessToken", "");
                     Log.d("test", "取出token=" + token);
                     File file = new File(finalFilepath);
-                    final String ret = UploadUtil.uploadFile(file, "http://202.104.136.9:8389/common/file?access_token=" + token, file.getName());
+                    final String ret = UploadUtil.uploadFile(file, WXApplication.url + "/common/file?access_token=" + token, file.getName());
                     Log.d("test", "upload ret = " + ret);
                     if (TextUtils.isEmpty(ret)) {
                         toast("上传图片失败，请稍后再试");
@@ -361,7 +361,7 @@ public class MainActivity extends BaseActivity {
                         public void run() {
                             try {
                                 JSONObject obj = new JSONObject(ret);
-                                String url = "http://202.104.136.9:8389" + obj.getJSONObject("data").getString("url");
+                                String url = WXApplication.url + obj.getJSONObject("data").getString("url");
                                 obj.getJSONObject("data").put("url", url);
                                 Log.d("test", "obj = " + obj.toString());
                                 wv.loadUrl("javascript:fileUploadCallback(" + obj.toString() + ")");
@@ -464,7 +464,12 @@ public class MainActivity extends BaseActivity {
 
 
         @JavascriptInterface
-        public void httpRequest(final String url, String param, final String method, String time, String tagname, String related, String event) {
+        public void httpRequest(String url, String param, final String method, String time, String tagname, String related, String event) {
+            if (WXApplication.isTest) {
+                url = url.replace("http://202.104.136.9:8389", WXApplication.ceshiUrl);
+            } else {
+                url = url.replace("http://202.104.136.9:8389", WXApplication.zhengshiUrl);
+            }
             try {
                 Integer.parseInt(time);
                 param = param.replace("\\\"", "\"");
@@ -740,7 +745,7 @@ public class MainActivity extends BaseActivity {
                 try {
                     sleep(1500);
                     checkTimeout();
-                    HttpGet httpRequest = new HttpGet("http://202.104.136.9:8389/download/version/zip_ls.json");
+                    HttpGet httpRequest = new HttpGet(WXApplication.url + "/download/version/zip_ls.json");
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
