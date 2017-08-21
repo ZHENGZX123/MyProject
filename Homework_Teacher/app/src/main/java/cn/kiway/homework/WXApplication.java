@@ -30,6 +30,20 @@ import ly.count.android.api.Countly;
 
 public class WXApplication extends Application {
 
+    public static String url;
+    public static final String zhengshiUrl = "http://zhengshi:8389";//正式地址
+    public static final String ceshiUrl = "http://202.104.136.9:8389";//测试地址
+
+    public static boolean isTest = true;
+
+    static {
+        if (isTest) {
+            url = ceshiUrl;
+        } else {
+            url = zhengshiUrl;
+        }
+    }
+
     public static String ROOT = "/mnt/sdcard/kiway_teacher/";
     public static String HTML = "xtzy_teacher/dist/index.html";
     public static String ZIP = "xtzy_teacher.zip";
