@@ -31,10 +31,10 @@ import ly.count.android.api.Countly;
 public class WXApplication extends Application {
 
     public static String url;
-    public static final String zhengshiUrl = "http://zhengshi:8389";//正式地址
-    public static final String ceshiUrl = "http://202.104.136.9:8389";//测试地址
+    public static final String zhengshiUrl = "http://zy.xtclass.com:8389";//正式地址
+    public static final String ceshiUrl = "http://202.104.136.9:8389";    //测试地址8390
 
-    public static boolean isTest = true;
+    public static boolean isTest = true;//测试true  正式false
 
     static {
         if (isTest) {

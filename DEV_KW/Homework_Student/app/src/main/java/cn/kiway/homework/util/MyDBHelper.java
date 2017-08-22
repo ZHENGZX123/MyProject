@@ -338,7 +338,16 @@ public class MyDBHelper extends SQLiteOpenHelper {
         if (db == null)
             db = getWritableDatabase();
         Log.d("test", "删除记录:" + tagname);
-        db.delete(TABLE_HTTPCACHE, "tagname=?", new String[]{tagname});
+
+        if (tagname.contains(",")) {
+            String[] tagnames = tagname.split(",");
+            for (String s : tagnames) {
+                db.delete(TABLE_HTTPCACHE, "tagname=?", new String[]{s});
+            }
+        } else {
+            db.delete(TABLE_HTTPCACHE, "tagname=?", new String[]{tagname});
+        }
+
         db.close();
     }
 
