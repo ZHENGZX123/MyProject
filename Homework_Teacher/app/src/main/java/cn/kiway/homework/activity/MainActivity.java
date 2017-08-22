@@ -473,9 +473,9 @@ public class MainActivity extends BaseActivity {
         @JavascriptInterface
         public void httpRequest(String url, String param, final String method, String time, String tagname, String related, String event) {
             if (WXApplication.isTest) {
-                url = url.replace("http://202.104.136.9:8389", WXApplication.ceshiUrl);
+                url = url.replace("http://202.104.136.9:8389", WXApplication.ceshiUrl).replace("http://202.104.136.9:8390", WXApplication.ceshiUrl);
             } else {
-                url = url.replace("http://202.104.136.9:8389", WXApplication.zhengshiUrl);
+                url = url.replace("http://202.104.136.9:8389", WXApplication.zhengshiUrl).replace("http://202.104.136.9:8390", WXApplication.zhengshiUrl);
             }
             try {
                 Integer.parseInt(time);
@@ -595,7 +595,6 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onSuccess(int i, Header[] headers, String ret) {
                                 Log.d("test", "get onSuccess = " + ret);
-                                saveDB(url, param, method, ret, tagname);
                                 httpRequestCallback(tagname, ret);
                                 //如果是post，related不为空，查找一下相关的缓存，并清除掉
                                 new MyDBHelper(getApplicationContext()).deleteHttpCache(related);
@@ -614,6 +613,10 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    public void clickSetToken(View view) {
+        getSharedPreferences("kiway", 0).edit().putString("accessToken", "123456").commit();
     }
 
     private void saveDB(String url, String param, String method, String ret, String tagname) {
@@ -646,8 +649,8 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + finalResult);
                     String r = finalResult.replace("null", "\"\"").replace("\"\"\"\"", "\"\"");
+                    Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + r);
                     wv.loadUrl("javascript:" + tagname + "(" + r + ")");
                 } catch (Exception e) {
                     e.printStackTrace();
