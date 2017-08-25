@@ -24,6 +24,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,12 +76,14 @@ import cn.kiway.homework.util.UploadUtil;
 import cn.kiway.homework.util.Utils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
+import static cn.kiway.homework.WXApplication.ceshiUrl;
 import static cn.kiway.homework.WXApplication.url;
+import static cn.kiway.homework.WXApplication.zhengshiUrl;
 
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.2.4";
+    private static final String currentPackageVersion = "0.2.8";
 
     private WebView wv;
     private LinearLayout layout_welcome;
@@ -99,15 +102,20 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         Log.d("test", "onCreate");
         instance = this;
-        pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
-        wv = (WebView) findViewById(R.id.wv);
-        kill = (Button) findViewById(R.id.kill);
-        layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
+        initView();
+        Utils.checkNetWork(this);
         checkIsFirst();
         initData();
         load();
         checkNewVersion();
         huaweiPush();
+    }
+
+    private void initView() {
+        pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
+        wv = (WebView) findViewById(R.id.wv);
+        kill = (Button) findViewById(R.id.kill);
+        layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
     }
 
     @Override
@@ -210,14 +218,14 @@ public class MainActivity extends BaseActivity {
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
                 Log.d("test", "shouldInterceptRequest url = " + url);
                 //只有http图片才缓存
-//                if ((url.startsWith("http") || url.startsWith("https"))
-//                        && (url.endsWith("jpg") || url.endsWith("JPG") || url.endsWith("jpeg") || url.endsWith("JPEG") || url.endsWith("png") || url.endsWith("PNG"))) {
-//                    InputStream is = getStreamByUrl(url);
-//                    if (is == null) {
-//                        return super.shouldInterceptRequest(view, url);
-//                    }
-//                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
-//                }
+                if ((url.startsWith("http") || url.startsWith("https"))
+                        && (url.endsWith("jpg") || url.endsWith("JPG") || url.endsWith("jpeg") || url.endsWith("JPEG") || url.endsWith("png") || url.endsWith("PNG"))) {
+                    InputStream is = getStreamByUrl(url);
+                    if (is == null) {
+                        return super.shouldInterceptRequest(view, url);
+                    }
+                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
+                }
                 //des解密用
 //                else if (url.endsWith("js") || url.endsWith("css") || url.endsWith("html")) {
 //                    InputStream is = getStreamByUrl2(url.replace("file://", ""));
@@ -274,6 +282,12 @@ public class MainActivity extends BaseActivity {
 
     public class JsAndroidInterface {
         public JsAndroidInterface() {
+        }
+
+        @JavascriptInterface
+        public String getOS() {
+            Log.d("test", "getOS is called");
+            return "Android";
         }
 
         @JavascriptInterface
@@ -462,10 +476,8 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public void httpRequest(String url, String param, final String method, String time, String tagname, String related, String event) {
-            if (WXApplication.isTest) {
-                url = url.replace("http://202.104.136.9:8389", WXApplication.ceshiUrl).replace("http://202.104.136.9:8390", WXApplication.ceshiUrl);
-            } else {
-                url = url.replace("http://202.104.136.9:8389", WXApplication.zhengshiUrl).replace("http://202.104.136.9:8390", WXApplication.zhengshiUrl);
+            if (!WXApplication.isTest) {
+                url = url.replace(ceshiUrl, zhengshiUrl);
             }
             try {
                 Integer.parseInt(time);
@@ -766,13 +778,21 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
-    private Handler mHandler = new Handler() {
+    public Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             if (isJump) {
                 return;
             }
             isSuccess = true;
-            if (msg.what == 2) {
+            if (msg.what == 1) {
+                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
+                int arg1 = msg.arg1;
+                if (arg1 == 0) {
+                    rl_nonet.setVisibility(View.VISIBLE);
+                } else {
+                    rl_nonet.setVisibility(View.GONE);
+                }
+            } else if (msg.what == 2) {
                 String ret = (String) msg.obj;
                 try {
                     //1.apk更新
@@ -1016,6 +1036,10 @@ public class MainActivity extends BaseActivity {
                 checking = false;
             }
         });
+    }
+
+    public void clickNetwork(View view) {
+        startActivity(new Intent(this, NoNetActivity.class));
     }
 
 }
