@@ -5,17 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:id="@+id/rl_nonet"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#fec7de"
+        android:onClick="clickNetwork"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="无法连接服务器，请检查你的网络设置"
+            android:textColor="#666666" />
+
+    </RelativeLayout>
+
     <WebView
         android:id="@+id/wv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></WebView>
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_nonet"></WebView>
 
     <Button
         android:id="@+id/kill"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="clickSetToken"
-        android:text="杀死" />
+        android:text="杀死"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/layout_welcome"
@@ -35,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="协同作业"
+            android:text="协同教师"
             android:textColor="#000000"
             android:textSize="25sp" />
 

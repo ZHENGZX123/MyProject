@@ -58,7 +58,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
 
             //没有接收消息的event，只好暂时放这里了 TODO
             new MyDBHelper(context).deleteHttpCache("getTeacherInMsg");
-
+            new MyDBHelper(context).deleteHttpCache("getHomework");
             //华为必须重新打开页面，因为event竟然比onresume还慢
             Intent i = new Intent(context, MainActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
