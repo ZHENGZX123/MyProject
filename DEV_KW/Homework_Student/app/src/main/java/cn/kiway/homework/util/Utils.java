@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Message;
@@ -122,26 +120,19 @@ public class Utils {
         return data;
     }
 
-    public static void checkNetWork(Context context) {
+    public static void checkNetWork(Context context, boolean reConnect) {
         //获取手机的连接服务管理器，这里是连接管理器类
         try {
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo.State wifiState = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
-            NetworkInfo.State mobileState = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
+            boolean available = NetworkUtil.isNetworkAvailable(context);
             Message msg = new Message();
-            if (wifiState != null && mobileState != null && NetworkInfo.State.CONNECTED != wifiState && NetworkInfo.State.CONNECTED == mobileState) {
-//            String type = getCurrentNetworkType(context);
+            if (available) {
                 msg.what = 1;
                 msg.arg1 = 1;
-                msg.obj = "GPRS网络连接！";
-            } else if (wifiState != null && mobileState != null && NetworkInfo.State.CONNECTED == wifiState && NetworkInfo.State.CONNECTED != mobileState) {
-                msg.what = 1;
-                msg.arg1 = 2;
-                msg.obj = "WIFI连接！";
-            } else if (wifiState != null && mobileState != null && NetworkInfo.State.CONNECTED != wifiState && NetworkInfo.State.CONNECTED != mobileState) {
+                msg.arg2 = reConnect ? 1 : 0;
+            } else {
                 msg.what = 1;
                 msg.arg1 = 0;
-                msg.obj = "手机没有任何网络...";
+                msg.arg2 = reConnect ? 1 : 0;
             }
             MainActivity.instance.mHandler.sendMessage(msg);
         } catch (Exception e) {

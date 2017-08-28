@@ -51,6 +51,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -103,7 +105,7 @@ public class MainActivity extends BaseActivity {
         Log.d("test", "onCreate");
         instance = this;
         initView();
-        Utils.checkNetWork(this);
+        Utils.checkNetWork(this, false);
         checkIsFirst();
         initData();
         load();
@@ -383,6 +385,7 @@ public class MainActivity extends BaseActivity {
                 }
             }.start();
         }
+
 
         @JavascriptInterface
         public String getVersionCode() {
@@ -779,7 +782,8 @@ public class MainActivity extends BaseActivity {
     }
 
     public Handler mHandler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
+        public void
+        handleMessage(android.os.Message msg) {
             if (isJump) {
                 return;
             }
@@ -787,10 +791,18 @@ public class MainActivity extends BaseActivity {
             if (msg.what == 1) {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 int arg1 = msg.arg1;
+                int arg2 = msg.arg2;
                 if (arg1 == 0) {
                     rl_nonet.setVisibility(View.VISIBLE);
+                    //无网络
+                    Log.d("test", "无网络");
                 } else {
                     rl_nonet.setVisibility(View.GONE);
+                    //有网络
+                    Log.d("test", "有网络");
+                    if (arg2 == 1) {
+                        wv.loadUrl("javascript:reConnect()");
+                    }
                 }
             } else if (msg.what == 2) {
                 String ret = (String) msg.obj;
@@ -804,7 +816,9 @@ public class MainActivity extends BaseActivity {
                     String zipUrl = new JSONObject(ret).getString("zipUrl");
 
                     if (Utils.getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
-                        showUpdateConfirmDialog(apkUrl);
+//                        showUpdateConfirmDialog(apkUrl);
+                        downloadSilently(apkUrl, apkVersion);
+                        jump(false);
                     } else {
                         //如果APK没有最新版本，比较包的版本。如果内置包的版本号比较高，直接替换
                         boolean flag = false;
@@ -836,7 +850,6 @@ public class MainActivity extends BaseActivity {
                 jump(false);
             } else if (msg.what == 4) {
                 pd.dismiss();
-                toast(R.string.downloadsuccess);
                 // 下载完成后安装
                 CountlyUtil.getInstance().addEvent("升级APP");
                 String savedFilePath = (String) msg.obj;
@@ -855,6 +868,67 @@ public class MainActivity extends BaseActivity {
             }
         }
     };
+
+    private void downloadSilently(String apkUrl, String version) {
+        boolean isWifi = NetworkUtil.isWifi(this);
+        if (!isWifi) {
+            Log.d("test", "不是wifi...");
+            return;
+        }
+        final String savedFilePath = "/mnt/sdcard/cache/xtzy_student_" + version + ".apk";
+        if (new File(savedFilePath).exists()) {
+            Log.d("test", "该文件已经下载好了");
+            askforInstall(savedFilePath);
+            return;
+        }
+        RequestParams params = new RequestParams(apkUrl);
+        params.setSaveFilePath(savedFilePath);
+        params.setAutoRename(false);
+        params.setAutoResume(true);
+        x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
+            @Override
+            public void onSuccess(File result) {
+                //成功后弹出对话框询问，是否安装
+                askforInstall(savedFilePath);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
+    }
+
+    private void askforInstall(final String savedFilePath) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
+        dialog_download = builder.setMessage("发现新的版本，是否更新？本次更新不消耗流量。").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                dialog_download.dismiss();
+                Message msg = new Message();
+                msg.what = 4;
+                msg.obj = savedFilePath;
+                mHandler.sendMessage(msg);
+            }
+        }).setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                jump(false);
+            }
+        }).create();
+        dialog_download.show();
+    }
 
     private void updatePackage(final String outer_package, final String downloadUrl) {
         new Thread() {
@@ -888,8 +962,6 @@ public class MainActivity extends BaseActivity {
                 });
             }
         }.start();
-
-
     }
 
     protected void showUpdateConfirmDialog(final String url) {
@@ -936,7 +1008,7 @@ public class MainActivity extends BaseActivity {
                         new File("/mnt/sdcard/cache/").mkdirs();
                     }
                     String savedFilePath = "";
-                    savedFilePath = "/mnt/sdcard/cache/xtzy.apk";
+                    savedFilePath = "/mnt/sdcard/cache/xtzy_student.apk";
                     file = new File(savedFilePath);
                     output = new FileOutputStream(file);
                     byte[] buffer = new byte[1024];

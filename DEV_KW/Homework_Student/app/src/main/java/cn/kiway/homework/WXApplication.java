@@ -18,6 +18,8 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
+import org.xutils.x;
+
 import java.io.File;
 import java.util.List;
 
@@ -76,6 +78,9 @@ public class WXApplication extends Application {
         //jpush
         JPushInterface.setDebugMode(true);
         JPushInterface.init(this);
+
+        //xutils
+        x.Ext.init(this);
     }
 
     private boolean shouldInit() {
