@@ -48,6 +48,7 @@ public class BaseActivity extends Activity {
     }
 
     public void toast(final String txt) {
+        Log.d("test", "toast is called");
         runOnUiThread(new Runnable() {
 
             @Override
