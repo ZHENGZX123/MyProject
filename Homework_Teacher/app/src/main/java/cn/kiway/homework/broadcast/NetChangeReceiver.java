@@ -18,7 +18,7 @@ public class NetChangeReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("test", "NetChangeBroadcast onReceive");
-        Utils.checkNetWork(context);
+        Utils.checkNetWork(context, true);
     }
 
     private static final int NETWORK_TYPE_UNAVAILABLE = -1;

@@ -18,6 +18,8 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
+import org.xutils.x;
+
 import java.io.File;
 import java.util.List;
 
@@ -46,6 +48,7 @@ public class WXApplication extends Application {
 
     public static String ROOT = "/mnt/sdcard/kiway_teacher/";
     public static String HTML = "xtzy_teacher/dist/index.html";
+    public static String HTML4PAD = "xtzy_teacher/dist/index4pad.html";
     public static String ZIP = "xtzy_teacher.zip";
 
     public static String BOOKS = "/mnt/sdcard/books/";
@@ -76,6 +79,9 @@ public class WXApplication extends Application {
         //jpush
         JPushInterface.setDebugMode(true);
         JPushInterface.init(this);
+
+        //xutils
+        x.Ext.init(this);
     }
 
     private boolean shouldInit() {
