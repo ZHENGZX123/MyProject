@@ -329,8 +329,8 @@ public class MainActivity extends BaseActivity {
                 String userId = new JSONObject(param).getString("userId");
                 getSharedPreferences("kiway", 0).edit().putString("accessToken", accessToken).commit();
                 getSharedPreferences("kiway", 0).edit().putString("userId", userId).commit();
-//                getBooks();
                 installationPush();
+                getBooks();
             } catch (Exception e) {
                 e.printStackTrace();
             }
