@@ -11,8 +11,11 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import net.lingala.zip4j.core.ZipFile;
+
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
@@ -21,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.SecureRandom;
+import java.util.Iterator;
 import java.util.Locale;
 
 import javax.crypto.Cipher;
@@ -29,7 +33,11 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 import cn.kiway.homework.WXApplication;
+import cn.kiway.homework.entity.KV;
 import cn.kiway.homework.util.CountlyUtil;
+import cn.kiway.homework.util.FileUtils;
+import cn.kiway.homework.util.HttpDownload;
+import cn.kiway.homework.util.MyDBHelper;
 import cn.kiway.homework.util.Utils;
 import ly.count.android.api.Countly;
 
@@ -205,5 +213,77 @@ public class BaseActivity extends Activity {
         super.onStop();
         CountlyUtil.getInstance().sendAll();
         Countly.sharedInstance().onStop();
+    }
+
+
+    public void getBooks() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.setTimeout(10000);
+        String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
+        client.addHeader("X-Auth-Token", token);
+        String url = WXApplication.url + "/teacher/book?access_token=" + token;
+        client.get(this, url, new TextHttpResponseHandler() {
+            @Override
+            public void onSuccess(int code, Header[] headers, String ret) {
+                Log.d("test", "getBooks onSuccess = " + ret);
+                downloadBooks(ret);
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                Log.d("test", "getBooks onFailure = " + s);
+            }
+        });
+    }
+
+    private void downloadBooks(final String ret) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    JSONArray array = new JSONObject(ret).getJSONArray("data");
+                    int count = array.length();
+                    for (int i = 0; i < count; i++) {
+                        JSONObject o = array.getJSONObject(i);
+                        String id = o.getString("id");
+                        Log.d("test", "id = " + id);
+                        //0.检查本地是否存在
+                        if (new File(WXApplication.BOOKS + id + ".zip").exists()) {
+                            continue;
+                        }
+                        //1.下载
+                        String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
+                        String downloadurl = WXApplication.url + "/resource/book/" + id + "?access_token=" + token;
+                        Log.d("test", "downloadurl = " + downloadurl);
+                        int ret = new HttpDownload().downFile(downloadurl, "/mnt/sdcard/books/", id + ".zip");
+                        Log.d("test", "下载结果 ret = " + ret);
+                        if (ret == 0) {
+                            //2.解压
+                            new ZipFile(WXApplication.BOOKS + id + ".zip").extractAll(WXApplication.BOOKS + id);
+                            //3.读取data.json文件
+                            String filepath = WXApplication.BOOKS + id + "/data.json";
+                            String content = FileUtils.readSDCardFile(filepath, getApplicationContext());
+                            Log.d("test", "content = " + content);
+                            JSONObject all = new JSONObject(content);
+                            Iterator<String> keys = all.keys();
+                            while (keys.hasNext()) {
+                                String key = keys.next();
+                                String value = all.getString(key);
+                                Log.d("test", "key = " + key);
+                                Log.d("test", "value = " + value);
+                                //4.插入数据库
+                                KV a = new KV();
+                                a.k = key;
+                                a.v = value;
+                                new MyDBHelper(getApplicationContext()).addKV(a);
+                            }
+                            Log.d("test", "book" + id + "插入sql完毕");
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 }

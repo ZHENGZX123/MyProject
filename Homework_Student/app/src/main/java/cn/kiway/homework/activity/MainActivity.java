@@ -307,6 +307,7 @@ public class MainActivity extends BaseActivity {
                 getSharedPreferences("kiway", 0).edit().putString("accessToken", accessToken).commit();
                 getSharedPreferences("kiway", 0).edit().putString("userId", userId).commit();
                 installationPush();
+//                getBooks();
             } catch (Exception e) {
                 e.printStackTrace();
             }
