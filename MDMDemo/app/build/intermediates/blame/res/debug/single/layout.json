@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\MDM\\app\\build\\intermediates\\res\\merged\\debug\\layout\\main_layout.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\MDM\\app\\src\\main\\res\\layout\\main_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\MDM\\app\\build\\intermediates\\res\\merged\\debug\\layout\\license_layout.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\MDM\\app\\src\\main\\res\\layout\\license_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\MDM\\app\\build\\intermediates\\res\\merged\\debug\\layout\\eula_layout.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\MDM\\app\\src\\main\\res\\layout\\eula_layout.xml"
+    }
+]
