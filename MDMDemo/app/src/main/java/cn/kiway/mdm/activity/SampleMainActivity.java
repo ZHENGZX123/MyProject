@@ -41,13 +41,16 @@
  * Huawei and other Huawei trademarks are trademarks of Huawei Technologies Co., Ltd.
  * All other trademarks and trade names mentioned in this document are the property of their respective holders.
  */
-package cn.kiway.mdm;
+package cn.kiway.mdm.activity;
 
 import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -59,6 +62,13 @@ import android.widget.Toast;
 
 import com.huawei.android.app.admin.DeviceControlManager;
 import com.huawei.android.app.admin.DeviceRestrictionManager;
+
+import java.util.List;
+
+import cn.kiway.mdm.R;
+import cn.kiway.mdm.SampleDeviceReceiver;
+import cn.kiway.mdm.SampleEula;
+import cn.kiway.mdm.util.WifiAdmin;
 
 public class SampleMainActivity extends Activity {
     private DeviceRestrictionManager mDeviceRestrictionManager = null;
@@ -79,6 +89,7 @@ public class SampleMainActivity extends Activity {
     private Button settingEnableBtn;
 
     private Button shutdownDevice;
+    private Button connectSSID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +125,7 @@ public class SampleMainActivity extends Activity {
         settingEnableBtn = (Button) findViewById(R.id.enableSetting);
 
         shutdownDevice = (Button) findViewById(R.id.shutdownDevice);
+        connectSSID = (Button) findViewById(R.id.connectSSID);
 
         wifiDisableBtn.setOnClickListener(new SampleOnClickListener());
         wifiEnableBtn.setOnClickListener(new SampleOnClickListener());
@@ -123,6 +135,7 @@ public class SampleMainActivity extends Activity {
         settingEnableBtn.setOnClickListener(new SampleOnClickListener());
 
         shutdownDevice.setOnClickListener(new SampleOnClickListener());
+        connectSSID.setOnClickListener(new SampleOnClickListener());
     }
 
     private void updateState() {
@@ -222,9 +235,71 @@ public class SampleMainActivity extends Activity {
             case R.id.shutdownDevice:
                 mDeviceControlManager.shutdownDevice(mAdminName);
                 break;
+            case R.id.connectSSID:
+                connectSSID();
+                break;
 
         }
     }
+
+    private void connectSSID() {
+        String SSID = "KWHW2";
+        String password = "KWF58888";
+
+
+        boolean has = false;
+        WifiAdmin admin = new WifiAdmin(this);
+        admin.startScan();
+        List<ScanResult> list = admin.getWifiList();
+        for (int i = 0; i < list.size(); i++) {
+            Log.d("test", " wifi = " + list.get(i).toString());
+            if (list.get(i).SSID.equals(SSID)) {
+                has = true;
+            }
+        }
+        if (has) {
+            Log.d("test", "有这个wifi");
+            connectWifi(SSID, password);
+        } else {
+            Log.d("test", "xxxx");
+        }
+    }
+
+
+    public void connectWifi(String ssid, String pwd) {
+        WifiAdmin admin = new WifiAdmin(this);
+        String capabilities = "[WPA-PSK-CCMP][WPA2-PSK-CCMP][ESS]";
+        int type = 1;
+        if (capabilities.contains("WEP")) {
+            type = 2;
+        } else if (capabilities.contains("WPA")) {
+            type = 3;
+        }
+        Log.d("test", "type = " + type);
+        if (type == 1) {
+            String SSID = ssid;
+            if (Build.VERSION.SDK_INT >= 21) {
+                SSID = "" + SSID + "";
+            } else {
+                SSID = "\"" + SSID + "\"";
+            }
+            WifiConfiguration config = new WifiConfiguration();
+            config.SSID = SSID;
+            config.allowedKeyManagement
+                    .set(WifiConfiguration.KeyMgmt.NONE);
+            admin.addNetwork(config);
+        } else {
+            String SSID = ssid;
+            if (Build.VERSION.SDK_INT >= 21) {
+                SSID = "" + SSID + "";
+            } else {
+                SSID = "\"" + SSID + "\"";
+            }
+            admin.addNetwork(admin.CreateWifiInfo(SSID,
+                    pwd, type));
+        }
+    }
+
 
     private void toast(String txt) {
         Toast.makeText(this, txt, Toast.LENGTH_SHORT).show();

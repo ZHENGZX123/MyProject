@@ -66,6 +66,10 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
+import cn.kiway.mdm.activity.LicenseActivity;
+import cn.kiway.mdm.util.SharedPreferenceUtil;
+import cn.kiway.mdm.util.Utils;
+
 public class SampleEula {
     private static final int REQUEST_ENABLE = 1;
     private Activity mActivity = null;
@@ -159,7 +163,7 @@ public class SampleEula {
         public void onClick(View widget) {  
             widget.setBackgroundColor(Color.parseColor("#00000000"));  
   
-            Intent intent = new Intent(mActivity, LicenseActivity.class);  
+            Intent intent = new Intent(mActivity, LicenseActivity.class);
             mActivity.startActivity(intent);  
         }
     }  
