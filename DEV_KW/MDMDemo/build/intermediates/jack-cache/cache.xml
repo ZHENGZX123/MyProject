@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="D:\Android\sdk\platforms\android-20\android.jar"
+        revision="25.0.3"
+        sha1="99b6a3d5b4a540cddbb95eab3c27b406aba3360e">
+        <dex dex="C:\Users\Administrator\Desktop\MDM\app\build\intermediates\transforms\preJackRuntimeLibraries\release\jars\8000\40\android-a99f8e3ce2eb42caa45cb3ff4bd01307b7e865f3.jar" />
+    </item>
+    <item
+        jar="C:\Users\Administrator\Desktop\MDM\app\libs\hwMdm.jar"
+        revision="25.0.3"
+        sha1="236395562144e882c8260e23ff74db35f0c1aef1">
+        <dex dex="C:\Users\Administrator\Desktop\MDM\app\build\intermediates\transforms\preJackPackagedLibraries\release\jars\8000\1f\hwMdm-cfd3717c40b946039b8e3f314cfb761834dac330.jar" />
+    </item>
+
+</items>

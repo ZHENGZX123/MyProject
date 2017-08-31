@@ -1,0 +1,8 @@
+"C:/Users/Administrator/Desktop/MDM/app/src/main/java/cn/kiway/mdm/LicenseActivity.java"
+"C:/Users/Administrator/Desktop/MDM/app/src/main/java/cn/kiway/mdm/SampleDeviceReceiver.java"
+"C:/Users/Administrator/Desktop/MDM/app/src/main/java/cn/kiway/mdm/SampleEula.java"
+"C:/Users/Administrator/Desktop/MDM/app/src/main/java/cn/kiway/mdm/SampleMainActivity.java"
+"C:/Users/Administrator/Desktop/MDM/app/src/main/java/cn/kiway/mdm/SharedPreferenceUtil.java"
+"C:/Users/Administrator/Desktop/MDM/app/src/main/java/cn/kiway/mdm/Utils.java"
+"C:/Users/Administrator/Desktop/MDM/app/build/generated/source/r/debug/cn/kiway/mdm/R.java"
+"C:/Users/Administrator/Desktop/MDM/app/build/generated/source/buildConfig/debug/cn/kiway/mdm/BuildConfig.java"
