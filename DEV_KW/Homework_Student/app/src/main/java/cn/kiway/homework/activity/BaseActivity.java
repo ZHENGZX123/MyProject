@@ -185,7 +185,9 @@ public class BaseActivity extends Activity {
             param.put("userId", userId);
             Log.d("push", "param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            client.post(this, WXApplication.url + "/push/installation", stringEntity, "application/json", new TextHttpResponseHandler() {
+            String url = WXApplication.url + "/push/installation";
+            Log.d("push", "installationPush = " + url);
+            client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("push", "installationPush onSuccess = " + ret);
