@@ -62,12 +62,13 @@ import android.widget.Toast;
 
 import com.huawei.android.app.admin.DeviceControlManager;
 import com.huawei.android.app.admin.DeviceRestrictionManager;
+import com.huawei.android.pushagent.api.PushManager;
 
 import java.util.List;
 
 import cn.kiway.mdm.R;
-import cn.kiway.mdm.SampleDeviceReceiver;
-import cn.kiway.mdm.SampleEula;
+import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
+import cn.kiway.mdm.util.SampleEula;
 import cn.kiway.mdm.util.WifiAdmin;
 
 public class SampleMainActivity extends Activity {
@@ -96,9 +97,7 @@ public class SampleMainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
 
-        TelephonyManager tm = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
-        String imei = tm.getDeviceId();
-        Log.d("test", "imei = " + imei);
+        huaweiPush();
 
         mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
@@ -300,8 +299,12 @@ public class SampleMainActivity extends Activity {
         }
     }
 
-
     private void toast(String txt) {
         Toast.makeText(this, txt, Toast.LENGTH_SHORT).show();
+    }
+
+    public void huaweiPush() {
+        PushManager.requestToken(this);
+        Log.i("huawei", "try to get Token ,current packageName is " + this.getPackageName());
     }
 }

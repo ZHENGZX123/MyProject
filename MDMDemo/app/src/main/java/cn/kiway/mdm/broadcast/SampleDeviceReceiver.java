@@ -41,11 +41,13 @@
  * Huawei and other Huawei trademarks are trademarks of Huawei Technologies Co., Ltd.
  * All other trademarks and trade names mentioned in this document are the property of their respective holders.
  */
-package cn.kiway.mdm;
+package cn.kiway.mdm.broadcast;
 
 import android.app.admin.DeviceAdminReceiver;
 import android.content.Context;
 import android.content.Intent;
+
+import cn.kiway.mdm.R;
 
 public class SampleDeviceReceiver extends DeviceAdminReceiver {
 

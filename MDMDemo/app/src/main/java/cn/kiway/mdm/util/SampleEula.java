@@ -41,7 +41,7 @@
  * Huawei and other Huawei trademarks are trademarks of Huawei Technologies Co., Ltd.
  * All other trademarks and trade names mentioned in this document are the property of their respective holders.
  */
-package cn.kiway.mdm;
+package cn.kiway.mdm.util;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -66,9 +66,8 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
+import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.LicenseActivity;
-import cn.kiway.mdm.util.SharedPreferenceUtil;
-import cn.kiway.mdm.util.Utils;
 
 public class SampleEula {
     private static final int REQUEST_ENABLE = 1;
