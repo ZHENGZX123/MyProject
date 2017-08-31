@@ -85,7 +85,7 @@ import static cn.kiway.homework.WXApplication.zhengshiUrl;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.2.8";
+    private static final String currentPackageVersion = "0.3.2";
 
     private WebView wv;
     private LinearLayout layout_welcome;
