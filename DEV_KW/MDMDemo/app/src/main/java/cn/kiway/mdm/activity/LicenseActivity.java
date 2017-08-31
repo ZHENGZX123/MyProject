@@ -8,7 +8,7 @@
 
  * In consideration of your agreement to abide by the following terms, and
  * subject to these terms, Huawei grants you a personal, non-exclusive
- * license, under Huawei's copyrights in this original Huawei software(hereinafter referred as, to use, reproduce, modify and redistribute the Huawei Software, with or without modifications, in source and/or binary forms;
+ * license, under Huawei's copyrights in this original Huawei software(hereinafter referred as ), to use, reproduce, modify and redistribute the Huawei Software, with or without modifications, in source and/or binary forms;
  * provided that if you redistribute the Huawei Software in its entirety and
  * without modifications, you must retain this notice and the following
  * text and disclaimers in all such redistributions of the Huawei Software.
@@ -41,50 +41,41 @@
  * Huawei and other Huawei trademarks are trademarks of Huawei Technologies Co., Ltd.
  * All other trademarks and trade names mentioned in this document are the property of their respective holders.
  */
-package cn.kiway.mdm;
+package cn.kiway.mdm.activity;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.preference.PreferenceManager;
 
-public class SharedPreferenceUtil {
-    private static String EULA_PREFIX = "eula_useraccepted_";
-    private int mVersionCode;
-    private String mEulaKey = null;
-    private Context mContext = null;
-    private SharedPreferences mSharedPreferences = null;
-    
-    public SharedPreferenceUtil(Context context) {
-        mContext = context;
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        // the eulaKey changes every time you increment the version number in AndroidManifest.xml
-        mVersionCode = getVersionCodeInner();;
-        mEulaKey = EULA_PREFIX + mVersionCode;
+import android.app.Activity;
+import android.os.Bundle;
+import android.text.Html;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.TextView;
+
+import cn.kiway.mdm.R;
+import cn.kiway.mdm.util.Utils;
+
+public class LicenseActivity extends Activity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.license_layout);
+        Button acceptBtn = (Button) findViewById(R.id.cancelBtn);
+        acceptBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                finish();
+            }
+        });
+        TextView licenseText = (TextView) findViewById(R.id.license_content);
+        String filename = "huawei_software_license.html";
+        String content = Utils.getStringFromHtmlFile(this, filename);
+        licenseText.setText(Html.fromHtml(content));
     }
 
-    public boolean hasUserAccepted() {
-        return mSharedPreferences.getBoolean(mEulaKey, false);
-    }
 
-    public void saveUserChoice(boolean accepted) {
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putBoolean(mEulaKey, accepted);
-        editor.commit();
-    }
-    
-    public int getVersionCode(){
-        return mVersionCode;
-    }
-    
-    private int getVersionCodeInner() {
-        PackageInfo pi = null;
-        try {
-             pi = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), PackageManager.GET_ACTIVITIES);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return pi.versionCode; 
-    }
 }

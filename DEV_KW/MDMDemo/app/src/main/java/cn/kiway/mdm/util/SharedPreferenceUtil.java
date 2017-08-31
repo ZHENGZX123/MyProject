@@ -8,7 +8,7 @@
 
  * In consideration of your agreement to abide by the following terms, and
  * subject to these terms, Huawei grants you a personal, non-exclusive
- * license, under Huawei's copyrights in this original Huawei software(hereinafter referred ), to use, reproduce, modify and redistribute the Huawei Software, with or without modifications, in source and/or binary forms;
+ * license, under Huawei's copyrights in this original Huawei software(hereinafter referred as, to use, reproduce, modify and redistribute the Huawei Software, with or without modifications, in source and/or binary forms;
  * provided that if you redistribute the Huawei Software in its entirety and
  * without modifications, you must retain this notice and the following
  * text and disclaimers in all such redistributions of the Huawei Software.
@@ -41,26 +41,50 @@
  * Huawei and other Huawei trademarks are trademarks of Huawei Technologies Co., Ltd.
  * All other trademarks and trade names mentioned in this document are the property of their respective holders.
  */
-package cn.kiway.mdm;
+package cn.kiway.mdm.util;
 
-import android.app.admin.DeviceAdminReceiver;
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.preference.PreferenceManager;
 
-public class SampleDeviceReceiver extends DeviceAdminReceiver {
-
-    @Override
-    public void onEnabled(Context context, Intent intent) {
+public class SharedPreferenceUtil {
+    private static String EULA_PREFIX = "eula_useraccepted_";
+    private int mVersionCode;
+    private String mEulaKey = null;
+    private Context mContext = null;
+    private SharedPreferences mSharedPreferences = null;
+    
+    public SharedPreferenceUtil(Context context) {
+        mContext = context;
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        // the eulaKey changes every time you increment the version number in AndroidManifest.xml
+        mVersionCode = getVersionCodeInner();;
+        mEulaKey = EULA_PREFIX + mVersionCode;
     }
 
-    @Override
-    public void onDisabled(Context context, Intent intent) {
-
+    public boolean hasUserAccepted() {
+        return mSharedPreferences.getBoolean(mEulaKey, false);
     }
 
-    @Override
-    public CharSequence onDisableRequested(Context context, Intent intent) {
-        return context.getString(R.string.disable_warning);
+    public void saveUserChoice(boolean accepted) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putBoolean(mEulaKey, accepted);
+        editor.commit();
     }
-
+    
+    public int getVersionCode(){
+        return mVersionCode;
+    }
+    
+    private int getVersionCodeInner() {
+        PackageInfo pi = null;
+        try {
+             pi = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), PackageManager.GET_ACTIVITIES);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return pi.versionCode; 
+    }
 }
