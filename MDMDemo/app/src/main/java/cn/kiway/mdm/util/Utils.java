@@ -43,23 +43,31 @@
  */
 package cn.kiway.mdm.util;
 
+import android.content.Context;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
+import android.os.Build;
+import android.text.TextUtils;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import android.content.Context;
-import android.util.Log;
+import java.util.List;
 
 public class Utils {
     public static String TAG = "SampleUtils";
+
     /**
      * Get help string from html file
-     * @param context: Context object
+     *
+     * @param context:  Context object
      * @param filePath: html file path
      * @return string
      */
-    public static String getStringFromHtmlFile (Context context, String filePath) {
+    public static String getStringFromHtmlFile(Context context, String filePath) {
         String result = "";
         if (null == context || null == filePath) {
             return result;
@@ -120,4 +128,66 @@ public class Utils {
         return result;
     }
 
+
+    public static void connectSSID(Context c, String SSID, String password) {
+        if (TextUtils.isEmpty(SSID)) {
+            return;
+        }
+        if (TextUtils.isEmpty(password)) {
+            return;
+        }
+        //1.先打开位置服务
+        //2.搜索附近wifi
+        boolean has = false;
+        WifiAdmin admin = new WifiAdmin(c);
+        admin.startScan();
+        List<ScanResult> list = admin.getWifiList();
+        for (int i = 0; i < list.size(); i++) {
+            Log.d("test", " wifi = " + list.get(i).toString());
+            if (list.get(i).SSID.equals(SSID)) {
+                has = true;
+            }
+        }
+        //3.连接wifi
+        if (has) {
+            Log.d("test", "附近有这个wifi");
+            connectWifi(admin, SSID, password);
+        } else {
+            Log.d("test", "附近没有这个wifi");
+        }
+    }
+
+
+    public static void connectWifi(WifiAdmin admin, String ssid, String pwd) {
+        String capabilities = "[WPA-PSK-CCMP][WPA2-PSK-CCMP][ESS]";
+        int type = 1;
+        if (capabilities.contains("WEP")) {
+            type = 2;
+        } else if (capabilities.contains("WPA")) {
+            type = 3;
+        }
+        Log.d("test", "type = " + type);
+        if (type == 1) {
+            String SSID = ssid;
+            if (Build.VERSION.SDK_INT >= 21) {
+                SSID = "" + SSID + "";
+            } else {
+                SSID = "\"" + SSID + "\"";
+            }
+            WifiConfiguration config = new WifiConfiguration();
+            config.SSID = SSID;
+            config.allowedKeyManagement
+                    .set(WifiConfiguration.KeyMgmt.NONE);
+            admin.addNetwork(config);
+        } else {
+            String SSID = ssid;
+            if (Build.VERSION.SDK_INT >= 21) {
+                SSID = "" + SSID + "";
+            } else {
+                SSID = "\"" + SSID + "\"";
+            }
+            admin.addNetwork(admin.CreateWifiInfo(SSID,
+                    pwd, type));
+        }
+    }
 }
