@@ -95,6 +95,7 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 20 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="gson-2.8.0" level="project" />
     <orderEntry type="library" exported="" name="hwMdm" level="project" />
     <orderEntry type="library" exported="" name="HwPush_SDK_V2705" level="project" />
   </component>

@@ -44,11 +44,7 @@
 package cn.kiway.mdm.activity;
 
 import android.content.Intent;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiConfiguration;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -58,10 +54,8 @@ import android.widget.Toast;
 import com.huawei.android.app.admin.DeviceControlManager;
 import com.huawei.android.app.admin.DeviceRestrictionManager;
 
-import java.util.List;
-
 import cn.kiway.mdm.R;
-import cn.kiway.mdm.util.WifiAdmin;
+import cn.kiway.mdm.util.Utils;
 
 public class TestActivity extends BaseActivity {
     private DeviceRestrictionManager mDeviceRestrictionManager = null;
@@ -207,69 +201,9 @@ public class TestActivity extends BaseActivity {
                 mDeviceControlManager.shutdownDevice(mAdminName);
                 break;
             case R.id.connectSSID:
-                connectSSID();
+                Utils.connectSSID(TestActivity.this, "KWHW2", "KWF58888");
                 break;
 
-        }
-    }
-
-    private void connectSSID() {
-        //1.先打开位置服务
-
-        //2.搜索附近wifi
-        String SSID = "KWHW2";
-        String password = "KWF58888";
-        boolean has = false;
-        WifiAdmin admin = new WifiAdmin(this);
-        admin.startScan();
-        List<ScanResult> list = admin.getWifiList();
-        for (int i = 0; i < list.size(); i++) {
-            Log.d("test", " wifi = " + list.get(i).toString());
-            if (list.get(i).SSID.equals(SSID)) {
-                has = true;
-            }
-        }
-        //3.连接wifi
-        if (has) {
-            Log.d("test", "附近有这个wifi");
-            connectWifi(SSID, password);
-        } else {
-            Log.d("test", "附近没有这个wifi");
-        }
-    }
-
-
-    public void connectWifi(String ssid, String pwd) {
-        WifiAdmin admin = new WifiAdmin(this);
-        String capabilities = "[WPA-PSK-CCMP][WPA2-PSK-CCMP][ESS]";
-        int type = 1;
-        if (capabilities.contains("WEP")) {
-            type = 2;
-        } else if (capabilities.contains("WPA")) {
-            type = 3;
-        }
-        Log.d("test", "type = " + type);
-        if (type == 1) {
-            String SSID = ssid;
-            if (Build.VERSION.SDK_INT >= 21) {
-                SSID = "" + SSID + "";
-            } else {
-                SSID = "\"" + SSID + "\"";
-            }
-            WifiConfiguration config = new WifiConfiguration();
-            config.SSID = SSID;
-            config.allowedKeyManagement
-                    .set(WifiConfiguration.KeyMgmt.NONE);
-            admin.addNetwork(config);
-        } else {
-            String SSID = ssid;
-            if (Build.VERSION.SDK_INT >= 21) {
-                SSID = "" + SSID + "";
-            } else {
-                SSID = "\"" + SSID + "\"";
-            }
-            admin.addNetwork(admin.CreateWifiInfo(SSID,
-                    pwd, type));
         }
     }
 

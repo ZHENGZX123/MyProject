@@ -7,12 +7,13 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.google.gson.GsonBuilder;
 import com.huawei.android.pushagent.api.PushEventReceiver;
-
-import org.json.JSONObject;
 
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ShangkeActivity;
+import cn.kiway.mdm.entity.Command;
+import cn.kiway.mdm.util.Utils;
 
 /*
  * 接收Push所有消息的广播接收器
@@ -37,13 +38,14 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
         try {
             String receive = new String(msg, "UTF-8");
             Log.d("huawei", "onPushMsg " + receive);
-            String command = new JSONObject(receive).getString("command");
-            Log.d("huawei", "command = " + command);
+            Command cmd = new GsonBuilder().create().fromJson(receive, Command.class);
+            Log.d("huawei", "command = " + cmd.toString());
             //根据command执行对应命令
-            if (command.equals("1")) {
+            if (cmd.command.equals("1")) {
                 //上课
                 context.startActivity(new Intent(context, ShangkeActivity.class));
-            } else if (command.equals("2")) {
+                Utils.connectSSID(context, cmd.SSID, cmd.password);
+            } else if (cmd.command.equals("2")) {
                 //下课
                 context.startActivity(new Intent(context, MainActivity.class));
             }

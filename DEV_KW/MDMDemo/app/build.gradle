@@ -43,4 +43,5 @@ dependencies {
     sourceCompatibility = '1.7'
     targetCompatibility = '1.7'
     compile files('libs/HwPush_SDK_V2705.jar')
+    compile files('libs/gson-2.8.0.jar')
 }
