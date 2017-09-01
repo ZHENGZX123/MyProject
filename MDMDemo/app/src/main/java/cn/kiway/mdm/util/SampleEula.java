@@ -61,9 +61,6 @@ import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import cn.kiway.mdm.R;
@@ -106,7 +103,7 @@ public class SampleEula {
 
                                 @Override
                                 public void onClick(DialogInterface dialog,
-                                        int which) {
+                                                    int which) {
                                     // Close the activity as they have declined
                                     // the EULA
                                     mActivity.finish();
@@ -114,42 +111,30 @@ public class SampleEula {
 
                             });
             AlertDialog eulaDialog = builder.create();
-            eulaDialog.setCancelable(false); 
+            eulaDialog.setCancelable(false);
             LayoutInflater inflater = LayoutInflater.from(mActivity);
-            View layout = inflater.inflate(R.layout.eula_layout, null);
-            TextView permissionText = (TextView)layout.findViewById(R.id.content_permissions);
+            View layout = inflater.inflate(R.layout.layout_eula, null);
+            TextView permissionText = (TextView) layout.findViewById(R.id.content_permissions);
             String filename = "huawei_permission_statement.html";
             String content = Utils.getStringFromHtmlFile(mActivity, filename);
             permissionText.setText(Html.fromHtml(content));
 
-            TextView statementText = (TextView)layout.findViewById(R.id.read_statement);
-            statementText.setMovementMethod(LinkMovementMethod.getInstance());  
-            CharSequence text = statementText.getText();  
-            if (text instanceof Spannable) {  
-                int end = text.length();  
+            TextView statementText = (TextView) layout.findViewById(R.id.read_statement);
+            statementText.setMovementMethod(LinkMovementMethod.getInstance());
+            CharSequence text = statementText.getText();
+            if (text instanceof Spannable) {
+                int end = text.length();
                 Spannable sp = (Spannable) text;
-                URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);  
-                SpannableStringBuilder style = new SpannableStringBuilder(text);  
+                URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
+                SpannableStringBuilder style = new SpannableStringBuilder(text);
                 style.clearSpans();// should clear old spans  
-                for (URLSpan url : urls) {  
-                    MyURLSpan myURLSpan = new MyURLSpan();  
-                    style.setSpan(myURLSpan, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);  
-                }  
-                statementText.setText(style);  
-            }
-            CheckBox checkbox = (CheckBox)layout.findViewById(R.id.not_show_check);
-            checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-                
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if(isChecked){
-                        notShowAgain = true;
-                    } else {
-                        notShowAgain = false;
-                    }
-                    
+                for (URLSpan url : urls) {
+                    MyURLSpan myURLSpan = new MyURLSpan();
+                    style.setSpan(myURLSpan, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                 }
-            });
+                statementText.setText(style);
+            }
+            notShowAgain = true;
             eulaDialog.setView(layout);
             eulaDialog.show();
         } else {
@@ -157,15 +142,15 @@ public class SampleEula {
         }
     }
 
-    private class MyURLSpan extends ClickableSpan {  
-        @Override  
-        public void onClick(View widget) {  
-            widget.setBackgroundColor(Color.parseColor("#00000000"));  
-  
+    private class MyURLSpan extends ClickableSpan {
+        @Override
+        public void onClick(View widget) {
+            widget.setBackgroundColor(Color.parseColor("#00000000"));
+
             Intent intent = new Intent(mActivity, LicenseActivity.class);
-            mActivity.startActivity(intent);  
+            mActivity.startActivity(intent);
         }
-    }  
+    }
 
     protected void activeProcess() {
         if (mDevicePolicyManager != null
@@ -174,7 +159,7 @@ public class SampleEula {
                     DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
             intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminName);
             mActivity.startActivityForResult(intent, REQUEST_ENABLE);
-            Log.d("SAMPLE","activeProcess");
+            Log.d("SAMPLE", "activeProcess");
         }
     }
 }
