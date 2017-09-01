@@ -43,16 +43,11 @@
  */
 package cn.kiway.mdm.activity;
 
-import android.app.Activity;
-import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.os.Build;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -62,20 +57,15 @@ import android.widget.Toast;
 
 import com.huawei.android.app.admin.DeviceControlManager;
 import com.huawei.android.app.admin.DeviceRestrictionManager;
-import com.huawei.android.pushagent.api.PushManager;
 
 import java.util.List;
 
 import cn.kiway.mdm.R;
-import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
-import cn.kiway.mdm.util.SampleEula;
 import cn.kiway.mdm.util.WifiAdmin;
 
-public class SampleMainActivity extends Activity {
+public class TestActivity extends BaseActivity {
     private DeviceRestrictionManager mDeviceRestrictionManager = null;
     private DeviceControlManager mDeviceControlManager = null;
-    private DevicePolicyManager mDevicePolicyManager = null;
-    private ComponentName mAdminName = null;
 
     private TextView wifiStatusText;
     private Button wifiDisableBtn;
@@ -95,19 +85,13 @@ public class SampleMainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_layout);
-
-        huaweiPush();
-
-        mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-        mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
+        setContentView(R.layout.layout_test);
 
         mDeviceRestrictionManager = new DeviceRestrictionManager();
         mDeviceControlManager = new DeviceControlManager();
 
         initSampleView();
         updateState();
-        new SampleEula(this, mDevicePolicyManager, mAdminName).show();
     }
 
     private void initSampleView() {
@@ -138,10 +122,6 @@ public class SampleMainActivity extends Activity {
     }
 
     private void updateState() {
-        if (!isActiveMe()) {
-            wifiStatusText.setText(getString(R.string.state_not_actived));
-            return;
-        }
         boolean isWifiDisabled = false;
         try {
             isWifiDisabled = mDeviceRestrictionManager.isWifiDisabled(mAdminName);
@@ -186,14 +166,6 @@ public class SampleMainActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         updateState();
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private boolean isActiveMe() {
-        if (mDevicePolicyManager == null || !mDevicePolicyManager.isAdminActive(mAdminName)) {
-            return false;
-        } else {
-            return true;
-        }
     }
 
     private class SampleOnClickListener implements OnClickListener {
@@ -242,10 +214,11 @@ public class SampleMainActivity extends Activity {
     }
 
     private void connectSSID() {
+        //1.先打开位置服务
+
+        //2.搜索附近wifi
         String SSID = "KWHW2";
         String password = "KWF58888";
-
-
         boolean has = false;
         WifiAdmin admin = new WifiAdmin(this);
         admin.startScan();
@@ -256,11 +229,12 @@ public class SampleMainActivity extends Activity {
                 has = true;
             }
         }
+        //3.连接wifi
         if (has) {
-            Log.d("test", "有这个wifi");
+            Log.d("test", "附近有这个wifi");
             connectWifi(SSID, password);
         } else {
-            Log.d("test", "xxxx");
+            Log.d("test", "附近没有这个wifi");
         }
     }
 
@@ -299,12 +273,5 @@ public class SampleMainActivity extends Activity {
         }
     }
 
-    private void toast(String txt) {
-        Toast.makeText(this, txt, Toast.LENGTH_SHORT).show();
-    }
 
-    public void huaweiPush() {
-        PushManager.requestToken(this);
-        Log.i("huawei", "try to get Token ,current packageName is " + this.getPackageName());
-    }
 }

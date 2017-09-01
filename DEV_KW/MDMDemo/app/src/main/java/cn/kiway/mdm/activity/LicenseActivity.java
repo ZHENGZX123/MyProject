@@ -62,7 +62,7 @@ public class LicenseActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.license_layout);
+        setContentView(R.layout.layout_license);
         Button acceptBtn = (Button) findViewById(R.id.cancelBtn);
         acceptBtn.setOnClickListener(new OnClickListener() {
 

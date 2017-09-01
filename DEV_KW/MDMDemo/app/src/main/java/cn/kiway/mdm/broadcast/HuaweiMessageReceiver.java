@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.huawei.android.pushagent.api.PushEventReceiver;
 
+import org.json.JSONObject;
+
 /*
  * 接收Push所有消息的广播接收器
  */
@@ -29,8 +31,14 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
     @Override
     public boolean onPushMsg(Context context, byte[] msg, Bundle bundle) {
         try {
-            String content = "收到一条Push消息： " + new String(msg, "UTF-8");
-            Log.d("huawei", content);
+            String receive = new String(msg, "UTF-8");
+            Log.d("huawei", "onPushMsg " + receive);
+            String command = new JSONObject(receive).getString("command");
+            Log.d("huawei", "command = " + command);
+            //根据command执行对应命令
+            if (command.equals("1")) {
+
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
