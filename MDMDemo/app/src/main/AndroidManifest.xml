@@ -36,6 +36,7 @@
             android:screenOrientation="landscape"></activity>
         <activity
             android:name="cn.kiway.mdm.activity.MainActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,6 +49,10 @@
 
         <activity
             android:name="cn.kiway.mdm.activity.LicenseActivity"
+            android:screenOrientation="landscape"></activity>
+
+        <activity
+            android:name="cn.kiway.mdm.activity.ShangkeActivity"
             android:screenOrientation="landscape"></activity>
 
         <receiver

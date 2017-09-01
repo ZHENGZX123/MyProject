@@ -2,6 +2,7 @@ package cn.kiway.mdm.broadcast;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -9,6 +10,9 @@ import android.util.Log;
 import com.huawei.android.pushagent.api.PushEventReceiver;
 
 import org.json.JSONObject;
+
+import cn.kiway.mdm.activity.MainActivity;
+import cn.kiway.mdm.activity.ShangkeActivity;
 
 /*
  * 接收Push所有消息的广播接收器
@@ -37,7 +41,11 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             Log.d("huawei", "command = " + command);
             //根据command执行对应命令
             if (command.equals("1")) {
-
+                //上课
+                context.startActivity(new Intent(context, ShangkeActivity.class));
+            } else if (command.equals("2")) {
+                //下课
+                context.startActivity(new Intent(context, MainActivity.class));
             }
         } catch (Exception e) {
             e.printStackTrace();
