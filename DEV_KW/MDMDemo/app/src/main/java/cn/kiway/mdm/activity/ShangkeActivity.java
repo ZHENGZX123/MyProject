@@ -8,13 +8,12 @@ import cn.kiway.mdm.R;
  * Created by Administrator on 2017/9/1.
  */
 
-public class MainActivity extends BaseActivity {
-
+public class ShangkeActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_main);
+        setContentView(R.layout.layout_shangke);
 
     }
 
