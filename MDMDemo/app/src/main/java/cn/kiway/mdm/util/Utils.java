@@ -57,6 +57,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import cn.kiway.mdm.mdm.MDMHelper;
+
 public class Utils {
     public static String TAG = "SampleUtils";
 
@@ -137,6 +139,7 @@ public class Utils {
             return;
         }
         //1.先打开位置服务
+        MDMHelper.getAdapter().turnOnGPS(true);
         //2.搜索附近wifi
         boolean has = false;
         WifiAdmin admin = new WifiAdmin(c);

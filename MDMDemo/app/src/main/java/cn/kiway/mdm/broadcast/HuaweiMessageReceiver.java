@@ -44,6 +44,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             if (cmd.command.equals("1")) {
                 //上课
                 context.startActivity(new Intent(context, ShangkeActivity.class));
+                //管控wifi
                 Utils.connectSSID(context, cmd.SSID, cmd.password);
             } else if (cmd.command.equals("2")) {
                 //下课

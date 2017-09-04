@@ -37,13 +37,17 @@
         <activity
             android:name="cn.kiway.mdm.activity.MainActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="landscape"></activity>
+
+        <activity
+            android:name="cn.kiway.mdm.activity.EulaActivity"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-                <!--<category android:name="android.intent.category.HOME" />-->
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />-->
             </intent-filter>
         </activity>
 
