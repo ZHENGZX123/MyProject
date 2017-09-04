@@ -1,5 +1,6 @@
 package cn.kiway.mdm.mdm;
 
+import cn.kiway.mdm.adapter.HuaweiMDMAdapter;
 import cn.kiway.mdm.adapter.IMDMAdapter;
 
 /**
@@ -8,13 +9,13 @@ import cn.kiway.mdm.adapter.IMDMAdapter;
 
 public class MDMHelper {
 
-    final IMDMAdapter mAdapter;
+    private static IMDMAdapter mAdapter;
 
-    public MDMHelper(IMDMAdapter adapter) {
-        mAdapter = adapter;
+    public static IMDMAdapter getAdapter() {
+        if (mAdapter == null) {
+            mAdapter = new HuaweiMDMAdapter();
+        }
+        return mAdapter;
     }
-
-    private void setWifiDisabled(boolean disabled) {
-        mAdapter.setWifiDisabled(disabled);
-    }
+    
 }
