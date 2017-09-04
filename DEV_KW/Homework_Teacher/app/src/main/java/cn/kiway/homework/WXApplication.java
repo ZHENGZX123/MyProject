@@ -48,7 +48,6 @@ public class WXApplication extends Application {
 
     public static String ROOT = "/mnt/sdcard/kiway_teacher/";
     public static String HTML = "xtzy_teacher/dist/index.html";
-    public static String HTML4PAD = "xtzy_teacher/dist/index4pad.html";
     public static String ZIP = "xtzy_teacher.zip";
 
     public static String BOOKS = "/mnt/sdcard/books/";

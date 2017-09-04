@@ -50,6 +50,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xutils.common.util.DensityUtil;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
@@ -84,7 +85,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.2.8";
+    private static final String currentPackageVersion = "0.3.2";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -93,16 +94,22 @@ public class MainActivity extends BaseActivity {
     protected ProgressDialog pd;
     private int lastProgress;
     private WebView wv;
+    private RelativeLayout root;
     private LinearLayout layout_welcome;
     public static MainActivity instance;
     private Button kill;
     private String user = "";
+    private String username;
+    private String password;
+    private String tab;
+    private boolean fromCreate = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         instance = this;
+        fromCreate = true;
         initView();
         Utils.checkNetWork(this, false);
         checkIsFirst();
@@ -121,21 +128,55 @@ public class MainActivity extends BaseActivity {
 
 
     private void checkIsPad(Intent intent) {
-        String username = intent.getStringExtra("username");
-        String password = intent.getStringExtra("password");
+        username = intent.getStringExtra("username");
+        password = intent.getStringExtra("password");
+        tab = intent.getStringExtra("tab");
         Log.d("test", "checkIsPad is called " + "username = " + username + " , password = " + password);
         if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
-            //没有帐号密码
+            //手机
             user = "";
             load();
         } else {
-            //有帐号密码
-            user = username + "," + password;
+            //平板
+            //强制
+            int width = DensityUtil.getScreenWidth() * 5 / 4;
+            int height = DensityUtil.getScreenWidth();
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, height);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            root.setLayoutParams(lp);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            user = username + "," + password + "," + tab;
+
+            if (fromCreate) {
+                //1.如果是第一次进来，要重新登录
+                getSharedPreferences("kiway", 0).edit().putString("username", "").commit();
+                getSharedPreferences("kiway", 0).edit().putString("password", "").commit();
+                getSharedPreferences("kiway", 0).edit().putString("tab", "").commit();
+                fromCreate = false;
+            }
+            String lastUsername = getSharedPreferences("kiway", 0).getString("username", "");
+            String lastPassword = getSharedPreferences("kiway", 0).getString("password", "");
+            String lastTab = getSharedPreferences("kiway", 0).getString("tab", "");
+            if (username.equals(lastUsername) && password.equals(lastPassword) && tab.equals(lastTab)) {
+                Log.d("test", "同样的用户，不用再次登录。");
+                return;
+            }
+            if (username.equals(lastUsername) && password.equals(lastPassword)) {
+                Log.d("test", "load局部，不重刷");
+                wv.loadUrl("javascript:loadTab(" + tab + ")");
+                getSharedPreferences("kiway", 0).edit().putString("tab", tab).commit();
+                return;
+            }
+            new MyDBHelper(this).deleteAllHttpCache();
             load();
+            getSharedPreferences("kiway", 0).edit().putString("username", username).commit();
+            getSharedPreferences("kiway", 0).edit().putString("password", password).commit();
+            getSharedPreferences("kiway", 0).edit().putString("tab", tab).commit();
         }
     }
 
     private void initView() {
+        root = (RelativeLayout) findViewById(R.id.root);
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
         wv = (WebView) findViewById(R.id.wv);
         kill = (Button) findViewById(R.id.kill);
