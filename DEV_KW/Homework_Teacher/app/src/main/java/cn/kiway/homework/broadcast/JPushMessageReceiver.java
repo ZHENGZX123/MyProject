@@ -51,6 +51,7 @@ public class JPushMessageReceiver extends BroadcastReceiver {
                 //TODO 接到通知的时候就应该清掉了,但是怎么刷新页面呢。
                 new MyDBHelper(context).deleteHttpCache("getTeacherInMsg");
                 new MyDBHelper(context).deleteHttpCache("getHomework");
+                new MyDBHelper(context).deleteHttpCache("getStudentList");
                 BadgeUtil.sendBadgeNumber(context , "1");
                 if (MainActivity.instance == null) {
                     return;
