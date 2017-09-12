@@ -73,7 +73,7 @@ public class WXApplication extends Application {
         }
 
         //countly
-        Countly.sharedInstance().init(this, "http://192.168.8.61:80", "39e84dfb1fb6ce8c398d6f80810fdb7369f9f903");
+        Countly.sharedInstance().init(this, "http://202.104.136.9:8389/countly", "e3a6f65596ea867c2f739c12d5120d5d76353b5e");
 
         //jpush
         JPushInterface.setDebugMode(true);
