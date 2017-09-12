@@ -85,7 +85,7 @@ import static cn.kiway.homework.WXApplication.zhengshiUrl;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.3.2";
+    private static final String currentPackageVersion = "0.3.9";
 
     private WebView wv;
     private LinearLayout layout_welcome;
@@ -252,6 +252,9 @@ public class MainActivity extends BaseActivity {
             if (url.endsWith("login") || url.endsWith("ctb/error") || url.endsWith("msdx") || url.endsWith("mine") || url.endsWith("index")) {
                 doFinish();
                 return true;
+            }
+            if (url.contains("msdx_detail")) {
+                wv.loadUrl("javascript:clickback()");
             }
             if (wv.canGoBack()) {
                 wv.goBack();
