@@ -1,8 +1,8 @@
-package cn.kiway.launcher.phone.utils;
+package cn.kiway.mdm.utils;
 
 import java.util.ArrayList;
 
-import cn.kiway.launcher.phone.entity.App;
+import cn.kiway.mdm.entity.App;
 
 
 /**
@@ -13,7 +13,7 @@ public class Constant {
 
     //只能打开以下app
     public static String[] apps = new String[]{
-            "cn.kiway.launcher",//开维教育桌面
+            "cn.kiway.mdm",//开维教育桌面 cn.kiway.mdm
             "com.kiway.yjpt.Teacher",//幼教园丁
             "cn.kiway.Yjptj",
             "cn.kiway.baoantong",    //宝安通
