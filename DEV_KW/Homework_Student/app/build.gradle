@@ -14,10 +14,10 @@ android {
     buildToolsVersion '25.0.1'
     defaultConfig {
         applicationId "cn.kiway.homework.student"
-        minSdkVersion 15
+        minSdkVersion 18
         targetSdkVersion 20
         versionCode 1
-        versionName "0.2.3"
+        versionName "0.2.4"
         ndk {
             abiFilters "armeabi", "armeabi-v7a" , "armeabi-v8a"
         }
@@ -57,6 +57,6 @@ dependencies {
     compile project(':scanlibrary')
     compile files('libs/jcore-android-1.1.6.jar')
     compile files('libs/jpush-android-3.0.8.jar')
-
     compile 'org.xutils:xutils:3.5.0'
+    compile project(':tqlPen')
 }

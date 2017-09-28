@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
@@ -24,6 +25,17 @@ import cn.kiway.homework.activity.MainActivity;
  */
 
 public class Utils {
+
+    /**
+     * 判断是否平板设备
+     *
+     * @param context
+     * @return true:平板,false:手机
+     */
+    public static boolean isTabletDevice(Context context) {
+        return (context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >=
+                Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
 
     public static final String SYS_EMUI = "huawei";//sys_emui
     public static final String SYS_MIUI = "xiaomi";//sys_miui
