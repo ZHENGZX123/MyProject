@@ -3,14 +3,20 @@ package cn.kiway.homework.activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -27,6 +33,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.zxing.client.android.CaptureActivity;
 import com.loopj.android.http.AsyncHttpClient;
@@ -38,6 +45,11 @@ import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.ui.ImagePreviewActivity;
 import com.lzy.imagepicker.view.CropImageView;
 import com.nanchen.compresshelper.CompressHelper;
+import com.sonix.oid.Dots;
+import com.sonix.oidbluetooth.BluetoothLEService;
+import com.sonix.oidbluetooth.SelectDeviceActivity;
+import com.tqltech.tqlpencomm.Dot;
+import com.tqltech.tqlpencomm.PenCommAgent;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -78,6 +90,7 @@ import cn.kiway.homework.util.UploadUtil;
 import cn.kiway.homework.util.Utils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
+import static android.content.ContentValues.TAG;
 import static cn.kiway.homework.WXApplication.ceshiUrl;
 import static cn.kiway.homework.WXApplication.url;
 import static cn.kiway.homework.WXApplication.zhengshiUrl;
@@ -85,7 +98,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.3.9";
+    private static final String currentPackageVersion = "0.4.2";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -103,6 +116,7 @@ public class MainActivity extends BaseActivity {
     private String password;
     private String tab;
     private boolean fromCreate = true;
+    private String mPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,15 +131,19 @@ public class MainActivity extends BaseActivity {
         checkNewVersion();
         huaweiPush();
         checkIsPad(getIntent());
+        initPen();
     }
 
+    private void initPen() {
+        Intent gattServiceIntent = new Intent(this, BluetoothLEService.class);
+        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+    }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         checkIsPad(intent);
     }
-
 
     private void checkIsPad(Intent intent) {
         username = intent.getStringExtra("username");
@@ -264,8 +282,11 @@ public class MainActivity extends BaseActivity {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
-        settings.setTextSize(WebSettings.TextSize.NORMAL);
-
+        if (Utils.isTabletDevice(this)) {
+            settings.setTextSize(WebSettings.TextSize.LARGER);
+        } else {
+            settings.setTextSize(WebSettings.TextSize.NORMAL);
+        }
         wv.setWebViewClient(new WebViewClient() {
 
             @Override
@@ -340,15 +361,188 @@ public class MainActivity extends BaseActivity {
     private static final int SELECT_PHOTO = 8888;
     private static final int SAOMAWANG = 7777;
     private static final int QRSCAN = 6666;
-
+    private static final int REQUEST_SELECT_DEVICE = 1;
+    private static final int REQUEST_ENABLE_BT = 2;
 
     private MediaRecorder mediaRecorder;
     private File recordFile;
     private long start;
     private String snapshotFile;
 
+    private BluetoothLEService mService = null;
+
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder rawBinder) {
+            mService = ((BluetoothLEService.LocalBinder) rawBinder).getService();
+            if (!mService.initialize()) {
+                finish();
+            }
+            mService.setOnDataReceiveListener(new BluetoothLEService.OnDataReceiveListener() {
+                @Override
+                public void onDataReceive(final Dot dot) {
+                    Log.d("test", "onDataReceive dot = " + dot.toString());
+                }
+
+                @Override
+                public void onStartOfflineDownload(final boolean isSuccess) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isSuccess) {
+                                pd = new ProgressDialog(MainActivity.this);
+                                pd.setMessage("正在获取离线数据。。。");
+                                pd.show();
+                            } else {
+                                Toast.makeText(MainActivity.this, "没有缓存", Toast.LENGTH_SHORT).show();
+                                //返回给前端
+                                drawOffline();
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void onOfflineDataReceive(final Dot dot) {
+                    Log.d("test", "onOfflineDataReceive dot = " + dot.toString());
+                    ProcessEachDot2(dot);
+                }
+
+                @Override
+                public void onFinishedOfflineDownload() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //1.删除所有缓存
+                            PenCommAgent bleManager = PenCommAgent.GetInstance(getApplication());
+                            bleManager.WritePenOffLineDelet();
+                            pd.dismiss();
+
+                            //返回给前端
+                            drawOffline();
+                        }
+                    });
+                }
+
+                private void drawOffline() {
+                    //FIXME mPage
+                    ArrayList<Dots> dots = new com.sonix.util.MyDBHelper(getApplicationContext()).getDotsByPageID(null);
+                    for (int i = 0; i < dots.size(); i++) {
+                        Dots d = dots.get(i);
+                        //规则1：如果第一个点不是0，强制为0
+                        if (i == 0) {
+                            d.ntype = 0;
+                            continue;
+                        }
+                        //规则2：如果0前面不是2，强制为2
+                        if (d.ntype == 0) {
+                            Dots prevDot = dots.get(i - 1);
+                            if (prevDot.ntype != 2) {
+                                prevDot.ntype = 2;
+                            }
+                        }
+                        //规则3:如果最后一个不是2，强制2为2
+                        if (i == dots.size() - 1) {
+                            d.ntype = 2;
+                        }
+                    }
+                    String param = "";
+                    for (Dots d : dots) {
+                        //Log.d("test", "d = " + d.toString());
+                        Log.d("test", "d = " + d.ntype);
+                        if (d.ntype == 0) {
+                            param += "[" + d.pointX + "," + d.pointY + ",";
+                        } else if (d.ntype == 1) {
+                            param += d.pointX + "," + d.pointY + ",";
+                        } else {
+                            param += d.pointX + "," + d.pointY + "],";
+                        }
+                    }
+                    param = param.substring(0, param.length() - 1);
+                    param = "[" + param + "]";
+                    Log.d("test", "param = " + param);
+                    final String finalParam = param;
+                    wv.loadUrl("javascript:drawOffline('" + finalParam + "')");
+                }
+
+                private void ProcessEachDot2(Dot dot) {
+                    int counter = 0;
+                    int pointZ = dot.force;
+                    if (pointZ < 0) {
+                        Log.i(TAG, "Counter=" + counter + ", Pressure=" + pointZ + "  Cut!!!!!");
+                        return;
+                    }
+                    int tmpx = dot.x;
+                    int pointX = dot.fx;
+                    pointX /= 100.0;
+                    pointX += tmpx;
+                    int tmpy = dot.y;
+                    int pointY = dot.fy;
+                    pointY /= 100.0;
+                    pointY += tmpy;
+                    //int PageID = CheckXYLocation(gpointX, gpointY);
+                    int PageID = dot.PageID;
+                    int type = 0;
+                    if (dot.type == Dot.DotType.PEN_DOWN) {
+                        type = 0;
+                    } else if (dot.type == Dot.DotType.PEN_MOVE) {
+                        type = 1;
+                    } else if (dot.type == Dot.DotType.PEN_UP) {
+                        type = 2;
+                    }
+                    Dots dots = new Dots(dot.SectionID, dot.OwnerID, dot.BookID, PageID, pointX, pointY, pointZ, type, 0, 0, dot.Counter, dot.angle);
+                    new com.sonix.util.MyDBHelper(getApplicationContext()).addDots(dots);
+                }
+
+                @Override
+                public void onConnected(String address, String penName) {
+                    Log.d("test", "onConnected isCalled");
+                    //在这里传给前端
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //wv.loadUrl();
+                        }
+                    });
+                }
+            });
+        }
+
+        public void onServiceDisconnected(ComponentName classname) {
+            mService = null;
+        }
+    };
+
     public class JsAndroidInterface {
         public JsAndroidInterface() {
+        }
+
+        @JavascriptInterface
+        public void bindPen() {
+            Log.d("test", "bindPen");
+            //连接笔，绑定笔
+            if (checkBLEEnable()) {
+                Intent serverIntent = new Intent(MainActivity.this, SelectDeviceActivity.class);
+                startActivityForResult(serverIntent, REQUEST_SELECT_DEVICE);
+            }
+        }
+
+        @JavascriptInterface
+        public void unbindPen() {
+            Log.d("test", "unbindPen");
+        }
+
+        @JavascriptInterface
+        public void getOffline(String mac, String page) {
+            Log.d("test", "getOffline , mac = " + mac + " , page = " + page);
+            mPage = page;
+            //1.判断有没有绑定笔(前端来做)
+            //2.笔有没有连接，如果连接了，直接读缓存，如果没有，先连接笔。
+            PenCommAgent bleManager = PenCommAgent.GetInstance(getApplication());
+            if (bleManager != null && bleManager.isConnect()) {
+                bleManager.ReqOfflineDataTransfer(true);
+            } else {
+                toast("请先连接智能笔");
+            }
         }
 
         @JavascriptInterface
@@ -1185,5 +1379,25 @@ public class MainActivity extends BaseActivity {
 
     public void clickNetwork(View view) {
         startActivity(new Intent(this, NoNetActivity.class));
+    }
+
+    private boolean checkBLEEnable() {
+        BluetoothManager mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        BluetoothAdapter mBluetoothAdapter = mBluetoothManager.getAdapter();
+        if (mBluetoothAdapter.isEnabled()) {
+            return true;
+        }
+        Intent enableBtIntent = new Intent(
+                BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mServiceConnection);
+        mService.stopSelf();
+        mService = null;
     }
 }
