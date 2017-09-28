@@ -173,7 +173,7 @@ public class Utils {
                 }
                 //屏蔽掉系统设置
                 if (packageInfo.packageName.equals("com.android.settings")
-                        || packageInfo.packageName.equals("cn.kiway.mdm.phone")) {
+                        || packageInfo.packageName.equals("cn.kiway.mdm")) {
                     continue;
                 }
                 App a = new App();
