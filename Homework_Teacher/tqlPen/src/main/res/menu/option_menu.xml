@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/connect_scan"
+        android:icon="@android:drawable/ic_menu_search"
+        android:showAsAction="ifRoom|withText"
+        android:title="连接"
+        tools:ignore="AppCompatResource" />
+    <item
+        android:id="@+id/offline"
+        android:icon="@android:drawable/ic_menu_search"
+        android:showAsAction="ifRoom|withText"
+        android:title="获取离线"
+        tools:ignore="AppCompatResource" />
+    <item
+        android:id="@+id/offlinelist"
+        android:icon="@android:drawable/ic_menu_search"
+        android:showAsAction="ifRoom|withText"
+        android:title="查看离线"
+        tools:ignore="AppCompatResource" />
+    <item
+        android:id="@+id/clearOffline"
+        android:icon="@android:drawable/ic_menu_search"
+        android:showAsAction="ifRoom|withText"
+        android:title="清除离线"
+        android:visible="false"
+        tools:ignore="AppCompatResource" />
+    <item
+        android:id="@+id/clear"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        android:showAsAction="ifRoom|withText"
+        android:title="清除"
+        tools:ignore="AppCompatResource" />
+    <item
+        android:id="@+id/color"
+        android:icon="@android:drawable/ic_menu_report_image"
+        android:showAsAction="ifRoom|withText"
+        android:title="颜色"
+        tools:ignore="AppCompatResource">
+        <menu>
+            <item
+                android:id="@+id/color_white"
+                android:title="灰" />
+            <item
+                android:id="@+id/color_red"
+                android:title="红" />
+            <item
+                android:id="@+id/color_yellow"
+                android:title="黄" />
+            <item
+                android:id="@+id/color_green"
+                android:title="绿" />
+            <item
+                android:id="@+id/color_cyan"
+                android:title="深蓝" />
+            <item
+                android:id="@+id/color_blue"
+                android:title="蓝" />
+            <item
+                android:id="@+id/color_black"
+                android:title="黑" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/width"
+        android:icon="@android:drawable/ic_menu_report_image"
+        android:showAsAction="ifRoom|withText"
+        android:title="线宽"
+        tools:ignore="AppCompatResource">
+        <menu>
+            <item
+                android:id="@+id/w1"
+                android:title="1" />
+            <item
+                android:id="@+id/w2"
+                android:title="2" />
+            <item
+                android:id="@+id/w3"
+                android:title="3" />
+            <item
+                android:id="@+id/w4"
+                android:title="4" />
+            <item
+                android:id="@+id/w5"
+                android:title="5" />
+            <item
+                android:id="@+id/w6"
+                android:title="6" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/replay"
+        android:icon="@android:drawable/ic_menu_report_image"
+        android:showAsAction="ifRoom|withText"
+        android:title="回放"
+        tools:ignore="AppCompatResource">
+        <menu>
+            <item
+                android:id="@+id/s1"
+                android:title="1(最快)" />
+            <item
+                android:id="@+id/s2"
+                android:title="2" />
+            <item
+                android:id="@+id/s3"
+                android:title="3" />
+            <item
+                android:id="@+id/s4"
+                android:title="4" />
+            <item
+                android:id="@+id/s5"
+                android:title="5(最慢)" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/setting"
+        android:icon="@android:drawable/ic_menu_report_image"
+        android:showAsAction="ifRoom|withText"
+        android:title="设置"
+        tools:ignore="AppCompatResource"></item>
+
+</menu>
