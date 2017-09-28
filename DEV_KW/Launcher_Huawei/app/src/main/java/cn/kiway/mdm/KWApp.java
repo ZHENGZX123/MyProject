@@ -1,4 +1,4 @@
-package cn.kiway.launcher.phone;
+package cn.kiway.mdm;
 
 import android.app.Application;
 

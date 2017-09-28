@@ -1,4 +1,4 @@
-package cn.kiway.launcher.phone.activity;
+package cn.kiway.mdm.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,9 +18,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.kiway.launcher.phone.R;
-import cn.kiway.launcher.phone.entity.App;
-import cn.kiway.launcher.phone.utils.Utils;
+import cn.kiway.mdm.R;
+import cn.kiway.mdm.entity.App;
+import cn.kiway.mdm.utils.Utils;
 
 
 public class AppListActivity extends BaseActivity {

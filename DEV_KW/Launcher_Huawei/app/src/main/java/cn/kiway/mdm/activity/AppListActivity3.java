@@ -1,4 +1,4 @@
-package cn.kiway.launcher.phone.activity;
+package cn.kiway.mdm.activity;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,12 +12,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import cn.kiway.launcher.phone.R;
-import cn.kiway.launcher.phone.entity.App;
-import cn.kiway.launcher.phone.utils.Utils;
+import cn.kiway.mdm.R;
+import cn.kiway.mdm.entity.App;
+import cn.kiway.mdm.utils.Utils;
 
-import static cn.kiway.launcher.phone.R.id.cb;
-import static cn.kiway.launcher.phone.utils.Constant.otherApps;
+import static cn.kiway.mdm.utils.Constant.otherApps;
 
 
 public class AppListActivity3 extends BaseActivity {

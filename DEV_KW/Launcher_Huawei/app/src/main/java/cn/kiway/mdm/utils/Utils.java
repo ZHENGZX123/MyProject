@@ -1,18 +1,11 @@
-package cn.kiway.launcher.phone.utils;
+package cn.kiway.mdm.utils;
 
-import android.app.ActivityManager;
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Environment;
-import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.DataOutputStream;
@@ -27,12 +20,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import cn.kiway.launcher.phone.entity.App;
-
-import static cn.kiway.launcher.phone.service.KWService.TAG;
-import static cn.kiway.launcher.phone.utils.Constant.apps;
-import static cn.kiway.launcher.phone.utils.Constant.otherApps;
-
+import cn.kiway.mdm.entity.App;
 
 /**
  * Created by Administrator on 2017/6/8.
@@ -88,63 +76,6 @@ public class Utils {
         return defaultValue;
     }
 
-    public static void collapse(Context context) {
-        try {
-            Object service = context.getSystemService("statusbar");
-            Class<?> statusbarManager = Class.forName("android.app.StatusBarManager");
-            if (Build.VERSION.SDK_INT <= 16) {
-                Method collapse = statusbarManager.getMethod("collapse");
-                collapse.invoke(service);
-            } else {
-                Method collapse2 = statusbarManager.getMethod("collapsePanels");
-                collapse2.invoke(service);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static boolean checkCurrentApp(Context context) {
-        String packageName = "";
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            UsageStatsManager m = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
-            if (m != null) {
-                long now = System.currentTimeMillis();
-                //获取60秒之内的应用数据
-                List<UsageStats> stats = m.queryUsageStats(UsageStatsManager.INTERVAL_BEST, now - 10 * 1000, now);//60
-                //取得最近运行的一个app，即当前运行的app
-                if ((stats != null) && (!stats.isEmpty())) {
-                    int j = 0;
-                    for (int i = 0; i < stats.size(); i++) {
-                        if (stats.get(i).getLastTimeUsed() > stats.get(j).getLastTimeUsed()) {
-                            j = i;
-                        }
-                    }
-                    packageName = stats.get(j).getPackageName();
-                }
-            }
-        } else {
-            ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-            ComponentName cn = activityManager.getRunningTasks(1).get(0).topActivity;
-            packageName = cn.getPackageName();
-        }
-        Log.d("aaa", "packageName = " + packageName);
-        if (TextUtils.isEmpty(packageName)) {
-            return true;//false
-        }
-        for (String temp : apps) {
-            if (temp.equals(packageName)) {
-                return true;
-            }
-        }
-        for (int i = 0; i < otherApps.size(); i++) {
-            if (otherApps.get(i).packageName.equals(packageName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static ArrayList<App> scanLocalInstallAppList(PackageManager packageManager) {
         ArrayList<App> apps = new ArrayList<>();
         try {
@@ -167,7 +98,7 @@ public class Utils {
                 }
                 //屏蔽掉系统设置
                 if (packageInfo.packageName.equals("com.android.settings")
-                        || packageInfo.packageName.equals("cn.kiway.launcher.phone")) {
+                        || packageInfo.packageName.equals("cn.kiway.mdm.phone")) {
                     continue;
                 }
                 App a = new App();

@@ -1,4 +1,4 @@
-package cn.kiway.launcher.phone.entity;
+package cn.kiway.mdm.entity;
 
 import android.graphics.drawable.Drawable;
 
