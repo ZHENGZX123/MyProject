@@ -60,6 +60,7 @@ public class EulaActivity extends Activity {
 
         if (getSharedPreferences("kiway", 0).getBoolean("agree", false)) {
             startActivity(new Intent(this, MainActivity.class));
+            finish();
         }
     }
 

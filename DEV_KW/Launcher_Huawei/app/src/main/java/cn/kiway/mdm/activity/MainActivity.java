@@ -53,7 +53,6 @@ public class MainActivity extends BaseActivity {
             return;
         }
         toast("开始锁定");
-        //开启线程
         getSharedPreferences("kiway", 0).edit().putBoolean("locked", true).commit();
     }
 
@@ -103,7 +102,10 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        return;
+        if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
