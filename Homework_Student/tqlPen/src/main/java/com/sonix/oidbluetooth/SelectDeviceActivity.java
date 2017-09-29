@@ -132,6 +132,7 @@ public class SelectDeviceActivity extends ListActivity {
         bleManager.stopFindAllDevices();
         Bundle b = new Bundle();
         b.putString(BluetoothDevice.EXTRA_DEVICE, mLeDeviceListAdapter.getDevice(position).getAddress());
+        b.putString(BluetoothDevice.EXTRA_NAME, mLeDeviceListAdapter.getDevice(position).getName());
 
         Intent result = new Intent();
         result.putExtras(b);
