@@ -190,6 +190,16 @@ public class OidActivity extends Activity {
                 public void onConnected(String address, String penName) {
 
                 }
+
+                @Override
+                public void onPenNameSetupResponse(boolean isSuccess) {
+
+                }
+
+                @Override
+                public void onReceivePenStatus(int battery) {
+
+                }
             });
         }
 
@@ -502,7 +512,8 @@ public class OidActivity extends Activity {
             case REQUEST_SELECT_DEVICE:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     String deviceAddress = data.getStringExtra(BluetoothDevice.EXTRA_DEVICE);
-                    mService.connect(deviceAddress);
+                    String deviceName = data.getStringExtra(BluetoothDevice.EXTRA_NAME);
+                    mService.connect(deviceAddress , deviceName);
                 }
                 break;
             case REQUEST_ENABLE_BT:
