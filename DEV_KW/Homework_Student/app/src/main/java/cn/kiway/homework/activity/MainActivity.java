@@ -112,6 +112,9 @@ public class MainActivity extends BaseActivity {
     public static MainActivity instance;
     private Button kill;
     private String mPage;
+    private int mAction = -1;
+    private String mNewName;
+    private String mMac;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -335,7 +338,6 @@ public class MainActivity extends BaseActivity {
                                 pd.setMessage("正在获取离线数据。。。");
                                 pd.show();
                             } else {
-                                Toast.makeText(MainActivity.this, "没有缓存", Toast.LENGTH_SHORT).show();
                                 //返回给前端
                                 drawOffline();
                             }
@@ -366,9 +368,10 @@ public class MainActivity extends BaseActivity {
                 }
 
                 private void drawOffline() {
-                    //FIXME mPage
-                    ArrayList<Dots> dots = new com.sonix.util.MyDBHelper(getApplicationContext()).getDotsByPageID(null);
-                    for (int i = 0; i < dots.size(); i++) {
+                    ArrayList<Dots> dots = new com.sonix.util.MyDBHelper(getApplicationContext()).getDotsByPageID(mPage);
+                    int size = dots.size();
+                    Log.d("test", "drawOffline size = " + size);
+                    for (int i = 0; i < size; i++) {
                         Dots d = dots.get(i);
                         //规则1：如果第一个点不是0，强制为0
                         if (i == 0) {
@@ -389,8 +392,7 @@ public class MainActivity extends BaseActivity {
                     }
                     String param = "";
                     for (Dots d : dots) {
-                        //Log.d("test", "d = " + d.toString());
-                        Log.d("test", "d = " + d.ntype);
+                        Log.d("test", "d = " + d.toString());
                         if (d.ntype == 0) {
                             param += "[" + d.pointX + "," + d.pointY + ",";
                         } else if (d.ntype == 1) {
@@ -399,11 +401,15 @@ public class MainActivity extends BaseActivity {
                             param += d.pointX + "," + d.pointY + "],";
                         }
                     }
+                    if (TextUtils.isEmpty(param)) {
+                        Log.d("test", "没有缓存点");
+                        return;
+                    }
                     param = param.substring(0, param.length() - 1);
                     param = "[" + param + "]";
                     Log.d("test", "param = " + param);
                     final String finalParam = param;
-                    wv.loadUrl("javascript:drawOffline('" + finalParam + "')");
+                    wv.loadUrl("javascript:getOfflineCallback('" + finalParam + "')");
                 }
 
                 private void ProcessEachDot2(Dot dot) {
@@ -424,6 +430,7 @@ public class MainActivity extends BaseActivity {
                     //int PageID = CheckXYLocation(gpointX, gpointY);
                     int PageID = dot.PageID;
                     int type = 0;
+                    Log.d("test", "dot.type = " + dot.type.ordinal());
                     if (dot.type == Dot.DotType.PEN_DOWN) {
                         type = 0;
                     } else if (dot.type == Dot.DotType.PEN_MOVE) {
@@ -436,13 +443,69 @@ public class MainActivity extends BaseActivity {
                 }
 
                 @Override
-                public void onConnected(String address, String penName) {
+                public void onConnected(final String address, final String penName) {
                     Log.d("test", "onConnected isCalled");
-                    //在这里传给前端
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            //wv.loadUrl();
+                            toast("连接点阵笔成功");
+                            if (mAction == -1) {
+                                return;
+                            }
+                            if (mAction == 0) {
+                                JSONObject obj = new JSONObject();
+                                try {
+                                    obj.put("address", address);
+                                    obj.put("penName", penName);
+                                    wv.loadUrl("javascript:bindPenCallback(" + obj.toString() + ")");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                //sdk bug sleep 1000.
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            sleep(1000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                        if (mAction == 1) {
+                                            new JsAndroidInterface().renamePen(mMac, mNewName);
+                                        } else if (mAction == 2) {
+                                            new JsAndroidInterface().getPenBattery(mMac);
+                                        } else if (mAction == 3) {
+                                            new JsAndroidInterface().getOffline(mMac, mPage);
+                                        }
+                                    }
+                                }.start();
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void onPenNameSetupResponse(final boolean isSuccess) {
+                    Log.d("test", "改名" + isSuccess);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isSuccess) {
+                                wv.loadUrl("javascript:renamePenCallback(1)");
+                            } else {
+                                wv.loadUrl("javascript:renamePenCallback(0)");
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void onReceivePenStatus(final int battery) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            wv.loadUrl("javascript:getPenBatteryCallback(" + battery + ")");
                         }
                     });
                 }
@@ -461,6 +524,7 @@ public class MainActivity extends BaseActivity {
         @JavascriptInterface
         public void bindPen() {
             Log.d("test", "bindPen");
+            mAction = 0;
             //连接笔，绑定笔
             if (checkBLEEnable()) {
                 Intent serverIntent = new Intent(MainActivity.this, SelectDeviceActivity.class);
@@ -469,21 +533,49 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
+        public void renamePen(String mac, String newName) {
+            mAction = 1;
+            mNewName = newName;
+            mMac = mac;
+            Log.d("test", "renamePen mac = " + mac + " , newName = " + newName);
+            //1.判断笔有没有连接。
+            PenCommAgent bleManager = PenCommAgent.GetInstance(getApplication());
+            if (bleManager != null && bleManager.isConnect()) {
+                bleManager.ReqSetupPenName(newName);
+            } else {
+                mService.connect(mac, null);
+            }
+        }
+
+        @JavascriptInterface
+        public void getPenBattery(String mac) {
+            mAction = 2;
+            mMac = mac;
+            PenCommAgent bleManager = PenCommAgent.GetInstance(getApplication());
+            if (bleManager != null && bleManager.isConnect()) {
+                bleManager.ReqPenStatus();
+            } else {
+                mService.connect(mac, null);
+            }
+        }
+
+        @JavascriptInterface
         public void unbindPen() {
             Log.d("test", "unbindPen");
+            mService.close();
         }
 
         @JavascriptInterface
         public void getOffline(String mac, String page) {
             Log.d("test", "getOffline , mac = " + mac + " , page = " + page);
+            mAction = 3;
+            mMac = mac;
             mPage = page;
-            //1.判断有没有绑定笔(前端来做)
-            //2.笔有没有连接，如果连接了，直接读缓存，如果没有，先连接笔。
             PenCommAgent bleManager = PenCommAgent.GetInstance(getApplication());
             if (bleManager != null && bleManager.isConnect()) {
                 bleManager.ReqOfflineDataTransfer(true);
             } else {
-                toast("请先连接智能笔");
+                mService.connect(mac, null);
             }
         }
 
@@ -651,18 +743,17 @@ public class MainActivity extends BaseActivity {
             imagePicker.setFocusHeight(1000);// 需要剪裁的高
             imagePicker.setStyle(CropImageView.Style.RECTANGLE);// 方形
             imagePicker.setShowCamera(true);// 是否显示摄像
-
             Intent intent = new Intent(MainActivity.this, ImageGridActivity.class);
             startActivityForResult(intent, SELECT_PHOTO);
         }
 
         @JavascriptInterface
         public void snapshot() {
-//            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//            snapshotFile = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
-//            Uri uri = Uri.fromFile(new File(snapshotFile));
-//            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-//            startActivityForResult(intent, SNAPSHOT);
+            //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            //snapshotFile = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
+            //Uri uri = Uri.fromFile(new File(snapshotFile));
+            //intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            //startActivityForResult(intent, SNAPSHOT);
             Intent intent = new Intent(MainActivity.this, ScanActivity.class);
             intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, ScanConstants.OPEN_CAMERA);
             startActivityForResult(intent, SNAPSHOT);
@@ -956,7 +1047,8 @@ public class MainActivity extends BaseActivity {
         } else if (requestCode == REQUEST_SELECT_DEVICE) {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 String deviceAddress = data.getStringExtra(BluetoothDevice.EXTRA_DEVICE);
-                mService.connect(deviceAddress);
+                String deviceName = data.getStringExtra(BluetoothDevice.EXTRA_NAME);
+                mService.connect(deviceAddress, deviceName);
             }
         } else if (requestCode == REQUEST_ENABLE_BT) {
             if (resultCode == Activity.RESULT_OK) {
