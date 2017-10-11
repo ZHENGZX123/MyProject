@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.sonix.util.ApplicationResources;
@@ -33,6 +34,7 @@ public class BluetoothLEService extends Service {
     private PenCommAgent bleManager;
     private int mConnectionState;
     private String mAddress;
+    private String mName;
 
     private void broadcastUpdate(final String action) {
         final Intent intent = new Intent(action);
@@ -89,24 +91,25 @@ public class BluetoothLEService extends Service {
         return true;
     }
 
-    public boolean connect(final String address) {
+    public boolean connect(final String address, final String name) {
         if (address == null) {
             Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.");
             return false;
         }
-
         // Previously connected device.  Try to reconnect.
         if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress)
                 && bleManager.isConnect(address)
             ///&& mBluetoothGatt != null
                 ) {
             Log.d(TAG, "Trying to use an existing pen for connection.");
-
             return true;
         }
 
         Log.d(TAG, "Trying to create a new connection.");
         mAddress = address;
+        if (!TextUtils.isEmpty(name)) {
+            mName = name;
+        }
         bleManager.connect(address);
         mBluetoothDeviceAddress = address;
         mConnectionState = STATE_CONNECTING;
@@ -126,12 +129,7 @@ public class BluetoothLEService extends Service {
         Log.w(TAG, "mBluetoothGatt closed");
         bleManager.disconnect(mBluetoothDeviceAddress);
         mBluetoothDeviceAddress = null;
-
         bleManager = null;
-    }
-
-    public void getPenStatus() {
-        bleManager.ReqPenStatus();
     }
 
     private OnDataReceiveListener onDataReceiveListener = null;
@@ -146,6 +144,12 @@ public class BluetoothLEService extends Service {
         void onFinishedOfflineDownload();
 
         void onConnected(String address, String penName);
+
+        void onDisconnected();
+
+        void onPenNameSetupResponse(boolean isSuccess);
+
+        void onReceivePenStatus(int battery);
     }
 
     public void setOnDataReceiveListener(OnDataReceiveListener dataReceiveListener) {
@@ -163,9 +167,8 @@ public class BluetoothLEService extends Service {
             mConnectionState = STATE_CONNECTED;
             broadcastUpdate(intentAction);
             Log.i(TAG, "Connected to GATT server.");
-
             if (onDataReceiveListener != null) {
-                onDataReceiveListener.onConnected(mAddress, "笔的名字");
+                onDataReceiveListener.onConnected(mAddress, mName);
             }
         }
 
@@ -173,12 +176,13 @@ public class BluetoothLEService extends Service {
         public void onDisconnected() {
             String intentAction;
             Log.d(TAG, "TQLPenSignal had onDisconnected");
-
             intentAction = ACTION_GATT_DISCONNECTED;
             mConnectionState = STATE_DISCONNECTED;
             Log.i(TAG, "C.");
             broadcastUpdate(intentAction);
-
+            if (onDataReceiveListener != null) {
+                onDataReceiveListener.onDisconnected();
+            }
         }
 
         @Override
@@ -209,7 +213,6 @@ public class BluetoothLEService extends Service {
                 onDataReceiveListener.onOfflineDataReceive(dot);
             }
         }
-
 
         @Override
         public void onPenAuthenticated() {
@@ -255,7 +258,6 @@ public class BluetoothLEService extends Service {
             broadcastUpdate(intentAction);
         }
 
-        /// add
         @Override
         public void onPenNameSetupResponse(boolean isSuccess) {
             if (isSuccess) {
@@ -264,6 +266,9 @@ public class BluetoothLEService extends Service {
             String intentAction = ACTION_PEN_STATUS_CHANGE;
             Log.i(TAG, "Disconnected from GATT server.");
             broadcastUpdate(intentAction);
+            if (onDataReceiveListener != null) {
+                onDataReceiveListener.onPenNameSetupResponse(isSuccess);
+            }
         }
 
         @Override
@@ -320,6 +325,10 @@ public class BluetoothLEService extends Service {
             String intentAction = ACTION_PEN_STATUS_CHANGE;
             Log.i(TAG, "Disconnected from GATT server.");
             broadcastUpdate(intentAction);
+
+            if (onDataReceiveListener != null) {
+                onDataReceiveListener.onReceivePenStatus(battery);
+            }
         }
 
         @Override
