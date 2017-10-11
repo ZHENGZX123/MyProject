@@ -3,20 +3,14 @@ package cn.kiway.homework.activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -24,11 +18,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
-import android.webkit.WebChromeClient;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -44,11 +33,9 @@ import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.ui.ImagePreviewActivity;
 import com.lzy.imagepicker.view.CropImageView;
 import com.nanchen.compresshelper.CompressHelper;
-import com.sonix.oid.Dots;
-import com.sonix.oidbluetooth.BluetoothLEService;
-import com.sonix.oidbluetooth.SelectDeviceActivity;
-import com.tqltech.tqlpencomm.Dot;
-import com.tqltech.tqlpencomm.PenCommAgent;
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
+import com.tencent.smtt.sdk.WebView;
+import com.tencent.smtt.sdk.WebViewClient;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -87,9 +74,9 @@ import cn.kiway.homework.util.NetworkUtil;
 import cn.kiway.homework.util.ResourceUtil;
 import cn.kiway.homework.util.UploadUtil;
 import cn.kiway.homework.util.Utils;
+import cn.kiway.homework.view.X5WebView;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static android.content.ContentValues.TAG;
 import static cn.kiway.homework.WXApplication.ceshiUrl;
 import static cn.kiway.homework.WXApplication.url;
 import static cn.kiway.homework.WXApplication.zhengshiUrl;
@@ -97,7 +84,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.4.2";
+    private static final String currentPackageVersion = "0.4.7";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -105,7 +92,7 @@ public class MainActivity extends BaseActivity {
     private Dialog dialog_download;
     protected ProgressDialog pd;
     private int lastProgress;
-    private WebView wv;
+    private X5WebView wv;
     private RelativeLayout root;
     private LinearLayout layout_welcome;
     public static MainActivity instance;
@@ -134,13 +121,8 @@ public class MainActivity extends BaseActivity {
         checkNewVersion();
         huaweiPush();
         checkIsPad(getIntent());
-        initPen();
     }
 
-    private void initPen() {
-        Intent gattServiceIntent = new Intent(this, BluetoothLEService.class);
-        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -199,7 +181,7 @@ public class MainActivity extends BaseActivity {
     private void initView() {
         root = (RelativeLayout) findViewById(R.id.root);
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
-        wv = (WebView) findViewById(R.id.wv);
+        wv = (X5WebView) findViewById(R.id.wv);
         kill = (Button) findViewById(R.id.kill);
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
     }
@@ -277,7 +259,7 @@ public class MainActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
-        WebSettings settings = wv.getSettings();
+        com.tencent.smtt.sdk.WebSettings settings = wv.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setAppCacheEnabled(true);
         settings.setUseWideViewPort(true);
@@ -286,10 +268,11 @@ public class MainActivity extends BaseActivity {
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
         if (Utils.isTabletDevice(this)) {
-            settings.setTextSize(WebSettings.TextSize.LARGER);
+            settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.LARGER);
         } else {
-            settings.setTextSize(WebSettings.TextSize.NORMAL);
+            settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.NORMAL);
         }
+
         wv.setWebViewClient(new WebViewClient() {
 
             @Override
@@ -325,7 +308,7 @@ public class MainActivity extends BaseActivity {
         });
 
         wv.setVerticalScrollBarEnabled(false);
-        wv.setWebChromeClient(new WebChromeClient());
+        wv.setWebChromeClient(new com.tencent.smtt.sdk.WebChromeClient());
         wv.addJavascriptInterface(new JsAndroidInterface(), "wx");
     }
 
@@ -372,345 +355,8 @@ public class MainActivity extends BaseActivity {
     private long start;
     private String snapshotFile;
 
-    private BluetoothLEService mService = null;
-
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder rawBinder) {
-            mService = ((BluetoothLEService.LocalBinder) rawBinder).getService();
-            if (!mService.initialize()) {
-                finish();
-            }
-            mService.setOnDataReceiveListener(new BluetoothLEService.OnDataReceiveListener() {
-                @Override
-                public void onDataReceive(final Dot dot) {
-                    Log.d("test", "onDataReceive dot = " + dot.toString());
-                    //TODO 在线的点要不要存到离线数据库里面去。
-                }
-
-                @Override
-                public void onStartOfflineDownload(final boolean isSuccess) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (isSuccess) {
-                                pd = new ProgressDialog(MainActivity.this);
-                                pd.setMessage("正在获取离线数据。。。");
-                                pd.show();
-                            } else {
-                                //没有离线数据，直接返回给前端
-                                Log.d("test", "prepareOfflineCallback");
-                                wv.loadUrl("javascript:prepareOfflineCallback()");
-                            }
-                        }
-                    });
-                }
-
-                @Override
-                public void onOfflineDataReceive(final Dot dot) {
-                    Log.d("test", "onOfflineDataReceive dot = " + dot.toString());
-                    ProcessEachDot2(dot);
-                }
-
-                @Override
-                public void onFinishedOfflineDownload() {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //1.删除所有缓存
-                            PenCommAgent bleManager = PenCommAgent.GetInstance(getApplication());
-                            bleManager.WritePenOffLineDelet();
-                            pd.dismiss();
-
-                            //有离线数据，下载完了，返回给前端
-                            Log.d("test", "prepareOfflineCallback");
-                            wv.loadUrl("javascript:prepareOfflineCallback()");
-                        }
-                    });
-                }
-
-                private synchronized void ProcessEachDot2(Dot dot) {
-                    int counter = 0;
-                    int pointZ = dot.force;
-                    if (pointZ < 0) {
-                        Log.i(TAG, "Counter=" + counter + ", Pressure=" + pointZ + "  Cut!!!!!");
-                        return;
-                    }
-                    int tmpx = dot.x;
-                    float pointX = dot.fx;
-                    pointX /= 100.0;
-                    pointX += tmpx;
-
-                    int tmpy = dot.y;
-                    float pointY = dot.fy;
-                    pointY /= 100.0;
-                    pointY += tmpy;
-
-                    //int PageID = CheckXYLocation(gpointX, gpointY);
-                    int PageID = dot.PageID;
-                    int type = 0;
-                    Log.d("test", "dot.type = " + dot.type.ordinal());
-                    if (dot.type == Dot.DotType.PEN_DOWN) {
-                        type = 0;
-                    } else if (dot.type == Dot.DotType.PEN_MOVE) {
-                        type = 1;
-                    } else if (dot.type == Dot.DotType.PEN_UP) {
-                        type = 2;
-                    }
-                    Dots dots = new Dots(dot.SectionID, dot.OwnerID, dot.BookID, PageID, pointX, pointY, pointZ, type, 0, 0, dot.Counter, dot.angle);
-                    new com.sonix.util.MyDBHelper(getApplicationContext()).addDots(dots);
-                }
-
-                @Override
-                public void onConnected(final String address, final String penName) {
-                    Log.d("test", "onConnected isCalled");
-                    mStatus = 1;
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            toast("连接点阵笔成功");
-                            if (mAction == 0) {
-                                JSONObject obj = new JSONObject();
-                                try {
-                                    obj.put("address", address);
-                                    obj.put("penName", penName);
-                                    wv.loadUrl("javascript:bindPenCallback(" + obj.toString() + ")");
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                mAction = -1;
-                            } else {
-                                //sdk bug sleep 1000.
-                                new Thread() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            sleep(1500);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-                                        if (mAction == 1) {
-                                            new JsAndroidInterface().renamePen(mMac, mNewName);
-                                        } else if (mAction == 2) {
-                                            new JsAndroidInterface().getPenBattery(mMac);
-                                        } else if (mAction == 3) {
-                                            new JsAndroidInterface().prepareOffline(mMac, mPage);
-                                        }
-                                        mAction = -1;
-                                    }
-                                }.start();
-                            }
-                        }
-                    });
-                }
-
-                @Override
-                public void onDisconnected() {
-                    Log.d("test", "onDisconnected is called");
-                    mStatus = 0;
-                }
-
-                @Override
-                public void onPenNameSetupResponse(final boolean isSuccess) {
-                    Log.d("test", "改名" + isSuccess);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (isSuccess) {
-                                wv.loadUrl("javascript:renamePenCallback(1)");
-                            } else {
-                                wv.loadUrl("javascript:renamePenCallback(0)");
-                            }
-                        }
-                    });
-                }
-
-                @Override
-                public void onReceivePenStatus(final int battery) {
-                    Log.d("test", "onReceivePenStatus = " + battery);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            wv.loadUrl("javascript:getPenBatteryCallback(" + battery + ")");
-                        }
-                    });
-                }
-            });
-        }
-
-        public void onServiceDisconnected(ComponentName classname) {
-            mService = null;
-        }
-    };
-
     public class JsAndroidInterface {
         public JsAndroidInterface() {
-        }
-
-        @JavascriptInterface
-        public void bindPen() {
-            Log.d("test", "bindPen");
-            mAction = 0;
-            //连接笔，绑定笔
-            if (checkBLEEnable()) {
-                Intent serverIntent = new Intent(MainActivity.this, SelectDeviceActivity.class);
-                startActivityForResult(serverIntent, REQUEST_SELECT_DEVICE);
-            }
-        }
-
-        @JavascriptInterface
-        public void renamePen(String mac, String newName) {
-            mNewName = newName;
-            mMac = mac;
-            Log.d("test", "renamePen mac = " + mac + " , newName = " + newName);
-            //1.判断笔有没有连接。
-            PenCommAgent bleManager = PenCommAgent.GetInstance(getApplication());
-            if (bleManager != null && bleManager.isConnect()) {
-                bleManager.ReqSetupPenName(newName);
-            } else {
-                mAction = 1;
-                mService.connect(mac, null);
-            }
-        }
-
-        @JavascriptInterface
-        public void getPenBattery(String mac) {
-            Log.d("test", "getPenBattery mac = " + mac);
-            mMac = mac;
-            PenCommAgent bleManager = PenCommAgent.GetInstance(getApplication());
-            if (bleManager != null && bleManager.isConnect()) {
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                bleManager.ReqPenStatus();
-            } else {
-                mAction = 2;
-                mService.connect(mac, null);
-            }
-        }
-
-        @JavascriptInterface
-        public String getPenStatus(String mac) {
-            Log.d("test", "getPenStatus mac = " + mac);
-            return mStatus + "";
-        }
-
-        @JavascriptInterface
-        public void connectPen(String mac) {
-            Log.d("test", "connectPen mac = " + mac);
-            mMac = mac;
-            mService.connect(mac, null);
-        }
-
-        @JavascriptInterface
-        public void disconnectPen(String mac) {
-            Log.d("test", "disconnectPen mac = " + mac);
-            new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        sleep(2000);
-                        toast("请长按蓝牙笔上的开关");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }.start();
-            //mService.close();
-            //试试disconnect()
-        }
-
-        @JavascriptInterface
-        public void unbindPen(String mac) {
-            Log.d("test", "unbindPen mac = " + mac);
-            //mService.close();
-            //试试disconnect()
-        }
-
-        @JavascriptInterface
-        public void prepareOffline(String mac, String page) {
-            Log.d("test", "prepareOffline , mac = " + mac + " , page = " + page);
-            mMac = mac;
-            mPage = page;//现在用不到。
-            PenCommAgent bleManager = PenCommAgent.GetInstance(getApplication());
-            if (bleManager != null && bleManager.isConnect()) {
-                bleManager.ReqOfflineDataTransfer(true);
-            } else {
-                mAction = 3;
-                mService.connect(mac, null);
-            }
-        }
-
-        @JavascriptInterface
-        public void getOffline(String mac, final String page) {
-            Log.d("test", "getOffline , mac = " + mac + " , page = " + page);
-            String pages[] = page.replace("[", "").replace("]", "").split(",");
-            String ret = "";
-            for (String p : pages) {
-                ret += drawOffline(p) + "_";
-            }
-            ret = ret.substring(0, ret.length() - 1);
-            final String finalRet = ret;
-            Log.d("test", "finalRet = " + finalRet);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    wv.loadUrl("javascript:getOfflineCallback('" + finalRet + "')");
-                }
-            });
-        }
-
-        private String drawOffline(String p) {
-            ArrayList<Dots> dots = new com.sonix.util.MyDBHelper(getApplicationContext()).getDotsByPageID(p);
-            int size = dots.size();
-            Log.d("test", "drawOffline page = " + p + " size = " + size);
-            if (size < 10) {
-                Log.d("test", "page = " + p + " , param = [[41.47,152.64,41.51,152.74,41.48,152.64]]");
-                return "[[0,0,50,50,100,100,60,40]]";
-            }
-            for (int i = 0; i < size; i++) {
-                Dots d = dots.get(i);
-                //规则1：如果第一个点不是0，强制为0
-                if (i == 0) {
-                    d.ntype = 0;
-                    continue;
-                }
-                //规则2：如果0前面不是2，强制为2
-                if (d.ntype == 0) {
-                    Dots prevDot = dots.get(i - 1);
-                    prevDot.ntype = 2;
-                }
-                //规则3：2的后面一定是0
-                if (i != size - 1 && d.ntype == 2) {
-                    Dots nextDot = dots.get(i + 1);
-                    nextDot.ntype = 0;
-                }
-                //规则4:如果最后一个不是2，强制为2
-                if (i == size - 1) {
-                    d.ntype = 2;
-                }
-            }
-            //规则5 如果倒数第2个是2，把最后一个删掉
-            Dots temp = dots.get(size - 2);
-            if (temp.ntype == 2) {
-                dots.remove(size - 1);
-            }
-            String param = "";
-            for (Dots d : dots) {
-                Log.d("test", "d = " + d.toString());
-                if (d.ntype == 0) {
-                    param += "[" + d.pointX + "," + d.pointY + ",";
-                } else if (d.ntype == 1) {
-                    param += d.pointX + "," + d.pointY + ",";
-                } else {
-                    param += d.pointX + "," + d.pointY + "],";
-                }
-            }
-            param = param.substring(0, param.length() - 1);
-            param = "[" + param + "]";
-            Log.d("test", "page = " + p + " , param = " + param);
-            return param;
         }
 
         @JavascriptInterface
@@ -1549,23 +1195,8 @@ public class MainActivity extends BaseActivity {
         startActivity(new Intent(this, NoNetActivity.class));
     }
 
-    private boolean checkBLEEnable() {
-        BluetoothManager mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        BluetoothAdapter mBluetoothAdapter = mBluetoothManager.getAdapter();
-        if (mBluetoothAdapter.isEnabled()) {
-            return true;
-        }
-        Intent enableBtIntent = new Intent(
-                BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        return false;
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mServiceConnection);
-        mService.stopSelf();
-        mService = null;
     }
 }
