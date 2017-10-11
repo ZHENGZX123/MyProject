@@ -118,6 +118,10 @@ public class BluetoothLEService extends Service {
         return true;
     }
 
+    public void disconnect() {
+        bleManager.disconnect(mBluetoothDeviceAddress);
+    }
+
     public void close() {
         if (bleManager == null) {
             return;
@@ -141,6 +145,8 @@ public class BluetoothLEService extends Service {
 
         void onConnected(String address, String penName);
 
+        void onDisconnected();
+
         void onPenNameSetupResponse(boolean isSuccess);
 
         void onReceivePenStatus(int battery);
@@ -161,7 +167,6 @@ public class BluetoothLEService extends Service {
             mConnectionState = STATE_CONNECTED;
             broadcastUpdate(intentAction);
             Log.i(TAG, "Connected to GATT server.");
-
             if (onDataReceiveListener != null) {
                 onDataReceiveListener.onConnected(mAddress, mName);
             }
@@ -171,11 +176,13 @@ public class BluetoothLEService extends Service {
         public void onDisconnected() {
             String intentAction;
             Log.d(TAG, "TQLPenSignal had onDisconnected");
-
             intentAction = ACTION_GATT_DISCONNECTED;
             mConnectionState = STATE_DISCONNECTED;
             Log.i(TAG, "C.");
             broadcastUpdate(intentAction);
+            if (onDataReceiveListener != null) {
+                onDataReceiveListener.onDisconnected();
+            }
         }
 
         @Override

@@ -192,6 +192,11 @@ public class OidActivity extends Activity {
                 }
 
                 @Override
+                public void onDisconnected() {
+
+                }
+
+                @Override
                 public void onPenNameSetupResponse(boolean isSuccess) {
 
                 }
