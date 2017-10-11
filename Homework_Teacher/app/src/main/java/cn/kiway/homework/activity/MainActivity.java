@@ -33,7 +33,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.zxing.client.android.CaptureActivity;
 import com.loopj.android.http.AsyncHttpClient;
@@ -117,6 +116,10 @@ public class MainActivity extends BaseActivity {
     private String tab;
     private boolean fromCreate = true;
     private String mPage;
+    private int mAction = -1;
+    private String mNewName;
+    private String mMac;
+    private int mStatus;//0断开 1连接
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -381,6 +384,7 @@ public class MainActivity extends BaseActivity {
                 @Override
                 public void onDataReceive(final Dot dot) {
                     Log.d("test", "onDataReceive dot = " + dot.toString());
+                    //TODO 在线的点要不要存到离线数据库里面去。
                 }
 
                 @Override
@@ -393,9 +397,9 @@ public class MainActivity extends BaseActivity {
                                 pd.setMessage("正在获取离线数据。。。");
                                 pd.show();
                             } else {
-                                Toast.makeText(MainActivity.this, "没有缓存", Toast.LENGTH_SHORT).show();
-                                //返回给前端
-                                drawOffline();
+                                //没有离线数据，直接返回给前端
+                                Log.d("test", "prepareOfflineCallback");
+                                wv.loadUrl("javascript:prepareOfflineCallback()");
                             }
                         }
                     });
@@ -417,54 +421,14 @@ public class MainActivity extends BaseActivity {
                             bleManager.WritePenOffLineDelet();
                             pd.dismiss();
 
-                            //返回给前端
-                            drawOffline();
+                            //有离线数据，下载完了，返回给前端
+                            Log.d("test", "prepareOfflineCallback");
+                            wv.loadUrl("javascript:prepareOfflineCallback()");
                         }
                     });
                 }
 
-                private void drawOffline() {
-                    //FIXME mPage
-                    ArrayList<Dots> dots = new com.sonix.util.MyDBHelper(getApplicationContext()).getDotsByPageID(null);
-                    for (int i = 0; i < dots.size(); i++) {
-                        Dots d = dots.get(i);
-                        //规则1：如果第一个点不是0，强制为0
-                        if (i == 0) {
-                            d.ntype = 0;
-                            continue;
-                        }
-                        //规则2：如果0前面不是2，强制为2
-                        if (d.ntype == 0) {
-                            Dots prevDot = dots.get(i - 1);
-                            if (prevDot.ntype != 2) {
-                                prevDot.ntype = 2;
-                            }
-                        }
-                        //规则3:如果最后一个不是2，强制2为2
-                        if (i == dots.size() - 1) {
-                            d.ntype = 2;
-                        }
-                    }
-                    String param = "";
-                    for (Dots d : dots) {
-                        //Log.d("test", "d = " + d.toString());
-                        Log.d("test", "d = " + d.ntype);
-                        if (d.ntype == 0) {
-                            param += "[" + d.pointX + "," + d.pointY + ",";
-                        } else if (d.ntype == 1) {
-                            param += d.pointX + "," + d.pointY + ",";
-                        } else {
-                            param += d.pointX + "," + d.pointY + "],";
-                        }
-                    }
-                    param = param.substring(0, param.length() - 1);
-                    param = "[" + param + "]";
-                    Log.d("test", "param = " + param);
-                    final String finalParam = param;
-                    wv.loadUrl("javascript:drawOffline('" + finalParam + "')");
-                }
-
-                private void ProcessEachDot2(Dot dot) {
+                private synchronized void ProcessEachDot2(Dot dot) {
                     int counter = 0;
                     int pointZ = dot.force;
                     if (pointZ < 0) {
@@ -472,16 +436,19 @@ public class MainActivity extends BaseActivity {
                         return;
                     }
                     int tmpx = dot.x;
-                    int pointX = dot.fx;
+                    float pointX = dot.fx;
                     pointX /= 100.0;
                     pointX += tmpx;
+
                     int tmpy = dot.y;
-                    int pointY = dot.fy;
+                    float pointY = dot.fy;
                     pointY /= 100.0;
                     pointY += tmpy;
+
                     //int PageID = CheckXYLocation(gpointX, gpointY);
                     int PageID = dot.PageID;
                     int type = 0;
+                    Log.d("test", "dot.type = " + dot.type.ordinal());
                     if (dot.type == Dot.DotType.PEN_DOWN) {
                         type = 0;
                     } else if (dot.type == Dot.DotType.PEN_MOVE) {
@@ -494,13 +461,76 @@ public class MainActivity extends BaseActivity {
                 }
 
                 @Override
-                public void onConnected(String address, String penName) {
+                public void onConnected(final String address, final String penName) {
                     Log.d("test", "onConnected isCalled");
-                    //在这里传给前端
+                    mStatus = 1;
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            //wv.loadUrl();
+                            toast("连接点阵笔成功");
+                            if (mAction == 0) {
+                                JSONObject obj = new JSONObject();
+                                try {
+                                    obj.put("address", address);
+                                    obj.put("penName", penName);
+                                    wv.loadUrl("javascript:bindPenCallback(" + obj.toString() + ")");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                mAction = -1;
+                            } else {
+                                //sdk bug sleep 1000.
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            sleep(1500);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                        if (mAction == 1) {
+                                            new JsAndroidInterface().renamePen(mMac, mNewName);
+                                        } else if (mAction == 2) {
+                                            new JsAndroidInterface().getPenBattery(mMac);
+                                        } else if (mAction == 3) {
+                                            new JsAndroidInterface().prepareOffline(mMac, mPage);
+                                        }
+                                        mAction = -1;
+                                    }
+                                }.start();
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void onDisconnected() {
+                    Log.d("test", "onDisconnected is called");
+                    mStatus = 0;
+                }
+
+                @Override
+                public void onPenNameSetupResponse(final boolean isSuccess) {
+                    Log.d("test", "改名" + isSuccess);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isSuccess) {
+                                wv.loadUrl("javascript:renamePenCallback(1)");
+                            } else {
+                                wv.loadUrl("javascript:renamePenCallback(0)");
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void onReceivePenStatus(final int battery) {
+                    Log.d("test", "onReceivePenStatus = " + battery);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            wv.loadUrl("javascript:getPenBatteryCallback(" + battery + ")");
                         }
                     });
                 }
@@ -519,6 +549,7 @@ public class MainActivity extends BaseActivity {
         @JavascriptInterface
         public void bindPen() {
             Log.d("test", "bindPen");
+            mAction = 0;
             //连接笔，绑定笔
             if (checkBLEEnable()) {
                 Intent serverIntent = new Intent(MainActivity.this, SelectDeviceActivity.class);
@@ -527,22 +558,159 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
-        public void unbindPen() {
-            Log.d("test", "unbindPen");
+        public void renamePen(String mac, String newName) {
+            mNewName = newName;
+            mMac = mac;
+            Log.d("test", "renamePen mac = " + mac + " , newName = " + newName);
+            //1.判断笔有没有连接。
+            PenCommAgent bleManager = PenCommAgent.GetInstance(getApplication());
+            if (bleManager != null && bleManager.isConnect()) {
+                bleManager.ReqSetupPenName(newName);
+            } else {
+                mAction = 1;
+                mService.connect(mac, null);
+            }
         }
 
         @JavascriptInterface
-        public void getOffline(String mac, String page) {
-            Log.d("test", "getOffline , mac = " + mac + " , page = " + page);
-            mPage = page;
-            //1.判断有没有绑定笔(前端来做)
-            //2.笔有没有连接，如果连接了，直接读缓存，如果没有，先连接笔。
+        public void getPenBattery(String mac) {
+            Log.d("test", "getPenBattery mac = " + mac);
+            mMac = mac;
+            PenCommAgent bleManager = PenCommAgent.GetInstance(getApplication());
+            if (bleManager != null && bleManager.isConnect()) {
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                bleManager.ReqPenStatus();
+            } else {
+                mAction = 2;
+                mService.connect(mac, null);
+            }
+        }
+
+        @JavascriptInterface
+        public String getPenStatus(String mac) {
+            Log.d("test", "getPenStatus mac = " + mac);
+            return mStatus + "";
+        }
+
+        @JavascriptInterface
+        public void connectPen(String mac) {
+            Log.d("test", "connectPen mac = " + mac);
+            mMac = mac;
+            mService.connect(mac, null);
+        }
+
+        @JavascriptInterface
+        public void disconnectPen(String mac) {
+            Log.d("test", "disconnectPen mac = " + mac);
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        sleep(2000);
+                        toast("请长按蓝牙笔上的开关");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+            //mService.close();
+            //试试disconnect()
+        }
+
+        @JavascriptInterface
+        public void unbindPen(String mac) {
+            Log.d("test", "unbindPen mac = " + mac);
+            //mService.close();
+            //试试disconnect()
+        }
+
+        @JavascriptInterface
+        public void prepareOffline(String mac, String page) {
+            Log.d("test", "prepareOffline , mac = " + mac + " , page = " + page);
+            mMac = mac;
+            mPage = page;//现在用不到。
             PenCommAgent bleManager = PenCommAgent.GetInstance(getApplication());
             if (bleManager != null && bleManager.isConnect()) {
                 bleManager.ReqOfflineDataTransfer(true);
             } else {
-                toast("请先连接智能笔");
+                mAction = 3;
+                mService.connect(mac, null);
             }
+        }
+
+        @JavascriptInterface
+        public void getOffline(String mac, final String page) {
+            Log.d("test", "getOffline , mac = " + mac + " , page = " + page);
+            String pages[] = page.replace("[", "").replace("]", "").split(",");
+            String ret = "";
+            for (String p : pages) {
+                ret += drawOffline(p) + "_";
+            }
+            ret = ret.substring(0, ret.length() - 1);
+            final String finalRet = ret;
+            Log.d("test", "finalRet = " + finalRet);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    wv.loadUrl("javascript:getOfflineCallback('" + finalRet + "')");
+                }
+            });
+        }
+
+        private String drawOffline(String p) {
+            ArrayList<Dots> dots = new com.sonix.util.MyDBHelper(getApplicationContext()).getDotsByPageID(p);
+            int size = dots.size();
+            Log.d("test", "drawOffline page = " + p + " size = " + size);
+            if (size < 10) {
+                Log.d("test", "page = " + p + " , param = [[41.47,152.64,41.51,152.74,41.48,152.64]]");
+                return "[[0,0,50,50,100,100,60,40]]";
+            }
+            for (int i = 0; i < size; i++) {
+                Dots d = dots.get(i);
+                //规则1：如果第一个点不是0，强制为0
+                if (i == 0) {
+                    d.ntype = 0;
+                    continue;
+                }
+                //规则2：如果0前面不是2，强制为2
+                if (d.ntype == 0) {
+                    Dots prevDot = dots.get(i - 1);
+                    prevDot.ntype = 2;
+                }
+                //规则3：2的后面一定是0
+                if (i != size - 1 && d.ntype == 2) {
+                    Dots nextDot = dots.get(i + 1);
+                    nextDot.ntype = 0;
+                }
+                //规则4:如果最后一个不是2，强制为2
+                if (i == size - 1) {
+                    d.ntype = 2;
+                }
+            }
+            //规则5 如果倒数第2个是2，把最后一个删掉
+            Dots temp = dots.get(size - 2);
+            if (temp.ntype == 2) {
+                dots.remove(size - 1);
+            }
+            String param = "";
+            for (Dots d : dots) {
+                Log.d("test", "d = " + d.toString());
+                if (d.ntype == 0) {
+                    param += "[" + d.pointX + "," + d.pointY + ",";
+                } else if (d.ntype == 1) {
+                    param += d.pointX + "," + d.pointY + ",";
+                } else {
+                    param += d.pointX + "," + d.pointY + "],";
+                }
+            }
+            param = param.substring(0, param.length() - 1);
+            param = "[" + param + "]";
+            Log.d("test", "page = " + p + " , param = " + param);
+            return param;
         }
 
         @JavascriptInterface
@@ -565,7 +733,7 @@ public class MainActivity extends BaseActivity {
                 getSharedPreferences("kiway", 0).edit().putString("accessToken", accessToken).commit();
                 getSharedPreferences("kiway", 0).edit().putString("userId", userId).commit();
                 installationPush();
-                getBooks();
+                //getBooks();
             } catch (Exception e) {
                 e.printStackTrace();
             }
