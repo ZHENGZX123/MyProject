@@ -99,7 +99,7 @@ import static cn.kiway.homework.WXApplication.zhengshiUrl;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.4.3";
+    private static final String currentPackageVersion = "0.4.6";
 
     private WebView wv;
     private LinearLayout layout_welcome;
@@ -115,6 +115,7 @@ public class MainActivity extends BaseActivity {
     private int mAction = -1;
     private String mNewName;
     private String mMac;
+    private int mStatus;//0断开 1连接
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -326,6 +327,7 @@ public class MainActivity extends BaseActivity {
                 @Override
                 public void onDataReceive(final Dot dot) {
                     Log.d("test", "onDataReceive dot = " + dot.toString());
+                    //TODO 在线的点要不要存到离线数据库里面去。
                 }
 
                 @Override
@@ -338,8 +340,9 @@ public class MainActivity extends BaseActivity {
                                 pd.setMessage("正在获取离线数据。。。");
                                 pd.show();
                             } else {
-                                //返回给前端
-                                drawOffline();
+                                //没有离线数据，直接返回给前端
+                                Log.d("test", "prepareOfflineCallback");
+                                wv.loadUrl("javascript:prepareOfflineCallback()");
                             }
                         }
                     });
@@ -361,58 +364,14 @@ public class MainActivity extends BaseActivity {
                             bleManager.WritePenOffLineDelet();
                             pd.dismiss();
 
-                            //返回给前端
-                            drawOffline();
+                            //有离线数据，下载完了，返回给前端
+                            Log.d("test", "prepareOfflineCallback");
+                            wv.loadUrl("javascript:prepareOfflineCallback()");
                         }
                     });
                 }
 
-                private void drawOffline() {
-                    ArrayList<Dots> dots = new com.sonix.util.MyDBHelper(getApplicationContext()).getDotsByPageID(mPage);
-                    int size = dots.size();
-                    Log.d("test", "drawOffline size = " + size);
-                    for (int i = 0; i < size; i++) {
-                        Dots d = dots.get(i);
-                        //规则1：如果第一个点不是0，强制为0
-                        if (i == 0) {
-                            d.ntype = 0;
-                            continue;
-                        }
-                        //规则2：如果0前面不是2，强制为2
-                        if (d.ntype == 0) {
-                            Dots prevDot = dots.get(i - 1);
-                            if (prevDot.ntype != 2) {
-                                prevDot.ntype = 2;
-                            }
-                        }
-                        //规则3:如果最后一个不是2，强制2为2
-                        if (i == dots.size() - 1) {
-                            d.ntype = 2;
-                        }
-                    }
-                    String param = "";
-                    for (Dots d : dots) {
-                        Log.d("test", "d = " + d.toString());
-                        if (d.ntype == 0) {
-                            param += "[" + d.pointX + "," + d.pointY + ",";
-                        } else if (d.ntype == 1) {
-                            param += d.pointX + "," + d.pointY + ",";
-                        } else {
-                            param += d.pointX + "," + d.pointY + "],";
-                        }
-                    }
-                    if (TextUtils.isEmpty(param)) {
-                        Log.d("test", "没有缓存点");
-                        return;
-                    }
-                    param = param.substring(0, param.length() - 1);
-                    param = "[" + param + "]";
-                    Log.d("test", "param = " + param);
-                    final String finalParam = param;
-                    wv.loadUrl("javascript:getOfflineCallback('" + finalParam + "')");
-                }
-
-                private void ProcessEachDot2(Dot dot) {
+                private synchronized void ProcessEachDot2(Dot dot) {
                     int counter = 0;
                     int pointZ = dot.force;
                     if (pointZ < 0) {
@@ -420,13 +379,15 @@ public class MainActivity extends BaseActivity {
                         return;
                     }
                     int tmpx = dot.x;
-                    int pointX = dot.fx;
+                    float pointX = dot.fx;
                     pointX /= 100.0;
                     pointX += tmpx;
+
                     int tmpy = dot.y;
-                    int pointY = dot.fy;
+                    float pointY = dot.fy;
                     pointY /= 100.0;
                     pointY += tmpy;
+
                     //int PageID = CheckXYLocation(gpointX, gpointY);
                     int PageID = dot.PageID;
                     int type = 0;
@@ -445,13 +406,11 @@ public class MainActivity extends BaseActivity {
                 @Override
                 public void onConnected(final String address, final String penName) {
                     Log.d("test", "onConnected isCalled");
+                    mStatus = 1;
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             toast("连接点阵笔成功");
-                            if (mAction == -1) {
-                                return;
-                            }
                             if (mAction == 0) {
                                 JSONObject obj = new JSONObject();
                                 try {
@@ -461,13 +420,14 @@ public class MainActivity extends BaseActivity {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
+                                mAction = -1;
                             } else {
                                 //sdk bug sleep 1000.
                                 new Thread() {
                                     @Override
                                     public void run() {
                                         try {
-                                            sleep(1000);
+                                            sleep(1500);
                                         } catch (InterruptedException e) {
                                             e.printStackTrace();
                                         }
@@ -476,13 +436,20 @@ public class MainActivity extends BaseActivity {
                                         } else if (mAction == 2) {
                                             new JsAndroidInterface().getPenBattery(mMac);
                                         } else if (mAction == 3) {
-                                            new JsAndroidInterface().getOffline(mMac, mPage);
+                                            new JsAndroidInterface().prepareOffline(mMac, mPage);
                                         }
+                                        mAction = -1;
                                     }
                                 }.start();
                             }
                         }
                     });
+                }
+
+                @Override
+                public void onDisconnected() {
+                    Log.d("test", "onDisconnected is called");
+                    mStatus = 0;
                 }
 
                 @Override
@@ -502,6 +469,7 @@ public class MainActivity extends BaseActivity {
 
                 @Override
                 public void onReceivePenStatus(final int battery) {
+                    Log.d("test", "onReceivePenStatus = " + battery);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -534,7 +502,6 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public void renamePen(String mac, String newName) {
-            mAction = 1;
             mNewName = newName;
             mMac = mac;
             Log.d("test", "renamePen mac = " + mac + " , newName = " + newName);
@@ -543,40 +510,150 @@ public class MainActivity extends BaseActivity {
             if (bleManager != null && bleManager.isConnect()) {
                 bleManager.ReqSetupPenName(newName);
             } else {
+                mAction = 1;
                 mService.connect(mac, null);
             }
         }
 
         @JavascriptInterface
         public void getPenBattery(String mac) {
-            mAction = 2;
+            Log.d("test", "getPenBattery mac = " + mac);
             mMac = mac;
             PenCommAgent bleManager = PenCommAgent.GetInstance(getApplication());
             if (bleManager != null && bleManager.isConnect()) {
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 bleManager.ReqPenStatus();
             } else {
+                mAction = 2;
                 mService.connect(mac, null);
             }
         }
 
         @JavascriptInterface
-        public void unbindPen() {
-            Log.d("test", "unbindPen");
-            mService.close();
+        public String getPenStatus(String mac) {
+            Log.d("test", "getPenStatus mac = " + mac);
+            return mStatus + "";
         }
 
         @JavascriptInterface
-        public void getOffline(String mac, String page) {
-            Log.d("test", "getOffline , mac = " + mac + " , page = " + page);
-            mAction = 3;
+        public void connectPen(String mac) {
+            Log.d("test", "connectPen mac = " + mac);
             mMac = mac;
-            mPage = page;
+            mService.connect(mac, null);
+        }
+
+        @JavascriptInterface
+        public void disconnectPen(String mac) {
+            Log.d("test", "disconnectPen mac = " + mac);
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        sleep(2000);
+                        toast("请长按蓝牙笔上的开关");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+            //mService.close();
+            //试试disconnect()
+        }
+
+        @JavascriptInterface
+        public void unbindPen(String mac) {
+            Log.d("test", "unbindPen mac = " + mac);
+            //mService.close();
+            //试试disconnect()
+        }
+
+        @JavascriptInterface
+        public void prepareOffline(String mac, String page) {
+            Log.d("test", "prepareOffline , mac = " + mac + " , page = " + page);
+            mMac = mac;
+            mPage = page;//现在用不到。
             PenCommAgent bleManager = PenCommAgent.GetInstance(getApplication());
             if (bleManager != null && bleManager.isConnect()) {
                 bleManager.ReqOfflineDataTransfer(true);
             } else {
+                mAction = 3;
                 mService.connect(mac, null);
             }
+        }
+
+        @JavascriptInterface
+        public void getOffline(String mac, final String page) {
+            Log.d("test", "getOffline , mac = " + mac + " , page = " + page);
+            String pages[] = page.replace("[", "").replace("]", "").split(",");
+            String ret = "";
+            for (String p : pages) {
+                ret += drawOffline(p) + "_";
+            }
+            ret = ret.substring(0, ret.length() - 1);
+            final String finalRet = ret;
+            Log.d("test", "finalRet = " + finalRet);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    wv.loadUrl("javascript:getOfflineCallback('" + finalRet + "')");
+                }
+            });
+        }
+
+        private String drawOffline(String p) {
+            ArrayList<Dots> dots = new com.sonix.util.MyDBHelper(getApplicationContext()).getDotsByPageID(p);
+            int size = dots.size();
+            Log.d("test", "drawOffline page = " + p + " size = " + size);
+            if (size < 10) {
+                Log.d("test", "page = " + p + " , param = [[41.47,152.64,41.51,152.74,41.48,152.64]]");
+                return "[[0,0,50,50,100,100,60,40]]";
+            }
+            for (int i = 0; i < size; i++) {
+                Dots d = dots.get(i);
+                //规则1：如果第一个点不是0，强制为0
+                if (i == 0) {
+                    d.ntype = 0;
+                    continue;
+                }
+                //规则2：如果0前面不是2，强制为2
+                if (d.ntype == 0) {
+                    Dots prevDot = dots.get(i - 1);
+                    prevDot.ntype = 2;
+                }
+                //规则3：2的后面一定是0
+                if (i != size - 1 && d.ntype == 2) {
+                    Dots nextDot = dots.get(i + 1);
+                    nextDot.ntype = 0;
+                }
+                //规则4:如果最后一个不是2，强制为2
+                if (i == size - 1) {
+                    d.ntype = 2;
+                }
+            }
+            //规则5 如果倒数第2个是2，把最后一个删掉
+            Dots temp = dots.get(size - 2);
+            if (temp.ntype == 2) {
+                dots.remove(size - 1);
+            }
+            String param = "";
+            for (Dots d : dots) {
+                Log.d("test", "d = " + d.toString());
+                if (d.ntype == 0) {
+                    param += "[" + d.pointX + "," + d.pointY + ",";
+                } else if (d.ntype == 1) {
+                    param += d.pointX + "," + d.pointY + ",";
+                } else {
+                    param += d.pointX + "," + d.pointY + "],";
+                }
+            }
+            param = param.substring(0, param.length() - 1);
+            param = "[" + param + "]";
+            Log.d("test", "page = " + p + " , param = " + param);
+            return param;
         }
 
         @JavascriptInterface
