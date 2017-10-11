@@ -1,6 +1,7 @@
 package cn.kiway.mdm.activity;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +10,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.kiway.mdm.R;
+import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
+import cn.kiway.mdm.mdm.MDMHelper;
 
 public class MainActivity extends BaseActivity {
 
@@ -43,10 +49,6 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    public void clickButton1(View v) {
-
-    }
-
     public void clickButton2(View v) {
         if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
             toast("当前已锁定");
@@ -54,6 +56,28 @@ public class MainActivity extends BaseActivity {
         }
         toast("开始锁定");
         getSharedPreferences("kiway", 0).edit().putBoolean("locked", true).commit();
+
+        //初始化adapter
+        ComponentName mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
+        MDMHelper.getAdapter().init(this, mAdminName);
+        //1.设置默认桌面
+        MDMHelper.getAdapter().setDefaultLauncher("cn.kiway.mdm", "cn.kiway.mdm.activity.MainActivity");
+        //2.关闭settings.慎用！！！
+        //MDMHelper.getAdapter().setSettingsApplicationDisabled(true);
+        //3.设置不可卸载
+        List<String> packages = new ArrayList<>();
+        packages.add("cn.kiway.mdm");
+        MDMHelper.getAdapter().addDisallowedUninstallPackages(packages);
+        MDMHelper.getAdapter().addPersistentApp(packages);
+        //4.禁止下拉状态栏
+        MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(true);
+        //5.禁止USB，慎用！！！
+        MDMHelper.getAdapter().setUSBDataDisabled(true);
+        //6.禁用一些物理键盘
+        MDMHelper.getAdapter().setTaskButtonDisabled(true);
+        MDMHelper.getAdapter().setHomeButtonDisabled(true);
+        //MDMHelper.getAdapter().setVpnDisabled(true); 这个失效。
+
     }
 
     public void clickButton3(View v) {
@@ -95,6 +119,29 @@ public class MainActivity extends BaseActivity {
                 }
                 toast("已经解锁");
                 getSharedPreferences("kiway", 0).edit().putBoolean("locked", false).commit();
+
+
+                //初始化adapter
+                ComponentName mAdminName = new ComponentName(MainActivity.this, SampleDeviceReceiver.class);
+                MDMHelper.getAdapter().init(MainActivity.this, mAdminName);
+                //1.设置默认桌面
+                MDMHelper.getAdapter().clearDefaultLauncher();
+                //2.关闭settings.慎用！！！
+                //MDMHelper.getAdapter().setSettingsApplicationDisabled(true);
+                //3.设置不可卸载
+                List<String> packages = new ArrayList<>();
+                packages.add("cn.kiway.mdm");
+                MDMHelper.getAdapter().addDisallowedUninstallPackages(packages);
+                MDMHelper.getAdapter().addPersistentApp(packages);
+                //4.禁止下拉状态栏
+                MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(false);
+                //5.禁止USB，慎用！！！
+                MDMHelper.getAdapter().setUSBDataDisabled(false);
+                //6.禁用一些物理键盘
+                MDMHelper.getAdapter().setTaskButtonDisabled(false);
+                MDMHelper.getAdapter().setHomeButtonDisabled(false);
+                //MDMHelper.getAdapter().setVpnDisabled(true); 这个失效。
+
 
             }
         }).show();
