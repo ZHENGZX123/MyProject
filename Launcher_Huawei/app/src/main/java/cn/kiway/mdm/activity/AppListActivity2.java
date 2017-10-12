@@ -140,7 +140,7 @@ public class AppListActivity2 extends BaseActivity implements CheckPassword.Chec
 
     public void clickButton1(View view) {
         checkPassword.setView(null, 0);
-        checkPassword.setCancelable(false);
+        checkPassword.setCancelable(true);
         checkPassword.setTitle("请输入密码");
         checkPassword.show();
 //        final EditText et = new EditText(this);

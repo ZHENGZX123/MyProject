@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         kiway {
-            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+            storeFile file('F:/android_signature/kiway.key')
             storePassword 'kiway123'
             keyAlias 'kiway'
             keyPassword 'kiway123'
