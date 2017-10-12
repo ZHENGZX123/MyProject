@@ -25,11 +25,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
-import android.webkit.WebChromeClient;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -50,6 +45,10 @@ import com.scanlibrary.ScanConstants;
 import com.sonix.oid.Dots;
 import com.sonix.oidbluetooth.BluetoothLEService;
 import com.sonix.oidbluetooth.SelectDeviceActivity;
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
+import com.tencent.smtt.sdk.WebSettings;
+import com.tencent.smtt.sdk.WebView;
+import com.tencent.smtt.sdk.WebViewClient;
 import com.tqltech.tqlpencomm.Dot;
 import com.tqltech.tqlpencomm.PenCommAgent;
 
@@ -89,6 +88,7 @@ import cn.kiway.homework.util.NetworkUtil;
 import cn.kiway.homework.util.ResourceUtil;
 import cn.kiway.homework.util.UploadUtil;
 import cn.kiway.homework.util.Utils;
+import cn.kiway.homework.view.X5WebView;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static android.content.ContentValues.TAG;
@@ -99,9 +99,9 @@ import static cn.kiway.homework.WXApplication.zhengshiUrl;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.4.6";
+    private static final String currentPackageVersion = "0.4.7";
 
-    private WebView wv;
+    private X5WebView wv;
     private LinearLayout layout_welcome;
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -140,7 +140,7 @@ public class MainActivity extends BaseActivity {
 
     private void initView() {
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
-        wv = (WebView) findViewById(R.id.wv);
+        wv = (X5WebView) findViewById(R.id.wv);
         kill = (Button) findViewById(R.id.kill);
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
     }
@@ -237,6 +237,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+                Log.d("test", "onPageFinished url = " + url);
             }
 
             @Override
@@ -248,7 +249,6 @@ public class MainActivity extends BaseActivity {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
                 Log.d("test", "shouldInterceptRequest url = " + url);
-                //只有http图片才缓存
                 if ((url.startsWith("http") || url.startsWith("https"))
                         && (url.endsWith("jpg") || url.endsWith("JPG") || url.endsWith("jpeg") || url.endsWith("JPEG") || url.endsWith("png") || url.endsWith("PNG"))) {
                     InputStream is = getStreamByUrl(url);
@@ -258,16 +258,16 @@ public class MainActivity extends BaseActivity {
                     return new WebResourceResponse(getMimeType(url), "utf-8", is);
                 }
                 //des解密用
-                //else if (url.endsWith("js") || url.endsWith("css") || url.endsWith("html")) {
-                //InputStream is = getStreamByUrl2(url.replace("file://", ""));
-                // return new WebResourceResponse(getMimeType(url), "utf-8", is);
-                //}
+//                else if (url.endsWith("js") || url.endsWith("css") || url.endsWith("html")) {
+//                    InputStream is = getStreamByUrl2(url.replace("file://", ""));
+//                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
+//                }
                 return super.shouldInterceptRequest(view, url);
             }
         });
 
         wv.setVerticalScrollBarEnabled(false);
-        wv.setWebChromeClient(new WebChromeClient());
+        wv.setWebChromeClient(new com.tencent.smtt.sdk.WebChromeClient());
         wv.addJavascriptInterface(new JsAndroidInterface(), "wx");
     }
 
