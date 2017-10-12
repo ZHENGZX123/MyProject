@@ -29,6 +29,10 @@
             android:name=".activity.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.ChangePassWordActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name="cn.kiway.mdm.activity.EulaActivity"

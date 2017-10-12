@@ -1,8 +1,6 @@
 package cn.kiway.mdm.activity;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -14,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,32 +20,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.mdm.R;
+import cn.kiway.mdm.dialog.CheckPassword;
+import cn.kiway.mdm.dialog.ShowMessageDailog;
+import cn.kiway.mdm.dialog.TimeSelectDailog;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.utils.Constant.otherApps;
 
 
-public class AppListActivity2 extends BaseActivity {
+public class AppListActivity2 extends BaseActivity implements CheckPassword.CheckPasswordCall {
 
     private GridView gv;
     private ArrayList<App> apps = new ArrayList<>();
     private MyAdapter adapter;
+    TimeSelectDailog dailog;
+    ShowMessageDailog showDialog;
+    CheckPassword checkPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_list);
-
         gv = (GridView) findViewById(R.id.gv);
+        dailog = new TimeSelectDailog(this);
+        showDialog = new ShowMessageDailog(this);
+        checkPassword = new CheckPassword(this, this);
         adapter = new MyAdapter();
         gv.setAdapter(adapter);
-
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    clickButton1(view);
+                    return;
+                }
+
                 try {
-                    App a = apps.get(position);
+                    App a = apps.get(position - 1);
                     String packageName = a.packageName;
                     Log.d("test", "packageName = " + packageName);
                     if (TextUtils.isEmpty(packageName)) {
@@ -61,12 +70,33 @@ public class AppListActivity2 extends BaseActivity {
                         toast("该APP未安装");
                         return;
                     }
+                    if (!getSharedPreferences("kiway", 0).getString(packageName, "").equals("")) {//是否设置了使用时间
+                        String time = getSharedPreferences("kiway", 0).getString(packageName, "");
+                        if (!Utils.rangeInDefined(Integer.parseInt(Utils.getDateField(System.currentTimeMillis(), 11))
+                                , Integer.parseInt(time.split("-")[0]), Integer.parseInt(time.split
+                                        ("-")[1]))) {//判断是否处于使用时间
+                            showDialog.setShowMessage(a.name + "的使用时间为" + time + "时，目前该时间段无法使用");
+                            showDialog.show();
+                            return;
+                        }
+                    }
                     Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
                     startActivity(intent);
                 } catch (Exception e) {
                     e.printStackTrace();
                     toast("启动异常");
                 }
+            }
+        });
+        gv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                if (position == 0)
+                    return false;
+                App a = apps.get(position - 1);
+                dailog.setPackageName(a.packageName);
+                dailog.show();
+                return false;
             }
         });
     }
@@ -109,28 +139,38 @@ public class AppListActivity2 extends BaseActivity {
     }
 
     public void clickButton1(View view) {
-        final EditText et = new EditText(this);
-        et.setText("123456");
-        et.setSingleLine();
-        new AlertDialog.Builder(this).setTitle("请输入密码").setIcon(
-                android.R.drawable.ic_dialog_info).setView(et
-        ).setPositiveButton("确认", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String input = et.getText().toString();
-                if (input.equals("")) {
-                    toast("密码不能为空");
-                    return;
-                }
-                String password = getSharedPreferences("kiway", 0).getString("password", "");
-                if (!input.equals(password)) {
-                    toast("密码错误");
-                    return;
-                }
+        checkPassword.setView(null, 0);
+        checkPassword.setCancelable(false);
+        checkPassword.setTitle("请输入密码");
+        checkPassword.show();
+//        final EditText et = new EditText(this);
+//        et.setText("123456");
+//        et.setSingleLine();
+//        new AlertDialog.Builder(this).setTitle("请输入密码").setIcon(
+//                android.R.drawable.ic_dialog_info).setView(et
+//        ).setPositiveButton("确认", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                String input = et.getText().toString();
+//                if (input.equals("")) {
+//                    toast("密码不能为空");
+//                    return;
+//                }
+//                String password = getSharedPreferences("kiway", 0).getString("password", "");
+//                if (!input.equals(password)) {
+//                    toast("密码错误");
+//                    return;
+//                }
+//                startActivity(new Intent(AppListActivity2.this, AppListActivity3.class));
+//            }
+//        }).show();
+    }
 
-                startActivity(new Intent(AppListActivity2.this, AppListActivity3.class));
-            }
-        }).show();
+    @Override
+    public void success(View vx, int position) throws Exception {
+        if (position == 0) {
+            startActivity(new Intent(AppListActivity2.this, AppListActivity3.class));
+        }
     }
 
     private class MyAdapter extends BaseAdapter {
@@ -157,10 +197,14 @@ public class AppListActivity2 extends BaseActivity {
                 holder = (ViewHolder) rowView.getTag();
             }
 
-            App app = apps.get(position);
-            holder.name.setText(app.name);
-            holder.iv.setImageDrawable(app.icon);
-
+            if (position == 0) {
+                holder.name.setText("添加应用");
+                holder.iv.setImageDrawable(getResources().getDrawable(R.drawable.ic_add));
+            } else {
+                App app = apps.get(position - 1);
+                holder.name.setText(app.name);
+                holder.iv.setImageDrawable(app.icon);
+            }
             return rowView;
         }
 
@@ -171,7 +215,7 @@ public class AppListActivity2 extends BaseActivity {
 
         @Override
         public int getCount() {
-            return apps.size();
+            return apps.size() + 1;
         }
 
         @Override
