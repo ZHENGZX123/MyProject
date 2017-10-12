@@ -17,10 +17,8 @@ android {
         minSdkVersion 18
         targetSdkVersion 20
         versionCode 1
-        versionName "0.2.4"
-        ndk {
-            abiFilters "armeabi", "armeabi-v7a" , "armeabi-v8a"
-        }
+        versionName "0.2.5"
+        ndk {abiFilters "armeabi", "armeabi-v7a" , "armeabi-v8a", "x86", "mips"}
     }
     buildTypes {
         release {
@@ -59,4 +57,5 @@ dependencies {
     compile files('libs/jpush-android-3.0.8.jar')
     compile 'org.xutils:xutils:3.5.0'
     compile project(':tqlPen')
+    compile files('libs/tbs_sdk_thirdapp_v3.1.0.1034_43100_sharewithdownload_obfs_20170301_182143.jar')
 }
