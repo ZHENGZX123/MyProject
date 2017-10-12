@@ -8,6 +8,7 @@ import com.huawei.android.app.admin.DeviceApplicationManager;
 import com.huawei.android.app.admin.DeviceControlManager;
 import com.huawei.android.app.admin.DevicePackageManager;
 import com.huawei.android.app.admin.DeviceRestrictionManager;
+import com.huawei.android.app.admin.DeviceSettingsManager;
 import com.huawei.android.app.admin.DeviceVpnManager;
 
 import java.util.List;
@@ -148,6 +149,16 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     public void clearDefaultLauncher() {
         try {
             new DeviceControlManager().clearDefaultLauncher(mAdminName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void setTimeAndDateSetDisabled(boolean b) {
+        try {
+            new DeviceSettingsManager().setTimeAndDateSetDisabled(mAdminName, b);
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();

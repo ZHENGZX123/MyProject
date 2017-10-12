@@ -42,4 +42,6 @@ public interface IMDMAdapter {
     void addDisallowedUninstallPackages(List<String> packageNames);//慎用
 
     void clearDefaultLauncher();
+
+    void setTimeAndDateSetDisabled(boolean b);
 }
