@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/iv"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@mipmap/ic_launcher" />
 
     <TextView
@@ -16,6 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:maxLines="1"
         android:text="王者农药" />
 
 </LinearLayout>

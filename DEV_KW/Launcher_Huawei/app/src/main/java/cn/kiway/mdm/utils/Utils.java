@@ -19,9 +19,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 
@@ -296,5 +299,74 @@ public class Utils {
             }
         }
         return true;
+    }
+
+    public static boolean rangeInDefined(int current, int min, int max)
+    {
+        return Math.max(min, current) == Math.min(current, max);
+    }
+
+    public static String getDateField(long time, int filed) {
+        String s = null;
+        Date date = new Date(time);
+        SimpleDateFormat sdf;
+        try {
+            switch (filed) {
+                case 0:
+                    sdf = new SimpleDateFormat("yyyy", Locale.getDefault());
+                    s = sdf.format(date);
+                    break;
+                case 1:
+                    sdf = new SimpleDateFormat("MM", Locale.getDefault());
+                    s = sdf.format(date);
+                    break;
+                case 2:
+                    sdf = new SimpleDateFormat("dd", Locale.getDefault());
+                    s = sdf.format(date);
+                    break;
+                case 3:
+                    sdf = new SimpleDateFormat("MM.yyyy", Locale.getDefault());
+                    s = sdf.format(date);
+                    break;
+                case 4:
+                    sdf = new SimpleDateFormat("dd-MM HH:mm", Locale.getDefault());
+                    s = sdf.format(date);
+                    break;
+                case 5:
+                    sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                    s = sdf.format(date);
+                    break;
+                case 6:
+                    sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    s = sdf.format(date);
+                    break;
+                case 7:
+                    sdf = new SimpleDateFormat(" HH:mm MM-dd", Locale.getDefault());
+                    s = sdf.format(date);
+                    break;
+                case 8:
+                    sdf = new SimpleDateFormat("MM-dd HH:mm", Locale.getDefault());
+                    s = sdf.format(date);
+                    break;
+                case 9:
+                    sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
+                            Locale.getDefault());
+                    s = sdf.format(date);
+                    break;
+                case 10:
+                    sdf = new SimpleDateFormat("yyyy年-MM月-dd日 HH:mm:ss",
+                            Locale.getDefault());
+                    s = sdf.format(date);
+                    break;
+                case 11:
+                    sdf = new SimpleDateFormat("HH", Locale.getDefault());
+                    s = sdf.format(date);
+                    break;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return s;
     }
 }
