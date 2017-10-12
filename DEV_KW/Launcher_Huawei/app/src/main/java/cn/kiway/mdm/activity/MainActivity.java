@@ -168,15 +168,19 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
 
     public void SMS(View view) {
-//        Intent intent = new Intent(Intent.ACTION_MAIN);
-//        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        try {
+            Intent intent = new Intent(Intent.ACTION_MAIN);//短信列表界面
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.setType("vnd.android-dir/mms-sms");
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        Intent intent = new Intent(Intent.ACTION_VIEW);//发送短信的界面
+//        intent.putExtra("address", "");
+//        intent.putExtra("sms_body", "");
 //        intent.setType("vnd.android-dir/mms-sms");
 //        startActivity(intent);
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.putExtra("address", "");
-        intent.putExtra("sms_body", "");
-        intent.setType("vnd.android-dir/mms-sms");
-        startActivity(intent);
     }
 
     public void ChangePassWord(View view) {
@@ -249,7 +253,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             //MDMHelper.getAdapter().setVpnDisabled(true); 这个失效。
             //7.禁止修改时间
             MDMHelper.getAdapter().setTimeAndDateSetDisabled(true);
-        }else if (position==1){
+        } else if (position == 1) {
             startActivity(new Intent(MainActivity.this, ChangePassWordActivity.class));
         }
     }
