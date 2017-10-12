@@ -104,7 +104,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     public void clickButton5(View v) {
         dialog.setView(null, 0);
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
         dialog.setTitle("请输入密码");
         dialog.show();
 //        //弹出密码框，密码正确就解锁
@@ -197,7 +197,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 //            }
 //        }).show();
         dialog.setView(null, 1);
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
         dialog.setTitle("请输入密码");
         dialog.show();
     }
