@@ -51,6 +51,7 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
         editText = (EditText) findViewById(R.id.password);
         editText.setText("123456");
         findViewById(R.id.ok).setOnClickListener(this);
+        setOnShowListener(this);
     }
 
     protected void fullWindowCenter() {
@@ -84,6 +85,7 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
     }
 
     @Override
