@@ -165,8 +165,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         intent.setData(Contacts.People.CONTENT_URI);
         startActivity(intent);
     }
-                //7.禁止修改时间
-                MDMHelper.getAdapter().setTimeAndDateSetDisabled(true);
+
 
     public void SMS(View view) {
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -243,6 +242,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             MDMHelper.getAdapter().setTaskButtonDisabled(false);
             MDMHelper.getAdapter().setHomeButtonDisabled(false);
             //MDMHelper.getAdapter().setVpnDisabled(true); 这个失效。
+            //7.禁止修改时间
+            MDMHelper.getAdapter().setTimeAndDateSetDisabled(true);
         }else if (position==1){
             startActivity(new Intent(MainActivity.this, ChangePassWordActivity.class));
         }
