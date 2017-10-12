@@ -118,10 +118,8 @@ public class AppListActivity extends BaseActivity {
             if (rowView == null) {
                 rowView = inflater.inflate(R.layout.item_grid_app, null);
                 holder = new ViewHolder();
-
                 holder.iv = (ImageView) rowView.findViewById(R.id.iv);
                 holder.name = (TextView) rowView.findViewById(R.id.name);
-
                 rowView.setTag(holder);
             } else {
                 holder = (ViewHolder) rowView.getTag();
@@ -134,7 +132,6 @@ public class AppListActivity extends BaseActivity {
             } else {
                 holder.iv.setImageDrawable(app.icon);
             }
-
             return rowView;
         }
 

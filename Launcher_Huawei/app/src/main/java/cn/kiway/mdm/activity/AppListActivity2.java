@@ -188,10 +188,8 @@ public class AppListActivity2 extends BaseActivity implements CheckPassword.Chec
             if (rowView == null) {
                 rowView = inflater.inflate(R.layout.item_grid_app, null);
                 holder = new ViewHolder();
-
                 holder.iv = (ImageView) rowView.findViewById(R.id.iv);
                 holder.name = (TextView) rowView.findViewById(R.id.name);
-
                 rowView.setTag(holder);
             } else {
                 holder = (ViewHolder) rowView.getTag();
