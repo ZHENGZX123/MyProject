@@ -168,8 +168,13 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
 
     public void SMS(View view) {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
+//        Intent intent = new Intent(Intent.ACTION_MAIN);
+//        intent.addCategory(Intent.CATEGORY_DEFAULT);
+//        intent.setType("vnd.android-dir/mms-sms");
+//        startActivity(intent);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.putExtra("address", "");
+        intent.putExtra("sms_body", "");
         intent.setType("vnd.android-dir/mms-sms");
         startActivity(intent);
     }
