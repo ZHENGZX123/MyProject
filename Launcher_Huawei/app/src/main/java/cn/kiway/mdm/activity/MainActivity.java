@@ -77,7 +77,8 @@ public class MainActivity extends BaseActivity {
         MDMHelper.getAdapter().setTaskButtonDisabled(true);
         MDMHelper.getAdapter().setHomeButtonDisabled(true);
         //MDMHelper.getAdapter().setVpnDisabled(true); 这个失效。
-
+        //7.禁止修改时间
+        MDMHelper.getAdapter().setTimeAndDateSetDisabled(true);
     }
 
     public void clickButton3(View v) {
@@ -141,6 +142,8 @@ public class MainActivity extends BaseActivity {
                 MDMHelper.getAdapter().setTaskButtonDisabled(false);
                 MDMHelper.getAdapter().setHomeButtonDisabled(false);
                 //MDMHelper.getAdapter().setVpnDisabled(true); 这个失效。
+                //7.禁止修改时间
+                MDMHelper.getAdapter().setTimeAndDateSetDisabled(true);
 
 
             }
