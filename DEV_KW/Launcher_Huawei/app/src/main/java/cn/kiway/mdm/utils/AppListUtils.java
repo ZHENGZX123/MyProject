@@ -112,8 +112,6 @@ public class AppListUtils {
         a14.icon = Utils.getIconByPackageName(context.getPackageManager(), a14);
         apps.add(a14);
 
-
-
         App a16 = new App();
         a16.name ="作业帮";
         a16.packageName = "com.baidu.homework";
