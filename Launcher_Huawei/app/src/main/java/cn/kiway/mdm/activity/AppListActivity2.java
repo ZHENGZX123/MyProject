@@ -80,10 +80,7 @@ public class AppListActivity2 extends BaseActivity implements CheckPassword.Chec
                     Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
                     startActivity(intent);
                     finish();
-                } catch (
-                        Exception e)
-
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                     toast("启动异常");
                 }
