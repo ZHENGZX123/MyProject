@@ -11,4 +11,5 @@
     <color name="grey">#909AAB</color>
     <color name="blue">#006EBF</color>
     <color name="second_grey">#902C14</color>
+    <color name="bg_dialog">#00000000</color>
 </resources>

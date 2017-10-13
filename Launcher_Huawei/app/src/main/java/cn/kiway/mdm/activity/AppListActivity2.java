@@ -24,6 +24,7 @@ import cn.kiway.mdm.dialog.CheckPassword;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.dialog.TimeSelectDailog;
 import cn.kiway.mdm.entity.App;
+import cn.kiway.mdm.utils.AppListUtils;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.utils.Constant.otherApps;
@@ -70,25 +71,27 @@ public class AppListActivity2 extends BaseActivity implements CheckPassword.Chec
                         toast("该APP未安装");
                         return;
                     }
-                    if (!getSharedPreferences("kiway", 0).getString(packageName, "").equals("")) {//是否设置了使用时间
-                        String time = getSharedPreferences("kiway", 0).getString(packageName, "");
-                        if (!Utils.rangeInDefined(Integer.parseInt(Utils.getDateField(System.currentTimeMillis(), 11))
-                                , Integer.parseInt(time.split("-")[0]), Integer.parseInt(time.split
-                                        ("-")[1]))) {//判断是否处于使用时间
-                            showDialog.setShowMessage(a.name + "的使用时间为" + time + "时，目前该时间段无法使用");
-                            showDialog.show();
-                            return;
-                        }
+                    if (AppListUtils.isCheckAppTime(AppListActivity2.this, packageName)) {//判断是否处于使用时间
+                        showDialog.setShowMessage(a.name + "的使用时间为" + getSharedPreferences("kiway", 0).getString
+                                (packageName, "") + "时，目前该时间段无法使用");
+                        showDialog.show();
+                        return;
                     }
                     Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
                     startActivity(intent);
-                } catch (Exception e) {
+                    finish();
+                } catch (
+                        Exception e)
+
+                {
                     e.printStackTrace();
                     toast("启动异常");
                 }
             }
         });
-        gv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        gv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+
+        {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
                 if (position == 0)
@@ -225,6 +228,7 @@ public class AppListActivity2 extends BaseActivity implements CheckPassword.Chec
         public long getItemId(int arg0) {
             return arg0;
         }
+
     }
 
     public boolean isAppInstalled(Context context, String packageName) {

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="#FFFFFF"
+              android:background="@color/white"
               android:orientation="vertical">
 
     <RelativeLayout
@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="更改密码"
+            android:text="锁定"
             android:textColor="@color/white"
             android:textSize="16sp"/>
 
@@ -28,51 +28,55 @@
             android:src="@drawable/ic_navigate_before"/>
     </RelativeLayout>
 
-    <EditText
-        android:id="@+id/new_password"
+    <TextView
+        android:id="@+id/lock"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@null"
-        android:hint="请输入新密码"
-        android:inputType="textPassword"
-        android:maxLength="11"
+        android:layout_height="wrap_content"
+        android:drawableRight="@drawable/ic_chevron_right"
+        android:gravity="center_vertical"
+        android:onClick="Lock"
         android:padding="10dp"
-        android:singleLine="true"
-        android:textColor="#333333"
-        android:textColorHint="#666666"
-        android:textSize="14sp"/>
+        android:text="锁定"
+        android:textSize="16sp"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
         android:background="#e5e5e5"/>
 
-    <EditText
-        android:id="@+id/new_password1"
+    <TextView
+        android:id="@+id/password"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@null"
-        android:hint="请输入新密码"
-        android:inputType="textPassword"
-        android:maxLength="11"
+        android:layout_height="wrap_content"
+        android:drawableRight="@drawable/ic_chevron_right"
+        android:gravity="center_vertical"
+        android:onClick="Password"
         android:padding="10dp"
-        android:singleLine="true"
-        android:textColor="#333333"
-        android:textColorHint="#666666"
-        android:textSize="14sp"/>
+        android:text="修改密码"
+        android:textSize="16sp"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
         android:background="#e5e5e5"/>
 
-    <Button
-        android:id="@+id/chang"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_margin="20dp"
-        android:background="@drawable/blue_val"
-        android:onClick="Ok"
-        android:text="确定"
-        android:textColor="@color/blue"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/moshi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:onClick="Password"
+        android:padding="10dp"
+        android:text="修改密码"
+        android:textColor="#666666"
+        android:textSize="12sp"/>
 </LinearLayout>

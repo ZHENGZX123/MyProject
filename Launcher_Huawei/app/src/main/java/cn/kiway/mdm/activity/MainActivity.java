@@ -1,24 +1,44 @@
 package cn.kiway.mdm.activity;
 
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Contacts;
 import android.provider.MediaStore;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.mdm.R;
+import cn.kiway.mdm.View.viewPager.StereoPagerTransformer;
+import cn.kiway.mdm.adapter.AppListAdapter;
+import cn.kiway.mdm.adapter.MyViewPagerAdapter;
 import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
 import cn.kiway.mdm.dialog.CheckPassword;
+import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.mdm.MDMHelper;
+import cn.kiway.mdm.utils.AppListUtils;
+
+import static cn.kiway.mdm.utils.AppListUtils.isAppInstalled;
+import static cn.kiway.mdm.utils.Constant.kiwayQiTa;
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall {
     CheckPassword dialog;
+    private ViewPager viewPager;
+    private LinearLayout group;//圆点指示器
+    private ImageView[] ivPoints;//小圆点图片的集合
+    private int totalPage; //总的页数
+    private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +46,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         setContentView(R.layout.activity_main);
         Log.d("test", "Main onCreate");
         dialog = new CheckPassword(this, this);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        group = (LinearLayout) findViewById(R.id.points);
         //1.设置初始密码
         String password = getSharedPreferences("kiway", 0).getString("password", "");
         Log.d("test", "pasword = " + password);
@@ -51,6 +73,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 //                }
 //            }).setCancelable(false).show();
         }
+        initData();
     }
 
     public void clickButton2(View v) {
@@ -254,7 +277,82 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             //7.禁止修改时间
             MDMHelper.getAdapter().setTimeAndDateSetDisabled(true);
         } else if (position == 1) {
-            startActivity(new Intent(MainActivity.this, ChangePassWordActivity.class));
+            startActivity(new Intent(MainActivity.this, LockActivity.class));
         }
+    }
+
+
+    //设置页面数据
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+    private void initData() {
+        totalPage = (int) Math.ceil(AppListUtils.getAppListData(this).size() * 1.0 / 20);
+        viewPagerList = new ArrayList<View>();
+        for (int i = 0; i < totalPage; i++) {
+            //每个页面都是inflate出一个新实例
+            final int page = i;
+            final GridView gridView = (GridView) View.inflate(this, R.layout.gird_view, null);
+            gridView.setClipToPadding(false);
+            gridView.setSelected(true);
+            gridView.setSelector(android.R.color.transparent);
+            gridView.setAdapter(new AppListAdapter(this, AppListUtils.getAppListData(this), i, 20));//添加item点击监听
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> arg0, View arg1,
+                                        int position, long arg3) {
+                    //跳转到其他APK
+                    try {
+                        final int pos = position + page * 20;//假设mPageSiez
+                        App a = AppListUtils.getAppListData(MainActivity.this).get(pos);
+                        String packageName = a.packageName;
+                        if (packageName.equals(kiwayQiTa)) {//如果点击的是其他应用
+                            clickButton4(null);
+                            return;
+                        }
+                        if (TextUtils.isEmpty(packageName)) {
+                            toast("包名错误");
+                            return;
+                        }
+                        //1.判断app是否安装
+                        boolean installed = isAppInstalled(getApplicationContext(), packageName);
+                        if (!installed) {
+                            toast("该APP未安装");
+                            return;
+                        }
+                        Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        toast("启动异常");
+                    }
+                }
+            });//每一个GridView作为一个View对象添加到ViewPager集合中
+            viewPagerList.add(gridView);
+        }
+        viewPager.setPageTransformer(false,new StereoPagerTransformer());
+        viewPager.setAdapter(new MyViewPagerAdapter(viewPagerList));//设置ViewPager适配器
+        group.removeAllViews();
+        ivPoints = new ImageView[totalPage];//添加小圆点
+        for (int i = 0; i < totalPage; i++) {
+            ivPoints[i] = new ImageView(this);
+            if (i == 0) {
+                ivPoints[i].setImageResource(R.drawable.ic_lens);
+            } else {
+                ivPoints[i].setImageResource(R.drawable.ic_panorama_fish_eye);
+            }
+            ivPoints[i].setPadding(8, 8, 8, 8);
+            group.addView(ivPoints[i]);
+        }
+        //设置ViewPager的滑动监听，主要是设置点点的背景颜色的改变
+        viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                for (int i = 0; i < totalPage; i++) {
+                    if (i == position) {
+                        ivPoints[i].setImageResource(R.drawable.ic_lens);
+                    } else {
+                        ivPoints[i].setImageResource(R.drawable.ic_panorama_fish_eye);
+                    }
+                }
+            }
+        });
     }
 }
