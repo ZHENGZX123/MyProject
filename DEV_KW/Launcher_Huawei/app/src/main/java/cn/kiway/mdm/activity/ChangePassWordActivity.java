@@ -35,4 +35,8 @@ public class ChangePassWordActivity extends BaseActivity {
         Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
         finish();
     }
+
+    public void Before(View view) {
+        finish();
+    }
 }

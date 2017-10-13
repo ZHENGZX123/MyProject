@@ -12,9 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="7dp"
-        android:text="]对不起"
-        android:textSize="16sp"/>
+        android:padding="10dp"
+        android:textColor="#ea3d21"
+        android:textSize="14sp"/>
 
     <View
         android:layout_width="match_parent"

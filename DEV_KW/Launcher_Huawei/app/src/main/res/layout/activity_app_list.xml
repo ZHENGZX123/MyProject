@@ -2,9 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@drawable/aa"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center"
+              android:background="@drawable/white_val"
               android:orientation="vertical"
+              android:layout_margin="30dp"
               tools:context="cn.kiway.mdm.activity.AppListActivity">
 
     <Button
@@ -15,15 +17,28 @@
         android:text="选择应用"
         android:visibility="gone"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="15dp"
+        android:text="其他应用"
+        android:textColor="#333333"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="#000000"/>
 
     <GridView
         android:id="@+id/gv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="220dp"
         android:layout_margin="10dp"
         android:horizontalSpacing="10dp"
-        android:numColumns="4"
-        android:scrollbars="none"
+        android:numColumns="3"
         android:verticalSpacing="10dp"></GridView>
 
 
