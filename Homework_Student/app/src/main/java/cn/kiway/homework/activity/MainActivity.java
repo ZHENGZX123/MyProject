@@ -338,6 +338,8 @@ public class MainActivity extends BaseActivity {
                             if (isSuccess) {
                                 pd = new ProgressDialog(MainActivity.this);
                                 pd.setMessage("正在获取离线数据。。。");
+                                pd.setCancelable(false);
+                                pd.setCanceledOnTouchOutside(false);
                                 pd.show();
                             } else {
                                 //没有离线数据，直接返回给前端
@@ -406,6 +408,8 @@ public class MainActivity extends BaseActivity {
                 @Override
                 public void onConnected(final String address, final String penName) {
                     Log.d("test", "onConnected isCalled");
+                    PenCommAgent bleManager = PenCommAgent.GetInstance(getApplication());
+                    bleManager.setgXYDataFormat(1);
                     mStatus = 1;
                     runOnUiThread(new Runnable() {
                         @Override
@@ -427,7 +431,7 @@ public class MainActivity extends BaseActivity {
                                     @Override
                                     public void run() {
                                         try {
-                                            sleep(1500);
+                                            sleep(2000);
                                         } catch (InterruptedException e) {
                                             e.printStackTrace();
                                         }
@@ -629,8 +633,8 @@ public class MainActivity extends BaseActivity {
                     Dots nextDot = dots.get(i + 1);
                     nextDot.ntype = 0;
                 }
-                //规则4:如果最后一个不是2，强制为2
-                if (i == size - 1) {
+
+                if (i == size - 1) {    //规则4:如果最后一个不是2，强制为2
                     d.ntype = 2;
                 }
             }
