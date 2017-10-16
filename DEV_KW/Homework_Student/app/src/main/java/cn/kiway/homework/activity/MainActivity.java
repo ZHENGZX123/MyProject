@@ -613,8 +613,8 @@ public class MainActivity extends BaseActivity {
             int size = dots.size();
             Log.d("test", "drawOffline page = " + p + " size = " + size);
             if (size < 10) {
-                Log.d("test", "page = " + p + " , param = [[41.47,152.64,41.51,152.74,41.48,152.64]]");
-                return "[[0,0,50,50,100,100,60,40]]";
+                Log.d("test", "page = " + p + " , param = [[0,0,0,0,0,0]]");
+                return "[[0,0,0,0,0,0]]";
             }
             for (int i = 0; i < size; i++) {
                 Dots d = dots.get(i);
@@ -645,7 +645,7 @@ public class MainActivity extends BaseActivity {
             }
             String param = "";
             for (Dots d : dots) {
-                Log.d("test", "d = " + d.toString());
+//                Log.d("test", "d = " + d.toString());
                 if (d.ntype == 0) {
                     param += "[" + d.pointX + "," + d.pointY + ",";
                 } else if (d.ntype == 1) {
