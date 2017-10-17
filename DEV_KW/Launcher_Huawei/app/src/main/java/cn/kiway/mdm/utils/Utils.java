@@ -306,8 +306,7 @@ public class Utils {
         return true;
     }
 
-    public static boolean rangeInDefined(int current, int min, int max)
-    {
+    public static boolean rangeInDefined(int current, int min, int max) {
         return Math.max(min, current) == Math.min(current, max);
     }
 
@@ -376,7 +375,10 @@ public class Utils {
     }
 
 
-    public static void connectSSID(Context c, String SSID, String password) {
+    public static void connectSSID(Context c, String receive) {
+        String SSID = "";
+        String password = "";
+
         if (TextUtils.isEmpty(SSID)) {
             return;
         }
@@ -437,5 +439,27 @@ public class Utils {
             admin.addNetwork(admin.CreateWifiInfo(SSID,
                     pwd, type));
         }
+    }
+
+    public static void installAPP(Context context, String receive) {
+        //1.解析receive
+        //2.查看对应包名，手机是否安装有该apk
+        //3.如果没有，下载
+        //4.静默安装
+    }
+
+    public static void uninstallAPP(Context context, String receive) {
+        //1.解析receive
+        //2.查看对应包名，手机是否安装有该apk
+        //3.如果有，静默卸载
+    }
+
+    public static void openAPP(Context context, String receive) {
+        //1.解析receive
+        //2.查看对应包名，直接打开
+    }
+
+    public static void register(Context context, String deviceId, String token) {
+
     }
 }
