@@ -1,6 +1,7 @@
 package cn.kiway.mdm.activity;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import cn.kiway.mdm.adapter.MyViewPagerAdapter;
 import cn.kiway.mdm.dialog.CheckPassword;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.utils.AppListUtils;
+import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.utils.AppListUtils.isAppInstalled;
 import static cn.kiway.mdm.utils.Constant.kiwayQiTa;
@@ -59,6 +61,25 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         huaweiPush();
         //3.上报位置
         uploadStatus();
+        //4.拉取命令
+        getCommand();
+    }
+
+    private void getCommand() {
+        Context context = this;
+        String receive = "";
+        //1.wifi电子围栏
+        Utils.connectSSID(context, receive);
+        //2.APP白名单、APP时间分段
+        //AppListUtils
+        //3.网页打开黑名单
+        //MDMHelper.getAdapter().addNetworkAccessBlackList(null);
+        //4.安装app
+        Utils.installAPP(context, receive);
+        //5.卸载app
+        Utils.uninstallAPP(context, receive);
+        //6.打开app
+        Utils.openAPP(context, receive);
     }
 
     private void uploadStatus() {
