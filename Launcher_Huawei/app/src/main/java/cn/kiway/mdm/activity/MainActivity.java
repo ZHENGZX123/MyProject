@@ -1,7 +1,6 @@
 package cn.kiway.mdm.activity;
 
 import android.annotation.TargetApi;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,10 +24,8 @@ import cn.kiway.mdm.R;
 import cn.kiway.mdm.View.viewPager.StereoPagerTransformer;
 import cn.kiway.mdm.adapter.AppListAdapter;
 import cn.kiway.mdm.adapter.MyViewPagerAdapter;
-import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
 import cn.kiway.mdm.dialog.CheckPassword;
 import cn.kiway.mdm.entity.App;
-import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.AppListUtils;
 
 import static cn.kiway.mdm.utils.AppListUtils.isAppInstalled;
@@ -60,6 +57,27 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         initData();
         //2.华为推送
         huaweiPush();
+        //3.上报位置
+        uploadStatus();
+    }
+
+    private void uploadStatus() {
+        new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    //1.上报位置：经纬度
+
+                    //2.使用APP日志
+
+                    try {
+                        sleep(60 * 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
     }
 
     public void huaweiPush() {
@@ -114,33 +132,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     @Override
     public void success(View vx, int position) throws Exception {
-        if (position == 0) {
-            toast("已经解锁");
-            getSharedPreferences("kiway", 0).edit().putBoolean("locked", false).commit();
-
-            //初始化adapter
-            ComponentName mAdminName = new ComponentName(MainActivity.this, SampleDeviceReceiver.class);
-            MDMHelper.getAdapter().init(MainActivity.this, mAdminName);
-            //1.设置默认桌面
-            MDMHelper.getAdapter().clearDefaultLauncher();
-            //2.关闭settings.慎用！！！
-            //MDMHelper.getAdapter().setSettingsApplicationDisabled(true);
-            //3.设置不可卸载
-            List<String> packages = new ArrayList<>();
-            packages.add("cn.kiway.mdm");
-            MDMHelper.getAdapter().addDisallowedUninstallPackages(packages);
-            MDMHelper.getAdapter().addPersistentApp(packages);
-            //4.禁止下拉状态栏
-            MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(false);
-            //5.禁止USB，慎用！！！
-            MDMHelper.getAdapter().setUSBDataDisabled(false);
-            //6.禁用一些物理键盘
-            MDMHelper.getAdapter().setTaskButtonDisabled(false);
-            MDMHelper.getAdapter().setHomeButtonDisabled(false);
-            //MDMHelper.getAdapter().setVpnDisabled(true); 这个失效。
-            //7.禁止修改时间
-            MDMHelper.getAdapter().setTimeAndDateSetDisabled(true);
-        } else if (position == 1) {
+        if (position == 1) {
             startActivity(new Intent(MainActivity.this, LockActivity.class));
         }
     }

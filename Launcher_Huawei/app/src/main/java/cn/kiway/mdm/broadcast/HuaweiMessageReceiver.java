@@ -26,6 +26,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 .getSystemService(Context.TELEPHONY_SERVICE);
         Log.d("huawei", "imei = " + tm.getDeviceId());
 
+        //注册到后台
+        Utils.register(context, tm.getDeviceId(), token);
     }
 
     @Override
@@ -35,12 +37,17 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             Log.d("huawei", "onPushMsg " + receive);
             //解析发送过来的命令，执行对应的操作
             //1.wifi电子围栏
-            Utils.connectSSID(context, "KIWAY2", "KWF58888");
-            //2.APP时间分段
+            Utils.connectSSID(context, receive);
+            //2.APP白名单、APP时间分段
+            //AppListUtils
             //3.网页打开黑名单
-//            MDMHelper.getAdapter().addNetworkAccessBlackList(null);
-
-
+            //MDMHelper.getAdapter().addNetworkAccessBlackList(null);
+            //4.安装app
+            Utils.installAPP(context, receive);
+            //5.卸载app
+            Utils.uninstallAPP(context, receive);
+            //6.打开app
+            Utils.openAPP(context, receive);
         } catch (Exception e) {
             e.printStackTrace();
         }
