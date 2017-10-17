@@ -7,10 +7,7 @@ import android.content.pm.PackageManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.kiway.mdm.R;
 import cn.kiway.mdm.entity.App;
-
-import static cn.kiway.mdm.utils.Constant.kiwayQiTa;
 
 /**
  * Created by Administrator on 2017/10/13.
@@ -113,29 +110,29 @@ public class AppListUtils {
         apps.add(a14);
 
         App a16 = new App();
-        a16.name ="作业帮";
+        a16.name = "作业帮";
         a16.packageName = "com.baidu.homework";
         a16.icon = Utils.getIconByPackageName(context.getPackageManager(), a16);
         apps.add(a16);
 
         App a17 = new App();
-        a17.name ="答题王";
+        a17.name = "答题王";
         a17.packageName = "com.zhtiantian.ChallengerTX";
         a17.icon = Utils.getIconByPackageName(context.getPackageManager(), a17);
         apps.add(a17);
 
         App a18 = new App();
-        a18.name ="疯狂猜成语";
+        a18.name = "疯狂猜成语";
         a18.packageName = "com.kamitu.drawsth.standalone.free.android";
         a18.icon = Utils.getIconByPackageName(context.getPackageManager(), a18);
         apps.add(a18);
 
-        //其他应用的数据，
-        App a100 = new App();
-        a100.name = "其他应用";
-        a100.packageName = kiwayQiTa;
-        a100.icon = context.getResources().getDrawable(R.drawable.ic_more);
-        apps.add(a100);
+        //其他应用的数据。暂时屏蔽，改为由后台管控
+//        App a100 = new App();
+//        a100.name = "其他应用";
+//        a100.packageName = kiwayQiTa;
+//        a100.icon = context.getResources().getDrawable(R.drawable.ic_more);
+//        apps.add(a100);
 
         return apps;
     }
