@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.entity.School;
 
-import static cn.kiway.mdm.R.id.lv;
-
 /**
  * Created by Administrator on 2017/10/17.
  */
@@ -32,7 +30,7 @@ public class SchoolListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schoollist);
 
-        lv1 = (ListView) findViewById(lv);
+        lv1 = (ListView) findViewById(R.id.lv);
         adapter1 = new MyAdapter();
         lv1.setAdapter(adapter1);
 
@@ -49,6 +47,7 @@ public class SchoolListActivity extends BaseActivity {
 
     private void initData() {
         String area = getIntent().getStringExtra("area");
+        //根据area获取学校列表
 
     }
 
@@ -75,9 +74,8 @@ public class SchoolListActivity extends BaseActivity {
             } else {
                 holder = (ViewHolder) rowView.getTag();
             }
-
             final School s = schools.get(position);
-
+            holder.name.setText(s.name);
             return rowView;
         }
 
