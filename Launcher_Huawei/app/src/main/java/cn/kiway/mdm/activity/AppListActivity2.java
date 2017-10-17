@@ -143,27 +143,6 @@ public class AppListActivity2 extends BaseActivity implements CheckPassword.Chec
         checkPassword.setCancelable(true);
         checkPassword.setTitle("请输入密码");
         checkPassword.show();
-//        final EditText et = new EditText(this);
-//        et.setText("123456");
-//        et.setSingleLine();
-//        new AlertDialog.Builder(this).setTitle("请输入密码").setIcon(
-//                android.R.drawable.ic_dialog_info).setView(et
-//        ).setPositiveButton("确认", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                String input = et.getText().toString();
-//                if (input.equals("")) {
-//                    toast("密码不能为空");
-//                    return;
-//                }
-//                String password = getSharedPreferences("kiway", 0).getString("password", "");
-//                if (!input.equals(password)) {
-//                    toast("密码错误");
-//                    return;
-//                }
-//                startActivity(new Intent(AppListActivity2.this, AppListActivity3.class));
-//            }
-//        }).show();
     }
 
     @Override

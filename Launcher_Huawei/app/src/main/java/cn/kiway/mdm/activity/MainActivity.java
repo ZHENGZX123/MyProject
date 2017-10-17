@@ -16,6 +16,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.huawei.android.pushagent.api.PushManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +58,13 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             dialog.show();
         }
         initData();
+        //2.华为推送
+        huaweiPush();
+    }
+
+    public void huaweiPush() {
+        PushManager.requestToken(this);
+        Log.i("huawei", "try to get Token ,current packageName is " + this.getPackageName());
     }
 
     public void Camera(View view) {
