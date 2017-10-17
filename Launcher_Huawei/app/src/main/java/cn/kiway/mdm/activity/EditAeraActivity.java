@@ -152,7 +152,8 @@ public class EditAeraActivity extends BaseActivity implements
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_confirm:
-
+			String aera=mCurrentProviceName + "*" + mCurrentCityName
+					+ "*" + mCurrentDistrictName;
 			break;
 		case R.id.previos:
 			finish();
