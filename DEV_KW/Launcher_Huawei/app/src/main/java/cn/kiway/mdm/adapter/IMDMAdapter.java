@@ -3,6 +3,7 @@ package cn.kiway.mdm.adapter;
 import android.content.ComponentName;
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,4 +45,6 @@ public interface IMDMAdapter {
     void clearDefaultLauncher();
 
     void setTimeAndDateSetDisabled(boolean b);
+
+    void addNetworkAccessBlackList(ArrayList<String> addDomainList);
 }

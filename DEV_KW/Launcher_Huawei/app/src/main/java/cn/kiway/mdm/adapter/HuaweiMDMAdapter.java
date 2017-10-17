@@ -6,11 +6,13 @@ import android.widget.Toast;
 
 import com.huawei.android.app.admin.DeviceApplicationManager;
 import com.huawei.android.app.admin.DeviceControlManager;
+import com.huawei.android.app.admin.DeviceNetworkManager;
 import com.huawei.android.app.admin.DevicePackageManager;
 import com.huawei.android.app.admin.DeviceRestrictionManager;
 import com.huawei.android.app.admin.DeviceSettingsManager;
 import com.huawei.android.app.admin.DeviceVpnManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -165,6 +167,15 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
         }
     }
 
+    @Override
+    public void addNetworkAccessBlackList(ArrayList<String> addDomainList) {
+        try {
+            new DeviceNetworkManager().addNetworkAccessBlackList(mAdminName, addDomainList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     public void addPersistentApp(List<String> packageNames) {
