@@ -12,4 +12,6 @@
     <color name="blue">#006EBF</color>
     <color name="second_grey">#902C14</color>
     <color name="bg_dialog">#00000000</color>
+    <color name="province_line_border">#333333</color>
+    <color name="press_color">#ddaaaaaa</color>
 </resources>

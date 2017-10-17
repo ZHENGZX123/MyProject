@@ -93,16 +93,13 @@ public class AppListActivity3 extends BaseActivity {
             if (rowView == null) {
                 rowView = inflater.inflate(R.layout.item_list_app, null);
                 holder = new ViewHolder();
-
                 holder.iv = (ImageView) rowView.findViewById(R.id.iv);
                 holder.name = (TextView) rowView.findViewById(R.id.name);
                 holder.cb = (ImageView) rowView.findViewById(R.id.cb);
-
                 rowView.setTag(holder);
             } else {
                 holder = (ViewHolder) rowView.getTag();
             }
-
             App app = apps.get(position);
             holder.name.setText(app.name);
             if (app.selected) {
@@ -111,7 +108,6 @@ public class AppListActivity3 extends BaseActivity {
                 holder.cb.setVisibility(View.INVISIBLE);
             }
             holder.iv.setImageDrawable(app.icon);
-
             return rowView;
         }
 

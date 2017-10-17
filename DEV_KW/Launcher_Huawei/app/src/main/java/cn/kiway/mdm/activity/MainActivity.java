@@ -154,7 +154,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     @Override
     public void success(View vx, int position) throws Exception {
         if (position == 1) {
-            startActivity(new Intent(MainActivity.this, LockActivity.class));
+            startActivity(new Intent(MainActivity.this, EditAeraActivity.class));
         }
     }
 
