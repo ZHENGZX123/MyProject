@@ -3,8 +3,10 @@ package cn.kiway.mdm.activity;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.provider.Contacts;
 import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
@@ -16,8 +18,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.huawei.android.pushagent.api.PushManager;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +28,7 @@ import cn.kiway.mdm.adapter.MyViewPagerAdapter;
 import cn.kiway.mdm.dialog.CheckPassword;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.utils.AppListUtils;
+import cn.kiway.mdm.utils.LocationUtils;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.utils.AppListUtils.isAppInstalled;
@@ -40,29 +41,49 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private ImageView[] ivPoints;//小圆点图片的集合
     private int totalPage; //总的页数
     private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
+    private boolean stop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("test", "Main onCreate");
-        dialog = new CheckPassword(this, this);
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
-        group = (LinearLayout) findViewById(R.id.points);
+        initView();
         //1.设置初始密码
+        initPassword();
+        //2.初始化界面
+        initData();
+        //4.上报位置
+        uploadStatus();
+        //5.拉取命令
+        getCommand();
+        //6.判断跳到login
+        checkLogin();
+    }
+
+    private void checkLogin() {
+        //只判断第一次
+        boolean login = getSharedPreferences("kiway", 0).getBoolean("login", false);
+        if (login) {
+            return;
+        }
+        startActivity(new Intent(this, LoginActivity.class));
+    }
+
+    private void initPassword() {
         String password = getSharedPreferences("kiway", 0).getString("password", "");
         if (TextUtils.isEmpty(password)) {
             dialog.setTitle("请设置初始密码");
             dialog.setCancelable(false);
             dialog.show();
         }
-        initData();
-        //2.华为推送
-        huaweiPush();
-        //3.上报位置
-        uploadStatus();
-        //4.拉取命令
-        getCommand();
+    }
+
+    private void initView() {
+        stop = false;
+        dialog = new CheckPassword(this, this);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        group = (LinearLayout) findViewById(R.id.points);
     }
 
     private void getCommand() {
@@ -86,24 +107,26 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         new Thread() {
             @Override
             public void run() {
-                while (true) {
+                while (!stop) {
                     //1.上报位置：经纬度
-
-                    //2.使用APP日志
-
+                    Location location = LocationUtils.getInstance(MainActivity.this).showLocation();
+                    if (location != null) {
+                        String address = "纬度：" + location.getLatitude() + "经度：" + location.getLongitude();
+                        Log.d("test", address);
+                    }
+                    //2.上报在线状态：已登录并且屏幕点亮
+                    PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                    boolean isScreenOn = pm.isScreenOn();//如果为true，则表示屏幕“亮”了，否则屏幕“暗”了。
+                    Log.d("test", "isScreenOn = " + isScreenOn);
+                    //3.上报设备日志，异常日志
                     try {
-                        sleep(60 * 1000);
+                        sleep(10 * 60 * 1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
             }
         }.start();
-    }
-
-    public void huaweiPush() {
-        PushManager.requestToken(this);
-        Log.i("huawei", "try to get Token ,current packageName is " + this.getPackageName());
     }
 
     public void Camera(View view) {
@@ -148,6 +171,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stop = true;
         Log.d("test", "Main onDestroy");
     }
 
@@ -240,4 +264,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
         startActivity(new Intent(this, AppListActivity2.class));
     }
+
+
 }
