@@ -69,7 +69,9 @@
         <activity
             android:name=".activity.AppListActivity3"
             android:screenOrientation="portrait"></activity>
-
+        <activity
+            android:name=".activity.EditAeraActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name="cn.kiway.mdm.activity.LicenseActivity"
             android:screenOrientation="portrait"></activity>

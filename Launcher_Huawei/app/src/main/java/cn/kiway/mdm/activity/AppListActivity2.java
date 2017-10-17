@@ -173,7 +173,6 @@ public class AppListActivity2 extends BaseActivity implements CheckPassword.Chec
             } else {
                 holder = (ViewHolder) rowView.getTag();
             }
-
             if (position == 0) {
                 holder.name.setText("添加应用");
                 holder.iv.setImageDrawable(getResources().getDrawable(R.drawable.ic_add));
