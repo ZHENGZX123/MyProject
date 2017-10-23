@@ -95,7 +95,6 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
         }
     }
 
-
     @Override
     public void setSettingsApplicationDisabled(boolean disable) {
         try {
@@ -171,6 +170,86 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     public void addNetworkAccessBlackList(ArrayList<String> addDomainList) {
         try {
             new DeviceNetworkManager().addNetworkAccessBlackList(mAdminName, addDomainList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void setWIFIeditDisabled(boolean b) {
+        try {
+            new DeviceSettingsManager().setWIFIeditDisabled(mAdminName, b);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void installPackage(String path) {
+        try {
+            new DevicePackageManager().installPackage(mAdminName, path);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void uninstallPackage(String s, boolean b) {
+        try {
+            new DevicePackageManager().uninstallPackage(mAdminName, s, b);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void setBluetoothDisabled(boolean b) {
+        try {
+            new DeviceRestrictionManager().setBluetoothDisabled(mAdminName, b);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void setGPSDisabled(boolean b) {
+        try {
+            new DeviceRestrictionManager().setGPSDisabled(mAdminName, b);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void setWifiApDisabled(boolean b) {
+        try {
+            new DeviceRestrictionManager().setWifiApDisabled(mAdminName, b);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void rebootDevice() {
+        try {
+            new DeviceControlManager().rebootDevice(mAdminName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void setScreenCaptureDisabled(boolean disabled) {
+        try {
+            new DeviceRestrictionManager().setScreenCaptureDisabled(mAdminName, disabled);
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();

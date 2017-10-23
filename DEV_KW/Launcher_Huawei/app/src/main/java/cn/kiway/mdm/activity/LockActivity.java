@@ -67,23 +67,24 @@ public class LockActivity extends BaseActivity {
         MDMHelper.getAdapter().init(this, mAdminName);
         //1.设置默认桌面
         MDMHelper.getAdapter().setDefaultLauncher("cn.kiway.mdm", "cn.kiway.mdm.activity.MainActivity");
-        //2.关闭settings.慎用！！！
+        //2.关闭settings.失效
         //MDMHelper.getAdapter().setSettingsApplicationDisabled(true);
         //3.设置不可卸载
         List<String> packages = new ArrayList<>();
         packages.add("cn.kiway.mdm");
         MDMHelper.getAdapter().addDisallowedUninstallPackages(packages);
-        MDMHelper.getAdapter().addPersistentApp(packages);
+        //保持APP持续运行
+        //MDMHelper.getAdapter().addPersistentApp(packages);
         //4.禁止下拉状态栏
         MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(true);
-        //5.禁止USB，慎用！！！
-        MDMHelper.getAdapter().setUSBDataDisabled(true);
+        //5.禁止USB，调试期间可以关闭
+        //MDMHelper.getAdapter().setUSBDataDisabled(true);
         //6.禁用一些物理键盘
         MDMHelper.getAdapter().setTaskButtonDisabled(true);
         MDMHelper.getAdapter().setHomeButtonDisabled(true);
         //MDMHelper.getAdapter().setVpnDisabled(true); //这个失效。
         //7.禁止修改时间
-        //MDMHelper.getAdapter().setTimeAndDateSetDisabled(true);//这个失效
+        MDMHelper.getAdapter().setTimeAndDateSetDisabled(true);//这个失效
     }
 
     private void unlock() {
@@ -98,16 +99,16 @@ public class LockActivity extends BaseActivity {
         List<String> packages = new ArrayList<>();
         packages.add("cn.kiway.mdm");
         MDMHelper.getAdapter().addDisallowedUninstallPackages(packages);
-        MDMHelper.getAdapter().addPersistentApp(packages);
+        //MDMHelper.getAdapter().addPersistentApp(packages);
         //4.禁止下拉状态栏
         MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(false);
-        //5.禁止USB，慎用！！！
-        MDMHelper.getAdapter().setUSBDataDisabled(false);
+        //5.禁止USB，调试期间可以关闭
+        //MDMHelper.getAdapter().setUSBDataDisabled(false);
         //6.禁用一些物理键盘
         MDMHelper.getAdapter().setTaskButtonDisabled(false);
         MDMHelper.getAdapter().setHomeButtonDisabled(false);
         //MDMHelper.getAdapter().setVpnDisabled(true); //这个失效。
-        //MDMHelper.getAdapter().setTimeAndDateSetDisabled(false);//这个失效
+        MDMHelper.getAdapter().setTimeAndDateSetDisabled(false);//这个失效
     }
 
 

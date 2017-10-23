@@ -58,7 +58,7 @@ public class EulaActivity extends Activity {
         mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
 
-        if (getSharedPreferences("kiway", 0).getBoolean("agree", false)) {
+        if (isActiveMe()) {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         }
@@ -98,7 +98,6 @@ public class EulaActivity extends Activity {
             Toast.makeText(this, "请先激活", Toast.LENGTH_SHORT).show();
             return;
         }
-        getSharedPreferences("kiway", 0).edit().putBoolean("agree", true).commit();
         startActivity(new Intent(this, MainActivity.class));
     }
 

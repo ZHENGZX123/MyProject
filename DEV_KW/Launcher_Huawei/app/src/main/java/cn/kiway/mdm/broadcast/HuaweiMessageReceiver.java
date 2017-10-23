@@ -3,11 +3,14 @@ package cn.kiway.mdm.broadcast;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.huawei.android.pushagent.api.PushEventReceiver;
 
+import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.utils.Utils;
 
 /*
@@ -33,6 +36,12 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
         try {
             String receive = new String(msg, "UTF-8");
             Log.d("huawei", "onPushMsg " + receive);
+
+            MainActivity.instance.test(receive);
+
+            if (true) {
+                return false;
+            }
             //解析发送过来的命令，执行对应的操作
             //1.wifi电子围栏
             Utils.connectSSID(context, receive);
@@ -62,6 +71,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             }
             String content = "收到通知附加消息： " + extras.getString(BOUND_KEY.pushMsgKey);
             Log.d("huawei", "content = " + content);
+
         } else if (Event.PLUGINRSP.equals(event)) {
             final int TYPE_LBS = 1;
             final int TYPE_TAG = 2;
@@ -77,4 +87,14 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
         }
         super.onEvent(context, event, extras);
     }
+
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+
+        }
+    };
 }
