@@ -8,6 +8,8 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -34,6 +36,8 @@ import java.util.Set;
 
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.mdm.MDMHelper;
+
+import static android.content.Context.WIFI_SERVICE;
 
 /**
  * Created by Administrator on 2017/6/8.
@@ -374,15 +378,22 @@ public class Utils {
         return s;
     }
 
-
     public static void connectSSID(Context c, String receive) {
-        String SSID = "";
-        String password = "";
-
+        String SSID = "KWHW2";
+        String password = "KWF58888";
         if (TextUtils.isEmpty(SSID)) {
             return;
         }
         if (TextUtils.isEmpty(password)) {
+            return;
+        }
+        //0.判断当前连接的是不是这个
+        WifiManager wifiManager = (WifiManager) c.getSystemService(WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        String currentSSID = wifiInfo.getSSID().replace("\"","");
+        Log.d("test", "currentSSID = " + currentSSID);
+        if (currentSSID.equals(SSID)) {
+            Log.d("test", "目标正确，不用连了");
             return;
         }
         //1.先打开位置服务

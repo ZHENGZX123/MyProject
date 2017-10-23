@@ -1,6 +1,7 @@
 package cn.kiway.mdm.activity;
 
 import android.annotation.TargetApi;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -8,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Contacts;
-import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,8 +25,10 @@ import cn.kiway.mdm.R;
 import cn.kiway.mdm.View.viewPager.StereoPagerTransformer;
 import cn.kiway.mdm.adapter.AppListAdapter;
 import cn.kiway.mdm.adapter.MyViewPagerAdapter;
+import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
 import cn.kiway.mdm.dialog.CheckPassword;
 import cn.kiway.mdm.entity.App;
+import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.AppListUtils;
 import cn.kiway.mdm.utils.LocationUtils;
 import cn.kiway.mdm.utils.Utils;
@@ -42,11 +44,13 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private int totalPage; //总的页数
     private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
     private boolean stop;
+    public static MainActivity instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        instance = this;
         Log.d("test", "Main onCreate");
         initView();
         //1.设置初始密码
@@ -54,11 +58,11 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //2.初始化界面
         initData();
         //4.上报位置
-        uploadStatus();
+        //uploadStatus();
         //5.拉取命令
-        getCommand();
+        //getCommand();
         //6.判断跳到login
-        checkLogin();
+        //checkLogin();
     }
 
     private void checkLogin() {
@@ -87,6 +91,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void getCommand() {
+        //TODO 没有登录的话，不会去拉取命令。
         Context context = this;
         String receive = "";
         //1.wifi电子围栏
@@ -130,9 +135,50 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void Camera(View view) {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivity(cameraIntent);
+//        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        startActivity(cameraIntent);
+        if (true) {
+            return;
+        }
+        //改为测试用
+        ComponentName mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
+        MDMHelper.getAdapter().init(this, mAdminName);
+
+        //wifi围栏
+        MDMHelper.getAdapter().setScreenCaptureDisabled(flag);
+
+//        Utils.connectSSID(this, "");
+
+//        String path = "/mnt/sdcard/test.apk";
+//        Log.d("test", "文件是否存在" + new File(path).exists());
+//        MDMHelper.getAdapter().installPackage(path);
+
+//        MDMHelper.getAdapter().uninstallPackage("cn.kiway.homework.student", false);
+
+//        MDMHelper.getAdapter().shutdownDevice();
+
+//        ArrayList<String> domains = new ArrayList<>();
+//        domains.add("http://www.kiway.cn/");
+//        MDMHelper.getAdapter().addNetworkAccessBlackList(domains);
+
+//        MDMHelper.getAdapter().setWifiDisabled(flag);
+
+//        MDMHelper.getAdapter().setBluetoothDisabled(flag);
+
+//        MDMHelper.getAdapter().setDataConnectivityDisabled(flag);
+
+//        MDMHelper.getAdapter().turnOnGPS(flag);
+
+//        MDMHelper.getAdapter().setGPSDisabled(flag);
+
+//        MDMHelper.getAdapter().setWifiApDisabled(flag);
+
+//        MDMHelper.getAdapter().rebootDevice();
+
+        flag = !flag;
     }
+
+    private boolean flag = true;
 
     public void Call(View view) {
         Intent intent = new Intent();
@@ -178,10 +224,9 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     @Override
     public void success(View vx, int position) throws Exception {
         if (position == 1) {
-            startActivity(new Intent(MainActivity.this, EditAeraActivity.class));
+            startActivity(new Intent(MainActivity.this, LockActivity.class));
         }
     }
-
 
     //设置页面数据
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -265,5 +310,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         startActivity(new Intent(this, AppListActivity2.class));
     }
 
+    public void test(String text) {
+        toast(text);
+    }
 
 }

@@ -47,4 +47,20 @@ public interface IMDMAdapter {
     void setTimeAndDateSetDisabled(boolean b);
 
     void addNetworkAccessBlackList(ArrayList<String> addDomainList);
+
+    void setWIFIeditDisabled(boolean b);
+
+    void installPackage(String path);
+
+    void uninstallPackage(String s, boolean b);
+
+    void setBluetoothDisabled(boolean b);
+
+    void setGPSDisabled(boolean b);
+
+    void setWifiApDisabled(boolean b);
+
+    void rebootDevice();
+
+    void setScreenCaptureDisabled(boolean flag);
 }
