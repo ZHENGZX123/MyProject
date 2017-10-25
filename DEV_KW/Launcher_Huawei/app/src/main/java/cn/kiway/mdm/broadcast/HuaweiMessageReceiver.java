@@ -27,9 +27,13 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
 
         TelephonyManager tm = (TelephonyManager) context
                 .getSystemService(Context.TELEPHONY_SERVICE);
+        String imei = tm.getDeviceId();
         Log.d("huawei", "imei = " + tm.getDeviceId());
-        context.getSharedPreferences("kiway", 0).edit().putString("huaweiToken", token).commit();
+
+        //注册一下
+        MainActivity.instance.installationPush(token, imei);
     }
+
 
     @Override
     public boolean onPushMsg(Context context, byte[] msg, Bundle bundle) {

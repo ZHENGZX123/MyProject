@@ -63,4 +63,12 @@ public interface IMDMAdapter {
     void rebootDevice();
 
     void setScreenCaptureDisabled(boolean flag);
+
+    void setMicrophoneDisabled(boolean flag);
+
+    void setRestoreFactoryDisabled(boolean flag);
+
+    void setSystemUpdateDisabled(boolean flag);
+
+    void setNetworkLocationDisabled(boolean flag);
 }

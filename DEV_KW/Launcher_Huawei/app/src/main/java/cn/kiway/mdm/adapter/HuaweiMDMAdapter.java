@@ -257,6 +257,46 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     }
 
     @Override
+    public void setMicrophoneDisabled(boolean flag) {
+        try {
+            new DeviceRestrictionManager().setMicrophoneDisabled(mAdminName, flag);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void setRestoreFactoryDisabled(boolean flag) {
+        try {
+            new DeviceSettingsManager().setRestoreFactoryDisabled(mAdminName, flag);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void setSystemUpdateDisabled(boolean flag) {
+        try {
+            new DeviceRestrictionManager().setSystemUpdateDisabled(mAdminName, flag);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void setNetworkLocationDisabled(boolean flag) {
+        try {
+            new DeviceSettingsManager().setNetworkLocationDisabled(mAdminName, flag);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
     public void addPersistentApp(List<String> packageNames) {
         try {
             new DeviceApplicationManager().addPersistentApp(mAdminName, packageNames);
