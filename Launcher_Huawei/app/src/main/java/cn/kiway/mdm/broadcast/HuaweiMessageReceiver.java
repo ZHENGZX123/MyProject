@@ -5,11 +5,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.huawei.android.pushagent.api.PushEventReceiver;
 
+import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.utils.Utils;
 
@@ -25,13 +25,15 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
         String content = "获取token和belongId成功，token = " + token + ",belongId = " + belongId;
         Log.d("huawei", content);
 
-        TelephonyManager tm = (TelephonyManager) context
-                .getSystemService(Context.TELEPHONY_SERVICE);
-        String imei = tm.getDeviceId();
-        Log.d("huawei", "imei = " + tm.getDeviceId());
-
         //注册一下
-        MainActivity.instance.installationPush(token, imei);
+        if (KWApp.instance != null) {
+            Message msg = new Message();
+            msg.what = 1;
+            msg.obj = token;
+            KWApp.instance.mHandler.sendMessage(msg);
+        }
+
+
     }
 
 

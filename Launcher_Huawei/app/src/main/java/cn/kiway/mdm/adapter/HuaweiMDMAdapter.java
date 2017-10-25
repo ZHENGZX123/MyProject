@@ -46,6 +46,11 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     }
 
     @Override
+    public void setVoiceDisabled(boolean disabled) {
+
+    }
+
+    @Override
     public void setDataConnectivityDisabled(boolean disabled) {
         try {
             new DeviceRestrictionManager().setDataConnectivityDisabled(mAdminName, disabled);
@@ -63,6 +68,11 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             e.printStackTrace();
             Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void setExternalStorageDisabled(boolean disabled) {
+
     }
 
     @Override
@@ -93,6 +103,11 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             e.printStackTrace();
             Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void setBackButtonDisabled(boolean disabled) {
+
     }
 
     @Override
@@ -290,6 +305,57 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     public void setNetworkLocationDisabled(boolean flag) {
         try {
             new DeviceSettingsManager().setNetworkLocationDisabled(mAdminName, flag);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void addInstallPackageBlackList(ArrayList<String> packageNames) {
+        try {
+            new DeviceApplicationManager().addInstallPackageBlackList(mAdminName, packageNames);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void addDisallowedRunningApp(ArrayList<String> packageNames) {
+        try {
+            new DeviceApplicationManager().addDisallowedRunningApp(mAdminName, packageNames);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public List<String> getDisallowedRunningApp() {
+        try {
+            return new DeviceApplicationManager().getDisallowedRunningApp(mAdminName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        return null;
+    }
+
+    @Override
+    public void removeDisallowedRunningApp(ArrayList<String> packageNames) {
+        try {
+            new DeviceApplicationManager().removeDisallowedRunningApp(mAdminName, packageNames);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void setSilentActiveAdmin() {
+        try {
+            new DeviceControlManager().setSilentActiveAdmin(mAdminName);
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();

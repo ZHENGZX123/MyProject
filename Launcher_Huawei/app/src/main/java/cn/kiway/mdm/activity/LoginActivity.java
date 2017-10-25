@@ -41,7 +41,6 @@ public class LoginActivity extends BaseActivity {
         codeET = (EditText) findViewById(R.id.codeET);
         nameET = (EditText) findViewById(R.id.nameET);
 
-
         //1.省市县、选学校、选班级
 
         //2.注册到后台:学校，学号，姓名，设备IMEI，华为token,手机品牌型号

@@ -18,9 +18,13 @@ public interface IMDMAdapter {
 
     void setWifiDisabled(boolean disabled);
 
+    void setVoiceDisabled(boolean disabled);
+
     void setDataConnectivityDisabled(boolean disabled);
 
     void setUSBDataDisabled(boolean disabled);//慎用
+
+    void setExternalStorageDisabled(boolean disabled);//慎用
 
     void setStatusBarExpandPanelDisabled(boolean disabled);
 
@@ -28,7 +32,9 @@ public interface IMDMAdapter {
 
     void setHomeButtonDisabled(boolean disabled);
 
-    void setSettingsApplicationDisabled(boolean disabled);
+    void setBackButtonDisabled(boolean disabled);//慎用
+
+    void setSettingsApplicationDisabled(boolean disabled);//5.1
 
     void turnOnGPS(boolean on);
 
@@ -71,4 +77,14 @@ public interface IMDMAdapter {
     void setSystemUpdateDisabled(boolean flag);
 
     void setNetworkLocationDisabled(boolean flag);
+
+    void addInstallPackageBlackList(ArrayList<String> packageNames);
+
+    void addDisallowedRunningApp(ArrayList<String> packageNames);
+
+    List<String> getDisallowedRunningApp();
+
+    void removeDisallowedRunningApp(ArrayList<String> packageNames);
+
+    void setSilentActiveAdmin();
 }
