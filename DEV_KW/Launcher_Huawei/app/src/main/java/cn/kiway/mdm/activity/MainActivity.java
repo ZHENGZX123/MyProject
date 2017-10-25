@@ -1,6 +1,7 @@
 package cn.kiway.mdm.activity;
 
 import android.annotation.TargetApi;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -31,8 +32,10 @@ import cn.kiway.mdm.R;
 import cn.kiway.mdm.View.viewPager.StereoPagerTransformer;
 import cn.kiway.mdm.adapter.AppListAdapter;
 import cn.kiway.mdm.adapter.MyViewPagerAdapter;
+import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
 import cn.kiway.mdm.dialog.CheckPassword;
 import cn.kiway.mdm.entity.App;
+import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.AppListUtils;
 import cn.kiway.mdm.utils.LocationUtils;
 import cn.kiway.mdm.utils.Utils;
@@ -62,13 +65,18 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //2.初始化界面
         initData();
         //3.华为推送
-        huaweiPush();
+        //huaweiPush();
         //4.上报位置
         //uploadStatus();
         //5.拉取命令
         //getCommand();
         //6.判断跳到login
         //checkLogin();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private void checkLogin() {
@@ -148,8 +156,23 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 //        }
 
         //改为测试用
-//        ComponentName mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
-//        MDMHelper.getAdapter().init(this, mAdminName);
+        ComponentName mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
+        MDMHelper.getAdapter().init(this, mAdminName);
+
+//        MDMHelper.getAdapter().setSilentActiveAdmin();
+
+//        ArrayList<String> packageNames = new ArrayList<>();
+//        packageNames.add("com.android.settings");
+//        packageNames.add("com.hyphenate.chatuidemo");
+//        MDMHelper.getAdapter().addDisallowedRunningApp(packageNames);
+//        MDMHelper.getAdapter().removeDisallowedRunningApp(packageNames);
+//        List<String> list = MDMHelper.getAdapter().getDisallowedRunningApp();
+//        Log.d("test", "s.size = " + list.size());
+//        for (String s : list) {
+//            Log.d("test", "s = " + s);
+//        }
+
+//        MDMHelper.getAdapter().addInstallPackageBlackList(packageNames);
 
 //        MDMHelper.getAdapter().setBluetoothDisabled(flag);
 //        MDMHelper.getAdapter().setNetworkLocationDisabled(flag);
