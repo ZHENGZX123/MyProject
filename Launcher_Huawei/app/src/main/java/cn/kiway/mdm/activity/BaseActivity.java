@@ -16,9 +16,6 @@ public class BaseActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //3.华为推送
-        huaweiPush();
     }
 
     public void huaweiPush() {
