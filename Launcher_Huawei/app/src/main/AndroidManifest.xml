@@ -54,7 +54,7 @@
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
 
         <activity
-            android:name="cn.kiway.mdm.activity.EulaActivity"
+            android:name=".activity.EulaActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden">
             <intent-filter>
@@ -93,7 +93,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <activity
-            android:name="activity.LicenseActivity"
+            android:name=".activity.LicenseActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
+        <activity
+            android:name=".activity.WebViewActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
 

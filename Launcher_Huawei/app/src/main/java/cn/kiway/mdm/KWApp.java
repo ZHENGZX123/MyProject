@@ -14,7 +14,6 @@ import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONObject;
 
-import cn.kiway.mdm.utils.CrashHandler;
 import cn.kiway.mdm.utils.Utils;
 
 /**
@@ -30,7 +29,7 @@ public class KWApp extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        CrashHandler.getInstance().init(this);
+//        CrashHandler.getInstance().init(this);
         huaweiPush();
     }
 

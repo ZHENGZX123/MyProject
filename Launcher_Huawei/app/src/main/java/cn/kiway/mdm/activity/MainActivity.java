@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Contacts;
-import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -126,8 +125,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void Camera(View view) {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivity(cameraIntent);
+//        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        startActivity(cameraIntent);
+        Intent i = new Intent(this, WebViewActivity.class);
+        startActivity(i);
     }
 
     public void Call(View view) {
