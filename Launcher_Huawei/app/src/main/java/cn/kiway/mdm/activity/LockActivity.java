@@ -21,6 +21,7 @@ import java.util.List;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
 import cn.kiway.mdm.mdm.MDMHelper;
+import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.KWApp.server;
@@ -90,7 +91,10 @@ public class LockActivity extends BaseActivity {
                             toast("注销成功");
                             String imei = Utils.getIMEI(LockActivity.this);
                             Utils.deviceRuntime(LockActivity.this, imei, "2");
+                            //TODO 这里有问题
                             getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
+                            new MyDBHelper(LockActivity.this).deleteWifi();
+                            new MyDBHelper(LockActivity.this).deleteNetwork();
                             startActivity(new Intent(LockActivity.this, LoginActivity.class));
                             finish();
                         } else {
