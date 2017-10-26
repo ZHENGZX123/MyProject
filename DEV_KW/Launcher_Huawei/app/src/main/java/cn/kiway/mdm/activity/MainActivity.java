@@ -177,7 +177,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
     }
 
-
     //设置页面数据
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private void initData() {
