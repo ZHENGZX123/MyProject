@@ -55,17 +55,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         uploadStatus();
         //5.拉取命令
         getCommand();
-        //6.判断跳到login
-        checkLogin();
-    }
-
-    private void checkLogin() {
-        //只判断第一次
-        boolean login = getSharedPreferences("kiway", 0).getBoolean("login", false);
-        if (login) {
-            return;
-        }
-        startActivity(new Intent(this, LoginActivity.class));
+        //7.测试
+        //Utils.uploadException(this);
     }
 
     private void initPassword() {
@@ -85,20 +76,25 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void getCommand() {
-        Context context = this;
-        String receive = "";
-        //1.wifi电子围栏
-        Utils.connectSSID(context, receive);
-        //2.APP白名单、APP时间分段
-        //AppListUtils
-        //3.网页打开黑名单
-        //MDMHelper.getAdapter().addNetworkAccessBlackList(null);
-        //4.安装app
-        Utils.installAPP(context, receive);
-        //5.卸载app
-        Utils.uninstallAPP(context, receive);
-        //6.打开app
-        Utils.openAPP(context, receive);
+        new Thread() {
+            @Override
+            public void run() {
+                //1.wifi电子围栏
+                String receive = "";
+                //Utils.connectSSID(context, receive);
+                //2.APP白名单、APP时间分段
+                Utils.appCharge(MainActivity.this);
+                //AppListUtils
+                //3.网页打开黑名单
+                //MDMHelper.getAdapter().addNetworkAccessBlackList(null);
+                //4.安装app
+                //Utils.installAPP(context, receive);
+                //5.卸载app
+                //Utils.uninstallAPP(context, receive);
+                //6.打开app
+                //Utils.openAPP(context, receive);
+            }
+        }.start();
     }
 
     private void uploadStatus() {
@@ -111,6 +107,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     if (location != null) {
                         String address = "纬度：" + location.getLatitude() + "经度：" + location.getLongitude();
                         Log.d("test", address);
+                        Utils.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude());
                     }
                     //2.上报在线状态：已登录并且屏幕点亮
                     PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -176,7 +173,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     @Override
     public void success(View vx, int position) throws Exception {
         if (position == 1) {
-            startActivity(new Intent(MainActivity.this, EditAeraActivity.class));
+            startActivity(new Intent(MainActivity.this, LockActivity.class));
         }
     }
 

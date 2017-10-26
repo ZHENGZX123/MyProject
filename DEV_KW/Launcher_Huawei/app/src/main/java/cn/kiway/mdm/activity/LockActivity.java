@@ -3,9 +3,17 @@ package cn.kiway.mdm.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +21,17 @@ import java.util.List;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
 import cn.kiway.mdm.mdm.MDMHelper;
+import cn.kiway.mdm.utils.Utils;
+
+import static cn.kiway.mdm.KWApp.server;
 
 /**
  * Created by Administrator on 2017/10/13.
  */
 
 public class LockActivity extends BaseActivity {
-    TextView textView;
-    TextView moshi;
+    private TextView textView;
+    private TextView moshi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +66,54 @@ public class LockActivity extends BaseActivity {
 
     public void Password(View view) {
         startActivity(new Intent(this, ChangePassWordActivity.class));
+    }
+
+    public void Logout(View view) {
+        try {
+            showPD();
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            String url = server + "device/logout";
+            Log.d("test", "url = " + url);
+            RequestParams param = new RequestParams();
+            Log.d("test", "param = " + param.toString());
+            client.post(this, url, param, new TextHttpResponseHandler() {
+
+                @Override
+                public void onSuccess(int arg0, Header[] arg1, String ret) {
+                    dismissPD();
+                    Log.d("test", "post onSuccess = " + ret);
+                    try {
+                        JSONObject o = new JSONObject(ret);
+                        int StatusCode = o.optInt("StatusCode");
+                        if (StatusCode == 200) {
+                            toast("注销成功");
+                            String imei = Utils.getIMEI(LockActivity.this);
+                            Utils.deviceRuntime(LockActivity.this, imei, "2");
+                            getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
+                            startActivity(new Intent(LockActivity.this, LoginActivity.class));
+                            finish();
+                        } else {
+                            toast("注销失败");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        toast("请求失败，请稍后再试");
+                    }
+                }
+
+                @Override
+                public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                    dismissPD();
+                    toast("请求失败，请稍后再试");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("test", "exception = " + e.toString());
+            toast("请求失败，请稍后再试");
+            dismissPD();
+        }
     }
 
     public void Before(View view) {

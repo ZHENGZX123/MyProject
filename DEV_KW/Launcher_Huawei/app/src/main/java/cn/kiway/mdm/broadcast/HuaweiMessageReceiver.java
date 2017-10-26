@@ -10,7 +10,6 @@ import android.util.Log;
 import com.huawei.android.pushagent.api.PushEventReceiver;
 
 import cn.kiway.mdm.KWApp;
-import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.utils.Utils;
 
 /*
@@ -42,8 +41,6 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
         try {
             String receive = new String(msg, "UTF-8");
             Log.d("huawei", "onPushMsg " + receive);
-
-            MainActivity.instance.test(receive);
 
             if (true) {
                 return false;

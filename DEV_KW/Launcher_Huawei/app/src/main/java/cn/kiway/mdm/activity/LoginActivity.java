@@ -10,13 +10,18 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
-import org.apache.http.entity.StringEntity;
+import org.json.JSONObject;
 
 import cn.kiway.mdm.R;
+import cn.kiway.mdm.entity.Class;
 import cn.kiway.mdm.entity.School;
+import cn.kiway.mdm.utils.Utils;
+
+import static cn.kiway.mdm.KWApp.server;
 
 /**
  * Created by Administrator on 2017/10/17.
@@ -26,10 +31,11 @@ public class LoginActivity extends BaseActivity {
 
 
     private Button schollBtn;
-    private EditText classET;
+    private Button classBtn;
     private EditText codeET;
     private EditText nameET;
     private School mSchool;
+    private Class mClass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +43,11 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
 
         schollBtn = (Button) findViewById(R.id.schollBtn);
-        classET = (EditText) findViewById(R.id.classET);
+        classBtn = (Button) findViewById(R.id.classBtn);
         codeET = (EditText) findViewById(R.id.codeET);
         nameET = (EditText) findViewById(R.id.nameET);
-
-
         //1.省市县、选学校、选班级
-
         //2.注册到后台:学校，学号，姓名，设备IMEI，华为token,手机品牌型号
-        //Utils.register(context, tm.getDeviceId(), token);
         String brand = Build.BRAND;
         Log.d("test", "brand = " + brand);
         String model = Build.MODEL;
@@ -56,6 +58,14 @@ public class LoginActivity extends BaseActivity {
         startActivityForResult(new Intent(this, EditAeraActivity.class), 999);
     }
 
+    public void selectClass(View view) {
+        if (mSchool == null) {
+            toast("请先选择学校");
+            return;
+        }
+        startActivityForResult(new Intent(this, ClassListActivity.class).putExtra("schoolId", mSchool.schoolId), 9999);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -63,6 +73,9 @@ public class LoginActivity extends BaseActivity {
             mSchool = (School) data.getSerializableExtra("school");
             Log.d("test", "mSchool = " + mSchool.toString());
             schollBtn.setText(mSchool.name);
+        } else if (requestCode == 9999 && resultCode == 9999) {
+            mClass = (Class) data.getSerializableExtra("class");
+            classBtn.setText(mClass.name);
         }
     }
 
@@ -70,6 +83,10 @@ public class LoginActivity extends BaseActivity {
         //1.客户端校验
         if (mSchool == null) {
             toast("请选择学校");
+            return;
+        }
+        if (mClass == null) {
+            toast("请选择班级");
             return;
         }
 
@@ -83,28 +100,64 @@ public class LoginActivity extends BaseActivity {
             toast("请填写姓名");
             return;
         }
+        final String imei = Utils.getIMEI(this);
+
+        String token = getSharedPreferences("kiway", 0).getString("token", "");
+        Log.d("test", "token = " + token);
         //2.提交数据
         try {
+            showPD();
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            String url = "";
-            String param = "";
-            StringEntity stringEntity = new StringEntity(param, "utf-8");
-            client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+            String url = server + "device/login";
+            Log.d("test", "url = " + url);
+            RequestParams param = new RequestParams();
+            param.put("classId", mClass.id);
+            param.put("studentNumber", code);
+            param.put("mobileModel", Build.MODEL);
+            param.put("mobileBrand", Build.BRAND);
+            param.put("schoolId", mSchool.schoolId);
+            param.put("name", name);
+            param.put("IMEI", imei);
+            param.put("id", "");
+            param.put("platform", "Android");
+            param.put("token", token);
+            Log.d("test", "param = " + param.toString());
+            client.post(this, url, param, new TextHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int arg0, Header[] arg1, String ret) {
+                    dismissPD();
                     Log.d("test", "post onSuccess = " + ret);
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    try {
+                        JSONObject o = new JSONObject(ret);
+                        int StatusCode = o.optInt("StatusCode");
+                        if (StatusCode == 200) {
+                            toast("登录成功");
+                            Utils.deviceRuntime(LoginActivity.this, imei, "1");
+                            getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            finish();
+                        } else {
+                            toast("登录失败");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        toast("请求失败，请稍后再试");
+                    }
                 }
 
                 @Override
                 public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                    dismissPD();
+                    toast("请求失败，请稍后再试");
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
             Log.d("test", "exception = " + e.toString());
+            toast("请求失败，请稍后再试");
+            dismissPD();
         }
     }
 }
