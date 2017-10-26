@@ -18,8 +18,6 @@ package widget;
 
 /**
  * Wheel adapter interface
- * 
- * @deprecated Use WheelViewAdapter
  */
 public interface WheelAdapter {
 	/**

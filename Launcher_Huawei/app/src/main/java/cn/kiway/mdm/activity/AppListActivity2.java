@@ -179,7 +179,7 @@ public class AppListActivity2 extends BaseActivity implements CheckPassword.Chec
             } else {
                 App app = apps.get(position - 1);
                 holder.name.setText(app.name);
-                holder.iv.setImageDrawable(app.icon);
+                holder.iv.setImageDrawable(Utils.getIconByPackageName(getPackageManager(), app));
             }
             return rowView;
         }

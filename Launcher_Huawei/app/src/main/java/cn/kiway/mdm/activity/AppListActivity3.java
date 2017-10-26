@@ -107,7 +107,7 @@ public class AppListActivity3 extends BaseActivity {
             } else {
                 holder.cb.setVisibility(View.INVISIBLE);
             }
-            holder.iv.setImageDrawable(app.icon);
+            holder.iv.setImageDrawable(Utils.getIconByPackageName(getPackageManager(), app));
             return rowView;
         }
 

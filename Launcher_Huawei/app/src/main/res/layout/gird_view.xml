@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridView
+<com.anarchy.classify.ClassifyView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/gridView"
+    android:id="@+id/classify_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:horizontalSpacing="10dp"
-    android:numColumns="4"
-    android:scrollbars="none"
-    android:verticalSpacing="20dp">
-</GridView>
+    android:layout_height="match_parent">
+
+</com.anarchy.classify.ClassifyView>

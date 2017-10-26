@@ -1,0 +1,174 @@
+[
+    {
+        "outputFile": "F:\\kiway_xm\\Launcher_Huawei\\classify\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values\\values.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 38,
+                    "endOffset": 89
+                },
+                "from": {
+                    "file": "F:\\kiway_xm\\Launcher_Huawei\\classify\\src\\main\\res\\values\\colors.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 57,
+                        "endColumn": 38,
+                        "endOffset": 91
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 12,
+                    "startColumn": 4,
+                    "startOffset": 2160,
+                    "endColumn": 74,
+                    "endOffset": 2230
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\.android\\build-cache\\635f6e6062c74d11749b63b451c52d039b3112ac\\output\\res\\values\\values.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 13,
+                    "startColumn": 4,
+                    "startOffset": 2235,
+                    "endColumn": 75,
+                    "endOffset": 2306
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\.android\\build-cache\\635f6e6062c74d11749b63b451c52d039b3112ac\\output\\res\\values\\values.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 14,
+                    "startColumn": 4,
+                    "startOffset": 2311,
+                    "endColumn": 71,
+                    "endOffset": 2378
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\.android\\build-cache\\635f6e6062c74d11749b63b451c52d039b3112ac\\output\\res\\values\\values.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 15,
+                    "startColumn": 4,
+                    "startOffset": 2383,
+                    "endColumn": 65,
+                    "endOffset": 2444
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\.android\\build-cache\\635f6e6062c74d11749b63b451c52d039b3112ac\\output\\res\\values\\values.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 16,
+                    "startColumn": 4,
+                    "startOffset": 2449,
+                    "endColumn": 45,
+                    "endOffset": 2490
+                },
+                "from": {
+                    "file": "F:\\kiway_xm\\Launcher_Huawei\\classify\\src\\main\\res\\values\\strings.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 17,
+                    "startColumn": 4,
+                    "startOffset": 2495,
+                    "endColumn": 55,
+                    "endOffset": 2546
+                },
+                "from": {
+                    "file": "F:\\kiway_xm\\Launcher_Huawei\\classify\\src\\main\\res\\values\\strings.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 18,
+                    "startColumn": 4,
+                    "startOffset": 2551,
+                    "endLine": 21,
+                    "endColumn": 12,
+                    "endOffset": 2751
+                },
+                "from": {
+                    "file": "F:\\kiway_xm\\Launcher_Huawei\\classify\\src\\main\\res\\values\\classify_style.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 56,
+                        "endLine": 6,
+                        "endColumn": 12,
+                        "endOffset": 256
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 22,
+                    "startColumn": 4,
+                    "startOffset": 2756,
+                    "endLine": 25,
+                    "endColumn": 12,
+                    "endOffset": 2945
+                },
+                "from": {
+                    "file": "F:\\kiway_xm\\Launcher_Huawei\\classify\\src\\main\\res\\values\\classify_style.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 26,
+                    "startColumn": 4,
+                    "startOffset": 2950,
+                    "endLine": 33,
+                    "endColumn": 12,
+                    "endOffset": 3295
+                },
+                "from": {
+                    "file": "F:\\kiway_xm\\Launcher_Huawei\\classify\\src\\main\\res\\values\\classify_style.xml",
+                    "position": {
+                        "startLine": 8,
+                        "startColumn": 4,
+                        "startOffset": 262,
+                        "endLine": 15,
+                        "endColumn": 12,
+                        "endOffset": 607
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 34,
+                    "startColumn": 4,
+                    "startOffset": 3300,
+                    "endLine": 43,
+                    "endColumn": 12,
+                    "endOffset": 3706
+                },
+                "from": {
+                    "file": "F:\\kiway_xm\\Launcher_Huawei\\classify\\src\\main\\res\\values\\classify_style.xml",
+                    "position": {
+                        "startLine": 17,
+                        "startColumn": 4,
+                        "startOffset": 613,
+                        "endLine": 26,
+                        "endColumn": 12,
+                        "endOffset": 1019
+                    }
+                }
+            }
+        ]
+    }
+]
