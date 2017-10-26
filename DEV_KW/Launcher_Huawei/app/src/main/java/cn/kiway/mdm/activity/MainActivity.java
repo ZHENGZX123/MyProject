@@ -1,6 +1,7 @@
 package cn.kiway.mdm.activity;
 
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -8,12 +9,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Contacts;
+import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.anarchy.classify.ClassifyView;
 
@@ -31,8 +34,11 @@ import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.LocationUtils;
 import cn.kiway.mdm.utils.Utils;
 
+import static cn.kiway.mdm.utils.Constant._16;
+
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall {
     CheckPassword dialog;
+    List<List<App>> allListData = new ArrayList<>();
     private ViewPager viewPager;
     private LinearLayout group;//圆点指示器
     private ImageView[] ivPoints;//小圆点图片的集合
@@ -49,41 +55,22 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //1.设置初始密码
         initPassword();
         //2.初始化界面
-        initData();
+        initData(getListdata(AppListUtils.getAppListData(this)));
         //4.上报位置
         uploadStatus();
         //5.拉取命令
         getCommand();
-        //6.检查命令
-        checkCommand();
-        //7.测试
-        //Utils.exceptions(this);
+        //6.判断跳到login
+        checkLogin();
     }
 
-    private void checkCommand() {
-        new Thread() {
-            @Override
-            public void run() {
-                //10秒后开始检查
-                try {
-                    sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                while (!stop) {
-                    Log.d("test", "检查开始");
-                    //1.检查wifi
-                    Utils.checkWifis(MainActivity.this);
-                    Utils.checkAppCharges(MainActivity.this);
-                    Log.d("test", "检查结束");
-                    try {
-                        sleep(1000 * 60);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }.start();
+    private void checkLogin() {
+        //只判断第一次
+        boolean login = getSharedPreferences("kiway", 0).getBoolean("login", false);
+        if (login) {
+            return;
+        }
+        startActivity(new Intent(this, LoginActivity.class));
     }
 
     private void initPassword() {
@@ -100,17 +87,24 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         dialog = new CheckPassword(this, this);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         group = (LinearLayout) findViewById(R.id.points);
+
     }
 
     private void getCommand() {
-        new Thread() {
-            @Override
-            public void run() {
-                Utils.appCharge(MainActivity.this);
-                Utils.networkDeviceCharge(MainActivity.this);
-                Utils.wifi(MainActivity.this);
-            }
-        }.start();
+        Context context = this;
+        String receive = "";
+        //1.wifi电子围栏
+       // Utils.connectSSID(context, receive);
+        //2.APP白名单、APP时间分段
+        //AppListUtils
+        //3.网页打开黑名单
+        //MDMHelper.getAdapter().addNetworkAccessBlackList(null);
+        //4.安装app
+        Utils.installAPP(context, receive);
+        //5.卸载app
+        Utils.uninstallAPP(context, receive);
+        //6.打开app
+        Utils.openAPP(context, receive);
     }
 
     private void uploadStatus() {
@@ -123,7 +117,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     if (location != null) {
                         String address = "纬度：" + location.getLatitude() + "经度：" + location.getLongitude();
                         Log.d("test", address);
-                        Utils.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude());
                     }
                     //2.上报在线状态：已登录并且屏幕点亮
                     PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -141,10 +134,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void Camera(View view) {
-//        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        startActivity(cameraIntent);
-        Intent i = new Intent(this, WebViewActivity.class);
-        startActivity(i);
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivity(cameraIntent);
     }
 
     public void Call(View view) {
@@ -153,6 +144,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         intent.setData(Contacts.People.CONTENT_URI);
         startActivity(intent);
     }
+
 
     public void SMS(View view) {
         try {
@@ -190,46 +182,50 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     @Override
     public void success(View vx, int position) throws Exception {
         if (position == 1) {
-            startActivity(new Intent(MainActivity.this, LockActivity.class));
+            startActivity(new Intent(MainActivity.this, EditAeraActivity.class));
         }
+    }
+
+    public List<List<App>> getListdata(List<List<App>> data1) {
+        allListData.clear();
+        totalPage = (int) Math.ceil(data1.size() * 1.0 / _16);
+        for (int i = 0; i < totalPage; i++) {
+            if (FileACache.loadListCache(MainActivity.this, i + "list.txt").size() > 0) {
+                allListData.addAll(new ArrayList(FileACache.loadListCache(MainActivity.this, i + "list.txt")));
+            } else {
+                if (i * _16 + _16 >= data1.size())
+                    allListData.addAll(new ArrayList(data1.subList(i * _16, data1.size() - 1)));
+                else
+                    allListData.addAll(new ArrayList(data1.subList(i * _16, i * _16 + _16)));
+            }
+        }
+        Log.e("allListData", allListData.toString());
+        return allListData;
     }
 
     //设置页面数据
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-    private void initData() {
-        totalPage = (int) Math.ceil(AppListUtils.getAppListData(this).size() * 1.0 / 12);
+    private void initData(List<List<App>> data1) {
         viewPagerList = new ArrayList<View>();
+        totalPage = (int) Math.ceil(data1.size() * 1.0 / _16);
         for (int i = 0; i < totalPage; i++) {
-            //每个页面都是inflate出一个新实例
             final ClassifyView classifyView = (ClassifyView) View.inflate(this, R.layout.gird_view, null);
             classifyView.setClipToPadding(false);
             classifyView.setSelected(true);
             List<List<App>> data = new ArrayList<>();//截取数据到适配器
-            if (FileACache.loadListCache(MainActivity.this, i + "list.txt").size() > 0) {
-                data = new ArrayList(FileACache.loadListCache(MainActivity.this, i + "list.txt"));
+            if (i * _16 + _16 >= data1.size()) {
+                data = new ArrayList(data1.subList(i * _16, data1.size() - 1));
             } else {
-                if (i * 16 + 16 >= AppListUtils.getAppListData(this).size())
-                    data = new ArrayList(AppListUtils.getAppListData(this).subList(i * 16, AppListUtils.getAppListData(this).size()
-                            - 1));
-                else
-                    data = new ArrayList(AppListUtils.getAppListData(this).subList(i * 16, i * 16 + 16));
+                data = new ArrayList(data1.subList(i * _16, i * _16 + _16));
             }
             classifyView.setAdapter(new AppListAdapter(MainActivity.this, data, i));
             viewPagerList.add(classifyView);
         }
-        viewPager.setPageTransformer(false, new
-
-                StereoPagerTransformer());
-        viewPager.setAdapter(new
-
-                MyViewPagerAdapter(viewPagerList));//设置ViewPager适配器
+        viewPager.setPageTransformer(false, new StereoPagerTransformer());
+        viewPager.setAdapter(new MyViewPagerAdapter(viewPagerList));//设置ViewPager适配器
         group.removeAllViews();
         ivPoints = new ImageView[totalPage];//添加小圆点
-        for (
-                int i = 0;
-                i < totalPage; i++)
-
-        {
+        for (int i = 0; i < totalPage; i++) {
             ivPoints[i] = new ImageView(this);
             if (i == 0) {
                 ivPoints[i].setImageResource(R.drawable.ic_lens);
@@ -264,5 +260,31 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         startActivity(new Intent(this, AppListActivity2.class));
     }
 
+    public class AppReceiver extends BroadcastReceiver {
+        private final String TAG = this.getClass().getSimpleName();
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (TextUtils.equals(intent.getAction(), Intent.ACTION_PACKAGE_ADDED)) {//监听应用安装成功
+                String packageName = intent.getData().getSchemeSpecificPart();
+                ArrayList<App> apps = new ArrayList<>();
+                App a = new App();
+                a.name = Utils.getProgramNameByPackageName(context, packageName);
+                a.packageName = packageName;
+                apps.add(a);
+                allListData.add(apps);
+                initData(allListData);
+                Log.e(TAG, "--------安装成功" + packageName);
+                Toast.makeText(context, "安装成功" + packageName, Toast.LENGTH_LONG).show();
+            } else if (TextUtils.equals(intent.getAction(), Intent.ACTION_PACKAGE_REPLACED)) {
+                String packageName = intent.getData().getSchemeSpecificPart();
+                Log.e(TAG, "--------替换成功" + packageName);
+                Toast.makeText(context, "替换成功" + packageName, Toast.LENGTH_LONG).show();
+            } else if (TextUtils.equals(intent.getAction(), Intent.ACTION_PACKAGE_REMOVED)) {
+                String packageName = intent.getData().getSchemeSpecificPart();
+                Log.e(TAG, "--------卸载成功" + packageName);
+                Toast.makeText(context, "卸载成功" + packageName, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 }

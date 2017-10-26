@@ -18,7 +18,6 @@ import cn.kiway.mdm.R;
 public class ShowMessageDailog extends Dialog implements View.OnClickListener,DialogInterface.OnShowListener {
     protected LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
-
     TextView textView;
 
     public ShowMessageDailog(Context context) {

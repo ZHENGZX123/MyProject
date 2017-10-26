@@ -35,6 +35,7 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
 
     public AppListAdapter(Context context, List<List<App>> mData, int index) {
         super(mData);
+
         this.index = index;
         this.context = context;
     }

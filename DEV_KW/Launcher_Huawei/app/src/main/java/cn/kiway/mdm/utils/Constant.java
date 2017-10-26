@@ -27,4 +27,5 @@ public class Constant {
     public static ArrayList<App> otherApps = new ArrayList<>();
 
     public final static String kiwayQiTa="kiwayqita";
+    public final static int _16=16;
 }

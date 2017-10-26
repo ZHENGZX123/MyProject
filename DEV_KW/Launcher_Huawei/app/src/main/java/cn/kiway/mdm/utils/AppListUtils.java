@@ -163,7 +163,6 @@ public class AppListUtils {
        // a18.icon = Utils.getIconByPackageName(context.getPackageManager(), a18);
         apps18.add(a18);
         data.add(apps18);
-
         //其他应用的数据。暂时屏蔽，改为由后台管控
 //        App a100 = new App();
 //        a100.name = "其他应用";
