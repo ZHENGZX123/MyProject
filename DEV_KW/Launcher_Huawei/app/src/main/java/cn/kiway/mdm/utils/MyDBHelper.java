@@ -211,6 +211,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 
+import cn.kiway.mdm.entity.AppCharge;
 import cn.kiway.mdm.entity.Network;
 import cn.kiway.mdm.entity.Wifi;
 
@@ -229,10 +230,16 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + TABLE_WIFI
             + "   (id integer primary key autoincrement,  name  text,  password  text  , timeRange text , level text)";
 
+    private static final String TABLE_APP = "app";
+    private static final String CREATE_TABLE_APP = " create table  IF NOT EXISTS "
+            + TABLE_APP
+            + "   (id integer primary key autoincrement,  name  text,  type  text  , timeRange text , version text , packages text , url text)";
+
+
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 2);
+        super(c, DB_NAME, null, 3);
     }
 
     @Override
@@ -242,6 +249,11 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WIFI);
         db.execSQL(CREATE_TABLE_WIFI);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_APP);
+        db.execSQL(CREATE_TABLE_APP);
+
+
     }
 
     @Override
@@ -249,6 +261,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         this.db = db;
         db.execSQL(CREATE_TABLE_NETWORK);
         db.execSQL(CREATE_TABLE_WIFI);
+        db.execSQL(CREATE_TABLE_APP);
     }
 
     //------------------------------------------Network----------------
@@ -335,6 +348,64 @@ public class MyDBHelper extends SQLiteOpenHelper {
         cur.close();
         db.close();
         return wifis;
+    }
+
+    //------------------------------------------app----------------
+
+    public void addAppcharge(AppCharge a) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", a.name);
+        values.put("type", a.type);
+        values.put("timeRange", a.timeRange);
+        values.put("version", a.version);
+        values.put("packages", a.packages);
+        values.put("url", a.url);
+        db.insert(TABLE_APP, null, values);
+        db.close();
+    }
+
+    public void deleteAppcharge() {
+        if (db == null)
+            db = getWritableDatabase();
+        db.delete(TABLE_APP, null, null);
+        db.close();
+    }
+
+    //-1就是全部 0:必选,1:白名单,2:黑名单
+    public ArrayList<AppCharge> getAllAppCharges(int type) {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = null;
+        if (type == -1) {
+            cur = db.query(TABLE_APP, null, null, null, null, null, null);
+        } else {
+            cur = db.query(TABLE_APP, null, "type=?", new String[]{type + ""}, null, null, null);
+        }
+        ArrayList<AppCharge> Appcharges = new ArrayList<>();
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            String id = cur.getString(cur.getColumnIndex("id"));
+            String name = cur.getString(cur.getColumnIndex("name"));
+            type = cur.getInt(cur.getColumnIndex("type"));
+            String timeRange = cur.getString(cur.getColumnIndex("timeRange"));
+            String version = cur.getString(cur.getColumnIndex("version"));
+            String packages = cur.getString(cur.getColumnIndex("packages"));
+            String url = cur.getString(cur.getColumnIndex("url"));
+
+            AppCharge a = new AppCharge();
+            a.id = id;
+            a.name = name;
+            a.type = type;
+            a.timeRange = timeRange;
+            a.version = version;
+            a.packages = packages;
+            a.url = url;
+            Appcharges.add(a);
+        }
+        cur.close();
+        db.close();
+        return Appcharges;
     }
 
 }

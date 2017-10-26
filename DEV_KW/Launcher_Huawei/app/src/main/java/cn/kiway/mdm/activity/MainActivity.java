@@ -57,17 +57,24 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //6.检查命令
         checkCommand();
         //7.测试
-        //Utils.uploadException(this);
+        //Utils.exceptions(this);
     }
 
     private void checkCommand() {
         new Thread() {
             @Override
             public void run() {
+                //10秒后开始检查
+                try {
+                    sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 while (!stop) {
                     Log.d("test", "检查开始");
                     //1.检查wifi
                     Utils.checkWifis(MainActivity.this);
+                    Utils.checkAppCharges(MainActivity.this);
                     Log.d("test", "检查结束");
                     try {
                         sleep(1000 * 60);
