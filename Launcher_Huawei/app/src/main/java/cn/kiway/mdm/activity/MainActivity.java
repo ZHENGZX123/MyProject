@@ -54,8 +54,29 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         uploadStatus();
         //5.拉取命令
         getCommand();
+        //6.检查命令
+        checkCommand();
         //7.测试
         //Utils.uploadException(this);
+    }
+
+    private void checkCommand() {
+        new Thread() {
+            @Override
+            public void run() {
+                while (!stop) {
+                    Log.d("test", "检查开始");
+                    //1.检查wifi
+                    Utils.checkWifis(MainActivity.this);
+                    Log.d("test", "检查结束");
+                    try {
+                        sleep(1000 * 60);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
     }
 
     private void initPassword() {
@@ -78,21 +99,9 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         new Thread() {
             @Override
             public void run() {
-                //1.wifi电子围栏
-                String receive = "";
-                //Utils.connectSSID(context, receive);
-                //2.APP白名单、APP时间分段
                 Utils.appCharge(MainActivity.this);
-                //AppListUtils
-                //3.网页打开黑名单
                 Utils.networkDeviceCharge(MainActivity.this);
                 Utils.wifi(MainActivity.this);
-                //4.安装app
-                //Utils.installAPP(context, receive);
-                //5.卸载app
-                //Utils.uninstallAPP(context, receive);
-                //6.打开app
-                //Utils.openAPP(context, receive);
             }
         }.start();
     }

@@ -3,6 +3,7 @@ package cn.kiway.mdm.activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -39,29 +40,16 @@ public class WebViewActivity extends BaseActivity {
     private void initData() {
         WebSettings settings = wv.getSettings();
         settings.setJavaScriptEnabled(true);
-        settings.setAppCacheEnabled(true);
-        settings.setUseWideViewPort(true);
-        settings.setDomStorageEnabled(true);
-        settings.setSupportZoom(false);
-        settings.setBuiltInZoomControls(false);
-        settings.setLoadWithOverviewMode(true);
 
         wv.setWebViewClient(new WebViewClient() {
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                Log.d("test", "onPageFinished url = " + url);
-            }
-
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.d("test", "url = " + url);
+                Log.d("test", "shouldOverrideUrlLoading url = " + url);
                 view.loadUrl(url);
                 return true;
             }
-
         });
+
 
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new WebChromeClient());
@@ -73,6 +61,9 @@ public class WebViewActivity extends BaseActivity {
             toast("不能为空");
             return;
         }
+        if (!content.startsWith("http")) {
+            content = "http://" + content;
+        }
         if (checkNetwork(content) == 1) {
             wv.loadUrl(content);
         } else if (checkNetwork(content) == 2 || checkNetwork(content) == 0) {
@@ -82,7 +73,7 @@ public class WebViewActivity extends BaseActivity {
 
     //1.白名单
     //2.黑名单
-    //TODO 需要优化
+    //TODO 需要优化,判断域名
     private int checkNetwork(String content) {
         int type = 0;
         ArrayList<Network> networks = new MyDBHelper(this).getAllNetworks();
@@ -93,5 +84,18 @@ public class WebViewActivity extends BaseActivity {
             }
         }
         return type;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (wv.canGoBack()) {
+                wv.goBack();
+                return true;
+            } else {
+                finish();
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
