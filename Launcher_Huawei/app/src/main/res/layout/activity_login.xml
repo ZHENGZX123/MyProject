@@ -42,10 +42,12 @@
                 android:layout_height="wrap_content"
                 android:text="班级：" />
 
-            <EditText
-                android:id="@+id/classET"
+            <Button
+                android:id="@+id/classBtn"
                 android:layout_width="150dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:onClick="selectClass"
+                android:text="请点击选择班级" />
 
         </LinearLayout>
 
@@ -65,7 +67,8 @@
             <EditText
                 android:id="@+id/codeET"
                 android:layout_width="150dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:singleLine="true" />
 
         </LinearLayout>
 
@@ -84,13 +87,14 @@
             <EditText
                 android:id="@+id/nameET"
                 android:layout_width="150dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:singleLine="true" />
 
         </LinearLayout>
 
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"

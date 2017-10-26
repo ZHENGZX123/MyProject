@@ -23,6 +23,7 @@ import org.json.JSONObject;
 public class KWApp extends Application {
 
     public static KWApp instance;
+    public static final String server = "http://192.168.8.161:8082/mdms/";
 
     @Override
     public void onCreate() {
@@ -62,7 +63,7 @@ public class KWApp extends Application {
             param.put("module", "student");
             Log.d("push", "param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            String url = "http://192.168.8.161:8082/mdms/push/installation";
+            String url = server + "push/installation";
             Log.d("test", "installationPush = " + url);
             client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
                 @Override

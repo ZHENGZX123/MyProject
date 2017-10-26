@@ -10,12 +10,9 @@ public class School implements Serializable {
 
     public String id;
     public String name;
+    public String schoolId;
+    public String regionId;
+    public String address;
+    public String code;
 
-    @Override
-    public String toString() {
-        return "School{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                '}';
-    }
 }
