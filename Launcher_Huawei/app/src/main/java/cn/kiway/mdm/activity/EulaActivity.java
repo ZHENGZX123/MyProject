@@ -59,8 +59,7 @@ public class EulaActivity extends Activity {
         mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
 
         if (isActiveMe()) {
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
+            jump();
         }
     }
 
@@ -94,11 +93,22 @@ public class EulaActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (!isActiveMe()) {
+        if (isActiveMe()) {
             Toast.makeText(this, "请先激活", Toast.LENGTH_SHORT).show();
-            return;
+        } else {
+            jump();
         }
-        startActivity(new Intent(this, MainActivity.class));
+    }
+
+    private void jump() {
+        //判断是否登录
+        boolean login = getSharedPreferences("kiway", 0).getBoolean("login", false);
+        if (login) {
+            startActivity(new Intent(this, MainActivity.class));
+        } else {
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+        finish();
     }
 
     private boolean isActiveMe() {

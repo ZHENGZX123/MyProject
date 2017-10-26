@@ -1,11 +1,9 @@
 package cn.kiway.mdm;
 
 import android.app.Application;
-import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.huawei.android.pushagent.api.PushManager;
@@ -15,6 +13,9 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONObject;
+
+import cn.kiway.mdm.utils.CrashHandler;
+import cn.kiway.mdm.utils.Utils;
 
 /**
  * Created by Administrator on 2017/6/9.
@@ -29,6 +30,7 @@ public class KWApp extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        CrashHandler.getInstance().init(this);
         huaweiPush();
     }
 
@@ -42,9 +44,7 @@ public class KWApp extends Application {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 1) {
-                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                String imei = tm.getDeviceId();
-                Log.d("huawei", "imei = " + tm.getDeviceId());
+                String imei = Utils.getIMEI(getApplicationContext());
                 installationPush(msg.obj.toString(), imei);
             }
         }
@@ -61,7 +61,7 @@ public class KWApp extends Application {
             param.put("deviceId", token);
             param.put("userId", imei);
             param.put("module", "student");
-            Log.d("push", "param = " + param.toString());
+            Log.d("test", "param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
             String url = server + "push/installation";
             Log.d("test", "installationPush = " + url);

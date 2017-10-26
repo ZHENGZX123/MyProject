@@ -1,19 +1,32 @@
 package cn.kiway.mdm.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.net.DhcpInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.util.Log;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -34,10 +47,12 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 
+import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.mdm.MDMHelper;
 
 import static android.content.Context.WIFI_SERVICE;
+import static cn.kiway.mdm.KWApp.server;
 
 /**
  * Created by Administrator on 2017/6/8.
@@ -191,7 +206,7 @@ public class Utils {
                 App a = new App();
                 a.name = packageInfo.applicationInfo.loadLabel(packageManager).toString();
                 a.packageName = packageInfo.packageName;
-               // a.icon = (packageInfo.applicationInfo.loadIcon(packageManager));
+                // a.icon = (packageInfo.applicationInfo.loadIcon(packageManager));
                 apps.add(a);
             }
         } catch (Exception e) {
@@ -209,7 +224,7 @@ public class Utils {
                     App a = new App();
                     a.name = packageInfo.applicationInfo.loadLabel(packageManager).toString();
                     a.packageName = packageInfo.packageName;
-                  //  a.icon = (packageInfo.applicationInfo.loadIcon(packageManager));
+                    //  a.icon = (packageInfo.applicationInfo.loadIcon(packageManager));
                     return a;
                 }
             }
@@ -467,4 +482,160 @@ public class Utils {
         //2.查看对应包名，直接打开
     }
 
+    public static String getIMEI(Context c) {
+        TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
+        String imei = tm.getDeviceId();
+        Log.d("test", "IMEI = " + imei);
+        return imei;
+    }
+
+    public static void uploadLocation(final MainActivity c, final double longitude, final double latitude) {
+        c.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.setTimeout(10000);
+                    //TODO 半小时一次
+                    JSONArray array = new JSONArray();
+                    JSONObject param = new JSONObject();
+                    param.put("IMEI", Utils.getIMEI(c));
+                    param.put("longitude", "" + longitude);
+                    param.put("latitude", "" + latitude);
+                    array.put(param);
+                    Log.d("test", "array = " + array.toString());
+                    StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
+                    String url = server + "device/locationTrack";
+                    Log.d("test", "locationTrack = " + url);
+                    client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "locationTrack onSuccess = " + ret);
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "locationTrack onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
+                }
+            }
+        });
+    }
+
+    public static void deviceRuntime(final Activity c, final String imei, final String flag) {
+        new Thread() {
+            @Override
+            public void run() {
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            AsyncHttpClient client = new AsyncHttpClient();
+                            client.setTimeout(10000);
+                            JSONArray array = new JSONArray();
+                            JSONObject param = new JSONObject();
+                            param.put("IMEI", imei);
+                            param.put("flag", flag);
+                            array.put(param);
+                            Log.d("test", "array = " + array.toString());
+                            StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
+                            String url = server + "device/deviceRuntime";
+                            Log.d("test", "deviceRuntime = " + url);
+                            client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                                @Override
+                                public void onSuccess(int code, Header[] headers, String ret) {
+                                    Log.d("test", "deviceRuntime onSuccess = " + ret);
+                                }
+
+                                @Override
+                                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                                    Log.d("test", "deviceRuntime onFailure = " + s);
+                                }
+                            });
+                        } catch (Exception e) {
+                            Log.d("test", "e = " + e.toString());
+                        }
+                    }
+                });
+            }
+        }.start();
+    }
+
+    public static void uploadException(MainActivity c) {
+        try {
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            RequestParams param = new RequestParams();
+            param.put("IMEI", getIMEI(c));
+            param.put("ip", getIP(c));
+            param.put("className", "MainActivity");
+            param.put("message", "NullPointException At line 76");
+            Log.d("test", "param = " + param.toString());
+            String url = server + "device/exceptions";
+            Log.d("test", "exceptions = " + url);
+            client.post(c, url, param, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "exceptions onSuccess = " + ret);
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "exceptions onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
+        }
+    }
+
+    private static String getIP(MainActivity c) {
+        try {
+            WifiManager wifi_service = (WifiManager) c.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            DhcpInfo dhcpInfo = wifi_service.getDhcpInfo();
+            WifiInfo wifiinfo = wifi_service.getConnectionInfo();
+            System.out.println("Wifi info----->" + wifiinfo.getIpAddress());
+            System.out.println("DHCP info gateway----->" + Formatter.formatIpAddress(dhcpInfo.gateway));
+            System.out.println("DHCP info netmask----->" + Formatter.formatIpAddress(dhcpInfo.netmask));
+            // DhcpInfo中的ipAddress是一个int型的变量，通过Formatter将其转化为字符串IP地址
+            String ip = Formatter.formatIpAddress(dhcpInfo.ipAddress);
+            Log.d("test", "ip = " + ip);
+            return ip;
+        } catch (Exception ex) {
+            Log.d("test", "getIp ex = " + ex.toString());
+        }
+        return "unknown";
+    }
+
+    public static void appCharge(final MainActivity c) {
+        c.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.setTimeout(10000);
+                    RequestParams param = new RequestParams();
+                    Log.d("test", "param = " + param.toString());
+                    String url = server + "device/appCharge";
+                    Log.d("test", "appCharge = " + url);
+                    client.get(c, url, param, new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "appCharge onSuccess = " + ret);
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "appCharge onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
+                }
+            }
+        });
+    }
 }
