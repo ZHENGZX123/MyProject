@@ -254,6 +254,32 @@ public class Utils {
         }
         return null;
     }
+    /**
+     06
+     * 通过包名获取应用程序的名称。
+     07
+     * @param context
+    08
+     *            Context对象。
+    09
+     * @param packageName
+    10
+     *            包名。
+    11
+     * @return 返回包名所对应的应用程序的名称。
+    12
+     */
+    public static String getProgramNameByPackageName(Context context, String packageName) {
+        PackageManager pm = context.getPackageManager();
+        String name = null;
+        try {
+            name = pm.getApplicationLabel(pm.getApplicationInfo(packageName,
+                    PackageManager.GET_META_DATA)).toString();
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return name;
+    }
 
     //判断有没有su文件
     public static boolean isRoot() {

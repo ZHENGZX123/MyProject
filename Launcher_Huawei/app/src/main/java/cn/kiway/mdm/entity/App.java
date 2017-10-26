@@ -13,4 +13,12 @@ public class App implements Serializable {
     //public Drawable icon;
     public boolean selected;
 
+    @Override
+    public String toString() {
+        return "App{" +
+                "name='" + name + '\'' +
+                ", packageName='" + packageName + '\'' +
+                ", selected=" + selected +
+                '}';
+    }
 }
