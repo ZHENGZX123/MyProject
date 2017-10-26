@@ -53,6 +53,7 @@ import java.util.Set;
 
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.entity.App;
+import cn.kiway.mdm.entity.AppCharge;
 import cn.kiway.mdm.entity.Network;
 import cn.kiway.mdm.entity.Wifi;
 
@@ -506,12 +507,12 @@ public class Utils {
                     client.setTimeout(10000);
                     //TODO 半小时一次
                     JSONArray array = new JSONArray();
-                    JSONObject param = new JSONObject();
-                    param.put("IMEI", Utils.getIMEI(c));
-                    param.put("longitude", "" + longitude);
-                    param.put("latitude", "" + latitude);
-                    array.put(param);
-                    Log.d("test", "array = " + array.toString());
+                    JSONObject o1 = new JSONObject();
+                    o1.put("imeis", Utils.getIMEI(c));
+                    o1.put("longitude", "" + longitude);
+                    o1.put("latitude", "" + latitude);
+                    array.put(o1);
+                    Log.d("test", "location array = " + array.toString());
                     StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
                     String url = server + "device/locationTrack";
                     Log.d("test", "locationTrack = " + url);
@@ -572,7 +573,7 @@ public class Utils {
         }.start();
     }
 
-    public static void uploadException(MainActivity c) {
+    public static void exceptions(MainActivity c) {
         try {
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
@@ -633,6 +634,19 @@ public class Utils {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "appCharge onSuccess = " + ret);
+
+                            try {
+                                JSONArray data = new JSONObject(ret).getJSONArray("data");
+                                ArrayList<AppCharge> networks = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<AppCharge>>() {
+                                }.getType());
+                                //存进数据库里 TODO 这里要用syncronised
+                                new MyDBHelper(c).deleteAppcharge();
+                                for (AppCharge n : networks) {
+                                    new MyDBHelper(c).addAppcharge(n);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         @Override
@@ -666,7 +680,7 @@ public class Utils {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 ArrayList<Network> networks = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Network>>() {
                                 }.getType());
-                                //存进数据库里
+                                //存进数据库里 TODO 这里要用syncronised
                                 new MyDBHelper(c).deleteNetwork();
                                 for (Network n : networks) {
                                     new MyDBHelper(c).addNetwork(n);
@@ -749,6 +763,30 @@ public class Utils {
                     }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void checkAppCharges(MainActivity m) {
+        try {
+            ArrayList<AppCharge> apps_type0 = new MyDBHelper(m).getAllAppCharges(0);
+            Log.d("test", "apps_type0 = " + apps_type0.size());
+            ArrayList<AppCharge> apps_type1 = new MyDBHelper(m).getAllAppCharges(1);
+            Log.d("test", "apps_type1 = " + apps_type1.size());
+            ArrayList<AppCharge> apps_type2 = new MyDBHelper(m).getAllAppCharges(2);
+            Log.d("test", "apps_type2 = " + apps_type2.size());
+            //1.检查type
+            for (AppCharge a : apps_type0) {
+
+            }
+            for (AppCharge a : apps_type1) {
+
+            }
+            for (AppCharge a : apps_type2) {
+
+            }
+            //2.检查时间段
         } catch (Exception e) {
             e.printStackTrace();
         }
