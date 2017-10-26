@@ -19,6 +19,8 @@ import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -49,6 +51,7 @@ import java.util.Set;
 
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.entity.App;
+import cn.kiway.mdm.entity.Network;
 import cn.kiway.mdm.mdm.MDMHelper;
 
 import static android.content.Context.WIFI_SERVICE;
@@ -630,6 +633,76 @@ public class Utils {
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "appCharge onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
+                }
+            }
+        });
+    }
+
+    public static void networkDeviceCharge(final MainActivity c) {
+        c.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.setTimeout(10000);
+                    RequestParams param = new RequestParams();
+                    Log.d("test", "param = " + param.toString());
+                    String url = server + "device/networkDeviceCharge";
+                    Log.d("test", "networkDeviceCharge = " + url);
+                    client.get(c, url, param, new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "networkDeviceCharge onSuccess = " + ret);
+                            try {
+                                JSONArray data = new JSONObject(ret).getJSONArray("data");
+                                ArrayList<Network> networks = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Network>>() {
+                                }.getType());
+                                //存进数据库里
+                                new MyDBHelper(c).deleteNetwork();
+                                for (Network n : networks) {
+                                    new MyDBHelper(c).addNetwork(n);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "networkDeviceCharge onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
+                }
+            }
+        });
+    }
+
+    public static void wifi(final MainActivity c) {
+        c.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.setTimeout(10000);
+                    RequestParams param = new RequestParams();
+                    Log.d("test", "param = " + param.toString());
+                    String url = server + "device/wifi";
+                    Log.d("test", "wifi = " + url);
+                    client.get(c, url, param, new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "wifi onSuccess = " + ret);
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "wifi onFailure = " + s);
                         }
                     });
                 } catch (Exception e) {

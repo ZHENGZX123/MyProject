@@ -208,69 +208,81 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
-import cn.kiway.mdm.entity.KV;
+import org.xutils.db.annotation.Table;
+
+import java.util.ArrayList;
+
+import cn.kiway.mdm.entity.Network;
 
 
 public class MyDBHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "mdm.db";
 
 
-    private static final String TABLE_KV = "KV";
-    private static final String CREATE_TABLE_KV = " create table  IF NOT EXISTS "
-            + TABLE_KV
-            + "   (id integer primary key autoincrement,  k  text,  v  text ) ";
+    private static final String TABLE_NETWORK = "Network";
+    private static final String CREATE_TABLE_NETWORK = " create table  IF NOT EXISTS "
+            + TABLE_NETWORK
+            + "   (id integer primary key autoincrement,  url  text,  type  text ) ";
 
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 9);
+        super(c, DB_NAME, null, 1);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int arg1, int arg2) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_KV);
-        db.execSQL(CREATE_TABLE_KV);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NETWORK);
+        db.execSQL(CREATE_TABLE_NETWORK);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         this.db = db;
-        db.execSQL(CREATE_TABLE_KV);
-        db.execSQL("CREATE UNIQUE INDEX index_k ON KV (k)");
+        db.execSQL(CREATE_TABLE_NETWORK);
     }
 
-    //------------------------------------------kv----------------
+    //------------------------------------------Network----------------
 
-    public void addKV(KV a) {
+    public void addNetwork(Network a) {
         if (db == null)
             db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("k", a.k);
-        values.put("v", a.v);
-        db.insert(TABLE_KV, null, values);
+        values.put("url", a.url);
+        values.put("type", a.type);
+        db.insert(TABLE_NETWORK, null, values);
         db.close();
     }
 
-    public KV getKVByK(String k) {
+    public void deleteNetwork() {
         if (db == null)
             db = getWritableDatabase();
-        Cursor cur = db.query(TABLE_KV, null, "k=?", new String[]{k}, null, null, null);
-        KV a = null;
+        db.delete(TABLE_NETWORK, null, null);
+        db.close();
+    }
+
+    public ArrayList<Network> getAllNetworks() {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_NETWORK, null, null, null, null, null, null);
+        ArrayList<Network> networks = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             String id = cur.getString(cur.getColumnIndex("id"));
-            k = cur.getString(cur.getColumnIndex("k"));
-            String v = cur.getString(cur.getColumnIndex("v"));
+            String url = cur.getString(cur.getColumnIndex("url"));
+            int type = cur.getInt(cur.getColumnIndex("type"));
 
-            a = new KV();
+            Network a = new Network();
             a.id = id;
-            a.k = k;
-            a.v = v;
+            a.url = url;
+            a.type = type;
+            networks.add(a);
 
         }
         cur.close();
         db.close();
-        return a;
+        return networks;
     }
 
 

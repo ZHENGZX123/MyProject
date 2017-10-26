@@ -86,7 +86,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 Utils.appCharge(MainActivity.this);
                 //AppListUtils
                 //3.网页打开黑名单
-                //MDMHelper.getAdapter().addNetworkAccessBlackList(null);
+                Utils.networkDeviceCharge(MainActivity.this);
+                Utils.wifi(MainActivity.this);
                 //4.安装app
                 //Utils.installAPP(context, receive);
                 //5.卸载app
@@ -135,7 +136,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         intent.setData(Contacts.People.CONTENT_URI);
         startActivity(intent);
     }
-
 
     public void SMS(View view) {
         try {
