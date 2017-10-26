@@ -40,6 +40,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,7 +54,7 @@ import java.util.Set;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.Network;
-import cn.kiway.mdm.mdm.MDMHelper;
+import cn.kiway.mdm.entity.Wifi;
 
 import static android.content.Context.WIFI_SERVICE;
 import static cn.kiway.mdm.KWApp.server;
@@ -396,9 +398,10 @@ public class Utils {
         return s;
     }
 
-    public static void connectSSID(Context c, String receive) {
-        String SSID = "KWHW2";
-        String password = "KWF58888";
+    public static void connectSSID(Context c, String SSID, String password) {
+        Log.d("test", "connectSSID SSID = " + SSID + " , password = " + password);
+        SSID = "KWHW2";
+        password = "KWF58888";
         if (TextUtils.isEmpty(SSID)) {
             return;
         }
@@ -411,20 +414,22 @@ public class Utils {
         String currentSSID = wifiInfo.getSSID().replace("\"", "");
         Log.d("test", "currentSSID = " + currentSSID);
         if (currentSSID.equals(SSID)) {
-            Log.d("test", "目标正确，不用连了");
+            Log.d("test", "当前连接着这个wifi");
             return;
         }
-        //1.先打开位置服务
-        MDMHelper.getAdapter().turnOnGPS(true);
+        //1.先打开位置服务 TODO
+        //MDMHelper.getAdapter().turnOnGPS(true);
         //2.搜索附近wifi
         boolean has = false;
         WifiAdmin admin = new WifiAdmin(c);
         admin.startScan();
         List<ScanResult> list = admin.getWifiList();
+        Log.d("test", "搜索到附近的wifi个数" + list.size());
         for (int i = 0; i < list.size(); i++) {
-            Log.d("test", " wifi = " + list.get(i).toString());
+            //Log.d("test", "附近的 wifi = " + list.get(i).toString());
             if (list.get(i).SSID.equals(SSID)) {
                 has = true;
+                break;
             }
         }
         //3.连接wifi
@@ -698,6 +703,18 @@ public class Utils {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "wifi onSuccess = " + ret);
+                            try {
+                                JSONArray data = new JSONObject(ret).getJSONArray("data");
+                                ArrayList<Wifi> wifis = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Wifi>>() {
+                                }.getType());
+                                //存进数据库里
+                                new MyDBHelper(c).deleteWifi();
+                                for (Wifi n : wifis) {
+                                    new MyDBHelper(c).addWifi(n);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         @Override
@@ -710,5 +727,42 @@ public class Utils {
                 }
             }
         });
+    }
+
+    public static void checkWifis(MainActivity m) {
+        try {
+            ArrayList<Wifi> wifis = new MyDBHelper(m).getAllWifis();
+            Log.d("test", "wifis = " + wifis);
+            for (Wifi w : wifis) {
+                String timeRange = w.timeRange;
+                JSONArray array = new JSONArray(timeRange);
+                int count = array.length();
+                //TODO 这个循环要改一下，判断level来做
+                for (int i = 0; i < count; i++) {
+                    JSONObject o = array.getJSONObject(i);
+                    String startTime = o.getString("startTime");
+                    String endTime = o.getString("endTime");
+                    boolean in = checkInTimes(startTime, endTime);
+                    if (in) {
+                        Utils.connectSSID(m, w.name, w.password);
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static boolean checkInTimes(String startTime, String endTime) throws ParseException {
+        DateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        String current = sdf.format(new Date());
+        Date dt1 = sdf.parse(startTime);
+        Date dt2 = sdf.parse(endTime);
+        Date dtNow = sdf.parse(current);
+        if (dtNow.getTime() > dt1.getTime() && dtNow.getTime() < dt2.getTime()) {
+            return true;
+        }
+        return false;
     }
 }

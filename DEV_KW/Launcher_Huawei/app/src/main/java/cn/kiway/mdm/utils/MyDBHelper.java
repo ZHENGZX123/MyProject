@@ -208,13 +208,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
-import org.xutils.db.annotation.Table;
 
 import java.util.ArrayList;
 
 import cn.kiway.mdm.entity.Network;
+import cn.kiway.mdm.entity.Wifi;
 
 
 public class MyDBHelper extends SQLiteOpenHelper {
@@ -224,24 +222,33 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_NETWORK = "Network";
     private static final String CREATE_TABLE_NETWORK = " create table  IF NOT EXISTS "
             + TABLE_NETWORK
-            + "   (id integer primary key autoincrement,  url  text,  type  text ) ";
+            + "   (id integer primary key autoincrement,  url  text,  type  text )";
+
+    private static final String TABLE_WIFI = "wifi";
+    private static final String CREATE_TABLE_WIFI = " create table  IF NOT EXISTS "
+            + TABLE_WIFI
+            + "   (id integer primary key autoincrement,  name  text,  password  text  , timeRange text , level text)";
 
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 1);
+        super(c, DB_NAME, null, 2);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int arg1, int arg2) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NETWORK);
         db.execSQL(CREATE_TABLE_NETWORK);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WIFI);
+        db.execSQL(CREATE_TABLE_WIFI);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         this.db = db;
         db.execSQL(CREATE_TABLE_NETWORK);
+        db.execSQL(CREATE_TABLE_WIFI);
     }
 
     //------------------------------------------Network----------------
@@ -278,12 +285,56 @@ public class MyDBHelper extends SQLiteOpenHelper {
             a.url = url;
             a.type = type;
             networks.add(a);
-
         }
         cur.close();
         db.close();
         return networks;
     }
 
+    //------------------------------------------wifi----------------
+
+    public void addWifi(Wifi a) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", a.name);
+        values.put("password", a.password);
+        values.put("timeRange", a.timeRange);
+        values.put("level", a.level);
+        db.insert(TABLE_WIFI, null, values);
+        db.close();
+    }
+
+    public void deleteWifi() {
+        if (db == null)
+            db = getWritableDatabase();
+        db.delete(TABLE_WIFI, null, null);
+        db.close();
+    }
+
+    public ArrayList<Wifi> getAllWifis() {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_WIFI, null, null, null, null, null, null);
+        ArrayList<Wifi> wifis = new ArrayList<>();
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            String id = cur.getString(cur.getColumnIndex("id"));
+            String name = cur.getString(cur.getColumnIndex("name"));
+            String password = cur.getString(cur.getColumnIndex("password"));
+            String timeRange = cur.getString(cur.getColumnIndex("timeRange"));
+            int level = cur.getInt(cur.getColumnIndex("level"));
+
+            Wifi a = new Wifi();
+            a.id = id;
+            a.name = name;
+            a.password = password;
+            a.timeRange = timeRange;
+            a.level = level;
+            wifis.add(a);
+        }
+        cur.close();
+        db.close();
+        return wifis;
+    }
 
 }
