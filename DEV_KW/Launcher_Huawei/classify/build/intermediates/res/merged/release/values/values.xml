@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="sd">#10333333</color>
+    <declare-styleable name="ClassifyView"><attr format="fraction" name="SubRatio"/><attr format="integer" name="MainSpanCount"/><attr format="integer" name="SubSpanCount"/><attr format="color" name="ShadowColor"/><attr format="integer" name="AnimationDuration"/><attr format="dimension" name="EdgeWidth"/><attr format="dimension" name="MainPaddingLeft"/><attr format="dimension" name="MainPaddingTop"/><attr format="dimension" name="MainPaddingRight"/><attr format="dimension" name="MainPaddingBottom"/><attr format="dimension" name="MainPadding"/><attr format="boolean" name="MainClipToPadding"/><attr format="dimension" name="SubPaddingLeft"/><attr format="dimension" name="SubPaddingTop"/><attr format="dimension" name="SubPaddingRight"/><attr format="dimension" name="SubPaddingBottom"/><attr format="dimension" name="SubPadding"/><attr format="boolean" name="SubClipToPadding"/><attr format="float" name="DragScaleX"/><attr format="float" name="DragScaleY"/><attr format="float" name="DragInMergeScaleX"/><attr format="float" name="DragInMergeScaleY"/><attr format="enum" name="DragScalePivotGravity">
+            <enum name="leftTop" value="0"/>
+            <enum name="rightTop" value="1"/>
+            <enum name="leftBottom" value="2"/>
+            <enum name="rightBottom" value="3"/>
+            <enum name="center" value="4"/>
+        </attr></declare-styleable>
+    <declare-styleable name="InsertAbleGridView"><attr format="integer" name="RowCount"/><attr format="integer" name="ColumnCount"/><attr format="dimension" name="RowGap"/><attr format="dimension" name="ColumnGap"/><attr format="dimension" name="InnerPadding"/><attr format="dimension" name="OutlinePadding"/><attr format="dimension" name="OutlineWidth"/><attr format="color" name="OutlineColor"/></declare-styleable>
+    <declare-styleable name="RecyclerView"><attr format="string" name="layoutManager"/><attr name="android:orientation"/><attr format="integer" name="spanCount"/><attr format="boolean" name="reverseLayout"/><attr format="boolean" name="stackFromEnd"/></declare-styleable>
+    <dimen name="item_touch_helper_max_drag_scroll_per_frame">20dp</dimen>
+    <dimen name="item_touch_helper_swipe_escape_max_velocity">800dp</dimen>
+    <dimen name="item_touch_helper_swipe_escape_velocity">120dp</dimen>
+    <item name="item_touch_helper_previous_elevation" type="id"/>
+    <string name="app_name">classify</string>
+    <string name="sub_container">sub_container</string>
+    <style name="ClassifyViewTheme" parent="android:Theme.Holo.Light">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimAmount">0.2</item>
+    </style>
+    <style name="DefaultAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_down</item>
+    </style>
+    <style name="DefaultStyle">
+        <item name="MainSpanCount">4</item>
+        <item name="SubRatio">40%</item>
+        <item name="SubSpanCount">4</item>
+        <item name="ShadowColor">#f4221231</item>
+        <item name="AnimationDuration">@android:integer/config_mediumAnimTime</item>
+        <item name="EdgeWidth">0dp</item>
+    </style>
+    <style name="InsertAbleGridViewDefaultStyle">
+        <item name="RowCount">2</item>
+        <item name="ColumnCount">2</item>
+        <item name="RowGap">5dp</item>
+        <item name="ColumnGap">5dp</item>
+        <item name="OutlinePadding">8dp</item>
+        <item name="OutlineWidth">1dp</item>
+        <item name="OutlineColor">#ffffff</item>
+        <item name="InnerPadding">6dp</item>
+    </style>
+</resources>

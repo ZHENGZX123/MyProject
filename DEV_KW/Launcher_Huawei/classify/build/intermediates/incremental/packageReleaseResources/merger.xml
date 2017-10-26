@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main$Generated" generated="true"><source path="F:\kiway_xm\Launcher_Huawei\classify\src\main\res"/><source path="F:\kiway_xm\Launcher_Huawei\classify\build\generated\res\rs\release"/><source path="F:\kiway_xm\Launcher_Huawei\classify\build\generated\res\resValues\release"/></dataSet><dataSet config="release$Generated" generated="true"><source path="F:\kiway_xm\Launcher_Huawei\classify\src\release\res"/></dataSet><dataSet config="main" generated-set="main$Generated"><source path="F:\kiway_xm\Launcher_Huawei\classify\src\main\res"><file name="slide_down" path="F:\kiway_xm\Launcher_Huawei\classify\src\main\res\anim\slide_down.xml" qualifiers="" type="anim"/><file name="slide_up" path="F:\kiway_xm\Launcher_Huawei\classify\src\main\res\anim\slide_up.xml" qualifiers="" type="anim"/><file name="simple_item" path="F:\kiway_xm\Launcher_Huawei\classify\src\main\res\layout\simple_item.xml" qualifiers="" type="layout"/><file name="sub_content" path="F:\kiway_xm\Launcher_Huawei\classify\src\main\res\layout\sub_content.xml" qualifiers="" type="layout"/><file path="F:\kiway_xm\Launcher_Huawei\classify\src\main\res\values\attrs.xml" qualifiers=""><declare-styleable name="ClassifyView">
+        <attr format="fraction" name="SubRatio"/>
+        <attr format="integer" name="MainSpanCount"/>
+        <attr format="integer" name="SubSpanCount"/>
+        <attr format="color" name="ShadowColor"/>
+        <attr format="integer" name="AnimationDuration"/>
+        <attr format="dimension" name="EdgeWidth"/>
+        <attr format="dimension" name="MainPaddingLeft"/>
+        <attr format="dimension" name="MainPaddingTop"/>
+        <attr format="dimension" name="MainPaddingRight"/>
+        <attr format="dimension" name="MainPaddingBottom"/>
+        <attr format="dimension" name="MainPadding"/>
+        <attr format="boolean" name="MainClipToPadding"/>
+        <attr format="dimension" name="SubPaddingLeft"/>
+        <attr format="dimension" name="SubPaddingTop"/>
+        <attr format="dimension" name="SubPaddingRight"/>
+        <attr format="dimension" name="SubPaddingBottom"/>
+        <attr format="dimension" name="SubPadding"/>
+        <attr format="boolean" name="SubClipToPadding"/>
+        <attr format="float" name="DragScaleX"/>
+        <attr format="float" name="DragScaleY"/>
+        <attr format="float" name="DragInMergeScaleX"/>
+        <attr format="float" name="DragInMergeScaleY"/>
+        <attr format="enum" name="DragScalePivotGravity">
+            <enum name="leftTop" value="0"/>
+            <enum name="rightTop" value="1"/>
+            <enum name="leftBottom" value="2"/>
+            <enum name="rightBottom" value="3"/>
+            <enum name="center" value="4"/>
+        </attr>
+    </declare-styleable><declare-styleable name="InsertAbleGridView">
+        <attr format="integer" name="RowCount"/>
+        <attr format="integer" name="ColumnCount"/>
+        <attr format="dimension" name="RowGap"/>
+        <attr format="dimension" name="ColumnGap"/>
+        <attr format="dimension" name="InnerPadding"/>
+        <attr format="dimension" name="OutlinePadding"/>
+        <attr format="dimension" name="OutlineWidth"/>
+        <attr format="color" name="OutlineColor"/>
+    </declare-styleable></file><file path="F:\kiway_xm\Launcher_Huawei\classify\src\main\res\values\classify_style.xml" qualifiers=""><style name="DefaultAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_down</item>
+    </style><style name="ClassifyViewTheme" parent="android:Theme.Holo.Light">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimAmount">0.2</item>
+    </style><style name="InsertAbleGridViewDefaultStyle">
+        <item name="RowCount">2</item>
+        <item name="ColumnCount">2</item>
+        <item name="RowGap">5dp</item>
+        <item name="ColumnGap">5dp</item>
+        <item name="OutlinePadding">8dp</item>
+        <item name="OutlineWidth">1dp</item>
+        <item name="OutlineColor">#ffffff</item>
+        <item name="InnerPadding">6dp</item>
+    </style><style name="DefaultStyle">
+        <item name="MainSpanCount">4</item>
+        <item name="SubRatio">40%</item>
+        <item name="SubSpanCount">4</item>
+        <item name="ShadowColor">#f4221231</item>
+        <item name="AnimationDuration">@android:integer/config_mediumAnimTime</item>
+        <item name="EdgeWidth">0dp</item>
+    </style></file><file path="F:\kiway_xm\Launcher_Huawei\classify\src\main\res\values\strings.xml" qualifiers=""><string name="sub_container">sub_container</string><string name="app_name">classify</string></file><file path="F:\kiway_xm\Launcher_Huawei\classify\src\main\res\values\colors.xml" qualifiers=""><color name="sd">#10333333</color></file></source><source path="F:\kiway_xm\Launcher_Huawei\classify\build\generated\res\rs\release"/><source path="F:\kiway_xm\Launcher_Huawei\classify\build\generated\res\resValues\release"/></dataSet><dataSet config="release" generated-set="release$Generated"><source path="F:\kiway_xm\Launcher_Huawei\classify\src\release\res"/></dataSet><mergedItems><configuration qualifiers=""><declare-styleable name="ClassifyView"><attr format="fraction" name="SubRatio"/><attr format="integer" name="MainSpanCount"/><attr format="integer" name="SubSpanCount"/><attr format="color" name="ShadowColor"/><attr format="integer" name="AnimationDuration"/><attr format="dimension" name="EdgeWidth"/><attr format="dimension" name="MainPaddingLeft"/><attr format="dimension" name="MainPaddingTop"/><attr format="dimension" name="MainPaddingRight"/><attr format="dimension" name="MainPaddingBottom"/><attr format="dimension" name="MainPadding"/><attr format="boolean" name="MainClipToPadding"/><attr format="dimension" name="SubPaddingLeft"/><attr format="dimension" name="SubPaddingTop"/><attr format="dimension" name="SubPaddingRight"/><attr format="dimension" name="SubPaddingBottom"/><attr format="dimension" name="SubPadding"/><attr format="boolean" name="SubClipToPadding"/><attr format="float" name="DragScaleX"/><attr format="float" name="DragScaleY"/><attr format="float" name="DragInMergeScaleX"/><attr format="float" name="DragInMergeScaleY"/><attr format="enum" name="DragScalePivotGravity">
+            <enum name="leftTop" value="0"/>
+            <enum name="rightTop" value="1"/>
+            <enum name="leftBottom" value="2"/>
+            <enum name="rightBottom" value="3"/>
+            <enum name="center" value="4"/>
+        </attr></declare-styleable><declare-styleable name="InsertAbleGridView"><attr format="integer" name="RowCount"/><attr format="integer" name="ColumnCount"/><attr format="dimension" name="RowGap"/><attr format="dimension" name="ColumnGap"/><attr format="dimension" name="InnerPadding"/><attr format="dimension" name="OutlinePadding"/><attr format="dimension" name="OutlineWidth"/><attr format="color" name="OutlineColor"/></declare-styleable></configuration></mergedItems></merger>

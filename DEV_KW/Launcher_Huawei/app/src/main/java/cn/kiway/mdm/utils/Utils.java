@@ -191,7 +191,7 @@ public class Utils {
                 App a = new App();
                 a.name = packageInfo.applicationInfo.loadLabel(packageManager).toString();
                 a.packageName = packageInfo.packageName;
-                a.icon = (packageInfo.applicationInfo.loadIcon(packageManager));
+               // a.icon = (packageInfo.applicationInfo.loadIcon(packageManager));
                 apps.add(a);
             }
         } catch (Exception e) {
@@ -209,7 +209,7 @@ public class Utils {
                     App a = new App();
                     a.name = packageInfo.applicationInfo.loadLabel(packageManager).toString();
                     a.packageName = packageInfo.packageName;
-                    a.icon = (packageInfo.applicationInfo.loadIcon(packageManager));
+                  //  a.icon = (packageInfo.applicationInfo.loadIcon(packageManager));
                     return a;
                 }
             }
