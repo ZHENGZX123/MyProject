@@ -25,6 +25,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
         String content = "获取token和belongId成功，token = " + token + ",belongId = " + belongId;
         Log.d("huawei", content);
 
+        context.getSharedPreferences("kiway", 0).edit().putString("token", token).commit();
+
         //注册一下
         if (KWApp.instance != null) {
             Message msg = new Message();
@@ -32,8 +34,6 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             msg.obj = token;
             KWApp.instance.mHandler.sendMessage(msg);
         }
-
-
     }
 
 

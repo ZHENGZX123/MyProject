@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.mdm.R;
-import cn.kiway.mdm.entity.School;
+import cn.kiway.mdm.entity.Class;
 
 import static cn.kiway.mdm.KWApp.server;
 
@@ -33,16 +33,16 @@ import static cn.kiway.mdm.KWApp.server;
  * Created by Administrator on 2017/10/17.
  */
 
-public class SchoolListActivity extends BaseActivity {
+public class ClassListActivity extends BaseActivity {
 
     private ListView lv1;
     private MyAdapter adapter1;
-    private ArrayList<School> schools = new ArrayList<>();
+    private ArrayList<Class> classes = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_schoollist);
+        setContentView(R.layout.activity_classlist);
 
         lv1 = (ListView) findViewById(R.id.lv);
         adapter1 = new MyAdapter();
@@ -52,33 +52,33 @@ public class SchoolListActivity extends BaseActivity {
         lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                School s = schools.get(i);
-                setResult(999, new Intent().putExtra("school", s));
+                Class s = classes.get(i);
+                setResult(9999, new Intent().putExtra("class", s));
                 finish();
             }
         });
     }
 
     private void initData() {
-        String area = getIntent().getStringExtra("area");
+        String area = getIntent().getStringExtra("schoolId");
         //根据area获取学校列表
         try {
             showPD();
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            String url = server + "common/school?addr=" + area;
-            Log.d("test", "school url = " + url);
+            String url = server + "common/class?schoolId=" + area;
+            Log.d("test", "Class url = " + url);
             client.get(this, url, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     dismissPD();
-                    Log.d("test", "school onSuccess = " + ret);
+                    Log.d("test", "Class onSuccess = " + ret);
                     try {
                         JSONArray data = new JSONObject(ret).getJSONArray("data");
-                        schools = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<School>>() {
+                        classes = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Class>>() {
                         }.getType());
-                        if (schools.size() == 0) {
-                            toast("该地区没有学校");
+                        if (classes.size() == 0) {
+                            toast("该学校没有班级");
                             return;
                         }
                         adapter1.notifyDataSetChanged();
@@ -89,9 +89,9 @@ public class SchoolListActivity extends BaseActivity {
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "school onFailure = " + s);
-                    toast("请求失败，请稍后再试");
                     dismissPD();
+                    Log.d("test", "Class onFailure = " + s);
+                    toast("请求失败，请稍后再试");
                 }
             });
         } catch (Exception e) {
@@ -107,7 +107,7 @@ public class SchoolListActivity extends BaseActivity {
         private final LayoutInflater inflater;
 
         public MyAdapter() {
-            inflater = LayoutInflater.from(SchoolListActivity.this);
+            inflater = LayoutInflater.from(ClassListActivity.this);
         }
 
         @Override
@@ -115,7 +115,7 @@ public class SchoolListActivity extends BaseActivity {
             View rowView = convertView;
             ViewHolder holder;
             if (rowView == null) {
-                rowView = inflater.inflate(R.layout.item_school, null);
+                rowView = inflater.inflate(R.layout.item_class, null);
                 holder = new ViewHolder();
 
                 holder.name = (TextView) rowView.findViewById(R.id.name);
@@ -124,7 +124,7 @@ public class SchoolListActivity extends BaseActivity {
             } else {
                 holder = (ViewHolder) rowView.getTag();
             }
-            final School s = schools.get(position);
+            final Class s = classes.get(position);
             holder.name.setText(s.name);
             return rowView;
         }
@@ -135,12 +135,12 @@ public class SchoolListActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return schools.size();
+            return classes.size();
         }
 
         @Override
-        public School getItem(int arg0) {
-            return schools.get(arg0);
+        public Class getItem(int arg0) {
+            return classes.get(arg0);
         }
 
         @Override

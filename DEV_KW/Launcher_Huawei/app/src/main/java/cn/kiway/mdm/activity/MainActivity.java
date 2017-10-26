@@ -71,7 +71,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //5.拉取命令
         //getCommand();
         //6.判断跳到login
-        //checkLogin();
+        checkLogin();
     }
 
     @Override
@@ -350,39 +350,4 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         toast(text);
     }
 
-    public void installationPush(final String token, final String imei) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.setTimeout(10000);
-                    Log.d("test", "huaweitoken = " + token);
-                    JSONObject param = new JSONObject();
-                    param.put("appId", "c77b6c47dbcee47d7ffbc9461da0c82a");
-                    param.put("type", Build.TYPE);
-                    param.put("deviceId", token);
-                    param.put("userId", imei);
-                    param.put("module", "student");
-                    Log.d("push", "param = " + param.toString());
-                    StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-                    String url = "http://192.168.8.161:8082/mdms/push/installation";
-                    Log.d("test", "installationPush = " + url);
-                    client.post(MainActivity.this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int code, Header[] headers, String ret) {
-                            Log.d("test", "installationPush onSuccess = " + ret);
-                        }
-
-                        @Override
-                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            Log.d("test", "installationPush onFailure = " + s);
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.d("test", "e = " + e.toString());
-                }
-            }
-        });
-    }
 }

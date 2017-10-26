@@ -390,7 +390,7 @@ public class Utils {
         //0.判断当前连接的是不是这个
         WifiManager wifiManager = (WifiManager) c.getSystemService(WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        String currentSSID = wifiInfo.getSSID().replace("\"","");
+        String currentSSID = wifiInfo.getSSID().replace("\"", "");
         Log.d("test", "currentSSID = " + currentSSID);
         if (currentSSID.equals(SSID)) {
             Log.d("test", "目标正确，不用连了");
@@ -453,24 +453,18 @@ public class Utils {
     }
 
     public static void installAPP(Context context, String receive) {
-        //1.解析receive
         //2.查看对应包名，手机是否安装有该apk
         //3.如果没有，下载
         //4.静默安装
     }
 
     public static void uninstallAPP(Context context, String receive) {
-        //1.解析receive
         //2.查看对应包名，手机是否安装有该apk
         //3.如果有，静默卸载
     }
 
     public static void openAPP(Context context, String receive) {
-        //1.解析receive
         //2.查看对应包名，直接打开
     }
 
-    public static void register(Context context, String deviceId, String token) {
-
-    }
 }
