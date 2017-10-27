@@ -5,8 +5,8 @@
       <filter>
         <option name="logLevel" value="verbose" />
         <option name="logMessagePattern" value="" />
-        <option name="logTagPattern" value="test" />
-        <option name="name" value="test" />
+        <option name="logTagPattern" value="cehsi" />
+        <option name="name" value="install" />
         <option name="packageNamePattern" value="" />
         <option name="pid" value="" />
       </filter>
@@ -34,470 +34,44 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_LOG_LEVEL" value="verbose" />
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="info" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="0dfc0e9d-41d2-4397-986a-12cec69d850f" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/assets" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/assets/shaders" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/assets/shaders/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/assets/shaders/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/res" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/res/resValues" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/res/resValues/androidTest" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/res/resValues/androidTest/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/res/resValues/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/res/resValues/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/res/rs" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/res/rs/androidTest" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/res/rs/androidTest/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/res/rs/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/res/rs/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/aidl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/aidl/androidTest" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/aidl/androidTest/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/aidl/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/aidl/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/apt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/apt/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/androidTest" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/androidTest/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/androidTest/debug/com" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/androidTest/debug/com/anarchy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/androidTest/debug/com/anarchy/classify" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/androidTest/debug/com/anarchy/classify/test" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/debug/com" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/debug/com/anarchy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/debug/com/anarchy/classify" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/release/com" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/release/com/anarchy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/release/com/anarchy/classify" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/androidTest" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/androidTest/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/androidTest/debug/android" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/androidTest/debug/android/support" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/androidTest/debug/android/support/v4" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/androidTest/debug/android/support/v7" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/androidTest/debug/android/support/v7/recyclerview" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/androidTest/debug/com" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/androidTest/debug/com/anarchy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/androidTest/debug/com/anarchy/classify" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/androidTest/debug/com/anarchy/classify/test" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/debug/android" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/debug/android/support" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/debug/android/support/v4" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/debug/android/support/v7" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/debug/android/support/v7/recyclerview" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/debug/com" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/debug/com/anarchy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/debug/com/anarchy/classify" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/release/android" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/release/android/support" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/release/android/support/v4" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/release/android/support/v7" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/release/android/support/v7/recyclerview" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/release/com" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/release/com/anarchy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/release/com/anarchy/classify" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/rs" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/rs/androidTest" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/rs/androidTest/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/rs/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/rs/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/annotations" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/annotations/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/annotations/release/annotations.zip" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/androidTest" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/androidTest/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/androidTest/debug/multi" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/androidTest/debug/single" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/debug/multi" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/debug/single" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/release/multi" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/release/single" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/debug/aidl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/debug/assets" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/debug/res" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/debug/res/anim" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/debug/res/layout" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/debug/res/values" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default/aidl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default/assets" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default/classes.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default/jni" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default/libs" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default/res" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default/res/anim" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default/res/layout" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default/res/values" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/android" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/android/support" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/android/support/v4" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/android/support/v4/R.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/android/support/v7" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/android/support/v7/recyclerview" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/android/support/v7/recyclerview/R$attr.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/android/support/v7/recyclerview/R$dimen.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/android/support/v7/recyclerview/R$id.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/android/support/v7/recyclerview/R$styleable.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/android/support/v7/recyclerview/R.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/BuildConfig.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyDragShadowBuilder.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyItemAnimator$1.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyItemAnimator$2.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyItemAnimator$3.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyItemAnimator$4.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyItemAnimator$5.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyItemAnimator$6.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyItemAnimator$7.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyItemAnimator$8.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyItemAnimator$ChangeInfo.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyItemAnimator$MoveInfo.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyItemAnimator$VpaListenerAdapter.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyItemAnimator.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$1.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$10.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$11.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$12.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$13.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$14.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$2.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$3.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$4.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$5.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$6.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$7.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$8.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$9$1.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$9.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$DragListener.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$ElevationHelper.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$MainDragListener.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$MoveState.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$MyGravity.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$Region.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView$State.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/ClassifyView.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/DragDrawable.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/MergeInfo.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/R$anim.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/R$attr.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/R$dimen.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/R$id.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/R$layout.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/R$string.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/R$style.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/R$styleable.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/R.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/adapter" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/adapter/BaseMainAdapter.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/adapter/BaseSubAdapter.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/callback" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/callback/BaseCallBack.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/callback/MainRecyclerViewCallBack.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/callback/SubRecyclerViewCallBack.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/BaseSimpleAdapter.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/ChangeInfo.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/PrimitiveSimpleAdapter$1.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/PrimitiveSimpleAdapter$SimpleHook.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/PrimitiveSimpleAdapter$SimpleMainAdapter.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/PrimitiveSimpleAdapter$SimpleSubAdapter.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/PrimitiveSimpleAdapter$ViewHolder.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/PrimitiveSimpleAdapter.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/SimpleAdapter$ViewHolder.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/SimpleAdapter.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/widget" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/widget/BagDrawable$1.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/widget/BagDrawable$2.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/widget/BagDrawable$3.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/widget/BagDrawable.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/widget/CanMergeView.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/widget/InsertAbleGridView$1.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/widget/InsertAbleGridView.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/simple/widget/MiViewHolder.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/util" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/classes/release/com/anarchy/classify/util/L.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental-safeguard" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental-safeguard/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/compileDebugAidl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/compileDebugAidl/dependency.store" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/compileDebugAndroidTestAidl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/compileDebugAndroidTestAidl/dependency.store" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/compileReleaseAidl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/compileReleaseAidl/dependency.store" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugAndroidTestResources" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugAndroidTestResources/aapt-temp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugAndroidTestResources/merged.dir" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugAssets" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugResources" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugResources/merged.dir" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugShaders" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeReleaseAssets" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeReleaseJniLibFolders" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeReleaseResources" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeReleaseResources/merged.dir" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeReleaseShaders" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageDebugAndroidTest" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageDebugAndroidTest/zip-cache" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageDebugResources" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageDebugResources/merged.dir" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageReleaseResources" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageReleaseResources/merged.dir" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/processDebugAndroidTestResources" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/processDebugAndroidTestResources/aapt-temp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/processDebugResources" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/processDebugResources/aapt-temp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/processReleaseResources" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/processReleaseResources/aapt-temp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/jniLibs" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/jniLibs/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/lint" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/manifest" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/manifest/androidTest" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/manifest/androidTest/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/manifest/tmp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/manifests" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/manifests/aapt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/manifests/aapt/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/manifests/aapt/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/androidTest" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/androidTest/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/androidTest/debug/anim" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/androidTest/debug/layout" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/androidTest/debug/values" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/debug/anim" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/debug/layout" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/debug/values" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/release/anim" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/release/layout" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/release/values" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/resources-debug-androidTest.ap_" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/rs" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/rs/androidTest" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/rs/androidTest/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/rs/androidTest/debug/lib" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/rs/androidTest/debug/obj" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/rs/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/rs/debug/lib" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/rs/debug/obj" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/rs/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/rs/release/lib" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/rs/release/obj" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/shaders" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/shaders/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/shaders/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/symbols" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/symbols/androidTest" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/symbols/androidTest/debug" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/transforms" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/transforms/mergeJavaRes" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/transforms/mergeJavaRes/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/transforms/mergeJniLibs" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/transforms/mergeJniLibs/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/transforms/stripDebugSymbol" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/transforms/stripDebugSymbol/release" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/transforms/stripDebugSymbol/release/jars" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/transforms/stripDebugSymbol/release/jars/2000" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/transforms/stripDebugSymbol/release/jars/2000/10" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/transforms/stripDebugSymbol/release/jars/2000/10/1994fd2e1ab453b38f0d84c50dd88a0f99cfe0c0.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/outputs" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/outputs/aar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/tmp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/tmp/compileReleaseJavaWithJavac" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/tmp/compileReleaseJavaWithJavac/emptySourcePathRef" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/androidTest" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/androidTest/java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/androidTest/java/com" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/androidTest/java/com/anarchy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/androidTest/java/com/anarchy/classify" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/adapter" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/callback" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/widget" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/util" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/res" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/res/anim" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/res/layout" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/res/values" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/test" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/test/java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/test/java/com" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/test/java/com/anarchy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/test/java/com/anarchy/classify" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/FileACache.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_sample_vertical.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/.gitignore" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build.gradle" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/androidTest/debug/com/anarchy/classify/test/BuildConfig.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/debug/com/anarchy/classify/BuildConfig.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/buildConfig/release/com/anarchy/classify/BuildConfig.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/androidTest/debug/android/support/v4/R.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/androidTest/debug/android/support/v7/recyclerview/R.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/androidTest/debug/com/anarchy/classify/R.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/androidTest/debug/com/anarchy/classify/test/R.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/debug/android/support/v4/R.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/debug/android/support/v7/recyclerview/R.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/debug/com/anarchy/classify/R.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/release/android/support/v4/R.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/release/android/support/v7/recyclerview/R.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/generated/source/r/release/com/anarchy/classify/R.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/androidTest/debug/multi/values.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/androidTest/debug/single/anim.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/androidTest/debug/single/layout.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/debug/multi/values.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/debug/single/anim.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/debug/single/layout.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/release/multi/values.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/release/single/anim.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/release/single/layout.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/debug/AndroidManifest.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/debug/R.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/debug/res/anim/slide_down.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/debug/res/anim/slide_up.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/debug/res/layout/simple_item.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/debug/res/layout/sub_content.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/debug/res/values/values.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default/AndroidManifest.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default/R.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default/res/anim/slide_down.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default/res/anim/slide_up.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default/res/layout/simple_item.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default/res/layout/sub_content.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/bundles/default/res/values/values.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental-safeguard/release/tag.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugAndroidTestResources/compile-file-map.properties" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugAndroidTestResources/merger.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugAssets/merger.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugResources/compile-file-map.properties" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugResources/merger.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugShaders/merger.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeReleaseAssets/merger.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeReleaseJniLibFolders/merger.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeReleaseResources/compile-file-map.properties" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeReleaseResources/merger.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeReleaseShaders/merger.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageDebugResources/compile-file-map.properties" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageDebugResources/merger.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageReleaseResources/compile-file-map.properties" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageReleaseResources/merger.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/manifest/androidTest/debug/AndroidManifest.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/manifests/aapt/debug/AndroidManifest.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/manifests/aapt/release/AndroidManifest.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/androidTest/debug/anim/slide_down.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/androidTest/debug/anim/slide_up.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/androidTest/debug/layout/simple_item.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/androidTest/debug/layout/sub_content.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/androidTest/debug/values/values.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/debug/anim/slide_down.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/debug/anim/slide_up.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/debug/layout/simple_item.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/debug/layout/sub_content.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/debug/values/values.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/release/anim/slide_down.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/release/anim/slide_up.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/release/layout/simple_item.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/release/layout/sub_content.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/res/merged/release/values/values.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/symbols/androidTest/debug/R.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/typedefs.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/outputs/aar/classify-debug.aar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/outputs/aar/classify-release.aar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/classify.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/proguard-rules.pro" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/androidTest/java/com/anarchy/classify/ApplicationTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/AndroidManifest.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/ClassifyDragShadowBuilder.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/ClassifyItemAnimator.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/ClassifyView.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/DragDrawable.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/MergeInfo.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/adapter/BaseMainAdapter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/adapter/BaseSubAdapter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/callback/BaseCallBack.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/callback/MainRecyclerViewCallBack.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/callback/SubRecyclerViewCallBack.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/BaseSimpleAdapter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/ChangeInfo.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/PrimitiveSimpleAdapter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/SimpleAdapter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/widget/BagDrawable.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/widget/CanMergeView.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/widget/InsertAbleGridView.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/widget/MiViewHolder.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/util/L.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/res/anim/slide_down.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/res/anim/slide_up.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/res/layout/simple_item.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/res/layout/sub_content.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/res/values/attrs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/res/values/classify_style.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/res/values/colors.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/main/res/values/strings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/src/test/java/com/anarchy/classify/ExampleUnitTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugAndroidTestResources/merged.dir/values" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugResources/merged.dir/values" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeReleaseResources/merged.dir/values" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageDebugResources/merged.dir/values" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageReleaseResources/merged.dir/values" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugAndroidTestResources/merged.dir/values/values.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeReleaseResources/merged.dir/values/values.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageDebugResources/merged.dir/values/values.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageReleaseResources/merged.dir/values/values.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/fileHashes.bin" afterPath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/fileHashes.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/fileSnapshots.bin" afterPath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/fileSnapshots.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/taskArtifacts.bin" afterPath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/taskArtifacts.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/taskArtifacts.lock" afterPath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/taskArtifacts.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_app_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.bin" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_app_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_app_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_app_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classify/build/intermediates/annotations/release/annotations.zip" afterPath="$PROJECT_DIR$/classify/build/intermediates/annotations/release/annotations.zip" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/AppListActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/AppListActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/AppListActivity2.java" afterPath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/AppListActivity2.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/AppListActivity3.java" afterPath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/AppListActivity3.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/LoginActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/LoginActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/MainActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/adapter/AppListAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/adapter/AppListAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/entity/App.java" afterPath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/entity/App.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/AppListUtils.java" afterPath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/AppListUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/Utils.java" afterPath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/Utils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/widget/WheelAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/widget/WheelAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/widget/adapters/AdapterWheel.java" afterPath="$PROJECT_DIR$/app/src/main/java/widget/adapters/AdapterWheel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/widget/service/XmlParserHandler.java" afterPath="$PROJECT_DIR$/app/src/main/java/widget/service/XmlParserHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/gird_view.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/gird_view.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_grid_app.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_grid_app.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/settings.gradle" afterPath="$PROJECT_DIR$/settings.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/FileACache.java" afterPath="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/FileACache.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classify/build/intermediates/blame/res/androidTest/debug/multi/values.json" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/androidTest/debug/multi/values.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classify/build/intermediates/blame/res/debug/multi/values.json" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/debug/multi/values.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classify/build/intermediates/blame/res/release/multi/values.json" afterPath="$PROJECT_DIR$/classify/build/intermediates/blame/res/release/multi/values.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugAndroidTestResources/compile-file-map.properties" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugAndroidTestResources/compile-file-map.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugResources/compile-file-map.properties" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugResources/compile-file-map.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugResources/merger.xml" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeDebugResources/merger.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeReleaseResources/compile-file-map.properties" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeReleaseResources/compile-file-map.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeReleaseResources/merger.xml" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/mergeReleaseResources/merger.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageDebugResources/compile-file-map.properties" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageDebugResources/compile-file-map.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageDebugResources/merger.xml" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageDebugResources/merger.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageReleaseResources/compile-file-map.properties" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageReleaseResources/compile-file-map.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageReleaseResources/merger.xml" afterPath="$PROJECT_DIR$/classify/build/intermediates/incremental/packageReleaseResources/merger.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classify/build/outputs/aar/classify-debug.aar" afterPath="$PROJECT_DIR$/classify/build/outputs/aar/classify-debug.aar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classify/build/outputs/aar/classify-release.aar" afterPath="$PROJECT_DIR$/classify/build/outputs/aar/classify-release.aar" />
     </list>
     <ignored path="Launcher.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -529,50 +103,91 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/MainActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="5218">
+              <caret line="272" column="48" selection-start-line="272" selection-start-column="48" selection-end-line="272" selection-end-column="48" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#3006#3400#0" expanded="true" />
+                <element signature="e#3399#3400#0" expanded="true" />
+                <element signature="e#4056#4309#0" expanded="true" />
+                <element signature="e#4308#4309#0" expanded="true" />
+                <element signature="e#4368#5129#0" expanded="true" />
+                <element signature="e#5128#5129#0" expanded="true" />
+                <element signature="e#5703#6886#0" expanded="true" />
+                <element signature="e#6885#6886#0" expanded="true" />
+                <element signature="e#10613#11092#0" expanded="true" />
+                <element signature="e#11091#11092#0" expanded="true" />
+                <element signature="e#12631#13784#0" expanded="true" />
+                <element signature="e#13783#13784#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ShowMessageDailog.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/dialog/ShowMessageDailog.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="92">
+              <caret line="37" column="40" selection-start-line="37" selection-start-column="40" selection-end-line="37" selection-end-column="40" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AppListAdapter.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/adapter/AppListAdapter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-2209">
+              <caret line="39" column="11" selection-start-line="39" selection-start-column="11" selection-end-line="39" selection-end-column="11" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="HuaweiMDMAdapter.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/adapter/HuaweiMDMAdapter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="494">
+              <caret line="366" column="67" selection-start-line="366" selection-start-column="67" selection-end-line="366" selection-end-column="67" />
+              <folding>
+                <element signature="e#780#781#0" expanded="true" />
+                <element signature="e#806#807#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SimpleAdapter.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/SimpleAdapter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="176">
+              <caret line="22" column="46" selection-start-line="22" selection-start-column="46" selection-end-line="22" selection-end-column="46" />
+              <folding>
+                <element signature="e#533#534#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="FileACache.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/FileACache.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1115">
-              <caret line="126" column="39" selection-start-line="126" selection-start-column="39" selection-end-line="126" selection-end-column="39" />
+            <state relative-caret-position="349">
+              <caret line="27" column="37" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="37" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AppListActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/AppListActivity.java">
+      <file leaf-file-name="KWApp.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/KWApp.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="775">
-              <caret line="135" column="9" selection-start-line="135" selection-start-column="9" selection-end-line="135" selection-end-column="9" />
+            <state relative-caret-position="808">
+              <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="HuaweiMessageReceiver.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/broadcast/HuaweiMessageReceiver.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="44" column="12" selection-start-line="44" selection-start-column="12" selection-end-line="44" selection-end-column="12" />
-              <folding>
-                <element signature="e#3217#3355#0" expanded="true" />
-                <element signature="e#3354#3355#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/MainActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-404">
-              <caret line="199" column="34" selection-start-line="199" selection-start-column="34" selection-end-line="199" selection-end-column="34" />
-              <folding>
-                <element signature="e#3110#4125#0" expanded="true" />
-                <element signature="e#4124#4125#0" expanded="true" />
-                <element signature="e#7682#8161#0" expanded="true" />
-                <element signature="e#8160#8161#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -2812,7 +2427,7 @@
     <option name="modificationStamps">
       <map>
         <entry key="E:\repo_ali\Dev_KW\Launcher" value="4491745989886" />
-        <entry key="F:\kiway_xm\Launcher_Huawei" value="6035248973031" />
+        <entry key="F:\kiway_xm\Launcher_Huawei" value="6035445367947" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -3263,18 +2878,11 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/View/viewPager/OverViewPager.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/adapter/MyViewPagerAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/BaseActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/Constant.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/black_val.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/styles.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_app_list.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_password.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/ChangePassWordActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_lock.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/LockActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/View/viewPager/StereoPagerTransformer.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/dialog_message.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
@@ -3288,10 +2896,7 @@
         <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/EditAeraActivity.java" />
         <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/gird_view.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/LoginActivity.java" />
         <option value="$PROJECT_DIR$/classify/build.gradle" />
-        <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/item_grid_app.xml" />
         <option value="$PROJECT_DIR$/classify/build/intermediates/res/merged/release/values/values.xml" />
         <option value="$PROJECT_DIR$/classify/src/main/res/layout/simple_item.xml" />
@@ -3300,20 +2905,30 @@
         <option value="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/widget/BagDrawable.java" />
         <option value="$PROJECT_DIR$/classify/src/main/res/values/colors.xml" />
         <option value="$PROJECT_DIR$/classify/src/main/res/values/classify_style.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/FileACache.java" />
-        <option value="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/SimpleAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/entity/App.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/AppListUtils.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/AppListActivity3.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/AppListActivity2.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/Utils.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/adapter/AppListAdapter.java" />
         <option value="$PROJECT_DIR$/classify/src/main/res/layout/sub_content.xml" />
         <option value="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/ClassifyView.java" />
         <option value="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/DragDrawable.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/AppListActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/MainActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/LoginActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/dialog/ShowMessageDailog.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/Constant.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/entity/App.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/AppListUtils.java" />
+        <option value="$PROJECT_DIR$/app/build.gradle" />
+        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/Utils.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/broadcast/HuaweiMessageReceiver.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/LockActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/KWApp.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/AppReceiverIn.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/FileACache.java" />
+        <option value="$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/SimpleAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/adapter/AppListAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/adapter/HuaweiMDMAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/MainActivity.java" />
       </list>
     </option>
   </component>
@@ -3331,7 +2946,7 @@
     <OptionsSetting value="true" id="Status" />
     <OptionsSetting value="true" id="Edit" />
     <ConfirmationsSetting value="0" id="Add" />
-    <ConfirmationsSetting value="0" id="Remove" />
+    <ConfirmationsSetting value="1" id="Remove" />
   </component>
   <component name="ProjectView">
     <navigator currentView="AndroidView" proportions="" version="1">
@@ -3348,11 +2963,14 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane />
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches">
+        <subPane />
+      </pane>
+      <pane id="PackagesPane" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -3360,6 +2978,16 @@
               <option name="myItemId" value="Launcher_Huawei" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Gradle Scripts" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidBuildScriptsGroupNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Launcher_Huawei" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -3421,7 +3049,7 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="broadcast" />
+              <option name="myItemId" value="utils" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -3443,13 +3071,26 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="activity" />
+              <option name="myItemId" value="dialog" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Launcher_Huawei" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="manifests" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidManifestsGroupNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -3506,19 +3147,9 @@
           <option name="mySupportsDeletion" value="false" />
           <option name="myCanBeAbsent" value="false" />
           <option name="myId" value="UPDATED" />
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\adapter\HuaweiMDMAdapter.java</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\adapter\IMDMAdapter.java</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\KWApp.java</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\broadcast\HuaweiMessageReceiver.java</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\activity\SchoolListActivity.java</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\activity\EulaActivity.java</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\activity\LockActivity.java</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\activity\BaseActivity.java</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\entity\School.java</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\mdm\MDMHelper.java</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\AndroidManifest.xml</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\res\layout\layout_eula.xml</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\res\layout\activity_login.xml</PATH>
+          <PATH vcs="svn" revision="7605">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\utils\Utils.java</PATH>
+          <PATH vcs="svn" revision="7605">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\broadcast\HuaweiMessageReceiver.java</PATH>
+          <PATH vcs="svn" revision="7605">F:\kiway_xm\Launcher_Huawei\app\src\main\AndroidManifest.xml</PATH>
         </FILE-GROUP>
         <FILE-GROUP>
           <option name="myUpdateName" value="Created" />
@@ -3526,12 +3157,6 @@
           <option name="mySupportsDeletion" value="false" />
           <option name="myCanBeAbsent" value="false" />
           <option name="myId" value="CREATED" />
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\utils\MyDBHelper.java</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\activity\ClassListActivity.java</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\entity\KV.java</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\entity\Class.java</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\res\layout\item_class.xml</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\res\layout\activity_classlist.xml</PATH>
         </FILE-GROUP>
         <FILE-GROUP>
           <option name="myUpdateName" value="Deleted" />
@@ -3546,18 +3171,6 @@
           <option name="mySupportsDeletion" value="false" />
           <option name="myCanBeAbsent" value="false" />
           <option name="myId" value="RESTORED" />
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\.idea\libraries\support_media_compat_25_3_1.xml</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\.idea\libraries\support_compat_25_3_1.xml</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\.idea\libraries\support_fragment_25_3_1.xml</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\.idea\libraries\support_vector_drawable_25_3_1.xml</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\.idea\libraries\appcompat_v7_25_3_1.xml</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\.idea\libraries\support_core_ui_25_3_1.xml</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\.idea\libraries\constraint_layout_solver_1_0_2.xml</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\.idea\libraries\support_core_utils_25_3_1.xml</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\.idea\libraries\animated_vector_drawable_25_3_1.xml</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\.idea\libraries\support_v4_25_3_1.xml</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\.idea\libraries\constraint_layout_1_0_2.xml</PATH>
-          <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\.idea\libraries\support_annotations_25_3_1.xml</PATH>
         </FILE-GROUP>
       </FILE-GROUP>
       <FILE-GROUP>
@@ -3601,9 +3214,7 @@
         <option name="mySupportsDeletion" value="false" />
         <option name="myCanBeAbsent" value="false" />
         <option name="myId" value="MERGED" />
-        <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\utils\Utils.java</PATH>
-        <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\activity\MainActivity.java</PATH>
-        <PATH vcs="svn" revision="7574">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\activity\LoginActivity.java</PATH>
+        <PATH vcs="svn" revision="7605">F:\kiway_xm\Launcher_Huawei\app\src\main\java\cn\kiway\mdm\activity\MainActivity.java</PATH>
       </FILE-GROUP>
       <FILE-GROUP>
         <option name="myUpdateName" value="Not in repository" />
@@ -4084,7 +3695,42 @@
       <option name="project" value="LOCAL" />
       <updated>1508227720903</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011">
+      <created>1508983881830</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1508983881830</updated>
+    </task>
+    <task id="LOCAL-00012">
+      <created>1509009924649</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1509009924655</updated>
+    </task>
+    <task id="LOCAL-00013">
+      <created>1509067732664</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1509067732664</updated>
+    </task>
+    <task id="LOCAL-00014">
+      <created>1509071913026</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1509071913026</updated>
+    </task>
+    <task id="LOCAL-00015">
+      <created>1509075366837</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1509075366837</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -4101,24 +3747,24 @@
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4303621" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2827298" sideWeight="0.6131805" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3593315" sideWeight="0.59169054" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.454039" sideWeight="0.4004298" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.362117" sideWeight="0.7965616" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.454039" sideWeight="0.40759313" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5487465" sideWeight="0.8402579" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32967034" sideWeight="0.4974293" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.454039" sideWeight="0.5995702" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2103064" sideWeight="0.57808024" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23076923" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36629528" sideWeight="0.19484241" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24212034" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2103064" sideWeight="0.42191976" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19842407" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298969" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4972145" sideWeight="0.76790833" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2896936" sideWeight="0.7507163" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -4177,196 +3823,11 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="8" />
+      <option name="time" value="18" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_grid_app.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="429">
-          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/gird_view.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="33">
-          <caret line="1" column="29" selection-start-line="1" selection-start-column="29" selection-end-line="1" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://D:/MySoftl/Android/sdk/platforms/android-23/android.jar!/android/view/ViewGroup.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="39" column="22" selection-start-line="39" selection-start-column="22" selection-end-line="39" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/util/L.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-171">
-          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_sample_vertical.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="13" column="50" selection-start-line="13" selection-start-column="50" selection-end-line="13" selection-end-column="50" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://D:/MySoftl/Android/sdk/platforms/android-23/android.jar!/android/app/Dialog.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="35" column="13" selection-start-line="35" selection-start-column="13" selection-end-line="35" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/callback/MainRecyclerViewCallBack.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="271">
-          <caret line="96" column="26" selection-start-line="96" selection-start-column="12" selection-end-line="96" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/MergeInfo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-195">
-          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/ChangeInfo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1364">
-          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/BaseSimpleAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="14" column="16" selection-start-line="14" selection-start-column="12" selection-end-line="14" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/ClassifyItemAnimator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="13200">
-          <caret line="422" column="50" selection-start-line="422" selection-start-column="50" selection-end-line="422" selection-end-column="50" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#7335#7336#0" expanded="false" />
-            <element signature="e#7397#7398#0" expanded="false" />
-            <element signature="e#8413#8414#0" expanded="false" />
-            <element signature="e#8488#8489#0" expanded="false" />
-            <element signature="e#8581#8582#0" expanded="false" />
-            <element signature="e#8657#8658#0" expanded="false" />
-            <element signature="e#10760#10761#0" expanded="false" />
-            <element signature="e#10820#10821#0" expanded="false" />
-            <element signature="e#13830#13831#0" expanded="false" />
-            <element signature="e#13920#13921#0" expanded="false" />
-            <element signature="e#14877#14878#0" expanded="false" />
-            <element signature="e#14968#14969#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classify/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="66">
-          <caret line="2" column="18" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/adapter/BaseSubAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="363">
-          <caret line="21" column="28" selection-start-line="21" selection-start-column="22" selection-end-line="21" selection-end-column="36" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#699#700#0" expanded="false" />
-            <element signature="e#726#727#0" expanded="false" />
-            <element signature="e#1381#1382#0" expanded="false" />
-            <element signature="e#1428#1429#0" expanded="false" />
-            <element signature="e#2561#2562#0" expanded="false" />
-            <element signature="e#2601#2602#0" expanded="false" />
-            <element signature="e#3040#3041#0" expanded="false" />
-            <element signature="e#3067#3068#0" expanded="false" />
-            <element signature="e#3136#3137#0" expanded="false" />
-            <element signature="e#3163#3164#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://D:/MySoftl/Android/sdk/platforms/android-23/android.jar!/android/view/WindowManager.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="446">
-          <caret line="40" column="32" selection-start-line="40" selection-start-column="32" selection-end-line="40" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://D:/MySoftl/Android/sdk/platforms/android-23/android.jar!/android/view/View.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="149">
-          <caret line="1006" column="25" selection-start-line="1006" selection-start-column="25" selection-end-line="1006" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classify/src/main/res/anim/slide_up.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classify/src/main/res/values/classify_style.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="455">
-          <caret line="32" column="12" selection-start-line="32" selection-start-column="12" selection-end-line="32" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider editor-type-id="android-manifest">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="14" column="75" selection-start-line="14" selection-start-column="75" selection-end-line="14" selection-end-column="75" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/SchoolListActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="142">
-          <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/PrimitiveSimpleAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-264">
@@ -4378,26 +3839,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/SimpleAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="22" column="17" selection-start-line="22" selection-start-column="17" selection-end-line="22" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://D:/MySoftl/Android/sdk/platforms/android-23/android.jar!/android/content/pm/PackageItemInfo.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
           <caret line="41" column="20" selection-start-line="41" selection-start-column="20" selection-end-line="41" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/AppListUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="97" column="79" selection-start-line="97" selection-start-column="19" selection-end-line="97" selection-end-column="79" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4409,40 +3854,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/Utils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="451">
-          <caret line="213" column="9" selection-start-line="213" selection-start-column="9" selection-end-line="213" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/adapter/AppListAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="351">
-          <caret line="72" column="36" selection-start-line="72" selection-start-column="36" selection-end-line="72" selection-end-column="36" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/classify/src/main/res/layout/simple_item.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-90">
           <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-          <folding />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer2">
+        <state />
       </provider>
     </entry>
     <entry file="jar://D:/MySoftl/Android/sdk/extras/android/m2repository/com/android/support/recyclerview-v7/23.3.0/recyclerview-v7-23.3.0-sources.jar!/android/support/v7/widget/RecyclerView.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="133">
           <caret line="146" column="13" selection-start-line="146" selection-start-column="13" selection-end-line="146" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4455,21 +3880,19 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/classify/src/main/res/layout/sub_content.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="7" column="35" selection-start-line="7" selection-start-column="35" selection-end-line="7" selection-end-column="35" />
-          <folding />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer2">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/adapter/BaseMainAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-189">
           <caret line="127" column="0" selection-start-line="127" selection-start-column="0" selection-end-line="127" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4477,10 +3900,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3771">
           <caret line="142" column="42" selection-start-line="142" selection-start-column="42" selection-end-line="142" selection-end-column="42" />
-          <folding>
-            <element signature="e#4932#4933#0" expanded="false" />
-            <element signature="e#4985#4986#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -4496,7 +3915,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="125">
           <caret line="66" column="82" selection-start-line="66" selection-start-column="82" selection-end-line="66" selection-end-column="82" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4504,7 +3922,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
           <caret line="39" column="67" selection-start-line="39" selection-start-column="67" selection-end-line="39" selection-end-column="67" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4512,30 +3929,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-387">
           <caret line="30" column="19" selection-start-line="30" selection-start-column="19" selection-end-line="30" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/mdm/MDMHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="157">
-          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/entity/School.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-140">
-          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/entity/App.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4551,7 +3944,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="132">
           <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4559,7 +3951,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="231">
           <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4567,7 +3958,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="231">
           <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4575,7 +3965,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="208">
           <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4583,17 +3972,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="741">
           <caret line="50" column="46" selection-start-line="50" selection-start-column="46" selection-end-line="50" selection-end-column="46" />
-          <folding>
-            <element signature="e#3186#3187#0" expanded="true" />
-            <element signature="e#3215#3216#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/adapter/HuaweiMDMAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="142">
-          <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -4601,14 +3979,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-660">
           <caret line="735" column="30" selection-start-line="735" selection-start-column="30" selection-end-line="735" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/FileACache.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1115">
-          <caret line="126" column="39" selection-start-line="126" selection-start-column="39" selection-end-line="126" selection-end-column="39" />
           <folding />
         </state>
       </provider>
@@ -4621,26 +3991,272 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/MainActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-404">
-          <caret line="199" column="34" selection-start-line="199" selection-start-column="34" selection-end-line="199" selection-end-column="34" />
+        <state relative-caret-position="126">
+          <caret line="66" column="40" selection-start-line="66" selection-start-column="40" selection-end-line="66" selection-end-column="40" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/LoginActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="40" column="59" selection-start-line="40" selection-start-column="59" selection-end-line="40" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/adapter/IMDMAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-343">
+          <caret line="12" column="17" selection-start-line="12" selection-start-column="17" selection-end-line="12" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/dialog/CheckPassword.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-343">
+          <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/MySoftl/Android/sdk/platforms/android-23/android.jar!/java/util/List.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="177">
+          <caret line="56" column="12" selection-start-line="56" selection-start-column="12" selection-end-line="56" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/entity/App.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="17" column="18" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/entity/School.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="48">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/entity/KV.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/entity/Class.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="6" column="14" selection-start-line="6" selection-start-column="14" selection-end-line="6" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/Utils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="12045">
+          <caret line="378" column="23" selection-start-line="378" selection-start-column="23" selection-end-line="378" selection-end-column="23" />
           <folding>
-            <element signature="e#3110#4125#0" expanded="true" />
-            <element signature="e#4124#4125#0" expanded="true" />
-            <element signature="e#7682#8161#0" expanded="true" />
-            <element signature="e#8160#8161#0" expanded="true" />
+            <marker date="1509092575591" expanded="true" signature="31489:31570" ph="{...}" />
+            <marker date="1509092575591" expanded="true" signature="31922:31929" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/broadcast/HuaweiMessageReceiver.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="44" column="12" selection-start-line="44" selection-start-column="12" selection-end-line="44" selection-end-column="12" />
+        <state relative-caret-position="132">
+          <caret line="62" column="0" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/mdm/MDMHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-140">
+          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/MySoftl/Android/sdk/platforms/android-23/android.jar!/android/database/sqlite/SQLiteOpenHelper.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="166">
+          <caret line="29" column="26" selection-start-line="29" selection-start-column="26" selection-end-line="29" selection-end-column="26" />
           <folding>
-            <element signature="e#3217#3355#0" expanded="true" />
-            <element signature="e#3354#3355#0" expanded="true" />
+            <element signature="e#952#953#0" expanded="true" />
+            <element signature="e#1003#1004#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/MyDBHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-806">
+          <caret line="378" column="30" selection-start-line="378" selection-start-column="30" selection-end-line="378" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/FileUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="265">
+          <caret line="59" column="22" selection-start-line="59" selection-start-column="22" selection-end-line="59" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider editor-type-id="android-manifest">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-21">
+          <caret line="104" column="46" selection-start-line="104" selection-start-column="46" selection-end-line="104" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/BaseActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="28">
+          <caret line="27" column="17" selection-start-line="27" selection-start-column="17" selection-end-line="27" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/KWApp.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="808">
+          <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/AppReceiverIn.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-192">
+          <caret line="24" column="36" selection-start-line="24" selection-start-column="36" selection-end-line="24" selection-end-column="36" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/LockActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="163" column="60" selection-start-line="163" selection-start-column="60" selection-end-line="163" selection-end-column="60" />
+          <folding>
+            <element signature="e#2031#2032#0" expanded="false" />
+            <element signature="e#2108#2109#0" expanded="false" />
+            <element signature="e#4278#4279#0" expanded="false" />
+            <element signature="e#4302#4303#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/Constant.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="29" column="28" selection-start-line="29" selection-start-column="28" selection-end-line="29" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classify/src/main/java/com/anarchy/classify/simple/SimpleAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="22" column="46" selection-start-line="22" selection-start-column="46" selection-end-line="22" selection-end-column="46" />
+          <folding>
+            <element signature="e#533#534#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/adapter/HuaweiMDMAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="494">
+          <caret line="366" column="67" selection-start-line="366" selection-start-column="67" selection-end-line="366" selection-end-column="67" />
+          <folding>
+            <element signature="e#780#781#0" expanded="true" />
+            <element signature="e#806#807#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/AppListUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="297">
+          <caret line="16" column="34" selection-start-line="16" selection-start-column="34" selection-end-line="16" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/utils/FileACache.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="349">
+          <caret line="27" column="37" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/adapter/AppListAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2209">
+          <caret line="39" column="11" selection-start-line="39" selection-start-column="11" selection-end-line="39" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_message.xml">
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/dialog/ShowMessageDailog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="92">
+          <caret line="37" column="40" selection-start-line="37" selection-start-column="40" selection-end-line="37" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/cn/kiway/mdm/activity/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5218">
+          <caret line="272" column="48" selection-start-line="272" selection-start-column="48" selection-end-line="272" selection-end-column="48" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3006#3400#0" expanded="true" />
+            <element signature="e#3399#3400#0" expanded="true" />
+            <element signature="e#4056#4309#0" expanded="true" />
+            <element signature="e#4308#4309#0" expanded="true" />
+            <element signature="e#4368#5129#0" expanded="true" />
+            <element signature="e#5128#5129#0" expanded="true" />
+            <element signature="e#5703#6886#0" expanded="true" />
+            <element signature="e#6885#6886#0" expanded="true" />
+            <element signature="e#10613#11092#0" expanded="true" />
+            <element signature="e#11091#11092#0" expanded="true" />
+            <element signature="e#12631#13784#0" expanded="true" />
+            <element signature="e#13783#13784#0" expanded="true" />
           </folding>
         </state>
       </provider>
