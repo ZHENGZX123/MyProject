@@ -42,6 +42,7 @@ import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
 import static cn.kiway.mdm.utils.AppReceiverIn.REMOVE_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.REPLACE_SUCCESS;
 import static cn.kiway.mdm.utils.Constant._16;
+import static cn.kiway.mdm.utils.FileACache.ListFileName;
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall {
@@ -246,8 +247,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     public List<List<App>> getListdata(List<List<App>> data1) {
         allListData.clear();
-        if (FileACache.loadListCache(MainActivity.this, "list.txt").size() > 0) {
-            allListData.addAll(new ArrayList(FileACache.loadListCache(MainActivity.this, "list.txt")));
+        if (FileACache.loadListCache(MainActivity.this, ListFileName).size() > 0) {
+            allListData.addAll(new ArrayList(FileACache.loadListCache(MainActivity.this, ListFileName)));
         } else {
             allListData.addAll(new ArrayList(data1));//不知道为啥不用data1.size()-1
         }
@@ -270,7 +271,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             } else {
                 data = new ArrayList(data1.subList(i * _16, i * _16 + _16));
             }
-            classifyView.setAdapter(new AppListAdapter(MainActivity.this, data,allListData, i));
+            classifyView.setAdapter(new AppListAdapter(MainActivity.this, data, allListData, i));
             viewPagerList.add(classifyView);
         }
         viewPager.setPageTransformer(false, new StereoPagerTransformer());
