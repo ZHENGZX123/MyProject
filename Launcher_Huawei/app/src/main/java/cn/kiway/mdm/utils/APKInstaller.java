@@ -15,7 +15,7 @@ public class APKInstaller {
 
     private static ArrayList<String> packages = new ArrayList<>();
 
-    public static void addPackage(final MainActivity m, final String packageName, final String url, final String name, final String version) {
+    public static void install(final MainActivity m, final String packageName, final String url, final String name, final String version) {
         if (packages.contains(packageName)) {
             return;
         }
@@ -24,7 +24,7 @@ public class APKInstaller {
         new Thread() {
             @Override
             public void run() {
-                final String savePath = "/mnt/sdcard/mdm/apk/";
+                final String savePath = "/mnt/sdcard/kiway_mdm/apk/";
                 final String saveName = name + "_" + version + ".apk";
                 int ret = new HttpDownload().downFile(url, savePath, saveName);
                 Log.d("test", "下载" + name + "，ret = " + ret);
