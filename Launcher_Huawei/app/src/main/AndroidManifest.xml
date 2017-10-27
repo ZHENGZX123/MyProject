@@ -101,7 +101,15 @@
             </intent-filter>
         </receiver>
 
-
+<receiver android:name=".activity.MainActivity$AppReceiver"
+           android:label="@string/app_name">
+        <intent-filter>
+            <action android:name="android.intent.action.PACKAGE_ADDED" />
+            <action android:name="android.intent.action.PACKAGE_REPLACED" />
+            <action android:name="android.intent.action.PACKAGE_REMOVED" />
+            <data android:scheme="package" />
+        </intent-filter>
+    </receiver>
         <!-- 华为推送 -->
         <!-- 第三方相关 :接收Push消息（注册、Push消息、Push连接状态、标签，LBS上报结果）广播 -->
         <receiver android:name=".broadcast.HuaweiMessageReceiver">
