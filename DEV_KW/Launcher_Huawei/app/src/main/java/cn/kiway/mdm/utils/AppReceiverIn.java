@@ -11,7 +11,7 @@ import android.util.Log;
  */
 
 public class AppReceiverIn extends BroadcastReceiver {
-    public static final String TAG = "cehsi";
+    public static final String TAG = "install";
 
     public static final String INSTALL_SUCCESS = "INSTALL_SUCCESS";//安装成功
     public static final String REMOVE_SUCCESS = "REMOVE_SUCCESS";//移除成功
