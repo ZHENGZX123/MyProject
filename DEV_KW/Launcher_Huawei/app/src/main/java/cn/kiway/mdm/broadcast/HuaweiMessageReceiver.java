@@ -10,7 +10,9 @@ import android.util.Log;
 import com.huawei.android.pushagent.api.PushEventReceiver;
 
 import cn.kiway.mdm.KWApp;
-import cn.kiway.mdm.utils.Utils;
+
+import static cn.kiway.mdm.KWApp.MSG_INSTALL;
+import static cn.kiway.mdm.KWApp.MSG_LOCK;
 
 /*
  * 接收Push所有消息的广播接收器
@@ -28,10 +30,9 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
 
         //注册一下
         if (KWApp.instance != null) {
-            Message msg = new Message();
-            msg.what = 1;
-            msg.obj = token;
-            KWApp.instance.mHandler.sendMessage(msg);
+            Message m = new Message();
+            m.what = MSG_INSTALL;
+            KWApp.instance.mHandler.sendMessage(m);
         }
     }
 
@@ -41,43 +42,12 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
         try {
             String receive = new String(msg, "UTF-8");
             Log.d("huawei", "onPushMsg " + receive);
-
-           //MainActivity.instance.test(receive);
-
-            if (true) {
-                return false;
+            //做出对应处理
+            if (KWApp.instance != null) {
+                Message m = new Message();
+                m.what = MSG_LOCK;
+                KWApp.instance.mHandler.sendMessage(m);
             }
-            //解析发送过来的命令，执行对应的操作
-            //1.wifi电子围栏
-           // Utils.connectSSID(context, receive);
-            //2.APP白名单、APP时间分段
-            //AppListUtils
-            //3.网页打开黑名单
-            //MDMHelper.getAdapter().addNetworkAccessBlackList(null);
-            //4.安装app
-            Utils.installAPP(context, receive);
-            //5.卸载app
-            Utils.uninstallAPP(context, receive);
-            //6.打开app
-            Utils.openAPP(context, receive);
-
-
-            if (true) {
-                return false;
-            }
-            //解析发送过来的命令，执行对应的操作
-            //1.wifi电子围栏
-          //  Utils.connectSSID(context, receive);
-            //2.APP白名单、APP时间分段
-            //AppListUtils
-            //3.网页打开黑名单
-            //MDMHelper.getAdapter().addNetworkAccessBlackList(null);
-            //4.安装app
-            Utils.installAPP(context, receive);
-            //5.卸载app
-            Utils.uninstallAPP(context, receive);
-            //6.打开app
-            Utils.openAPP(context, receive);
         } catch (Exception e) {
             e.printStackTrace();
         }

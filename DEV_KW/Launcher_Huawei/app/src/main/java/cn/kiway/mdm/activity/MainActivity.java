@@ -60,17 +60,45 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         uploadStatus();
         //5.拉取命令
         getCommand();
-        //6.判断跳到login
-        checkLogin();
+        //6.检查命令
+        checkCommand();
     }
 
-    private void checkLogin() {
-        //只判断第一次
-        boolean login = getSharedPreferences("kiway", 0).getBoolean("login", false);
-        if (login) {
-            return;
-        }
-        startActivity(new Intent(this, LoginActivity.class));
+    private void getCommand() {
+        new Thread() {
+            @Override
+            public void run() {
+                Utils.appCharge(MainActivity.this);
+                Utils.networkDeviceCharge(MainActivity.this);
+                Utils.wifi(MainActivity.this);
+            }
+        }.start();
+    }
+
+    private void checkCommand() {
+        new Thread() {
+            @Override
+            public void run() {
+                //10秒后开始检查
+                try {
+                    sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                while (!stop) {
+                    Log.d("test", "检查开始");
+                    //1.检查wifi
+                    Utils.checkWifis(MainActivity.this);
+                    Utils.checkAppCharges(MainActivity.this);
+                    Log.d("test", "检查结束");
+                    try {
+                        sleep(1000 * 60);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
     }
 
     private void initPassword() {
@@ -88,23 +116,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         group = (LinearLayout) findViewById(R.id.points);
 
-    }
-
-    private void getCommand() {
-        Context context = this;
-        String receive = "";
-        //1.wifi电子围栏
-       // Utils.connectSSID(context, receive);
-        //2.APP白名单、APP时间分段
-        //AppListUtils
-        //3.网页打开黑名单
-        //MDMHelper.getAdapter().addNetworkAccessBlackList(null);
-        //4.安装app
-        Utils.installAPP(context, receive);
-        //5.卸载app
-        Utils.uninstallAPP(context, receive);
-        //6.打开app
-        Utils.openAPP(context, receive);
     }
 
     private void uploadStatus() {
@@ -182,7 +193,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     @Override
     public void success(View vx, int position) throws Exception {
         if (position == 1) {
-            startActivity(new Intent(MainActivity.this, EditAeraActivity.class));
+            startActivityForResult(new Intent(MainActivity.this, LockActivity.class), 999);
         }
     }
 
@@ -260,8 +271,19 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         startActivity(new Intent(this, AppListActivity2.class));
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 999) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
+    }
+
     public class AppReceiver extends BroadcastReceiver {
         private final String TAG = this.getClass().getSimpleName();
+
 
         @Override
         public void onReceive(Context context, Intent intent) {

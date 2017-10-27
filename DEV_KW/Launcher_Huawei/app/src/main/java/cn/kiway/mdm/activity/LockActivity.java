@@ -95,7 +95,7 @@ public class LockActivity extends BaseActivity {
                             getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
                             new MyDBHelper(LockActivity.this).deleteWifi();
                             new MyDBHelper(LockActivity.this).deleteNetwork();
-                            startActivity(new Intent(LockActivity.this, LoginActivity.class));
+                            setResult(999);
                             finish();
                         } else {
                             toast("注销失败");
