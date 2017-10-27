@@ -56,6 +56,7 @@ import cn.kiway.mdm.mdm.MDMHelper;
 
 import static android.content.Context.WIFI_SERVICE;
 import static cn.kiway.mdm.KWApp.server;
+import static cn.kiway.mdm.mdm.MDMHelper.getAdapter;
 
 /**
  * Created by Administrator on 2017/6/8.
@@ -395,7 +396,7 @@ public class Utils {
             return;
         }
         //1.先打开位置服务
-        MDMHelper.getAdapter().turnOnGPS(true);
+        getAdapter().turnOnGPS(true);
         //2.搜索附近wifi
         boolean has = false;
         WifiAdmin admin = new WifiAdmin(c);
@@ -767,17 +768,37 @@ public class Utils {
                     Log.d("test", ac.name + "_" + ac.packages + "已安装");
                 } else {
                     Log.d("test", ac.name + "_" + ac.packages + "未安装");
-                    //TODO 下载安装
+                    //下载安装
+                    APKInstaller.addPackage(m, ac.packages, ac.url, ac.name, ac.version);
                 }
                 //TODO 版本更新
             }
+            final ArrayList<String> whiteList = new ArrayList<>();
             for (AppCharge ac : apps_type1) {
                 //白名单，调用华为的API
+                whiteList.add(ac.packages);
             }
-            for (AppCharge ac : apps_type2) {
-                //黑名单，调用华为的API
+            m.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    List<String> currentList = MDMHelper.getAdapter().getInstallPackageWhiteList();
+                    if (currentList.size() > 0) {
+                        MDMHelper.getAdapter().removeInstallPackageWhiteList(currentList);
+                    }
+                    MDMHelper.getAdapter().addInstallPackageWhiteList(whiteList);
+                }
+            });
+            for (final AppCharge ac : apps_type2) {
+                //黑名单，卸载黑名单里的APP
+                m.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //MDMHelper.getAdapter().uninstallPackage(ac.packages);
+                    }
+                });
             }
             //2.检查使用时间段
+
 
         } catch (Exception e) {
             e.printStackTrace();

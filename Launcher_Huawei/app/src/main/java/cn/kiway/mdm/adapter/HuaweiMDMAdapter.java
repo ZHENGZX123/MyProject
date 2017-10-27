@@ -212,9 +212,9 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     }
 
     @Override
-    public void uninstallPackage(String s, boolean b) {
+    public void uninstallPackage(String s) {
         try {
-            new DevicePackageManager().uninstallPackage(mAdminName, s, b);
+            new DevicePackageManager().uninstallPackage(mAdminName, s, false);
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -356,6 +356,38 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     public void setSilentActiveAdmin() {
         try {
             new DeviceControlManager().setSilentActiveAdmin(mAdminName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void addInstallPackageWhiteList(ArrayList<String> whiteList) {
+        try {
+            new DevicePackageManager().addInstallPackageWhiteList(mAdminName, whiteList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public List<String> getInstallPackageWhiteList() {
+        List<String> whitelist = new ArrayList<>();
+        try {
+            whitelist = new DevicePackageManager().getInstallPackageWhiteList(mAdminName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        return whitelist;
+    }
+
+    @Override
+    public void removeInstallPackageWhiteList(List<String> currentList) {
+        try {
+            new DevicePackageManager().removeInstallPackageWhiteList(mAdminName, currentList);
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();

@@ -80,10 +80,7 @@ public class FileUtils {
             if (!new File(path).exists()) {
                 new File(path).mkdirs();
             }
-
-            String tmpFilename = fileName.replace("zip", "tmp");
-
-            String savedFilePath = path + tmpFilename;
+            String savedFilePath = path + fileName;
             createSDDir(path);
             file = new File(savedFilePath);
             output = new FileOutputStream(file);
