@@ -164,5 +164,7 @@ public class LockActivity extends BaseActivity {
         MDMHelper.getAdapter().setHomeButtonDisabled(false);
         //MDMHelper.getAdapter().setVpnDisabled(true); //这个失效。
         //MDMHelper.getAdapter().setTimeAndDateSetDisabled(false);//这个失效
+
+        MDMHelper.getAdapter().setWifiDisabled(false);
     }
 }

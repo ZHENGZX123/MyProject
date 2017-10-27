@@ -20,6 +20,7 @@ import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.huawei.android.pushagent.api.PushManager;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -815,5 +816,10 @@ public class Utils {
             return true;
         }
         return false;
+    }
+
+    public static void huaweiPush(Context c) {
+        PushManager.requestToken(c);
+        Log.d("huawei", "try to get Token ,current packageName is " + c.getPackageName());
     }
 }

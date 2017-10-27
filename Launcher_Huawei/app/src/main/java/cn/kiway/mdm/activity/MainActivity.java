@@ -38,6 +38,7 @@ import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
 import static cn.kiway.mdm.utils.AppReceiverIn.REMOVE_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.REPLACE_SUCCESS;
 import static cn.kiway.mdm.utils.Constant._16;
+import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall {
     CheckPassword dialog;
@@ -65,7 +66,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         getCommand();
         //6.检查命令
         checkCommand();
-
+        //注册华为
+        huaweiPush(this);
     }
 
     private void getCommand() {
