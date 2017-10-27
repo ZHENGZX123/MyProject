@@ -8,6 +8,7 @@ import cn.kiway.mdm.R;
  * Created by Administrator on 2017/10/27.
  */
 
+//锁屏页面
 public class TestActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
