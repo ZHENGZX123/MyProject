@@ -770,7 +770,7 @@ public class Utils {
                 } else {
                     Log.d("test", ac.name + "_" + ac.packages + "未安装");
                     //下载安装
-                    APKInstaller.addPackage(m, ac.packages, ac.url, ac.name, ac.version);
+                    APKInstaller.install(m, ac.packages, ac.url, ac.name, ac.version);
                 }
                 //TODO 版本更新
             }
