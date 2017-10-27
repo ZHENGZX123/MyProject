@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,7 +15,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.anarchy.classify.ClassifyView;
 
@@ -28,15 +28,20 @@ import cn.kiway.mdm.adapter.MyViewPagerAdapter;
 import cn.kiway.mdm.dialog.CheckPassword;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.utils.AppListUtils;
+import cn.kiway.mdm.utils.AppReceiverIn;
 import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.LocationUtils;
 import cn.kiway.mdm.utils.Utils;
 
+import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
+import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
+import static cn.kiway.mdm.utils.AppReceiverIn.REMOVE_SUCCESS;
+import static cn.kiway.mdm.utils.AppReceiverIn.REPLACE_SUCCESS;
 import static cn.kiway.mdm.utils.Constant._16;
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall {
     CheckPassword dialog;
-    List<List<App>> allListData = new ArrayList<>();
+    public List<List<App>> allListData = new ArrayList<>();
     private ViewPager viewPager;
     private LinearLayout group;//圆点指示器
     private ImageView[] ivPoints;//小圆点图片的集合
@@ -60,6 +65,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         getCommand();
         //6.检查命令
         checkCommand();
+
     }
 
     private void getCommand() {
@@ -182,12 +188,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         super.onBackPressed();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        stop = true;
-        Log.d("test", "Main onDestroy");
-    }
 
     @Override
     public void success(View vx, int position) throws Exception {
@@ -215,7 +215,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     //设置页面数据
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-    private void initData(List<List<App>> data1) {
+    public void initData(List<List<App>> data1) {
         viewPagerList = new ArrayList<View>();
         totalPage = (int) Math.ceil(data1.size() * 1.0 / _16);
         for (int i = 0; i < totalPage; i++) {
@@ -279,32 +279,49 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
     }
 
-    public class AppReceiver extends BroadcastReceiver {
-        private final String TAG = this.getClass().getSimpleName();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //注册广播
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(INSTALL_SUCCESS);
+        filter.addAction(REPLACE_SUCCESS);
+        filter.addAction(REMOVE_SUCCESS);
+        registerReceiver(mReceiver, filter);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stop = true;
+        unregisterReceiver(mReceiver);
+        Log.d("test", "Main onDestroy");
+    }
 
+    /**
+     * 广播接收
+     */
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (TextUtils.equals(intent.getAction(), Intent.ACTION_PACKAGE_ADDED)) {//监听应用安装成功
-                String packageName = intent.getData().getSchemeSpecificPart();
+            String action = intent.getAction();
+            String packageName = intent.getStringExtra(PACKAGENAME);
+            if (action.equals(INSTALL_SUCCESS)) {
                 ArrayList<App> apps = new ArrayList<>();
                 App a = new App();
                 a.name = Utils.getProgramNameByPackageName(context, packageName);
                 a.packageName = packageName;
                 apps.add(a);
+                Log.e(AppReceiverIn.TAG, "--------MainActivity安装成功" + packageName);
+                if (allListData.toString().contains(a.packageName))
+                    return;
                 allListData.add(apps);
                 initData(allListData);
-                Log.e(TAG, "--------安装成功" + packageName);
-                Toast.makeText(context, "安装成功" + packageName, Toast.LENGTH_LONG).show();
-            } else if (TextUtils.equals(intent.getAction(), Intent.ACTION_PACKAGE_REPLACED)) {
-                String packageName = intent.getData().getSchemeSpecificPart();
-                Log.e(TAG, "--------替换成功" + packageName);
-                Toast.makeText(context, "替换成功" + packageName, Toast.LENGTH_LONG).show();
-            } else if (TextUtils.equals(intent.getAction(), Intent.ACTION_PACKAGE_REMOVED)) {
-                String packageName = intent.getData().getSchemeSpecificPart();
-                Log.e(TAG, "--------卸载成功" + packageName);
-                Toast.makeText(context, "卸载成功" + packageName, Toast.LENGTH_LONG).show();
+            } else if (action.equals(REMOVE_SUCCESS)) {
+                Log.e(AppReceiverIn.TAG, "--------MainActivity卸载成功" + packageName);
+            } else if (action.equals(REPLACE_SUCCESS)) {
+                Log.e(AppReceiverIn.TAG, "--------MainActivity替换成功" + packageName);
             }
         }
-    }
+    };
 }
