@@ -25,6 +25,7 @@ public class FileACache {
     public static String QzInfo = "Qz_List_Info";
     public static String CyInfo = "Cy_List_Info";
     private static String DataCache = "kiwaylauncher";
+    public static String ListFileName = "list.txt";
 
     /**
      * 保存 一组 数据

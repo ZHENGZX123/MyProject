@@ -246,16 +246,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     public List<List<App>> getListdata(List<List<App>> data1) {
         allListData.clear();
-        totalPage = (int) Math.ceil(data1.size() * 1.0 / _16);
-        for (int i = 0; i < totalPage; i++) {
-            if (FileACache.loadListCache(MainActivity.this, i + "list.txt").size() > 0) {
-                allListData.addAll(new ArrayList(FileACache.loadListCache(MainActivity.this, i + "list.txt")));
-            } else {
-                if (i * _16 + _16 >= data1.size())
-                    allListData.addAll(new ArrayList(data1.subList(i * _16, data1.size())));//不知道为啥不用data1.size()-1
-                else
-                    allListData.addAll(new ArrayList(data1.subList(i * _16, i * _16 + _16)));
-            }
+        if (FileACache.loadListCache(MainActivity.this, "list.txt").size() > 0) {
+            allListData.addAll(new ArrayList(FileACache.loadListCache(MainActivity.this, "list.txt")));
+        } else {
+            allListData.addAll(new ArrayList(data1));//不知道为啥不用data1.size()-1
         }
         Log.e("allListData", allListData.toString());
         return allListData;
@@ -276,7 +270,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             } else {
                 data = new ArrayList(data1.subList(i * _16, i * _16 + _16));
             }
-            classifyView.setAdapter(new AppListAdapter(MainActivity.this, data, i));
+            classifyView.setAdapter(new AppListAdapter(MainActivity.this, data,allListData, i));
             viewPagerList.add(classifyView);
         }
         viewPager.setPageTransformer(false, new StereoPagerTransformer());

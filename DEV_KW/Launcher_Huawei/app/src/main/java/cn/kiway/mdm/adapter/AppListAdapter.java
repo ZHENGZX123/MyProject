@@ -1,6 +1,5 @@
 package cn.kiway.mdm.adapter;
 
-import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,12 +16,15 @@ import java.util.List;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.AppListActivity2;
+import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.utils.AppListUtils.isAppInstalled;
+import static cn.kiway.mdm.utils.Constant._16;
 import static cn.kiway.mdm.utils.Constant.kiwayQiTa;
+import static cn.kiway.mdm.utils.FileACache.ListFileName;
 
 /**
  * Created by Administrator on 2017/10/13.
@@ -31,13 +33,16 @@ import static cn.kiway.mdm.utils.Constant.kiwayQiTa;
 public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder> {
 
     int index;
-    Context context;
+    MainActivity context;
+    List<List<App>> AllList;
+    int size;
 
-    public AppListAdapter(Context context, List<List<App>> mData, int index) {
+    public AppListAdapter(MainActivity context, List<List<App>> mData, List<List<App>> AllList, int index) {
         super(mData);
-
         this.index = index;
         this.context = context;
+        this.AllList = AllList;
+        this.size = mData.size();
     }
 
 
@@ -75,7 +80,7 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
         } else {
             holder.name.setText(books.get(0).name);
         }
-        FileACache.saveListCache(context, mData, index + "list.txt");
+        notifyData();
     }
 
     @Override
@@ -86,7 +91,24 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
     @Override
     public void notifyData() {
         super.notifyData();
-        FileACache.saveListCache(context, mData, index + "list.txt");
+        if (mData.size() != size) {//合并或者移除了文件
+            for (int i = index * _16; i < index * _16 + size; i++) {//先移除原始的数据
+                AllList.remove(index * _16);
+            }
+            for (int i = 0; i < mData.size(); i++) {//添加改变后的数据
+                AllList.add(index * _16, mData.get(mData.size() - 1 - i));
+            }
+        } else {
+            for (int i = index * _16; i < index * _16 + size; i++) {//只是拖动排序的时候
+                AllList.remove(i);//替换数据
+                AllList.add(i, mData.get(i - index * _16));
+            }
+        }
+        FileACache.saveListCache(context, AllList, ListFileName);//保存数据
+        this.size = mData.size();
+        if (mData.size() > _16) {//单个页面数据大于16时，更新整个界面，从文件夹拖出来的时候
+            context.initData(AllList);
+        }
     }
 
     @Override
