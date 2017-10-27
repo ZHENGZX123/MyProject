@@ -38,7 +38,8 @@ public class KWApp extends Application {
     public static final int MSG_INSTALL = 1;
     public static final int MSG_LOCK = 2;
     public static final int MSG_UNLOCK = 3;
-
+    public static final int MSG_LAUNCH_APP = 4;
+    public static final int MSG_LAUNCH_MDM = 5;
 
     @Override
     public void onCreate() {
@@ -71,6 +72,13 @@ public class KWApp extends Application {
                 if (currentActivity != null) {
                     currentActivity.finish();
                 }
+            } else if (msg.what == MSG_LAUNCH_APP) {
+                //打开APP
+                Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.homework.student");
+                startActivity(intent);
+            } else if (msg.what == MSG_LAUNCH_MDM) {
+                Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.mdm");
+                startActivity(intent);
             }
         }
     };

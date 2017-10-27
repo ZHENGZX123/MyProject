@@ -12,7 +12,6 @@ import com.huawei.android.pushagent.api.PushEventReceiver;
 import cn.kiway.mdm.KWApp;
 
 import static cn.kiway.mdm.KWApp.MSG_INSTALL;
-import static cn.kiway.mdm.KWApp.MSG_LOCK;
 
 /*
  * 接收Push所有消息的广播接收器
@@ -36,16 +35,15 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
         }
     }
 
-
     @Override
     public boolean onPushMsg(Context context, byte[] msg, Bundle bundle) {
         try {
             String receive = new String(msg, "UTF-8");
             Log.d("huawei", "onPushMsg " + receive);
-            //做出对应处理
+            //做出对应处理 FIXME
             if (KWApp.instance != null) {
                 Message m = new Message();
-                m.what = MSG_LOCK;
+                m.what = Integer.parseInt(receive);
                 KWApp.instance.mHandler.sendMessage(m);
             }
         } catch (Exception e) {

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.provider.Contacts;
 import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
@@ -128,12 +127,9 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     if (location != null) {
                         String address = "纬度：" + location.getLatitude() + "经度：" + location.getLongitude();
                         Log.d("test", address);
+                        Utils.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude());
                     }
-                    //2.上报在线状态：已登录并且屏幕点亮
-                    PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                    boolean isScreenOn = pm.isScreenOn();//如果为true，则表示屏幕“亮”了，否则屏幕“暗”了。
-                    Log.d("test", "isScreenOn = " + isScreenOn);
-                    //3.上报设备日志，异常日志
+                    //2.获取电量，如果电量1%，上报一下
                     try {
                         sleep(10 * 60 * 1000);
                     } catch (InterruptedException e) {
@@ -270,7 +266,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
         startActivity(new Intent(this, AppListActivity2.class));
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
