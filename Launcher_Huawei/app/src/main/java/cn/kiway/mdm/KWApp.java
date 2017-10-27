@@ -172,8 +172,8 @@ public class KWApp extends Application {
             JSONObject param = new JSONObject();
             param.put("appId", "c77b6c47dbcee47d7ffbc9461da0c82a");
             param.put("type", Build.TYPE);
-            param.put("deviceId", token);
-            param.put("userId", imei);
+            param.put("deviceId", imei);
+            param.put("userId", token);
             param.put("module", "student");
             Log.d("test", "param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
