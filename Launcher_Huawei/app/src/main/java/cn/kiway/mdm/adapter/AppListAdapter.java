@@ -112,8 +112,7 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
     }
 
     @Override
-    protected void onItemClick(View view, int parentIndex, int index) {
-        //跳转到其他APK
+    protected void onItemClick(View view, int parentIndex, int index) {//跳转到其他APK
         try {
             if (index == -1)
                 index = 0;
