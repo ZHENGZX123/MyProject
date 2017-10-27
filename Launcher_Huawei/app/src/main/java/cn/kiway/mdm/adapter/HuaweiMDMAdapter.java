@@ -134,7 +134,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     @Override
     public void turnOnGPS(boolean on) {
         try {
-           // new DeviceControlManager().turnOnGPS(mAdminName, on);
+            new DeviceControlManager().turnOnGPS(mAdminName, on);
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();

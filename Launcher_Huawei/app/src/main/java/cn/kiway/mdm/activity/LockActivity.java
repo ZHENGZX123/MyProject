@@ -1,6 +1,5 @@
 package cn.kiway.mdm.activity;
 
-import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.mdm.R;
-import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
 import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
@@ -125,9 +123,6 @@ public class LockActivity extends BaseActivity {
     }
 
     private void lock() {
-        //初始化adapter
-        ComponentName mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
-        MDMHelper.getAdapter().init(this, mAdminName);
         //1.设置默认桌面
         MDMHelper.getAdapter().setDefaultLauncher("cn.kiway.mdm", "cn.kiway.mdm.activity.MainActivity");
         //2.关闭settings.失效
@@ -151,9 +146,6 @@ public class LockActivity extends BaseActivity {
     }
 
     private void unlock() {
-        //初始化adapter
-        ComponentName mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
-        MDMHelper.getAdapter().init(this, mAdminName);
         //1.设置默认桌面
         MDMHelper.getAdapter().clearDefaultLauncher();
         //2.关闭settings.慎用！！！

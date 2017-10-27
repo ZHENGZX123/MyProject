@@ -52,6 +52,7 @@ import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.AppCharge;
 import cn.kiway.mdm.entity.Network;
 import cn.kiway.mdm.entity.Wifi;
+import cn.kiway.mdm.mdm.MDMHelper;
 
 import static android.content.Context.WIFI_SERVICE;
 import static cn.kiway.mdm.KWApp.server;
@@ -203,20 +204,20 @@ public class Utils {
         }
         return null;
     }
+
     /**
-     06
+     * 06
      * 通过包名获取应用程序的名称。
-     07
-     * @param context
-    08
-     *            Context对象。
-    09
-     * @param packageName
-    10
-     *            包名。
-    11
+     * 07
+     *
+     * @param context     08
+     *                    Context对象。
+     *                    09
+     * @param packageName 10
+     *                    包名。
+     *                    11
      * @return 返回包名所对应的应用程序的名称。
-    12
+     * 12
      */
     public static String getProgramNameByPackageName(Context context, String packageName) {
         PackageManager pm = context.getPackageManager();
@@ -393,8 +394,8 @@ public class Utils {
             Log.d("test", "当前连接着这个wifi");
             return;
         }
-        //1.先打开位置服务 TODO
-        //MDMHelper.getAdapter().turnOnGPS(true);
+        //1.先打开位置服务
+        MDMHelper.getAdapter().turnOnGPS(true);
         //2.搜索附近wifi
         boolean has = false;
         WifiAdmin admin = new WifiAdmin(c);
