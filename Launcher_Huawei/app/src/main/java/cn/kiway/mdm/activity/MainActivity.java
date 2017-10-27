@@ -1,14 +1,19 @@
 package cn.kiway.mdm.activity;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.AppOpsManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Contacts;
+import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -50,6 +55,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
     private boolean stop;
 
+    private static final int MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS = 1101;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,8 +73,42 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         getCommand();
         //6.检查命令
         checkCommand();
-        //注册华为
+        //7.注册华为
         huaweiPush(this);
+        //8.允许使用访问记录
+        setUsageStats();
+    }
+
+    private void setUsageStats() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (!hasPermission()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开");
+                builder.setTitle("提示");
+                builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivityForResult(
+                                new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
+                                MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS);
+                    }
+                });
+                builder.setCancelable(false);
+                builder.create().show();
+            }
+        }
+    }
+
+    //检测用户是否对本app开启了“Apps with usage access”权限
+    private boolean hasPermission() {
+        AppOpsManager appOps = (AppOpsManager)
+                getSystemService(Context.APP_OPS_SERVICE);
+        int mode = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    android.os.Process.myUid(), getPackageName());
+        }
+        return mode == AppOpsManager.MODE_ALLOWED;
     }
 
     private void getCommand() {
@@ -121,7 +162,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         dialog = new CheckPassword(this, this);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         group = (LinearLayout) findViewById(R.id.points);
-
     }
 
     private void uploadStatus() {
@@ -153,12 +193,12 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void Camera(View view) {
-//        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        startActivity(cameraIntent);
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivity(cameraIntent);
 //        Log.d("test", "开始安装");
 //        MDMHelper.getAdapter().installPackage("/mnt/sdcard/test.apk");
 //        Log.d("test", "安装结束");
-        Utils.connectSSID(this, "", "");
+//        Utils.connectSSID(this, "", "");
     }
 
     public void Call(View view) {
@@ -283,6 +323,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         if (resultCode == 999) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
+        } else if (requestCode == MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS) {
+            if (!hasPermission()) {
+                toast("请务必设置权限");
+                //若用户未开启权限，则引导用户开启“Apps with usage access”权限
+                startActivityForResult(
+                        new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
+                        MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS);
+            }
         }
     }
 
