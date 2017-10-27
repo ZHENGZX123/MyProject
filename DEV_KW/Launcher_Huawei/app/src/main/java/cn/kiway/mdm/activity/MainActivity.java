@@ -137,6 +137,11 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                         Utils.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude());
                     }
                     //2.获取电量，如果电量1%，上报一下
+                    Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+                    int level = intent.getIntExtra("level", 0);
+                    if (level == 1) {
+                        Utils.deviceRuntime(MainActivity.this, Utils.getIMEI(MainActivity.this), "2");
+                    }
                     try {
                         sleep(10 * 60 * 1000);
                     } catch (InterruptedException e) {

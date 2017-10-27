@@ -29,7 +29,6 @@ import static cn.kiway.mdm.KWApp.server;
 
 public class LoginActivity extends BaseActivity {
 
-
     private Button schollBtn;
     private Button classBtn;
     private EditText codeET;
