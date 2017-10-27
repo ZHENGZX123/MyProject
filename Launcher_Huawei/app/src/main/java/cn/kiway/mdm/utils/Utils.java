@@ -13,7 +13,6 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.format.Formatter;
@@ -33,13 +32,11 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,7 +45,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.Set;
 
 import cn.kiway.mdm.activity.MainActivity;
@@ -136,54 +132,6 @@ public class Utils {
         return result;
     }
 
-    public static final String SYS_EMUI = "sys_emui";
-    public static final String SYS_MIUI = "sys_miui";
-    public static final String SYS_FLYME = "sys_flyme";
-    private static final String KEY_MIUI_VERSION_CODE = "ro.miui.ui.version.code";
-    private static final String KEY_MIUI_VERSION_NAME = "ro.miui.ui.version.name";
-    private static final String KEY_MIUI_INTERNAL_STORAGE = "ro.miui.internal.storage";
-    private static final String KEY_EMUI_API_LEVEL = "ro.build.hw_emui_api_level";
-    private static final String KEY_EMUI_VERSION = "ro.build.version.emui";
-    private static final String KEY_EMUI_CONFIG_HW_SYS_VERSION = "ro.confg.hw_systemversion";
-
-    public static String getSystem() {
-        String SYS = "";
-        try {
-            Properties prop = new Properties();
-            prop.load(new FileInputStream(new File(Environment.getRootDirectory(), "build.prop")));
-            if (prop.getProperty(KEY_MIUI_VERSION_CODE, null) != null
-                    || prop.getProperty(KEY_MIUI_VERSION_NAME, null) != null
-                    || prop.getProperty(KEY_MIUI_INTERNAL_STORAGE, null) != null) {
-                SYS = SYS_MIUI;//小米
-            } else if (prop.getProperty(KEY_EMUI_API_LEVEL, null) != null
-                    || prop.getProperty(KEY_EMUI_VERSION, null) != null
-                    || prop.getProperty(KEY_EMUI_CONFIG_HW_SYS_VERSION, null) != null) {
-                SYS = SYS_EMUI;//华为
-            } else if (getMeizuFlymeOSFlag().toLowerCase().contains("flyme")) {
-                SYS = SYS_FLYME;//魅族
-            }
-            ;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return SYS;
-        }
-        return SYS;
-    }
-
-    public static String getMeizuFlymeOSFlag() {
-        return getSystemProperty("ro.build.display.id", "");
-    }
-
-    private static String getSystemProperty(String key, String defaultValue) {
-        try {
-            Class<?> clz = Class.forName("android.os.SystemProperties");
-            Method get = clz.getMethod("get", String.class, String.class);
-            return (String) get.invoke(clz, key, defaultValue);
-        } catch (Exception e) {
-        }
-        return defaultValue;
-    }
-
     public static ArrayList<App> scanLocalInstallAppList(PackageManager packageManager) {
         ArrayList<App> apps = new ArrayList<>();
         try {
@@ -212,6 +160,7 @@ public class Utils {
                 App a = new App();
                 a.name = packageInfo.applicationInfo.loadLabel(packageManager).toString();
                 a.packageName = packageInfo.packageName;
+
                 // a.icon = (packageInfo.applicationInfo.loadIcon(packageManager));
                 apps.add(a);
             }
@@ -796,23 +745,39 @@ public class Utils {
 
     public static void checkAppCharges(MainActivity m) {
         try {
+            //1.检查type
             ArrayList<AppCharge> apps_type0 = new MyDBHelper(m).getAllAppCharges(0);
             Log.d("test", "apps_type0 = " + apps_type0.size());
             ArrayList<AppCharge> apps_type1 = new MyDBHelper(m).getAllAppCharges(1);
             Log.d("test", "apps_type1 = " + apps_type1.size());
             ArrayList<AppCharge> apps_type2 = new MyDBHelper(m).getAllAppCharges(2);
             Log.d("test", "apps_type2 = " + apps_type2.size());
-            //1.检查type
-            for (AppCharge a : apps_type0) {
-
+            ArrayList<App> installApps = scanLocalInstallAppList(m.getPackageManager());
+            for (AppCharge ac : apps_type0) {
+                //必须安装的APP，如果没有安装，要安装上去，注意重复下载的问题。
+                boolean installed = false;
+                for (App a : installApps) {
+                    if (a.packageName.equals(ac.packages)) {
+                        installed = true;
+                        break;
+                    }
+                }
+                if (installed) {
+                    Log.d("test", ac.name + "_" + ac.packages + "已安装");
+                } else {
+                    Log.d("test", ac.name + "_" + ac.packages + "未安装");
+                    //TODO 下载安装
+                }
+                //TODO 版本更新
             }
-            for (AppCharge a : apps_type1) {
-
+            for (AppCharge ac : apps_type1) {
+                //白名单，调用华为的API
             }
-            for (AppCharge a : apps_type2) {
-
+            for (AppCharge ac : apps_type2) {
+                //黑名单，调用华为的API
             }
-            //2.检查时间段
+            //2.检查使用时间段
+
         } catch (Exception e) {
             e.printStackTrace();
         }

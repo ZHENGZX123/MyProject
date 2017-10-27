@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import cn.kiway.mdm.KWApp;
+
 /**
  * Created by Administrator on 2017/6/9.
  */
@@ -18,6 +20,12 @@ public class BaseActivity extends Activity {
         super.onCreate(savedInstanceState);
         pd = new ProgressDialog(this);
         pd.setMessage("网络请求中");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        KWApp.instance.currentActivity = this;
     }
 
     public void showPD() {

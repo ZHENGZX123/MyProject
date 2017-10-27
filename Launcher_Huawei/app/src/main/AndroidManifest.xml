@@ -84,6 +84,10 @@
         <activity
             android:name="cn.kiway.mdm.activity.LicenseActivity"
             android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.TestActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
 
         <receiver
             android:name="cn.kiway.mdm.broadcast.SampleDeviceReceiver"
