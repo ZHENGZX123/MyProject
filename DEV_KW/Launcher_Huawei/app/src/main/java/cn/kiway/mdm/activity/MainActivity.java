@@ -204,7 +204,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 allListData.addAll(new ArrayList(FileACache.loadListCache(MainActivity.this, i + "list.txt")));
             } else {
                 if (i * _16 + _16 >= data1.size())
-                    allListData.addAll(new ArrayList(data1.subList(i * _16, data1.size() - 1)));
+                    allListData.addAll(new ArrayList(data1.subList(i * _16, data1.size())));//不知道为啥不用data1.size()-1
                 else
                     allListData.addAll(new ArrayList(data1.subList(i * _16, i * _16 + _16)));
             }
@@ -224,7 +224,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             classifyView.setSelected(true);
             List<List<App>> data = new ArrayList<>();//截取数据到适配器
             if (i * _16 + _16 >= data1.size()) {
-                data = new ArrayList(data1.subList(i * _16, data1.size() - 1));
+                data = new ArrayList(data1.subList(i * _16, data1.size()));
             } else {
                 data = new ArrayList(data1.subList(i * _16, i * _16 + _16));
             }
@@ -316,6 +316,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 if (allListData.toString().contains(a.packageName))
                     return;
                 allListData.add(apps);
+                allListData.add(apps);//待解决，需要加两个后面的，应用才会显示出来
                 initData(allListData);
             } else if (action.equals(REMOVE_SUCCESS)) {
                 Log.e(AppReceiverIn.TAG, "--------MainActivity卸载成功" + packageName);
