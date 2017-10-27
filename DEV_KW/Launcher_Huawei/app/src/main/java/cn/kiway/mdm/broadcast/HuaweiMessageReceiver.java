@@ -53,9 +53,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             JSONObject data = new JSONObject(receive).getJSONObject("data");
             String command = data.optString("command");
             int flag = data.optInt("flag");
-            if (KWApp.instance == null) {
-                return false;
-            }
+
             Message m = new Message();
             if (KWApp.flagCommands.contains(command)) {
                 context.getSharedPreferences("kiway", 0).edit().putInt("flag_" + command, flag).commit();
@@ -73,12 +71,29 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.what = MSG_LOCK;
             } else if (command.equals("unlock")) {
                 m.what = MSG_UNLOCK;
+            } else if (command.equals("wifilist")) {
+                //保存进数据库，并马上执行一次
+
+
+            } else if (command.equals("app")) {
+                //保存进数据库，并马上执行一次
+
+
+            } else if (command.equals("network")) {
+                //保存进数据库即可
+
             } else {
                 m.what = MSG_TOAST;
                 m.obj = receive;
             }
+            if (KWApp.instance == null) {
+                return false;
+            }
             KWApp.instance.mHandler.sendMessage(m);
-        } catch (Exception e) {
+        } catch (
+                Exception e)
+
+        {
             e.printStackTrace();
         }
         return false;

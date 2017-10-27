@@ -635,7 +635,7 @@ public class Utils {
         });
     }
 
-    public static void checkWifis(MainActivity m) {
+    public synchronized static void checkWifis(MainActivity m) {
         try {
             ArrayList<Wifi> wifis = new MyDBHelper(m).getAllWifis();
             Log.d("test", "wifis = " + wifis);
@@ -660,7 +660,7 @@ public class Utils {
         }
     }
 
-    public static void checkAppCharges(MainActivity m) {
+    public synchronized static void checkAppCharges(MainActivity m) {
         try {
             //1.检查type
             ArrayList<AppCharge> apps_type0 = new MyDBHelper(m).getAllAppCharges(0);
@@ -732,9 +732,14 @@ public class Utils {
         return false;
     }
 
-    public static void huaweiPush(Context c) {
-        PushManager.requestToken(c);
-        Log.d("huawei", "try to get Token ,current packageName is " + c.getPackageName());
+    public static void huaweiPush(final Context c) {
+        new Thread() {
+            @Override
+            public void run() {
+                PushManager.requestToken(c);
+                Log.d("huawei", "try to get Token ,current packageName is " + c.getPackageName());
+            }
+        }.start();
     }
 
     public static String getRunningAPP(Context context) {
