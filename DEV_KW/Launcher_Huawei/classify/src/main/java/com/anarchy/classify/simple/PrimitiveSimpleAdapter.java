@@ -279,9 +279,6 @@ public abstract class PrimitiveSimpleAdapter<Sub, VH extends PrimitiveSimpleAdap
     protected void onSubDialogCancel(Dialog dialog,int parentPosition){
 
     }
-    /**
-     * @deprecated {@link #onItemClick(ViewHolder, int, int)}
-     */
     protected void onItemClick(View pressedView,int parentIndex,int index){
 
     }
