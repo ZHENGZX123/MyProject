@@ -44,6 +44,7 @@ public class KWApp extends Application {
     public static final int MSG_REBOOT = 7;//重启
     public static final int MSG_SHUTDOWN = 8;//重启
 
+    public static boolean shangke = false;
 
     public static final ArrayList<String> flagCommands = new ArrayList<>();
 
@@ -83,20 +84,33 @@ public class KWApp extends Application {
                 installationPush(token, imei);
             } else if (msg.what == MSG_LOCK) {
                 //强制锁屏
-                lock();
+                MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(true);
+                MDMHelper.getAdapter().setTaskButtonDisabled(true);
+                MDMHelper.getAdapter().setHomeButtonDisabled(true);
+                MDMHelper.getAdapter().setBackButtonDisabled(true);
                 startActivity(new Intent(getApplicationContext(), TestActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             } else if (msg.what == MSG_UNLOCK) {
                 //解除锁屏
-                unlock();
+                MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(false);
+                MDMHelper.getAdapter().setTaskButtonDisabled(false);
+                MDMHelper.getAdapter().setHomeButtonDisabled(false);
+                MDMHelper.getAdapter().setBackButtonDisabled(false);
                 if (currentActivity != null) {
                     currentActivity.finish();
                 }
             } else if (msg.what == MSG_LAUNCH_APP) {
                 //打开APP
-                Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.homework.student");
-                startActivity(intent);
+                shangke = true;
+                MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(true);
+                MDMHelper.getAdapter().setTaskButtonDisabled(true);
+                MDMHelper.getAdapter().setHomeButtonDisabled(true);
+                Utils.launchApp(getApplicationContext(), msg.obj.toString());
             } else if (msg.what == MSG_LAUNCH_MDM) {
+                shangke = false;
                 //返回MDM桌面
+                MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(false);
+                MDMHelper.getAdapter().setTaskButtonDisabled(false);
+                MDMHelper.getAdapter().setHomeButtonDisabled(false);
                 Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.mdm");
                 startActivity(intent);
             } else if (msg.what == MSG_FLAGCOMMAND) {
@@ -148,20 +162,6 @@ public class KWApp extends Application {
 
         int flag_bluetooth = getSharedPreferences("kiway", 0).getInt("flag_bluetooth", 1);
         MDMHelper.getAdapter().setBluetoothDisabled(flag_bluetooth == 0);
-    }
-
-    private void unlock() {
-        MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(false);
-        MDMHelper.getAdapter().setTaskButtonDisabled(false);
-        MDMHelper.getAdapter().setHomeButtonDisabled(false);
-        MDMHelper.getAdapter().setBackButtonDisabled(false);
-    }
-
-    private void lock() {
-        MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(true);
-        MDMHelper.getAdapter().setTaskButtonDisabled(true);
-        MDMHelper.getAdapter().setHomeButtonDisabled(true);
-        MDMHelper.getAdapter().setBackButtonDisabled(true);
     }
 
     public void installationPush(final String token, final String imei) {

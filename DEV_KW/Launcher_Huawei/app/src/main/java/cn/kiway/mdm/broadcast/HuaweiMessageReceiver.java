@@ -15,9 +15,13 @@ import cn.kiway.mdm.KWApp;
 
 import static cn.kiway.mdm.KWApp.MSG_FLAGCOMMAND;
 import static cn.kiway.mdm.KWApp.MSG_INSTALL;
+import static cn.kiway.mdm.KWApp.MSG_LAUNCH_APP;
+import static cn.kiway.mdm.KWApp.MSG_LAUNCH_MDM;
+import static cn.kiway.mdm.KWApp.MSG_LOCK;
 import static cn.kiway.mdm.KWApp.MSG_REBOOT;
 import static cn.kiway.mdm.KWApp.MSG_SHUTDOWN;
 import static cn.kiway.mdm.KWApp.MSG_TOAST;
+import static cn.kiway.mdm.KWApp.MSG_UNLOCK;
 
 /*
  * 接收Push所有消息的广播接收器
@@ -60,6 +64,15 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.what = MSG_REBOOT;
             } else if (command.equals("shutdown")) {
                 m.what = MSG_SHUTDOWN;
+            } else if (command.equals("shangke")) {
+                m.what = MSG_LAUNCH_APP;
+                m.obj = "cn.kiway.homework.student";
+            } else if (command.equals("xiake")) {
+                m.what = MSG_LAUNCH_MDM;
+            } else if (command.equals("lock")) {
+                m.what = MSG_LOCK;
+            } else if (command.equals("unlock")) {
+                m.what = MSG_UNLOCK;
             } else {
                 m.what = MSG_TOAST;
                 m.obj = receive;

@@ -1,6 +1,10 @@
 package cn.kiway.mdm.utils;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -31,13 +35,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,6 +49,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.AppCharge;
@@ -57,7 +59,6 @@ import cn.kiway.mdm.mdm.MDMHelper;
 
 import static android.content.Context.WIFI_SERVICE;
 import static cn.kiway.mdm.KWApp.server;
-import static cn.kiway.mdm.mdm.MDMHelper.getAdapter;
 
 /**
  * Created by Administrator on 2017/6/8.
@@ -143,7 +144,6 @@ public class Utils {
             Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
             resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 
-            // 通过getPackageManager()的queryIntentActivities方法遍历,得到所有能打开的app的packageName
             List<ResolveInfo> resolveinfoList = packageManager
                     .queryIntentActivities(resolveIntent, 0);
             Set<String> allowPackages = new HashSet();
@@ -233,82 +233,6 @@ public class Utils {
         return name;
     }
 
-    //判断有没有su文件
-    public static boolean isRoot() {
-        boolean root = false;
-        try {
-            if ((!new File("/system/bin/su").exists())
-                    && (!new File("/system/xbin/su").exists())) {
-                root = false;
-            } else {
-                root = true;
-            }
-        } catch (Exception e) {
-        }
-        return root;
-    }
-
-
-    public static boolean hasRoot() {
-        int i = execRootCmdSilent("echo test"); // 通过执行测试命令来检测
-        if (i != -1) {
-            return true;
-        }
-        return false;
-    }
-
-
-    public static int execRootCmdSilent(String paramString) {
-        try {
-            Process localProcess = Runtime.getRuntime().exec("su");
-            Object localObject = localProcess.getOutputStream();
-            DataOutputStream localDataOutputStream = new DataOutputStream(
-                    (OutputStream) localObject);
-            String str = String.valueOf(paramString);
-            localObject = str + "\n";
-            localDataOutputStream.writeBytes((String) localObject);
-            localDataOutputStream.flush();
-            localDataOutputStream.writeBytes("exit\n");
-            localDataOutputStream.flush();
-            localProcess.waitFor();
-            int result = localProcess.exitValue();
-            return (Integer) result;
-        } catch (Exception localException) {
-            localException.printStackTrace();
-            return -1;
-        }
-    }
-
-    /**
-     * 应用程序运行命令获取 Root权限，设备必须已破解(获得ROOT权限)
-     *
-     * @return 应用程序是/否获取Root权限
-     */
-    public static boolean upgradeRootPermission(String pkgCodePath) {
-        Process process = null;
-        DataOutputStream os = null;
-        try {
-            String cmd = "chmod 777 " + pkgCodePath;
-            process = Runtime.getRuntime().exec("su"); //切换到root帐号
-            os = new DataOutputStream(process.getOutputStream());
-            os.writeBytes(cmd + "\n");
-            os.writeBytes("exit\n");
-            os.flush();
-            process.waitFor();
-        } catch (Exception e) {
-            return false;
-        } finally {
-            try {
-                if (os != null) {
-                    os.close();
-                }
-                process.destroy();
-            } catch (Exception e) {
-            }
-        }
-        return true;
-    }
-
     public static boolean rangeInDefined(int current, int min, int max) {
         return Math.max(min, current) == Math.min(current, max);
     }
@@ -377,7 +301,7 @@ public class Utils {
         return s;
     }
 
-    public static void connectSSID(Context c, String SSID, String password) {
+    public static void connectSSID(MainActivity c, String SSID, String password) {
         Log.d("test", "connectSSID SSID = " + SSID + " , password = " + password);
         SSID = "KWHW2";
         password = "KWF58888";
@@ -388,7 +312,7 @@ public class Utils {
             return;
         }
         //0.判断当前连接的是不是这个
-        WifiManager wifiManager = (WifiManager) c.getSystemService(WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) c.getApplicationContext().getSystemService(WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         String currentSSID = wifiInfo.getSSID().replace("\"", "");
         Log.d("test", "currentSSID = " + currentSSID);
@@ -397,7 +321,12 @@ public class Utils {
             return;
         }
         //1.先打开位置服务
-        getAdapter().turnOnGPS(true);
+        c.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                MDMHelper.getAdapter().turnOnGPS(true);
+            }
+        });
         //2.搜索附近wifi
         boolean has = false;
         WifiAdmin admin = new WifiAdmin(c);
@@ -452,21 +381,6 @@ public class Utils {
             admin.addNetwork(admin.CreateWifiInfo(SSID,
                     pwd, type));
         }
-    }
-
-    public static void installAPP(Context context, String receive) {
-        //2.查看对应包名，手机是否安装有该apk
-        //3.如果没有，下载
-        //4.静默安装
-    }
-
-    public static void uninstallAPP(Context context, String receive) {
-        //2.查看对应包名，手机是否安装有该apk
-        //3.如果有，静默卸载
-    }
-
-    public static void openAPP(Context context, String receive) {
-        //2.查看对应包名，直接打开
     }
 
     public static String getIMEI(Context c) {
@@ -821,5 +735,53 @@ public class Utils {
     public static void huaweiPush(Context c) {
         PushManager.requestToken(c);
         Log.d("huawei", "try to get Token ,current packageName is " + c.getPackageName());
+    }
+
+    public static String getRunningAPP(Context context) {
+        String packageName = "";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            UsageStatsManager m = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+            if (m != null) {
+                long now = System.currentTimeMillis();
+                //获取60秒之内的应用数据
+                List<UsageStats> stats = m.queryUsageStats(UsageStatsManager.INTERVAL_BEST, now - 10 * 1000, now);//60
+                //取得最近运行的一个app，即当前运行的app
+                if ((stats != null) && (!stats.isEmpty())) {
+                    int j = 0;
+                    for (int i = 0; i < stats.size(); i++) {
+                        if (stats.get(i).getLastTimeUsed() > stats.get(j).getLastTimeUsed()) {
+                            j = i;
+                        }
+                    }
+                    packageName = stats.get(j).getPackageName();
+                }
+            }
+        } else {
+            ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            ComponentName cn = activityManager.getRunningTasks(1).get(0).topActivity;
+            packageName = cn.getPackageName();
+        }
+        Log.d("aaa", "packageName = " + packageName);
+        return packageName;
+    }
+
+    public static void launchApp(final Context c, final String packageName) {
+        new Thread() {
+            @Override
+            public void run() {
+                while (KWApp.shangke) {
+                    String runningAPP = Utils.getRunningAPP(c);
+                    if (!runningAPP.equals(packageName)) {
+                        Intent intent = c.getPackageManager().getLaunchIntentForPackage(packageName);
+                        c.startActivity(intent);
+                    }
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
     }
 }
