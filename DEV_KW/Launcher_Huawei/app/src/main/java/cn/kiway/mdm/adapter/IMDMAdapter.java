@@ -58,7 +58,7 @@ public interface IMDMAdapter {
 
     void installPackage(String path);
 
-    void uninstallPackage(String s, boolean b);
+    void uninstallPackage(String s);
 
     void setBluetoothDisabled(boolean b);
 
@@ -87,4 +87,10 @@ public interface IMDMAdapter {
     void removeDisallowedRunningApp(ArrayList<String> packageNames);
 
     void setSilentActiveAdmin();
+
+    void addInstallPackageWhiteList(ArrayList<String> whiteList);
+
+    List<String> getInstallPackageWhiteList();
+
+    void removeInstallPackageWhiteList(List<String> currentList);
 }
