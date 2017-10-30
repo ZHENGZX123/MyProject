@@ -44,16 +44,9 @@ public class WebViewActivity extends BaseActivity {
         wv.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                int type = checkNetwork(url);
                 Log.d("test", "shouldOverrideUrlLoading url = " + url);
-                Log.d("test", "type = " + type);
-                if (type == 1) {
-                    view.loadUrl(url);
-                    return true;
-                } else {
-                    toast("该网站不能访问");
-                    return true;
-                }
+                view.loadUrl(url);
+                return true;
             }
         });
 
@@ -80,7 +73,7 @@ public class WebViewActivity extends BaseActivity {
 
     //1.白名单
     //2.黑名单
-    //判断域名，还是全匹配
+    //TODO 需要优化,判断域名
     private int checkNetwork(String content) {
         int type = 0;
         ArrayList<Network> networks = new MyDBHelper(this).getAllNetworks();

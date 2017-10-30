@@ -75,7 +75,6 @@ public class LockActivity extends BaseActivity {
             String url = server + "device/logout";
             Log.d("test", "url = " + url);
             RequestParams param = new RequestParams();
-            param.put("operation", "invalidate");
             Log.d("test", "param = " + param.toString());
             client.post(this, url, param, new TextHttpResponseHandler() {
 
