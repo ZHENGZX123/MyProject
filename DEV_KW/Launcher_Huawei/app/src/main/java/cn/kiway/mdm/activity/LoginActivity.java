@@ -121,7 +121,6 @@ public class LoginActivity extends BaseActivity {
             param.put("id", "");
             param.put("platform", "Android");
             param.put("token", token);
-            param.put("operation", "login");
             Log.d("test", "param = " + param.toString());
             client.post(this, url, param, new TextHttpResponseHandler() {
 

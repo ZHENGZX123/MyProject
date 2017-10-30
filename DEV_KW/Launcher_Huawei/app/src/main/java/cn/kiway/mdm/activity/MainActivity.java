@@ -54,7 +54,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private int totalPage; //总的页数
     private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
     private boolean stop;
-    public static MainActivity instance;
+
     public static final int MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS = 1101;
 
     @Override
@@ -62,7 +62,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("test", "Main onCreate");
-        instance = this;
         initView();
         //1.设置初始密码
         initPassword();
