@@ -45,7 +45,11 @@ public class WebViewActivity extends BaseActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 Log.d("test", "shouldOverrideUrlLoading url = " + url);
-                view.loadUrl(url);
+                if (checkNetwork(url) == 1) {
+                    wv.loadUrl(url);
+                } else {
+                    view.loadUrl(url);
+                }
                 return true;
             }
         });
@@ -78,7 +82,7 @@ public class WebViewActivity extends BaseActivity {
         int type = 0;
         ArrayList<Network> networks = new MyDBHelper(this).getAllNetworks();
         for (Network n : networks) {
-            if (content.contains(n.url)) {
+            if (content.contains(n.host)) {
                 type = n.type;
                 break;
             }
