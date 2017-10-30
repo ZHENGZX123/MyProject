@@ -17,6 +17,4 @@ public class MDMHelper {
         }
         return mAdapter;
     }
-
-
 }

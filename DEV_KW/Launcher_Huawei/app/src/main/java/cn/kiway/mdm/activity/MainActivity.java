@@ -1,11 +1,9 @@
 package cn.kiway.mdm.activity;
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.app.AppOpsManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
@@ -30,6 +28,7 @@ import cn.kiway.mdm.View.viewPager.StereoPagerTransformer;
 import cn.kiway.mdm.adapter.AppListAdapter;
 import cn.kiway.mdm.adapter.MyViewPagerAdapter;
 import cn.kiway.mdm.dialog.CheckPassword;
+import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.utils.AppListUtils;
 import cn.kiway.mdm.utils.AppReceiverIn;
@@ -37,6 +36,7 @@ import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.LocationUtils;
 import cn.kiway.mdm.utils.Utils;
 
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
 import static cn.kiway.mdm.utils.AppReceiverIn.REMOVE_SUCCESS;
@@ -55,7 +55,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
     private boolean stop;
 
-    private static final int MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS = 1101;
+    public static final int MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS = 1101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,19 +82,23 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private void setUsageStats() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (!hasPermission()) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开");
-                builder.setTitle("提示");
-                builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivityForResult(
-                                new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
-                                MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS);
-                    }
-                });
-                builder.setCancelable(false);
-                builder.create().show();
+                ShowMessageDailog dailog = new ShowMessageDailog(this);
+                dailog.setShowMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开", YUXUNFANWENJLU);
+                dailog.setCancelable(false);
+                dailog.show();
+//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//                builder.setMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开");
+//                builder.setTitle("提示");
+//                builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        startActivityForResult(
+//                                new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
+//                                MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS);
+//                    }
+//                });
+//                builder.setCancelable(false);
+//                builder.create().show();
             }
         }
     }
