@@ -48,6 +48,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.activity.MainActivity;
@@ -788,5 +790,14 @@ public class Utils {
                 }
             }
         }.start();
+    }
+
+
+    public static String getHostByUrl(String url) {
+        Matcher m = Pattern.compile(",?(\\w+\\.(com|net))").matcher(url);
+        while (m.find()) {
+            return m.group(1);
+        }
+        return "";
     }
 }
