@@ -405,6 +405,7 @@ public class Utils {
                     o1.put("imeis", Utils.getIMEI(c));
                     o1.put("longitude", "" + longitude);
                     o1.put("latitude", "" + latitude);
+                    o1.put("operation", "GPS");
                     array.put(o1);
                     Log.d("test", "location array = " + array.toString());
                     StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
@@ -442,6 +443,7 @@ public class Utils {
                             JSONObject param = new JSONObject();
                             param.put("IMEI", imei);
                             param.put("flag", flag);
+                            param.put("operation", "submitData");
                             array.put(param);
                             Log.d("test", "array = " + array.toString());
                             StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
@@ -476,6 +478,7 @@ public class Utils {
             param.put("ip", getIP(c));
             param.put("className", "MainActivity");
             param.put("message", "NullPointException At line 76");
+            param.put("operation", "submitData");
             Log.d("test", "param = " + param.toString());
             String url = server + "device/exceptions";
             Log.d("test", "exceptions = " + url);
@@ -638,6 +641,10 @@ public class Utils {
     }
 
     public synchronized static void checkWifis(MainActivity m) {
+        if (m == null) {
+            Log.d("test", "没有界面，推过来也没用");
+            return;
+        }
         try {
             ArrayList<Wifi> wifis = new MyDBHelper(m).getAllWifis();
             Log.d("test", "wifis = " + wifis);
@@ -663,6 +670,10 @@ public class Utils {
     }
 
     public synchronized static void checkAppCharges(MainActivity m) {
+        if (m == null) {
+            Log.d("test", "没有界面，推过来也没用");
+            return;
+        }
         try {
             //1.检查type
             ArrayList<AppCharge> apps_type0 = new MyDBHelper(m).getAllAppCharges(0);
