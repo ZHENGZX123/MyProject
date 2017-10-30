@@ -84,7 +84,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (!hasPermission()) {
                 ShowMessageDailog dailog = new ShowMessageDailog(this);
-                dailog.setShowMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开", YUXUNFANWENJLU);
+                dailog.setShowMessage(getString(R.string.setting_use_record_permissions), YUXUNFANWENJLU);
                 dailog.setCancelable(false);
                 dailog.show();
 //                AlertDialog.Builder builder = new AlertDialog.Builder(this);

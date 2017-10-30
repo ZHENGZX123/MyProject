@@ -11,5 +11,6 @@
     <string name="title_license">免责声明与软件许可协议</string>
     <string name="title_permissions">权限使用声明</string>
     <string name="read_statement">若您点击同意并开始使用本软件，代表您已阅读并接受<a href="http://www.huawei.mdm.com">《免责声明与软件许可协议》</a>。</string>
+    <string name="setting_use_record_permissions">请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开</string>
 </resources>
 
