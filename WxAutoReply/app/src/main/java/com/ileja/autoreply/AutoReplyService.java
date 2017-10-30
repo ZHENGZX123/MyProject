@@ -13,7 +13,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.os.PowerManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -36,15 +35,10 @@ public class AutoReplyService extends AccessibilityService {
     boolean background = false;
     private String name;
     private String scontent;
+    private String retContent = "未知错误";
     AccessibilityNodeInfo itemNodeinfo;
     private KeyguardManager.KeyguardLock kl;
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-
-        }
-    };
+    private Handler handler = new Handler();
 
     /**
      * 必须重写的方法，响应各种事件。
@@ -70,12 +64,13 @@ public class AutoReplyService extends AccessibilityService {
                                 if (isAppForeground(MM_PNAME)) {
                                     background = false;
                                     android.util.Log.d("maptrix", "is mm in foreground");
-                                    sendNotifacationReply(event);
                                     handler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
                                             sendNotifacationReply(event);
-                                            fill(1);
+                                            if (fill(1)) {
+                                                send();
+                                            }
                                         }
                                     }, 1000);
                                 } else {
@@ -93,7 +88,9 @@ public class AutoReplyService extends AccessibilityService {
                                     handler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-                                            fill(2);
+                                            if (fill(2)) {
+                                                send();
+                                            }
                                         }
                                     }, 1000);
                                 } else {
@@ -108,22 +105,27 @@ public class AutoReplyService extends AccessibilityService {
                 break;
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 android.util.Log.d("maptrix", "get type window down event");
-                if (!hasAction) break;
+                if (!hasAction) {
+                    android.util.Log.d("maptrix", "break");
+                    break;
+                }
                 itemNodeinfo = null;
                 String className = event.getClassName().toString();
                 if (className.equals("com.tencent.mm.ui.LauncherUI")) {
                     if (fill(3)) {
-
+                        send();
                     } else {
                         if (itemNodeinfo != null) {
                             itemNodeinfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    fill(4);
-//                                    back2Home();
-//                                    release();
-//                                    hasAction = false;
+                                    if (fill(4)) {
+                                        send();
+                                    }
+                                    back2Home();
+                                    release();
+                                    hasAction = false;
                                 }
                             }, 1000);
                             break;
@@ -131,9 +133,9 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }
                 //bring2Front();
-//                back2Home();
-//                release();
-//                hasAction = false;
+                back2Home();
+                release();
+                hasAction = false;
                 break;
         }
     }
@@ -172,7 +174,6 @@ public class AutoReplyService extends AccessibilityService {
     /**
      * 模拟back按键
      */
-
     private void pressBackButton() {
         Runtime runtime = Runtime.getRuntime();
         try {
@@ -202,12 +203,7 @@ public class AutoReplyService extends AccessibilityService {
             android.util.Log.i("maptrix", "sender content =" + scontent);
 
 
-            PendingIntent pendingIntent = notification.contentIntent;
-            try {
-                pendingIntent.send();
-            } catch (PendingIntent.CanceledException e) {
-                e.printStackTrace();
-            }
+            getReplayFromServer(notification, name, scontent);
         }
     }
 
@@ -215,38 +211,27 @@ public class AutoReplyService extends AccessibilityService {
     private boolean fill(int from) {
         android.util.Log.i("maptrix", "from  = " + from);
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-        if (rootNode == null) {
-            return false;
+        if (rootNode != null) {
+            return findEditText(rootNode, retContent);
         }
-        getReplayFromServer(rootNode, from);
-        return true;
+        return false;
     }
 
 
     private boolean findEditText(AccessibilityNodeInfo rootNode, String content) {
         int count = rootNode.getChildCount();
-
-        android.util.Log.d("maptrix", "root class=" + rootNode.getClassName() + "," + rootNode.getText() + "," + count);
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
             if (nodeInfo == null) {
-                android.util.Log.d("maptrix", "nodeinfo = null");
                 continue;
             }
-
-            android.util.Log.d("maptrix", "class=" + nodeInfo.getClassName());
-            android.util.Log.e("maptrix", "ds=" + nodeInfo.getContentDescription());
             if (nodeInfo.getContentDescription() != null) {
                 int nindex = nodeInfo.getContentDescription().toString().indexOf(name);
-                int cindex = nodeInfo.getContentDescription().toString().indexOf(scontent);
-                android.util.Log.e("maptrix", "nindex=" + nindex + " cindex=" + cindex);
                 if (nindex != -1) {
                     itemNodeinfo = nodeInfo;
-                    android.util.Log.i("maptrix", "find node info");
                 }
             }
             if ("android.widget.EditText".equals(nodeInfo.getClassName())) {
-                android.util.Log.i("maptrix", "==================");
                 Bundle arguments = new Bundle();
                 arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
                         AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
@@ -358,7 +343,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void getReplayFromServer(final AccessibilityNodeInfo rootNode, final int from) {
+    private void getReplayFromServer(final Notification notification, final String name, final String content) {
         AsyncHttpClient client = new AsyncHttpClient();
         client.setTimeout(10000);
         String url = "http://202.104.136.9:8389/download/version/zip_xs.json";
@@ -366,29 +351,24 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void onSuccess(int code, Header[] headers, String ret) {
                 Log.d("test", "onSuccess = " + ret);
-                boolean find = findEditText(rootNode, ret);
-                if (find) {
-                    send();
-                }
-                if (from == 3 || from == 4) {
-                    back2Home();
-                    release();
-                    hasAction = false;
+                retContent = "回复：" + content;
+                handleResult();
+            }
+
+            private void handleResult() {
+                PendingIntent pendingIntent = notification.contentIntent;
+                try {
+                    pendingIntent.send();
+                } catch (PendingIntent.CanceledException e) {
+                    e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                 Log.d("test", "onFailure = " + s);
-                boolean find = findEditText(rootNode, "服务器异常");
-                if (find) {
-                    send();
-                }
-                if (from == 4) {
-                    back2Home();
-                    release();
-                    hasAction = false;
-                }
+                retContent = s;
+                handleResult();
             }
         });
     }
