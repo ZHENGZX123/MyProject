@@ -2,18 +2,15 @@ package com.ileja.autoreply;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PowerManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -26,6 +23,7 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import org.apache.http.Header;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AutoReplyService extends AccessibilityService {
@@ -39,6 +37,41 @@ public class AutoReplyService extends AccessibilityService {
     AccessibilityNodeInfo itemNodeinfo;
     private KeyguardManager.KeyguardLock kl;
     private Handler handler = new Handler();
+    public ArrayList<AccessibilityEvent> events = new ArrayList<>();
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        android.util.Log.d("maptrix", "service oncreate");
+
+        new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (events.size() == 0) {
+                        continue;
+                    }
+                    if (hasAction) {
+                        continue;
+                    }
+                    android.util.Log.d("maptrix", "get firstEvent");
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            AccessibilityEvent firstEvent = events.remove(0);
+                            launchWechat(firstEvent);
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
 
     /**
      * 必须重写的方法，响应各种事件。
@@ -53,55 +86,32 @@ public class AutoReplyService extends AccessibilityService {
             case AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED:// 通知栏事件
                 android.util.Log.d("maptrix", "get notification event");
                 List<CharSequence> texts = event.getText();
-                if (!texts.isEmpty()) {
-                    for (CharSequence text : texts) {
-                        String content = text.toString();
-                        if (!TextUtils.isEmpty(content)) {
-                            if (isScreenLocked()) {
-                                locked = true;
-                                wakeAndUnlock();
-                                android.util.Log.d("maptrix", "the screen is locked");
-                                if (isAppForeground(MM_PNAME)) {
-                                    background = false;
-                                    android.util.Log.d("maptrix", "is mm in foreground");
-                                    handler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            sendNotifacationReply(event);
-                                            if (fill(1)) {
-                                                send();
-                                            }
-                                        }
-                                    }, 1000);
-                                } else {
-                                    background = true;
-                                    android.util.Log.d("maptrix", "is mm in background");
-                                    sendNotifacationReply(event);
-                                }
-                            } else {
-                                locked = false;
-                                android.util.Log.d("maptrix", "the screen is unlocked");
-                                if (isAppForeground(MM_PNAME)) {
-                                    background = false;
-                                    android.util.Log.d("maptrix", "is mm in foreground");
-                                    sendNotifacationReply(event);
-                                    handler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (fill(2)) {
-                                                send();
-                                            }
-                                        }
-                                    }, 1000);
-                                } else {
-                                    background = true;
-                                    android.util.Log.d("maptrix", "is mm in background");
-                                    sendNotifacationReply(event);
-                                }
-                            }
+                if (texts.isEmpty()) {
+                    return;
+                }
+                for (CharSequence text : texts) {
+                    String content = text.toString();
+                    if (!TextUtils.isEmpty(content)) {
+                        if (isScreenLocked()) {
+                            continue;
                         }
+                        locked = false;
+                        android.util.Log.d("maptrix", "the screen is unlocked");
+                        background = true;
+                        android.util.Log.d("maptrix", "is mm in background");
+
+//                        handler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+                        launchWechat(event);
+//                            }
+//                        }, 100);
+
+                        //加入队列
+//                        events.add(event);
                     }
                 }
+
                 break;
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 android.util.Log.d("maptrix", "get type window down event");
@@ -111,26 +121,11 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 itemNodeinfo = null;
                 String className = event.getClassName().toString();
-                if (className.equals("com.tencent.mm.ui.LauncherUI")) {
-                    if (fill(3)) {
-                        send();
-                    } else {
-                        if (itemNodeinfo != null) {
-                            itemNodeinfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (fill(4)) {
-                                        send();
-                                    }
-                                    back2Home();
-                                    release();
-                                    hasAction = false;
-                                }
-                            }, 1000);
-                            break;
-                        }
-                    }
+                if (!className.equals("com.tencent.mm.ui.LauncherUI")) {
+                    return;
+                }
+                if (fill()) {
+                    send();
                 }
                 //bring2Front();
                 back2Home();
@@ -188,8 +183,9 @@ public class AutoReplyService extends AccessibilityService {
      *
      * @param event
      */
-    private void sendNotifacationReply(AccessibilityEvent event) {
+    private void launchWechat(AccessibilityEvent event) {
         hasAction = true;
+        android.util.Log.i("maptrix", "event.getParcelableData() = " + event.getParcelableData());
         if (event.getParcelableData() != null
                 && event.getParcelableData() instanceof Notification) {
             Notification notification = (Notification) event
@@ -202,21 +198,18 @@ public class AutoReplyService extends AccessibilityService {
             android.util.Log.i("maptrix", "sender name =" + name);
             android.util.Log.i("maptrix", "sender content =" + scontent);
 
-
             getReplayFromServer(notification, name, scontent);
         }
     }
 
     @SuppressLint("NewApi")
-    private boolean fill(int from) {
-        android.util.Log.i("maptrix", "from  = " + from);
+    private boolean fill() {
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
         if (rootNode != null) {
             return findEditText(rootNode, retContent);
         }
         return false;
     }
-
 
     private boolean findEditText(AccessibilityNodeInfo rootNode, String content) {
         int count = rootNode.getChildCount();
@@ -261,49 +254,14 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     /**
-     * 判断指定的应用是否在前台运行
-     *
-     * @param packageName
-     * @return
-     */
-    private boolean isAppForeground(String packageName) {
-        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
-        String currentPackageName = cn.getPackageName();
-        if (!TextUtils.isEmpty(currentPackageName) && currentPackageName.equals(packageName)) {
-            return true;
-        }
-
-        return false;
-    }
-
-
-    /**
-     * 将当前应用运行到前台
-     */
-    private void bring2Front() {
-        ActivityManager activtyManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> runningTaskInfos = activtyManager.getRunningTasks(3);
-        for (ActivityManager.RunningTaskInfo runningTaskInfo : runningTaskInfos) {
-            if (this.getPackageName().equals(runningTaskInfo.topActivity.getPackageName())) {
-                activtyManager.moveTaskToFront(runningTaskInfo.id, ActivityManager.MOVE_TASK_WITH_HOME);
-                return;
-            }
-        }
-    }
-
-    /**
      * 回到系统桌面
      */
     private void back2Home() {
         Intent home = new Intent(Intent.ACTION_MAIN);
-
         home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         home.addCategory(Intent.CATEGORY_HOME);
-
         startActivity(home);
     }
-
 
     /**
      * 系统是否在锁屏状态
@@ -313,25 +271,6 @@ public class AutoReplyService extends AccessibilityService {
     private boolean isScreenLocked() {
         KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         return keyguardManager.inKeyguardRestrictedInputMode();
-    }
-
-    private void wakeAndUnlock() {
-        //获取电源管理器对象
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-
-        //获取PowerManager.WakeLock对象，后面的参数|表示同时传入两个值，最后的是调试用的Tag
-        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "bright");
-
-        //点亮屏幕
-        wl.acquire(1000);
-
-        //得到键盘锁管理器对象
-        KeyguardManager km = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-        kl = km.newKeyguardLock("unLock");
-
-        //解锁
-        kl.disableKeyguard();
-
     }
 
     private void release() {
