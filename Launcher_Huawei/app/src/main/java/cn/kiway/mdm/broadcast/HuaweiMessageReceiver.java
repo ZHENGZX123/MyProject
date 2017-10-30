@@ -12,6 +12,8 @@ import com.huawei.android.pushagent.api.PushEventReceiver;
 import org.json.JSONObject;
 
 import cn.kiway.mdm.KWApp;
+import cn.kiway.mdm.activity.MainActivity;
+import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.KWApp.MSG_FLAGCOMMAND;
 import static cn.kiway.mdm.KWApp.MSG_INSTALL;
@@ -73,15 +75,12 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.what = MSG_UNLOCK;
             } else if (command.equals("wifilist")) {
                 //保存进数据库，并马上执行一次
-
-
+                Utils.checkWifis(MainActivity.instance);
             } else if (command.equals("app")) {
-                //保存进数据库，并马上执行一次
-
-
+                //保存进数据库，并马上执行一次checkAppCharges
+                Utils.checkAppCharges(MainActivity.instance);
             } else if (command.equals("network")) {
                 //保存进数据库即可
-
             } else {
                 m.what = MSG_TOAST;
                 m.obj = receive;
