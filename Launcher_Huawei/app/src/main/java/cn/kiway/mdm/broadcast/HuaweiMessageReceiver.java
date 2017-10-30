@@ -90,10 +90,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 return false;
             }
             KWApp.instance.mHandler.sendMessage(m);
-        } catch (
-                Exception e)
-
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -131,7 +128,6 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-
 
         }
     };

@@ -154,6 +154,7 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
     }
 
     static class ItemViewHolder extends MiViewHolder {
+
         ImageView iv;
 
         public ItemViewHolder(View itemView) {
