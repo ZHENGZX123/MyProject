@@ -618,7 +618,6 @@ public class ClassifyView extends FrameLayout {
                             listener.onDragStart(ClassifyView.this,mSelected,mInitialTouchX, mInitialTouchY, IN_MAIN_REGION);
                         }
                         doStartDragWithAnimation(mSubRecyclerView,mSelected,mSelectedPosition, targetX, targetY, mSubLocation, mSubCallBack);
-
                     }
                 }
             }
@@ -764,11 +763,10 @@ public class ClassifyView extends FrameLayout {
      */
     protected Dialog createSubDialog() {
         Dialog dialog = new Dialog(getContext(), R.style.ClassifyViewTheme);
-
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
-        layoutParams.gravity = Gravity.BOTTOM;
+        layoutParams.gravity = Gravity.CENTER;
         layoutParams.height = (int) (getHeight() * mSubRatio);
         layoutParams.dimAmount = 0.1f;
         layoutParams.windowAnimations = R.style.DefaultAnimation;
@@ -822,7 +820,6 @@ public class ClassifyView extends FrameLayout {
                 group = (ViewGroup) content;
             }
             group.addView(mSubRecyclerView);
-
         }
         dialog.setContentView(content);
         WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
