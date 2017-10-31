@@ -292,7 +292,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
             String id = cur.getString(cur.getColumnIndex("id"));
             String url = cur.getString(cur.getColumnIndex("url"));
             int type = cur.getInt(cur.getColumnIndex("type"));
-
             Network a = new Network();
             a.id = id;
             a.url = url;
