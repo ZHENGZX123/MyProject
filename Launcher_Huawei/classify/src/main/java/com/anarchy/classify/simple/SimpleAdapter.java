@@ -124,10 +124,8 @@ public abstract class SimpleAdapter<T, VH extends SimpleAdapter.ViewHolder> exte
         mData.remove(selectedPosition);
     }
 
-
     /**
      * 主层级数据绑定
-     *
      * @param holder
      * @param position
      */
@@ -149,7 +147,6 @@ public abstract class SimpleAdapter<T, VH extends SimpleAdapter.ViewHolder> exte
     }
 
     public static class ViewHolder extends PrimitiveSimpleAdapter.ViewHolder {
-
         public ViewHolder(View itemView) {
             super(itemView);
         }
