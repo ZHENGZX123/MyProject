@@ -84,7 +84,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.4.7";
+    private static final String currentPackageVersion = "0.5.2";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -101,6 +101,7 @@ public class MainActivity extends BaseActivity {
     private String username;
     private String password;
     private String tab;
+    private long time;
     private boolean fromCreate = true;
     private String mPage;
     private int mAction = -1;
@@ -312,8 +313,6 @@ public class MainActivity extends BaseActivity {
         wv.addJavascriptInterface(new JsAndroidInterface(), "wx");
     }
 
-    private long time;
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -388,12 +387,7 @@ public class MainActivity extends BaseActivity {
         @JavascriptInterface
         public void logout() {
             Log.d("test", "logout");
-            getSharedPreferences("kiway", 0).edit().putString("accessToken", "").commit();
-            getSharedPreferences("kiway", 0).edit().putString("userId", "").commit();
-
-            new MyDBHelper(getApplicationContext()).deleteAllHttpCache();
-            //TODO注销推送平台。
-//            installationPush();
+            uninstallationPush();
         }
 
         @JavascriptInterface
@@ -1014,6 +1008,7 @@ public class MainActivity extends BaseActivity {
         new Thread() {
             @Override
             public void run() {
+                Log.d("test", "updatePackage downloadUrl = " + downloadUrl);
                 final int ret = new HttpDownload().downFile(downloadUrl, WXApplication.ROOT, WXApplication.ZIP);
                 Log.d("test", "下载新包 ret = " + ret);
                 runOnUiThread(new Runnable() {
