@@ -29,7 +29,6 @@ public class AppListActivity3 extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_list3);
-
         lv = (ListView) findViewById(R.id.lv);
         adapter = new MyAdapter();
         lv.setAdapter(adapter);
@@ -43,7 +42,6 @@ public class AppListActivity3 extends BaseActivity {
             }
         });
         apps = Utils.scanLocalInstallAppList(getPackageManager());
-        //
         for (App a : apps) {
             for (App b : otherApps) {
                 if (a.packageName.equals(b.packageName)) {
