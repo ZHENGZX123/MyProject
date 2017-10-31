@@ -9,13 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="测试专用页面"
+        android:text="屏幕锁定"
         android:textSize="30sp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="clickUnlock"
-        android:text="救命用一键解锁" />
 
 </RelativeLayout>
