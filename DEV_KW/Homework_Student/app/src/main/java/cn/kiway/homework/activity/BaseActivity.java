@@ -42,6 +42,7 @@ import cn.kiway.homework.util.Utils;
 import ly.count.android.api.Countly;
 
 import static cn.kiway.homework.util.Utils.SYS_EMUI;
+import static cn.kiway.homework.util.Utils.SYS_MIUI;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -167,7 +168,7 @@ public class BaseActivity extends Activity {
             String type = Utils.getSystem();
             String deviceId = "";
             switch (type) {
-                case Utils.SYS_MIUI:
+                case SYS_MIUI:
                     deviceId = xiaomitoken;
                     break;
                 case SYS_EMUI:
@@ -203,6 +204,66 @@ public class BaseActivity extends Activity {
         }
     }
 
+    public void uninstallationPush() {
+        try {
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            String accessToken = getSharedPreferences("kiway", 0).getString("accessToken", "");
+            String userId = getSharedPreferences("kiway", 0).getString("userId", "");
+            String xiaomitoken = getSharedPreferences("kiway", 0).getString("xiaomitoken", "");
+            String huaweitoken = getSharedPreferences("kiway", 0).getString("huaweitoken", "");
+            String othertoken = getSharedPreferences("kiway", 0).getString("othertoken", "");
+            client.addHeader("X-Auth-Token", accessToken);
+            Log.d("test", "xiaomitoken = " + xiaomitoken);
+            Log.d("test", "huaweitoken = " + huaweitoken);
+            Log.d("test", "othertoken = " + othertoken);
+            String type = Utils.getSystem();
+            String deviceId = "";
+            switch (type) {
+                case SYS_MIUI:
+                    deviceId = xiaomitoken;
+                    break;
+                case SYS_EMUI:
+                    deviceId = huaweitoken;
+                    break;
+                case Utils.SYS_OTHER:
+                    deviceId = othertoken;
+                    break;
+            }
+            JSONObject param = new JSONObject();
+            param.put("appId", "c77b6c47dbcee47d7ffbc9461da0c82a");
+            param.put("deviceId", deviceId);
+            param.put("type", type);
+            param.put("module", "student");
+            param.put("userId", userId);
+            Log.d("push", "uninstall param = " + param.toString());
+            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+            String url = WXApplication.url + "/push/uninstall";
+            Log.d("push", "url = " + url);
+            client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("push", "uninstall onSuccess = " + ret);
+                    getSharedPreferences("kiway", 0).edit().putString("accessToken", "").commit();
+                    getSharedPreferences("kiway", 0).edit().putString("userId", "").commit();
+                    new MyDBHelper(getApplicationContext()).deleteAllHttpCache();
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("push", "uninstall onFailure = " + s);
+                    getSharedPreferences("kiway", 0).edit().putString("accessToken", "").commit();
+                    getSharedPreferences("kiway", 0).edit().putString("userId", "").commit();
+                    new MyDBHelper(getApplicationContext()).deleteAllHttpCache();
+                }
+            });
+        } catch (Exception e) {
+            Log.d("push", "e = " + e.toString());
+            getSharedPreferences("kiway", 0).edit().putString("accessToken", "").commit();
+            getSharedPreferences("kiway", 0).edit().putString("userId", "").commit();
+            new MyDBHelper(getApplicationContext()).deleteAllHttpCache();
+        }
+    }
 
     @Override
     protected void onStart() {

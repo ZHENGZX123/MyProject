@@ -99,6 +99,8 @@ public class HttpDownload {
         HttpURLConnection urlConn = null;
         url = new URL(urlStr);
         urlConn = (HttpURLConnection) url.openConnection();
+        urlConn.setConnectTimeout(10000);
+        urlConn.setReadTimeout(10000);
         inputStream = urlConn.getInputStream();
         return inputStream;
     }

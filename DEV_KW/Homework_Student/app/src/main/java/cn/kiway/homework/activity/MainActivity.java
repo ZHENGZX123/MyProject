@@ -99,7 +99,7 @@ import static cn.kiway.homework.WXApplication.zhengshiUrl;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.4.7";
+    private static final String currentPackageVersion = "0.5.2";
 
     private X5WebView wv;
     private LinearLayout layout_welcome;
@@ -116,6 +116,7 @@ public class MainActivity extends BaseActivity {
     private String mNewName;
     private String mMac;
     private int mStatus;//0断开 1连接
+    private long time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -271,7 +272,6 @@ public class MainActivity extends BaseActivity {
         wv.addJavascriptInterface(new JsAndroidInterface(), "wx");
     }
 
-    private long time;
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -591,13 +591,25 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public void getOffline(String mac, final String page) {
+            //[6,7,8]
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    wv.loadUrl("javascript:getOfflineCallback('[[0,0,0,0,0,0],[0,0,50,50,100,100]]_[[0,0,0,0,0,0],[0,0,50,50,100,100]]')");
+//                }
+//            });
+//            if (true) {
+//                return;
+//            }
             Log.d("test", "getOffline , mac = " + mac + " , page = " + page);
             String pages[] = page.replace("[", "").replace("]", "").split(",");
             String ret = "";
             for (String p : pages) {
                 ret += drawOffline(p) + "_";
             }
-            ret = ret.substring(0, ret.length() - 1);
+            if (ret.length() > 1) {
+                ret = ret.substring(0, ret.length() - 1);
+            }
             final String finalRet = ret;
             Log.d("test", "finalRet = " + finalRet);
             runOnUiThread(new Runnable() {
@@ -614,7 +626,7 @@ public class MainActivity extends BaseActivity {
             Log.d("test", "drawOffline page = " + p + " size = " + size);
             if (size < 10) {
                 Log.d("test", "page = " + p + " , param = [[0,0,0,0,0,0]]");
-                return "[[0,0,0,0,0,0]]";
+                return "[[0,0,50,50,100,100]]";
             }
             for (int i = 0; i < size; i++) {
                 Dots d = dots.get(i);
@@ -633,7 +645,6 @@ public class MainActivity extends BaseActivity {
                     Dots nextDot = dots.get(i + 1);
                     nextDot.ntype = 0;
                 }
-
                 if (i == size - 1) {    //规则4:如果最后一个不是2，强制为2
                     d.ntype = 2;
                 }
@@ -642,6 +653,21 @@ public class MainActivity extends BaseActivity {
             Dots temp = dots.get(size - 2);
             if (temp.ntype == 2) {
                 dots.remove(size - 1);
+            }
+            //规则6 分开距离很远的1和1
+            for (int i = 0; i < size - 1; i++) {
+                Dots d = dots.get(i);
+                Dots nextD = dots.get(i + 1);
+                if (d.ntype == 1 && nextD.ntype == 1) {
+                    float diffx = nextD.pointX - d.pointX;
+                    float diffy = nextD.pointY - d.pointY;
+                    if (Math.abs(diffx) > 10 || Math.abs(diffy) > 10) {
+                        Log.d("test", "发现飞点");
+                        d.ntype = 2;
+                        nextD.ntype = 0;
+                        i++;
+                    }
+                }
             }
             String param = "";
             for (Dots d : dots) {
@@ -691,11 +717,7 @@ public class MainActivity extends BaseActivity {
         @JavascriptInterface
         public void logout() {
             Log.d("test", "logout");
-            getSharedPreferences("kiway", 0).edit().putString("accessToken", "").commit();
-            getSharedPreferences("kiway", 0).edit().putString("userId", "").commit();
-            new MyDBHelper(getApplicationContext()).deleteAllHttpCache();
-            //TODO 注销推送平台。
-            //unInstallationPush();
+            uninstallationPush();
         }
 
         @JavascriptInterface

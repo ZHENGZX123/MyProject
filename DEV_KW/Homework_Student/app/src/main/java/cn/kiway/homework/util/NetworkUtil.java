@@ -22,12 +22,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-/**
- * 
- * @author (作者名) chen jian
- * @version (版本标识) 1.0
- * 
- */
 public class NetworkUtil {
 	public static final int BUFFER_SIZE_1K_HARF = 512;
 	public static final int BUFFER_SIZE_1K = 1024;
