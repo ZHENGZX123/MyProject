@@ -3,18 +3,9 @@ package cn.kiway.mdm;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.Toast;
-
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.TextHttpResponseHandler;
-
-import org.apache.http.Header;
-import org.apache.http.entity.StringEntity;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -81,7 +72,7 @@ public class KWApp extends Application {
             } else if (msg.what == MSG_INSTALL) {
                 String token = getSharedPreferences("kiway", 0).getString("token", "");
                 String imei = Utils.getIMEI(getApplicationContext());
-                installationPush(token, imei);
+                Utils.installationPush(instance, token, imei);
             } else if (msg.what == MSG_LOCK) {
                 //强制锁屏
                 MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(true);
@@ -155,7 +146,7 @@ public class KWApp extends Application {
 
         int flag_wifi = getSharedPreferences("kiway", 0).getInt("flag_wifi", 1);
         //太危险了
-        MDMHelper.getAdapter().setWifiDisabled(flag_wifi == 0);
+        //MDMHelper.getAdapter().setWifiDisabled(flag_wifi == 0);
 
         int flag_systemupdate = getSharedPreferences("kiway", 0).getInt("flag_systemupdate", 1);
         MDMHelper.getAdapter().setSystemUpdateDisabled(flag_systemupdate == 0);
@@ -164,34 +155,4 @@ public class KWApp extends Application {
         MDMHelper.getAdapter().setBluetoothDisabled(flag_bluetooth == 0);
     }
 
-    public void installationPush(final String token, final String imei) {
-        try {
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
-            Log.d("test", "huaweitoken = " + token);
-            JSONObject param = new JSONObject();
-            param.put("appId", "c77b6c47dbcee47d7ffbc9461da0c82a");
-            param.put("type", Build.TYPE);
-            param.put("deviceId", imei);
-            param.put("userId", token);
-            param.put("module", "student");
-            Log.d("test", "param = " + param.toString());
-            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            String url = server + "push/installation";
-            Log.d("test", "installationPush = " + url);
-            client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "installationPush onSuccess = " + ret);
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "installationPush onFailure = " + s);
-                }
-            });
-        } catch (Exception e) {
-            Log.d("test", "e = " + e.toString());
-        }
-    }
 }
