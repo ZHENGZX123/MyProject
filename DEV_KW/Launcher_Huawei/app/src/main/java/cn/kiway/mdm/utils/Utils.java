@@ -48,6 +48,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.activity.MainActivity;
@@ -67,6 +69,7 @@ import static cn.kiway.mdm.KWApp.server;
 public class Utils {
 
     public static String TAG = "SampleUtils";
+    private static String today;
 
     /**
      * Get help string from html file
@@ -160,10 +163,10 @@ public class Utils {
                         || packageInfo.packageName.equals("cn.kiway.mdm")) {
                     continue;
                 }
+
                 App a = new App();
                 a.name = packageInfo.applicationInfo.loadLabel(packageManager).toString();
                 a.packageName = packageInfo.packageName;
-
                 // a.icon = (packageInfo.applicationInfo.loadIcon(packageManager));
                 apps.add(a);
             }
@@ -397,12 +400,12 @@ public class Utils {
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
                     client.setTimeout(10000);
-                    //TODO 半小时一次
                     JSONArray array = new JSONArray();
                     JSONObject o1 = new JSONObject();
                     o1.put("imeis", Utils.getIMEI(c));
                     o1.put("longitude", "" + longitude);
                     o1.put("latitude", "" + latitude);
+                    o1.put("operation", "GPS");
                     array.put(o1);
                     Log.d("test", "location array = " + array.toString());
                     StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
@@ -440,6 +443,7 @@ public class Utils {
                             JSONObject param = new JSONObject();
                             param.put("IMEI", imei);
                             param.put("flag", flag);
+                            param.put("operation", "submitData");
                             array.put(param);
                             Log.d("test", "array = " + array.toString());
                             StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
@@ -474,6 +478,7 @@ public class Utils {
             param.put("ip", getIP(c));
             param.put("className", "MainActivity");
             param.put("message", "NullPointException At line 76");
+            param.put("operation", "submitData");
             Log.d("test", "param = " + param.toString());
             String url = server + "device/exceptions";
             Log.d("test", "exceptions = " + url);
@@ -497,11 +502,6 @@ public class Utils {
         try {
             WifiManager wifi_service = (WifiManager) c.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             DhcpInfo dhcpInfo = wifi_service.getDhcpInfo();
-            WifiInfo wifiinfo = wifi_service.getConnectionInfo();
-            System.out.println("Wifi info----->" + wifiinfo.getIpAddress());
-            System.out.println("DHCP info gateway----->" + Formatter.formatIpAddress(dhcpInfo.gateway));
-            System.out.println("DHCP info netmask----->" + Formatter.formatIpAddress(dhcpInfo.netmask));
-            // DhcpInfo中的ipAddress是一个int型的变量，通过Formatter将其转化为字符串IP地址
             String ip = Formatter.formatIpAddress(dhcpInfo.ipAddress);
             Log.d("test", "ip = " + ip);
             return ip;
@@ -531,7 +531,7 @@ public class Utils {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 ArrayList<AppCharge> networks = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<AppCharge>>() {
                                 }.getType());
-                                //存进数据库里 TODO 这里要用syncronised
+                                //存进数据库里
                                 new MyDBHelper(c).deleteAppcharge();
                                 for (AppCharge n : networks) {
                                     new MyDBHelper(c).addAppcharge(n);
@@ -572,7 +572,7 @@ public class Utils {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 ArrayList<Network> networks = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Network>>() {
                                 }.getType());
-                                //存进数据库里 TODO 这里要用syncronised
+                                //存进数据库里
                                 new MyDBHelper(c).deleteNetwork();
                                 for (Network n : networks) {
                                     new MyDBHelper(c).addNetwork(n);
@@ -636,6 +636,10 @@ public class Utils {
     }
 
     public synchronized static void checkWifis(MainActivity m) {
+        if (m == null) {
+            Log.d("test", "没有界面，推过来也没用");
+            return;
+        }
         try {
             ArrayList<Wifi> wifis = new MyDBHelper(m).getAllWifis();
             Log.d("test", "wifis = " + wifis);
@@ -643,7 +647,7 @@ public class Utils {
                 String timeRange = w.timeRange;
                 JSONArray array = new JSONArray(timeRange);
                 int count = array.length();
-                //TODO 这个循环要改一下，判断level来做
+                //TODO 这个循环要改一下，先判断level
                 for (int i = 0; i < count; i++) {
                     JSONObject o = array.getJSONObject(i);
                     String startTime = o.getString("startTime");
@@ -661,6 +665,10 @@ public class Utils {
     }
 
     public synchronized static void checkAppCharges(MainActivity m) {
+        if (m == null) {
+            Log.d("test", "没有界面，推过来也没用");
+            return;
+        }
         try {
             //1.检查type
             ArrayList<AppCharge> apps_type0 = new MyDBHelper(m).getAllAppCharges(0);
@@ -788,5 +796,62 @@ public class Utils {
                 }
             }
         }.start();
+    }
+
+
+    public static String getHostByUrl(String url) {
+        Matcher m = Pattern.compile(",?(\\w+\\.(com|net))").matcher(url);
+        while (m.find()) {
+            return m.group(1);
+        }
+        return "";
+    }
+
+    public static void uploadApp(final MainActivity c) {
+        if (!NetworkUtil.isWifi(c)) {
+            return;
+        }
+        c.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //判断是不是wifi环境
+                //1.上报APP列表
+                //2.上传APP图标
+                try {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.setTimeout(10000);
+                    JSONArray array = new JSONArray();
+                    JSONObject o1 = new JSONObject();
+                    o1.put("operation", "submitData");
+                    array.put(o1);
+                    Log.d("test", "location array = " + array.toString());
+                    StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
+                    String url = server + "device/applist";
+                    Log.d("test", "applist url = " + url);
+                    client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "applist onSuccess = " + ret);
+                            String today = getToday();
+                            c.getSharedPreferences("kiway", 0).edit().putBoolean(today, true).commit();
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "applist onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
+                }
+            }
+        });
+    }
+
+    public static String getToday() {
+        Date d = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String today = sdf.format(d);
+        return today;
     }
 }

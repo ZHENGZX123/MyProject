@@ -85,6 +85,7 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
     }
 
     @Override
