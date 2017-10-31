@@ -888,7 +888,7 @@ public class Utils {
             client.setTimeout(10000);
             Log.d("test", "huaweitoken = " + token);
             JSONObject param = new JSONObject();
-            param.put("appId", "c77b6c47dbcee47d7ffbc9461da0c82a");
+            param.put("appId", "2747ffbb3cfca89d0084d3d95fe42c3f");
             param.put("type", "huawei");
             param.put("deviceId", imei);
             param.put("userId", token);
