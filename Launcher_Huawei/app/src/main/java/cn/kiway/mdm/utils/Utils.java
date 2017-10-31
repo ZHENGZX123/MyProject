@@ -167,6 +167,8 @@ public class Utils {
                 App a = new App();
                 a.name = packageInfo.applicationInfo.loadLabel(packageManager).toString();
                 a.packageName = packageInfo.packageName;
+                a.versionName = packageInfo.versionName;
+                a.versionCode = packageInfo.versionCode;
                 // a.icon = (packageInfo.applicationInfo.loadIcon(packageManager));
                 apps.add(a);
             }
@@ -835,14 +837,24 @@ public class Utils {
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
                     client.setTimeout(10000);
-                    JSONArray array = new JSONArray();
-                    JSONObject o1 = new JSONObject();
-                    o1.put("operation", "submitData");
-                    array.put(o1);
-                    Log.d("test", "location array = " + array.toString());
-                    StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
-                    String url = server + "device/applist";
+                    String url = server + "device/appInstallation";
                     Log.d("test", "applist url = " + url);
+                    JSONArray array = new JSONArray();
+                    ArrayList<App> installApps = scanLocalInstallAppList(c.getPackageManager());
+                    int count = installApps.size();
+                    String imei = Utils.getIMEI(c);
+                    for (int i = 0; i < count; i++) {
+                        JSONObject o1 = new JSONObject();
+                        App a = installApps.get(i);
+                        o1.put("imei", imei);
+                        o1.put("appName", a.name);
+                        o1.put("packages", a.packageName);
+                        o1.put("versionName", a.versionName);
+                        o1.put("versionCode", a.versionCode);
+                        array.put(o1);
+                    }
+                    Log.d("test", "applist array = " + array.toString());
+                    StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
                     client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
@@ -877,7 +889,7 @@ public class Utils {
             Log.d("test", "huaweitoken = " + token);
             JSONObject param = new JSONObject();
             param.put("appId", "c77b6c47dbcee47d7ffbc9461da0c82a");
-            param.put("type", Build.TYPE);
+            param.put("type", "huawei");
             param.put("deviceId", imei);
             param.put("userId", token);
             param.put("module", "student");
