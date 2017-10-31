@@ -329,7 +329,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     public ArrayList<Wifi> getAllWifis() {
         if (db == null)
             db = getWritableDatabase();
-        Cursor cur = db.query(TABLE_WIFI, null, null, null, null, null, null);
+        Cursor cur = db.query(TABLE_WIFI, null, null, null, null, null, "level desc");
         ArrayList<Wifi> wifis = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             String id = cur.getString(cur.getColumnIndex("id"));
