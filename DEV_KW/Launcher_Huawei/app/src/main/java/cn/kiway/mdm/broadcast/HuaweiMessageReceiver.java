@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.huawei.android.pushagent.api.PushEventReceiver;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import cn.kiway.mdm.KWApp;
@@ -55,6 +56,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             JSONObject data = new JSONObject(receive).getJSONObject("data");
             String command = data.optString("command");
             int flag = data.optInt("flag");
+            JSONArray content = data.optJSONArray("content");
 
             Message m = new Message();
             if (KWApp.flagCommands.contains(command)) {
@@ -64,14 +66,15 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.what = MSG_REBOOT;
             } else if (command.equals("shutdown")) {
                 m.what = MSG_SHUTDOWN;
-            } else if (command.equals("shangke")) {
+            } else if (command.equals("temporary_app")) {
                 m.what = MSG_LAUNCH_APP;
-                m.obj = "cn.kiway.homework.student";
-            } else if (command.equals("xiake")) {
+                String packageName = content.getJSONObject(0).getString("packages");
+                m.obj = packageName;
+            } else if (command.equals("temporary_app_uncharge")) {
                 m.what = MSG_LAUNCH_MDM;
-            } else if (command.equals("lock")) {
+            } else if (command.equals("temporary_lockScreen")) {
                 m.what = MSG_LOCK;
-            } else if (command.equals("unlock")) {
+            } else if (command.equals("temporary_unlockScreen")) {
                 m.what = MSG_UNLOCK;
             } else if (command.equals("wifi")) {
                 //保存进数据库，并马上执行一次

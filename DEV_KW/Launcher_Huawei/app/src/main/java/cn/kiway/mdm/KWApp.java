@@ -90,7 +90,7 @@ public class KWApp extends Application {
                     currentActivity.finish();
                 }
             } else if (msg.what == MSG_LAUNCH_APP) {
-                //打开APP
+                //打开APP，如果没安装怎么办
                 shangke = true;
                 MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(true);
                 MDMHelper.getAdapter().setTaskButtonDisabled(true);
