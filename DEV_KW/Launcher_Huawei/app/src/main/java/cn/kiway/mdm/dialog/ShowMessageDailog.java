@@ -33,6 +33,7 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
     public static class MessageId {
         public static final int DISMISS = 0;//消失
         public static final int YUXUNFANWENJLU = DISMISS + 1;//允许访问记录
+        public static final int PUSHFILE = DISMISS + 2;//允许访问记录
     }
 
     public ShowMessageDailog(Context context) {

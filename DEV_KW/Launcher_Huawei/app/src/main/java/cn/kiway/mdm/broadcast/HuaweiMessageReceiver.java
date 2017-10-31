@@ -21,6 +21,7 @@ import static cn.kiway.mdm.KWApp.MSG_INSTALL;
 import static cn.kiway.mdm.KWApp.MSG_LAUNCH_APP;
 import static cn.kiway.mdm.KWApp.MSG_LAUNCH_MDM;
 import static cn.kiway.mdm.KWApp.MSG_LOCK;
+import static cn.kiway.mdm.KWApp.MSG_PUSH_FILE;
 import static cn.kiway.mdm.KWApp.MSG_REBOOT;
 import static cn.kiway.mdm.KWApp.MSG_SHUTDOWN;
 import static cn.kiway.mdm.KWApp.MSG_TOAST;
@@ -56,7 +57,6 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             JSONObject data = new JSONObject(receive).getJSONObject("data");
             String command = data.optString("command");
             int flag = data.optInt("flag");
-            JSONArray content = data.optJSONArray("content");
 
             Message m = new Message();
             if (KWApp.flagCommands.contains(command)) {
@@ -68,6 +68,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.what = MSG_SHUTDOWN;
             } else if (command.equals("temporary_app")) {
                 m.what = MSG_LAUNCH_APP;
+                JSONArray content = data.optJSONArray("content");
                 String packageName = content.getJSONObject(0).getString("packages");
                 m.obj = packageName;
             } else if (command.equals("temporary_app_uncharge")) {
@@ -84,6 +85,10 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 Utils.checkAppCharges(MainActivity.instance);
             } else if (command.equals("network")) {
                 //保存进数据库即可
+            } else if (command.equals("file_push")) {
+                JSONObject content = data.getJSONObject("content");
+                m.what = MSG_PUSH_FILE;
+                m.obj = content.toString();
             } else {
                 m.what = MSG_TOAST;
                 m.obj = receive;

@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.DhcpInfo;
+import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
@@ -21,6 +22,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -35,6 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -308,7 +311,7 @@ public class Utils {
 
     public static void connectSSID(MainActivity c, String SSID, String password) {
         Log.d("test", "connectSSID SSID = " + SSID + " , password = " + password);
-        SSID = "KWHW2";
+        SSID = "KWHW2_5G";
         password = "KWF58888";
         if (TextUtils.isEmpty(SSID)) {
             return;
@@ -918,5 +921,53 @@ public class Utils {
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         String currentSSID = wifiInfo.getSSID().replace("\"", "");
         return currentSSID;
+    }
+
+    public static void openFile(Context context, String filePath) {
+        Log.d("test", "openFile filepath = " + filePath);
+        filePath = "file://" + filePath;
+        String filetype = filePath.split("\\.")[1].toLowerCase();
+        Log.d("test", "filetype = " + filetype);
+        String typeOpenFile = "*";
+        if (filetype.equals("pdf"))
+            typeOpenFile = "application/pdf";
+        else if (filetype.equals("ppt") || filetype.equals("pptx"))
+            typeOpenFile = "application/vnd.ms-powerpoint";
+        else if (filetype.equals("doc") || filetype.equals("docx") || filetype.equals("docm") || filetype.equals("dotx") || filetype
+                .equals("dotm"))
+            typeOpenFile = "application/msword";
+        else if (filetype.equals("xlsx") || filetype.equals("xlsm") || filetype.equals("xltx"))
+            typeOpenFile = "application/vnd.ms-excel";
+        else if (filetype.equals("mp3") || filetype.equals("amr") || filetype.equals("ogg") || filetype.equals("wav")) {
+            typeOpenFile = "audio/*";
+        } else if (filetype.equals("mp4") || filetype.equals("3gp") || filetype.equals("avi") || filetype.equals("rmvb") || filetype
+                .equals("mpg") | filetype.equals("rm") || filetype.equals("flv")) {
+            typeOpenFile = "video/*";
+        } else if (filetype.equals("swf")) {
+            typeOpenFile = "application/x-shockwave-flash";
+        } else if (filetype.equals("jpg") || filetype.equals("jpeg") || filetype.equals("png")) {
+            typeOpenFile = "image/*";
+        } else if (filetype.equals("apk")) {
+            Intent intent = new Intent();
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setAction(android.content.Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
+            context.startActivity(intent);
+            return;
+        }
+        Log.d("test", "typeOpenFile = " + typeOpenFile);
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setDataAndType(Uri.parse(filePath), typeOpenFile);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (typeOpenFile.equals("video/*") || typeOpenFile.equals("audio/*"))
+                Toast.makeText(context, "手机没有安装相关的播放器，请下载安装", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(context, "手机没有安装相关的办公软件，请下载安装", Toast.LENGTH_SHORT).show();
+        }
     }
 }
