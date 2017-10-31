@@ -54,7 +54,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private int totalPage; //总的页数
     private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
     private boolean stop;
-
+    public static MainActivity instance;
     public static final int MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS = 1101;
 
     @Override
@@ -62,6 +62,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("test", "Main onCreate");
+        instance = this;
         initView();
         //1.设置初始密码
         initPassword();
@@ -77,28 +78,25 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         huaweiPush(this);
         //8.允许使用访问记录
         setUsageStats();
+        //9.上报APP列表
+        uploadApp();
+    }
+
+    private void uploadApp() {
+        String today = Utils.getToday();
+        if (getSharedPreferences("kiway", 0).getBoolean(today, false)) {
+            return;
+        }
+        Utils.uploadApp(this);
     }
 
     private void setUsageStats() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (!hasPermission()) {
                 ShowMessageDailog dailog = new ShowMessageDailog(this);
-                dailog.setShowMessage(getString(R.string.setting_use_record_permissions), YUXUNFANWENJLU);
+                dailog.setShowMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开", YUXUNFANWENJLU);
                 dailog.setCancelable(false);
                 dailog.show();
-//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//                builder.setMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开");
-//                builder.setTitle("提示");
-//                builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        startActivityForResult(
-//                                new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
-//                                MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS);
-//                    }
-//                });
-//                builder.setCancelable(false);
-//                builder.create().show();
             }
         }
     }

@@ -30,17 +30,23 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
     int messageId;
     Context context;
 
+    public static class MessageId {
+        public static final int DISMISS = 0;//消失
+        public static final int YUXUNFANWENJLU = DISMISS + 1;//允许访问记录
+    }
 
     public ShowMessageDailog(Context context) {
         super(context, R.style.LoadingDialog);
         this.context = context;
     }
 
+
     public void setShowMessage(String message) {
         this.message = message;
         this.messageId = DISMISS;
         if (textView != null)
             textView.setText(message);
+
     }
 
     public void setShowMessage(String message, int messageId) {
@@ -86,11 +92,6 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
         textView = (TextView) findViewById(R.id.message);
         if (textView != null)
             textView.setText(message);
-    }
-
-    public class MessageId {
-        public static final int DISMISS = 0x0001;//消失
-        public static final int YUXUNFANWENJLU = DISMISS + 1;//允许访问记录
     }
 
 }

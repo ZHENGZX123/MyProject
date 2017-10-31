@@ -297,6 +297,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             a.id = id;
             a.url = url;
             a.type = type;
+            a.host = Utils.getHostByUrl(url);
             networks.add(a);
         }
         cur.close();
