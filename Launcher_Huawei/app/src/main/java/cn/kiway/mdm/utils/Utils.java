@@ -315,9 +315,7 @@ public class Utils {
             return;
         }
         //0.判断当前连接的是不是这个
-        WifiManager wifiManager = (WifiManager) c.getApplicationContext().getSystemService(WIFI_SERVICE);
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        String currentSSID = wifiInfo.getSSID().replace("\"", "");
+        String currentSSID = getCurrentSSID(c);
         Log.d("test", "currentSSID = " + currentSSID);
         if (currentSSID.equals(SSID)) {
             Log.d("test", "当前连接着这个wifi");
@@ -643,22 +641,41 @@ public class Utils {
         try {
             ArrayList<Wifi> wifis = new MyDBHelper(m).getAllWifis();
             Log.d("test", "wifis = " + wifis);
+
+            ArrayList<Wifi> rightWifis = new ArrayList();
             for (Wifi w : wifis) {
                 String timeRange = w.timeRange;
                 JSONArray array = new JSONArray(timeRange);
                 int count = array.length();
-                //TODO 这个循环要改一下，先判断level
                 for (int i = 0; i < count; i++) {
                     JSONObject o = array.getJSONObject(i);
                     String startTime = o.getString("startTime");
                     String endTime = o.getString("endTime");
-                    boolean in = checkInTimes(startTime, endTime);
-                    if (in) {
-                        Utils.connectSSID(m, w.name, w.password);
-                        break;
+                    w.inTimeRange = checkInTimes(startTime, endTime);
+                    if (w.inTimeRange) {
+                        rightWifis.add(w);
                     }
                 }
             }
+            int in_count = rightWifis.size();
+            if (in_count == 0) {
+                Log.d("test", "没有一个wifi在当前时间段");
+                return;
+            }
+            if (in_count == 1) {
+                Log.d("test", "只有一个wifi在当前时间段");
+                Utils.connectSSID(m, rightWifis.get(0).name, rightWifis.get(0).password);
+                return;
+            }
+            //如果有2个，怎么办呢
+            Wifi firstWifi = rightWifis.get(0);
+            Wifi secondWifi = rightWifis.get(1);
+            Utils.connectSSID(m, firstWifi.name, firstWifi.password);
+            Thread.sleep(10000);
+            if (Utils.getCurrentSSID(m).equals(firstWifi.name)) {
+                return;
+            }
+            Utils.connectSSID(m, secondWifi.name, secondWifi.password);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -884,5 +901,12 @@ public class Utils {
         } catch (Exception e) {
             Log.d("test", "e = " + e.toString());
         }
+    }
+
+    public static String getCurrentSSID(MainActivity c) {
+        WifiManager wifiManager = (WifiManager) c.getApplicationContext().getSystemService(WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        String currentSSID = wifiInfo.getSSID().replace("\"", "");
+        return currentSSID;
     }
 }
