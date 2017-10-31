@@ -73,7 +73,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.what = MSG_LOCK;
             } else if (command.equals("unlock")) {
                 m.what = MSG_UNLOCK;
-            } else if (command.equals("wifilist")) {
+            } else if (command.equals("wifi")) {
                 //保存进数据库，并马上执行一次
                 Utils.checkWifis(MainActivity.instance);
             } else if (command.equals("app")) {

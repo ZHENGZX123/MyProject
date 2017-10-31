@@ -48,7 +48,7 @@ public class KWApp extends Application {
         flagCommands.add("restore");
         flagCommands.add("ap");
         flagCommands.add("usb");
-        flagCommands.add("wifi");
+        flagCommands.add("allowWifi");
         flagCommands.add("systemupdate");
         flagCommands.add("landscape");
         flagCommands.add("portrait");
