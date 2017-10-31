@@ -5,12 +5,18 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.util.ArrayList;
 
 import cn.kiway.mdm.activity.ScreenActivity;
 import cn.kiway.mdm.mdm.MDMHelper;
+import cn.kiway.mdm.utils.HttpDownload;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
@@ -33,7 +39,9 @@ public class KWApp extends Application {
     public static final int MSG_LAUNCH_MDM = 5;//打开MDM
     public static final int MSG_FLAGCOMMAND = 6;//flag类型的命令
     public static final int MSG_REBOOT = 7;//重启
-    public static final int MSG_SHUTDOWN = 8;//重启
+    public static final int MSG_SHUTDOWN = 8;//关机
+    public static final int MSG_PUSH_FILE = 9;//下载文件
+    public static final int MSG_OPEN_FILE = 10;//打开文件
 
     public static boolean shangke = false;
 
@@ -111,9 +119,52 @@ public class KWApp extends Application {
                 MDMHelper.getAdapter().rebootDevice();
             } else if (msg.what == MSG_SHUTDOWN) {
                 MDMHelper.getAdapter().shutdownDevice();
+            } else if (msg.what == MSG_PUSH_FILE) {
+                handlePushFile(msg.obj.toString());
+            } else if (msg.what == MSG_OPEN_FILE) {
+                Utils.openFile(getApplicationContext(), msg.obj.toString());
             }
         }
     };
+
+    private void handlePushFile(String c) {
+        try {
+            JSONObject content = new JSONObject(c);
+            final String url = content.getString("url");
+            String size = content.getString("size");
+            String name = content.getString("name");
+            Toast.makeText(getApplicationContext(), "老师给你发来文件：" + name, Toast.LENGTH_SHORT).show();
+            new Thread() {
+                @Override
+                public void run() {
+                    final String filename = url.substring(url.lastIndexOf("/") + 1);
+                    final String folder = "/mnt/sdcard/kiway_mdm/file/";
+                    final String filePath = folder + filename;
+                    //文件已存在,直接打开
+                    if (new File(filePath).exists()) {
+                        Message m = new Message();
+                        m.what = MSG_OPEN_FILE;
+                        m.obj = filePath;
+                        mHandler.sendMessage(m);
+                        return;
+                    }
+                    //1.下载文件
+                    //2.弹出提示
+                    int ret = new HttpDownload().downFile(url, folder, filename);
+                    Log.d("test", "download ret = " + ret);
+                    if (ret == -1) {
+                        return;
+                    }
+                    Message m = new Message();
+                    m.what = MSG_OPEN_FILE;
+                    m.obj = filePath;
+                    mHandler.sendMessage(m);
+                }
+            }.start();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void excuteFlagCommand() {
         int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
