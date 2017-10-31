@@ -101,6 +101,12 @@ public class EulaActivity extends Activity {
     }
 
     private void jump() {
+        //救命用
+//        startActivity(new Intent(this, TestActivity.class));
+//        finish();
+//        if (true) {
+//            return;
+//        }
         //判断是否登录
         boolean login = getSharedPreferences("kiway", 0).getBoolean("login", false);
         if (login) {

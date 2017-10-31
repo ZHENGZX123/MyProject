@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import cn.kiway.mdm.activity.TestActivity;
+import cn.kiway.mdm.activity.ScreenActivity;
 import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.Utils;
 
@@ -79,7 +79,7 @@ public class KWApp extends Application {
                 MDMHelper.getAdapter().setTaskButtonDisabled(true);
                 MDMHelper.getAdapter().setHomeButtonDisabled(true);
                 MDMHelper.getAdapter().setBackButtonDisabled(true);
-                startActivity(new Intent(getApplicationContext(), TestActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                startActivity(new Intent(getApplicationContext(), ScreenActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             } else if (msg.what == MSG_UNLOCK) {
                 //解除锁屏
                 MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(false);
