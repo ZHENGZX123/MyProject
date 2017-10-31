@@ -10,15 +10,8 @@ public class App implements Serializable {
 
     public String name;
     public String packageName;
-    //public Drawable icon;
+    public String versionName;
+    public int versionCode;
     public boolean selected;
 
-    @Override
-    public String toString() {
-        return "App{" +
-                "name='" + name + '\'' +
-                ", packageName='" + packageName + '\'' +
-                ", selected=" + selected +
-                '}';
-    }
 }
