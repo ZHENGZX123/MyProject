@@ -854,4 +854,35 @@ public class Utils {
         String today = sdf.format(d);
         return today;
     }
+
+    public static void installationPush(Context c, final String token, final String imei) {
+        try {
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            Log.d("test", "huaweitoken = " + token);
+            JSONObject param = new JSONObject();
+            param.put("appId", "c77b6c47dbcee47d7ffbc9461da0c82a");
+            param.put("type", Build.TYPE);
+            param.put("deviceId", imei);
+            param.put("userId", token);
+            param.put("module", "student");
+            Log.d("test", "param = " + param.toString());
+            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+            String url = server + "push/installation";
+            Log.d("test", "installationPush = " + url);
+            client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "installationPush onSuccess = " + ret);
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "installationPush onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
+        }
+    }
 }
