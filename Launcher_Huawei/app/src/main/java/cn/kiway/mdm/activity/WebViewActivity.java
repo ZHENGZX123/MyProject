@@ -5,17 +5,18 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.entity.Network;
 import cn.kiway.mdm.utils.MyDBHelper;
+import cn.kiway.mdm.utils.MyWebChromeClient;
 
 
 /**
@@ -26,21 +27,20 @@ public class WebViewActivity extends BaseActivity {
 
     private WebView wv;
     private EditText et;
-
+    private ProgressBar pg1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
         wv = (WebView) findViewById(R.id.wv);
         et = (EditText) findViewById(R.id.et);
+        pg1=(ProgressBar) findViewById(R.id.progressBar1);
         initData();
     }
-
 
     private void initData() {
         WebSettings settings = wv.getSettings();
         settings.setJavaScriptEnabled(true);
-
         wv.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -56,10 +56,8 @@ public class WebViewActivity extends BaseActivity {
                 }
             }
         });
-
-
         wv.setVerticalScrollBarEnabled(false);
-        wv.setWebChromeClient(new WebChromeClient());
+        wv.setWebChromeClient(new MyWebChromeClient(pg1));
     }
 
     public void clickGo(View view) {
