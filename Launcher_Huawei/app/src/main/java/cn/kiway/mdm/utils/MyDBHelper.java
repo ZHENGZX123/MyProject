@@ -252,8 +252,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_APP);
         db.execSQL(CREATE_TABLE_APP);
-
-
     }
 
     @Override

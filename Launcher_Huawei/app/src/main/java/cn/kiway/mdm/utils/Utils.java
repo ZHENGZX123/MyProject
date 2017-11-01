@@ -672,6 +672,7 @@ public class Utils {
                 Utils.connectSSID(m, rightWifis.get(0).name, rightWifis.get(0).password);
                 return;
             }
+            Log.d("test", "有" + in_count + "个wifi在当前时间段");
             //如果有2个，怎么办呢
             Wifi firstWifi = rightWifis.get(0);
             Wifi secondWifi = rightWifis.get(1);

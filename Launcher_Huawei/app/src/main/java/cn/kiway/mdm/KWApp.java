@@ -75,9 +75,7 @@ public class KWApp extends Application {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what == MSG_TOAST) {
-                Toast.makeText(getApplicationContext(), msg.obj.toString(), Toast.LENGTH_SHORT).show();
-            } else if (msg.what == MSG_INSTALL) {
+            if (msg.what == MSG_INSTALL) {
                 String token = getSharedPreferences("kiway", 0).getString("token", "");
                 String imei = Utils.getIMEI(getApplicationContext());
                 Utils.installationPush(instance, token, imei);
