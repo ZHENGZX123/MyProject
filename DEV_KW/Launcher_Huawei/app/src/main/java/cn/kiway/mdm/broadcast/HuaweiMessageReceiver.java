@@ -3,7 +3,6 @@ package cn.kiway.mdm.broadcast;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
@@ -24,7 +23,6 @@ import static cn.kiway.mdm.KWApp.MSG_LOCK;
 import static cn.kiway.mdm.KWApp.MSG_PUSH_FILE;
 import static cn.kiway.mdm.KWApp.MSG_REBOOT;
 import static cn.kiway.mdm.KWApp.MSG_SHUTDOWN;
-import static cn.kiway.mdm.KWApp.MSG_TOAST;
 import static cn.kiway.mdm.KWApp.MSG_UNLOCK;
 
 /*
@@ -52,15 +50,22 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
     public boolean onPushMsg(Context context, byte[] msg, Bundle bundle) {
         try {
             String receive = new String(msg, "UTF-8");
-            Log.d("huawei", "onPushMsg " + receive);
+            Log.d("huawei", "onPushMsg = " + receive);
 
-            JSONObject data = new JSONObject(receive).getJSONObject("data");
+            String dataStr = new JSONObject(receive).getString("data");
+            JSONObject data = new JSONObject(dataStr);
             String command = data.optString("command");
-            int flag = data.optInt("flag");
 
             Message m = new Message();
-            if (KWApp.flagCommands.contains(command)) {
-                context.getSharedPreferences("kiway", 0).edit().putInt("flag_" + command, flag).commit();
+            if (command.equals("allowAppFunction")) {
+                JSONArray content = data.getJSONArray("content");
+                int count = content.length();
+                for (int i = 0; i < count; i++) {
+                    JSONObject o = content.getJSONObject(i);
+                    String commandT = o.optString("command");
+                    int flag = data.optInt("flag");
+                    context.getSharedPreferences("kiway", 0).edit().putInt("flag_" + commandT, flag).commit();
+                }
                 m.what = MSG_FLAGCOMMAND;
             } else if (command.equals("reboot")) {
                 m.what = MSG_REBOOT;
@@ -78,20 +83,20 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             } else if (command.equals("temporary_unlockScreen")) {
                 m.what = MSG_UNLOCK;
             } else if (command.equals("wifi")) {
-                //保存进数据库，并马上执行一次
+                //TODO 保存进数据库，并马上执行一次
+                //注意这里是单条的操作
                 Utils.checkWifis(MainActivity.instance);
             } else if (command.equals("app")) {
+                //TODO 注意这里是单条的操作
                 //保存进数据库，并马上执行一次checkAppCharges
                 Utils.checkAppCharges(MainActivity.instance);
             } else if (command.equals("network")) {
-                //保存进数据库即可
+                //TODO 保存进数据库即可
+                //注意这里是单条的操作
             } else if (command.equals("file_push")) {
                 JSONObject content = data.getJSONObject("content");
                 m.what = MSG_PUSH_FILE;
                 m.obj = content.toString();
-            } else {
-                m.what = MSG_TOAST;
-                m.obj = receive;
             }
             if (KWApp.instance == null) {
                 return false;
@@ -131,11 +136,4 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
     }
 
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-
-        }
-    };
 }
