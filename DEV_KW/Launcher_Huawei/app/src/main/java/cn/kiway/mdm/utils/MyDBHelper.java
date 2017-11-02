@@ -375,6 +375,21 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return wifis;
     }
 
+    public void updateWifi(Wifi a) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("ids", a.id);
+        cv.put("name", a.name);
+        cv.put("password", a.password);
+        cv.put("timeRange", a.timeRange);
+        cv.put("level", a.level);
+
+        String[] args = {a.id};
+        db.update(TABLE_WIFI, cv, "ids=?", args);
+        db.close();
+    }
+
     //------------------------------------------app----------------
 
     public void addAppcharge(AppCharge a) {
@@ -439,5 +454,22 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return Appcharges;
     }
 
+    public void updateAppCharges(AppCharge a) {
+        if (db == null)
+            db = getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put("ids", a.id);
+        cv.put("name", a.name);
+        cv.put("type", a.type);
+        cv.put("timeRange", a.timeRange);
+        cv.put("version", a.version);
+        cv.put("packages", a.packages);
+        cv.put("url", a.url);
+
+        String[] args = {a.id};
+        db.update(TABLE_APP, cv, "ids=?", args);
+        db.close();
+    }
 
 }

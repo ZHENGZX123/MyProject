@@ -12,8 +12,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import cn.kiway.mdm.KWApp;
+import cn.kiway.mdm.activity.MainActivity;
+import cn.kiway.mdm.entity.AppCharge;
 import cn.kiway.mdm.entity.Network;
+import cn.kiway.mdm.entity.Wifi;
 import cn.kiway.mdm.utils.MyDBHelper;
+import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.KWApp.MSG_FLAGCOMMAND;
 import static cn.kiway.mdm.KWApp.MSG_INSTALL;
@@ -83,15 +87,57 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             } else if (command.equals("temporary_unlockScreen")) {
                 m.what = MSG_UNLOCK;
             } else if (command.equals("wifi")) {
-                //TODO 保存进数据库，并马上执行一次
-                //注意这里是单条的操作
-
+                //保存进数据库，并马上执行一次
+                JSONArray content = data.optJSONArray("content");
+                String operation = content.getJSONObject(0).optString("operation");
+                String id = content.getJSONObject(0).optString("id");
+                String name = content.getJSONObject(0).optString("name");
+                String password = content.getJSONObject(0).optString("password");
+                String timeRange = content.getJSONObject(0).optString("timeRange");
+                int level = content.getJSONObject(0).optInt("level");
+                Wifi a = new Wifi();
+                a.id = id;
+                a.name = name;
+                a.password = password;
+                a.timeRange = timeRange;
+                a.level = level;
+                if (operation.equals("save")) {
+                    new MyDBHelper(context).addWifi(a);
+                } else if (operation.equals("update")) {
+                    new MyDBHelper(context).updateWifi(a);
+                } else if (operation.equals("delete")) {
+                    new MyDBHelper(context).deleteWifi(id);
+                }
+                Utils.checkWifis(MainActivity.instance);
             } else if (command.equals("app")) {
-                //TODO 注意这里是单条的操作
                 //保存进数据库，并马上执行一次checkAppCharges
-
+                //{"data":"{\"id\":\"001\",\"operation\":\"save\",\"command\":\"app\",\"content\":[{\"times\":[{\"startTime\":\"09:42:39\",\"endTime\":\"10:42:39\"}],\"type\":0,\"url\":\"http://www.yuertong.com/yyfw/static/app/Yjptj.apk\"}]}"}
+                JSONArray content = data.optJSONArray("content");
+                String operation = content.getJSONObject(0).optString("operation");
+                String url = content.getJSONObject(0).optString("url");
+                int type = content.getJSONObject(0).optInt("type");
+                String id = content.getJSONObject(0).optString("id");
+                String name = content.getJSONObject(0).optString("name");
+                String packages = content.getJSONObject(0).getString("packages");
+                String version = content.getJSONObject(0).getString("version");
+                String times = content.getJSONObject(0).getString("times");
+                AppCharge a = new AppCharge();
+                a.id = id;
+                a.name = name;
+                a.type = type;
+                a.timeRange = times;
+                a.version = version;
+                a.packages = packages;
+                a.url = url;
+                if (operation.equals("save")) {
+                    new MyDBHelper(context).addAppcharge(a);
+                } else if (operation.equals("update")) {
+                    new MyDBHelper(context).updateAppCharges(a);
+                } else if (operation.equals("delete")) {
+                    new MyDBHelper(context).deleteAppcharge(id);
+                }
+                Utils.checkAppCharges(MainActivity.instance);
             } else if (command.equals("network")) {
-                //TODO 保存进数据库即可
                 //注意这里是单条的操作
                 //{"data":"{\"command\":\"network\",\"content\":[{\"type\":1,\"operation\":\"save\",\"url\":\"www.123.com\"}]}"}
                 JSONArray content = data.optJSONArray("content");

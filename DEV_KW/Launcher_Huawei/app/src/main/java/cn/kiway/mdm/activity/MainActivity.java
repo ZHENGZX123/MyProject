@@ -120,6 +120,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 Utils.appCharge(MainActivity.this);
                 Utils.networkDeviceCharge(MainActivity.this);
                 Utils.wifi(MainActivity.this);
+                Utils.appFunction(MainActivity.this);
             }
         }.start();
     }
