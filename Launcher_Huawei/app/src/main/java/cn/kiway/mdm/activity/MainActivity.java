@@ -10,6 +10,7 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Contacts;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -196,14 +197,13 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void Camera(View view) {
-        Intent cameraIntent = new Intent(this, WebViewActivity.class);
+        int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
+        if (flag_camera == 0) {
+            toast("相机功能当前不能使用");
+            return;
+        }
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivity(cameraIntent);
-//        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        startActivity(cameraIntent);
-//        Log.d("test", "开始安装");
-//        MDMHelper.getAdapter().installPackage("/mnt/sdcard/test.apk");
-//        Log.d("test", "安装结束");
-//        Utils.connectSSID(this, "", "");
     }
 
     public void Call(View view) {
