@@ -13,5 +13,6 @@ public class App implements Serializable {
     public String versionName;
     public int versionCode;
     public boolean selected;
+    public int category;
 
 }
