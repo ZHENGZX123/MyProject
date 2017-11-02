@@ -541,7 +541,7 @@ public class Utils {
                                 ArrayList<AppCharge> networks = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<AppCharge>>() {
                                 }.getType());
                                 //存进数据库里
-                                new MyDBHelper(c).deleteAppcharge();
+                                new MyDBHelper(c).deleteAppcharge(null);
                                 for (AppCharge n : networks) {
                                     new MyDBHelper(c).addAppcharge(n);
                                 }
@@ -582,7 +582,7 @@ public class Utils {
                                 ArrayList<Network> networks = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Network>>() {
                                 }.getType());
                                 //存进数据库里
-                                new MyDBHelper(c).deleteNetwork();
+                                new MyDBHelper(c).deleteNetwork(null);
                                 for (Network n : networks) {
                                     new MyDBHelper(c).addNetwork(n);
                                 }
@@ -623,7 +623,7 @@ public class Utils {
                                 ArrayList<Wifi> wifis = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Wifi>>() {
                                 }.getType());
                                 //存进数据库里
-                                new MyDBHelper(c).deleteWifi();
+                                new MyDBHelper(c).deleteWifi(null);
                                 for (Wifi n : wifis) {
                                     new MyDBHelper(c).addWifi(n);
                                 }

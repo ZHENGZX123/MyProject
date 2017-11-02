@@ -12,8 +12,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import cn.kiway.mdm.KWApp;
-import cn.kiway.mdm.activity.MainActivity;
-import cn.kiway.mdm.utils.Utils;
+import cn.kiway.mdm.entity.Network;
+import cn.kiway.mdm.utils.MyDBHelper;
 
 import static cn.kiway.mdm.KWApp.MSG_FLAGCOMMAND;
 import static cn.kiway.mdm.KWApp.MSG_INSTALL;
@@ -85,14 +85,30 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             } else if (command.equals("wifi")) {
                 //TODO 保存进数据库，并马上执行一次
                 //注意这里是单条的操作
-                Utils.checkWifis(MainActivity.instance);
+
             } else if (command.equals("app")) {
                 //TODO 注意这里是单条的操作
                 //保存进数据库，并马上执行一次checkAppCharges
-                Utils.checkAppCharges(MainActivity.instance);
+
             } else if (command.equals("network")) {
                 //TODO 保存进数据库即可
                 //注意这里是单条的操作
+                //{"data":"{\"command\":\"network\",\"content\":[{\"type\":1,\"operation\":\"save\",\"url\":\"www.123.com\"}]}"}
+                JSONArray content = data.optJSONArray("content");
+                String operation = content.getJSONObject(0).optString("operation");
+                String url = content.getJSONObject(0).optString("url");
+                int type = content.getJSONObject(0).optInt("type");
+                String id = content.getJSONObject(0).optString("id");
+                Network a = new Network();
+                a.url = url;
+                a.type = type;
+                if (operation.equals("save")) {
+                    new MyDBHelper(context).addNetwork(a);
+                } else if (operation.equals("update")) {
+                    new MyDBHelper(context).updateNetwork(a);
+                } else if (operation.equals("delete")) {
+                    new MyDBHelper(context).deleteNetwork(id);
+                }
             } else if (command.equals("file_push")) {
                 JSONObject content = data.getJSONObject("content");
                 m.what = MSG_PUSH_FILE;
