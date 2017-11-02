@@ -89,12 +89,12 @@ public class LoginActivity extends BaseActivity {
             return;
         }
 
-        String code = codeET.getText().toString();
-        String name = nameET.getText().toString();
+        final String code = codeET.getText().toString();
         if (TextUtils.isEmpty(code)) {
             toast("请填写学号");
             return;
         }
+        final String name = nameET.getText().toString();
         if (TextUtils.isEmpty(name)) {
             toast("请填写姓名");
             return;
@@ -136,6 +136,8 @@ public class LoginActivity extends BaseActivity {
                             toast("登录成功");
                             Utils.deviceRuntime(LoginActivity.this, imei, "1");
                             getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
+                            getSharedPreferences("kiway", 0).edit().putString("username", name).commit();
+                            getSharedPreferences("kiway", 0).edit().putString("studentNumber", code).commit();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         } else {

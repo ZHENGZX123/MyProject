@@ -90,8 +90,7 @@ public class LockActivity extends BaseActivity {
                             toast("注销成功");
                             String imei = Utils.getIMEI(LockActivity.this);
                             Utils.deviceRuntime(LockActivity.this, imei, "2");
-                            //TODO 这里有问题
-                            getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
+                            getSharedPreferences("kiway", 0).edit().clear();
                             new MyDBHelper(LockActivity.this).deleteAppcharge(null);
                             new MyDBHelper(LockActivity.this).deleteWifi(null);
                             new MyDBHelper(LockActivity.this).deleteNetwork(null);
@@ -166,6 +165,8 @@ public class LockActivity extends BaseActivity {
         MDMHelper.getAdapter().setHomeButtonDisabled(false);
         //MDMHelper.getAdapter().setVpnDisabled(true); //这个失效。
         //MDMHelper.getAdapter().setTimeAndDateSetDisabled(false);//这个失效
+
         MDMHelper.getAdapter().setWifiDisabled(false);
+        //TODO 要解锁所有的，完整的，不要漏了
     }
 }

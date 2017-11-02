@@ -126,6 +126,12 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
                 view.getContext().startActivity(new Intent(view.getContext(), AppListActivity2.class));
                 return;
             }
+            int flag_app_open = view.getContext().getSharedPreferences("kiway", 0).getInt("flag_app_open", 1);
+            if (flag_app_open == 0) {
+                Toast.makeText(view.getContext(), "已被禁止使用", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (TextUtils.isEmpty(packageName)) {
                 Toast.makeText(view.getContext(), "包名错误", Toast.LENGTH_SHORT).show();
                 return;
