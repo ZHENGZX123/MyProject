@@ -21,9 +21,11 @@ import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.KWApp.MSG_FLAGCOMMAND;
 import static cn.kiway.mdm.KWApp.MSG_INSTALL;
+import static cn.kiway.mdm.KWApp.MSG_LANDSCAPE;
 import static cn.kiway.mdm.KWApp.MSG_LAUNCH_APP;
 import static cn.kiway.mdm.KWApp.MSG_LAUNCH_MDM;
 import static cn.kiway.mdm.KWApp.MSG_LOCK;
+import static cn.kiway.mdm.KWApp.MSG_PORTRAIT;
 import static cn.kiway.mdm.KWApp.MSG_PUSH_FILE;
 import static cn.kiway.mdm.KWApp.MSG_REBOOT;
 import static cn.kiway.mdm.KWApp.MSG_SHUTDOWN;
@@ -67,7 +69,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 for (int i = 0; i < count; i++) {
                     JSONObject o = content.getJSONObject(i);
                     String commandT = o.optString("command");
-                    int flag = data.optInt("flag");
+                    int flag = o.optInt("flag");
                     context.getSharedPreferences("kiway", 0).edit().putInt("flag_" + commandT, flag).commit();
                 }
                 m.what = MSG_FLAGCOMMAND;
@@ -159,6 +161,10 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 JSONObject content = data.getJSONObject("content");
                 m.what = MSG_PUSH_FILE;
                 m.obj = content.toString();
+            } else if (command.equals("portrait")) {
+                m.what = MSG_PORTRAIT;
+            } else if (command.equals("landscape")) {
+                m.what = MSG_LANDSCAPE;
             }
             if (KWApp.instance == null) {
                 return false;

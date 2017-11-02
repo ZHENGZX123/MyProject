@@ -31,17 +31,19 @@ public class KWApp extends Application {
     public static final String server = "http://192.168.8.161:8082/mdms/";
     public Activity currentActivity;
 
-    public static final int MSG_TOAST = 0;//测试
     public static final int MSG_INSTALL = 1;//注册华为
     public static final int MSG_LOCK = 2;//锁屏
     public static final int MSG_UNLOCK = 3;//解锁
     public static final int MSG_LAUNCH_APP = 4;//打开某个APP
     public static final int MSG_LAUNCH_MDM = 5;//打开MDM
     public static final int MSG_FLAGCOMMAND = 6;//flag类型的命令
-    public static final int MSG_REBOOT = 7;//重启
-    public static final int MSG_SHUTDOWN = 8;//关机
-    public static final int MSG_PUSH_FILE = 9;//下载文件
-    public static final int MSG_OPEN_FILE = 10;//打开文件
+    public static final int MSG_PUSH_FILE = 7;//下载文件
+    public static final int MSG_OPEN_FILE = 8;//打开文件
+    public static final int MSG_REBOOT = 9;//重启
+    public static final int MSG_SHUTDOWN = 10;//关机
+    public static final int MSG_PORTRAIT = 11;//横屏
+    public static final int MSG_LANDSCAPE = 12;//竖屏
+
 
     public static boolean shangke = false;
 
@@ -121,6 +123,10 @@ public class KWApp extends Application {
                 handlePushFile(msg.obj.toString());
             } else if (msg.what == MSG_OPEN_FILE) {
                 Utils.openFile(getApplicationContext(), msg.obj.toString());
+            } else if (msg.what == MSG_PORTRAIT) {
+
+            } else if (msg.what == MSG_LANDSCAPE) {
+
             }
         }
     };
@@ -164,7 +170,7 @@ public class KWApp extends Application {
         }
     }
 
-    private void excuteFlagCommand() {
+    public void excuteFlagCommand() {
         int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
         //这个没有对应的MDM接口，需要代码控制
 
