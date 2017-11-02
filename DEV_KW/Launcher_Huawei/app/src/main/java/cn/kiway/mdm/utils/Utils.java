@@ -7,7 +7,6 @@ import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -187,14 +186,6 @@ public class Utils {
         }
         return apps;
     }
-
-    public int getCategory(ApplicationInfo info) {
-        if ((info.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
-            return 1;
-        } else if ((info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-            return 1;
-        }
-        return 2;
 
     public static App getAppByPackageName(PackageManager packageManager, String packageName) {
         try {
