@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 
+import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
 import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.HttpDownload;
@@ -124,9 +125,15 @@ public class KWApp extends Application {
             } else if (msg.what == MSG_OPEN_FILE) {
                 Utils.openFile(getApplicationContext(), msg.obj.toString());
             } else if (msg.what == MSG_PORTRAIT) {
-
+                getSharedPreferences("kiway", 0).edit().putInt("oriantation", 0).commit();
+                if (currentActivity != null && currentActivity instanceof BaseActivity) {
+                    ((BaseActivity) currentActivity).setScreenOrientation();
+                }
             } else if (msg.what == MSG_LANDSCAPE) {
-
+                getSharedPreferences("kiway", 0).edit().putInt("oriantation", 1).commit();
+                if (currentActivity != null && currentActivity instanceof BaseActivity) {
+                    ((BaseActivity) currentActivity).setScreenOrientation();
+                }
             }
         }
     };
