@@ -9,7 +9,6 @@ public class Network {
     public String id;
     public String url;
     public int type;
-    public String host;
 
     @Override
     public String toString() {

@@ -92,8 +92,9 @@ public class LockActivity extends BaseActivity {
                             Utils.deviceRuntime(LockActivity.this, imei, "2");
                             //TODO 这里有问题
                             getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
-                            new MyDBHelper(LockActivity.this).deleteWifi();
-                            new MyDBHelper(LockActivity.this).deleteNetwork();
+                            new MyDBHelper(LockActivity.this).deleteAppcharge(null);
+                            new MyDBHelper(LockActivity.this).deleteWifi(null);
+                            new MyDBHelper(LockActivity.this).deleteNetwork(null);
                             setResult(999);
                             finish();
                         } else {

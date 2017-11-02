@@ -208,6 +208,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 
@@ -223,23 +224,23 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_NETWORK = "Network";
     private static final String CREATE_TABLE_NETWORK = " create table  IF NOT EXISTS "
             + TABLE_NETWORK
-            + "   (id integer primary key autoincrement,  url  text,  type  text )";
+            + "   (id integer primary key autoincrement, ids text,  url  text,  type  text )";
 
     private static final String TABLE_WIFI = "wifi";
     private static final String CREATE_TABLE_WIFI = " create table  IF NOT EXISTS "
             + TABLE_WIFI
-            + "   (id integer primary key autoincrement,  name  text,  password  text  , timeRange text , level text)";
+            + "   (id integer primary key autoincrement, ids text, name  text,  password  text  , timeRange text , level text)";
 
     private static final String TABLE_APP = "app";
     private static final String CREATE_TABLE_APP = " create table  IF NOT EXISTS "
             + TABLE_APP
-            + "   (id integer primary key autoincrement,  name  text,  type  text  , timeRange text , version text , packages text , url text)";
+            + "   (id integer primary key autoincrement, ids text, name  text,  type  text  , timeRange text , version text , packages text , url text)";
 
 
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 3);
+        super(c, DB_NAME, null, 4);
     }
 
     @Override
@@ -268,17 +269,24 @@ public class MyDBHelper extends SQLiteOpenHelper {
         if (db == null)
             db = getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put("ids", a.id);
         values.put("url", a.url);
         values.put("type", a.type);
         db.insert(TABLE_NETWORK, null, values);
         db.close();
     }
 
-    public void deleteNetwork() {
+    public void deleteNetwork(String ids) {
         if (db == null)
             db = getWritableDatabase();
-        db.delete(TABLE_NETWORK, null, null);
+
+        if (TextUtils.isEmpty(ids)) {
+            db.delete(TABLE_NETWORK, null, null);
+        } else {
+            db.delete(TABLE_NETWORK, "ids=?", new String[]{ids});
+        }
         db.close();
+
     }
 
     public ArrayList<Network> getAllNetworks() {
@@ -287,19 +295,31 @@ public class MyDBHelper extends SQLiteOpenHelper {
         Cursor cur = db.query(TABLE_NETWORK, null, null, null, null, null, null);
         ArrayList<Network> networks = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            String id = cur.getString(cur.getColumnIndex("id"));
+            String id = cur.getString(cur.getColumnIndex("ids"));
             String url = cur.getString(cur.getColumnIndex("url"));
             int type = cur.getInt(cur.getColumnIndex("type"));
             Network a = new Network();
             a.id = id;
             a.url = url;
             a.type = type;
-            a.host = Utils.getHostByUrl(url);
             networks.add(a);
         }
         cur.close();
         db.close();
         return networks;
+    }
+
+    public void updateNetwork(Network a) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("ids", a.id);
+        cv.put("type", a.type);
+        cv.put("url", a.url);
+
+        String[] args = {a.id};
+        db.update(TABLE_NETWORK, cv, "ids=?", args);
+        db.close();
     }
 
     //------------------------------------------wifi----------------
@@ -308,6 +328,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         if (db == null)
             db = getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put("ids", a.id);
         values.put("name", a.name);
         values.put("password", a.password);
         values.put("timeRange", a.timeRange);
@@ -316,11 +337,17 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void deleteWifi() {
+    public void deleteWifi(String ids) {
         if (db == null)
             db = getWritableDatabase();
-        db.delete(TABLE_WIFI, null, null);
+
+        if (TextUtils.isEmpty(ids)) {
+            db.delete(TABLE_WIFI, null, null);
+        } else {
+            db.delete(TABLE_WIFI, "ids=?", new String[]{ids});
+        }
         db.close();
+
     }
 
     public ArrayList<Wifi> getAllWifis() {
@@ -329,7 +356,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         Cursor cur = db.query(TABLE_WIFI, null, null, null, null, null, "level desc");
         ArrayList<Wifi> wifis = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            String id = cur.getString(cur.getColumnIndex("id"));
+            String id = cur.getString(cur.getColumnIndex("ids"));
             String name = cur.getString(cur.getColumnIndex("name"));
             String password = cur.getString(cur.getColumnIndex("password"));
             String timeRange = cur.getString(cur.getColumnIndex("timeRange"));
@@ -354,6 +381,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         if (db == null)
             db = getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put("ids", a.id);
         values.put("name", a.name);
         values.put("type", a.type);
         values.put("timeRange", a.timeRange);
@@ -364,10 +392,15 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void deleteAppcharge() {
+    public void deleteAppcharge(String ids) {
         if (db == null)
             db = getWritableDatabase();
-        db.delete(TABLE_APP, null, null);
+
+        if (TextUtils.isEmpty(ids)) {
+            db.delete(TABLE_APP, null, null);
+        } else {
+            db.delete(TABLE_APP, "ids=?", new String[]{ids});
+        }
         db.close();
     }
 
@@ -383,7 +416,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         }
         ArrayList<AppCharge> Appcharges = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            String id = cur.getString(cur.getColumnIndex("id"));
+            String id = cur.getString(cur.getColumnIndex("ids"));
             String name = cur.getString(cur.getColumnIndex("name"));
             type = cur.getInt(cur.getColumnIndex("type"));
             String timeRange = cur.getString(cur.getColumnIndex("timeRange"));
@@ -405,5 +438,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
         return Appcharges;
     }
+
 
 }

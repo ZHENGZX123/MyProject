@@ -181,7 +181,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     //2.获取电量，如果电量1%，上报一下
                     Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
                     int level = intent.getIntExtra("level", 0);
-                    if (level == 1) {
+                    if (level < 5) {
                         Utils.deviceRuntime(MainActivity.this, Utils.getIMEI(MainActivity.this), "2");
                     }
                     try {
