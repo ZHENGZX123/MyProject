@@ -810,19 +810,19 @@ public class Utils {
             @Override
             public void run() {
                 while (KWApp.shangke) {
-                    String runningAPP = Utils.getRunningAPP(c);
-                    if (!runningAPP.equals(packageName)) {
-                        Intent intent = c.getPackageManager().getLaunchIntentForPackage(packageName);
-                        if (intent == null) {
-                            Log.d("test", "app未安装，不应该啊");
-                            continue;
-                        }
-                        c.startActivity(intent);
-                    }
                     try {
-                        sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        String runningAPP = Utils.getRunningAPP(c);
+                        if (!runningAPP.equals(packageName)) {
+                            Intent intent = c.getPackageManager().getLaunchIntentForPackage(packageName);
+                            c.startActivity(intent);
+                            sleep(1000);
+                        }
+                    } catch (Exception e) {
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 }
             }
@@ -998,6 +998,19 @@ public class Utils {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "appFunction onSuccess = " + ret);
+                            try {
+                                JSONArray data = new JSONObject(ret).getJSONArray("data");
+                                int count = data.length();
+                                for (int i = 0; i < count; i++) {
+                                    JSONObject o = data.getJSONObject(i);
+                                    String commandT = o.optString("command");
+                                    int flag = o.optInt("flag");
+                                    c.getSharedPreferences("kiway", 0).edit().putInt("flag_" + commandT, flag).commit();
+                                }
+                                KWApp.instance.excuteFlagCommand();
+                            } catch (Exception e) {
+                                Log.d("test", "e = " + e.toString());
+                            }
                         }
 
                         @Override
@@ -1011,4 +1024,6 @@ public class Utils {
             }
         });
     }
+
+
 }
