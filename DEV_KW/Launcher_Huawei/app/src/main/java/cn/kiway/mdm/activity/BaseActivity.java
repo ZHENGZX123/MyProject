@@ -3,6 +3,7 @@ package cn.kiway.mdm.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -29,10 +30,20 @@ public class BaseActivity extends Activity {
         MDMHelper.getAdapter().init(this, mAdminName);
     }
 
+    public void setScreenOrientation() {
+        int oriantation = getSharedPreferences("kiway", 0).getInt("oriantation", 0);//0竖屏1横屏
+        if (oriantation == 0) {
+            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
         KWApp.instance.currentActivity = this;
+        setScreenOrientation();
     }
 
     public void showPD() {
