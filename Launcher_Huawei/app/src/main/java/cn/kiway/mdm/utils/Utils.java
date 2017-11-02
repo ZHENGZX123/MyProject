@@ -813,6 +813,10 @@ public class Utils {
                     String runningAPP = Utils.getRunningAPP(c);
                     if (!runningAPP.equals(packageName)) {
                         Intent intent = c.getPackageManager().getLaunchIntentForPackage(packageName);
+                        if (intent == null) {
+                            Log.d("test", "app未安装，不应该啊");
+                            continue;
+                        }
                         c.startActivity(intent);
                     }
                     try {
@@ -977,5 +981,34 @@ public class Utils {
             else
                 Toast.makeText(context, "手机没有安装相关的办公软件，请下载安装", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public static void appFunction(final MainActivity c) {
+        c.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.setTimeout(10000);
+                    RequestParams param = new RequestParams();
+                    Log.d("test", "param = " + param.toString());
+                    String url = server + "device/appFunction?imei=" + getIMEI(c);
+                    Log.d("test", "appFunction = " + url);
+                    client.get(c, url, param, new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "appFunction onSuccess = " + ret);
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "appFunction onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
+                }
+            }
+        });
     }
 }
