@@ -7,6 +7,7 @@ import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -166,12 +167,18 @@ public class Utils {
                         || packageInfo.packageName.equals("cn.kiway.mdm")) {
                     continue;
                 }
-
                 App a = new App();
                 a.name = packageInfo.applicationInfo.loadLabel(packageManager).toString();
                 a.packageName = packageInfo.packageName;
                 a.versionName = packageInfo.versionName;
                 a.versionCode = packageInfo.versionCode;
+                if ((packageInfo.applicationInfo.flags & packageInfo.applicationInfo.FLAG_SYSTEM) <= 0) {
+                    // 第三方应用
+                    a.category = 2;
+                } else {
+                    //系统应用
+                    a.category = 1;
+                }
                 // a.icon = (packageInfo.applicationInfo.loadIcon(packageManager));
                 apps.add(a);
             }
@@ -180,6 +187,14 @@ public class Utils {
         }
         return apps;
     }
+
+    public int getCategory(ApplicationInfo info) {
+        if ((info.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
+            return 1;
+        } else if ((info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+            return 1;
+        }
+        return 2;
 
     public static App getAppByPackageName(PackageManager packageManager, String packageName) {
         try {
@@ -855,6 +870,7 @@ public class Utils {
                         o1.put("packages", a.packageName);
                         o1.put("versionName", a.versionName);
                         o1.put("versionCode", a.versionCode);
+                        o1.put("category", a.category);
                         array.put(o1);
                     }
                     Log.d("test", "applist array = " + array.toString());
