@@ -12,13 +12,18 @@ import android.widget.Toast;
 import com.anarchy.classify.simple.SimpleAdapter;
 import com.anarchy.classify.simple.widget.MiViewHolder;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.List;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.AppListActivity2;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.entity.App;
+import cn.kiway.mdm.entity.AppCharge;
 import cn.kiway.mdm.utils.FileACache;
+import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.utils.AppListUtils.isAppInstalled;
@@ -131,7 +136,6 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
                 Toast.makeText(view.getContext(), "已被禁止使用", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             if (TextUtils.isEmpty(packageName)) {
                 Toast.makeText(view.getContext(), "包名错误", Toast.LENGTH_SHORT).show();
                 return;
@@ -142,8 +146,32 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
                 Toast.makeText(view.getContext(), "该APP未安装", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Intent intent = view.getContext().getPackageManager().getLaunchIntentForPackage(packageName);
-            view.getContext().startActivity(intent);
+            //2.检查当前时间段能不能使用
+            AppCharge app = new MyDBHelper(context).getAppChargesByPackage(packageName);
+            if (app != null) {
+                String timeRange = app.timeRange;// [{start end}{start end}]
+                JSONArray array = new JSONArray(timeRange);
+                int count = array.length();
+                boolean in = false;
+                for (int i = 0; i < count; i++) {
+                    JSONObject o = array.getJSONObject(i);
+                    String startTime = o.getString("startTime");
+                    String endTime = o.getString("endTime");
+                    in = Utils.checkInTimes(startTime, endTime);
+                    if (in) {
+                        break;
+                    }
+                }
+                if (in) {
+                    Intent intent = view.getContext().getPackageManager().getLaunchIntentForPackage(packageName);
+                    view.getContext().startActivity(intent);
+                } else {
+                    Toast.makeText(view.getContext(), "该时间段内不可以使用", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Intent intent = view.getContext().getPackageManager().getLaunchIntentForPackage(packageName);
+                view.getContext().startActivity(intent);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

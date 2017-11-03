@@ -454,6 +454,34 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return Appcharges;
     }
 
+    public AppCharge getAppChargesByPackage(String packages) {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_APP, null, "packages=?", new String[]{packages + ""}, null, null, null);
+        AppCharge a = null;
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            String id = cur.getString(cur.getColumnIndex("ids"));
+            String name = cur.getString(cur.getColumnIndex("name"));
+            int type = cur.getInt(cur.getColumnIndex("type"));
+            String timeRange = cur.getString(cur.getColumnIndex("timeRange"));
+            String version = cur.getString(cur.getColumnIndex("version"));
+            packages = cur.getString(cur.getColumnIndex("packages"));
+            String url = cur.getString(cur.getColumnIndex("url"));
+
+            a = new AppCharge();
+            a.id = id;
+            a.name = name;
+            a.type = type;
+            a.timeRange = timeRange;
+            a.version = version;
+            a.packages = packages;
+            a.url = url;
+        }
+        cur.close();
+        db.close();
+        return a;
+    }
+
     public void updateAppCharges(AppCharge a) {
         if (db == null)
             db = getWritableDatabase();
