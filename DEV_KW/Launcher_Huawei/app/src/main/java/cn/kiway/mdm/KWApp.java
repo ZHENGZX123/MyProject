@@ -32,6 +32,7 @@ public class KWApp extends Application {
     public static final String server = "http://192.168.8.161:8082/mdms/";
     public Activity currentActivity;
 
+    public static final int MSG_TOAST = 0;//注册华为
     public static final int MSG_INSTALL = 1;//注册华为
     public static final int MSG_LOCK = 2;//锁屏
     public static final int MSG_UNLOCK = 3;//解锁
@@ -78,39 +79,29 @@ public class KWApp extends Application {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what == MSG_INSTALL) {
+            if (msg.what == MSG_TOAST) {
+                Toast.makeText(KWApp.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+            } else if (msg.what == MSG_INSTALL) {
                 String token = getSharedPreferences("kiway", 0).getString("token", "");
                 String imei = Utils.getIMEI(getApplicationContext());
                 Utils.installationPush(instance, token, imei);
             } else if (msg.what == MSG_LOCK) {
                 //强制锁屏
-                MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(true);
-                MDMHelper.getAdapter().setTaskButtonDisabled(true);
-                MDMHelper.getAdapter().setHomeButtonDisabled(true);
                 MDMHelper.getAdapter().setBackButtonDisabled(true);
                 startActivity(new Intent(getApplicationContext(), ScreenActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             } else if (msg.what == MSG_UNLOCK) {
                 //解除锁屏
-                MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(false);
-                MDMHelper.getAdapter().setTaskButtonDisabled(false);
-                MDMHelper.getAdapter().setHomeButtonDisabled(false);
                 MDMHelper.getAdapter().setBackButtonDisabled(false);
-                if (currentActivity != null) {
+                if (currentActivity != null && currentActivity instanceof ScreenActivity) {
                     currentActivity.finish();
                 }
             } else if (msg.what == MSG_LAUNCH_APP) {
                 //打开APP，如果没安装怎么办
                 shangke = true;
-                MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(true);
-                MDMHelper.getAdapter().setTaskButtonDisabled(true);
-                MDMHelper.getAdapter().setHomeButtonDisabled(true);
                 Utils.launchApp(getApplicationContext(), msg.obj.toString());
             } else if (msg.what == MSG_LAUNCH_MDM) {
                 shangke = false;
                 //返回MDM桌面
-                MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(false);
-                MDMHelper.getAdapter().setTaskButtonDisabled(false);
-                MDMHelper.getAdapter().setHomeButtonDisabled(false);
                 Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.mdm");
                 startActivity(intent);
             } else if (msg.what == MSG_FLAGCOMMAND) {
@@ -204,14 +195,14 @@ public class KWApp extends Application {
         //这个没有对应的MDM接口，需要代码控制
 
         int flag_usb = getSharedPreferences("kiway", 0).getInt("flag_usb", 1);
-        MDMHelper.getAdapter().setUSBDataDisabled(flag_usb == 0);
+        //MDMHelper.getAdapter().setUSBDataDisabled(flag_usb == 0);
 
         int flag_wifi = getSharedPreferences("kiway", 0).getInt("flag_wifi", 1);
         //太危险了
         //MDMHelper.getAdapter().setWifiDisabled(flag_wifi == 0);
 
         int flag_systemupdate = getSharedPreferences("kiway", 0).getInt("flag_systemupdate", 1);
-        MDMHelper.getAdapter().setSystemUpdateDisabled(flag_systemupdate == 0);
+        //MDMHelper.getAdapter().setSystemUpdateDisabled(flag_systemupdate == 0);
 
         int flag_bluetooth = getSharedPreferences("kiway", 0).getInt("flag_bluetooth", 1);
         MDMHelper.getAdapter().setBluetoothDisabled(flag_bluetooth == 0);

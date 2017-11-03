@@ -10,7 +10,7 @@ import cn.kiway.mdm.mdm.MDMHelper;
  * Created by Administrator on 2017/10/27.
  */
 
-//锁屏页面
+//救急页面
 public class TestActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +30,7 @@ public class TestActivity extends BaseActivity {
         //6.禁用一些物理键盘
         MDMHelper.getAdapter().setTaskButtonDisabled(false);
         MDMHelper.getAdapter().setHomeButtonDisabled(false);
+        MDMHelper.getAdapter().setBackButtonDisabled(false);
         //MDMHelper.getAdapter().setVpnDisabled(true); //这个失效。
         //MDMHelper.getAdapter().setTimeAndDateSetDisabled(false);//这个失效
         MDMHelper.getAdapter().setWifiDisabled(false);

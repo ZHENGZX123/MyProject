@@ -132,12 +132,15 @@ public class LoginActivity extends BaseActivity {
                     try {
                         JSONObject o = new JSONObject(ret);
                         int StatusCode = o.optInt("StatusCode");
+                        String token = o.getJSONObject("data").getString("token");
+                        Log.d("test", "login get token = " + token);
                         if (StatusCode == 200) {
                             toast("登录成功");
                             Utils.deviceRuntime(LoginActivity.this, imei, "1");
                             getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
                             getSharedPreferences("kiway", 0).edit().putString("username", name).commit();
                             getSharedPreferences("kiway", 0).edit().putString("studentNumber", code).commit();
+                            getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         } else {

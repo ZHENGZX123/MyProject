@@ -106,7 +106,12 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
 
     @Override
     public void setBackButtonDisabled(boolean disabled) {
-
+        try {
+            new DeviceRestrictionManager().setBackButtonDisabled(mAdminName, disabled);
+        } catch (Exception e) {
+            e.printStackTrace();
+            //Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
