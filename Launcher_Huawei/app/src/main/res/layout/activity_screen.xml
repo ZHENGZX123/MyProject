@@ -10,6 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="屏幕锁定"
+        android:gravity="center"
+        android:background="@drawable/aa"
         android:textSize="30sp" />
 
 </RelativeLayout>

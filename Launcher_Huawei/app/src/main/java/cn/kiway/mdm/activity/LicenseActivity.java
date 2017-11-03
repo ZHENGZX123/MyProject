@@ -76,6 +76,4 @@ public class LicenseActivity extends Activity {
         String content = Utils.getStringFromHtmlFile(this, filename);
         licenseText.setText(Html.fromHtml(content));
     }
-
-
 }
