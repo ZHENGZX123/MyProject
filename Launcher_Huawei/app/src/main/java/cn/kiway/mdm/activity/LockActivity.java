@@ -70,7 +70,7 @@ public class LockActivity extends BaseActivity {
     public void Logout(View view) {
         try {
             showPD();
-            AsyncHttpClient client = new AsyncHttpClient();
+            AsyncHttpClient client = new AsyncHttpClient(); client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             String url = server + "device/logout";
             Log.d("test", "url = " + url);

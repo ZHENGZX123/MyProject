@@ -406,6 +406,7 @@ public class Utils {
             public void run() {
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
+                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                     client.setTimeout(10000);
                     JSONArray array = new JSONArray();
                     JSONObject o1 = new JSONObject();
@@ -445,6 +446,7 @@ public class Utils {
                     public void run() {
                         try {
                             AsyncHttpClient client = new AsyncHttpClient();
+                            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                             client.setTimeout(10000);
                             JSONArray array = new JSONArray();
                             JSONObject param = new JSONObject();
@@ -479,6 +481,7 @@ public class Utils {
     public static void exceptions(MainActivity c) {
         try {
             AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             RequestParams param = new RequestParams();
             param.put("IMEI", getIMEI(c));
@@ -524,6 +527,7 @@ public class Utils {
             public void run() {
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
+                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                     client.setTimeout(10000);
                     RequestParams param = new RequestParams();
                     Log.d("test", "param = " + param.toString());
@@ -566,6 +570,7 @@ public class Utils {
             public void run() {
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
+                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                     client.setTimeout(10000);
                     RequestParams param = new RequestParams();
                     Log.d("test", "param = " + param.toString());
@@ -607,6 +612,7 @@ public class Utils {
             public void run() {
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
+                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                     client.setTimeout(10000);
                     RequestParams param = new RequestParams();
                     Log.d("test", "param = " + param.toString());
@@ -743,7 +749,7 @@ public class Utils {
                 m.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //MDMHelper.getAdapter().uninstallPackage(ac.packages);
+                        MDMHelper.getAdapter().uninstallPackage(ac.packages);
                     }
                 });
             }
@@ -810,10 +816,10 @@ public class Utils {
                 while (KWApp.shangke) {
                     try {
                         String runningAPP = Utils.getRunningAPP(c);
-                        if (TextUtils.isEmpty(runningAPP)) {
-                            sleep(1000);
-                            continue;
-                        }
+//                        if (TextUtils.isEmpty(runningAPP)) {
+//                            sleep(1000);
+//                            continue;
+//                        }
                         if (!runningAPP.equals(packageName)) {
                             Intent intent = c.getPackageManager().getLaunchIntentForPackage(packageName);
                             c.startActivity(intent);
@@ -842,6 +848,7 @@ public class Utils {
                 //2.上传APP图标
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
+                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                     client.setTimeout(10000);
                     String url = server + "device/appInstallation";
                     Log.d("test", "applist url = " + url);
@@ -892,6 +899,9 @@ public class Utils {
     public static void installationPush(Context c, final String token, final String imei) {
         try {
             AsyncHttpClient client = new AsyncHttpClient();
+            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+            Log.d("test", "xtoken = " + xtoken);
+            client.addHeader("x-auth-token", xtoken);
             client.setTimeout(10000);
             Log.d("test", "huaweitoken = " + token);
             JSONObject param = new JSONObject();
@@ -981,6 +991,7 @@ public class Utils {
             public void run() {
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
+                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                     client.setTimeout(10000);
                     RequestParams param = new RequestParams();
                     Log.d("test", "param = " + param.toString());

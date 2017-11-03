@@ -29,6 +29,7 @@ import static cn.kiway.mdm.KWApp.MSG_PORTRAIT;
 import static cn.kiway.mdm.KWApp.MSG_PUSH_FILE;
 import static cn.kiway.mdm.KWApp.MSG_REBOOT;
 import static cn.kiway.mdm.KWApp.MSG_SHUTDOWN;
+import static cn.kiway.mdm.KWApp.MSG_TOAST;
 import static cn.kiway.mdm.KWApp.MSG_UNLOCK;
 
 /*
@@ -170,6 +171,12 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 return false;
             }
             KWApp.instance.mHandler.sendMessage(m);
+
+            Message testMsg= new Message();
+            testMsg.what = MSG_TOAST;
+            testMsg.obj = receive;
+            KWApp.instance.mHandler.sendMessage(testMsg);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
