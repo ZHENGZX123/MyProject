@@ -410,7 +410,7 @@ public class Utils {
                     client.setTimeout(10000);
                     JSONArray array = new JSONArray();
                     JSONObject o1 = new JSONObject();
-                    o1.put("imeis", Utils.getIMEI(c));
+                    o1.put("imei", Utils.getIMEI(c));
                     o1.put("longitude", "" + longitude);
                     o1.put("latitude", "" + latitude);
                     o1.put("operation", "GPS");
@@ -450,7 +450,7 @@ public class Utils {
                             client.setTimeout(10000);
                             JSONArray array = new JSONArray();
                             JSONObject param = new JSONObject();
-                            param.put("IMEI", imei);
+                            param.put("imei", imei);
                             param.put("flag", flag);
                             param.put("operation", "submitData");
                             array.put(param);
@@ -484,7 +484,7 @@ public class Utils {
             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             RequestParams param = new RequestParams();
-            param.put("IMEI", getIMEI(c));
+            param.put("imei", getIMEI(c));
             param.put("ip", getIP(c));
             param.put("className", "MainActivity");
             param.put("message", "NullPointException At line 76");
@@ -759,7 +759,7 @@ public class Utils {
         }
     }
 
-    private static boolean checkInTimes(String startTime, String endTime) throws ParseException {
+    public static boolean checkInTimes(String startTime, String endTime) throws ParseException {
         DateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         String current = sdf.format(new Date());
         Date dt1 = sdf.parse(startTime);

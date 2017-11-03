@@ -371,7 +371,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 if (allListData.toString().contains(a.packageName))
                     return;
                 allListData.add(apps);
-                allListData.add(apps);//待解决，需要加两个后面的，应用才会显示出来
                 initData(allListData);
             } else if (action.equals(REMOVE_SUCCESS)) {
                 Log.e(AppReceiverIn.TAG, "--------MainActivity卸载成功" + packageName);

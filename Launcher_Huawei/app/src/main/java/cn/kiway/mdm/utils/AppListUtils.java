@@ -90,13 +90,13 @@ public class AppListUtils {
 //        apps7.add(a7);
 //        data.add(apps7);
 
-        ArrayList<App> apps8 = new ArrayList<>();
-        App a8 = new App();
-        a8.name = "阿帆题";
-        a8.packageName = "com.lejent.zuoyeshenqi.afanti";
-       // a8.icon = Utils.getIconByPackageName(context.getPackageManager(), a8);
-        apps8.add(a8);
-        data.add(apps8);
+//        ArrayList<App> apps8 = new ArrayList<>();
+//        App a8 = new App();
+//        a8.name = "阿帆题";
+//        a8.packageName = "com.lejent.zuoyeshenqi.afanti";
+//       // a8.icon = Utils.getIconByPackageName(context.getPackageManager(), a8);
+//        apps8.add(a8);
+//        data.add(apps8);
 
 //        ArrayList<App> apps9 = new ArrayList<>();
 //        App a9 = new App();
@@ -155,13 +155,13 @@ public class AppListUtils {
 //        apps16.add(a16);
 //        data.add(apps16);
 
-//        ArrayList<App> apps17 = new ArrayList<>();
-//        App a17 = new App();
-//        a17.name = "答题王";
-//        a17.packageName = "com.zhtiantian.ChallengerTX";
-//       // a17.icon = Utils.getIconByPackageName(context.getPackageManager(), a17);
-//        apps17.add(a17);
-//        data.add(apps17);
+        ArrayList<App> apps17 = new ArrayList<>();
+        App a17 = new App();
+        a17.name = "答题王";
+        a17.packageName = "com.zhtiantian.ChallengerTX";
+        // a17.icon = Utils.getIconByPackageName(context.getPackageManager(), a17);
+        apps17.add(a17);
+        data.add(apps17);
 
         ArrayList<App> apps18 = new ArrayList<>();
         App a18 = new App();
