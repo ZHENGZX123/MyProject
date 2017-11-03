@@ -129,8 +129,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private void checkCommand() {
         new Thread() {
             @Override
-            public void run() {
-                //10秒后开始检查
+            public void run() {     //10秒后开始检查
                 try {
                     sleep(10000);
                 } catch (InterruptedException e) {
@@ -373,6 +372,23 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 allListData.add(apps);
                 initData(allListData);
             } else if (action.equals(REMOVE_SUCCESS)) {
+                if (allListData.toString().contains(packageName)) {
+                    for (int i = 0; i < allListData.size(); i++) {
+                        for (int j = 0; j < allListData.get(i).size(); j++) {
+                            App app = allListData.get(i).get(j);
+                            if (app.packageName.equals(packageName)) {//存在的
+                                if (allListData.get(i).size() == 1) {//只有一个的时候移除大的
+                                    allListData.remove(i);
+                                } else {
+                                    allListData.get(i).remove(j);
+                                }
+                                initData(allListData);
+                            } else {
+                                //不存咋的
+                            }
+                        }
+                    }
+                }
                 Log.e(AppReceiverIn.TAG, "--------MainActivity卸载成功" + packageName);
             } else if (action.equals(REPLACE_SUCCESS)) {
                 Log.e(AppReceiverIn.TAG, "--------MainActivity替换成功" + packageName);

@@ -56,7 +56,6 @@ public class AppListActivity2 extends BaseActivity implements CheckPassword.Chec
                     clickButton1(view);
                     return;
                 }
-
                 try {
                     App a = apps.get(position - 1);
                     String packageName = a.packageName;
