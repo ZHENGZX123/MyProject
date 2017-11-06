@@ -133,7 +133,7 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
             }
             int flag_app_open = view.getContext().getSharedPreferences("kiway", 0).getInt("flag_app_open", 1);
             if (flag_app_open == 0) {
-                Toast.makeText(view.getContext(), "已被禁止使用", Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(), "所有的APP已被禁止使用", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (TextUtils.isEmpty(packageName)) {

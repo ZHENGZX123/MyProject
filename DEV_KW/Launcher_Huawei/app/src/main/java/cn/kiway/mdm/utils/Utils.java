@@ -1209,4 +1209,19 @@ public class Utils {
             is301 = false;
         }
     }
+
+    public static void resetFunctions(Context context) {
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_camera", 0).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_snapshot", 0).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_location", 0).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_dataconnectivity", 0).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_microphone", 0).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_restore", 0).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_ap", 0).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_app_open", 0).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_usb", 0).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_wifi", 0).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_systemupdate", 0).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_bluetooth", 0).commit();
+    }
 }
