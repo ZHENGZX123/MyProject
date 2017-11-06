@@ -34,6 +34,14 @@ public class EulaActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_eula);
 
+        mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
+
+        if (isActiveMe()) {
+            jump();
+            return;
+        }
+
         String filename = "huawei_permission_statement.html";
         String content = Utils.getStringFromHtmlFile(this, filename);
         TextView permissionText = (TextView) findViewById(R.id.content_permissions);
@@ -53,13 +61,6 @@ public class EulaActivity extends Activity {
                 style.setSpan(myURLSpan, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             }
             statementText.setText(style);
-        }
-
-        mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-        mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
-
-        if (isActiveMe()) {
-            jump();
         }
     }
 
@@ -101,12 +102,6 @@ public class EulaActivity extends Activity {
     }
 
     private void jump() {
-        //救命用
-//        startActivity(new Intent(this, TestActivity.class));
-//        finish();
-//        if (true) {
-//            return;
-//        }
         //判断是否登录
         boolean login = getSharedPreferences("kiway", 0).getBoolean("login", false);
         if (login) {
