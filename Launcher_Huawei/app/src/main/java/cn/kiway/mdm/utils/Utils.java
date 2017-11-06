@@ -722,13 +722,17 @@ public class Utils {
                 String timeRange = w.timeRange;
                 JSONArray array = new JSONArray(timeRange);
                 int count = array.length();
-                for (int i = 0; i < count; i++) {
-                    JSONObject o = array.getJSONObject(i);
-                    String startTime = o.getString("startTime");
-                    String endTime = o.getString("endTime");
-                    w.inTimeRange = checkInTimes(startTime, endTime);
-                    if (w.inTimeRange) {
-                        rightWifis.add(w);
+                if (count == 0) {
+                    w.inTimeRange = true;
+                } else {
+                    for (int i = 0; i < count; i++) {
+                        JSONObject o = array.getJSONObject(i);
+                        String startTime = o.getString("startTime");
+                        String endTime = o.getString("endTime");
+                        w.inTimeRange = checkInTimes(startTime, endTime);
+                        if (w.inTimeRange) {
+                            rightWifis.add(w);
+                        }
                     }
                 }
             }
