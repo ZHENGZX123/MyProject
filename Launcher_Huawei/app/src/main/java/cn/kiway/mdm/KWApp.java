@@ -81,7 +81,9 @@ public class KWApp extends Application {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == MSG_TOAST) {
-                Toast.makeText(KWApp.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+                if (msg.obj != null) {
+                    Toast.makeText(KWApp.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+                }
             } else if (msg.what == MSG_INSTALL) {
                 String token = getSharedPreferences("huawei", 0).getString("token", "");
                 String imei = Utils.getIMEI(getApplicationContext());

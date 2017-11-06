@@ -54,6 +54,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import cn.kiway.mdm.KWApp;
+import cn.kiway.mdm.activity.LockActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.AppCharge;
@@ -546,7 +547,6 @@ public class Utils {
                     client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                     client.setTimeout(10000);
                     RequestParams param = new RequestParams();
-                    Log.d("test", "param = " + param.toString());
                     String url = server + "device/appCharge?imei=" + getIMEI(c);
                     Log.d("test", "appCharge = " + url);
                     client.get(c, url, param, new TextHttpResponseHandler() {
@@ -589,7 +589,6 @@ public class Utils {
                     client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                     client.setTimeout(10000);
                     RequestParams param = new RequestParams();
-                    Log.d("test", "param = " + param.toString());
                     String url = server + "device/networkDeviceCharge";
                     Log.d("test", "networkDeviceCharge = " + url);
                     client.get(c, url, param, new TextHttpResponseHandler() {
@@ -825,10 +824,12 @@ public class Utils {
         return packageName;
     }
 
+    public static Thread shangkeThread;
+    public static String packageName = null;
+    public static String url = null;
+
     public static void launchApp(final Context c, final JSONObject data) {
         JSONArray content = data.optJSONArray("content");
-        String packageName = null;
-        String url = null;
         try {
             packageName = content.getJSONObject(0).getString("packages");
             url = content.getJSONObject(0).getString("url");
@@ -836,26 +837,23 @@ public class Utils {
             e.printStackTrace();
         }
 
-        if (KWApp.shangke) {
-            //防止重复打开app
+        if (shangkeThread != null) {
             return;
         }
-        final String finalPackageName = packageName;
-        final String finalUrl = url;
-        new Thread() {
+        shangkeThread = new Thread() {
             @Override
             public void run() {
                 while (KWApp.shangke) {
                     try {
-                        if (!isAppInstall(c, finalPackageName)) {
+                        if (!isAppInstall(c, packageName)) {
                             //下载安装
-                            APKInstaller.install(MainActivity.instance, finalPackageName, finalUrl, "name", "version");
+                            APKInstaller.install(MainActivity.instance, packageName, url, "name", "version");
                             sleep(3000);
                             continue;
                         }
                         String runningAPP = Utils.getRunningAPP(c);
-                        if (!runningAPP.equals(finalPackageName)) {
-                            Intent intent = c.getPackageManager().getLaunchIntentForPackage(finalPackageName);
+                        if (!runningAPP.equals(packageName)) {
+                            Intent intent = c.getPackageManager().getLaunchIntentForPackage(packageName);
                             c.startActivity(intent);
                         }
                     } catch (Exception e) {
@@ -866,8 +864,10 @@ public class Utils {
                         }
                     }
                 }
+                shangkeThread = null;
             }
-        }.start();
+        };
+        shangkeThread.start();
     }
 
     public static void uploadApp(final MainActivity c) {
@@ -1066,4 +1066,29 @@ public class Utils {
     }
 
 
+    public static void logout(LockActivity c) {
+        try {
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+            client.setTimeout(10000);
+            String url = server + "device/logout";
+            Log.d("test", "url = " + url);
+            RequestParams param = new RequestParams();
+            param.put("operation", "invalidate");
+            Log.d("test", "param = " + param.toString());
+            client.post(c, url, param, new TextHttpResponseHandler() {
+
+                @Override
+                public void onSuccess(int arg0, Header[] arg1, String ret) {
+                }
+
+                @Override
+                public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("test", "exception = " + e.toString());
+        }
+    }
 }
