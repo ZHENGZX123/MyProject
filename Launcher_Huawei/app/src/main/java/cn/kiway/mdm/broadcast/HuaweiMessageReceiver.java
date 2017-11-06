@@ -66,6 +66,9 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
 
             Message m = new Message();
             if (command.equals("allowAppFunction")) {
+                //重置所有的值为0
+                Utils.resetFunctions(context);
+
                 JSONArray content = data.getJSONArray("content");
                 int count = content.length();
                 for (int i = 0; i < count; i++) {
@@ -89,7 +92,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             } else if (command.equals("temporary_unlockScreen")) {
                 m.what = MSG_UNLOCK;
             } else if (command.equals("wifi")) {
-                //保存进数据库，并马上执行一次
+                //TODO 改成Gson
                 JSONArray content = data.optJSONArray("content");
                 String operation = content.getJSONObject(0).optString("operation");
                 String id = content.getJSONObject(0).optString("id");
@@ -116,6 +119,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 //{"data":"{\"id\":\"001\",\"operation\":\"save\",\"command\":\"app\",\"content\":[{\"times\":[{\"startTime\":\"09:42:39\",\"endTime\":\"10:42:39\"}],\"type\":0,\"url\":\"http://www.yuertong.com/yyfw/static/app/Yjptj.apk\"}]}"}
                 JSONArray content = data.optJSONArray("content");
                 String operation = content.getJSONObject(0).optString("operation");
+                //TODO times改成timeRange，就可以用gson了
                 String url = content.getJSONObject(0).optString("url");
                 int type = content.getJSONObject(0).optInt("type");
                 String id = content.getJSONObject(0).optString("id");
@@ -141,7 +145,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 }
                 Utils.checkAppCharges(MainActivity.instance);
             } else if (command.equals("network")) {
-                //注意这里是单条的操作
+                //TODO 改成Gson
                 //{"data":"{\"command\":\"network\",\"content\":[{\"type\":1,\"operation\":\"save\",\"url\":\"www.123.com\"}]}"}
                 JSONArray content = data.optJSONArray("content");
                 String operation = content.getJSONObject(0).optString("operation");

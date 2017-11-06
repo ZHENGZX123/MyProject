@@ -15,4 +15,15 @@ public class App implements Serializable {
     public boolean selected;
     public int category;
 
+    @Override
+    public String toString() {
+        return "App{" +
+                "name='" + name + '\'' +
+                ", packageName='" + packageName + '\'' +
+                ", versionName='" + versionName + '\'' +
+                ", versionCode=" + versionCode +
+                ", selected=" + selected +
+                ", category=" + category +
+                '}';
+    }
 }
