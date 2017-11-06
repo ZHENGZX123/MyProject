@@ -34,6 +34,7 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -138,6 +139,21 @@ public class Utils {
             }
         }
         return result;
+    }
+
+    public static boolean isAppInstall(Context c, String packageName) {
+        PackageInfo packageInfo;
+        try {
+            packageInfo = c.getPackageManager().getPackageInfo(packageName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            packageInfo = null;
+            e.printStackTrace();
+        }
+        if (packageInfo == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public static ArrayList<App> scanLocalInstallAppList(PackageManager packageManager) {
@@ -531,7 +547,7 @@ public class Utils {
                     client.setTimeout(10000);
                     RequestParams param = new RequestParams();
                     Log.d("test", "param = " + param.toString());
-                    String url = server + "device/appCharge";
+                    String url = server + "device/appCharge?imei=" + getIMEI(c);
                     Log.d("test", "appCharge = " + url);
                     client.get(c, url, param, new TextHttpResponseHandler() {
                         @Override
@@ -809,19 +825,37 @@ public class Utils {
         return packageName;
     }
 
-    public static void launchApp(final Context c, final String packageName) {
+    public static void launchApp(final Context c, final JSONObject data) {
+        JSONArray content = data.optJSONArray("content");
+        String packageName = null;
+        String url = null;
+        try {
+            packageName = content.getJSONObject(0).getString("packages");
+            url = content.getJSONObject(0).getString("url");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if (KWApp.shangke) {
+            //防止重复打开app
+            return;
+        }
+        final String finalPackageName = packageName;
+        final String finalUrl = url;
         new Thread() {
             @Override
             public void run() {
                 while (KWApp.shangke) {
                     try {
+                        if (!isAppInstall(c, finalPackageName)) {
+                            //下载安装
+                            APKInstaller.install(MainActivity.instance, finalPackageName, finalUrl, "name", "version");
+                            sleep(3000);
+                            continue;
+                        }
                         String runningAPP = Utils.getRunningAPP(c);
-//                        if (TextUtils.isEmpty(runningAPP)) {
-//                            sleep(1000);
-//                            continue;
-//                        }
-                        if (!runningAPP.equals(packageName)) {
-                            Intent intent = c.getPackageManager().getLaunchIntentForPackage(packageName);
+                        if (!runningAPP.equals(finalPackageName)) {
+                            Intent intent = c.getPackageManager().getLaunchIntentForPackage(finalPackageName);
                             c.startActivity(intent);
                         }
                     } catch (Exception e) {
@@ -898,8 +932,11 @@ public class Utils {
 
     public static void installationPush(Context c, final String token, final String imei) {
         try {
-            AsyncHttpClient client = new AsyncHttpClient();
             String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+            if (TextUtils.isEmpty(xtoken)) {
+                return;
+            }
+            AsyncHttpClient client = new AsyncHttpClient();
             Log.d("test", "xtoken = " + xtoken);
             client.addHeader("x-auth-token", xtoken);
             client.setTimeout(10000);

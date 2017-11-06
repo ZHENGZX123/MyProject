@@ -101,7 +101,7 @@ public class LoginActivity extends BaseActivity {
         }
         final String imei = Utils.getIMEI(this);
 
-        String token = getSharedPreferences("kiway", 0).getString("token", "");
+        String token = getSharedPreferences("huawei", 0).getString("token", "");
         Log.d("test", "token = " + token);
         //2.提交数据
         try {

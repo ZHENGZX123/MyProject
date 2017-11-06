@@ -45,6 +45,7 @@ public class KWApp extends Application {
     public static final int MSG_SHUTDOWN = 10;//关机
     public static final int MSG_PORTRAIT = 11;//横屏
     public static final int MSG_LANDSCAPE = 12;//竖屏
+    public static final int MSG_UNINSTALL = 13;//卸载
 
 
     public static boolean shangke = false;
@@ -82,7 +83,7 @@ public class KWApp extends Application {
             if (msg.what == MSG_TOAST) {
                 Toast.makeText(KWApp.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
             } else if (msg.what == MSG_INSTALL) {
-                String token = getSharedPreferences("kiway", 0).getString("token", "");
+                String token = getSharedPreferences("huawei", 0).getString("token", "");
                 String imei = Utils.getIMEI(getApplicationContext());
                 Utils.installationPush(instance, token, imei);
             } else if (msg.what == MSG_LOCK) {
@@ -98,7 +99,7 @@ public class KWApp extends Application {
             } else if (msg.what == MSG_LAUNCH_APP) {
                 //打开APP，如果没安装怎么办
                 shangke = true;
-                Utils.launchApp(getApplicationContext(), msg.obj.toString());
+                Utils.launchApp(getApplicationContext(), (JSONObject) msg.obj);
             } else if (msg.what == MSG_LAUNCH_MDM) {
                 shangke = false;
                 //返回MDM桌面
@@ -125,6 +126,9 @@ public class KWApp extends Application {
                 if (currentActivity != null && currentActivity instanceof BaseActivity) {
                     ((BaseActivity) currentActivity).setScreenOrientation();
                 }
+            } else if (msg.what == MSG_UNINSTALL) {
+                //卸载某个包
+                MDMHelper.getAdapter().uninstallPackage(msg.obj.toString());
             }
         }
     };
