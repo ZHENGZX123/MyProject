@@ -16,6 +16,9 @@ public class APKInstaller {
     private static ArrayList<String> packages = new ArrayList<>();
 
     public static void install(final MainActivity m, final String packageName, final String url, final String name, final String version) {
+        if (m == null) {
+            return;
+        }
         if (packages.contains(packageName)) {
             return;
         }

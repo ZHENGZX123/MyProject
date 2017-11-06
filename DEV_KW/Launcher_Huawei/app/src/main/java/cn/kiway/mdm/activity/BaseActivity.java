@@ -7,6 +7,9 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
 import cn.kiway.mdm.mdm.MDMHelper;
@@ -64,5 +67,59 @@ public class BaseActivity extends Activity {
         });
     }
 
+    public void lock() {
+        //1.设置默认桌面
+        MDMHelper.getAdapter().setDefaultLauncher("cn.kiway.mdm", "cn.kiway.mdm.activity.MainActivity");
+        //2.关闭settings.失效
+        //MDMHelper.getAdapter().setSettingsApplicationDisabled(true);
+        //3.设置不可卸载
+        List<String> packages = new ArrayList<>();
+        packages.add("cn.kiway.mdm");
+        MDMHelper.getAdapter().addDisallowedUninstallPackages(packages);
+        //保持APP持续运行
+        //MDMHelper.getAdapter().addPersistentApp(packages);
+        //4.禁止下拉状态栏
+        MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(true);
+        //5.禁止USB，调试期间可以关闭
+        //MDMHelper.getAdapter().setUSBDataDisabled(true);
+        //6.禁用一些物理键盘
+        MDMHelper.getAdapter().setTaskButtonDisabled(true);
+        MDMHelper.getAdapter().setHomeButtonDisabled(true);
+        //MDMHelper.getAdapter().setVpnDisabled(true); //这个失效。
+        //7.禁止修改时间
+        //MDMHelper.getAdapter().setTimeAndDateSetDisabled(true);//这个失效
+    }
+
+    public void unlock() {
+        //1.设置默认桌面
+        MDMHelper.getAdapter().clearDefaultLauncher();
+        //2.关闭settings.慎用！！！
+        //MDMHelper.getAdapter().setSettingsApplicationDisabled(false);
+        //4.禁止下拉状态栏
+        MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(false);
+        //5.禁止USB，调试期间可以关闭
+        MDMHelper.getAdapter().setUSBDataDisabled(false);
+        //6.禁用一些物理键盘
+        MDMHelper.getAdapter().setTaskButtonDisabled(false);
+        MDMHelper.getAdapter().setHomeButtonDisabled(false);
+        MDMHelper.getAdapter().setBackButtonDisabled(false);
+        //MDMHelper.getAdapter().setVpnDisabled(true); //这个失效。
+        //MDMHelper.getAdapter().setTimeAndDateSetDisabled(false);//这个失效
+
+        MDMHelper.getAdapter().setWifiDisabled(false);
+
+        getSharedPreferences("kiway", 0).edit().putInt("flag_camera", 1).commit();
+        getSharedPreferences("kiway", 0).edit().putInt("flag_snapshot", 1).commit();
+        getSharedPreferences("kiway", 0).edit().putInt("flag_location", 1).commit();
+        getSharedPreferences("kiway", 0).edit().putInt("flag_dataconnectivity", 1).commit();
+        getSharedPreferences("kiway", 0).edit().putInt("flag_microphone", 1).commit();
+        getSharedPreferences("kiway", 0).edit().putInt("flag_restore", 1).commit();
+        getSharedPreferences("kiway", 0).edit().putInt("flag_ap", 1).commit();
+        getSharedPreferences("kiway", 0).edit().putInt("flag_app_open", 1).commit();
+        getSharedPreferences("kiway", 0).edit().putInt("flag_usb", 1).commit();
+        getSharedPreferences("kiway", 0).edit().putInt("flag_wifi", 1).commit();
+        getSharedPreferences("kiway", 0).edit().putInt("flag_systemupdate", 1).commit();
+        getSharedPreferences("kiway", 0).edit().putInt("flag_bluetooth", 1).commit();
+    }
 
 }

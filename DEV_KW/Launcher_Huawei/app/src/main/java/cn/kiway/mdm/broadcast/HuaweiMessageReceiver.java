@@ -30,6 +30,7 @@ import static cn.kiway.mdm.KWApp.MSG_PUSH_FILE;
 import static cn.kiway.mdm.KWApp.MSG_REBOOT;
 import static cn.kiway.mdm.KWApp.MSG_SHUTDOWN;
 import static cn.kiway.mdm.KWApp.MSG_TOAST;
+import static cn.kiway.mdm.KWApp.MSG_UNINSTALL;
 import static cn.kiway.mdm.KWApp.MSG_UNLOCK;
 
 /*
@@ -43,7 +44,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
         String content = "获取token和belongId成功，token = " + token + ",belongId = " + belongId;
         Log.d("huawei", content);
 
-        context.getSharedPreferences("kiway", 0).edit().putString("token", token).commit();
+        context.getSharedPreferences("huawei", 0).edit().putString("token", token).commit();
 
         //注册一下
         if (KWApp.instance != null) {
@@ -80,9 +81,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.what = MSG_SHUTDOWN;
             } else if (command.equals("temporary_app")) {
                 m.what = MSG_LAUNCH_APP;
-                JSONArray content = data.optJSONArray("content");
-                String packageName = content.getJSONObject(0).getString("packages");
-                m.obj = packageName;
+                m.obj = data;
             } else if (command.equals("temporary_app_uncharge")) {
                 m.what = MSG_LAUNCH_MDM;
             } else if (command.equals("temporary_lockScreen")) {
@@ -138,6 +137,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                     new MyDBHelper(context).updateAppCharges(a);
                 } else if (operation.equals("delete")) {
                     new MyDBHelper(context).deleteAppcharge(id);
+                    //TODO 如果type=0||type=1要卸载应用
                 }
                 Utils.checkAppCharges(MainActivity.instance);
             } else if (command.equals("network")) {
@@ -166,17 +166,21 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.what = MSG_PORTRAIT;
             } else if (command.equals("landscape")) {
                 m.what = MSG_LANDSCAPE;
+            } else if (command.equals("uninstall")) {
+                m.what = MSG_UNINSTALL;
+                JSONObject content = data.getJSONObject("content");
+                m.obj = content.getString("packages");
             }
             if (KWApp.instance == null) {
                 return false;
             }
             KWApp.instance.mHandler.sendMessage(m);
 
-            Message testMsg= new Message();
+            //测试用
+            Message testMsg = new Message();
             testMsg.what = MSG_TOAST;
             testMsg.obj = receive;
             KWApp.instance.mHandler.sendMessage(testMsg);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
