@@ -65,8 +65,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         Log.d("test", "Main onCreate");
         instance = this;
         initView();
-        //1.设置初始密码
-        initPassword();
         //2.初始化界面
         initData(getListdata(AppListUtils.getAppListData(this)));
         //4.上报位置
@@ -151,15 +149,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }.start();
     }
 
-    private void initPassword() {
-        String password = getSharedPreferences("kiway", 0).getString("password", "");
-        if (TextUtils.isEmpty(password)) {
-            dialog.setTitle("请设置初始密码");
-            dialog.setCancelable(false);
-            dialog.show();
-        }
-    }
-
     private void initView() {
         stop = false;
         dialog = new CheckPassword(this, this);
@@ -225,6 +214,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void ChangePassWord(View view) {
+        //1.设置初始密码
+        String password = getSharedPreferences("kiway", 0).getString("password", "");
+        if (TextUtils.isEmpty(password)) {
+            dialog.setTitle("请设置初始密码");
+            dialog.setCancelable(false);
+            dialog.show();
+            return;
+        }
         dialog.setView(null, 1);
         dialog.setCancelable(true);
         dialog.setTitle("请输入密码");
