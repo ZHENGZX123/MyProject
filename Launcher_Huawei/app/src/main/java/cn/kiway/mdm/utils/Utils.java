@@ -1058,10 +1058,12 @@ public class Utils {
 
                                 @Override
                                 public void onSuccess(int arg0, Header[] arg1, String ret) {
+                                    Log.d("test", "logout success");
                                 }
 
                                 @Override
                                 public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                                    Log.d("test", "logout failure");
                                 }
                             });
                         } catch (Exception e) {

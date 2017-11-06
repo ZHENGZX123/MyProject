@@ -126,15 +126,16 @@ public class LoginActivity extends BaseActivity {
                 @Override
                 public void onSuccess(int arg0, Header[] arg1, String ret) {
                     dismissPD();
-                    Log.d("test", "post onSuccess = " + ret);
+                    Log.d("test", "login onSuccess = " + ret);
                     try {
                         JSONObject o = new JSONObject(ret);
                         int StatusCode = o.optInt("StatusCode");
+                        String errorMsg = o.optString("errorMsg");
                         String token = o.getJSONObject("data").getString("token");
                         Log.d("test", "login get token = " + token);
                         if (StatusCode == 200) {
                             toast("登录成功");
-                            Utils.deviceRuntime(LoginActivity.this, "1" , true);
+                            Utils.deviceRuntime(LoginActivity.this, "1", true);
                             getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
                             getSharedPreferences("kiway", 0).edit().putString("username", name).commit();
                             getSharedPreferences("kiway", 0).edit().putString("studentNumber", code).commit();
@@ -142,7 +143,7 @@ public class LoginActivity extends BaseActivity {
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         } else {
-                            toast("登录失败");
+                            toast("登录失败：" + errorMsg);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
