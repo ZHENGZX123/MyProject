@@ -13,14 +13,16 @@
         android:textSize="30sp" />
 
     <Button
+        android:id="@+id/unlock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="clickUnlock"
-        android:text="救命用一键解锁" />
+        android:text="一键解锁" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/unlock"
         android:onClick="clickSetting"
         android:text="跳到设置页面" />
 
