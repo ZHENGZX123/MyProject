@@ -172,7 +172,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
                     int level = intent.getIntExtra("level", 0);
                     if (level < 5) {
-                        Utils.deviceRuntime(MainActivity.this, "2" , true);
+                        Utils.deviceRuntime(MainActivity.this, "2", true);
                     }
                     try {
                         sleep(10 * 60 * 1000);
@@ -203,6 +203,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
 
     public void SMS(View view) {
+        startActivity(new Intent(this, WebViewActivity.class));
+        if (true) {
+            return;
+        }
         try {
             Intent intent = new Intent(Intent.ACTION_MAIN);//短信列表界面
             intent.addCategory(Intent.CATEGORY_DEFAULT);

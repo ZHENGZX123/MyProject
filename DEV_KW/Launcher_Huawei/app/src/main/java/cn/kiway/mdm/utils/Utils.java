@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.DhcpInfo;
 import android.net.Uri;
@@ -72,7 +73,12 @@ import static cn.kiway.mdm.KWApp.server;
 public class Utils {
 
     public static String TAG = "SampleUtils";
-    private static String today;
+
+
+    public static boolean isTabletDevice(Context context) {
+        return (context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >=
+                Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
 
     /**
      * Get help string from html file

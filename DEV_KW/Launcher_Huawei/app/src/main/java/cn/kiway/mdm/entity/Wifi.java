@@ -12,6 +12,7 @@ public class Wifi {
     public String timeRange;
     public int level;
     public boolean inTimeRange;
+    public String operation;
 
     @Override
     public String toString() {
