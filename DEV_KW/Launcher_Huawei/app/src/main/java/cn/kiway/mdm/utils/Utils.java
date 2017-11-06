@@ -1144,8 +1144,9 @@ public class Utils {
         }
     }
 
+    private static boolean is301 = false;
 
-    public static void check301(Activity c, String result) {
+    public static void check301(final Activity c, String result) {
         if (c == null) {
             return;
         }
@@ -1157,8 +1158,11 @@ public class Utils {
             if (statusCode != 301) {
                 return;
             }
-
             Log.d("test", "301 happen");
+            if (is301) {
+                return;
+            }
+            is301 = true;
 
             final String imei = Utils.getIMEI(c);
             String token = c.getSharedPreferences("huawei", 0).getString("token", "");
@@ -1184,16 +1188,25 @@ public class Utils {
                 @Override
                 public void onSuccess(int arg0, Header[] arg1, String ret) {
                     Log.d("test", "login onSuccess = " + ret);
+                    try {
+                        JSONObject o = new JSONObject(ret);
+                        String token = o.getJSONObject("data").getString("token");
+                        c.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
+                    } catch (Exception e) {
+                    }
+                    is301 = false;
                 }
 
                 @Override
                 public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
                     Log.d("test", "login failure");
+                    is301 = false;
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
             Log.d("test", "exception = " + e.toString());
+            is301 = false;
         }
     }
 }
