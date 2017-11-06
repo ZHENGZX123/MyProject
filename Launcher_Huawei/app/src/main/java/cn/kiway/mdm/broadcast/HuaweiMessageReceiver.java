@@ -6,10 +6,15 @@ import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.huawei.android.pushagent.api.PushEventReceiver;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.activity.MainActivity;
@@ -92,75 +97,45 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             } else if (command.equals("temporary_unlockScreen")) {
                 m.what = MSG_UNLOCK;
             } else if (command.equals("wifi")) {
-                //TODO 改成Gson
                 JSONArray content = data.optJSONArray("content");
-                String operation = content.getJSONObject(0).optString("operation");
-                String id = content.getJSONObject(0).optString("id");
-                String name = content.getJSONObject(0).optString("name");
-                String password = content.getJSONObject(0).optString("password");
-                String timeRange = content.getJSONObject(0).optString("timeRange");
-                int level = content.getJSONObject(0).optInt("level");
-                Wifi a = new Wifi();
-                a.id = id;
-                a.name = name;
-                a.password = password;
-                a.timeRange = timeRange;
-                a.level = level;
-                if (operation.equals("save")) {
-                    new MyDBHelper(context).addWifi(a);
-                } else if (operation.equals("update")) {
-                    new MyDBHelper(context).updateWifi(a);
-                } else if (operation.equals("delete")) {
-                    new MyDBHelper(context).deleteWifi(id);
+                ArrayList<Wifi> wifis = new GsonBuilder().create().fromJson(content.toString(), new TypeToken<List<Wifi>>() {
+                }.getType());
+                Wifi wifi = wifis.get(0);
+                if (wifi.operation.equals("save")) {
+                    new MyDBHelper(context).addWifi(wifi);
+                } else if (wifi.operation.equals("update")) {
+                    new MyDBHelper(context).updateWifi(wifi);
+                } else if (wifi.operation.equals("delete")) {
+                    new MyDBHelper(context).deleteWifi(wifi.id);
+                    //不需要做什么。
                 }
                 Utils.checkWifis(MainActivity.instance);
             } else if (command.equals("app")) {
                 //保存进数据库，并马上执行一次checkAppCharges
-                //{"data":"{\"id\":\"001\",\"operation\":\"save\",\"command\":\"app\",\"content\":[{\"times\":[{\"startTime\":\"09:42:39\",\"endTime\":\"10:42:39\"}],\"type\":0,\"url\":\"http://www.yuertong.com/yyfw/static/app/Yjptj.apk\"}]}"}
                 JSONArray content = data.optJSONArray("content");
-                String operation = content.getJSONObject(0).optString("operation");
-                //TODO times改成timeRange，就可以用gson了
-                String url = content.getJSONObject(0).optString("url");
-                int type = content.getJSONObject(0).optInt("type");
-                String id = content.getJSONObject(0).optString("id");
-                String name = content.getJSONObject(0).optString("name");
-                String packages = content.getJSONObject(0).getString("packages");
-                String version = content.getJSONObject(0).getString("version");
-                String times = content.getJSONObject(0).getString("times");
-                AppCharge a = new AppCharge();
-                a.id = id;
-                a.name = name;
-                a.type = type;
-                a.timeRange = times;
-                a.version = version;
-                a.packages = packages;
-                a.url = url;
-                if (operation.equals("save")) {
-                    new MyDBHelper(context).addAppcharge(a);
-                } else if (operation.equals("update")) {
-                    new MyDBHelper(context).updateAppCharges(a);
-                } else if (operation.equals("delete")) {
-                    new MyDBHelper(context).deleteAppcharge(id);
+                ArrayList<AppCharge> apps = new GsonBuilder().create().fromJson(content.toString(), new TypeToken<List<AppCharge>>() {
+                }.getType());
+                AppCharge app = apps.get(0);
+                if (app.operation.equals("save")) {
+                    new MyDBHelper(context).addAppcharge(app);
+                } else if (app.operation.equals("update")) {
+                    new MyDBHelper(context).updateAppCharges(app);
+                } else if (app.operation.equals("delete")) {
+                    new MyDBHelper(context).deleteAppcharge(app.id);
                     //TODO 如果type=0||type=1要卸载应用
                 }
                 Utils.checkAppCharges(MainActivity.instance);
             } else if (command.equals("network")) {
-                //TODO 改成Gson
-                //{"data":"{\"command\":\"network\",\"content\":[{\"type\":1,\"operation\":\"save\",\"url\":\"www.123.com\"}]}"}
                 JSONArray content = data.optJSONArray("content");
-                String operation = content.getJSONObject(0).optString("operation");
-                String url = content.getJSONObject(0).optString("url");
-                int type = content.getJSONObject(0).optInt("type");
-                String id = content.getJSONObject(0).optString("id");
-                Network a = new Network();
-                a.url = url;
-                a.type = type;
-                if (operation.equals("save")) {
+                ArrayList<Network> networks = new GsonBuilder().create().fromJson(content.toString(), new TypeToken<List<Network>>() {
+                }.getType());
+                Network a = networks.get(0);
+                if (a.operation.equals("save")) {
                     new MyDBHelper(context).addNetwork(a);
-                } else if (operation.equals("update")) {
+                } else if (a.operation.equals("update")) {
                     new MyDBHelper(context).updateNetwork(a);
-                } else if (operation.equals("delete")) {
-                    new MyDBHelper(context).deleteNetwork(id);
+                } else if (a.operation.equals("delete")) {
+                    new MyDBHelper(context).deleteNetwork(a.id);
                 }
             } else if (command.equals("file_push")) {
                 JSONObject content = data.getJSONObject("content");

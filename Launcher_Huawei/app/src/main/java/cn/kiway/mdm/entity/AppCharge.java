@@ -13,6 +13,7 @@ public class AppCharge {
     public String version;
     public String packages;
     public String url;
+    public String operation;
 
     @Override
     public String toString() {
