@@ -57,13 +57,30 @@ public class LockActivity extends BaseActivity {
         setResult(999);
         finish();
 
-        Utils.logout(LockActivity.this);
-        String imei = Utils.getIMEI(LockActivity.this);
-        Utils.deviceRuntime(LockActivity.this, imei, "2");
-        getSharedPreferences("kiway", 0).edit().clear().commit();
-        new MyDBHelper(LockActivity.this).deleteAppcharge(null);
-        new MyDBHelper(LockActivity.this).deleteWifi(null);
-        new MyDBHelper(LockActivity.this).deleteNetwork(null);
+        new Thread() {
+            @Override
+            public void run() {
+                //1.上报状态
+                Utils.deviceRuntime(LockActivity.this, "2" , false);
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //2.注销
+                Utils.logout(LockActivity.this);
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //3.清数据
+                getSharedPreferences("kiway", 0).edit().clear().commit();
+                new MyDBHelper(LockActivity.this).deleteAppcharge(null);
+                new MyDBHelper(LockActivity.this).deleteWifi(null);
+                new MyDBHelper(LockActivity.this).deleteNetwork(null);
+            }
+        }.start();
     }
 
     public void Before(View view) {
