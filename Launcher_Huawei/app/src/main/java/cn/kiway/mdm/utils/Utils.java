@@ -338,8 +338,8 @@ public class Utils {
 
     public static void connectSSID(MainActivity c, String SSID, String password) {
         Log.d("test", "connectSSID SSID = " + SSID + " , password = " + password);
-        SSID = "KWHW2_5G";
-        password = "KWF58888";
+//        SSID = "KWHW2_5G";
+//        password = "KWF58888";
         if (TextUtils.isEmpty(SSID)) {
             return;
         }
