@@ -18,4 +18,10 @@
         android:onClick="clickUnlock"
         android:text="救命用一键解锁" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="clickSetting"
+        android:text="跳到设置页面" />
+
 </RelativeLayout>
