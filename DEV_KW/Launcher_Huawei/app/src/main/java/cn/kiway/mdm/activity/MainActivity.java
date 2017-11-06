@@ -172,7 +172,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
                     int level = intent.getIntExtra("level", 0);
                     if (level < 5) {
-                        Utils.deviceRuntime(MainActivity.this, Utils.getIMEI(MainActivity.this), "2");
+                        Utils.deviceRuntime(MainActivity.this, "2" , true);
                     }
                     try {
                         sleep(10 * 60 * 1000);

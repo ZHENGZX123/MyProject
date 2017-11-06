@@ -440,6 +440,7 @@ public class Utils {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "locationTrack onSuccess = " + ret);
+                            check301(c, ret);
                         }
 
                         @Override
@@ -454,7 +455,7 @@ public class Utils {
         });
     }
 
-    public static void deviceRuntime(final Activity c, final String imei, final String flag) {
+    public static void deviceRuntime(final Activity c, final String flag, final boolean check301) {
         new Thread() {
             @Override
             public void run() {
@@ -462,6 +463,7 @@ public class Utils {
                     @Override
                     public void run() {
                         try {
+                            String imei = getIMEI(c);
                             AsyncHttpClient client = new AsyncHttpClient();
                             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                             client.setTimeout(10000);
@@ -479,6 +481,9 @@ public class Utils {
                                 @Override
                                 public void onSuccess(int code, Header[] headers, String ret) {
                                     Log.d("test", "deviceRuntime onSuccess = " + ret);
+                                    if (check301) {
+                                        check301(c, ret);
+                                    }
                                 }
 
                                 @Override
@@ -495,7 +500,7 @@ public class Utils {
         }.start();
     }
 
-    public static void exceptions(MainActivity c) {
+    public static void exceptions(final MainActivity c) {
         try {
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
@@ -513,6 +518,7 @@ public class Utils {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "exceptions onSuccess = " + ret);
+                    check301(c, ret);
                 }
 
                 @Override
@@ -553,7 +559,7 @@ public class Utils {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "appCharge onSuccess = " + ret);
-
+                            check301(c, ret);
                             try {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 ArrayList<AppCharge> networks = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<AppCharge>>() {
@@ -595,6 +601,7 @@ public class Utils {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "networkDeviceCharge onSuccess = " + ret);
+                            check301(c, ret);
                             try {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 ArrayList<Network> networks = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Network>>() {
@@ -637,6 +644,7 @@ public class Utils {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "wifi onSuccess = " + ret);
+                            check301(c, ret);
                             try {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 ArrayList<Wifi> wifis = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Wifi>>() {
@@ -907,6 +915,7 @@ public class Utils {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "applist onSuccess = " + ret);
+                            check301(c, ret);
                             String today = getToday();
                             c.getSharedPreferences("kiway", 0).edit().putBoolean(today, true).commit();
                         }
@@ -928,43 +937,6 @@ public class Utils {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         String today = sdf.format(d);
         return today;
-    }
-
-    public static void installationPush(Context c, final String token, final String imei) {
-        try {
-            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-            if (TextUtils.isEmpty(xtoken)) {
-                return;
-            }
-            AsyncHttpClient client = new AsyncHttpClient();
-            Log.d("test", "xtoken = " + xtoken);
-            client.addHeader("x-auth-token", xtoken);
-            client.setTimeout(10000);
-            Log.d("test", "huaweitoken = " + token);
-            JSONObject param = new JSONObject();
-            param.put("appId", "2747ffbb3cfca89d0084d3d95fe42c3f");
-            param.put("type", "huawei");
-            param.put("deviceId", imei);
-            param.put("userId", token);
-            param.put("module", "student");
-            Log.d("test", "param = " + param.toString());
-            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            String url = server + "push/installation";
-            Log.d("test", "installationPush = " + url);
-            client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "installationPush onSuccess = " + ret);
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "installationPush onFailure = " + s);
-                }
-            });
-        } catch (Exception e) {
-            Log.d("test", "e = " + e.toString());
-        }
     }
 
     public static String getCurrentSSID(MainActivity c) {
@@ -1038,6 +1010,7 @@ public class Utils {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "appFunction onSuccess = " + ret);
+                            check301(c, ret);
                             try {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 int count = data.length();
@@ -1065,25 +1038,124 @@ public class Utils {
         });
     }
 
+    public static void logout(final LockActivity c) {
+        new Thread() {
+            @Override
+            public void run() {
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            AsyncHttpClient client = new AsyncHttpClient();
+                            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+                            client.setTimeout(10000);
+                            String url = server + "device/logout";
+                            Log.d("test", "url = " + url);
+                            RequestParams param = new RequestParams();
+                            param.put("operation", "invalidate");
+                            Log.d("test", "param = " + param.toString());
+                            client.post(c, url, param, new TextHttpResponseHandler() {
 
-    public static void logout(LockActivity c) {
+                                @Override
+                                public void onSuccess(int arg0, Header[] arg1, String ret) {
+                                }
+
+                                @Override
+                                public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.d("test", "exception = " + e.toString());
+                        }
+                    }
+                });
+            }
+        }.start();
+    }
+
+    public static void installationPush(Context c, final String token, final String imei) {
         try {
+            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+            if (TextUtils.isEmpty(xtoken)) {
+                return;
+            }
             AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+            Log.d("test", "xtoken = " + xtoken);
+            client.addHeader("x-auth-token", xtoken);
             client.setTimeout(10000);
-            String url = server + "device/logout";
+            Log.d("test", "huaweitoken = " + token);
+            JSONObject param = new JSONObject();
+            param.put("appId", "2747ffbb3cfca89d0084d3d95fe42c3f");
+            param.put("type", "huawei");
+            param.put("deviceId", imei);
+            param.put("userId", token);
+            param.put("module", "student");
+            Log.d("test", "param = " + param.toString());
+            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+            String url = server + "push/installation";
+            Log.d("test", "installationPush = " + url);
+            client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "installationPush onSuccess = " + ret);
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "installationPush onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
+        }
+    }
+
+
+    public static void check301(Activity c, String result) {
+        if (c == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(result)) {
+            return;
+        }
+        try {
+            int statusCode = new JSONObject(result).optInt("statusCode");
+            if (statusCode != 301) {
+                return;
+            }
+
+            Log.d("test", "301 happen");
+
+            final String imei = Utils.getIMEI(c);
+            String token = c.getSharedPreferences("huawei", 0).getString("token", "");
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            String url = server + "device/login";
             Log.d("test", "url = " + url);
             RequestParams param = new RequestParams();
-            param.put("operation", "invalidate");
+            param.put("schoolId", c.getSharedPreferences("kiway", 0).getString("schoolId", ""));
+            param.put("classId", c.getSharedPreferences("kiway", 0).getString("classId", ""));
+            param.put("studentNumber", c.getSharedPreferences("kiway", 0).getString("studentNumber", ""));
+            param.put("name", c.getSharedPreferences("kiway", 0).getString("name", ""));
+            param.put("mobileModel", Build.MODEL);
+            param.put("mobileBrand", Build.BRAND);
+            param.put("IMEI", imei);
+            param.put("id", "");
+            param.put("platform", "Android");
+            param.put("token", token);
+            param.put("operation", "login");
             Log.d("test", "param = " + param.toString());
             client.post(c, url, param, new TextHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int arg0, Header[] arg1, String ret) {
+                    Log.d("test", "login onSuccess = " + ret);
                 }
 
                 @Override
                 public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                    Log.d("test", "login failure");
                 }
             });
         } catch (Exception e) {

@@ -45,12 +45,6 @@ public class LoginActivity extends BaseActivity {
         classBtn = (Button) findViewById(R.id.classBtn);
         codeET = (EditText) findViewById(R.id.codeET);
         nameET = (EditText) findViewById(R.id.nameET);
-        //1.省市县、选学校、选班级
-        //2.注册到后台:学校，学号，姓名，设备IMEI，华为token,手机品牌型号
-        String brand = Build.BRAND;
-        Log.d("test", "brand = " + brand);
-        String model = Build.MODEL;
-        Log.d("test", "model = " + model);
     }
 
     public void selectSchool(View view) {
@@ -70,7 +64,6 @@ public class LoginActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 999 && resultCode == 999) {
             mSchool = (School) data.getSerializableExtra("school");
-            Log.d("test", "mSchool = " + mSchool.toString());
             schollBtn.setText(mSchool.name);
         } else if (requestCode == 9999 && resultCode == 9999) {
             mClass = (Class) data.getSerializableExtra("class");
@@ -99,8 +92,13 @@ public class LoginActivity extends BaseActivity {
             toast("请填写姓名");
             return;
         }
-        final String imei = Utils.getIMEI(this);
+        //保存登录信息，301的时候用到。。。
+        getSharedPreferences("kiway", 0).edit().putString("schoolId", mSchool.schoolId).commit();
+        getSharedPreferences("kiway", 0).edit().putString("classId", mClass.id).commit();
+        getSharedPreferences("kiway", 0).edit().putString("studentNumber", code).commit();
+        getSharedPreferences("kiway", 0).edit().putString("name", name).commit();
 
+        final String imei = Utils.getIMEI(this);
         String token = getSharedPreferences("huawei", 0).getString("token", "");
         Log.d("test", "token = " + token);
         //2.提交数据
@@ -136,7 +134,7 @@ public class LoginActivity extends BaseActivity {
                         Log.d("test", "login get token = " + token);
                         if (StatusCode == 200) {
                             toast("登录成功");
-                            Utils.deviceRuntime(LoginActivity.this, imei, "1");
+                            Utils.deviceRuntime(LoginActivity.this, "1" , true);
                             getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
                             getSharedPreferences("kiway", 0).edit().putString("username", name).commit();
                             getSharedPreferences("kiway", 0).edit().putString("studentNumber", code).commit();
