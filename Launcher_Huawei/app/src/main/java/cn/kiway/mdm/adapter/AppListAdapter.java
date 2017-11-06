@@ -2,6 +2,7 @@ package cn.kiway.mdm.adapter;
 
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -150,16 +151,21 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
             AppCharge app = new MyDBHelper(context).getAppChargesByPackage(packageName);
             if (app != null) {
                 String timeRange = app.timeRange;// [{start end}{start end}]
+                Log.d("test", "timeRange = " + timeRange);
                 JSONArray array = new JSONArray(timeRange);
                 int count = array.length();
                 boolean in = false;
-                for (int i = 0; i < count; i++) {
-                    JSONObject o = array.getJSONObject(i);
-                    String startTime = o.getString("startTime");
-                    String endTime = o.getString("endTime");
-                    in = Utils.checkInTimes(startTime, endTime);
-                    if (in) {
-                        break;
+                if (count == 0) {
+                    in = true;
+                } else {
+                    for (int i = 0; i < count; i++) {
+                        JSONObject o = array.getJSONObject(i);
+                        String startTime = o.getString("startTime");
+                        String endTime = o.getString("endTime");
+                        in = Utils.checkInTimes(startTime, endTime);
+                        if (in) {
+                            break;
+                        }
                     }
                 }
                 if (in) {
