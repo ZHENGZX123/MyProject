@@ -876,12 +876,16 @@ public class Utils {
     public static Thread shangkeThread;
     public static String packageName = null;
     public static String url = null;
+    public static String name = null;
+    public static String version = null;
 
     public static void launchApp(final Context c, final JSONObject data) {
         JSONArray content = data.optJSONArray("content");
         try {
             packageName = content.getJSONObject(0).getString("packages");
             url = content.getJSONObject(0).getString("url");
+            name = content.getJSONObject(0).getString("name");
+            version = content.getJSONObject(0).getString("version");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -896,7 +900,7 @@ public class Utils {
                     try {
                         if (!isAppInstall(c, packageName)) {
                             //下载安装
-                            APKInstaller.install(MainActivity.instance, packageName, url, "name", "version");
+                            APKInstaller.install(MainActivity.instance, packageName, url, name, version);
                             sleep(3000);
                             continue;
                         }
@@ -905,6 +909,7 @@ public class Utils {
                             Intent intent = c.getPackageManager().getLaunchIntentForPackage(packageName);
                             c.startActivity(intent);
                         }
+                        sleep(1000);
                     } catch (Exception e) {
                         try {
                             sleep(1000);

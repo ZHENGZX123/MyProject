@@ -50,7 +50,7 @@ public class LockActivity extends BaseActivity {
     }
 
     public void Password(View view) {
-        startActivity(new Intent(this, ChangePassWordActivity.class));
+        startActivity(new Intent(this, PassWordActivity.class));
     }
 
     public void Logout(View view) {
