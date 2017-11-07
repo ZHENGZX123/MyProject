@@ -11,7 +11,7 @@ import cn.kiway.mdm.R;
  * Created by Administrator on 2017/10/12.
  */
 
-public class ChangePassWordActivity extends BaseActivity {
+public class PassWordActivity extends BaseActivity {
     EditText editText1, editText2;
 
     @Override
