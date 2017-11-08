@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "E:\\repo_ali\\Dev_KW\\Homework_Teacher\\ImagePicker\\build\\intermediates\\res\\merged\\debug\\drawable-nodpi-v4\\wallpaper.jpg",
+        "source": "E:\\repo_ali\\Dev_KW\\Homework_Teacher\\ImagePicker\\build\\intermediates\\exploded-aar\\Homework_Teacher\\photoview\\unspecified\\res\\drawable-nodpi-v4\\wallpaper.jpg"
+    },
+    {
+        "merged": "E:\\repo_ali\\Dev_KW\\MDM_Parent\\ImagePicker\\build\\intermediates\\res\\merged\\debug\\drawable-nodpi-v4\\wallpaper.jpg",
+        "source": "E:\\repo_ali\\Dev_KW\\MDM_Parent\\ImagePicker\\build\\intermediates\\exploded-aar\\MDM_Parent\\photoview\\unspecified\\res\\drawable-nodpi-v4\\wallpaper.jpg"
+    },
+    {
+        "merged": "E:\\repo_ali\\Dev_KW\\MDM_Teacher\\ImagePicker\\build\\intermediates\\res\\merged\\debug\\drawable-nodpi-v4\\wallpaper.jpg",
+        "source": "E:\\repo_ali\\Dev_KW\\MDM_Teacher\\ImagePicker\\build\\intermediates\\exploded-aar\\MDM_Teacher\\photoview\\unspecified\\res\\drawable-nodpi-v4\\wallpaper.jpg"
+    }
+]
