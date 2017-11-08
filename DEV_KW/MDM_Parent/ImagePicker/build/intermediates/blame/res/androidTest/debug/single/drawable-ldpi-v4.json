@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "E:\\repo_ali\\Dev_KW\\Homework_Teacher\\ImagePicker\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-ldpi-v4\\ic_launcher.png",
+        "source": "E:\\repo_ali\\Dev_KW\\Homework_Teacher\\ImagePicker\\build\\intermediates\\exploded-aar\\Homework_Teacher\\photoview\\unspecified\\res\\drawable-ldpi-v4\\ic_launcher.png"
+    },
+    {
+        "merged": "E:\\repo_ali\\Dev_KW\\MDM_Teacher\\ImagePicker\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-ldpi-v4\\ic_launcher.png",
+        "source": "E:\\repo_ali\\Dev_KW\\MDM_Teacher\\ImagePicker\\build\\intermediates\\exploded-aar\\MDM_Teacher\\photoview\\unspecified\\res\\drawable-ldpi-v4\\ic_launcher.png"
+    },
+    {
+        "merged": "E:\\repo_ali\\Dev_KW\\MDM_Parent\\ImagePicker\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-ldpi-v4\\ic_launcher.png",
+        "source": "E:\\repo_ali\\Dev_KW\\MDM_Parent\\ImagePicker\\build\\intermediates\\exploded-aar\\MDM_Parent\\photoview\\unspecified\\res\\drawable-ldpi-v4\\ic_launcher.png"
+    }
+]
