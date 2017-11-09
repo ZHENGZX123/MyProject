@@ -65,6 +65,12 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             String receive = new String(msg, "UTF-8");
             Log.d("huawei", "onPushMsg = " + receive);
 
+            //如果没有登录，不接收推送
+            if (!context.getSharedPreferences("kiway", 0).getBoolean("login", false)) {
+                Log.d("huawei", "没有登录，不接受推送");
+                return false;
+            }
+
             String dataStr = new JSONObject(receive).getString("data");
             JSONObject data = new JSONObject(dataStr);
             String command = data.optString("command");
@@ -73,7 +79,6 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             if (command.equals("allowAppFunction")) {
                 //重置所有的值为0
                 Utils.resetFunctions(context);
-
                 JSONArray content = data.getJSONArray("content");
                 int count = content.length();
                 for (int i = 0; i < count; i++) {
@@ -107,7 +112,6 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                     new MyDBHelper(context).updateWifi(wifi);
                 } else if (wifi.operation.equals("delete")) {
                     new MyDBHelper(context).deleteWifi(wifi.id);
-                    //不需要做什么。
                 }
                 Utils.checkWifis(MainActivity.instance);
             } else if (command.equals("app")) {
