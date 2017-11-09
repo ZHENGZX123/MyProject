@@ -92,12 +92,21 @@ public class KWApp extends Application {
                 //强制锁屏
                 MDMHelper.getAdapter().setBackButtonDisabled(true);
                 startActivity(new Intent(getApplicationContext(), ScreenActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                //DevicePolicyManager mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+                //mDevicePolicyManager.lockNow();
             } else if (msg.what == MSG_UNLOCK) {
                 //解除锁屏
                 MDMHelper.getAdapter().setBackButtonDisabled(false);
                 if (currentActivity != null && currentActivity instanceof ScreenActivity) {
                     currentActivity.finish();
                 }
+                //PowerManager mPowerManager = ((PowerManager) getSystemService(POWER_SERVICE));
+                //PowerManager.WakeLock mScreenLock = mPowerManager.newWakeLock(
+                //        PowerManager.ACQUIRE_CAUSES_WAKEUP //该flag使能屏幕关闭时，也能点亮屏幕（通常的wakelock只能维持屏幕处于一直开启状态，如果灭屏时，是不会自动点亮的）
+                //                | PowerManager.SCREEN_DIM_WAKE_LOCK
+                //                | PowerManager.ON_AFTER_RELEASE, "screenOnWakeLock");
+                //mScreenLock.acquire();
+                //mScreenLock.release();
             } else if (msg.what == MSG_LAUNCH_APP) {
                 //打开APP，如果没安装怎么办
                 shangke = true;
@@ -173,6 +182,7 @@ public class KWApp extends Application {
             e.printStackTrace();
         }
     }
+
 
     public void excuteFlagCommand() {
         int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
