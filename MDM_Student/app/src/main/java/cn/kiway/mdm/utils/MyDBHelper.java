@@ -542,17 +542,18 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
     }
 
-    public ArrayList<Call> getAllCalls() {
+    //1打入 2打出
+    public ArrayList<Call> getAllCalls(int in_out) {
         if (db == null)
             db = getWritableDatabase();
-        Cursor cur = db.query(TABLE_CALL, null, null, null, null, null, null);
+        Cursor cur = db.query(TABLE_CALL, null, "in_out=?", new String[]{in_out + ""}, null, null, null);
         ArrayList<Call> calls = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             String id = cur.getString(cur.getColumnIndex("ids"));
             String name = cur.getString(cur.getColumnIndex("name"));
             String number = cur.getString(cur.getColumnIndex("number"));
             int type = cur.getInt(cur.getColumnIndex("type"));
-            int in_out = cur.getInt(cur.getColumnIndex("in_out"));
+            in_out = cur.getInt(cur.getColumnIndex("in_out"));
 
             Call a = new Call();
             a.id = id;
