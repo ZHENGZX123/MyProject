@@ -213,6 +213,7 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 
 import cn.kiway.mdm.entity.AppCharge;
+import cn.kiway.mdm.entity.Call;
 import cn.kiway.mdm.entity.Network;
 import cn.kiway.mdm.entity.Wifi;
 
@@ -226,21 +227,27 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + TABLE_NETWORK
             + "   (id integer primary key autoincrement, ids text,  url  text,  type  text )";
 
-    private static final String TABLE_WIFI = "wifi";
+    private static final String TABLE_WIFI = "Wifi";
     private static final String CREATE_TABLE_WIFI = " create table  IF NOT EXISTS "
             + TABLE_WIFI
             + "   (id integer primary key autoincrement, ids text, name  text,  password  text  , timeRange text , level text)";
 
-    private static final String TABLE_APP = "app";
+    private static final String TABLE_APP = "APP";
     private static final String CREATE_TABLE_APP = " create table  IF NOT EXISTS "
             + TABLE_APP
             + "   (id integer primary key autoincrement, ids text, name  text,  type  text  , timeRange text , version text , packages text , url text)";
 
 
+    private static final String TABLE_CALL = "Call";
+    private static final String CREATE_TABLE_CALL = " create table  IF NOT EXISTS "
+            + TABLE_CALL
+            + "   (id integer primary key autoincrement, ids text,  name  text,  number  text , type text , in_out text )";
+
+
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 4);
+        super(c, DB_NAME, null, 5);
     }
 
     @Override
@@ -253,6 +260,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_APP);
         db.execSQL(CREATE_TABLE_APP);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CALL);
+        db.execSQL(CREATE_TABLE_CALL);
     }
 
     @Override
@@ -261,6 +271,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_NETWORK);
         db.execSQL(CREATE_TABLE_WIFI);
         db.execSQL(CREATE_TABLE_APP);
+        db.execSQL(CREATE_TABLE_CALL);
     }
 
     //------------------------------------------Network----------------
@@ -502,5 +513,74 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.update(TABLE_APP, cv, "ids=?", args);
         db.close();
     }
+
+    //------------------- call-----------------------------------------
+
+    public void addCall(Call a) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("ids", a.id);
+        values.put("name", a.name);
+        values.put("number", a.number);
+        values.put("type", a.type);
+        values.put("in_out", a.in_out);
+        db.insert(TABLE_CALL, null, values);
+        db.close();
+    }
+
+    public void deleteCall(String ids) {
+        if (db == null)
+            db = getWritableDatabase();
+
+        if (TextUtils.isEmpty(ids)) {
+            db.delete(TABLE_CALL, null, null);
+        } else {
+            db.delete(TABLE_CALL, "ids=?", new String[]{ids});
+        }
+        db.close();
+
+    }
+
+    public ArrayList<Call> getAllCalls() {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_CALL, null, null, null, null, null, null);
+        ArrayList<Call> networks = new ArrayList<>();
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            String id = cur.getString(cur.getColumnIndex("ids"));
+            String name = cur.getString(cur.getColumnIndex("name"));
+            String number = cur.getString(cur.getColumnIndex("number"));
+            int type = cur.getInt(cur.getColumnIndex("type"));
+            int in_out = cur.getInt(cur.getColumnIndex("in_out"));
+
+            Call a = new Call();
+            a.id = id;
+            a.name = name;
+            a.number = number;
+            a.type = type;
+            a.in_out = in_out;
+            networks.add(a);
+        }
+        cur.close();
+        db.close();
+        return networks;
+    }
+
+    public void updateCall(Call a) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("ids", a.id);
+        cv.put("name", a.name);
+        cv.put("number", a.number);
+        cv.put("type", a.type);
+        cv.put("in_out", a.in_out);
+
+        String[] args = {a.id};
+        db.update(TABLE_CALL, cv, "ids=?", args);
+        db.close();
+    }
+
 
 }
