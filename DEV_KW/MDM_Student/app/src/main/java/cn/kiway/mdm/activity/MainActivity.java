@@ -33,11 +33,13 @@ import cn.kiway.mdm.adapter.MyViewPagerAdapter;
 import cn.kiway.mdm.dialog.CheckPassword;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.entity.App;
+import cn.kiway.mdm.entity.Call;
 import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.AppListUtils;
 import cn.kiway.mdm.utils.AppReceiverIn;
 import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.LocationUtils;
+import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
@@ -468,7 +470,15 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             Log.d("test", "onCallStateChanged state = " + state + " , incomingNumber = " + incomingNumber);
             // 如果是响铃状态,检测拦截模式是否是电话拦截,是挂断
             if (state == TelephonyManager.CALL_STATE_RINGING) {
-                if (incomingNumber.contains("18626318013")) {
+                ArrayList<Call> calls = new MyDBHelper(getApplicationContext()).getAllCalls(1);
+                boolean has = false;
+                for (Call l : calls) {
+                    if (l.number.equals(incomingNumber)) {
+                        has = true;
+                        break;
+                    }
+                }
+                if (has) {
                     MDMHelper.getAdapter().hangupCalling();
                 }
             }

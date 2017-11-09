@@ -61,7 +61,7 @@ public class LockActivity extends BaseActivity {
             @Override
             public void run() {
                 //1.上报状态
-                Utils.deviceRuntime(LockActivity.this, "2" , false);
+                Utils.deviceRuntime(LockActivity.this, "2", false);
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
@@ -79,6 +79,7 @@ public class LockActivity extends BaseActivity {
                 new MyDBHelper(LockActivity.this).deleteAppcharge(null);
                 new MyDBHelper(LockActivity.this).deleteWifi(null);
                 new MyDBHelper(LockActivity.this).deleteNetwork(null);
+                new MyDBHelper(LockActivity.this).deleteCall(null);
             }
         }.start();
     }
