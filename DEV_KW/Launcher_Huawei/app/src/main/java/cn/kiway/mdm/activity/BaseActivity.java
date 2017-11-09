@@ -3,11 +3,8 @@ package cn.kiway.mdm.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -118,6 +115,10 @@ public class BaseActivity extends Activity {
 //        MDMHelper.getAdapter().setGPSDisabled(false);
 //        MDMHelper.getAdapter().setWifiApDisabled(false);
 //        MDMHelper.getAdapter().setScreenCaptureDisabled(false);
+//        MDMHelper.getAdapter().setNetworkLocationDisabled(false);
+//        MDMHelper.getAdapter().setMicrophoneDisabled(false);
+//        MDMHelper.getAdapter().setRestoreFactoryDisabled(false);
+//        MDMHelper.getAdapter().setSystemUpdateDisabled(false);
 
 
         //移除白名单
@@ -140,7 +141,6 @@ public class BaseActivity extends Activity {
         getSharedPreferences("kiway", 0).edit().putInt("flag_systemupdate", 1).commit();
         getSharedPreferences("kiway", 0).edit().putInt("flag_bluetooth", 1).commit();
     }
-
 
 
 }

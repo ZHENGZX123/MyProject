@@ -99,6 +99,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.what = MSG_LAUNCH_MDM;
             } else if (command.equals("temporary_lockScreen")) {
                 m.what = MSG_LOCK;
+
             } else if (command.equals("temporary_unlockScreen")) {
                 m.what = MSG_UNLOCK;
             } else if (command.equals("wifi")) {
