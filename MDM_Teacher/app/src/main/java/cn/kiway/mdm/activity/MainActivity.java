@@ -73,9 +73,7 @@ import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static cn.kiway.mdm.WXApplication.ceshiUrl;
 import static cn.kiway.mdm.WXApplication.url;
-import static cn.kiway.mdm.WXApplication.zhengshiUrl;
 import static cn.kiway.mdm.util.Utils.getCurrentVersion;
 
 
@@ -437,16 +435,7 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
-        public String isTest() {
-            Log.d("test", "isTest is called");
-            return WXApplication.isTest ? "1" : "0";
-        }
-
-        @JavascriptInterface
         public void httpRequest(String url, String param, final String method, String time, String tagname, String related, String event) {
-            if (!WXApplication.isTest) {
-                url = url.replace(ceshiUrl, zhengshiUrl);
-            }
             try {
                 Integer.parseInt(time);
                 param = param.replace("\\\"", "\"");
@@ -714,7 +703,7 @@ public class MainActivity extends BaseActivity {
                 try {
                     sleep(1500);
                     checkTimeout();
-                    HttpGet httpRequest = new HttpGet(url + "/download/version/zip_ls.json");
+                    HttpGet httpRequest = new HttpGet(url + "/static/download/version/zip_teacher.json");
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
