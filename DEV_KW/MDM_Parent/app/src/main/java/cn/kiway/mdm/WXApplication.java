@@ -26,20 +26,7 @@ import java.io.File;
 
 public class WXApplication extends Application {
 
-    public static String url;
-    public static final String zhengshiUrl = "http://xxxx:8389";//正式地址
-    public static final String ceshiUrl = "http://xxxx:8389";//测试地址8390
-
-    public static boolean isTest = true;
-
-    static {
-        if (isTest) {
-            url = ceshiUrl;
-        } else {
-            url = zhengshiUrl;
-        }
-    }
-
+    public static String url = "http://xxxx:8389";//测试地址8390
     public static String ROOT = "/mnt/sdcard/kiway_mdm_parent/";
     public static String HTML = "mdm_parent/dist/index.html";
     public static String ZIP = "mdm_parent.zip";
