@@ -1197,6 +1197,52 @@ public class Utils {
         }
     }
 
+    public static void uninstallPush(final LockActivity c) {
+        new Thread() {
+            @Override
+            public void run() {
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                            if (TextUtils.isEmpty(xtoken)) {
+                                return;
+                            }
+                            String token = c.getSharedPreferences("huawei", 0).getString("token", "");
+                            Log.d("test", "huaweitoken = " + token);
+                            AsyncHttpClient client = new AsyncHttpClient();
+                            Log.d("test", "xtoken = " + xtoken);
+                            client.addHeader("x-auth-token", xtoken);
+                            client.setTimeout(10000);
+                            JSONObject param = new JSONObject();
+                            param.put("type", "huawei");
+                            param.put("imei", getIMEI(c));
+                            param.put("token", token);
+                            Log.d("test", "param = " + param.toString());
+                            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+                            String url = server + "device/uninstall";
+                            Log.d("test", "uninstallPush = " + url);
+                            client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                                @Override
+                                public void onSuccess(int code, Header[] headers, String ret) {
+                                    Log.d("test", "uninstallPush onSuccess = " + ret);
+                                }
+
+                                @Override
+                                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                                    Log.d("test", "uninstallPush onFailure = " + s);
+                                }
+                            });
+                        } catch (Exception e) {
+                            Log.d("test", "e = " + e.toString());
+                        }
+                    }
+                });
+            }
+        }.start();
+    }
+
     private static boolean is301 = false;
 
     public static void check301(final Activity c, String result) {
@@ -1349,4 +1395,6 @@ public class Utils {
         }
 
     }
+
+
 }
