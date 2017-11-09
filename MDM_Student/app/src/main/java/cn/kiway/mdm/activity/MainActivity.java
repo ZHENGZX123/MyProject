@@ -58,6 +58,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private boolean stop;
     public static MainActivity instance;
     public static final int MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS = 1101;
+    private TelephonyManager telephonyManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +85,27 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         checkSimCard();
         //11.检查settings
         //checkSettings();
+        //12.注册广播
+        registerBroadcast();
+        //13.监听来电
+        checkIncomingCall();
+    }
+
+    private void checkIncomingCall() {
+//        telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+//        myPhoneStateListener = new MyPhoneStateListener();
+        // 参数1:监听
+        // 参数2:监听的事件
+//        telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+    }
+
+    private void registerBroadcast() {
+        //注册广播
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(INSTALL_SUCCESS);
+        filter.addAction(REPLACE_SUCCESS);
+        filter.addAction(REMOVE_SUCCESS);
+        registerReceiver(mReceiver, filter);
     }
 
     private void checkSettings() {
@@ -373,12 +395,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     @Override
     protected void onResume() {
         super.onResume();
-        //注册广播
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(INSTALL_SUCCESS);
-        filter.addAction(REPLACE_SUCCESS);
-        filter.addAction(REMOVE_SUCCESS);
-        registerReceiver(mReceiver, filter);
+
+        //检查当前是不是锁屏、管控状态
     }
 
     @Override
