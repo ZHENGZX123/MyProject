@@ -13,6 +13,7 @@ import android.provider.Contacts;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.view.ViewPager;
+import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -32,6 +33,7 @@ import cn.kiway.mdm.adapter.MyViewPagerAdapter;
 import cn.kiway.mdm.dialog.CheckPassword;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.entity.App;
+import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.AppListUtils;
 import cn.kiway.mdm.utils.AppReceiverIn;
 import cn.kiway.mdm.utils.FileACache;
@@ -47,6 +49,7 @@ import static cn.kiway.mdm.utils.Constant._16;
 import static cn.kiway.mdm.utils.FileACache.ListFileName;
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
+
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall {
     CheckPassword dialog;
     public List<List<App>> allListData = new ArrayList<>();
@@ -59,6 +62,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     public static MainActivity instance;
     public static final int MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS = 1101;
     private TelephonyManager telephonyManager;
+    private MyPhoneStateListener myPhoneStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,11 +96,9 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void checkIncomingCall() {
-//        telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-//        myPhoneStateListener = new MyPhoneStateListener();
-        // 参数1:监听
-        // 参数2:监听的事件
-//        telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        myPhoneStateListener = new MyPhoneStateListener();
+        telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     private void registerBroadcast() {
@@ -404,6 +406,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         super.onDestroy();
         stop = true;
         unregisterReceiver(mReceiver);
+        telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_NONE);
         Log.d("test", "Main onDestroy");
     }
 
@@ -457,4 +460,20 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             }
         }
     };
+
+    private class MyPhoneStateListener extends PhoneStateListener {
+        @Override
+        public void onCallStateChanged(int state, final String incomingNumber) {
+            super.onCallStateChanged(state, incomingNumber);
+            Log.d("test", "onCallStateChanged state = " + state + " , incomingNumber = " + incomingNumber);
+            // 如果是响铃状态,检测拦截模式是否是电话拦截,是挂断
+            if (state == TelephonyManager.CALL_STATE_RINGING) {
+                if (incomingNumber.contains("18626318013")) {
+                    MDMHelper.getAdapter().hangupCalling();
+                }
+            }
+        }
+    }
+
+
 }

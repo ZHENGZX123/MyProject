@@ -95,4 +95,6 @@ public interface IMDMAdapter {
     void removeInstallPackageWhiteList(List<String> currentList);
 
     void setWIFIStandbyMode(int status);
+
+    void hangupCalling();
 }
