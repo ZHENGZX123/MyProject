@@ -546,7 +546,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         if (db == null)
             db = getWritableDatabase();
         Cursor cur = db.query(TABLE_CALL, null, null, null, null, null, null);
-        ArrayList<Call> networks = new ArrayList<>();
+        ArrayList<Call> calls = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             String id = cur.getString(cur.getColumnIndex("ids"));
             String name = cur.getString(cur.getColumnIndex("name"));
@@ -560,11 +560,11 @@ public class MyDBHelper extends SQLiteOpenHelper {
             a.number = number;
             a.type = type;
             a.in_out = in_out;
-            networks.add(a);
+            calls.add(a);
         }
         cur.close();
         db.close();
-        return networks;
+        return calls;
     }
 
     public void updateCall(Call a) {
