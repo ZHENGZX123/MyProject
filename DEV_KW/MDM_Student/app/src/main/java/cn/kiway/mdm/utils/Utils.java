@@ -20,6 +20,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.format.Formatter;
@@ -59,6 +60,7 @@ import java.util.Set;
 import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.activity.LockActivity;
 import cn.kiway.mdm.activity.MainActivity;
+import cn.kiway.mdm.activity.ScreenActivity;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.AppCharge;
 import cn.kiway.mdm.entity.Network;
@@ -66,6 +68,9 @@ import cn.kiway.mdm.entity.Wifi;
 import cn.kiway.mdm.mdm.MDMHelper;
 
 import static android.content.Context.WIFI_SERVICE;
+import static cn.kiway.mdm.KWApp.MSG_LAUNCH_APP;
+import static cn.kiway.mdm.KWApp.MSG_LAUNCH_MDM;
+import static cn.kiway.mdm.KWApp.MSG_LOCK;
 import static cn.kiway.mdm.KWApp.server;
 
 /**
@@ -828,7 +833,7 @@ public class Utils {
             Log.d("test", "runningAPP = " + runningAPP);
             AppCharge app = new MyDBHelper(m).getAppChargesByPackage(runningAPP);
             if (app != null) {
-                String timeRange = app.timeRange.replace(",]","]");// [{start end}{start end}]
+                String timeRange = app.timeRange.replace(",]", "]");// [{start end}{start end}]
                 Log.d("test", "timeRange = " + timeRange);
                 JSONArray array = new JSONArray(timeRange);
                 int count = array.length();
@@ -1274,11 +1279,74 @@ public class Utils {
     }
 
 
-    public static void hideSoftInput(Context c ,IBinder token) {
+    public static void hideSoftInput(Context c, IBinder token) {
         if (token != null) {
             InputMethodManager im = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
             im.hideSoftInputFromWindow(token,
                     InputMethodManager.HIDE_NOT_ALWAYS);
         }
+    }
+
+    public static long dateToLong(String currentTime) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dt = sdf.parse(currentTime);
+        long lTime = dt.getTime();
+        return lTime;
+    }
+
+    public static void checkTemperary(MainActivity c) {
+        if (KWApp.instance == null) {
+            return;
+        }
+        if (KWApp.instance.currentActivity == null) {
+            return;
+        }
+        try {
+            //1.锁屏
+            long lock_time = c.getSharedPreferences("kiway", 0).getLong("lock_time", 0L);
+            if (lock_time != 0) {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime < (lock_time + 60 * 60 * 1000)) {
+                    //自动锁屏
+                    if (!(KWApp.instance.currentActivity instanceof ScreenActivity)) {
+                        Message m = new Message();
+                        m.what = MSG_LOCK;
+                        KWApp.instance.mHandler.sendMessage(m);
+                    }
+                } else {
+                    //自动解锁屏幕
+                    if (KWApp.instance.currentActivity instanceof ScreenActivity) {
+                        Message m = new Message();
+                        m.what = MSG_LOCK;
+                        KWApp.instance.mHandler.sendMessage(m);
+                        c.getSharedPreferences("kiway", 0).edit().putLong("lock_time", 0).commit();
+                    }
+                }
+            }
+            //2.管控
+            long app_time = c.getSharedPreferences("kiway", 0).getLong("app_time", 0L);
+            String app_data = c.getSharedPreferences("kiway", 0).getString("app_data", "");
+            if (app_time != 0) {
+                JSONObject data = new JSONObject(app_data);
+                long currentTime = System.currentTimeMillis();
+                if (currentTime < (app_time + 60 * 60 * 1000)) {
+                    //自动管控
+                    Message m = new Message();
+                    m.what = MSG_LAUNCH_APP;
+                    m.obj = data;
+                    KWApp.instance.mHandler.sendMessage(m);
+                } else {
+                    //自动解除管控
+                    Message m = new Message();
+                    m.what = MSG_LAUNCH_MDM;
+                    KWApp.instance.mHandler.sendMessage(m);
+                    c.getSharedPreferences("kiway", 0).edit().putLong("app_time", 0).commit();
+                    c.getSharedPreferences("kiway", 0).edit().putString("app_data", "").commit();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
