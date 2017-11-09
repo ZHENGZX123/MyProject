@@ -407,10 +407,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d("test", "Main onDestroy");
         stop = true;
         unregisterReceiver(mReceiver);
         telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_NONE);
-        Log.d("test", "Main onDestroy");
     }
 
     /**

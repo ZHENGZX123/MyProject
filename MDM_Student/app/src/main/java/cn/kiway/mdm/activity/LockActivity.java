@@ -62,6 +62,7 @@ public class LockActivity extends BaseActivity {
             public void run() {
                 //1.上报状态
                 Utils.deviceRuntime(LockActivity.this, "2", false);
+                Utils.uninstallPush(LockActivity.this);
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
