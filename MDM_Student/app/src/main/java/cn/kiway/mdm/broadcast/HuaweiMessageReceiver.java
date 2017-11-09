@@ -93,14 +93,21 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             } else if (command.equals("shutdown")) {
                 m.what = MSG_SHUTDOWN;
             } else if (command.equals("temporary_app")) {
+                String currentTime = data.optString("currentTime");
+                context.getSharedPreferences("kiway", 0).edit().putLong("app_time", Utils.dateToLong(currentTime)).commit();
+                context.getSharedPreferences("kiway", 0).edit().putString("app_data", data.toString()).commit();
                 m.what = MSG_LAUNCH_APP;
                 m.obj = data;
             } else if (command.equals("temporary_app_uncharge")) {
                 m.what = MSG_LAUNCH_MDM;
+                context.getSharedPreferences("kiway", 0).edit().putLong("app_time", 0).commit();
+                context.getSharedPreferences("kiway", 0).edit().putString("app_data", "").commit();
             } else if (command.equals("temporary_lockScreen")) {
                 m.what = MSG_LOCK;
-
+                String currentTime = data.optString("currentTime");
+                context.getSharedPreferences("kiway", 0).edit().putLong("lock_time", Utils.dateToLong(currentTime)).commit();
             } else if (command.equals("temporary_unlockScreen")) {
+                context.getSharedPreferences("kiway", 0).edit().putLong("lock_time", 0).commit();
                 m.what = MSG_UNLOCK;
             } else if (command.equals("wifi")) {
                 JSONArray content = data.optJSONArray("content");

@@ -97,6 +97,13 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         checkIncomingCall();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //打开的时候检查一次。。。
+        Utils.checkTemperary(this);
+    }
+
     private void checkIncomingCall() {
         telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         myPhoneStateListener = new MyPhoneStateListener();
@@ -200,6 +207,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     //1.检查wifi
                     Utils.checkWifis(MainActivity.this);
                     Utils.checkAppCharges(MainActivity.this);
+                    Utils.checkTemperary(MainActivity.this);
                     Log.d("test", "检查结束");
                     try {
                         sleep(1000 * 60);
@@ -397,13 +405,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        //检查当前是不是锁屏、管控状态
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         stop = true;
@@ -484,6 +485,5 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             }
         }
     }
-
-
 }
+
