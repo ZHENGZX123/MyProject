@@ -108,7 +108,6 @@ public class BaseActivity extends Activity {
         //MDMHelper.getAdapter().setVpnDisabled(true); //这个失效。
         //MDMHelper.getAdapter().setTimeAndDateSetDisabled(false);//这个失效
 
-        //TODO 这里以后补充
 //        MDMHelper.getAdapter().setWifiDisabled(false);
 //        MDMHelper.getAdapter().setDataConnectivityDisabled(false);
 //        MDMHelper.getAdapter().setBluetoothDisabled(false);
@@ -120,6 +119,7 @@ public class BaseActivity extends Activity {
 //        MDMHelper.getAdapter().setRestoreFactoryDisabled(false);
 //        MDMHelper.getAdapter().setSystemUpdateDisabled(false);
 
+        //TODO 各种黑白名单
 
         //移除白名单
         List<String> currentList = MDMHelper.getAdapter().getInstallPackageWhiteList();
