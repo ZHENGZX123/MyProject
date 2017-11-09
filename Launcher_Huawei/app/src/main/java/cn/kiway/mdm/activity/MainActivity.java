@@ -82,6 +82,29 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         uploadApp();
         //10.判断有没有sim卡
         checkSimCard();
+        //11.检查settings
+        //checkSettings();
+    }
+
+    private void checkSettings() {
+        new Thread() {
+            @Override
+            public void run() {
+                while (!stop) {
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    String runningAPP = Utils.getRunningAPP(MainActivity.this);
+                    if (runningAPP.equals("com.android.settings")) {
+                        //返回MDM桌面
+                        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.mdm");
+                        startActivity(intent);
+                    }
+                }
+            }
+        }.start();
     }
 
     private void checkSimCard() {
@@ -389,7 +412,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             } else if (action.equals(REMOVE_SUCCESS)) {
                 Log.e(AppReceiverIn.TAG, "--------" + allListData.toString());
                 if (allListData.toString().contains(packageName)) {
-                    k : for (int i = 0; i < allListData.size(); i++) {
+                    k:
+                    for (int i = 0; i < allListData.size(); i++) {
                         for (int j = 0; j < allListData.get(i).size(); j++) {
                             App app = allListData.get(i).get(j);
                             if (app.packageName.equals(packageName)) {//存在的
