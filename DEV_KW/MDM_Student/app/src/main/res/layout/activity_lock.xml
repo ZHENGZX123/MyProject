@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/blue">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="锁定"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/before"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:onClick="Before"
+            android:paddingLeft="10dp"
+            android:src="@drawable/ic_navigate_before" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/lock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:drawableRight="@drawable/ic_chevron_right"
+        android:gravity="center_vertical"
+        android:onClick="Lock"
+        android:padding="10dp"
+        android:text="锁定"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:background="#e5e5e5" />
+
+    <TextView
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:drawableRight="@drawable/ic_chevron_right"
+        android:gravity="center_vertical"
+        android:onClick="Password"
+        android:padding="10dp"
+        android:text="修改密码"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:background="#e5e5e5" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:drawableRight="@drawable/ic_chevron_right"
+        android:gravity="center_vertical"
+        android:onClick="Logout"
+        android:padding="10dp"
+        android:text="退出登录"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:background="#e5e5e5" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/moshi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:onClick="Password"
+        android:padding="10dp"
+        android:text="当前模式"
+        android:textColor="#666666"
+        android:textSize="12sp" />
+</LinearLayout>

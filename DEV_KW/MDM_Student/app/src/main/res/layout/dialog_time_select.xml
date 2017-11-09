@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_margin="10dp"
+              android:layout_gravity="center"
+              android:background="@drawable/white_val"
+              android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="请选择可用时间"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        />
+
+    <cn.kiway.mdm.View.RangeSeekBar
+        android:id="@+id/RangeSeekBar"
+        style="@style/progress_horizontal_my"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/ok"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="确定"
+        android:background="@null"
+        android:padding="10dp"
+        android:textSize="16dp"
+        android:textColor="@color/blue"/>
+</LinearLayout>

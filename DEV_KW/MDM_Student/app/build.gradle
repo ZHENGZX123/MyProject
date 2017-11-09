@@ -1,0 +1,57 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        kiway {
+            //storeFile file('F:/android_signature/kiway.key')
+            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+            storePassword 'kiway123'
+            keyAlias 'kiway'
+            keyPassword 'kiway123'
+        }
+    }
+    compileSdkVersion 23
+    buildToolsVersion "25.0.3"
+    useLibrary 'org.apache.http.legacy'
+
+    defaultConfig {
+        applicationId "cn.kiway.mdm"
+        minSdkVersion 15
+        targetSdkVersion 20
+        versionCode 2
+        versionName "1.0.1"
+        jackOptions {
+            enabled true
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.kiway
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.kiway
+        }
+    }
+}
+
+dependencies {
+    compile files('libs/hwMdm.jar')
+    sourceCompatibility = '1.7'
+    targetCompatibility = '1.7'
+    compile files('libs/HwPush_SDK_V2705.jar')
+    compile files('libs/gson-2.8.0.jar')
+    compile 'com.android.support:support-v4:23.3.0'
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile files('libs/android-async-http-1.4.5.jar')
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    compile 'org.xutils:xutils:3.5.0'
+    compile project(':classify')
+}
