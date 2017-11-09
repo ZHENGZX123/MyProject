@@ -125,32 +125,32 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
             App a = mData.get(parentIndex).get(index);
             String packageName = a.packageName;
             if (packageName.equals(kiwayQiTa)) {//如果点击的是其他应用
-                if (!view.getContext().getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
-                    Toast.makeText(view.getContext(), "请先锁定在进入其他应用", Toast.LENGTH_SHORT).show();
+                if (!context.getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+                    Toast.makeText(context, "请先锁定在进入其他应用", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                view.getContext().startActivity(new Intent(view.getContext(), AppListActivity2.class));
+                context.startActivity(new Intent(context, AppListActivity2.class));
                 return;
             }
-            int flag_app_open = view.getContext().getSharedPreferences("kiway", 0).getInt("flag_app_open", 1);
+            int flag_app_open = context.getSharedPreferences("kiway", 0).getInt("flag_app_open", 1);
             if (flag_app_open == 0) {
-                Toast.makeText(view.getContext(), "所有的APP已被禁止使用", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "所有的APP已被禁止使用", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (TextUtils.isEmpty(packageName)) {
-                Toast.makeText(view.getContext(), "包名错误", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "包名错误", Toast.LENGTH_SHORT).show();
                 return;
             }
             //1.判断app是否安装
-            boolean installed = isAppInstalled(view.getContext().getApplicationContext(), packageName);
+            boolean installed = isAppInstalled(context.getApplicationContext(), packageName);
             if (!installed) {
-                Toast.makeText(view.getContext(), "该APP未安装", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "该APP未安装", Toast.LENGTH_SHORT).show();
                 return;
             }
             //2.检查当前时间段能不能使用
             AppCharge app = new MyDBHelper(context).getAppChargesByPackage(packageName);
             if (app != null) {
-                String timeRange = app.timeRange;// [{start end}{start end}]
+                String timeRange = app.timeRange.replace(",]","]");// [{start end}{start end}]
                 Log.d("test", "timeRange = " + timeRange);
                 JSONArray array = new JSONArray(timeRange);
                 int count = array.length();
@@ -169,14 +169,14 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
                     }
                 }
                 if (in) {
-                    Intent intent = view.getContext().getPackageManager().getLaunchIntentForPackage(packageName);
-                    view.getContext().startActivity(intent);
+                    Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
+                    context.startActivity(intent);
                 } else {
-                    Toast.makeText(view.getContext(), "该时间段内不可以使用", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "该时间段内不可以使用", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Intent intent = view.getContext().getPackageManager().getLaunchIntentForPackage(packageName);
-                view.getContext().startActivity(intent);
+                Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
+                context.startActivity(intent);
             }
         } catch (Exception e) {
             e.printStackTrace();

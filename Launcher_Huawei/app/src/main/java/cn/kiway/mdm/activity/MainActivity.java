@@ -13,6 +13,7 @@ import android.provider.Contacts;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.view.ViewPager;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -79,6 +80,18 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         setUsageStats();
         //9.上报APP列表
         uploadApp();
+        //10.判断有没有sim卡
+        checkSimCard();
+    }
+
+    private void checkSimCard() {
+        TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        String simSer = tm.getSimSerialNumber();
+        if (TextUtils.isEmpty(simSer)) {
+            Log.d("test", "没有sim卡");
+        } else {
+            Log.d("test", "有sim卡");
+        }
     }
 
     private void uploadApp() {
@@ -368,13 +381,15 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 a.packageName = packageName;
                 apps.add(a);
                 Log.e(AppReceiverIn.TAG, "--------MainActivity安装成功" + packageName);
-                if (allListData.toString().contains(a.packageName))
-                    return;
-                allListData.add(apps);
+                Log.e(AppReceiverIn.TAG, "--------MainActivity安装成功" + allListData.toString());
+                if (!allListData.toString().contains(a.packageName))
+                    allListData.add(apps);
+
                 initData(allListData);
             } else if (action.equals(REMOVE_SUCCESS)) {
+                Log.e(AppReceiverIn.TAG, "--------" + allListData.toString());
                 if (allListData.toString().contains(packageName)) {
-                    for (int i = 0; i < allListData.size(); i++) {
+                    k : for (int i = 0; i < allListData.size(); i++) {
                         for (int j = 0; j < allListData.get(i).size(); j++) {
                             App app = allListData.get(i).get(j);
                             if (app.packageName.equals(packageName)) {//存在的
@@ -384,6 +399,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                                     allListData.get(i).remove(j);
                                 }
                                 initData(allListData);
+                                break k;
                             } else {
                                 //不存咋的
                             }
@@ -393,6 +409,9 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 Log.e(AppReceiverIn.TAG, "--------MainActivity卸载成功" + packageName);
             } else if (action.equals(REPLACE_SUCCESS)) {
                 Log.e(AppReceiverIn.TAG, "--------MainActivity替换成功" + packageName);
+                if (allListData.toString().contains(packageName)) {
+                    initData(allListData);
+                }
             }
         }
     };

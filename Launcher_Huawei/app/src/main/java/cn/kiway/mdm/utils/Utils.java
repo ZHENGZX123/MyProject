@@ -19,10 +19,12 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.IBinder;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.google.gson.GsonBuilder;
@@ -708,7 +710,7 @@ public class Utils {
         });
     }
 
-    public synchronized static void checkWifis(MainActivity m) {
+    public synchronized static void checkWifis(final MainActivity m) {
         if (m == null) {
             Log.d("test", "没有界面，推过来也没用");
             return;
@@ -717,7 +719,7 @@ public class Utils {
             ArrayList<Wifi> wifis = new MyDBHelper(m).getAllWifis();
             Log.d("test", "wifis = " + wifis);
 
-            ArrayList<Wifi> rightWifis = new ArrayList();
+            final ArrayList<Wifi> rightWifis = new ArrayList();
             for (Wifi w : wifis) {
                 String timeRange = w.timeRange;
                 JSONArray array = new JSONArray(timeRange);
@@ -736,26 +738,30 @@ public class Utils {
                     }
                 }
             }
-            int in_count = rightWifis.size();
+            final int in_count = rightWifis.size();
             if (in_count == 0) {
                 Log.d("test", "没有一个wifi在当前时间段");
                 return;
             }
-            if (in_count == 1) {
-                Log.d("test", "只有一个wifi在当前时间段");
-                Utils.connectSSID(m, rightWifis.get(0).name, rightWifis.get(0).password);
-                return;
-            }
             Log.d("test", "有" + in_count + "个wifi在当前时间段");
-            //如果有2个，怎么办呢
-            Wifi firstWifi = rightWifis.get(0);
-            Wifi secondWifi = rightWifis.get(1);
-            Utils.connectSSID(m, firstWifi.name, firstWifi.password);
-            Thread.sleep(10000);
-            if (Utils.getCurrentSSID(m).equals(firstWifi.name)) {
-                return;
-            }
-            Utils.connectSSID(m, secondWifi.name, secondWifi.password);
+            //如果有N个，怎么办呢
+            new Thread() {
+                @Override
+                public void run() {
+                    for (int i = 0; i < in_count; i++) {
+                        Wifi w = rightWifis.get(i);
+                        Utils.connectSSID(m, w.name, w.password);
+                        try {
+                            sleep(10000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        if (Utils.getCurrentSSID(m).equals(w.name)) {
+                            break;
+                        }
+                    }
+                }
+            }.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -817,7 +823,34 @@ public class Utils {
                     }
                 });
             }
-            //2.检查使用时间段，需要做吗
+            //2.检查使用时间段
+            String runningAPP = Utils.getRunningAPP(m);
+            Log.d("test", "runningAPP = " + runningAPP);
+            AppCharge app = new MyDBHelper(m).getAppChargesByPackage(runningAPP);
+            if (app != null) {
+                String timeRange = app.timeRange.replace(",]","]");// [{start end}{start end}]
+                Log.d("test", "timeRange = " + timeRange);
+                JSONArray array = new JSONArray(timeRange);
+                int count = array.length();
+                boolean in = false;
+                if (count == 0) {
+                    in = true;
+                } else {
+                    for (int i = 0; i < count; i++) {
+                        JSONObject o = array.getJSONObject(i);
+                        String startTime = o.getString("startTime");
+                        String endTime = o.getString("endTime");
+                        in = Utils.checkInTimes(startTime, endTime);
+                        if (in) {
+                            break;
+                        }
+                    }
+                }
+                if (!in) {
+                    Intent intent = m.getPackageManager().getLaunchIntentForPackage("cn.kiway.mdm");
+                    m.startActivity(intent);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1238,5 +1271,14 @@ public class Utils {
         context.getSharedPreferences("kiway", 0).edit().putInt("flag_wifi", 0).commit();
         context.getSharedPreferences("kiway", 0).edit().putInt("flag_systemupdate", 0).commit();
         context.getSharedPreferences("kiway", 0).edit().putInt("flag_bluetooth", 0).commit();
+    }
+
+
+    public static void hideSoftInput(Context c ,IBinder token) {
+        if (token != null) {
+            InputMethodManager im = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
+            im.hideSoftInputFromWindow(token,
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

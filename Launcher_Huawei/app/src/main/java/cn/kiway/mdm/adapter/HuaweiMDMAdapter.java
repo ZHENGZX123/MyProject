@@ -102,6 +102,8 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             e.printStackTrace();
             //Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+
+
     }
 
     @Override
@@ -133,7 +135,6 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             //Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
 
     @Override
     public void turnOnGPS(boolean on) {
@@ -417,5 +418,16 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             //Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public void setWIFIStandbyMode(int status) {
+        try {
+            new DeviceSettingsManager().setWIFIStandbyMode(mAdminName, status);
+        } catch (Exception e) {
+            e.printStackTrace();
+            //Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
 }

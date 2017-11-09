@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -56,6 +57,8 @@ public class WebViewActivity extends BaseActivity {
         } else {
             settings.setTextSize(WebSettings.TextSize.NORMAL);
         }
+        wv.addJavascriptInterface(new JsAndroidInterface(), "wx");
+
         extHeader = new HashMap<String, String>();//创建额外的请求头参数表
         extHeader.put("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0");
 
@@ -63,8 +66,7 @@ public class WebViewActivity extends BaseActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 int type = checkNetwork(url);
-                Log.d("test", "shouldOverrideUrlLoading url = " + url);
-                Log.d("test", "type = " + type);
+                Log.d("test", "拦截 url = " + url);
                 if (type == 1) {
                     view.loadUrl(url, extHeader);
                     return true;
@@ -73,12 +75,33 @@ public class WebViewActivity extends BaseActivity {
                     return true;
                 }
             }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                view.loadUrl("javascript:window.wx.showSource('<head>'+"
+                        + "document.getElementsByTagName('html')[0].innerHTML+'</head>');");
+            }
+
         });
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new MyWebChromeClient(pg1));
     }
 
+    public class JsAndroidInterface {
+        public JsAndroidInterface() {
+        }
+
+        //显示html的内容
+        @JavascriptInterface
+        public void showSource(String html) {
+            Log.d("test", "html = " + html);
+        }
+
+    }
+
     public void clickGo(View view) {
+        Utils.hideSoftInput(this, view.getWindowToken());
         String content = et.getText().toString();
         if (TextUtils.isEmpty(content)) {
             toast("不能为空");

@@ -455,6 +455,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
     }
 
     public AppCharge getAppChargesByPackage(String packages) {
+        if (TextUtils.isEmpty(packages)) {
+            return null;
+        }
         if (db == null)
             db = getWritableDatabase();
         Cursor cur = db.query(TABLE_APP, null, "packages=?", new String[]{packages + ""}, null, null, null);

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.TestActivity;
+import cn.kiway.mdm.utils.Utils;
 
 /**
  * Created by Administrator on 2017/10/12.
@@ -28,9 +29,11 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
     View view;
     int position;
     String title;
+    private Context c;
 
     public CheckPassword(Context context, CheckPasswordCall checkPasswordCall) {
         super(context, R.style.LoadingDialog);
+        this.c = context;
         this.checkPasswordCall = checkPasswordCall;
         fullWindowCenter();
     }
@@ -65,6 +68,7 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
 
     @Override
     public void onClick(View view) {
+        Utils.hideSoftInput(c, view.getWindowToken());
         if (editText.getText().toString().equals("")) {
             Toast.makeText(getContext(), "密码不能为空", Toast.LENGTH_SHORT).show();
             return;
