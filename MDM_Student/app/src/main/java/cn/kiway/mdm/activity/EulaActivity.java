@@ -32,7 +32,7 @@ public class EulaActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_eula);
+        setContentView(R.layout.activity_eula);
 
         mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mAdminName = new ComponentName(this, SampleDeviceReceiver.class);

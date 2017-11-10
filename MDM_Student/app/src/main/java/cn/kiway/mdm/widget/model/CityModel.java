@@ -1,4 +1,4 @@
-package widget.model;
+package cn.kiway.mdm.widget.model;
 
 import java.util.List;
 

@@ -17,7 +17,7 @@
  *  limitations under the License.
  */
 
-package widget;
+package cn.kiway.mdm.widget;
 
 import android.view.View;
 import android.widget.LinearLayout;

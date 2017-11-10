@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.mdm.R;
-import cn.kiway.mdm.View.viewPager.StereoPagerTransformer;
 import cn.kiway.mdm.adapter.AppListAdapter;
 import cn.kiway.mdm.adapter.MyViewPagerAdapter;
 import cn.kiway.mdm.dialog.CheckPassword;
@@ -41,6 +40,7 @@ import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.LocationUtils;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
+import cn.kiway.mdm.view.viewPager.StereoPagerTransformer;
 
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
@@ -314,7 +314,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     @Override
     public void success(View vx, int position) throws Exception {
         if (position == 1) {
-            startActivityForResult(new Intent(MainActivity.this, LockActivity.class), 999);
+            startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), 999);
         }
     }
 
@@ -335,7 +335,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         viewPagerList = new ArrayList<View>();
         totalPage = (int) Math.ceil(data1.size() * 1.0 / _16);
         for (int i = 0; i < totalPage; i++) {
-            final ClassifyView classifyView = (ClassifyView) View.inflate(this, R.layout.gird_view, null);
+            final ClassifyView classifyView = (ClassifyView) View.inflate(this, R.layout.item_gird_view, null);
             classifyView.setClipToPadding(false);
             classifyView.setSelected(true);
             List<List<App>> data = new ArrayList<>();//截取数据到适配器
@@ -422,6 +422,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             String action = intent.getAction();
             String packageName = intent.getStringExtra(PACKAGENAME);
             if (action.equals(INSTALL_SUCCESS)) {
+                boolean in = Utils.checkInAppcharges(MainActivity.this, packageName);
+                if (!in) {
+                    return;
+                }
                 ArrayList<App> apps = new ArrayList<>();
                 App a = new App();
                 a.name = Utils.getProgramNameByPackageName(context, packageName);
@@ -429,10 +433,11 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 apps.add(a);
                 Log.e(AppReceiverIn.TAG, "--------MainActivity安装成功" + packageName);
                 Log.e(AppReceiverIn.TAG, "--------MainActivity安装成功" + allListData.toString());
-                if (!allListData.toString().contains(a.packageName))
+                if (!allListData.toString().contains(a.packageName)) {
                     allListData.add(apps);
-
+                }
                 initData(allListData);
+
             } else if (action.equals(REMOVE_SUCCESS)) {
                 Log.e(AppReceiverIn.TAG, "--------" + allListData.toString());
                 if (allListData.toString().contains(packageName)) {

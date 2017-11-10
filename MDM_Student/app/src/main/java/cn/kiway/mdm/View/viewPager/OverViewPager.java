@@ -1,4 +1,4 @@
-package cn.kiway.mdm.View.viewPager;
+package cn.kiway.mdm.view.viewPager;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;

@@ -150,7 +150,7 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
             //2.检查当前时间段能不能使用
             AppCharge app = new MyDBHelper(context).getAppChargesByPackage(packageName);
             if (app != null) {
-                String timeRange = app.timeRange.replace(",]","]");// [{start end}{start end}]
+                String timeRange = app.timeRange;// [{start end}{start end}]
                 Log.d("test", "timeRange = " + timeRange);
                 JSONArray array = new JSONArray(timeRange);
                 int count = array.length();

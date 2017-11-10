@@ -1,4 +1,4 @@
-package widget;
+package cn.kiway.mdm.widget;
 
 import android.os.Handler;
 import android.os.Message;

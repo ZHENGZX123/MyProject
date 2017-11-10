@@ -84,19 +84,5 @@
         android:layout_marginRight="7dp"
         android:background="#e5e5e5" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
 
-    <TextView
-        android:id="@+id/moshi"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:onClick="Password"
-        android:padding="10dp"
-        android:text="当前模式"
-        android:textColor="#666666"
-        android:textSize="12sp" />
 </LinearLayout>
