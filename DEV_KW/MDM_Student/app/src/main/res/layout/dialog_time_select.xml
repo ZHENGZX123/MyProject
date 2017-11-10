@@ -17,7 +17,7 @@
         android:textSize="16sp"
         />
 
-    <cn.kiway.mdm.View.RangeSeekBar
+    <cn.kiway.mdm.view.RangeSeekBar
         android:id="@+id/RangeSeekBar"
         style="@style/progress_horizontal_my"
         android:layout_width="match_parent"

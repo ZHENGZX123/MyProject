@@ -17,7 +17,7 @@
  *  limitations under the License.
  */
 
-package widget;
+package cn.kiway.mdm.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -38,7 +38,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import cn.kiway.mdm.R;
-import widget.adapters.WheelViewAdapter;
+import cn.kiway.mdm.widget.adapters.WheelViewAdapter;
 
 
 /**

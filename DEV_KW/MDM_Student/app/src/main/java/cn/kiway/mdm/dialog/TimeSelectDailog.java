@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 
 import cn.kiway.mdm.R;
-import cn.kiway.mdm.View.RangeSeekBar;
+import cn.kiway.mdm.view.RangeSeekBar;
 
 /**
  * Created by Administrator on 2017/10/12.

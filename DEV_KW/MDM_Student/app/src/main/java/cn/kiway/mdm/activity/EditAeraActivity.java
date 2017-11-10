@@ -14,13 +14,13 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import cn.kiway.mdm.R;
-import widget.OnWheelChangedListener;
-import widget.WheelView;
-import widget.adapters.ArrayWheelAdapter;
-import widget.model.CityModel;
-import widget.model.DistrictModel;
-import widget.model.ProvinceModel;
-import widget.service.XmlParserHandler;
+import cn.kiway.mdm.widget.OnWheelChangedListener;
+import cn.kiway.mdm.widget.WheelView;
+import cn.kiway.mdm.widget.adapters.ArrayWheelAdapter;
+import cn.kiway.mdm.widget.model.CityModel;
+import cn.kiway.mdm.widget.model.DistrictModel;
+import cn.kiway.mdm.widget.model.ProvinceModel;
+import cn.kiway.mdm.widget.service.XmlParserHandler;
 
 public class EditAeraActivity extends BaseActivity implements
         OnWheelChangedListener, View.OnClickListener {
@@ -72,7 +72,7 @@ public class EditAeraActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.yjptj_activity_edit_area);
+        setContentView(R.layout.activity_edit_area);
         setUpViews();
         setUpListener();
         setUpData();

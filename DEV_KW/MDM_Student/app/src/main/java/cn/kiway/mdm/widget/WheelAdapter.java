@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package widget;
+package cn.kiway.mdm.widget;
 
 /**
  * Wheel adapter interface

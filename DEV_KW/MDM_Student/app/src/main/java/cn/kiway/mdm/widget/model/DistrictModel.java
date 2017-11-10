@@ -1,4 +1,4 @@
-package widget.model;
+package cn.kiway.mdm.widget.model;
 
 public class DistrictModel {
 	private String name;

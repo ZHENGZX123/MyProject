@@ -1,4 +1,4 @@
-package widget.service;
+package cn.kiway.mdm.widget.service;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -7,9 +7,9 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-import widget.model.CityModel;
-import widget.model.DistrictModel;
-import widget.model.ProvinceModel;
+import cn.kiway.mdm.widget.model.CityModel;
+import cn.kiway.mdm.widget.model.DistrictModel;
+import cn.kiway.mdm.widget.model.ProvinceModel;
 
 
 public class XmlParserHandler extends DefaultHandler {

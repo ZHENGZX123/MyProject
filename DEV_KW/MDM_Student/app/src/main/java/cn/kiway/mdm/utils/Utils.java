@@ -58,7 +58,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import cn.kiway.mdm.KWApp;
-import cn.kiway.mdm.activity.LockActivity;
+import cn.kiway.mdm.activity.SettingActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
 import cn.kiway.mdm.entity.App;
@@ -833,7 +833,7 @@ public class Utils {
             Log.d("test", "runningAPP = " + runningAPP);
             AppCharge app = new MyDBHelper(m).getAppChargesByPackage(runningAPP);
             if (app != null) {
-                String timeRange = app.timeRange.replace(",]", "]");// [{start end}{start end}]
+                String timeRange = app.timeRange;// [{start end}{start end}]
                 Log.d("test", "timeRange = " + timeRange);
                 JSONArray array = new JSONArray(timeRange);
                 int count = array.length();
@@ -1122,7 +1122,7 @@ public class Utils {
         });
     }
 
-    public static void logout(final LockActivity c) {
+    public static void logout(final SettingActivity c) {
         new Thread() {
             @Override
             public void run() {
@@ -1197,7 +1197,7 @@ public class Utils {
         }
     }
 
-    public static void uninstallPush(final LockActivity c) {
+    public static void uninstallPush(final SettingActivity c) {
         new Thread() {
             @Override
             public void run() {
@@ -1215,15 +1215,14 @@ public class Utils {
                             Log.d("test", "xtoken = " + xtoken);
                             client.addHeader("x-auth-token", xtoken);
                             client.setTimeout(10000);
-                            JSONObject param = new JSONObject();
+                            RequestParams param = new RequestParams();
                             param.put("type", "huawei");
                             param.put("imei", getIMEI(c));
                             param.put("token", token);
                             Log.d("test", "param = " + param.toString());
-                            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
                             String url = server + "device/uninstall";
                             Log.d("test", "uninstallPush = " + url);
-                            client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                            client.post(c, url, param, new TextHttpResponseHandler() {
                                 @Override
                                 public void onSuccess(int code, Header[] headers, String ret) {
                                     Log.d("test", "uninstallPush onSuccess = " + ret);
@@ -1397,4 +1396,22 @@ public class Utils {
     }
 
 
+    public static boolean checkInAppcharges(MainActivity m, String packageName) {
+        ArrayList<AppCharge> apps_type0 = new MyDBHelper(m).getAllAppCharges(0);
+        ArrayList<AppCharge> apps_type1 = new MyDBHelper(m).getAllAppCharges(1);
+        boolean in = false;
+        for (AppCharge a : apps_type0) {
+            if (a.packages.equals(packageName)) {
+                in = true;
+                break;
+            }
+        }
+        for (AppCharge a : apps_type1) {
+            if (a.packages.equals(packageName)) {
+                in = true;
+                break;
+            }
+        }
+        return in;
+    }
 }

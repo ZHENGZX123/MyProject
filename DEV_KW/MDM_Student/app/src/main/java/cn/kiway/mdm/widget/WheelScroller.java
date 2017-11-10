@@ -17,7 +17,7 @@
  *  limitations under the License.
  */
 
-package widget;
+package cn.kiway.mdm.widget;
 
 import android.content.Context;
 import android.os.Handler;

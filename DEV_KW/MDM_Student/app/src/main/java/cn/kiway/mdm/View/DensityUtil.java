@@ -1,4 +1,4 @@
-package cn.kiway.mdm.View;
+package cn.kiway.mdm.view;
 
 import android.content.Context;
 
