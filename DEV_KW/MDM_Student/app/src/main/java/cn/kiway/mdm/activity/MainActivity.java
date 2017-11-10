@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Contacts;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.view.ViewPager;
@@ -264,12 +263,12 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void Call(View view) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setData(Contacts.People.CONTENT_URI);
-        startActivity(intent);
+//        Intent intent = new Intent();
+//        intent.setAction(Intent.ACTION_VIEW);
+//        intent.setData(Contacts.People.CONTENT_URI);
+//        startActivity(intent);
+        startActivity(new Intent(this, CallActivity.class));
     }
-
 
     public void SMS(View view) {
         startActivity(new Intent(this, WebViewActivity.class));

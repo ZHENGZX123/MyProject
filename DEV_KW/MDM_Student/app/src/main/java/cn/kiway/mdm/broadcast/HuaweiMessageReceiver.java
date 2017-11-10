@@ -24,6 +24,7 @@ import cn.kiway.mdm.entity.Wifi;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 
+import static cn.kiway.mdm.KWApp.MSG_BIND;
 import static cn.kiway.mdm.KWApp.MSG_FLAGCOMMAND;
 import static cn.kiway.mdm.KWApp.MSG_INSTALL;
 import static cn.kiway.mdm.KWApp.MSG_LANDSCAPE;
@@ -161,7 +162,10 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.what = MSG_UNINSTALL;
                 JSONObject content = data.getJSONObject("content");
                 m.obj = content.getString("packages");
+            } else if (command.equals("bind")) {
+                m.what = MSG_BIND;
             }
+
             if (KWApp.instance == null) {
                 return false;
             }

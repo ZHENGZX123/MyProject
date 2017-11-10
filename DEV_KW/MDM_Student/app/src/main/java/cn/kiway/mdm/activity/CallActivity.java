@@ -1,5 +1,7 @@
 package cn.kiway.mdm.activity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,14 +42,25 @@ public class CallActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Call c = calls.get(i);
-
-
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + c.number));
+                startActivity(intent);
             }
         });
     }
 
     private void initData() {
         calls = new MyDBHelper(this).getAllCalls(2);
+        //假数据
+        Call c1 = new Call();
+        c1.name = "爸爸";
+        c1.number = "18626318013";
+        calls.add(c1);
+
+        Call c2 = new Call();
+        c2.name = "黄老师";
+        c2.number = "18626318013";
+        calls.add(c2);
+
         adapter1.notifyDataSetChanged();
     }
 

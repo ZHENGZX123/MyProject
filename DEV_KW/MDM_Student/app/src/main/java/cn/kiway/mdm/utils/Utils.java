@@ -2,10 +2,12 @@ package cn.kiway.mdm.utils;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -1452,5 +1454,28 @@ public class Utils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void showBindDialog(Context c) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(c);
+        builder.setMessage("xx要绑定这个帐号，请确认");
+        builder.setTitle("提示");
+        builder.setPositiveButton("同意", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                doBind(1);
+            }
+        });
+        builder.setNegativeButton("不同意", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                doBind(0);
+            }
+        });
+        builder.create().show();
+    }
+
+    private static void doBind(int i) {
+
     }
 }

@@ -46,6 +46,7 @@ public class KWApp extends Application {
     public static final int MSG_PORTRAIT = 11;//横屏
     public static final int MSG_LANDSCAPE = 12;//竖屏
     public static final int MSG_UNINSTALL = 13;//卸载
+    public static final int MSG_BIND = 14;//绑定家长
 
 
     public static boolean shangke = false;
@@ -140,6 +141,8 @@ public class KWApp extends Application {
             } else if (msg.what == MSG_UNINSTALL) {
                 //卸载某个包
                 MDMHelper.getAdapter().uninstallPackage(msg.obj.toString());
+            } else if (msg.what == MSG_BIND) {
+                Utils.showBindDialog(getApplicationContext());
             }
         }
     };
