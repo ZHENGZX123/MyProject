@@ -69,7 +69,7 @@
             android:background="@null"
             android:drawableTop="@drawable/ic_calock"
             android:onClick="ChangePassWord"
-            android:text="锁定" />
+            android:text="设置" />
 
     </LinearLayout>
 
