@@ -225,7 +225,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_NETWORK = "Network";
     private static final String CREATE_TABLE_NETWORK = " create table  IF NOT EXISTS "
             + TABLE_NETWORK
-            + "   (id integer primary key autoincrement, ids text,  url  text,  type  text )";
+            + "   (id integer primary key autoincrement, ids text,  url  text,  type  text , enable text)";
 
     private static final String TABLE_WIFI = "Wifi";
     private static final String CREATE_TABLE_WIFI = " create table  IF NOT EXISTS "
@@ -247,7 +247,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 5);
+        super(c, DB_NAME, null, 6);
     }
 
     @Override
@@ -283,6 +283,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         values.put("ids", a.id);
         values.put("url", a.url);
         values.put("type", a.type);
+        values.put("enable", a.enable);
         db.insert(TABLE_NETWORK, null, values);
         db.close();
     }
@@ -297,7 +298,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
             db.delete(TABLE_NETWORK, "ids=?", new String[]{ids});
         }
         db.close();
-
     }
 
     public ArrayList<Network> getAllNetworks() {
@@ -309,10 +309,12 @@ public class MyDBHelper extends SQLiteOpenHelper {
             String id = cur.getString(cur.getColumnIndex("ids"));
             String url = cur.getString(cur.getColumnIndex("url"));
             int type = cur.getInt(cur.getColumnIndex("type"));
+            int enable = cur.getInt(cur.getColumnIndex("enable"));
             Network a = new Network();
             a.id = id;
             a.url = url;
             a.type = type;
+            a.enable = enable;
             networks.add(a);
         }
         cur.close();
@@ -325,8 +327,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
             db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("ids", a.id);
-        cv.put("type", a.type);
         cv.put("url", a.url);
+        cv.put("type", a.type);
+        cv.put("enable", a.enable);
 
         String[] args = {a.id};
         db.update(TABLE_NETWORK, cv, "ids=?", args);

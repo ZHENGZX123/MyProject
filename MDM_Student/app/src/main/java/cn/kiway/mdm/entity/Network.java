@@ -9,6 +9,7 @@ public class Network {
     public String id;
     public String url;
     public int type;
+    public int enable;
     public String operation;
 
     @Override
@@ -17,6 +18,8 @@ public class Network {
                 "id='" + id + '\'' +
                 ", url='" + url + '\'' +
                 ", type=" + type +
+                ", enable=" + enable +
+                ", operation='" + operation + '\'' +
                 '}';
     }
 }
