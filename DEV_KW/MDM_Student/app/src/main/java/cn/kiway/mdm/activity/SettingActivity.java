@@ -59,6 +59,7 @@ public class SettingActivity extends BaseActivity {
         String classId = getSharedPreferences("kiway", 0).getString("classId", "");
         String studentNumber = getSharedPreferences("kiway", 0).getString("studentNumber", "");
         String name = getSharedPreferences("kiway", 0).getString("name", "");
+        String token = getSharedPreferences("huawei", 0).getString("token", "");
         try {
             JSONObject content = new JSONObject();
             content.put("schoolId", schoolId);
@@ -66,6 +67,7 @@ public class SettingActivity extends BaseActivity {
             content.put("studentNumber", studentNumber);
             content.put("name", name);
             content.put("imei", Utils.getIMEI(this));
+            content.put("token", token);
             Bitmap b = Utils.createQRImage(content.toString(), 400, 400);
             codeIV.setImageBitmap(b);
             codeRL.setVisibility(View.VISIBLE);

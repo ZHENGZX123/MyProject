@@ -14,7 +14,7 @@ import android.widget.TextView;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.MainActivity;
 
-import static cn.kiway.mdm.activity.MainActivity.MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS;
+import static cn.kiway.mdm.activity.MainActivity.USAGE_STATS;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 
@@ -75,7 +75,7 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
             case YUXUNFANWENJLU:
                 ((MainActivity) context).startActivityForResult(
                         new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
-                        MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS);
+                        USAGE_STATS);
                 break;
         }
         dismiss();

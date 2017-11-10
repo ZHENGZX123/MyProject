@@ -68,7 +68,6 @@ import java.util.Locale;
 import java.util.Set;
 
 import cn.kiway.mdm.KWApp;
-import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
 import cn.kiway.mdm.activity.SettingActivity;
