@@ -51,19 +51,21 @@ import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall {
-    CheckPassword dialog;
+    private CheckPassword dialog;
     public List<List<App>> allListData = new ArrayList<>();
     private ViewPager viewPager;
     private LinearLayout group;//圆点指示器
     private ImageView[] ivPoints;//小圆点图片的集合
     private int totalPage; //总的页数
     private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
+
     private boolean stop;
     public static MainActivity instance;
-    public static final int LOGOUT = 999;
-    public static final int USAGE_STATS = 1101;
     private TelephonyManager telephonyManager;
     private MyPhoneStateListener myPhoneStateListener;
+
+    public static final int LOGOUT = 999;
+    public static final int USAGE_STATS = 1101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
