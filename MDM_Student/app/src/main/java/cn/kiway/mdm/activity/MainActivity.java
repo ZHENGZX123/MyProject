@@ -60,7 +60,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
     private boolean stop;
     public static MainActivity instance;
-    public static final int MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS = 1101;
+    public static final int LOGOUT = 999;
+    public static final int USAGE_STATS = 1101;
     private TelephonyManager telephonyManager;
     private MyPhoneStateListener myPhoneStateListener;
 
@@ -388,16 +389,16 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == 999) {
+        if (resultCode == LOGOUT) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
-        } else if (requestCode == MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS) {
+        } else if (requestCode == USAGE_STATS) {
             if (!hasPermission()) {
                 toast("请务必设置权限");
                 //若用户未开启权限，则引导用户开启“Apps with usage access”权限
                 startActivityForResult(
                         new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
-                        MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS);
+                        USAGE_STATS);
             }
         }
     }
