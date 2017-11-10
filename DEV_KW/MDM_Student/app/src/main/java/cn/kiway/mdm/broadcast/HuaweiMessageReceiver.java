@@ -150,6 +150,30 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 } else if (a.operation.equals("delete")) {
                     new MyDBHelper(context).deleteNetwork(a.id);
                 }
+            } else if (command.equals("network_black_white")) {
+                int enable_network_type = data.getJSONObject("content").getInt("type");
+                Log.d("test", "enable_network_type = " + enable_network_type);
+                ArrayList<Network> networks1 = new MyDBHelper(context).getAllNetworks(1);
+                ArrayList<Network> networks2 = new MyDBHelper(context).getAllNetworks(2);
+                if (enable_network_type == 1) {
+                    for (Network n : networks1) {
+                        n.enable = 1;
+                        new MyDBHelper(context).updateNetwork(n);
+                    }
+                    for (Network n : networks2) {
+                        n.enable = 0;
+                        new MyDBHelper(context).updateNetwork(n);
+                    }
+                } else if (enable_network_type == 2) {
+                    for (Network n : networks1) {
+                        n.enable = 0;
+                        new MyDBHelper(context).updateNetwork(n);
+                    }
+                    for (Network n : networks2) {
+                        n.enable = 1;
+                        new MyDBHelper(context).updateNetwork(n);
+                    }
+                }
             } else if (command.equals("file_push")) {
                 JSONObject content = data.getJSONObject("content");
                 m.what = MSG_PUSH_FILE;
@@ -164,6 +188,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.obj = content.getString("packages");
             } else if (command.equals("parent_bind")) {
                 m.what = MSG_PARENT_BIND;
+                m.obj = data;
             }
 
             if (KWApp.instance == null) {
