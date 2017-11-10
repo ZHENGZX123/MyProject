@@ -660,7 +660,7 @@ public class Utils {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 ArrayList<Network> networks = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Network>>() {
                                 }.getType());
-                                //存进数据库里
+                                //1.存进数据库里
                                 new MyDBHelper(c).deleteNetwork(null);
                                 for (Network n : networks) {
                                     new MyDBHelper(c).addNetwork(n);
@@ -1457,23 +1457,26 @@ public class Utils {
         return null;
     }
 
-    public static void showBindDialog(Activity m, String name) {
+    public static void showBindDialog(final Activity m, JSONObject data) {
         if (m == null) {
             return;
         }
+        String token = data.optString("token");
+
         AlertDialog.Builder builder = new AlertDialog.Builder(m, AlertDialog.THEME_HOLO_LIGHT);
-        builder.setMessage(name + "要绑定这个帐号，请确认");
+        builder.setMessage("家长要绑定这个帐号，是否同意？");
         builder.setTitle("提示");
+        final String finalToken = token;
         builder.setPositiveButton("同意", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                doBind(1);
+                doBind(m, 1, finalToken);
             }
         });
         builder.setNegativeButton("不同意", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                doBind(0);
+                doBind(m, 2, finalToken);
             }
         });
         Dialog d = builder.create();
@@ -1482,7 +1485,50 @@ public class Utils {
         d.show();
     }
 
-    private static void doBind(int i) {
+    private static void doBind(final Activity c, int flag, String token) {
+        try {
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+            client.setTimeout(10000);
+            String url = server + "student/response";
+            Log.d("test", "doBind = " + url);
+            RequestParams param = new RequestParams();
+            param.put("flag", flag);
+            param.put("token", token);
+            Log.d("test", "doBind param = " + param.toString());
+            client.post(c, url, param, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "doBind onSuccess = " + ret);
+                    check301(c, ret);
+                }
 
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "doBind onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
+        }
+    }
+
+    //0：没有设置network 1：白名单启用  2：黑名单启用
+    public static int getEnable_Network(Context c) {
+        //1.一个都没有，返回0
+        ArrayList<Network> networks = new MyDBHelper(c).getAllNetworks(0);
+        if (networks.size() == 0) {
+            return 0;
+        }
+        //2.找到enable=1的type
+        int enable_type = 0;
+        for (Network n : networks) {
+            if (n.enable == 1) {
+                enable_type = n.type;
+                break;
+            }
+        }
+        //如果都没有，那就返回0
+        return enable_type;
     }
 }

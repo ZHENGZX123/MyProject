@@ -65,15 +65,13 @@ public class WebViewActivity extends BaseActivity {
         wv.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                int type = checkNetwork(url);
-                Log.d("test", "拦截 url = " + url);
-                if (type == 1) {
-                    view.loadUrl(url, extHeader);
-                    return true;
+                Log.d("test", "shouldOverrideUrlLoading = " + url);
+                if (checkUrlEnable(url)) {
+                    wv.loadUrl(url, extHeader);
                 } else {
                     toast("该网站不能访问");
-                    return true;
                 }
+                return false;
             }
 
             @Override
@@ -97,7 +95,6 @@ public class WebViewActivity extends BaseActivity {
         public void showSource(String html) {
             Log.d("test", "html = " + html);
             //判断是不是非法网站
-
         }
 
     }
@@ -112,26 +109,44 @@ public class WebViewActivity extends BaseActivity {
         if (!content.startsWith("http")) {
             content = "http://" + content;
         }
-        if (checkNetwork(content) == 1) {
+        if (checkUrlEnable(content)) {
             wv.loadUrl(content, extHeader);
-        } else if (checkNetwork(content) == 2 || checkNetwork(content) == 0) {
+        } else {
             toast("该网站不能访问");
         }
     }
 
-    //1.白名单
-    //2.黑名单
-    //判断域名，还是全匹配
-    private int checkNetwork(String content) {
-        int type = 0;
-        ArrayList<Network> networks = new MyDBHelper(this).getAllNetworks();
-        for (Network n : networks) {
-            if (content.contains(n.url)) {
-                type = n.type;
-                break;
-            }
+    private boolean checkUrlEnable(String url) {
+        int enable_type = Utils.getEnable_Network(this);
+        Log.d("test", "enable_type = " + enable_type);
+        if (enable_type == 0) {
+            Log.d("test", "后台没有设置过url，或者设置过都清除了");
+            return true;
         }
-        return type;
+        //1.白名单启用
+        if (enable_type == 1) {
+            boolean in = false;
+            ArrayList<Network> networks = new MyDBHelper(this).getAllNetworks(1);
+            for (Network n : networks) {
+                if (url.contains(n.url)) {
+                    in = true;
+                    break;
+                }
+            }
+            return in;
+        }
+        if (enable_type == 2) {
+            boolean in = false;
+            ArrayList<Network> networks = new MyDBHelper(this).getAllNetworks(2);
+            for (Network n : networks) {
+                if (url.contains(n.url)) {
+                    in = true;
+                    break;
+                }
+            }
+            return !in;
+        }
+        return false;
     }
 
     @Override

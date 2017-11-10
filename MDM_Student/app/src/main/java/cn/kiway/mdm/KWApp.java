@@ -143,7 +143,7 @@ public class KWApp extends Application {
                 MDMHelper.getAdapter().uninstallPackage(msg.obj.toString());
             } else if (msg.what == MSG_PARENT_BIND) {
                 //绑定
-                Utils.showBindDialog(KWApp.instance.currentActivity, "家长");
+                Utils.showBindDialog(KWApp.instance.currentActivity, (JSONObject) msg.obj);
             }
         }
     };

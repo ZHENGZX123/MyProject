@@ -300,15 +300,21 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public ArrayList<Network> getAllNetworks() {
+    //0所有  1白名单 2黑名单
+    public ArrayList<Network> getAllNetworks(int type) {
         if (db == null)
             db = getWritableDatabase();
-        Cursor cur = db.query(TABLE_NETWORK, null, null, null, null, null, null);
+        Cursor cur = null;
+        if (type == 0) {
+            cur = db.query(TABLE_NETWORK, null, null, null, null, null, null);
+        } else {
+            cur = db.query(TABLE_NETWORK, null, "type=?", new String[]{type + ""}, null, null, null);
+        }
         ArrayList<Network> networks = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             String id = cur.getString(cur.getColumnIndex("ids"));
             String url = cur.getString(cur.getColumnIndex("url"));
-            int type = cur.getInt(cur.getColumnIndex("type"));
+            type = cur.getInt(cur.getColumnIndex("type"));
             int enable = cur.getInt(cur.getColumnIndex("enable"));
             Network a = new Network();
             a.id = id;
