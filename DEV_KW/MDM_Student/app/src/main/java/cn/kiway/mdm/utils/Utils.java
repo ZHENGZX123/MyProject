@@ -3,6 +3,7 @@ package cn.kiway.mdm.utils;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
@@ -67,6 +68,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import cn.kiway.mdm.KWApp;
+import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
 import cn.kiway.mdm.activity.SettingActivity;
@@ -1456,9 +1458,12 @@ public class Utils {
         return null;
     }
 
-    public static void showBindDialog(Context c) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(c);
-        builder.setMessage("xx要绑定这个帐号，请确认");
+    public static void showBindDialog(Activity m, String name) {
+        if (m == null) {
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(m, AlertDialog.THEME_HOLO_LIGHT);
+        builder.setMessage(name + "要绑定这个帐号，请确认");
         builder.setTitle("提示");
         builder.setPositiveButton("同意", new DialogInterface.OnClickListener() {
             @Override
@@ -1472,7 +1477,10 @@ public class Utils {
                 doBind(0);
             }
         });
-        builder.create().show();
+        Dialog d = builder.create();
+        d.setCancelable(false);
+        d.setCanceledOnTouchOutside(false);
+        d.show();
     }
 
     private static void doBind(int i) {
