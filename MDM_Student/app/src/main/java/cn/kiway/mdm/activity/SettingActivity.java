@@ -1,10 +1,15 @@
 package cn.kiway.mdm.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONObject;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.utils.MyDBHelper;
@@ -16,32 +21,61 @@ import cn.kiway.mdm.utils.Utils;
 
 public class SettingActivity extends BaseActivity {
 
-    private TextView textView;
+    private TextView mode;
+    private ImageView codeIV;
+    private RelativeLayout codeRL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        textView = (TextView) findViewById(R.id.lock);
+        mode = (TextView) findViewById(R.id.lock);
+        codeIV = (ImageView) findViewById(R.id.codeIV);
+        codeRL = (RelativeLayout) findViewById(R.id.codeRL);
+
         if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
-            textView.setText("家长模式");
+            mode.setText("家长模式");
         } else {
-            textView.setText("学生模式");
+            mode.setText("学生模式");
         }
     }
 
     public void Lock(View view) {
         if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
             getSharedPreferences("kiway", 0).edit().putBoolean("locked", false).commit();
-            textView.setText("学生模式");
+            mode.setText("学生模式");
             Toast.makeText(this, "解锁成功", Toast.LENGTH_SHORT).show();
             unlock();
         } else {
             getSharedPreferences("kiway", 0).edit().putBoolean("locked", true).commit();
-            textView.setText("家长模式");
+            mode.setText("家长模式");
             Toast.makeText(this, "锁定成功", Toast.LENGTH_SHORT).show();
             lock();
         }
+    }
+
+    public void Code(View view) {
+        String schoolId = getSharedPreferences("kiway", 0).getString("schoolId", "");
+        String classId = getSharedPreferences("kiway", 0).getString("classId", "");
+        String studentNumber = getSharedPreferences("kiway", 0).getString("studentNumber", "");
+        String name = getSharedPreferences("kiway", 0).getString("name", "");
+        try {
+            JSONObject content = new JSONObject();
+            content.put("schoolId", schoolId);
+            content.put("classId", classId);
+            content.put("studentNumber", studentNumber);
+            content.put("name", name);
+            content.put("imei", Utils.getIMEI(this));
+            Bitmap b = Utils.createQRImage(content.toString(), 400, 400);
+            codeIV.setImageBitmap(b);
+            codeRL.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void CodeIV(View view) {
+        codeRL.setVisibility(View.GONE);
     }
 
     public void Password(View view) {
