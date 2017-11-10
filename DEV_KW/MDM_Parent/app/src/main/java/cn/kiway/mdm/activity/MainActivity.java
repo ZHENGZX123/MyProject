@@ -24,8 +24,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.zxing.client.android.CaptureActivity;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.TextHttpResponseHandler;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.loader.GlideImageLoader;
@@ -40,10 +38,8 @@ import com.tencent.smtt.sdk.WebViewClient;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
-import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
@@ -62,11 +58,9 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import cn.kiway.mdm.WXApplication;
-import cn.kiway.mdm.entity.HTTPCache;
 import cn.kiway.mdm.parent.R;
 import cn.kiway.mdm.util.FileUtils;
 import cn.kiway.mdm.util.HttpDownload;
-import cn.kiway.mdm.util.MyDBHelper;
 import cn.kiway.mdm.util.NetworkUtil;
 import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
@@ -433,176 +427,6 @@ public class MainActivity extends BaseActivity {
                 MainActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
         }
-
-
-        @JavascriptInterface
-        public void httpRequest(String url, String param, final String method, String time, String tagname, String related, String event) {
-            try {
-                Integer.parseInt(time);
-                param = param.replace("\\\"", "\"");
-                if (param.startsWith("\"")) {
-                    param = param.substring(1);
-                }
-                if (param.endsWith("\"")) {
-                    param = param.substring(0, param.length() - 1);
-                }
-            } catch (Exception e) {
-                Log.d("test", "参数错误");
-                return;
-            }
-            Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , time = " + time + " , tagname = " + tagname + " , related = " + related + ", event = " + event);
-
-            //0.检查网络
-            if (!method.equalsIgnoreCase("GET") && !NetworkUtil.isNetworkAvailable(getApplicationContext())) {
-                toast("没有网络，请检查网络稍后再试");
-                httpRequestCallback(tagname, "");
-                return;
-            }
-            if (time.equals("0")) {
-                //1.重新获取
-                doHttpRequest(url, param, method, tagname, time, related);
-            } else {
-                //2.取缓存
-                String request = url + param + method;
-                HTTPCache cache1 = new MyDBHelper(MainActivity.this).getHttpCacheByRequest(request, Integer.parseInt(time));
-                if (cache1 == null) {
-                    Log.d("test", "没有缓存");
-                    doHttpRequest(url, param, method, tagname, time, related);
-                } else {
-                    Log.d("test", "有缓存");
-                    httpRequestCallback(cache1.tagname, cache1.response);
-                }
-            }
-        }
-    }
-
-    private void doHttpRequest(final String url, final String param, final String method, final String tagname, final String time, final String related) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.setTimeout(10000);
-                    String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
-                    client.addHeader("X-Auth-Token", token);
-                    if (method.equalsIgnoreCase("POST")) {
-                        StringEntity stringEntity = new StringEntity(param, "utf-8");
-                        client.post(MainActivity.this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
-
-                            @Override
-                            public void onSuccess(int arg0, Header[] arg1, String ret) {
-                                Log.d("test", "post onSuccess = " + ret);
-                                httpRequestCallback(tagname, ret);
-                                //如果是post，related不为空，查找一下相关的缓存，并清除掉
-                                new MyDBHelper(getApplicationContext()).deleteHttpCache(related);
-                            }
-
-                            @Override
-                            public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
-                                Log.d("test", "post onFailure = " + ret);
-                                httpRequestCallback(tagname, ret);
-                            }
-                        });
-                    } else if (method.equalsIgnoreCase("PUT")) {
-                        StringEntity stringEntity = new StringEntity(param, "utf-8");
-                        client.put(MainActivity.this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
-
-                            @Override
-                            public void onSuccess(int arg0, Header[] arg1, String ret) {
-                                Log.d("test", "put onSuccess = " + ret);
-                                httpRequestCallback(tagname, ret);
-                                //如果是post，related不为空，查找一下相关的缓存，并清除掉
-                                new MyDBHelper(getApplicationContext()).deleteHttpCache(related);
-                            }
-
-                            @Override
-                            public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
-                                Log.d("test", "put onFailure = " + ret);
-                                httpRequestCallback(tagname, ret);
-                            }
-                        });
-                    } else if (method.equalsIgnoreCase("GET")) {
-                        client.get(MainActivity.this, url, new TextHttpResponseHandler() {
-                            @Override
-                            public void onSuccess(int i, Header[] headers, String ret) {
-                                Log.d("test", "get onSuccess = " + ret);
-                                saveDB(url, param, method, ret, tagname);
-                                httpRequestCallback(tagname, ret);
-                            }
-
-                            @Override
-                            public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
-                                Log.d("test", "get onFailure = " + ret);
-                                //如果是get，把缓存回它
-                                String request = url + param + method;
-                                HTTPCache cache = new MyDBHelper(getApplicationContext()).getHttpCacheByRequest(request, Integer.parseInt(time));
-                                if (cache != null) {
-                                    httpRequestCallback(cache.tagname, cache.response);
-                                } else {
-                                    httpRequestCallback(tagname, ret);
-                                }
-                            }
-                        });
-                    } else if (method.equalsIgnoreCase("DELETE")) {
-                        client.delete(MainActivity.this, url, new TextHttpResponseHandler() {
-                            @Override
-                            public void onSuccess(int i, Header[] headers, String ret) {
-                                Log.d("test", "get onSuccess = " + ret);
-                                httpRequestCallback(tagname, ret);
-                                //如果是post，related不为空，查找一下相关的缓存，并清除掉
-                                new MyDBHelper(getApplicationContext()).deleteHttpCache(related);
-                            }
-
-                            @Override
-                            public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
-                                Log.d("test", "get onFailure = " + ret);
-                                httpRequestCallback(tagname, ret);
-                            }
-                        });
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.d("test", "exception = " + e.toString());
-                }
-            }
-        });
-    }
-
-    private void saveDB(String url, String param, String method, String ret, String tagname) {
-        Log.d("test", "saveDB");
-        String request = url + param + method;
-        HTTPCache cache = new MyDBHelper(this).getHttpCacheByRequest(request);
-        if (cache == null) {
-            cache = new HTTPCache();
-            cache.request = request;
-            cache.response = ret;
-            cache.requesttime = "" + System.currentTimeMillis();
-            cache.tagname = tagname;
-            new MyDBHelper(this).addHTTPCache(cache);
-        } else {
-            cache.response = ret;
-            cache.requesttime = "" + System.currentTimeMillis();
-            new MyDBHelper(this).updateHTTPCache(cache);
-        }
-    }
-
-    private void httpRequestCallback(final String tagname, String result) {
-        if (result == null) {
-            result = "";
-        }
-        final String finalResult = result;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String r = finalResult.replace("null", "\"\"").replace("\"\"\"\"", "\"\"");
-                    Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + r);
-                    wv.loadUrl("javascript:" + tagname + "(" + r + ")");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     //录音
