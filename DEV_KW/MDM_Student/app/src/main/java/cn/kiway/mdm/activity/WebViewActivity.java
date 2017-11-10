@@ -93,7 +93,7 @@ public class WebViewActivity extends BaseActivity {
         //显示html的内容
         @JavascriptInterface
         public void showSource(String html) {
-            Log.d("test", "html = " + html);
+            System.out.println("html = " + html);
             //判断是不是非法网站
         }
 
