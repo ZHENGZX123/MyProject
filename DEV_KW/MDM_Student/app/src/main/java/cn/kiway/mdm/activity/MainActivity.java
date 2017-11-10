@@ -40,7 +40,6 @@ import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.LocationUtils;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
-import cn.kiway.mdm.view.viewPager.StereoPagerTransformer;
 
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
@@ -347,7 +346,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             classifyView.setAdapter(new AppListAdapter(MainActivity.this, data, allListData, i));
             viewPagerList.add(classifyView);
         }
-        viewPager.setPageTransformer(false, new StereoPagerTransformer());
+        viewPager.setPageTransformer(false, new cn.kiway.mdm.view.viewPager.StereoPagerTransformer());
         viewPager.setAdapter(new MyViewPagerAdapter(viewPagerList));//设置ViewPager适配器
         group.removeAllViews();
         ivPoints = new ImageView[totalPage];//添加小圆点
