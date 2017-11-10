@@ -93,11 +93,6 @@ public class LoginActivity extends BaseActivity {
             toast("请填写姓名");
             return;
         }
-        //保存登录信息，301的时候用到。。。
-        getSharedPreferences("kiway", 0).edit().putString("schoolId", mSchool.schoolId).commit();
-        getSharedPreferences("kiway", 0).edit().putString("classId", mClass.id).commit();
-        getSharedPreferences("kiway", 0).edit().putString("studentNumber", code).commit();
-        getSharedPreferences("kiway", 0).edit().putString("name", name).commit();
 
         final String imei = Utils.getIMEI(this);
         String token = getSharedPreferences("huawei", 0).getString("token", "");
@@ -138,9 +133,12 @@ public class LoginActivity extends BaseActivity {
                             toast("登录成功");
                             Utils.deviceRuntime(LoginActivity.this, "1", true);
                             getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
-                            getSharedPreferences("kiway", 0).edit().putString("username", name).commit();
-                            getSharedPreferences("kiway", 0).edit().putString("studentNumber", code).commit();
                             getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
+                            getSharedPreferences("kiway", 0).edit().putString("schoolId", mSchool.schoolId).commit();
+                            getSharedPreferences("kiway", 0).edit().putString("classId", mClass.id).commit();
+                            getSharedPreferences("kiway", 0).edit().putString("studentNumber", code).commit();
+                            getSharedPreferences("kiway", 0).edit().putString("name", name).commit();
+
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         } else {
