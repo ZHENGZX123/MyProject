@@ -1477,12 +1477,14 @@ public class Utils {
         builder.setPositiveButton("同意", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
                 doBind(m, 1, finalToken);
             }
         });
         builder.setNegativeButton("不同意", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
                 doBind(m, 2, finalToken);
             }
         });
@@ -1562,7 +1564,7 @@ public class Utils {
 
     private static AlertDialog closerDialog;
 
-    public static void showCloserDialog(MainActivity m) {
+    public static void showCloserDialog(Activity m) {
         if (m == null) {
             return;
         }
@@ -1607,7 +1609,7 @@ public class Utils {
                             Log.d("test", "calls onSuccess = " + ret);
                             check301(c, ret);
                             //保存起来即可。
-                            
+
                         }
 
                         @Override

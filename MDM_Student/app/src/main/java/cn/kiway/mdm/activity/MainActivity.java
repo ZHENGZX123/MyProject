@@ -29,6 +29,7 @@ import com.anarchy.classify.ClassifyView;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.adapter.AppListAdapter;
 import cn.kiway.mdm.adapter.MyViewPagerAdapter;
@@ -110,6 +111,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     private void registerSensor() {
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
         List<Sensor> allSensors = mSensorManager.getSensorList(Sensor.TYPE_ALL);
         StringBuilder sb = new StringBuilder();
         sb.append("\t该手机有" + allSensors.size() + "个传感器：\n\n");
@@ -118,6 +120,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             Log.d("test", "sensorTypeName = " + sensorTypeName);
         }
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        Log.d("test", "max range = " + mSensor.getMaximumRange());
         mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
@@ -500,7 +503,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         float[] its = event.values;
         Log.d("test", "onSensorChanged its[0]:" + its[0]);
         if (its[0] == 0) {
-            Utils.showCloserDialog(this);
+            Utils.showCloserDialog(KWApp.instance.currentActivity);
         } else {
             Utils.hideCloserDialog();
         }
