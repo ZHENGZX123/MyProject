@@ -3,7 +3,6 @@ package cn.kiway.mdm.utils;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
@@ -1459,11 +1458,17 @@ public class Utils {
         return null;
     }
 
+    private static AlertDialog bindDialog;
+
     public static void showBindDialog(final Activity m, JSONObject data) {
         if (m == null) {
             return;
         }
         String token = data.optString("token");
+
+        if (bindDialog != null && bindDialog.isShowing()) {
+            return;
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(m, AlertDialog.THEME_HOLO_LIGHT);
         builder.setMessage("家长要绑定这个帐号，是否同意？");
@@ -1481,10 +1486,10 @@ public class Utils {
                 doBind(m, 2, finalToken);
             }
         });
-        Dialog d = builder.create();
-        d.setCancelable(false);
-        d.setCanceledOnTouchOutside(false);
-        d.show();
+        bindDialog = builder.create();
+        //bindDialog.setCancelable(false);
+        //bindDialog.setCanceledOnTouchOutside(false);
+        bindDialog.show();
     }
 
     private static void doBind(final Activity c, final int flag, final String token) {
@@ -1553,5 +1558,67 @@ public class Utils {
         }
         //如果都没有，那就返回0
         return enable_type;
+    }
+
+    private static AlertDialog closerDialog;
+
+    public static void showCloserDialog(MainActivity m) {
+        if (m == null) {
+            return;
+        }
+
+        if (closerDialog != null && closerDialog.isShowing()) {
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(m, AlertDialog.THEME_HOLO_LIGHT);
+        builder.setMessage("靠太近了对视力不好哦");
+        builder.setTitle("提示");
+        builder.setPositiveButton("知道了", null);
+        closerDialog = builder.create();
+        //closerDialog.setCancelable(false);
+        //closerDialog.setCanceledOnTouchOutside(false);
+        closerDialog = builder.create();
+        closerDialog.show();
+    }
+
+    public static void hideCloserDialog() {
+        if (closerDialog == null) {
+            return;
+        }
+        closerDialog.dismiss();
+    }
+
+    public static void getCalls(final MainActivity c) {
+        c.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+                    client.setTimeout(10000);
+                    RequestParams param = new RequestParams();
+                    Log.d("test", "param = " + param.toString());
+                    String url = server + "device/calls?imei=" + getIMEI(c);
+                    Log.d("test", "calls = " + url);
+                    client.get(c, url, param, new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "calls onSuccess = " + ret);
+                            check301(c, ret);
+                            //保存起来即可。
+                            
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "calls onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
+                }
+            }
+        });
     }
 }

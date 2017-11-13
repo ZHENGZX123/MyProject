@@ -6,6 +6,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -50,7 +54,7 @@ import static cn.kiway.mdm.utils.FileACache.ListFileName;
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 
-public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall {
+public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener {
     private CheckPassword dialog;
     public List<List<App>> allListData = new ArrayList<>();
     private ViewPager viewPager;
@@ -63,6 +67,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     public static MainActivity instance;
     private TelephonyManager telephonyManager;
     private MyPhoneStateListener myPhoneStateListener;
+
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
+
 
     public static final int LOGOUT = 999;
     public static final int USAGE_STATS = 1101;
@@ -96,6 +104,21 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         registerBroadcast();
         //13.监听来电
         checkIncomingCall();
+        //14.距离传感器
+        registerSensor();
+    }
+
+    private void registerSensor() {
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        List<Sensor> allSensors = mSensorManager.getSensorList(Sensor.TYPE_ALL);
+        StringBuilder sb = new StringBuilder();
+        sb.append("\t该手机有" + allSensors.size() + "个传感器：\n\n");
+        for (Sensor s : allSensors) {
+            String sensorTypeName = SensorTypeName.getSensorTypeName(s.getType());
+            Log.d("test", "sensorTypeName = " + sensorTypeName);
+        }
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -190,6 +213,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 Utils.networkDeviceCharge(MainActivity.this);
                 Utils.wifi(MainActivity.this);
                 Utils.appFunction(MainActivity.this);
+                Utils.getCalls(MainActivity.this);
             }
         }.start();
     }
@@ -412,6 +436,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         stop = true;
         unregisterReceiver(mReceiver);
         telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_NONE);
+        mSensorManager.unregisterListener(this);
     }
 
     /**
@@ -470,6 +495,22 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
     };
 
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        float[] its = event.values;
+        Log.d("test", "onSensorChanged its[0]:" + its[0]);
+        if (its[0] == 0) {
+            Utils.showCloserDialog(this);
+        } else {
+            Utils.hideCloserDialog();
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+        Log.d("test", "onAccuracyChanged");
+    }
+
     private class MyPhoneStateListener extends PhoneStateListener {
         @Override
         public void onCallStateChanged(int state, final String incomingNumber) {
@@ -489,6 +530,37 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     MDMHelper.getAdapter().hangupCalling();
                 }
             }
+        }
+    }
+
+    static class SensorTypeName {
+        private static String[] itsNames;
+
+        static {
+            itsNames = new String[20];
+            itsNames[0] = "未知";
+            itsNames[Sensor.TYPE_ACCELEROMETER] = "加速度";
+            itsNames[Sensor.TYPE_MAGNETIC_FIELD] = "磁力";
+            itsNames[Sensor.TYPE_ORIENTATION] = "方向";
+            itsNames[Sensor.TYPE_GYROSCOPE] = "陀螺仪";
+            itsNames[Sensor.TYPE_LIGHT] = "光线感应";
+            itsNames[Sensor.TYPE_PRESSURE] = "压力";
+            itsNames[Sensor.TYPE_TEMPERATURE] = "温度";
+            itsNames[Sensor.TYPE_PROXIMITY] = "接近,距离传感器";
+            itsNames[Sensor.TYPE_GRAVITY] = "重力";
+            itsNames[Sensor.TYPE_LINEAR_ACCELERATION] = "线性加速度";
+            itsNames[Sensor.TYPE_ROTATION_VECTOR] = "旋转矢量";
+            itsNames[Sensor.TYPE_RELATIVE_HUMIDITY] = "TYPE_RELATIVE_HUMIDITY";
+            itsNames[Sensor.TYPE_AMBIENT_TEMPERATURE] = "TYPE_AMBIENT_TEMPERATURE";
+            itsNames[13] = "TYPE_AMBIENT_TEMPERATURE";
+            itsNames[14] = "TYPE_MAGNETIC_FIELD_UNCALIBRATED";
+        }
+
+        public static String getSensorTypeName(int type) {
+            if (type > 0 && type < itsNames.length) {
+                return itsNames[type];
+            }
+            return "未知";
         }
     }
 }

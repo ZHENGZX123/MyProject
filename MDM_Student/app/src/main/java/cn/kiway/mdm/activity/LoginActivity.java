@@ -123,10 +123,11 @@ public class LoginActivity extends BaseActivity {
                 public void onSuccess(int arg0, Header[] arg1, String ret) {
                     dismissPD();
                     Log.d("test", "login onSuccess = " + ret);
+                    String errorMsg = "";
                     try {
                         JSONObject o = new JSONObject(ret);
                         int StatusCode = o.optInt("StatusCode");
-                        String errorMsg = o.optString("errorMsg");
+                        errorMsg = o.optString("errorMsg");
                         String token = o.getJSONObject("data").getString("token");
                         Log.d("test", "login get token = " + token);
                         if (StatusCode == 200) {
@@ -146,7 +147,7 @@ public class LoginActivity extends BaseActivity {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        toast("请求失败，请稍后再试");
+                        toast("登录失败：" + errorMsg);
                     }
                 }
 
