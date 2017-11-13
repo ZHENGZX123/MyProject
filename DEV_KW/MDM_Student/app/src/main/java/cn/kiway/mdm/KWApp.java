@@ -29,7 +29,9 @@ import static cn.kiway.mdm.utils.Utils.huaweiPush;
 public class KWApp extends Application {
 
     public static KWApp instance;
-    public static final String server = "http://192.168.8.161:8082/mdms/";
+    //    public static final String server = "http://192.168.8.161:8082/mdms/";
+    public static final String server = "http://202.104.136.9:8080/mdms/";
+
     public Activity currentActivity;
 
     public static final int MSG_TOAST = 0;//注册华为
