@@ -1254,21 +1254,21 @@ public class Utils {
 
     private static boolean is301 = false;
 
-    public static void check301(final Activity c, String result) {
+    public static boolean check301(final Activity c, String result) {
         if (c == null) {
-            return;
+            return false;
         }
         if (TextUtils.isEmpty(result)) {
-            return;
+            return false;
         }
         try {
             int statusCode = new JSONObject(result).optInt("statusCode");
             if (statusCode != 301) {
-                return;
+                return false;
             }
             Log.d("test", "301 happen");
             if (is301) {
-                return;
+                return true;
             }
             is301 = true;
 
@@ -1316,6 +1316,8 @@ public class Utils {
             Log.d("test", "exception = " + e.toString());
             is301 = false;
         }
+
+        return true;
     }
 
     public static void resetFunctions(Context context) {
@@ -1485,32 +1487,53 @@ public class Utils {
         d.show();
     }
 
-    private static void doBind(final Activity c, int flag, String token) {
-        try {
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-            client.setTimeout(10000);
-            String url = server + "student/response";
-            Log.d("test", "doBind = " + url);
-            RequestParams param = new RequestParams();
-            param.put("flag", flag);
-            param.put("token", token);
-            Log.d("test", "doBind param = " + param.toString());
-            client.post(c, url, param, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "doBind onSuccess = " + ret);
-                    check301(c, ret);
-                }
+    private static void doBind(final Activity c, final int flag, final String token) {
+        c.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    String xauthtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                    Log.d("test", "xauthtoken = " + xauthtoken);
+                    client.addHeader("x-auth-token", xauthtoken);
+                    client.setTimeout(10000);
+                    String url = server + "device/student/response";
+                    Log.d("test", "doBind = " + url);
+                    RequestParams param = new RequestParams();
+                    param.put("flag", flag);
+                    param.put("token", token);
+                    Log.d("test", "doBind param = " + param.toString());
+                    client.post(c, url, param, new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "doBind onSuccess = " + ret);
+                            boolean happen301 = check301(c, ret);
+                            if (happen301) {
+                                Log.d("test", "超时了，再次请求doBind");
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            sleep(3000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                        doBind(c, flag, token);
+                                    }
+                                }.start();
+                            }
+                        }
 
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "doBind onFailure = " + s);
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "doBind onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
                 }
-            });
-        } catch (Exception e) {
-            Log.d("test", "e = " + e.toString());
-        }
+            }
+        });
     }
 
     //0：没有设置network 1：白名单启用  2：黑名单启用
