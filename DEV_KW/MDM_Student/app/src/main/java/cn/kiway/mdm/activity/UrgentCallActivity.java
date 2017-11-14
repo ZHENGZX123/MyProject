@@ -1,8 +1,6 @@
 package cn.kiway.mdm.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +13,13 @@ import java.util.ArrayList;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.entity.Call;
-import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 
 /**
  * Created by Administrator on 2017/11/10.
  */
 
-public class CallActivity extends BaseActivity {
+public class UrgentCallActivity extends BaseActivity {
 
     private ListView lv1;
     private MyAdapter adapter1;
@@ -42,32 +39,29 @@ public class CallActivity extends BaseActivity {
         lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                if (position == calls.size() - 1) {
-                    //紧急电话
-                    startActivity(new Intent(CallActivity.this, UrgentCallActivity.class));
-                } else {
-                    Call c = calls.get(position);
-                    Utils.call(getApplicationContext(), c.phone);
-                }
+                Call c = calls.get(position);
+                Utils.call(getApplicationContext(), c.phone);
             }
         });
     }
 
     private void initData() {
-        //获取去电，只要白名单
         calls.clear();
-        ArrayList<Call> temp = new MyDBHelper(this).getAllCalls(2);
-        Log.d("test", "temp = " + temp.toString());
-        for (Call c : temp) {
-            if (c.type == 1) {
-                calls.add(c);
-            }
-        }
-
         //加上紧急号码
-        Call c = new Call();
-        c.name = "紧急电话";
-        calls.add(c);
+        Call c1 = new Call();
+        c1.name = "火警";
+        c1.phone = "119";
+        calls.add(c1);
+
+        Call c2 = new Call();
+        c2.name = "报警";
+        c2.phone = "110";
+        calls.add(c2);
+
+        Call c3 = new Call();
+        c3.name = "急救";
+        c3.phone = "120";
+        calls.add(c3);
 
         adapter1.notifyDataSetChanged();
     }
@@ -78,7 +72,7 @@ public class CallActivity extends BaseActivity {
         private final LayoutInflater inflater;
 
         public MyAdapter() {
-            inflater = LayoutInflater.from(CallActivity.this);
+            inflater = LayoutInflater.from(UrgentCallActivity.this);
         }
 
         @Override
