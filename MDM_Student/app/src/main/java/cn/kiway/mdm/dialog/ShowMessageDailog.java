@@ -11,12 +11,24 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.MainActivity;
+import cn.kiway.mdm.hprose.socket.KwHproseClient;
+import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.activity.MainActivity.USAGE_STATS;
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.ANSWERDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.REPONSEDIALOG;
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.SIGNDIALOG;
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.UNSWERDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
+import static cn.kiway.mdm.hprose.socket.MessageType.ANSWER;
+import static cn.kiway.mdm.hprose.socket.MessageType.SIGN;
+import static cn.kiway.mdm.hprose.socket.MessageType.SUREREPONSE;
 
 /**
  * Created by Administrator on 2017/10/12.
@@ -33,7 +45,11 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
     public static class MessageId {
         public static final int DISMISS = 0;//消失
         public static final int YUXUNFANWENJLU = DISMISS + 1;//允许访问记录
-        public static final int PUSHFILE = DISMISS + 2;//允许访问记录
+        public static final int PUSHFILE = YUXUNFANWENJLU + 1;//允许访问记录
+        public static final int SIGNDIALOG = PUSHFILE + 1;//签到
+        public static final int REPONSEDIALOG = SIGNDIALOG + 1;//学生是否听懂
+        public static final int ANSWERDIALOG = REPONSEDIALOG + 1;
+        public static final int UNSWERDIALOG = ANSWERDIALOG + 1;
     }
 
     public ShowMessageDailog(Context context) {
@@ -64,18 +80,102 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
         fullWindowCenter();
         textView = (TextView) findViewById(R.id.message);
         findViewById(R.id.ok).setOnClickListener(this);
+        findViewById(R.id.ok2).setOnClickListener(this);
         setOnShowListener(this);
     }
 
     @Override
     public void onClick(View view) {
-        switch (messageId) {
-            case DISMISS:
+        switch (view.getId()) {
+            case R.id.ok:
+                switch (messageId) {
+                    case DISMISS:
+                        break;
+                    case YUXUNFANWENJLU:
+                        ((MainActivity) context).startActivityForResult(
+                                new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
+                                USAGE_STATS);
+                        break;
+                    case SIGNDIALOG:
+                        try {
+                            JSONObject da = new JSONObject();
+                            da.put("msgType", SIGN);
+                            da.put("userId", Utils.getIMEI(getContext()));
+                            da.put("msg", "签到");
+                            if (KwHproseClient.helloClient != null)
+                                KwHproseClient.helloClient.sign(da.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case REPONSEDIALOG:
+                        try {
+                            JSONObject data = new JSONObject();
+                            data.put("title", "title");
+                            data.put("schoolId", getContext().getSharedPreferences("kiway", 0).getString("schoolId",
+                                    ""));
+                            data.put("classId", getContext().getSharedPreferences("kiway", 0).getString("classId", ""));
+                            data.put("userId", Utils.getIMEI(getContext()));
+                            data.put("type", "1");
+                            data.put("createData", System.currentTimeMillis());
+                            data.put("msgType", SUREREPONSE);
+                            if (KwHproseClient.helloClient != null)
+                                KwHproseClient.helloClient.reponse(data.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case ANSWERDIALOG:
+                        try {
+                            JSONObject da = new JSONObject();
+                            da.put("msgType", ANSWER);
+                            da.put("userId", Utils.getIMEI(getContext()));
+                            da.put("msg", "1");
+                            if (KwHproseClient.helloClient != null)
+                                KwHproseClient.helloClient.sign(da.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case UNSWERDIALOG:
+                        dismiss();
+                        break;
+                }
                 break;
-            case YUXUNFANWENJLU:
-                ((MainActivity) context).startActivityForResult(
-                        new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
-                        USAGE_STATS);
+            case R.id.ok2:
+                switch (messageId) {
+                    case REPONSEDIALOG:
+                        try {
+                            JSONObject data = new JSONObject();
+                            data.put("title", "title");
+                            data.put("schoolId", getContext().getSharedPreferences("kiway", 0).getString("schoolId",
+                                    ""));
+                            data.put("classId", getContext().getSharedPreferences("kiway", 0).getString("classId", ""));
+                            data.put("userId", Utils.getIMEI(getContext()));
+                            data.put("type", "0");
+                            data.put("createData", System.currentTimeMillis());
+                            data.put("msgType", SUREREPONSE);
+                            if (KwHproseClient.helloClient != null)
+                                KwHproseClient.helloClient.reponse(data.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case ANSWERDIALOG:
+                        try {
+                            JSONObject da = new JSONObject();
+                            da.put("msgType", ANSWER);
+                            da.put("userId", Utils.getIMEI(getContext()));
+                            da.put("msg", "0");
+                            if (KwHproseClient.helloClient != null)
+                                KwHproseClient.helloClient.sign(da.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case UNSWERDIALOG:
+                        break;
+                }
                 break;
         }
         dismiss();
@@ -93,6 +193,11 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
         textView = (TextView) findViewById(R.id.message);
         if (textView != null)
             textView.setText(message);
+        if (messageId == REPONSEDIALOG||messageId==ANSWERDIALOG) {
+            findViewById(R.id.ok2).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.ok2).setVisibility(View.GONE);
+        }
     }
 
 }

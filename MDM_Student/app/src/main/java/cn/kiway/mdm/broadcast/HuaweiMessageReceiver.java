@@ -19,7 +19,6 @@ import java.util.List;
 import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.entity.AppCharge;
-import cn.kiway.mdm.entity.Call;
 import cn.kiway.mdm.entity.Network;
 import cn.kiway.mdm.entity.Wifi;
 import cn.kiway.mdm.utils.MyDBHelper;
