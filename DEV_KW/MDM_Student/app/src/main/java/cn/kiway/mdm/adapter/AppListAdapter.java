@@ -124,6 +124,7 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
                 index = 0;
             App a = mData.get(parentIndex).get(index);
             String packageName = a.packageName;
+            String name = a.name;
             if (packageName.equals(kiwayQiTa)) {//如果点击的是其他应用
                 if (!context.getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
                     Toast.makeText(context, "请先锁定在进入其他应用", Toast.LENGTH_SHORT).show();
@@ -169,18 +170,22 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
                     }
                 }
                 if (in) {
-                    Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
-                    context.startActivity(intent);
+                    launchAPP(packageName, name);
                 } else {
                     Toast.makeText(context, "该时间段内不可以使用", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
-                context.startActivity(intent);
+                launchAPP(packageName, name);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void launchAPP(String packageName, String name) {
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
+        context.startActivity(intent);
+        Utils.childOperation(context, "useApp", "使用了" + name + "APP");
     }
 
 
