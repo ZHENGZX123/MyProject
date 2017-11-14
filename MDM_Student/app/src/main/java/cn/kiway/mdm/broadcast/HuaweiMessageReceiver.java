@@ -169,6 +169,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                     new MyDBHelper(context).deleteNetwork(a.id);
                 }
             } else if (command.equals("network_black_white")) {
+                //network黑白名单启用
                 int enable_network_type = data.getJSONObject("content").getInt("type");
                 Log.d("test", "enable_network_type = " + enable_network_type);
                 ArrayList<Network> networks1 = new MyDBHelper(context).getAllNetworks(1);
@@ -226,12 +227,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 }
                 //TODO call_come 这里要调用一下华为的方法
             } else if (command.equals("call_come_gone")) {
+                //来电黑白名单启用
                 int enable_call_type = data.optInt("type");
-                int froms = data.optInt("froms");
-                if (froms == 2) {
-                    //去电的黑名单，不用做。
-                    return false;
-                }
                 Log.d("test", "enable_call_type = " + enable_call_type);
                 ArrayList<Call> calls = new MyDBHelper(context).getAllCalls(1);
                 if (enable_call_type == 1) {
