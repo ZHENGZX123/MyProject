@@ -76,11 +76,10 @@ public class CallActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                initdata();
+                initData();
             }
         });
     }
-
 
     private class MyAdapter extends BaseAdapter {
 
