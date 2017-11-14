@@ -1,6 +1,7 @@
 package cn.kiway.mdm.activity;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AppOpsManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,9 +12,11 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.media.projection.MediaProjectionManager;
+import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.Telephony;
 import android.support.v4.view.ViewPager;
@@ -24,9 +27,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.anarchy.classify.ClassifyView;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +43,11 @@ import cn.kiway.mdm.dialog.CheckPassword;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.Call;
+import cn.kiway.mdm.hprose.hprose.net.KwConnection;
+import cn.kiway.mdm.hprose.hprose.net.KwConntectionCallback;
+import cn.kiway.mdm.hprose.screen.FxService;
+import cn.kiway.mdm.hprose.socket.KwHproseClient;
+import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.AppListUtils;
 import cn.kiway.mdm.utils.AppReceiverIn;
@@ -45,8 +55,17 @@ import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.LocationUtils;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
+import hprose.net.TimeoutType;
 
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.ANSWERDIALOG;
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.REPONSEDIALOG;
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.SIGNDIALOG;
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.UNSWERDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
+import static cn.kiway.mdm.hprose.socket.MessageType.ANSWER;
+import static cn.kiway.mdm.hprose.socket.MessageType.SIGN;
+import static cn.kiway.mdm.hprose.socket.MessageType.SUREREPONSE;
+import static cn.kiway.mdm.hprose.socket.MessageType.UNANSWER;
 import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
 import static cn.kiway.mdm.utils.AppReceiverIn.REMOVE_SUCCESS;
@@ -56,7 +75,8 @@ import static cn.kiway.mdm.utils.FileACache.ListFileName;
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 
-public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener {
+public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener,
+        KwConntectionCallback {
     private CheckPassword dialog;
     public List<List<App>> allListData = new ArrayList<>();
     private ViewPager viewPager;
@@ -74,15 +94,23 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private Sensor mSensor;
 
 
+    String ip;//tcp  ip地址
+
     public static final int LOGOUT = 999;
     public static final int USAGE_STATS = 1101;
+    public static final int SCREEN = 1102;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("test", "Main onCreate");
+        intent = new Intent(MainActivity.this, FxService.class);
+        //红米手机接收不到udp广播,打开udp锁
+        WifiManager manager = (WifiManager) getApplicationContext()
+                .getSystemService(Context.WIFI_SERVICE);
         instance = this;
+        KWApp.instance.setActivity(this);
         initView();
         //2.初始化界面
         initData(getListdata(AppListUtils.getAppListData(this)));
@@ -283,13 +311,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void Camera(View view) {
-        int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
-        if (flag_camera == 0) {
-            toast("相机功能当前不能使用");
-            return;
-        }
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivity(cameraIntent);
+        connectTcp("10.0.10.209");
+//        int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
+//        if (flag_camera == 0) {
+//            toast("相机功能当前不能使用");
+//            return;
+//        }
+//        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        startActivity(cameraIntent);
     }
 
     public void Call(View view) {
@@ -427,6 +456,27 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                         new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
                         USAGE_STATS);
             }
+        } else if (requestCode == SCREEN) {
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (!Settings.canDrawOverlays(this)) {
+                    // SYSTEM_ALERT_WINDOW permission not granted...
+                    Toast.makeText(MainActivity.this, "not granted", Toast.LENGTH_SHORT);
+                }
+            }
+        }
+
+        if (requestCode == REQUEST_MEDIA_PROJECTION) {
+            if (resultCode != Activity.RESULT_OK) {
+                return;
+            } else if (data != null && resultCode != 0) {
+                result = resultCode;
+                intent = data;
+                ((KWApp) getApplication()).setResult(resultCode);
+                ((KWApp) getApplication()).setIntent(data);
+                Intent intent = new Intent(getApplicationContext(), FxService.class);
+                startService(intent);
+                Logger.log("start service Service1");
+            }
         }
     }
 
@@ -559,6 +609,125 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 return !in;
             }
             return false;
+        }
+    }
+
+    @Override
+    public void onConnect(KwConnection conn) {
+        Logger.log("正在连接");
+    }
+
+    @Override
+    public void onConnected(KwConnection conn) {
+        Logger.log("连接完成");
+    }
+
+    @Override
+    public void onReceived(KwConnection conn, ByteBuffer data, Integer id) {
+        // Logger.log("接送到的数据" + data);
+    }
+
+    @Override
+    public void onClose() {
+        Logger.log("连接关闭");
+    }
+
+    @Override
+    public void onError(KwConnection conn, Exception e) {
+        Logger.log("连接错误" + e);
+    }
+
+    @Override
+    public void onTimeout(KwConnection conn, TimeoutType type) {
+        Logger.log("连接超时" + type);
+    }
+
+
+    public void permission() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (!Settings.canDrawOverlays(MainActivity.this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, SCREEN);
+            }
+        }
+    }
+
+    private int result = 0;
+    private MediaProjectionManager mMediaProjectionManager;
+    private int REQUEST_MEDIA_PROJECTION = 1;
+    Intent intent;
+
+    public void startScreen() {
+        if (Build.VERSION.SDK_INT >= 21) {
+            mMediaProjectionManager = (MediaProjectionManager) getApplication().getSystemService(Context
+                    .MEDIA_PROJECTION_SERVICE);
+            ((KWApp) getApplication()).setMediaProjectionManager(mMediaProjectionManager);
+        }
+        if (FxService.canSendImage) {
+            FxService.setCanSendImage(false);
+            stopService(new Intent(getApplicationContext(), FxService.class));
+        }
+        permission();
+        FxService.setCanSendImage(true);
+        startIntent();
+    }
+
+    public void stopScreen() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                FxService.setCanSendImage(false);
+                stopService(new Intent(getApplicationContext(), FxService.class));
+                Toast.makeText(MainActivity.this, "停止共享屏幕了", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void startIntent() {
+        if (intent != null && result != 0) {
+            Logger.log("user agree the application to capture screen");
+            ((KWApp) getApplication()).setResult(result);
+            ((KWApp) getApplication()).setIntent(intent);
+            Intent intent = new Intent(getApplicationContext(), FxService.class);
+            startService(intent);
+            Logger.log("start service Service1");
+        } else {//申请权限
+            startActivityForResult(mMediaProjectionManager.createScreenCaptureIntent(), REQUEST_MEDIA_PROJECTION);
+        }
+    }
+
+    public void Session(final int i) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ShowMessageDailog dailog = new ShowMessageDailog(MainActivity.this);
+                dailog.setCancelable(false);
+                if (i == SIGN) {
+                    dailog.setShowMessage("老师上课签到，请你点击确定确认签到上课", SIGNDIALOG);
+                } else if (i == ANSWER) {
+                    Logger.log("抢答");
+                    dailog.setShowMessage("老师有道题正在抢答，是否进去抢答", ANSWERDIALOG);
+                } else if (i == UNANSWER) {
+                    Logger.log("抢答结束");
+                    dailog.setShowMessage("抢答结束了", UNSWERDIALOG);
+                } else if (i == SUREREPONSE) {
+                    Logger.log("回应是否听懂");
+                    dailog.setShowMessage("同学们，老师这套题清楚了吗？" , REPONSEDIALOG);
+                }
+                dailog.show();
+            }
+        });
+    }
+
+
+    public void connectTcp(String ip) {
+        try {
+            KwHproseClient.connect(this, ip, Utils.getIMEI(this), this);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
     }
 }
