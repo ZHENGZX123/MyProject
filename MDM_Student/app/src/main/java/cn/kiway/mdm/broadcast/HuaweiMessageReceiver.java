@@ -206,8 +206,9 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             } else if (command.equals("parent_bind")) {
                 m.what = MSG_PARENT_BIND;
                 m.obj = data;
-            } else if (command.equals("call_gone")) {
-                //去电不用区分黑白名单。
+            } else if (command.equals("call_gone") || command.equals("call_come")) {
+                //去电的添加、编辑、删除
+                //来电的添加、编辑、删除
                 JSONArray content = data.optJSONArray("content");
                 ArrayList<Call> calls = new GsonBuilder().create().fromJson(content.toString(), new TypeToken<List<Call>>() {
                 }.getType());
@@ -219,6 +220,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 } else if (c.operation.equals("delete")) {
                     new MyDBHelper(context).deleteCall(c.id);
                 }
+            } else if (command.equals("")) {
+                //这里是来电的enable，参考network_black_white来做。。。
             }
 
             if (KWApp.instance == null) {

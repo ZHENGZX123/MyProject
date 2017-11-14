@@ -511,6 +511,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             // 如果是响铃状态,检测拦截模式是否是电话拦截,是挂断
             if (state == TelephonyManager.CALL_STATE_RINGING) {
                 boolean enable = checkCallEnable(incomingNumber);
+                Log.d("test", "checkCallEnable " + incomingNumber + " enable = " + enable);
                 if (!enable) {
                     MDMHelper.getAdapter().hangupCalling();
                 }
