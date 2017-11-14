@@ -510,18 +510,45 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             Log.d("test", "onCallStateChanged state = " + state + " , incomingNumber = " + incomingNumber);
             // 如果是响铃状态,检测拦截模式是否是电话拦截,是挂断
             if (state == TelephonyManager.CALL_STATE_RINGING) {
-                ArrayList<Call> calls = new MyDBHelper(getApplicationContext()).getAllCalls(1);
-                boolean has = false;
-                for (Call l : calls) {
-                    if (l.phone.equals(incomingNumber)) {
-                        has = true;
-                        break;
-                    }
-                }
-                if (has) {
+                boolean enable = checkCallEnable(incomingNumber);
+                if (!enable) {
                     MDMHelper.getAdapter().hangupCalling();
                 }
             }
+        }
+
+        //true不用挂断，false挂断
+        private boolean checkCallEnable(String incomingNumber) {
+            int enable_type = Utils.getEnable_Call_Come(getApplicationContext());
+            Log.d("test", "enable_type = " + enable_type);
+            if (enable_type == 0) {
+                Log.d("test", "后台没有设置过call，或者设置过都清除了");
+                return true;
+            }
+            ArrayList<Call> calls = new MyDBHelper(getApplicationContext()).getAllCalls(1);
+            //1.白名单启用
+            if (enable_type == 1) {
+                boolean in = false;
+                for (Call n : calls) {
+                    if (incomingNumber.equals(n.phone)) {
+                        in = true;
+                        break;
+                    }
+                }
+                return in;
+            }
+            //黑名单启用
+            if (enable_type == 2) {
+                boolean in = false;
+                for (Call n : calls) {
+                    if (incomingNumber.equals(n.phone)) {
+                        in = true;
+                        break;
+                    }
+                }
+                return !in;
+            }
+            return false;
         }
     }
 }

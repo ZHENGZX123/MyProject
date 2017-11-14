@@ -1646,4 +1646,24 @@ public class Utils {
         }
         return true;
     }
+
+
+    //0：没有设置来电 1：白名单启用  2：黑名单启用
+    public static int getEnable_Call_Come(Context c) {
+        //1.一个都没有，返回0
+        ArrayList<Call> calls = new MyDBHelper(c).getAllCalls(1);
+        if (calls.size() == 0) {
+            return 0;
+        }
+        //2.找到enable=1的type
+        int enable_type = 0;
+        for (Call n : calls) {
+            if (n.enable == 1) {
+                enable_type = n.type;
+                break;
+            }
+        }
+        //如果都没有，那就返回0
+        return enable_type;
+    }
 }
