@@ -3,6 +3,7 @@ package cn.kiway.mdm.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,9 +50,16 @@ public class CallActivity extends BaseActivity {
     }
 
     private void initData() {
-        calls = new MyDBHelper(this).getAllCalls(2);
-
-
+        //获取去电，只要白名单
+        calls.clear();
+        ArrayList<Call> temp = new MyDBHelper(this).getAllCalls(2);
+        Log.d("test", "temp = " + temp.toString());
+        for (Call c : temp) {
+            if (c.type == 1) {
+                calls.add(c);
+            }
+        }
+        adapter1.notifyDataSetChanged();
     }
 
 
@@ -71,17 +79,20 @@ public class CallActivity extends BaseActivity {
                 rowView = inflater.inflate(R.layout.item_call, null);
                 holder = new ViewHolder();
                 holder.name = (TextView) rowView.findViewById(R.id.name);
+                holder.number = (TextView) rowView.findViewById(R.id.number);
                 rowView.setTag(holder);
             } else {
                 holder = (ViewHolder) rowView.getTag();
             }
             final Call s = calls.get(position);
             holder.name.setText(s.name);
+            holder.number.setText(s.phone);
             return rowView;
         }
 
         public class ViewHolder {
             public TextView name;
+            public TextView number;
         }
 
         @Override
