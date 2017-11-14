@@ -72,6 +72,7 @@ import cn.kiway.mdm.activity.ScreenActivity;
 import cn.kiway.mdm.activity.SettingActivity;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.AppCharge;
+import cn.kiway.mdm.entity.Call;
 import cn.kiway.mdm.entity.Network;
 import cn.kiway.mdm.entity.Wifi;
 import cn.kiway.mdm.mdm.MDMHelper;
@@ -1608,9 +1609,19 @@ public class Utils {
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "calls onSuccess = " + ret);
                             check301(c, ret);
-                            //保存起来即可。
-
-
+                            try {
+                                JSONArray data = new JSONObject(ret).getJSONArray("data");
+                                ArrayList<Call> calls = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Call>>() {
+                                }.getType());
+                                //存进数据库里
+                                new MyDBHelper(c).deleteCall(null);
+                                for (Call n : calls) {
+                                    new MyDBHelper(c).addCall(n);
+                                }
+                                Log.d("test", "calls = " + calls);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         @Override
