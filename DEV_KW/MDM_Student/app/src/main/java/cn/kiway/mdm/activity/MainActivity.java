@@ -715,7 +715,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     dailog.setShowMessage("抢答结束了", UNSWERDIALOG);
                 } else if (i == SUREREPONSE) {
                     Logger.log("回应是否听懂");
-                    dailog.setShowMessage("同学们，老师这套题清楚了吗？" , REPONSEDIALOG);
+                    dailog.setShowMessage("同学们，老师这套题清楚了吗？", REPONSEDIALOG);
                 }
                 dailog.show();
             }
