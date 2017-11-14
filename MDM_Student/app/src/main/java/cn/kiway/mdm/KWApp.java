@@ -13,12 +13,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
-import cn.kiway.mdm.hprose.socket.KwHproseClient;
 import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.HttpDownload;
 import cn.kiway.mdm.utils.Utils;
@@ -57,25 +55,6 @@ public class KWApp extends Application {
     public static final int MSG_ATTEND_CALSS = 15;//绑定家长
     public static final int MSG_GET_OUT_OF_CALASS = 16;//绑定家长
 
-    public static boolean shangke = false;
-
-    public static final ArrayList<String> flagCommands = new ArrayList<>();
-
-    static {
-        flagCommands.add("camera");
-        flagCommands.add("snapshot");
-        flagCommands.add("location");
-        flagCommands.add("dataconnectivity");
-        flagCommands.add("microphone");
-        flagCommands.add("restore");
-        flagCommands.add("ap");
-        flagCommands.add("usb");
-        flagCommands.add("allowWifi");
-        flagCommands.add("systemupdate");
-        flagCommands.add("landscape");
-        flagCommands.add("portrait");
-        flagCommands.add("bluetooth");
-    }
 
     @Override
     public void onCreate() {
@@ -118,10 +97,10 @@ public class KWApp extends Application {
                 //mScreenLock.release();
             } else if (msg.what == MSG_LAUNCH_APP) {
                 //打开APP，如果没安装怎么办
-                shangke = true;
+                temporary_app = true;
                 Utils.launchApp(getApplicationContext(), (JSONObject) msg.obj);
             } else if (msg.what == MSG_LAUNCH_MDM) {
-                shangke = false;
+                temporary_app = false;
                 //返回MDM桌面
                 Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.mdm");
                 startActivity(intent);
