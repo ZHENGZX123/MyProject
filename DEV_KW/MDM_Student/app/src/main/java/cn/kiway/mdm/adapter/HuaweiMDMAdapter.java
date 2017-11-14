@@ -440,5 +440,10 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
         }
     }
 
+    @Override
+    public void connectWifi(String ssid, String pwd) {
+
+    }
+
 
 }

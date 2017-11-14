@@ -93,6 +93,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.what = MSG_REBOOT;
             } else if (command.equals("shutdown")) {
                 m.what = MSG_SHUTDOWN;
+                //TODO 判断有没有时间段
+                //context.getSharedPreferences("kiway", 0).edit().putLong("shutdown_time", Utils.dateToLong(currentTime)).commit();
             } else if (command.equals("temporary_app")) {
                 String currentTime = data.optString("currentTime");
                 context.getSharedPreferences("kiway", 0).edit().putLong("app_time", Utils.dateToLong(currentTime)).commit();

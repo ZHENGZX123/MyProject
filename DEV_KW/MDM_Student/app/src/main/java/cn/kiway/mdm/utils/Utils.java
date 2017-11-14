@@ -920,7 +920,7 @@ public class Utils {
         return packageName;
     }
 
-    public static Thread shangkeThread;
+    public static Thread temporary_appThread;
     public static String packageName = null;
     public static String url = null;
     public static String name = null;
@@ -936,14 +936,13 @@ public class Utils {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        if (shangkeThread != null) {
+        if (temporary_appThread != null) {
             return;
         }
-        shangkeThread = new Thread() {
+        temporary_appThread = new Thread() {
             @Override
             public void run() {
-                while (KWApp.shangke) {
+                while (KWApp.temporary_app) {
                     try {
                         if (!isAppInstall(c, packageName)) {
                             //下载安装
@@ -965,10 +964,10 @@ public class Utils {
                         }
                     }
                 }
-                shangkeThread = null;
+                temporary_appThread = null;
             }
         };
-        shangkeThread.start();
+        temporary_appThread.start();
     }
 
     public static void uploadApp(final MainActivity c) {
@@ -1343,7 +1342,7 @@ public class Utils {
         }
     }
 
-    public static long dateToLong(String currentTime) throws ParseException {
+    public static long dateToLong(String currentTime) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date dt = sdf.parse(currentTime);
         long lTime = dt.getTime();

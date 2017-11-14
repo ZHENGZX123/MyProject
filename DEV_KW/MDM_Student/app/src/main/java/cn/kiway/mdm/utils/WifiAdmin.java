@@ -13,7 +13,7 @@ import java.util.List;
 
 public class WifiAdmin {
 
-    private static final String TAG = "test";
+    private static final String TAG = "WifiAdmin";
     private WifiManager mWifiManager;
     private WifiInfo mWifiInfo;
     private List<ScanResult> mWifiList = null;
