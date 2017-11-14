@@ -220,8 +220,43 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 } else if (c.operation.equals("delete")) {
                     new MyDBHelper(context).deleteCall(c.id);
                 }
-            } else if (command.equals("")) {
-                //这里是来电的enable，参考network_black_white来做。。。
+                //TODO call_come 这里要调用一下华为的方法
+            } else if (command.equals("call_come_gone")) {
+                int enable_call_type = data.optInt("type");
+                int froms = data.optInt("froms");
+                if (froms == 2) {
+                    //去电的黑名单，不用做。
+                    return false;
+                }
+                Log.d("test", "enable_call_type = " + enable_call_type);
+                ArrayList<Call> calls = new MyDBHelper(context).getAllCalls(1);
+                if (enable_call_type == 1) {
+                    for (Call n : calls) {
+                        if (n.type == 1) {
+                            n.enable = 1;
+                            new MyDBHelper(context).updateCall(n);
+                        }
+                    }
+                    for (Call n : calls) {
+                        if (n.type == 2) {
+                            n.enable = 0;
+                            new MyDBHelper(context).updateCall(n);
+                        }
+                    }
+                } else if (enable_call_type == 2) {
+                    for (Call n : calls) {
+                        if (n.type == 1) {
+                            n.enable = 0;
+                            new MyDBHelper(context).updateCall(n);
+                        }
+                    }
+                    for (Call n : calls) {
+                        if (n.type == 2) {
+                            n.enable = 1;
+                            new MyDBHelper(context).updateCall(n);
+                        }
+                    }
+                }
             }
 
             if (KWApp.instance == null) {

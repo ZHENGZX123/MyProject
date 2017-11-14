@@ -1618,7 +1618,7 @@ public class Utils {
                                 for (Call n : calls) {
                                     new MyDBHelper(c).addCall(n);
                                 }
-                                Log.d("test", "calls = " + calls);
+                                //TODO 这里要调用一下华为的方法
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -1665,5 +1665,11 @@ public class Utils {
         }
         //如果都没有，那就返回0
         return enable_type;
+    }
+
+    public static void call(Context c, String number) {
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        c.startActivity(intent);
     }
 }

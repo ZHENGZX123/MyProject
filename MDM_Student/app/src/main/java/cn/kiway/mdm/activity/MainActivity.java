@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.provider.Telephony;
 import android.support.v4.view.ViewPager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -107,6 +108,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         checkIncomingCall();
         //14.距离传感器
         registerSensor();
+        //15.设置默认短信app
+        setDefaultSMSApp();
+    }
+
+    private void setDefaultSMSApp() {
+        Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+        intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getPackageName());
+        startActivity(intent);
     }
 
     private void registerSensor() {
@@ -292,7 +301,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void SMS(View view) {
-        startActivity(new Intent(this, WebViewActivity.class));
+        startActivity(new Intent(this, ComposeSmsActivity.class));
 //        startActivity(new Intent(this, WebViewActivity.class));
 //        try {
 //            Intent intent = new Intent(Intent.ACTION_MAIN);//短信列表界面
