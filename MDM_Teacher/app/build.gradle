@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         kiway {
-            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+            storeFile file('F:/android_signature/kiway.key')
             storePassword 'kiway123'
             keyAlias 'kiway'
             keyPassword 'kiway123'
@@ -18,6 +18,13 @@ android {
         targetSdkVersion 20
         versionCode 1
         versionName "0.0.1"
+        jackOptions {
+            enabled true
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     buildTypes {
         release {
@@ -42,6 +49,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile project(':zxing')
+    compile project(':lfilepickerlibrary')
     compile 'org.xutils:xutils:3.5.0'
     compile files('libs/tbs_sdk_thirdapp_v3.1.0.1034_43100_sharewithdownload_obfs_20170301_182143.jar')
+    compile files('libs/netty-all-4.0.51.Final.jar')
+    sourceCompatibility = '1.7'
+    targetCompatibility = '1.7'
+    compile files('libs/hprose_for_java_7.jar')
 }
