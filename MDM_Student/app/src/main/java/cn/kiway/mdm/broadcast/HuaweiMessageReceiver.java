@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.mdm.KWApp;
+import cn.kiway.mdm.activity.CallActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.entity.AppCharge;
 import cn.kiway.mdm.entity.Call;
@@ -219,6 +220,9 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                     new MyDBHelper(context).updateCall(c);
                 } else if (c.operation.equals("delete")) {
                     new MyDBHelper(context).deleteCall(c.id);
+                }
+                if (KWApp.instance.currentActivity != null && KWApp.instance.currentActivity instanceof CallActivity) {
+                    ((CallActivity) KWApp.instance.currentActivity).refreshUI();
                 }
                 //TODO call_come 这里要调用一下华为的方法
             } else if (command.equals("call_come_gone")) {

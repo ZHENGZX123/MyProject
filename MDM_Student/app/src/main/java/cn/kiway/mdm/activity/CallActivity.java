@@ -72,6 +72,15 @@ public class CallActivity extends BaseActivity {
         adapter1.notifyDataSetChanged();
     }
 
+    public void refreshUI() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                initdata();
+            }
+        });
+    }
+
 
     private class MyAdapter extends BaseAdapter {
 

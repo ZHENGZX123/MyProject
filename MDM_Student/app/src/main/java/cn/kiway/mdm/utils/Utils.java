@@ -1672,4 +1672,35 @@ public class Utils {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(intent);
     }
+
+
+    public static void childOperation(final MainActivity c, String type, String message) {
+        try {
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+            client.setTimeout(10000);
+            RequestParams param = new RequestParams();
+            param.put("IMEI", getIMEI(c));
+            param.put("type", type);
+            param.put("message", message);
+            Log.d("test", "param = " + param.toString());
+            String url = server + "device/parent/child/operation";
+            Log.d("test", "childOperation = " + url);
+            client.post(c, url, param, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "childOperation onSuccess = " + ret);
+                    check301(c, ret);
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "childOperation onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
+        }
+    }
+
 }
