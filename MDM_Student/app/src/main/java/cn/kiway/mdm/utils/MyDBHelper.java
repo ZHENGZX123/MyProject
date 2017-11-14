@@ -241,13 +241,13 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_CALL = "Call";
     private static final String CREATE_TABLE_CALL = " create table  IF NOT EXISTS "
             + TABLE_CALL
-            + "   (id integer primary key autoincrement, ids text,  name  text,  number  text , type text , in_out text )";
+            + "   (id integer primary key autoincrement, ids text,  name  text,  phone  text , type text , froms text )";
 
 
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 6);
+        super(c, DB_NAME, null, 7);
     }
 
     @Override
@@ -531,9 +531,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("ids", a.id);
         values.put("name", a.name);
-        values.put("number", a.number);
+        values.put("phone", a.phone);
         values.put("type", a.type);
-        values.put("in_out", a.in_out);
+        values.put("froms", a.froms);
         db.insert(TABLE_CALL, null, values);
         db.close();
     }
@@ -552,24 +552,24 @@ public class MyDBHelper extends SQLiteOpenHelper {
     }
 
     //1打入 2打出
-    public ArrayList<Call> getAllCalls(int in_out) {
+    public ArrayList<Call> getAllCalls(int froms) {
         if (db == null)
             db = getWritableDatabase();
-        Cursor cur = db.query(TABLE_CALL, null, "in_out=?", new String[]{in_out + ""}, null, null, null);
+        Cursor cur = db.query(TABLE_CALL, null, "froms=?", new String[]{froms + ""}, null, null, null);
         ArrayList<Call> calls = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             String id = cur.getString(cur.getColumnIndex("ids"));
             String name = cur.getString(cur.getColumnIndex("name"));
-            String number = cur.getString(cur.getColumnIndex("number"));
+            String phone = cur.getString(cur.getColumnIndex("phone"));
             int type = cur.getInt(cur.getColumnIndex("type"));
-            in_out = cur.getInt(cur.getColumnIndex("in_out"));
+            froms = cur.getInt(cur.getColumnIndex("froms"));
 
             Call a = new Call();
             a.id = id;
             a.name = name;
-            a.number = number;
+            a.phone = phone;
             a.type = type;
-            a.in_out = in_out;
+            a.froms = froms;
             calls.add(a);
         }
         cur.close();
@@ -583,9 +583,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put("ids", a.id);
         cv.put("name", a.name);
-        cv.put("number", a.number);
+        cv.put("phone", a.phone);
         cv.put("type", a.type);
-        cv.put("in_out", a.in_out);
+        cv.put("froms", a.froms);
 
         String[] args = {a.id};
         db.update(TABLE_CALL, cv, "ids=?", args);
