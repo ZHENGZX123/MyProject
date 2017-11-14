@@ -522,7 +522,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 ArrayList<Call> calls = new MyDBHelper(getApplicationContext()).getAllCalls(1);
                 boolean has = false;
                 for (Call l : calls) {
-                    if (l.number.equals(incomingNumber)) {
+                    if (l.phone.equals(incomingNumber)) {
                         has = true;
                         break;
                     }
