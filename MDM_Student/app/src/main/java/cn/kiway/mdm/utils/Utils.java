@@ -81,6 +81,7 @@ import static cn.kiway.mdm.KWApp.MSG_LAUNCH_APP;
 import static cn.kiway.mdm.KWApp.MSG_LAUNCH_MDM;
 import static cn.kiway.mdm.KWApp.MSG_LOCK;
 import static cn.kiway.mdm.KWApp.server;
+import static java.lang.System.currentTimeMillis;
 
 /**
  * Created by Administrator on 2017/6/8.
@@ -897,7 +898,7 @@ public class Utils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             UsageStatsManager m = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
             if (m != null) {
-                long now = System.currentTimeMillis();
+                long now = currentTimeMillis();
                 //获取60秒之内的应用数据
                 List<UsageStats> stats = m.queryUsageStats(UsageStatsManager.INTERVAL_BEST, now - 10 * 1000, now);//60
                 //取得最近运行的一个app，即当前运行的app
@@ -1360,7 +1361,7 @@ public class Utils {
             //1.锁屏
             long lock_time = c.getSharedPreferences("kiway", 0).getLong("lock_time", 0L);
             if (lock_time != 0) {
-                long currentTime = System.currentTimeMillis();
+                long currentTime = currentTimeMillis();
                 if (currentTime < (lock_time + 60 * 60 * 1000)) {
                     //自动锁屏
                     if (!(KWApp.instance.currentActivity instanceof ScreenActivity)) {
@@ -1383,7 +1384,7 @@ public class Utils {
             String app_data = c.getSharedPreferences("kiway", 0).getString("app_data", "");
             if (app_time != 0) {
                 JSONObject data = new JSONObject(app_data);
-                long currentTime = System.currentTimeMillis();
+                long currentTime = currentTimeMillis();
                 if (currentTime < (app_time + 60 * 60 * 1000)) {
                     //自动管控
                     Message m = new Message();
@@ -1621,5 +1622,16 @@ public class Utils {
                 }
             }
         });
+    }
+
+    //超出10分钟，命令无效
+    public static boolean checkCommandAvailable(String commandTime) throws Exception {
+        long commandTime_l = dateToLong(commandTime);
+        long currentTime = System.currentTimeMillis();
+        if (currentTime > (commandTime_l + 10 * 60 * 1000)) {
+            Log.d("test", "checkCommandAvailable false!!!");
+            return false;
+        }
+        return true;
     }
 }

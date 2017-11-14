@@ -91,10 +91,17 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.what = MSG_FLAGCOMMAND;
             } else if (command.equals("reboot")) {
                 m.what = MSG_REBOOT;
+                String currentTime = data.optString("currentTime");
+                if (!Utils.checkCommandAvailable(currentTime)) {
+                    return false;
+                }
             } else if (command.equals("shutdown")) {
                 m.what = MSG_SHUTDOWN;
-                //TODO 判断有没有时间段
-                //context.getSharedPreferences("kiway", 0).edit().putLong("shutdown_time", Utils.dateToLong(currentTime)).commit();
+                String currentTime = data.optString("currentTime");
+                if (!Utils.checkCommandAvailable(currentTime)) {
+                    return false;
+                }
+                //TODO 判断有没有开始时间-结束时间
             } else if (command.equals("temporary_app")) {
                 String currentTime = data.optString("currentTime");
                 context.getSharedPreferences("kiway", 0).edit().putLong("app_time", Utils.dateToLong(currentTime)).commit();
@@ -108,8 +115,15 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             } else if (command.equals("temporary_lockScreen")) {
                 m.what = MSG_LOCK;
                 String currentTime = data.optString("currentTime");
+                if (!Utils.checkCommandAvailable(currentTime)) {
+                    return false;
+                }
                 context.getSharedPreferences("kiway", 0).edit().putLong("lock_time", Utils.dateToLong(currentTime)).commit();
             } else if (command.equals("temporary_unlockScreen")) {
+                String currentTime = data.optString("currentTime");
+                if (!Utils.checkCommandAvailable(currentTime)) {
+                    return false;
+                }
                 context.getSharedPreferences("kiway", 0).edit().putLong("lock_time", 0).commit();
                 m.what = MSG_UNLOCK;
             } else if (command.equals("wifi")) {
