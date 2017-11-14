@@ -241,13 +241,13 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_CALL = "Call";
     private static final String CREATE_TABLE_CALL = " create table  IF NOT EXISTS "
             + TABLE_CALL
-            + "   (id integer primary key autoincrement, ids text,  name  text,  phone  text , type text , froms text )";
+            + "   (id integer primary key autoincrement, ids text,  name  text,  phone  text , type text , froms text , enable text )";
 
 
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 7);
+        super(c, DB_NAME, null, 8);
     }
 
     @Override
@@ -534,6 +534,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         values.put("phone", a.phone);
         values.put("type", a.type);
         values.put("froms", a.froms);
+        values.put("enable", a.enable);
         db.insert(TABLE_CALL, null, values);
         db.close();
     }
@@ -563,6 +564,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             String phone = cur.getString(cur.getColumnIndex("phone"));
             int type = cur.getInt(cur.getColumnIndex("type"));
             froms = cur.getInt(cur.getColumnIndex("froms"));
+            int enable = cur.getInt(cur.getColumnIndex("enable"));
 
             Call a = new Call();
             a.id = id;
@@ -570,6 +572,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             a.phone = phone;
             a.type = type;
             a.froms = froms;
+            a.enable = enable;
             calls.add(a);
         }
         cur.close();
@@ -586,11 +589,11 @@ public class MyDBHelper extends SQLiteOpenHelper {
         cv.put("phone", a.phone);
         cv.put("type", a.type);
         cv.put("froms", a.froms);
+        cv.put("enable", a.enable);
 
         String[] args = {a.id};
         db.update(TABLE_CALL, cv, "ids=?", args);
         db.close();
     }
-
 
 }
