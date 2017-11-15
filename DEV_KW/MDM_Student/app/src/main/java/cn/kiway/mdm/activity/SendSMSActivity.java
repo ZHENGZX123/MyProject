@@ -1,8 +1,10 @@
 package cn.kiway.mdm.activity;
 
-import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -11,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import cn.kiway.mdm.R;
@@ -21,7 +24,7 @@ import cn.kiway.mdm.utils.MyDBHelper;
 /**
  * @author way
  */
-public class SendSMSActivity extends Activity implements OnClickListener {
+public class SendSMSActivity extends BaseActivity implements OnClickListener {
 
     private TextView nameTV;
     private Button mBtnSend;// 发送btn
@@ -36,8 +39,8 @@ public class SendSMSActivity extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_sms);
 
-        initView();// 初始化view
-        initData();// 初始化数据
+        initView();
+        initData();
         mListView.setSelection(mAdapter.getCount() - 1);
     }
 
@@ -64,7 +67,9 @@ public class SendSMSActivity extends Activity implements OnClickListener {
      * 模拟加载消息历史，实际开发可以从数据库中读出
      */
     public void initData() {
-        mDataArrays.addAll(new MyDBHelper(this).getAllSMS(phone));
+        ArrayList<SMS> temp = new MyDBHelper(this).getAllSMS(phone);
+        Collections.reverse(temp);
+        mDataArrays = temp;
         mAdapter = new ChatMsgViewAdapter(this, mDataArrays);
         mListView.setAdapter(mAdapter);
     }
@@ -72,7 +77,7 @@ public class SendSMSActivity extends Activity implements OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_send:// 发送按钮点击事件
+            case R.id.btn_send:
                 send();
                 break;
         }
@@ -84,6 +89,10 @@ public class SendSMSActivity extends Activity implements OnClickListener {
     private void send() {
         String contString = mEditTextContent.getText().toString();
         if (contString.length() > 0) {
+            //1.发送消息
+            sendSMS(phone, contString);
+
+            //2.加入数据库
             SMS s = new SMS();
             s.phone = phone;
             s.content = contString;
@@ -91,9 +100,10 @@ public class SendSMSActivity extends Activity implements OnClickListener {
             s.time = "" + System.currentTimeMillis();
             new MyDBHelper(this).addSMS(s);
 
+            //3.刷新页面
             initData();
-            mEditTextContent.setText("");// 清空编辑框数据
-            mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
+            mEditTextContent.setText("");
+            mListView.setSelection(mListView.getCount() - 1);
         }
     }
 
@@ -101,8 +111,26 @@ public class SendSMSActivity extends Activity implements OnClickListener {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                Log.d("test", "refresh is called");
                 initData();
+                mListView.setSelection(mAdapter.getCount() - 1);
             }
         });
+    }
+
+    private static final String SENT_SMS_ACTION = "demo_sms_send_action";
+    private static final String KEY_PHONENUM = "phone_num";
+
+    public void sendSMS(String phoneNumber, String message) {
+        //获取短信管理器
+        android.telephony.SmsManager smsManager = android.telephony.SmsManager.getDefault();
+        //拆分短信内容（手机短信长度限制）
+        List<String> divideContents = smsManager.divideMessage(message);
+        Intent itSend = new Intent(SENT_SMS_ACTION);
+        itSend.putExtra(KEY_PHONENUM, phoneNumber);
+        PendingIntent sentPI = PendingIntent.getBroadcast(getApplicationContext(), 0, itSend, PendingIntent.FLAG_UPDATE_CURRENT);
+        for (String text : divideContents) {
+            smsManager.sendTextMessage(phoneNumber, null, text, sentPI, null);
+        }
     }
 }

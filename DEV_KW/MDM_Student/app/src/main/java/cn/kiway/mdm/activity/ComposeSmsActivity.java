@@ -34,8 +34,6 @@ public class ComposeSmsActivity extends BaseActivity {
         adapter1 = new MyAdapter();
         lv1.setAdapter(adapter1);
 
-        initData();
-
         lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -47,6 +45,12 @@ public class ComposeSmsActivity extends BaseActivity {
                 startActivity(i);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
     }
 
     private void initData() {

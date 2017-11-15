@@ -218,8 +218,6 @@ import cn.kiway.mdm.entity.Network;
 import cn.kiway.mdm.entity.SMS;
 import cn.kiway.mdm.entity.Wifi;
 
-import static android.R.attr.type;
-
 
 public class MyDBHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "mdm.db";
@@ -641,9 +639,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
             db = getWritableDatabase();
         Cursor cur = null;
         if (phone == null) {
-            cur = db.query(TABLE_SMS, null, null, null, null, null, null);
+            cur = db.query(TABLE_SMS, null, null, null, null, null, "time desc");
         } else {
-            cur = db.query(TABLE_SMS, null, "phone=?", new String[]{phone + ""}, null, null, null);
+            cur = db.query(TABLE_SMS, null, "phone=?", new String[]{phone + ""}, null, null, "time desc");
         }
         ArrayList<SMS> smses = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
