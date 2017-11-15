@@ -2,27 +2,21 @@ package cn.kiway.mdm.hprose.socket.actions;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.os.Environment;
 import android.view.View;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.IOException;
-
 import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.hprose.screen.FxService;
-import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.mdm.MDMHelper;
 
 import static cn.kiway.mdm.KWApp.MSG_LOCK;
 import static cn.kiway.mdm.KWApp.MSG_REBOOT;
 import static cn.kiway.mdm.KWApp.MSG_SHUTDOWN;
 import static cn.kiway.mdm.KWApp.MSG_UNLOCK;
-import static cn.kiway.mdm.hprose.socket.KwHproseClient.client;
 import static cn.kiway.mdm.hprose.socket.MessageType.ANSWER;
 import static cn.kiway.mdm.hprose.socket.MessageType.LOCKSCREEN;
 import static cn.kiway.mdm.hprose.socket.MessageType.OFFSCREENSHARE;
@@ -112,25 +106,10 @@ public class ActionsMessageHandle {
                 } else {
                     ((MainActivity) context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
-            } else if (msgType == SHARE_FILE) {
-                String path = Environment.getExternalStorageDirectory().getPath() + "/kiwayFile";
-                Logger.log("::::::::::" + data);
-                Logger.log("::::::::::" + data.optString("msg"));
-                Logger.log("::::::::::" + path + "/" + data.optString("msg").split("/")[data
-                        .optString("msg").split("/").length - 1]);
-                if (!new File(path).exists())
-                    new File(path).mkdir();
-                if (!new File(path + "/" + data.optString("msg").split("/")[data
-                        .optString("msg").split("/").length - 1]).exists())
-                    new File(path + "/" + data.optString("msg").split("/")[data
-                            .optString("msg").split("/").length - 1]).createNewFile();
-                if (client != null)
-                    client.getFile(path + "/" + data.optString("msg").split("/")[data
-                            .optString("msg").split("/").length - 1], data.optString("msg"));
+            } else if (msgType == SHARE_FILE) {//下载文件
+                ((MainActivity) context).downloadFile(s);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }

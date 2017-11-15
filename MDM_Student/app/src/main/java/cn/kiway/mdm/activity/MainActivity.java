@@ -138,6 +138,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         registerSensor();
         //15.设置默认短信app
         setDefaultSMSApp();
+
     }
 
     private void setDefaultSMSApp() {

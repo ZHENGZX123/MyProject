@@ -18,6 +18,7 @@ import java.io.File;
 import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
+import cn.kiway.mdm.hprose.socket.KwHproseClient;
 import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.HttpDownload;
 import cn.kiway.mdm.utils.Utils;
@@ -31,7 +32,7 @@ import static cn.kiway.mdm.utils.Utils.huaweiPush;
 public class KWApp extends Application {
 
     public static KWApp instance;
-//    public static final String server = "http://192.168.8.161:8082/mdms/";
+    //    public static final String server = "http://192.168.8.161:8082/mdms/";
     public static final String server = "http://202.104.136.9:8080/mdms/";
 
     public Activity currentActivity;
@@ -134,6 +135,12 @@ public class KWApp extends Application {
                 Utils.showBindDialog(KWApp.instance.currentActivity, (JSONObject) msg.obj);
             } else if (msg.what == MSG_SMS) {
                 Utils.showSMSDialog(KWApp.instance.currentActivity, (SmsMessage) msg.obj);
+            } else if (msg.what == MSG_ATTEND_CALSS) {
+                //上课
+                activity.connectTcp("");
+            } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
+                //下课
+                KwHproseClient.stop();
             }
         }
     };

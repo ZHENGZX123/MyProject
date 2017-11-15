@@ -110,10 +110,11 @@ abstract class KwSocketTransporter implements KwConnectionHandler {
     protected final ConcurrentLinkedQueue<Request> requests = new ConcurrentLinkedQueue<Request>();
     protected final AtomicInteger size = new AtomicInteger(0);
     KwConntectionCallback conntectionCallback;
+
     public KwSocketTransporter(KwHproseTcpClient client, KwConntectionCallback conntectionCallback) {
         super();
         this.client = client;
-        this.conntectionCallback=conntectionCallback;
+        this.conntectionCallback = conntectionCallback;
     }
 
     public final int getReadTimeout() {
@@ -172,7 +173,7 @@ abstract class KwSocketTransporter implements KwConnectionHandler {
         synchronized (idleConnections) {
             idleConnections.remove(conn);
         }
-        if (conntectionCallback!=null)
+        if (conntectionCallback != null)
             conntectionCallback.onClose();
         onError(conn, new ClosedChannelException());
     }
@@ -186,8 +187,9 @@ final class KwFullDuplexSocketTransporter extends KwSocketTransporter {
     private final static AtomicInteger nextId = new AtomicInteger(0);
     private final Map<KwConnection, Map<Integer, Response>> responses = new ConcurrentHashMap<KwConnection,
             Map<Integer, Response>>();
+
     public KwFullDuplexSocketTransporter(KwHproseTcpClient client, KwConntectionCallback conntectionCallback) {
-        super(client,conntectionCallback);
+        super(client, conntectionCallback);
     }
 
     protected final KwConnection fetch(Request request) {
@@ -271,8 +273,8 @@ final class KwFullDuplexSocketTransporter extends KwSocketTransporter {
     public final void onConnect(KwConnection conn) {
         size.incrementAndGet();
         responses.put(conn, new ConcurrentHashMap<Integer, Response>());
-if (conntectionCallback!=null)
-    conntectionCallback.onConnect(conn);
+        if (conntectionCallback != null)
+            conntectionCallback.onConnect(conn);
     }
 
     public final void onConnected(KwConnection conn) {
@@ -287,7 +289,7 @@ if (conntectionCallback!=null)
             }
             recycle(conn);
         }
-        if (conntectionCallback!=null)
+        if (conntectionCallback != null)
             conntectionCallback.onConnected(conn);
     }
 
@@ -311,7 +313,7 @@ if (conntectionCallback!=null)
                 }
             }
         }
-        if (conntectionCallback!=null)
+        if (conntectionCallback != null)
             conntectionCallback.onTimeout(conn, type);
     }
 
@@ -325,7 +327,7 @@ if (conntectionCallback!=null)
         } else {
             recycle(conn);
         }
-        if (conntectionCallback!=null)
+        if (conntectionCallback != null)
             conntectionCallback.onReceived(conn, data, id);
     }
 
@@ -349,7 +351,7 @@ if (conntectionCallback!=null)
                 response.result.reject(e);
             }
         }
-        if (conntectionCallback!=null)
+        if (conntectionCallback != null)
             conntectionCallback.onError(conn, e);
     }
 }
@@ -358,7 +360,7 @@ final class KwHalfDuplexSocketTransporter extends KwSocketTransporter {
     private final Map<KwConnection, Response> responses = new ConcurrentHashMap<KwConnection, Response>();
 
     public KwHalfDuplexSocketTransporter(KwHproseTcpClient client, KwConntectionCallback conntectionCallback) {
-        super(client,conntectionCallback);
+        super(client, conntectionCallback);
     }
 
     protected final KwConnection fetch(Request request) {
@@ -424,13 +426,13 @@ final class KwHalfDuplexSocketTransporter extends KwSocketTransporter {
     }
 
     public final void onConnect(KwConnection conn) {
-        if (conntectionCallback!=null)
+        if (conntectionCallback != null)
             conntectionCallback.onConnect(conn);
         size.incrementAndGet();
     }
 
     public final void onConnected(KwConnection conn) {
-        if (conntectionCallback!=null)
+        if (conntectionCallback != null)
             conntectionCallback.onConnected(conn);
         sendNext(conn);
     }
@@ -450,7 +452,7 @@ final class KwHalfDuplexSocketTransporter extends KwSocketTransporter {
             }
         }
         conn.close();
-        if (conntectionCallback!=null)
+        if (conntectionCallback != null)
             conntectionCallback.onTimeout(conn, type);
     }
 
@@ -463,7 +465,7 @@ final class KwHalfDuplexSocketTransporter extends KwSocketTransporter {
             result.resolve(data);
         }
         sendNext(conn);
-        if (conntectionCallback!=null)
+        if (conntectionCallback != null)
             conntectionCallback.onReceived(conn, data, id);
     }
 
@@ -476,7 +478,7 @@ final class KwHalfDuplexSocketTransporter extends KwSocketTransporter {
             response.timer.clear();
             response.result.reject(e);
         }
-        if (conntectionCallback!=null)
+        if (conntectionCallback != null)
             conntectionCallback.onError(conn, e);
     }
 
@@ -487,15 +489,14 @@ final class KwHalfDuplexSocketTransporter extends KwSocketTransporter {
 public class KwHproseTcpClient extends HproseClient {
     private String uri;
 
-    public long getFile(String local, String remote,JRFClient.processCallBack callBack) {
+    public long getFile(String local, String remote, JRFClient.DownLoadCallBack callBack) {
         long len = 0l;
         JRFClient cli = null;
         try {
             URI u = new URI(uri);
             cli = new JRFClient(new InetSocketAddress(u.getHost(), u.getPort() + 10));
             cli.start();
-            len = cli.getFile(remote, 3, local, 1500,callBack);
-            System.out.println("len=" + len);
+            len = cli.getFile(remote, 3, local, 1500, callBack);
             cli.requestStop();
             cli.join();
         } catch (Exception e) {
@@ -510,6 +511,10 @@ public class KwHproseTcpClient extends HproseClient {
         return len;
     }
 
+    /**
+     * @param local  存放地址
+     * @param remote 下载地址
+     */
     public long getFile(String local, String remote) {
         long len = 0l;
         JRFClient cli = null;
@@ -517,7 +522,7 @@ public class KwHproseTcpClient extends HproseClient {
             URI u = new URI(uri);
             cli = new JRFClient(new InetSocketAddress(u.getHost(), u.getPort() + 10));
             cli.start();
-            len = cli.getFile(remote, 3, local, 1500,null);
+            len = cli.getFile(remote, 3, local, 1500, null);
             System.out.println("len=" + len);
             cli.requestStop();
             cli.join();
@@ -577,9 +582,9 @@ public class KwHproseTcpClient extends HproseClient {
     public KwHproseTcpClient(String uri, KwConntectionCallback conntectionCallback) {
         super(uri);
         this.uri = uri;
-        this.conntectionCallback=conntectionCallback;
-        fdTrans = new KwFullDuplexSocketTransporter(this,conntectionCallback);
-        hdTrans = new KwHalfDuplexSocketTransporter(this,conntectionCallback);
+        this.conntectionCallback = conntectionCallback;
+        fdTrans = new KwFullDuplexSocketTransporter(this, conntectionCallback);
+        hdTrans = new KwHalfDuplexSocketTransporter(this, conntectionCallback);
     }
 
     public KwHproseTcpClient(HproseMode mode) {
