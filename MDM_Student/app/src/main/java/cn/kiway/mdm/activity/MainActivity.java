@@ -311,7 +311,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void Camera(View view) {
-        connectTcp("10.0.10.209");
+        Utils.childOperation(this, "useApp", "使用了相机APP");
+//        connectTcp("10.0.10.209");
 //        int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
 //        if (flag_camera == 0) {
 //            toast("相机功能当前不能使用");

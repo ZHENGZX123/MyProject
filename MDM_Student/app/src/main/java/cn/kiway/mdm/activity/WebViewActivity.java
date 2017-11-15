@@ -111,6 +111,7 @@ public class WebViewActivity extends BaseActivity {
         }
         if (checkUrlEnable(content)) {
             wv.loadUrl(content, extHeader);
+            Utils.childOperation(this, "surfInternet", "上网" + content);
         } else {
             toast("该网站不能访问");
         }

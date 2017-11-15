@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@null"
-            android:drawableTop="@drawable/ic_chrome"
+            android:drawableTop="@drawable/ic_message"
             android:onClick="SMS"
             android:text="短信"
             android:textColor="#333333" />

@@ -215,6 +215,7 @@ import java.util.ArrayList;
 import cn.kiway.mdm.entity.AppCharge;
 import cn.kiway.mdm.entity.Call;
 import cn.kiway.mdm.entity.Network;
+import cn.kiway.mdm.entity.SMS;
 import cn.kiway.mdm.entity.Wifi;
 
 
@@ -243,11 +244,16 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + TABLE_CALL
             + "   (id integer primary key autoincrement, ids text,  name  text,  phone  text , type text , froms text , enable text )";
 
+    private static final String TABLE_SMS = "SMS";
+    private static final String CREATE_TABLE_SMS = " create table  IF NOT EXISTS "
+            + TABLE_SMS
+            + "   (id integer primary key autoincrement,  phone  text,  content  text , time text , froms text)";
+
 
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 8);
+        super(c, DB_NAME, null, 12);
     }
 
     @Override
@@ -263,6 +269,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CALL);
         db.execSQL(CREATE_TABLE_CALL);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SMS);
+        db.execSQL(CREATE_TABLE_SMS);
     }
 
     @Override
@@ -272,6 +281,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_WIFI);
         db.execSQL(CREATE_TABLE_APP);
         db.execSQL(CREATE_TABLE_CALL);
+        db.execSQL(CREATE_TABLE_SMS);
     }
 
     //------------------------------------------Network----------------
@@ -596,4 +606,83 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    //------------------- SMS-----------------------------------------
+
+    public void addSMS(SMS a) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("phone", a.phone);
+        values.put("content", a.content);
+        values.put("time", a.time);
+        values.put("froms", a.froms);
+        db.insert(TABLE_SMS, null, values);
+        db.close();
+    }
+
+    public void deleteSMS(String id) {
+        if (db == null)
+            db = getWritableDatabase();
+
+        if (TextUtils.isEmpty(id)) {
+            db.delete(TABLE_SMS, null, null);
+        } else {
+            db.delete(TABLE_SMS, "id=?", new String[]{id});
+        }
+        db.close();
+
+    }
+
+    //1打入 2打出
+    public ArrayList<SMS> getAllSMS() {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_SMS, null, null, null, null, null, "time desc");
+        ArrayList<SMS> smses = new ArrayList<>();
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int id = cur.getInt(cur.getColumnIndex("id"));
+            String phone = cur.getString(cur.getColumnIndex("phone"));
+            String content = cur.getString(cur.getColumnIndex("content"));
+            String time = cur.getString(cur.getColumnIndex("time"));
+            int froms = cur.getInt(cur.getColumnIndex("froms"));
+
+            SMS a = new SMS();
+            a.id = id;
+            a.phone = phone;
+            a.content = content;
+            a.time = time;
+            a.froms = froms;
+            smses.add(a);
+        }
+        cur.close();
+        db.close();
+        return smses;
+    }
+
+    //（来去）电（黑白）名单里面找联系人
+    public Call getCallByPhone(String phone) {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_CALL, null, "phone=?", new String[]{phone + ""}, null, null, null);
+        Call a = null;
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            String id = cur.getString(cur.getColumnIndex("ids"));
+            String name = cur.getString(cur.getColumnIndex("name"));
+            phone = cur.getString(cur.getColumnIndex("phone"));
+            int type = cur.getInt(cur.getColumnIndex("type"));
+            int froms = cur.getInt(cur.getColumnIndex("froms"));
+            int enable = cur.getInt(cur.getColumnIndex("enable"));
+
+            a = new Call();
+            a.id = id;
+            a.name = name;
+            a.phone = phone;
+            a.type = type;
+            a.froms = froms;
+            a.enable = enable;
+        }
+        cur.close();
+        db.close();
+        return a;
+    }
 }

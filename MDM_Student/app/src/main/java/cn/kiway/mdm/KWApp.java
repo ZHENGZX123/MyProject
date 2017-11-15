@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.media.projection.MediaProjectionManager;
 import android.os.Handler;
 import android.os.Message;
+import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -30,8 +31,8 @@ import static cn.kiway.mdm.utils.Utils.huaweiPush;
 public class KWApp extends Application {
 
     public static KWApp instance;
-    //    public static final String server = "http://192.168.8.161:8082/mdms/";
-    public static final String server = "http://202.104.136.9:8080/mdms/";
+    public static final String server = "http://192.168.8.161:8082/mdms/";
+//    public static final String server = "http://202.104.136.9:8080/mdms/";
 
     public Activity currentActivity;
 
@@ -50,11 +51,11 @@ public class KWApp extends Application {
     public static final int MSG_LANDSCAPE = 12;//竖屏
     public static final int MSG_UNINSTALL = 13;//卸载
     public static final int MSG_PARENT_BIND = 14;//绑定家长
+    public static final int MSG_ATTEND_CALSS = 15;//上课
+    public static final int MSG_GET_OUT_OF_CALASS = 16;//下课
+    public static final int MSG_SMS = 17;//下课
 
     public static boolean temporary_app = false;
-    public static final int MSG_ATTEND_CALSS = 15;//绑定家长
-    public static final int MSG_GET_OUT_OF_CALASS = 16;//绑定家长
-
 
     @Override
     public void onCreate() {
@@ -131,6 +132,8 @@ public class KWApp extends Application {
             } else if (msg.what == MSG_PARENT_BIND) {
                 //绑定
                 Utils.showBindDialog(KWApp.instance.currentActivity, (JSONObject) msg.obj);
+            } else if (msg.what == MSG_SMS) {
+                Utils.showSMSDialog(KWApp.instance.currentActivity, (SmsMessage) msg.obj);
             }
         }
     };
@@ -214,6 +217,7 @@ public class KWApp extends Application {
         int flag_bluetooth = getSharedPreferences("kiway", 0).getInt("flag_bluetooth", 1);
         MDMHelper.getAdapter().setBluetoothDisabled(flag_bluetooth == 0);
     }
+
     private int result;
     private Intent intent;
     private MediaProjectionManager mMediaProjectionManager;

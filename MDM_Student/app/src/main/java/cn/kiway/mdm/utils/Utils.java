@@ -24,6 +24,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Message;
+import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.format.Formatter;
@@ -67,6 +68,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import cn.kiway.mdm.KWApp;
+import cn.kiway.mdm.activity.ComposeSmsActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
 import cn.kiway.mdm.activity.SettingActivity;
@@ -1671,10 +1673,12 @@ public class Utils {
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(intent);
+
+        Utils.childOperation(c, "calls", "打电话给" + number);
     }
 
 
-    public static void childOperation(final MainActivity c, String type, String message) {
+    public static void childOperation(final Context c, String type, String message) {
         try {
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
@@ -1690,7 +1694,6 @@ public class Utils {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "childOperation onSuccess = " + ret);
-                    check301(c, ret);
                 }
 
                 @Override
@@ -1703,4 +1706,25 @@ public class Utils {
         }
     }
 
+    public static void showSMSDialog(final Activity m, SmsMessage sms) {
+        if (m == null) {
+            return;
+        }
+        if (m instanceof ComposeSmsActivity) {
+            ((ComposeSmsActivity) m).refresh();
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(m, AlertDialog.THEME_HOLO_LIGHT);
+        builder.setMessage("您有新的短信");
+        builder.setTitle("提示");
+        builder.setPositiveButton("前往查看", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                m.startActivity(new Intent(m, ComposeSmsActivity.class));
+            }
+        });
+        builder.setNegativeButton("好的", null);
+        AlertDialog bindDialog = builder.create();
+        bindDialog.show();
+    }
 }
