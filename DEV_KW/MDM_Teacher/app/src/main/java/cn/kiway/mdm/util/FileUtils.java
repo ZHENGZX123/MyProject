@@ -19,6 +19,8 @@ import cn.kiway.mdm.WXApplication;
  * Created by Android on 2016/4/20.
  */
 public class FileUtils {
+
+   public final static String EnFILEPATH= Environment.getExternalStorageDirectory().getAbsolutePath() + "/kiwaymdm/pic";
     private String SDPATH;
 
     public String getSDPATH() {

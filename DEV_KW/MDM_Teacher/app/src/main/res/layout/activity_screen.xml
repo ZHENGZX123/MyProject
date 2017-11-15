@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ffff"
+                android:orientation="vertical">
 
     <ImageView
         android:id="@+id/iv_show"
@@ -12,12 +13,14 @@
 
     <Button
         android:id="@+id/button8"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
+        android:background="@color/colorAccent"
         android:onClick="OffSrceen"
-        android:text="关闭屏幕共享"/>
+        android:padding="@dimen/_10dp"
+        android:text="关闭屏幕共享"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/_ffffff"/>
 
 
 </RelativeLayout>

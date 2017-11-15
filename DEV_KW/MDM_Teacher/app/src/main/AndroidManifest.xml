@@ -36,6 +36,9 @@
             android:name="cn.kiway.mdm.activity.NoNetActivity"
             android:screenOrientation="portrait"></activity>
 
+        <activity
+            android:name="cn.kiway.mdm.scoket.ScreenActivity"
+            android:screenOrientation="portrait"></activity>
         <receiver android:name="cn.kiway.mdm.broadcast.NetChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />

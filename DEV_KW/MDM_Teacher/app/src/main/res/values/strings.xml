@@ -4,5 +4,8 @@
     <string name="downloadfailure">下载失败，请稍后再试</string>
     <string name="getnewversion">发现新的版本，是否更新？</string>
     <string name="downloading">正在下载新版本，请稍等</string>
-
+    <string name="filepath">"请将文件移动到此目录下（kiwaymdm）"</string>
+    <string name="student_no_inline">学生还没上线</string>
+    <string name="upload">正在上传图片</string>
+    <string name="upload_fialt">上传图片失败，请稍后再试</string>
 </resources>

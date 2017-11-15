@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -74,7 +75,7 @@ public class ScreenActivity extends Activity {
             }
         });
         receiveThread.start();
-        Toast.makeText(this, "初始化完成", Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this, "初始化完成", Toast.LENGTH_SHORT).show();
         sendMsg();//初始化完成在发送命令
         handler4 = new Handler();
         runnable4 = new Runnable() {
@@ -105,7 +106,6 @@ public class ScreenActivity extends Activity {
     }
 
     public void OffSrceen(View view) {
-
         try {
             JSONObject da = new JSONObject();
             da.put("msgType", OFFSCREENSHARE);
@@ -115,6 +115,15 @@ public class ScreenActivity extends Activity {
             e.printStackTrace();
         }
         finish();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Toast.makeText(this, "请通过关闭按钮退出界面", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     public byte[] receive() throws SocketException {

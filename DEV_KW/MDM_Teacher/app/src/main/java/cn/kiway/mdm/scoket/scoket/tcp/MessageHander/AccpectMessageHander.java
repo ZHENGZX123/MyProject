@@ -3,11 +3,7 @@ package cn.kiway.mdm.scoket.scoket.tcp.MessageHander;
 import android.os.Handler;
 import android.os.Message;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import cn.kiway.mdm.activity.MainActivity;
-import cn.kiway.mdm.scoket.db.DbUtils;
 import cn.kiway.mdm.scoket.utils.Logger;
 import cn.kiway.mdm.view.X5WebView;
 
@@ -54,13 +50,13 @@ public class AccpectMessageHander extends Handler {
                 webView.loadUrl(scoketClientDis.replace("msg", (String) msg.obj));
                 break;
             case SUREREPONSE://确认是否听懂  保存到本地数据库
-                try {
-                    webView.loadUrl(accpterMessage.replace("msg", (String) msg.obj));
-                    JSONObject data = new JSONObject((String) msg.obj);
-                    DbUtils.addResponse(activity, data.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                // try {
+                webView.loadUrl(accpterMessage.replace("msg", (String) msg.obj));
+                // JSONObject data = new JSONObject((String) msg.obj);
+                //DbUtils.addResponse(activity, data.toString());
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
                 break;
         }
     }

@@ -4,12 +4,14 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
 import com.leon.lfilepickerlibrary.LFilePicker;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 
@@ -21,10 +23,13 @@ import cn.kiway.mdm.scoket.scoket.tcp.netty.HproseChannelMapStatic;
 import cn.kiway.mdm.scoket.scoket.tcp.netty.PushServer;
 import cn.kiway.mdm.scoket.utils.Logger;
 import cn.kiway.mdm.scoket.utils.WifiUtils;
+import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.view.X5WebView;
 
+import static cn.kiway.mdm.scoket.scoket.tcp.netty.MessageType.SHARE_FILE;
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.NettyServerBootstrap.staute;
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.PushServer.FilePath;
+import static cn.kiway.mdm.util.FileUtils.EnFILEPATH;
 
 /**
  * Created by Administrator on 2017/11/9.
@@ -47,6 +52,7 @@ public class JsAndroidInterface {
     public void scoketOperate(String state) { //1启动，0关闭
         Logger.log("--------------Start----------" + state);
         if (state.equals("1")) {
+            closeServer();
             startServer();
             Logger.log("--------------Start----------");
         } else if (state.equals("0")) {
@@ -103,8 +109,9 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public void multiControl(String userId) {
+        Logger.log("multiControl::::"+userId);
         if (HproseChannelMapStatic.getChannel(userId) == null) {
-            Toast.makeText(activity, "学生还没上线", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, activity.getString(R.string.student_no_inline), Toast.LENGTH_SHORT).show();
             return;
         }
         activity.startActivity(new Intent(activity, ScreenActivity.class).putExtra("clientId", userId));
@@ -119,32 +126,47 @@ public class JsAndroidInterface {
     public static String picPath = "";
 
     @JavascriptInterface
-    public void takePhoto() {
-        picPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/kiwaymdm/pic/" + System
-                .currentTimeMillis() + ".png";
+    public void takePhoto(String token) {
+        activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token);
+        if (!new File(EnFILEPATH).exists())
+            new File(EnFILEPATH).mkdirs();
+        picPath = EnFILEPATH + "/" + System.currentTimeMillis() + ".png";
         Intent intent2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Uri uri = Uri.fromFile(new File(picPath));//为拍摄的图片指定一个存储的路径
         intent2.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         activity.startActivityForResult(intent2, REQUEST_ORIGINAL);
     }
 
-    public static String FILEPER = "";
     public static final int requsetFile = 45612;
 
     @JavascriptInterface
-    public void sendFile(String userId) {//发送文件
-        FILEPER = userId;
-//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT, Uri.parse(FilePath));
-//        intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
-//        intent.addCategory(Intent.CATEGORY_OPENABLE);
-//        activity.startActivityForResult(intent, requsetFile);
+    public void chooseFile() {//选择文件
         new LFilePicker()
                 .withActivity(activity)
-                .withTitle("请将文件移动到此目录下（kiwaymdm）")
+                .withTitle(activity.getString(R.string.filepath))
                 .withRequestCode(requsetFile)
                 .withMutilyMode(true)
                 .withfilePath(FilePath)
                 .start();
+    }
+
+    @JavascriptInterface
+    public void sendFile(String userId, String filePath) {
+        JSONObject da = new JSONObject();
+        try {
+            Logger.log(filePath);
+            Logger.log(filePath.split("kiwaymdm/")[1]);
+            String path = filePath.split("kiwaymdm/")[filePath.split("kiwaymdm/").length - 1];
+            PushServer.hproseSrv.shareFile("/" + path);
+            da.put("msgType", SHARE_FILE);
+            da.put("msg", "/" + path);
+            if (userId.equals("all"))
+                PushServer.hproseSrv.push("ground", da.toString());
+            else
+                PushServer.hproseSrv.push(userId + "owner", da.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @JavascriptInterface
