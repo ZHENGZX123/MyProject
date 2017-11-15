@@ -1670,7 +1670,7 @@ public class Utils {
         return enable_type;
     }
 
-    public static void call(Context c, String number) {
+    public static void call(Activity c, String number) {
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(intent);
@@ -1679,7 +1679,7 @@ public class Utils {
     }
 
 
-    public static void childOperation(final Context c, String type, String message) {
+    public static void childOperation(final Activity c, String type, String message) {
         try {
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
@@ -1695,6 +1695,7 @@ public class Utils {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "childOperation onSuccess = " + ret);
+                    check301(c, ret);
                 }
 
                 @Override
