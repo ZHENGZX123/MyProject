@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -37,25 +38,25 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import cn.kiway.mdm.WXApplication;
-import cn.kiway.mdm.scoket.scoket.tcp.netty.PushServer;
 import cn.kiway.mdm.scoket.utils.Logger;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.FileUtils;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.NetworkUtil;
+import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
 import cn.kiway.mdm.web.JsAndroidInterface;
 import cn.kiway.mdm.web.MyWebViewClient;
 
 import static cn.kiway.mdm.WXApplication.url;
-import static cn.kiway.mdm.scoket.scoket.tcp.netty.MessageType.SHARE_FILE;
 import static cn.kiway.mdm.util.ResultMessage.QRSCAN;
 import static cn.kiway.mdm.util.Utils.getCurrentVersion;
 import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
 import static cn.kiway.mdm.web.JsAndroidInterface.picPath;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile;
 import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
+import static cn.kiway.mdm.web.WebJsCallBack.fileUploadCallback;
 
 
 public class MainActivity extends BaseActivity {
@@ -83,7 +84,13 @@ public class MainActivity extends BaseActivity {
         initData();
         load();
         checkNewVersion();
-
+//        new LFilePicker()
+//                .withActivity(this)
+//                .withTitle(getString(R.string.filepath))
+//                .withRequestCode(requsetFile)
+//                .withMutilyMode(true)
+//                .withfilePath(FilePath)
+//                .start();
     }
 
     private void initView() {
@@ -208,25 +215,60 @@ public class MainActivity extends BaseActivity {
                         }
                     });
                 }
-                Logger.log(filePath);
-                Logger.log(filePath.split("kiwaymdm/")[1]);
-                String path = filePath.split("kiwaymdm/")[filePath.split("kiwaymdm/")
-                        .length - 1];
-                PushServer.hproseSrv.shareFile("/" + path);
-                wv.loadUrl(accpterFilePath.replace("filepah", filePath).replace("fileName", filePath.split("/")
-                        [filePath.split("/").length - 1]));
-                JSONObject da = new JSONObject();
-                da.put("msgType", SHARE_FILE);
-                da.put("msg", "/" + path);
-                PushServer.hproseSrv.push("ground", da.toString());
+                Logger.log(":::::::::::::" + accpterFilePath.replace("fileName", filePath.split("/")
+                        [filePath.split("/").length - 1]).replace("filePath", filePath));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        wv.loadUrl(accpterFilePath.replace("fileName", filePath.split("/")
+                                [filePath.split("/").length - 1]).replace("filePath", filePath));
+                    }
+                });
             } catch (RuntimeException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
                 e.printStackTrace();
             }
         } else if (requestCode == REQUEST_ORIGINAL) {
             String path = picPath;
-            Logger.log(":::::::::::::::" + path);
+            String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
+            File file = new File(path);
+            toast(getString(R.string.upload));
+            ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.show();
+            new Thread() {
+                @Override
+                public void run() {
+                    final String ret = UploadUtil.uploadFile(file, url + "/common/file?accessToken=" + token, file
+                            .getName());
+                    Log.d("test", "upload ret = " + ret);
+                    if (TextUtils.isEmpty(ret)) {
+                        progressDialog.dismiss();
+                        toast(getString(R.string.upload_fialt));
+                        return;
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                //{"statusCode":"200","data":{"size":3980499,"name":"1510711496558.png","key":"file",
+                                // "url":"http:\/\/202.104.136.9:8080\/mdms\/common\/api\/Files\/2381510711508232
+                                // \/download"},"errorCode":null,"errorMsg":null,"StatusCode":"200"}
+                                JSONObject obj = new JSONObject(ret);
+                                if (obj.optInt("StatusCode") != 200) {
+                                    progressDialog.dismiss();
+                                    toast(getString(R.string.upload_fialt));
+                                    return;
+                                }
+                                String url = obj.optJSONObject("data").optString("url");
+                                Log.d("test", "obj = " + obj.toString());
+                                wv.loadUrl(fileUploadCallback.replace("fileName", path.split("/")[path.split("/")
+                                        .length - 1]).replace("filePath", url));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }.start();
         }
     }
 
@@ -507,11 +549,5 @@ public class MainActivity extends BaseActivity {
         startActivity(new Intent(this, NoNetActivity.class));
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        broadCastUdp.isRun = false;
-
-    }
 
 }

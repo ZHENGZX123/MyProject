@@ -162,6 +162,7 @@ public final class KwConnection {
 				new byte[buffer.remaining()];
 		buffer.get(buf);
 		Message qmsg=new Message(buf);
+        qmsg.setStatus(200);
 		if(id!=null)qmsg.setHeader("timeout", id);    	
         outqueue.offer(qmsg);
        // System.out.println(qmsg.toString());
