@@ -71,6 +71,7 @@ import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.activity.ComposeSmsActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
+import cn.kiway.mdm.activity.SendSMSActivity;
 import cn.kiway.mdm.activity.SettingActivity;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.AppCharge;
@@ -1714,6 +1715,11 @@ public class Utils {
             ((ComposeSmsActivity) m).refresh();
             return;
         }
+        if (m instanceof SendSMSActivity) {
+            ((SendSMSActivity) m).refresh();
+            return;
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(m, AlertDialog.THEME_HOLO_LIGHT);
         builder.setMessage("您有新的短信");
         builder.setTitle("提示");
@@ -1726,5 +1732,12 @@ public class Utils {
         builder.setNegativeButton("好的", null);
         AlertDialog bindDialog = builder.create();
         bindDialog.show();
+    }
+
+    public static String longToDate(String time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        java.util.Date date = new Date(Long.parseLong(time));
+        String str = sdf.format(date);
+        return str;
     }
 }

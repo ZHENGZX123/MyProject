@@ -218,6 +218,8 @@ import cn.kiway.mdm.entity.Network;
 import cn.kiway.mdm.entity.SMS;
 import cn.kiway.mdm.entity.Wifi;
 
+import static android.R.attr.type;
+
 
 public class MyDBHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "mdm.db";
@@ -634,14 +636,19 @@ public class MyDBHelper extends SQLiteOpenHelper {
     }
 
     //1打入 2打出
-    public ArrayList<SMS> getAllSMS() {
+    public ArrayList<SMS> getAllSMS(String phone) {
         if (db == null)
             db = getWritableDatabase();
-        Cursor cur = db.query(TABLE_SMS, null, null, null, null, null, "time desc");
+        Cursor cur = null;
+        if (phone == null) {
+            cur = db.query(TABLE_SMS, null, null, null, null, null, null);
+        } else {
+            cur = db.query(TABLE_SMS, null, "phone=?", new String[]{phone + ""}, null, null, null);
+        }
         ArrayList<SMS> smses = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             int id = cur.getInt(cur.getColumnIndex("id"));
-            String phone = cur.getString(cur.getColumnIndex("phone"));
+            phone = cur.getString(cur.getColumnIndex("phone"));
             String content = cur.getString(cur.getColumnIndex("content"));
             String time = cur.getString(cur.getColumnIndex("time"));
             int froms = cur.getInt(cur.getColumnIndex("froms"));

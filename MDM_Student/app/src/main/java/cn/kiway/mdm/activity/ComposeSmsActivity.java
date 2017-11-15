@@ -1,5 +1,6 @@
 package cn.kiway.mdm.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -38,15 +39,19 @@ public class ComposeSmsActivity extends BaseActivity {
         lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
+                //点击回复短信
+                SMS s = SMSs.get(position);
+                Intent i = new Intent(ComposeSmsActivity.this, SendSMSActivity.class);
+                i.putExtra("phone", s.phone);
+                i.putExtra("name", s.name);
+                startActivity(i);
             }
         });
     }
 
     private void initData() {
         SMSs.clear();
-        ArrayList<SMS> temp = new MyDBHelper(this).getAllSMS();
-
+        ArrayList<SMS> temp = new MyDBHelper(this).getAllSMS(null);
         for (SMS s : temp) {
             if (!SMSs.toString().contains(s.phone)) {
                 SMSs.add(s);
