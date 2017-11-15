@@ -115,9 +115,12 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 String startTime = data.optString("startTime");
                 String endTime = data.optString("endTime");
                 if (operation.equals("save")) {
-
+                    context.getSharedPreferences("kiway", 0).edit().putString("shutdown_startTime", startTime).commit();
+                    context.getSharedPreferences("kiway", 0).edit().putString("shutdown_endTime", endTime).commit();
+                    Utils.checkShutDown(MainActivity.instance);
                 } else if (operation.equals("delete")) {
-
+                    context.getSharedPreferences("kiway", 0).edit().putString("shutdown_startTime", "").commit();
+                    context.getSharedPreferences("kiway", 0).edit().putString("shutdown_endTime", "").commit();
                 }
             } else if (command.equals("temporary_app")) {
                 String currentTime = data.optString("currentTime");
