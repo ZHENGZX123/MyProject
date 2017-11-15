@@ -46,15 +46,20 @@ public class ComposeSmsActivity extends BaseActivity {
     private void initData() {
         SMSs.clear();
         ArrayList<SMS> temp = new MyDBHelper(this).getAllSMS();
+
         for (SMS s : temp) {
+            if (!SMSs.toString().contains(s.phone)) {
+                SMSs.add(s);
+            }
+        }
+        for (SMS s : SMSs) {
             Call call = new MyDBHelper(this).getCallByPhone(s.phone);
             if (call != null) {
                 s.name = call.name;
             }
         }
 
-        //按联系人分组
-        SMSs.addAll(temp);
+
         adapter1.notifyDataSetChanged();
     }
 

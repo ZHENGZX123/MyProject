@@ -12,4 +12,11 @@ public class SMS {
     public int froms; //1收到的 2发出的
 
     public String name;//从call表查找name
+
+    @Override
+    public String toString() {
+        return "SMS{" +
+                "phone='" + phone + '\'' +
+                '}';
+    }
 }
