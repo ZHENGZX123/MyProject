@@ -112,6 +112,8 @@ public class SettingActivity extends BaseActivity {
                 new MyDBHelper(SettingActivity.this).deleteWifi(null);
                 new MyDBHelper(SettingActivity.this).deleteNetwork(null);
                 new MyDBHelper(SettingActivity.this).deleteCall(null);
+                new MyDBHelper(SettingActivity.this).deleteSMS(null);
+
             }
         }.start();
     }
