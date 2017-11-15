@@ -26,7 +26,9 @@ import cn.kiway.mdm.entity.Wifi;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 
+import static cn.kiway.mdm.KWApp.MSG_ATTEND_CALSS;
 import static cn.kiway.mdm.KWApp.MSG_FLAGCOMMAND;
+import static cn.kiway.mdm.KWApp.MSG_GET_OUT_OF_CALASS;
 import static cn.kiway.mdm.KWApp.MSG_INSTALL;
 import static cn.kiway.mdm.KWApp.MSG_LANDSCAPE;
 import static cn.kiway.mdm.KWApp.MSG_LAUNCH_APP;
@@ -119,7 +121,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 }
             } else if (command.equals("temporary_app")) {
                 String currentTime = data.optString("currentTime");
-                context.getSharedPreferences("kiway", 0).edit().putLong("app_time", Utils.dateToLong(currentTime)).commit();
+                context.getSharedPreferences("kiway", 0).edit().putLong("app_time", Utils.dateToLong(currentTime))
+                        .commit();
                 context.getSharedPreferences("kiway", 0).edit().putString("app_data", data.toString()).commit();
                 m.what = MSG_LAUNCH_APP;
                 m.obj = data;
@@ -133,7 +136,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 if (!Utils.checkCommandAvailable(currentTime)) {
                     return false;
                 }
-                context.getSharedPreferences("kiway", 0).edit().putLong("lock_time", Utils.dateToLong(currentTime)).commit();
+                context.getSharedPreferences("kiway", 0).edit().putLong("lock_time", Utils.dateToLong(currentTime))
+                        .commit();
             } else if (command.equals("temporary_unlockScreen")) {
                 String currentTime = data.optString("currentTime");
                 if (!Utils.checkCommandAvailable(currentTime)) {
@@ -143,7 +147,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.what = MSG_UNLOCK;
             } else if (command.equals("wifi")) {
                 JSONArray content = data.optJSONArray("content");
-                ArrayList<Wifi> wifis = new GsonBuilder().create().fromJson(content.toString(), new TypeToken<List<Wifi>>() {
+                ArrayList<Wifi> wifis = new GsonBuilder().create().fromJson(content.toString(), new
+                        TypeToken<List<Wifi>>() {
                 }.getType());
                 Wifi wifi = wifis.get(0);
                 if (wifi.operation.equals("save")) {
@@ -157,7 +162,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             } else if (command.equals("app")) {
                 //保存进数据库，并马上执行一次checkAppCharges
                 JSONArray content = data.optJSONArray("content");
-                ArrayList<AppCharge> apps = new GsonBuilder().create().fromJson(content.toString(), new TypeToken<List<AppCharge>>() {
+                ArrayList<AppCharge> apps = new GsonBuilder().create().fromJson(content.toString(), new
+                        TypeToken<List<AppCharge>>() {
                 }.getType());
                 AppCharge app = apps.get(0);
                 if (app.operation.equals("save")) {
@@ -171,7 +177,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 Utils.checkAppCharges(MainActivity.instance);
             } else if (command.equals("network")) {
                 JSONArray content = data.optJSONArray("content");
-                ArrayList<Network> networks = new GsonBuilder().create().fromJson(content.toString(), new TypeToken<List<Network>>() {
+                ArrayList<Network> networks = new GsonBuilder().create().fromJson(content.toString(), new
+                        TypeToken<List<Network>>() {
                 }.getType());
                 Network a = networks.get(0);
                 if (a.operation.equals("save")) {
@@ -225,7 +232,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 //去电的添加、编辑、删除
                 //来电的添加、编辑、删除
                 JSONArray content = data.optJSONArray("content");
-                ArrayList<Call> calls = new GsonBuilder().create().fromJson(content.toString(), new TypeToken<List<Call>>() {
+                ArrayList<Call> calls = new GsonBuilder().create().fromJson(content.toString(), new
+                        TypeToken<List<Call>>() {
                 }.getType());
                 Call c = calls.get(0);
                 if (c.operation.equals("save")) {
@@ -271,6 +279,12 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                         }
                     }
                 }
+            }else if (command.equals("shangke")) {
+                m.what = MSG_ATTEND_CALSS;
+                m.obj = data;
+            } else if (command.equals("xiake")) {
+                m.what = MSG_GET_OUT_OF_CALASS;
+                m.obj = data;
             }
 
             if (KWApp.instance == null) {
@@ -288,7 +302,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
         if (Event.NOTIFICATION_OPENED.equals(event) || Event.NOTIFICATION_CLICK_BTN.equals(event)) {
             int notifyId = extras.getInt(BOUND_KEY.pushNotifyId, 0);
             if (0 != notifyId) {
-                NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                NotificationManager manager = (NotificationManager) context.getSystemService(Context
+                        .NOTIFICATION_SERVICE);
                 manager.cancel(notifyId);
             }
             String content = "收到通知附加消息： " + extras.getString(BOUND_KEY.pushMsgKey);

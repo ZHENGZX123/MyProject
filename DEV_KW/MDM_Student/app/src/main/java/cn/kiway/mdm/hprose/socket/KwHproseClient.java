@@ -22,6 +22,7 @@ public class KwHproseClient {
         System.out.println("-----START------");
         activity = activity2;
         client = new KwHproseTcpClient("tcp://" + tcp + ":30100", conntectionCallback);
+        //client = new KwHproseHttpClient("http://" + tcp + ":30100",conntectionCallback);
         helloClient = client.useService(PushClass.class);
         GroundActions ground = new GroundActions<>(activity2);
         OwnerActions owner = new OwnerActions<>(activity2);

@@ -414,7 +414,7 @@ public class JRFClient extends Thread {
      * if compression is used).
      * @throws IOException
      */
-    public long getFile(String remote, int deflate, String local, int mtu, processCallBack callBack) throws
+    public long getFile(String remote, int deflate, String local, int mtu, DownLoadCallBack callBack) throws
             IOException {
         short num = new MsgGet(remote, deflate, mtu).send(sok);
         long len = 0l;
@@ -424,6 +424,7 @@ public class JRFClient extends Thread {
             infl = new Inflater();
             os = new InflaterOutputStream(os, infl);
         }
+        boolean isDownSuccess=false;
         try {
             Message m;
             byte[] buf;
@@ -437,13 +438,16 @@ public class JRFClient extends Thread {
                 buf = msg.getData();
                 os.write(buf);
                 len += buf.length; // Bytes received, network-wise (use infl.getBytesWritten() to get disk bytes i.e.
-                if (callBack != null)
-                    callBack.process((int) len);
-                if (!msg.hasNext())
+                if (!msg.hasNext()) {
+                    isDownSuccess=true;
                     break;
+                }
             }
+        } catch (Exception e) {
         } finally {
             try {
+                if (isDownSuccess&&callBack!=null)
+                    callBack.success();
                 os.close();
             } catch (IOException e) {
             }
@@ -451,8 +455,10 @@ public class JRFClient extends Thread {
         return len;
     }
 
-    public interface processCallBack {
-        public void process(int len);
+    public interface DownLoadCallBack {
+        public void success();
+
+        public void error();
     }
 
     /**

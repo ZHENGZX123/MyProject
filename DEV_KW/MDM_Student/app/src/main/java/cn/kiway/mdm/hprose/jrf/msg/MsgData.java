@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 
 import cn.kiway.mdm.hprose.jrf.ByteBufferOut;
+import cn.kiway.mdm.hprose.socket.Logger;
 
 /**
  * <p>Data chunk message, used to transfer file chunks between JRF client and server.</p>
@@ -79,6 +80,7 @@ public class MsgData extends MsgFileCmd {
 	@Override
 	protected void decode(byte[] buf) throws IOException {
 		try (DataInputStream dis = new DataInputStream(new ByteArrayInputStream(buf))) {
+
 			fileID = dis.readShort();
 			hasNext = (dis.readByte() != 0);
 			deflate = dis.readByte();
@@ -90,6 +92,7 @@ public class MsgData extends MsgFileCmd {
 	
 	@Override
 	public String toString() {
+
 		return stdToString()+" "+len+" bytes on file "+fileID;
 	}
 	

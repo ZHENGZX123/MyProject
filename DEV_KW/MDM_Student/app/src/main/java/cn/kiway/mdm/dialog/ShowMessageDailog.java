@@ -111,13 +111,8 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                     case REPONSEDIALOG:
                         try {
                             JSONObject data = new JSONObject();
-                            data.put("title", "title");
-                            data.put("schoolId", getContext().getSharedPreferences("kiway", 0).getString("schoolId",
-                                    ""));
-                            data.put("classId", getContext().getSharedPreferences("kiway", 0).getString("classId", ""));
                             data.put("userId", Utils.getIMEI(getContext()));
-                            data.put("type", "1");
-                            data.put("createData", System.currentTimeMillis());
+                            data.put("msg", "1");
                             data.put("msgType", SUREREPONSE);
                             if (KwHproseClient.helloClient != null)
                                 KwHproseClient.helloClient.reponse(data.toString());
@@ -147,13 +142,8 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                     case REPONSEDIALOG:
                         try {
                             JSONObject data = new JSONObject();
-                            data.put("title", "title");
-                            data.put("schoolId", getContext().getSharedPreferences("kiway", 0).getString("schoolId",
-                                    ""));
-                            data.put("classId", getContext().getSharedPreferences("kiway", 0).getString("classId", ""));
                             data.put("userId", Utils.getIMEI(getContext()));
-                            data.put("type", "0");
-                            data.put("createData", System.currentTimeMillis());
+                            data.put("msg", "0");
                             data.put("msgType", SUREREPONSE);
                             if (KwHproseClient.helloClient != null)
                                 KwHproseClient.helloClient.reponse(data.toString());
