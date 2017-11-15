@@ -73,6 +73,7 @@ public class BaseActivity extends Activity {
         //2.关闭settings.失效
         //MDMHelper.getAdapter().setSettingsApplicationDisabled(true);
         //3.设置不可卸载
+        //TODO 是不是因为这个，搞得不能覆盖安装
         List<String> packages = new ArrayList<>();
         packages.add("cn.kiway.mdm");
         MDMHelper.getAdapter().addDisallowedUninstallPackages(packages);

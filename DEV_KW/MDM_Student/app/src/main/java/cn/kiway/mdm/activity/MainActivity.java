@@ -156,8 +156,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     @Override
     protected void onResume() {
         super.onResume();
-        //打开的时候检查一次。。。
+        //1.检查锁屏
         Utils.checkTemperary(this);
+        //2.检查关机
+        Utils.checkShutDown(this);
     }
 
     private void checkIncomingCall() {

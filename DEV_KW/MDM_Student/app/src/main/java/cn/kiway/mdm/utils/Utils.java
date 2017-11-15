@@ -875,6 +875,7 @@ public class Utils {
         }
     }
 
+    //startTime小于endTime
     public static boolean checkInTimes(String startTime, String endTime) throws ParseException {
         DateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         String current = sdf.format(new Date());
@@ -883,6 +884,32 @@ public class Utils {
         Date dtNow = sdf.parse(current);
         if (dtNow.getTime() > dt1.getTime() && dtNow.getTime() < dt2.getTime()) {
             return true;
+        }
+        return false;
+    }
+
+    //startTime可以大于endTime
+    public static boolean checkInTimes2(String startTime, String endTime)
+            throws ParseException {
+        DateFormat sdf = new SimpleDateFormat("HH:mm");
+        String current = sdf.format(new Date());
+        Date dt1 = sdf.parse(startTime);
+        Date dt2 = sdf.parse(endTime);
+        Date dt3 = sdf.parse("23:59");
+        Date dt4 = sdf.parse("00:00");
+        Date dtNow = sdf.parse(current);
+        if (dt2.getTime() > dt1.getTime()) {
+            if (dtNow.getTime() > dt1.getTime()
+                    && dtNow.getTime() < dt2.getTime()) {
+                return true;
+            }
+        } else {
+            if ((dtNow.getTime() > dt1.getTime() && dtNow.getTime() < dt3
+                    .getTime())
+                    || (dtNow.getTime() > dt4.getTime() && dtNow.getTime() < dt2
+                    .getTime())) {
+                return true;
+            }
         }
         return false;
     }
@@ -1354,6 +1381,13 @@ public class Utils {
         return lTime;
     }
 
+    public static String longToDate(String time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        java.util.Date date = new Date(Long.parseLong(time));
+        String str = sdf.format(date);
+        return str;
+    }
+
     public static void checkTemperary(MainActivity c) {
         if (KWApp.instance == null) {
             return;
@@ -1735,10 +1769,36 @@ public class Utils {
         bindDialog.show();
     }
 
-    public static String longToDate(String time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        java.util.Date date = new Date(Long.parseLong(time));
-        String str = sdf.format(date);
-        return str;
+    public static void checkShutDown(MainActivity m) {
+        if (m == null) {
+            return;
+        }
+        try {
+            String shutdown_startTime = m.getSharedPreferences("kiway", 0).getString("shutdown_startTime", "");
+            String shutdown_endTime = m.getSharedPreferences("kiway", 0).getString("shutdown_endTime", "");
+            Log.d("test", "checkShutDown = " + shutdown_startTime + "-" + shutdown_endTime);
+            if (TextUtils.isEmpty(shutdown_startTime)) {
+                return;
+            }
+            if (TextUtils.isEmpty(shutdown_endTime)) {
+                return;
+            }
+            boolean in = checkInTimes2(shutdown_startTime, shutdown_endTime);
+            if (!in) {
+                return;
+            }
+            Log.d("test", "当前时间要关机。。。。。。");
+            //TODO 要结合时间表。。。
+            m.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    //MDMHelper.getAdapter().shutdownDevice();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
