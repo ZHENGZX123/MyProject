@@ -74,6 +74,12 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 return false;
             }
 
+            //FIXME 测试用
+            Message testMsg = new Message();
+            testMsg.what = MSG_TOAST;
+            testMsg.obj = receive;
+            KWApp.instance.mHandler.sendMessage(testMsg);
+
             String dataStr = new JSONObject(receive).getString("data");
             JSONObject data = new JSONObject(dataStr);
             String command = data.optString("command");
@@ -103,7 +109,14 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 if (!Utils.checkCommandAvailable(currentTime)) {
                     return false;
                 }
-                //TODO 判断有没有开始时间-结束时间
+                String operation = data.optString("operation");
+                String startTime = data.optString("startTime");
+                String endTime = data.optString("endTime");
+                if (operation.equals("save")) {
+
+                } else if (operation.equals("delete")) {
+
+                }
             } else if (command.equals("temporary_app")) {
                 String currentTime = data.optString("currentTime");
                 context.getSharedPreferences("kiway", 0).edit().putLong("app_time", Utils.dateToLong(currentTime)).commit();
@@ -264,12 +277,6 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 return false;
             }
             KWApp.instance.mHandler.sendMessage(m);
-
-            //测试用
-            Message testMsg = new Message();
-            testMsg.what = MSG_TOAST;
-            testMsg.obj = receive;
-            KWApp.instance.mHandler.sendMessage(testMsg);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -47,7 +47,7 @@ public class CallActivity extends BaseActivity {
                     startActivity(new Intent(CallActivity.this, UrgentCallActivity.class));
                 } else {
                     Call c = calls.get(position);
-                    Utils.call(getApplicationContext(), c.phone);
+                    Utils.call(CallActivity.this, c.phone);
                 }
             }
         });

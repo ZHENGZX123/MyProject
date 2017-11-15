@@ -40,7 +40,7 @@ public class UrgentCallActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Call c = calls.get(position);
-                Utils.call(getApplicationContext(), c.phone);
+                Utils.call(UrgentCallActivity.this, c.phone);
             }
         });
     }
