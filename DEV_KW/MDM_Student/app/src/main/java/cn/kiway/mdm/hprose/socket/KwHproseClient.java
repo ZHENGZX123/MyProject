@@ -1,5 +1,7 @@
 package cn.kiway.mdm.hprose.socket;
 
+import android.widget.Toast;
+
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.hprose.hprose.net.KwConntectionCallback;
 import cn.kiway.mdm.hprose.hprose.net.KwHproseTcpClient;
@@ -19,6 +21,7 @@ public class KwHproseClient {
 
     public static void connect(MainActivity activity2, String tcp, String userId, KwConntectionCallback
             conntectionCallback) throws Throwable {
+        stop();
         System.out.println("-----START------");
         activity = activity2;
         client = new KwHproseTcpClient("tcp://" + tcp + ":30100", conntectionCallback);
@@ -27,6 +30,7 @@ public class KwHproseClient {
         GroundActions ground = new GroundActions<>(activity2);
         OwnerActions owner = new OwnerActions<>(activity2);
         helloClient.publish(userId);
+        client.setKeepAlive(true);
         if (!client.isSubscribed("ground"))
             client.subscribe("ground", ground);//班级组
         if (!client.isSubscribed(userId + "owner"))
@@ -38,6 +42,15 @@ public class KwHproseClient {
         if (client != null)
             client.close();
         client = null;
+        if (activity != null) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(activity, "下课", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        activity = null;
     }
 }
 

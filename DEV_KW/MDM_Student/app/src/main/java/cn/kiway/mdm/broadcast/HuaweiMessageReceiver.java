@@ -283,6 +283,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                     }
                 }
             }else if (command.equals("shangke")) {
+
                 m.what = MSG_ATTEND_CALSS;
                 m.obj = data;
             } else if (command.equals("xiake")) {

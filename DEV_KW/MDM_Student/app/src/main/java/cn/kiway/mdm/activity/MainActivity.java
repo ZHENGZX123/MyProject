@@ -40,6 +40,7 @@ import cn.kiway.mdm.R;
 import cn.kiway.mdm.adapter.AppListAdapter;
 import cn.kiway.mdm.adapter.MyViewPagerAdapter;
 import cn.kiway.mdm.dialog.CheckPassword;
+import cn.kiway.mdm.dialog.ProgressDialog;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.Call;
@@ -314,8 +315,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void Camera(View view) {
-        Utils.childOperation(this, "useApp", "使用了相机APP");
-//        connectTcp("10.0.10.209");
+        // Utils.childOperation(this, "useApp", "使用了相机APP");
+        connectTcp(KWApp.instance.teacherIp);
 //        int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
 //        if (flag_camera == 0) {
 //            toast("相机功能当前不能使用");
@@ -623,6 +624,12 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     @Override
     public void onConnected(KwConnection conn) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, "上课连接完成", Toast.LENGTH_SHORT).show();
+            }
+        });
         Logger.log("连接完成");
     }
 
@@ -634,16 +641,22 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     @Override
     public void onClose() {
         Logger.log("连接关闭");
+        if (KWApp.instance.isAttenClass)
+            connectTcp(KWApp.instance.teacherIp);
     }
 
     @Override
     public void onError(KwConnection conn, Exception e) {
         Logger.log("连接错误" + e);
+        if (KWApp.instance.isAttenClass)
+            connectTcp(KWApp.instance.teacherIp);
     }
 
     @Override
     public void onTimeout(KwConnection conn, TimeoutType type) {
         Logger.log("连接超时" + type);
+        if (KWApp.instance.isAttenClass)
+            connectTcp(KWApp.instance.teacherIp);
     }
 
 
@@ -685,6 +698,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 stopService(new Intent(getApplicationContext(), FxService.class));
                 Toast.makeText(MainActivity.this, "停止共享屏幕了", Toast.LENGTH_SHORT)
                         .show();
+                //  connectTcp();
             }
         });
     }
@@ -703,11 +717,17 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
     }
 
+    ShowMessageDailog dailog;
+    int showI = -1;
+
     public void Session(final int i) {
+        if (showI == i && dailog != null && dailog.isShowing())
+            return;
+        showI = i;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ShowMessageDailog dailog = new ShowMessageDailog(MainActivity.this);
+                dailog = new ShowMessageDailog(MainActivity.this);
                 dailog.setCancelable(false);
                 if (i == SIGN) {
                     dailog.setShowMessage("老师上课签到，请你点击确定确认签到上课", SIGNDIALOG);
@@ -726,13 +746,34 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         });
     }
 
+    ProgressDialog progressDialog;
+    String proData = "";
 
-    public void connectTcp(String ip) {
-        try {
-            KwHproseClient.connect(this, ip, Utils.getIMEI(this), this);
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
+    public void downloadFile(final String data) {
+        if (proData.equals(data) && progressDialog != null && progressDialog.isShowing())
+            return;
+        proData = data;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog = new ProgressDialog(MainActivity.this, data);
+                progressDialog.show();
+            }
+        });
+    }
+
+    public void connectTcp(final String ip) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    KwHproseClient.connect(MainActivity.this, ip, Utils.getIMEI(MainActivity.this), MainActivity.this);
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+            }
+        });
+
     }
 }
 

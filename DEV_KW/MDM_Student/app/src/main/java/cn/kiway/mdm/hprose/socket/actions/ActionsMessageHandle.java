@@ -47,6 +47,7 @@ public class ActionsMessageHandle {
 
     public static void MessageHandle(Context context, String s) {
         try {
+
             JSONObject data = new JSONObject(s);
             int msgType = data.optInt("msgType");
             if (msgType == SIGN) {//签到
