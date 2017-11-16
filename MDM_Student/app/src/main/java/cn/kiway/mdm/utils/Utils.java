@@ -1177,6 +1177,7 @@ public class Utils {
                             Log.d("test", "url = " + url);
                             RequestParams param = new RequestParams();
                             param.put("operation", "invalidate");
+                            param.put("froms", "studentDevice");
                             Log.d("test", "param = " + param.toString());
                             client.post(c, url, param, new TextHttpResponseHandler() {
 
@@ -1316,10 +1317,10 @@ public class Utils {
             param.put("mobileModel", Build.MODEL);
             param.put("mobileBrand", Build.BRAND);
             param.put("IMEI", imei);
-            param.put("id", "");
             param.put("platform", "Android");
             param.put("token", token);
             param.put("operation", "login");
+            param.put("froms", "studentDevice");
             Log.d("test", "param = " + param.toString());
             client.post(c, url, param, new TextHttpResponseHandler() {
 
@@ -1722,6 +1723,7 @@ public class Utils {
             param.put("IMEI", getIMEI(c));
             param.put("type", type);
             param.put("message", message);
+            param.put("froms", "studentDevice");
             Log.d("test", "param = " + param.toString());
             String url = server + "device/parent/child/operation";
             Log.d("test", "childOperation = " + url);

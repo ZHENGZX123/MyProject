@@ -2,6 +2,7 @@ package cn.kiway.mdm.adapter;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,29 +12,32 @@ import java.util.List;
  */
 
 public class JiChengShiXunAdapter implements IMDMAdapter {
+
+    private Context c;
+
     @Override
     public void init(Context c) {
-
+        this.c = c;
     }
 
     @Override
     public void init(Context c, ComponentName name) {
-
+        this.c = c;
     }
 
     @Override
     public void setWifiDisabled(boolean disabled) {
-
+        Log.d("test", "没有对应实现");
     }
 
     @Override
     public void setVoiceDisabled(boolean disabled) {
-
+        Log.d("test", "没有对应实现");
     }
 
     @Override
     public void setDataConnectivityDisabled(boolean disabled) {
-
+        Log.d("test", "没有对应实现");
     }
 
     @Override
