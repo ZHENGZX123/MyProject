@@ -37,17 +37,21 @@ public class PushServer {
 
     public static void startHprose(AccpectMessageHander accpectMessageHander) {
         try {
+            if (hproseSrv != null && hproseSrv.isStarted())
+                return;
+            stopHprose();
             AttendClass.setAccpectMessageHander(accpectMessageHander);
             PushClass.setAccpectMessageHander(accpectMessageHander);
-            HproseChannelMapStatic.removeAll();//初始化话
+           // HproseChannelMapStatic.removeAll();//初始化话
             hproseSrv = new KwHproseTcpServer("0.0.0.0", 30100, accpectMessageHander);
             hproseSrv.add(AttendClass.class);
             hproseSrv.add(PushClass.class);
             hproseSrv.start();
-            File file=new File(FilePath);
+            File file = new File(FilePath);
             if (!file.exists())
                 file.mkdirs();
             hproseSrv.setSharedir(FilePath + "/");
+
             Logger.log("开启：：：hprose server start---------------");
         } catch (IOException e) {
             e.printStackTrace();

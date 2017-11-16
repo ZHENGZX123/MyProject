@@ -211,7 +211,8 @@ public class MainActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(MainActivity.this, "请选择 kiwaymdm 下面的文件", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, getString(R.string.choose_file), Toast.LENGTH_SHORT)
+                                    .show();
                         }
                     });
                 }
@@ -240,21 +241,17 @@ public class MainActivity extends BaseActivity {
                     final String ret = UploadUtil.uploadFile(file, url + "/common/file?accessToken=" + token, file
                             .getName());
                     Log.d("test", "upload ret = " + ret);
-                    if (TextUtils.isEmpty(ret)) {
-                        progressDialog.dismiss();
-                        toast(getString(R.string.upload_fialt));
-                        return;
-                    }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                //{"statusCode":"200","data":{"size":3980499,"name":"1510711496558.png","key":"file",
-                                // "url":"http:\/\/202.104.136.9:8080\/mdms\/common\/api\/Files\/2381510711508232
-                                // \/download"},"errorCode":null,"errorMsg":null,"StatusCode":"200"}
+                                progressDialog.dismiss();
+                                if (TextUtils.isEmpty(ret)) {
+                                    toast(getString(R.string.upload_fialt));
+                                    return;
+                                }
                                 JSONObject obj = new JSONObject(ret);
                                 if (obj.optInt("StatusCode") != 200) {
-                                    progressDialog.dismiss();
                                     toast(getString(R.string.upload_fialt));
                                     return;
                                 }

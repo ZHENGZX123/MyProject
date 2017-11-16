@@ -4,8 +4,6 @@ import java.nio.channels.SocketChannel;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import io.netty.channel.Channel;
-
 /**
  * Created by pangff on 16/1/16.
  */
@@ -33,11 +31,11 @@ public class HproseChannelMapStatic {
         return "";
     }
 
-    public static void sendAllChannel(String msg) {
-        for (Map.Entry entry : channelMap.entrySet()) {
-            ((Channel) entry.getValue()).writeAndFlush(msg);
-        }
-    }
+//    public static void sendAllChannel(String msg) {
+//        for (Map.Entry entry : channelMap.entrySet()) {
+//            ((Channel) entry.getValue()).writeAndFlush(msg);
+//        }
+//    }
 
     public static void removeAll() {
         channelMap = new ConcurrentHashMap();
