@@ -4,6 +4,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.mdm.MdmPolicyManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,15 +16,18 @@ import java.util.List;
 public class JiChengShiXunAdapter implements IMDMAdapter {
 
     private Context c;
+    private MdmPolicyManager mManager;
 
     @Override
     public void init(Context c) {
         this.c = c;
+        mManager = new MdmPolicyManager(c);
     }
 
     @Override
     public void init(Context c, ComponentName name) {
         this.c = c;
+        mManager = new MdmPolicyManager(c);
     }
 
     @Override
@@ -42,27 +47,27 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
 
     @Override
     public void setUSBDataDisabled(boolean disabled) {
-
+        mManager.setUsbDebuggingEnabled(!disabled);
     }
 
     @Override
     public void setExternalStorageDisabled(boolean disabled) {
-
+        mManager.setSdCardState(!disabled);
     }
 
     @Override
     public void setStatusBarExpandPanelDisabled(boolean disabled) {
-
+        mManager.setStatusBarDisabled(!disabled);
     }
 
     @Override
     public void setTaskButtonDisabled(boolean disabled) {
-
+        mManager.captureRecentKey(disabled ? 0 : 1);
     }
 
     @Override
     public void setHomeButtonDisabled(boolean disabled) {
-
+        mManager.captureHomeKey(disabled ? 0 : 1);
     }
 
     @Override

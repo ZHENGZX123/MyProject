@@ -104,6 +104,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //1.开启服务
         initService();
         //2.初始化界面
+        initView();
         initData(getListdata(AppListUtils.getAppListData(this)));
         //4.上报位置
         uploadStatus();
