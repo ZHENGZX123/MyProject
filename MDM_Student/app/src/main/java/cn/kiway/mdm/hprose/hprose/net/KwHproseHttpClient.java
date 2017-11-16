@@ -38,14 +38,15 @@ import hprose.util.concurrent.Threads;
 public class KwHproseHttpClient extends HproseClient {
     private String uri;
     KwConntectionCallback conntectionCallback;
-    public long getFile(String local, String remote,JRFClient.DownLoadCallBack callBack) {
+
+    public long getFile(String local, String remote, JRFClient.DownLoadCallBack callBack) {
         long len = 0l;
         JRFClient cli = null;
         try {
             URI u = new URI(uri);
             cli = new JRFClient(new InetSocketAddress(u.getHost(), u.getPort() + 10));
             cli.start();
-            len = cli.getFile(remote, 3, local, 1500,callBack);
+            len = cli.getFile(remote, 3, local, 1500, callBack);
             System.out.println("len=" + len);
             cli.requestStop();
             cli.join();
@@ -68,7 +69,7 @@ public class KwHproseHttpClient extends HproseClient {
             URI u = new URI(uri);
             cli = new JRFClient(new InetSocketAddress(u.getHost(), u.getPort() + 10));
             cli.start();
-            len = cli.getFile(remote, 3, local, 1500,null);
+            len = cli.getFile(remote, 3, local, 1500, null);
             System.out.println("len=" + len);
             cli.requestStop();
             cli.join();
@@ -83,7 +84,9 @@ public class KwHproseHttpClient extends HproseClient {
         }
         return len;
     }
+
     private static volatile ExecutorService pool = Executors.newCachedThreadPool();
+
     static {
         Threads.registerShutdownHandler(new Runnable() {
             public void run() {
@@ -93,6 +96,7 @@ public class KwHproseHttpClient extends HproseClient {
             }
         });
     }
+
     private final ConcurrentHashMap<String, String> headers = new ConcurrentHashMap<String, String>();
     private static boolean disableGlobalCookie = false;
     private static CookieManager globalCookieManager = new CookieManager();
@@ -120,10 +124,11 @@ public class KwHproseHttpClient extends HproseClient {
 
     public KwHproseHttpClient() {
         super();
-}
-     public KwHproseHttpClient(String uri,KwConntectionCallback conntectionCallback) {
+    }
+
+    public KwHproseHttpClient(String uri, KwConntectionCallback conntectionCallback) {
         super(uri);
-         this.uri=uri;
+        this.uri = uri;
         this.conntectionCallback = conntectionCallback;
     }
 
@@ -170,8 +175,7 @@ public class KwHproseHttpClient extends HproseClient {
                 !nl.equals("host")) {
             if (value == null) {
                 headers.remove(name);
-            }
-            else {
+            } else {
                 headers.put(name, value);
             }
         }
@@ -255,16 +259,15 @@ public class KwHproseHttpClient extends HproseClient {
         if (proxyHost != null) {
             prop.put("http.proxyHost", proxyHost);
             prop.put("http.proxyPort", Integer.toString(proxyPort));
-        }
-        else {
+        } else {
             prop.remove("http.proxyHost");
             prop.remove("http.proxyPort");
         }
-        HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         //this.conntectionCallback.onConnected();
         if (url.getProtocol().equals("https")) {
-            if (hv != null) ((HttpsURLConnection)conn).setHostnameVerifier(hv);
-            if (sslsf != null) ((HttpsURLConnection)conn).setSSLSocketFactory(sslsf);
+            if (hv != null) ((HttpsURLConnection) conn).setHostnameVerifier(hv);
+            if (sslsf != null) ((HttpsURLConnection) conn).setSSLSocketFactory(sslsf);
         }
         conn.setConnectTimeout(timeout);
         conn.setReadTimeout(timeout);
@@ -274,8 +277,7 @@ public class KwHproseHttpClient extends HproseClient {
         if (keepAlive) {
             conn.setRequestProperty("Connection", "keep-alive");
             conn.setRequestProperty("Keep-Alive", Integer.toString(keepAliveTimeout));
-        }
-        else {
+        } else {
             conn.setRequestProperty("Connection", "close");
         }
         if (proxyUser != null && proxyPass != null) {
@@ -285,7 +287,7 @@ public class KwHproseHttpClient extends HproseClient {
         for (Entry<String, String> entry : headers.entrySet()) {
             conn.setRequestProperty(entry.getKey(), entry.getValue());
         }
-        Map<String, List<String>> header = (Map<String, List<String>>)(context.get("httpHeader"));
+        Map<String, List<String>> header = (Map<String, List<String>>) (context.get("httpHeader"));
         if (header != null) {
             for (Entry<String, List<String>> entry : header.entrySet()) {
                 String key = entry.getKey();
@@ -305,15 +307,14 @@ public class KwHproseHttpClient extends HproseClient {
             ByteBufferStream stream = new ByteBufferStream(request);
             stream.writeTo(ostream);
             ostream.flush();
-        }
-        finally {
+        } finally {
             if (ostream != null) ostream.close();
         }
         context.set("httpHeader", conn.getHeaderFields());
         List<String> cookieList = new ArrayList<String>();
         int i = 1;
         String key;
-        while((key=conn.getHeaderFieldKey(i)) != null) {
+        while ((key = conn.getHeaderFieldKey(i)) != null) {
             if (key.equalsIgnoreCase("set-cookie") ||
                     key.equalsIgnoreCase("set-cookie2")) {
                 cookieList.add(conn.getHeaderField(i));
@@ -328,8 +329,7 @@ public class KwHproseHttpClient extends HproseClient {
             response.readFrom(istream);
             response.flip();
             return response.buffer;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             InputStream estream = null;
             try {
                 estream = conn.getErrorStream();
@@ -337,16 +337,13 @@ public class KwHproseHttpClient extends HproseClient {
                     response.readFrom(estream);
                     response.flip();
                     return response.buffer;
-                }
-                else {
+                } else {
                     throw e;
                 }
-            }
-            finally {
+            } finally {
                 if (estream != null) estream.close();
             }
-        }
-        finally {
+        } finally {
             if (istream != null) istream.close();
         }
     }
@@ -358,8 +355,7 @@ public class KwHproseHttpClient extends HproseClient {
             public void run() {
                 try {
                     promise.resolve(syncSendAndReceive(request, context));
-                }
-                catch (Throwable ex) {
+                } catch (Throwable ex) {
                     promise.reject(ex);
                 }
             }

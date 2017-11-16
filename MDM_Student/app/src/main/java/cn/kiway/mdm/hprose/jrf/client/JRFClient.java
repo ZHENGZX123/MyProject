@@ -397,6 +397,8 @@ public class JRFClient extends Thread {
         }
     }
 
+    DownLoadCallBack callBack;
+
     /**
      * Retrieve a remote file completely, without using {@link RemoteInputStream}. This method is preferred when
      * a whole file is to be copied locally, especially if compression is to be used, as it compresses the whole
@@ -418,13 +420,14 @@ public class JRFClient extends Thread {
             IOException {
         short num = new MsgGet(remote, deflate, mtu).send(sok);
         long len = 0l;
+        this.callBack = callBack;
         OutputStream os = new BufferedOutputStream(new FileOutputStream(local));
         Inflater infl = null;
         if (deflate > 0) {
             infl = new Inflater();
             os = new InflaterOutputStream(os, infl);
         }
-        boolean isDownSuccess=false;
+        boolean isDownSuccess = false;
         try {
             Message m;
             byte[] buf;
@@ -439,14 +442,16 @@ public class JRFClient extends Thread {
                 os.write(buf);
                 len += buf.length; // Bytes received, network-wise (use infl.getBytesWritten() to get disk bytes i.e.
                 if (!msg.hasNext()) {
-                    isDownSuccess=true;
+                    isDownSuccess = true;
                     break;
                 }
             }
         } catch (Exception e) {
+            cn.kiway.mdm.hprose.socket.Logger.log("--------ee----------");
         } finally {
+            cn.kiway.mdm.hprose.socket.Logger.log("------------------");
             try {
-                if (isDownSuccess&&callBack!=null)
+                if (isDownSuccess && callBack != null)
                     callBack.success();
                 os.close();
             } catch (IOException e) {
@@ -530,6 +535,8 @@ public class JRFClient extends Thread {
                 continue;
             } catch (IOException e) {
                 if (goOn) {
+                    if (callBack != null)
+                        callBack.error();
                     log.warning(getName() + ": Exception while processing messages. Closing connection: " + e
                             .getClass().getSimpleName() + " - " + e.getMessage());
                     goOn = false;
