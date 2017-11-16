@@ -12,6 +12,7 @@ import android.widget.Toast;
 import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.entity.SMS;
 import cn.kiway.mdm.utils.MyDBHelper;
+import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.KWApp.MSG_SMS;
 
@@ -38,6 +39,13 @@ public class SmsReceiver extends BroadcastReceiver {
                 long msgDate = messages[0].getTimestampMillis();
                 Log.e("test", "message from: " + msgAddress + ", message body: " + msgBody
                         + ", message date: " + msgDate);
+
+                //使用来电白名单、来电黑名单
+                boolean enable = Utils.checkCallEnable(context, msgAddress);
+                if (!enable) {
+                    Log.d("test", "该短信被拦截");
+                    return;
+                }
                 Toast.makeText(context, "接到新的短信", Toast.LENGTH_SHORT).show();
 
                 SMS s = new SMS();

@@ -1801,4 +1801,40 @@ public class Utils {
         }
 
     }
+
+    public static boolean checkCallEnable(Context c, String incomingNumber) {
+        //true不用挂断，false挂断
+
+        int enable_type = Utils.getEnable_Call_Come(c);
+        Log.d("test", "enable_type = " + enable_type);
+        if (enable_type == 0) {
+            Log.d("test", "后台没有设置过call，或者设置过都清除了");
+            return true;
+        }
+        ArrayList<Call> calls = new MyDBHelper(c).getAllCalls(1);
+        //1.白名单启用
+        if (enable_type == 1) {
+            boolean in = false;
+            for (Call n : calls) {
+                if (incomingNumber.equals(n.phone)) {
+                    in = true;
+                    break;
+                }
+            }
+            return in;
+        }
+        //黑名单启用
+        if (enable_type == 2) {
+            boolean in = false;
+            for (Call n : calls) {
+                if (incomingNumber.equals(n.phone)) {
+                    in = true;
+                    break;
+                }
+            }
+            return !in;
+        }
+        return false;
+    }
+
 }

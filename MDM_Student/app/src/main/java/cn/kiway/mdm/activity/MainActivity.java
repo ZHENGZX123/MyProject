@@ -42,7 +42,6 @@ import cn.kiway.mdm.dialog.CheckPassword;
 import cn.kiway.mdm.dialog.ProgressDialog;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.entity.App;
-import cn.kiway.mdm.entity.Call;
 import cn.kiway.mdm.hprose.hprose.net.KwConnection;
 import cn.kiway.mdm.hprose.hprose.net.KwConntectionCallback;
 import cn.kiway.mdm.hprose.screen.FxService;
@@ -53,7 +52,6 @@ import cn.kiway.mdm.utils.AppListUtils;
 import cn.kiway.mdm.utils.AppReceiverIn;
 import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.LocationUtils;
-import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 import hprose.net.TimeoutType;
 
@@ -574,7 +572,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             Log.d("test", "onCallStateChanged state = " + state + " , incomingNumber = " + incomingNumber);
             // 如果是响铃状态,检测拦截模式是否是电话拦截,是挂断
             if (state == TelephonyManager.CALL_STATE_RINGING) {
-                boolean enable = checkCallEnable(incomingNumber);
+                boolean enable = Utils.checkCallEnable(getApplicationContext(), incomingNumber);
                 Log.d("test", "checkCallEnable " + incomingNumber + " enable = " + enable);
                 if (!enable) {
                     MDMHelper.getAdapter().hangupCalling();
@@ -582,39 +580,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             }
         }
 
-        //true不用挂断，false挂断
-        private boolean checkCallEnable(String incomingNumber) {
-            int enable_type = Utils.getEnable_Call_Come(getApplicationContext());
-            Log.d("test", "enable_type = " + enable_type);
-            if (enable_type == 0) {
-                Log.d("test", "后台没有设置过call，或者设置过都清除了");
-                return true;
-            }
-            ArrayList<Call> calls = new MyDBHelper(getApplicationContext()).getAllCalls(1);
-            //1.白名单启用
-            if (enable_type == 1) {
-                boolean in = false;
-                for (Call n : calls) {
-                    if (incomingNumber.equals(n.phone)) {
-                        in = true;
-                        break;
-                    }
-                }
-                return in;
-            }
-            //黑名单启用
-            if (enable_type == 2) {
-                boolean in = false;
-                for (Call n : calls) {
-                    if (incomingNumber.equals(n.phone)) {
-                        in = true;
-                        break;
-                    }
-                }
-                return !in;
-            }
-            return false;
-        }
+
     }
 
     @Override
