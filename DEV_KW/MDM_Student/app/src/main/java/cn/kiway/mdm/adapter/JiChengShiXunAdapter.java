@@ -107,7 +107,9 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
 
     @Override
     public void addDisallowedUninstallPackages(List<String> packageNames) {
-
+        for (String s : packageNames) {
+            mManager.appNoUnInstallListWrite(s);
+        }
     }
 
     @Override
@@ -122,12 +124,14 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
 
     @Override
     public void addNetworkAccessBlackList(ArrayList<String> addDomainList) {
-
+        for (String s : addDomainList) {
+            mManager.addNetworkAccessWhitelistRule(s);
+        }
     }
 
     @Override
     public void setWIFIeditDisabled(boolean b) {
-
+        Log.d("test", "setWIFIeditDisabled没有对应实现");
     }
 
     @Override
@@ -187,22 +191,23 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
 
     @Override
     public void addInstallPackageBlackList(ArrayList<String> packageNames) {
-
+        Log.d("test", "addInstallPackageBlackList没有对应实现");
     }
 
     @Override
     public void addDisallowedRunningApp(ArrayList<String> packageNames) {
-
+        mManager.setDisableApplication(packageNames);
     }
 
     @Override
     public List<String> getDisallowedRunningApp() {
+        Log.d("test", "getDisallowedRunningApp没有对应实现");
         return null;
     }
 
     @Override
     public void removeDisallowedRunningApp(ArrayList<String> packageNames) {
-
+        Log.d("test", "removeDisallowedRunningApp没有对应实现");
     }
 
     @Override
