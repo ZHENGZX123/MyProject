@@ -16,6 +16,8 @@ import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.provider.Telephony;
 import android.support.v4.view.ViewPager;
@@ -83,7 +85,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private int totalPage; //总的页数
     private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
 
-    private boolean stop;
     public static MainActivity instance;
     private TelephonyManager telephonyManager;
     private MyPhoneStateListener myPhoneStateListener;
@@ -91,12 +92,15 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private SensorManager mSensorManager;
     private Sensor mSensor;
 
-
-    String ip;//tcp  ip地址
-
     public static final int LOGOUT = 999;
     public static final int USAGE_STATS = 1101;
     public static final int SCREEN = 1102;
+
+
+    private static final int MSG_CHECK_SETTING = 1;
+    private static final int MSG_CHECK_COMMAND = 2;
+    private static final int MSG_UPLOAD = 3;
+    private static final int MSG_GET_COMMAND = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,8 +137,63 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         registerSensor();
         //15.设置默认短信app
         setDefaultSMSApp();
-
     }
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_CHECK_SETTING: {
+                    String runningAPP = Utils.getRunningAPP(MainActivity.this);
+                    if (runningAPP.equals("com.android.settings")) {
+                        //返回MDM桌面
+                        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.mdm");
+                        startActivity(intent);
+                    }
+                    mHandler.sendEmptyMessageDelayed(MSG_CHECK_SETTING, 1000);
+                }
+                break;
+                case MSG_CHECK_COMMAND: {
+                    Log.d("test", "检查开始");
+                    //1.检查wifi
+                    Utils.checkWifis(MainActivity.this);
+                    Utils.checkAppCharges(MainActivity.this);
+                    Utils.checkTemperary(MainActivity.this);
+                    Utils.checkShutDown(MainActivity.this);
+                    Log.d("test", "检查结束");
+                    mHandler.sendEmptyMessageDelayed(MSG_CHECK_COMMAND, 60 * 1000);
+                }
+                break;
+                case MSG_UPLOAD: {
+                    Location location = LocationUtils.getInstance(MainActivity.this).showLocation();
+                    if (location != null) {
+                        String address = "纬度：" + location.getLatitude() + "经度：" + location.getLongitude();
+                        Log.d("test", address);
+                        Utils.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude());
+                    }
+                    //2.获取电量，如果电量1%，上报一下
+                    Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+                    int level = intent.getIntExtra("level", 0);
+                    if (level < 5) {
+                        Utils.deviceRuntime(MainActivity.this, "2", true);
+                    }
+                    mHandler.sendEmptyMessageDelayed(MSG_CHECK_COMMAND, 10 * 60 * 1000);
+                }
+                break;
+                case MSG_GET_COMMAND: {
+                    Utils.appCharge(MainActivity.this);
+                    Utils.networkDeviceCharge(MainActivity.this);
+                    Utils.wifi(MainActivity.this);
+                    Utils.appFunction(MainActivity.this);
+                    Utils.getCalls(MainActivity.this);
+                    mHandler.sendEmptyMessageDelayed(MSG_GET_COMMAND, 60 * 60 * 1000);
+                }
+                break;
+            }
+        }
+    };
+
 
     private void initService() {
         intent = new Intent(MainActivity.this, FxService.class);
@@ -177,24 +236,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void checkSettings() {
-        new Thread() {
-            @Override
-            public void run() {
-                while (!stop) {
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    String runningAPP = Utils.getRunningAPP(MainActivity.this);
-                    if (runningAPP.equals("com.android.settings")) {
-                        //返回MDM桌面
-                        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.mdm");
-                        startActivity(intent);
-                    }
-                }
-            }
-        }.start();
+        mHandler.sendEmptyMessage(MSG_CHECK_SETTING);
     }
 
     private void checkSimCard() {
@@ -239,77 +281,22 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void getCommand() {
-        new Thread() {
-            @Override
-            public void run() {
-                Utils.appCharge(MainActivity.this);
-                Utils.networkDeviceCharge(MainActivity.this);
-                Utils.wifi(MainActivity.this);
-                Utils.appFunction(MainActivity.this);
-                Utils.getCalls(MainActivity.this);
-            }
-        }.start();
+        mHandler.sendEmptyMessage(MSG_GET_COMMAND);
     }
 
     private void checkCommand() {
-        new Thread() {
-            @Override
-            public void run() {     //10秒后开始检查
-                try {
-                    sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                while (!stop) {
-                    Log.d("test", "检查开始");
-                    //1.检查wifi
-                    Utils.checkWifis(MainActivity.this);
-                    Utils.checkAppCharges(MainActivity.this);
-                    Utils.checkTemperary(MainActivity.this);
-                    Log.d("test", "检查结束");
-                    try {
-                        sleep(1000 * 60);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }.start();
+        mHandler.sendEmptyMessageDelayed(MSG_CHECK_COMMAND, 10000);
+
     }
 
     private void initView() {
-        stop = false;
         dialog = new CheckPassword(this, this);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         group = (LinearLayout) findViewById(R.id.points);
     }
 
     private void uploadStatus() {
-        new Thread() {
-            @Override
-            public void run() {
-                while (!stop) {
-                    //1.上报位置：经纬度
-                    Location location = LocationUtils.getInstance(MainActivity.this).showLocation();
-                    if (location != null) {
-                        String address = "纬度：" + location.getLatitude() + "经度：" + location.getLongitude();
-                        Log.d("test", address);
-                        Utils.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude());
-                    }
-                    //2.获取电量，如果电量1%，上报一下
-                    Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-                    int level = intent.getIntExtra("level", 0);
-                    if (level < 5) {
-                        Utils.deviceRuntime(MainActivity.this, "2", true);
-                    }
-                    try {
-                        sleep(10 * 60 * 1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }.start();
+        mHandler.sendEmptyMessage(MSG_UPLOAD);
     }
 
     public void Camera(View view) {
@@ -487,10 +474,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     protected void onDestroy() {
         super.onDestroy();
         Log.d("test", "Main onDestroy");
-        stop = true;
         unregisterReceiver(mReceiver);
         telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_NONE);
         mSensorManager.unregisterListener(this);
+        mHandler.removeCallbacksAndMessages(null);
     }
 
     /**
@@ -579,8 +566,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 }
             }
         }
-
-
     }
 
     @Override
@@ -664,7 +649,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 stopService(new Intent(getApplicationContext(), FxService.class));
                 Toast.makeText(MainActivity.this, "停止共享屏幕了", Toast.LENGTH_SHORT)
                         .show();
-                //  connectTcp();
             }
         });
     }
