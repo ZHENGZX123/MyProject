@@ -37,7 +37,6 @@ public class CallActivity extends BaseActivity {
         adapter1 = new MyAdapter();
         lv1.setAdapter(adapter1);
 
-        initData();
 
         lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -51,6 +50,12 @@ public class CallActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
     }
 
     private void initData() {
