@@ -55,7 +55,8 @@ public class KWApp extends Application {
     public static final int MSG_ATTEND_CALSS = 15;//上课
     public static final int MSG_GET_OUT_OF_CALASS = 16;//下课
     public static final int MSG_SMS = 17;//下课
-
+    public boolean isAttenClass = false;
+    public String teacherIp = "192.168.43.172";
     public static boolean temporary_app = false;
 
     @Override
@@ -81,8 +82,10 @@ public class KWApp extends Application {
             } else if (msg.what == MSG_LOCK) {
                 //强制锁屏
                 MDMHelper.getAdapter().setBackButtonDisabled(true);
-                startActivity(new Intent(getApplicationContext(), ScreenActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                //DevicePolicyManager mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+                startActivity(new Intent(getApplicationContext(), ScreenActivity.class).addFlags(Intent
+                        .FLAG_ACTIVITY_NEW_TASK));
+                //DevicePolicyManager mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context
+                // .DEVICE_POLICY_SERVICE);
                 //mDevicePolicyManager.lockNow();
             } else if (msg.what == MSG_UNLOCK) {
                 //解除锁屏
@@ -92,7 +95,8 @@ public class KWApp extends Application {
                 }
                 //PowerManager mPowerManager = ((PowerManager) getSystemService(POWER_SERVICE));
                 //PowerManager.WakeLock mScreenLock = mPowerManager.newWakeLock(
-                //        PowerManager.ACQUIRE_CAUSES_WAKEUP //该flag使能屏幕关闭时，也能点亮屏幕（通常的wakelock只能维持屏幕处于一直开启状态，如果灭屏时，是不会自动点亮的）
+                //        PowerManager.ACQUIRE_CAUSES_WAKEUP
+                // 该flag使能屏幕关闭时，也能点亮屏幕（通常的wakelock只能维持屏幕处于一直开启状态，如果灭屏时，是不会自动点亮的）
                 //                | PowerManager.SCREEN_DIM_WAKE_LOCK
                 //                | PowerManager.ON_AFTER_RELEASE, "screenOnWakeLock");
                 //mScreenLock.acquire();
@@ -137,9 +141,11 @@ public class KWApp extends Application {
                 Utils.showSMSDialog(KWApp.instance.currentActivity, (SmsMessage) msg.obj);
             } else if (msg.what == MSG_ATTEND_CALSS) {
                 //上课
-                activity.connectTcp("");
-            } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
-                //下课
+                teacherIp = ((JSONObject) msg.obj).optString("ip");
+                activity.connectTcp(teacherIp);
+                isAttenClass = true;
+            } else if (msg.what == MSG_GET_OUT_OF_CALASS) {//下课
+                isAttenClass = false;
                 KwHproseClient.stop();
             }
         }

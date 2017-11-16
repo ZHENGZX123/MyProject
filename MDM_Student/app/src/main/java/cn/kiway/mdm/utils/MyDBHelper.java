@@ -210,10 +210,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import cn.kiway.mdm.entity.AppCharge;
 import cn.kiway.mdm.entity.Call;
+import cn.kiway.mdm.entity.File;
 import cn.kiway.mdm.entity.Network;
 import cn.kiway.mdm.entity.SMS;
 import cn.kiway.mdm.entity.Wifi;
@@ -231,24 +236,31 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_WIFI = "Wifi";
     private static final String CREATE_TABLE_WIFI = " create table  IF NOT EXISTS "
             + TABLE_WIFI
-            + "   (id integer primary key autoincrement, ids text, name  text,  password  text  , timeRange text , level text)";
+            + "   (id integer primary key autoincrement, ids text, name  text,  password  text  , timeRange text , " +
+            "level text)";
 
     private static final String TABLE_APP = "APP";
     private static final String CREATE_TABLE_APP = " create table  IF NOT EXISTS "
             + TABLE_APP
-            + "   (id integer primary key autoincrement, ids text, name  text,  type  text  , timeRange text , version text , packages text , url text)";
+            + "   (id integer primary key autoincrement, ids text, name  text,  type  text  , timeRange text , " +
+            "version text , packages text , url text)";
 
 
     private static final String TABLE_CALL = "Call";
     private static final String CREATE_TABLE_CALL = " create table  IF NOT EXISTS "
             + TABLE_CALL
-            + "   (id integer primary key autoincrement, ids text,  name  text,  phone  text , type text , froms text , enable text )";
+            + "   (id integer primary key autoincrement, ids text,  name  text,  phone  text , type text , froms text" +
+            " , enable text )";
 
     private static final String TABLE_SMS = "SMS";
     private static final String CREATE_TABLE_SMS = " create table  IF NOT EXISTS "
             + TABLE_SMS
             + "   (id integer primary key autoincrement,  phone  text,  content  text , time text , froms text)";
 
+    private static final String TABLE_FILE = "FILE";
+    private static final String CREATE_TABLE_FILE = " create table  IF NOT EXISTS "
+            + TABLE_FILE
+            + "   (id integer primary key autoincrement,  filename  text,  filepath  text , time text)";
 
     private SQLiteDatabase db;
 
@@ -272,6 +284,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SMS);
         db.execSQL(CREATE_TABLE_SMS);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FILE);
+        db.execSQL(CREATE_TABLE_FILE);
     }
 
     @Override
@@ -282,6 +297,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_APP);
         db.execSQL(CREATE_TABLE_CALL);
         db.execSQL(CREATE_TABLE_SMS);
+        db.execSQL(CREATE_TABLE_FILE);
     }
 
     //------------------------------------------Network----------------
@@ -301,7 +317,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
     public void deleteNetwork(String ids) {
         if (db == null)
             db = getWritableDatabase();
-
         if (TextUtils.isEmpty(ids)) {
             db.delete(TABLE_NETWORK, null, null);
         } else {
@@ -689,5 +704,39 @@ public class MyDBHelper extends SQLiteOpenHelper {
         cur.close();
         db.close();
         return a;
+    }
+    //-----------------file
+
+    public void addFile(File a) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("filename", a.filename);
+        values.put("filepath", a.filepath);
+        values.put("time", a.time);
+        db.insert(TABLE_FILE, null, values);
+        db.close();
+    }
+
+    public JSONArray getFile() {
+        if (db == null)
+            db = getWritableDatabase();
+        JSONArray array = new JSONArray();
+        Cursor cur = db.query(TABLE_FILE, null, null, null, null, null, null);
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            JSONObject da = new JSONObject();
+            try {
+                // da.put("ids", cur.getString(1));
+                da.put("filename", cur.getString(1));
+                da.put("filepath", cur.getString(2));
+                da.put("time", cur.getString(3));
+                array.put(da);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        cur.close();
+        db.close();
+        return array;
     }
 }

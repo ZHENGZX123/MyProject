@@ -21,6 +21,7 @@ import cn.kiway.mdm.R;
 import cn.kiway.mdm.hprose.jrf.client.JRFClient;
 import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.utils.FileUtils;
+import cn.kiway.mdm.utils.MyDBHelper;
 
 import static cn.kiway.mdm.hprose.socket.KwHproseClient.client;
 
@@ -97,6 +98,11 @@ public class ProgressDialog extends Dialog implements JRFClient.DownLoadCallBack
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                cn.kiway.mdm.entity.File a = new cn.kiway.mdm.entity.File();//保存记录到本地
+                a.filename = depositPath.split("/")[depositPath.split("/").length-1];
+                a.time = System.currentTimeMillis() + "";
+                a.filepath = depositPath;
+                new MyDBHelper(context).addFile(a);
                 textView.setEnabled(true);
                 progressBar.setVisibility(View.GONE);
                 textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "\n接收完成,打开文件");
