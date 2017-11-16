@@ -14,7 +14,6 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -106,14 +105,11 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("test", "Main onCreate");
-        intent = new Intent(MainActivity.this, FxService.class);
-        //红米手机接收不到udp广播,打开udp锁
-        WifiManager manager = (WifiManager) getApplicationContext()
-                .getSystemService(Context.WIFI_SERVICE);
         instance = this;
-        KWApp.instance.setActivity(this);
-        initView();
+        //1.开启服务
+        initService();
         //2.初始化界面
+        initView();
         initData(getListdata(AppListUtils.getAppListData(this)));
         //4.上报位置
         uploadStatus();
@@ -140,6 +136,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //15.设置默认短信app
         setDefaultSMSApp();
 
+    }
+
+    private void initService() {
+        intent = new Intent(MainActivity.this, FxService.class);
     }
 
     private void setDefaultSMSApp() {

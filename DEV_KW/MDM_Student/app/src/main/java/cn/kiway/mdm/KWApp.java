@@ -142,7 +142,7 @@ public class KWApp extends Application {
             } else if (msg.what == MSG_ATTEND_CALSS) {
                 //上课
                 teacherIp = ((JSONObject) msg.obj).optString("ip");
-                activity.connectTcp(teacherIp);
+                MainActivity.instance.connectTcp(teacherIp);
                 isAttenClass = true;
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {//下课
                 isAttenClass = false;
@@ -234,12 +234,6 @@ public class KWApp extends Application {
     private int result;
     private Intent intent;
     private MediaProjectionManager mMediaProjectionManager;
-
-    public void setActivity(MainActivity activity) {
-        this.activity = activity;
-    }
-
-    private MainActivity activity;
 
     public int getResult() {
         return result;
