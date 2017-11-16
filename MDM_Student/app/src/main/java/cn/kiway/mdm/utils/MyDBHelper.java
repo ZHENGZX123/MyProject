@@ -363,8 +363,12 @@ public class MyDBHelper extends SQLiteOpenHelper {
         cv.put("enable", a.enable);
 
         String[] args = {a.id};
-        db.update(TABLE_NETWORK, cv, "ids=?", args);
+        int ret = db.update(TABLE_NETWORK, cv, "ids=?", args);
         db.close();
+
+        if (ret == 0) {
+            addNetwork(a);
+        }
     }
 
     //------------------------------------------wifi----------------
@@ -431,8 +435,11 @@ public class MyDBHelper extends SQLiteOpenHelper {
         cv.put("level", a.level);
 
         String[] args = {a.id};
-        db.update(TABLE_WIFI, cv, "ids=?", args);
+        int ret = db.update(TABLE_WIFI, cv, "ids=?", args);
         db.close();
+        if (ret == 0) {
+            addWifi(a);
+        }
     }
 
     //------------------------------------------app----------------
@@ -544,8 +551,11 @@ public class MyDBHelper extends SQLiteOpenHelper {
         cv.put("url", a.url);
 
         String[] args = {a.id};
-        db.update(TABLE_APP, cv, "ids=?", args);
+        int ret = db.update(TABLE_APP, cv, "ids=?", args);
         db.close();
+        if (ret == 0) {
+            addAppcharge(a);
+        }
     }
 
     //------------------- call-----------------------------------------
@@ -617,8 +627,11 @@ public class MyDBHelper extends SQLiteOpenHelper {
         cv.put("enable", a.enable);
 
         String[] args = {a.id};
-        db.update(TABLE_CALL, cv, "ids=?", args);
+        int ret = db.update(TABLE_CALL, cv, "ids=?", args);
         db.close();
+        if (ret == 0) {
+            addCall(a);
+        }
     }
 
     //------------------- SMS-----------------------------------------
