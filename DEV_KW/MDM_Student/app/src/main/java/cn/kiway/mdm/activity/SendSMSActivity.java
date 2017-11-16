@@ -18,6 +18,7 @@ import java.util.List;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.adapter.ChatMsgViewAdapter;
+import cn.kiway.mdm.entity.Call;
 import cn.kiway.mdm.entity.SMS;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
@@ -89,26 +90,42 @@ public class SendSMSActivity extends BaseActivity implements OnClickListener {
      */
     private void send() {
         String contString = mEditTextContent.getText().toString();
-        if (contString.length() > 0) {
-            //1.发送消息
-            sendSMS(phone, contString);
-
-            //2.加入数据库
-            SMS s = new SMS();
-            s.phone = phone;
-            s.content = contString;
-            s.froms = 2;
-            s.time = "" + System.currentTimeMillis();
-            new MyDBHelper(this).addSMS(s);
-
-            //3.刷新页面
-            initData();
-            mEditTextContent.setText("");
-            mListView.setSelection(mListView.getCount() - 1);
-
-            //4.记录请求
-            Utils.childOperation(this, "sendSms", "发送短信给" + phone);
+        if (contString.length() == 0) {
+            return;
         }
+        //0.判断是不是在去电白名单
+        ArrayList<Call> calls = new MyDBHelper(this).getAllCalls(2);
+        boolean in = false;
+        for (Call c : calls) {
+            if (c.phone.equals(phone)) {
+                in = true;
+                break;
+            }
+        }
+        if (!in) {
+            toast("该号码不在联系人白名单");
+            return;
+        }
+
+        //1.发送消息
+        sendSMS(phone, contString);
+
+        //2.加入数据库
+        SMS s = new SMS();
+        s.phone = phone;
+        s.content = contString;
+        s.froms = 2;
+        s.time = "" + System.currentTimeMillis();
+        new MyDBHelper(this).addSMS(s);
+
+        //3.刷新页面
+        initData();
+        mEditTextContent.setText("");
+        mListView.setSelection(mListView.getCount() - 1);
+
+        //4.记录请求
+        Utils.childOperation(this, "sendSms", "发送短信给" + phone);
+
     }
 
     public void refresh() {

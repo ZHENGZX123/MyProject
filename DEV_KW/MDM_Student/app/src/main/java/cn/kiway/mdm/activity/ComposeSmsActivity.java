@@ -67,8 +67,6 @@ public class ComposeSmsActivity extends BaseActivity {
                 s.name = call.name;
             }
         }
-
-
         adapter1.notifyDataSetChanged();
     }
 
