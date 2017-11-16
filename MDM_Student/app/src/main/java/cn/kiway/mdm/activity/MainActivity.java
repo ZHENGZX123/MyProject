@@ -32,7 +32,6 @@ import android.widget.Toast;
 
 import com.anarchy.classify.ClassifyView;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,10 +43,7 @@ import cn.kiway.mdm.dialog.CheckPassword;
 import cn.kiway.mdm.dialog.ProgressDialog;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.entity.App;
-import cn.kiway.mdm.hprose.hprose.net.KwConnection;
-import cn.kiway.mdm.hprose.hprose.net.KwConntectionCallback;
 import cn.kiway.mdm.hprose.screen.FxService;
-import cn.kiway.mdm.hprose.socket.KwHproseClient;
 import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.AppListUtils;
@@ -55,9 +51,9 @@ import cn.kiway.mdm.utils.AppReceiverIn;
 import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.LocationUtils;
 import cn.kiway.mdm.utils.Utils;
-import hprose.net.TimeoutType;
 
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.ANSWERDIALOG;
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.REPONSEDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.SIGNDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.UNSWERDIALOG;
@@ -75,8 +71,7 @@ import static cn.kiway.mdm.utils.FileACache.ListFileName;
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 
-public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener,
-        KwConntectionCallback {
+public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener {
     private CheckPassword dialog;
     public List<List<App>> allListData = new ArrayList<>();
     private ViewPager viewPager;
@@ -85,6 +80,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private int totalPage; //总的页数
     private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
 
+    private boolean stop;
     public static MainActivity instance;
     private TelephonyManager telephonyManager;
     private MyPhoneStateListener myPhoneStateListener;
@@ -92,16 +88,16 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private SensorManager mSensorManager;
     private Sensor mSensor;
 
+
+    String ip;//tcp  ip地址
+
     public static final int LOGOUT = 999;
     public static final int USAGE_STATS = 1101;
     public static final int SCREEN = 1102;
-
-
     private static final int MSG_CHECK_SETTING = 1;
     private static final int MSG_CHECK_COMMAND = 2;
     private static final int MSG_UPLOAD = 3;
     private static final int MSG_GET_COMMAND = 4;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,7 +107,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //1.开启服务
         initService();
         //2.初始化界面
-        initView();
         initData(getListdata(AppListUtils.getAppListData(this)));
         //4.上报位置
         uploadStatus();
@@ -260,10 +255,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private void setUsageStats() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (!hasPermission()) {
-                ShowMessageDailog dailog = new ShowMessageDailog(this);
-                dailog.setShowMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开", YUXUNFANWENJLU);
-                dailog.setCancelable(false);
-                dailog.show();
+                showMessageDailog = new ShowMessageDailog(this);
+                showMessageDailog.setShowMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开", YUXUNFANWENJLU);
+                showMessageDailog.setCancelable(false);
+                showMessageDailog.show();
             }
         }
     }
@@ -290,6 +285,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void initView() {
+        stop = false;
         dialog = new CheckPassword(this, this);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         group = (LinearLayout) findViewById(R.id.points);
@@ -301,7 +297,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     public void Camera(View view) {
         // Utils.childOperation(this, "useApp", "使用了相机APP");
-        connectTcp(KWApp.instance.teacherIp);
+        KWApp.instance.connectTcp(KWApp.instance.teacherIp);
 //        int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
 //        if (flag_camera == 0) {
 //            toast("相机功能当前不能使用");
@@ -474,6 +470,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     protected void onDestroy() {
         super.onDestroy();
         Log.d("test", "Main onDestroy");
+        stop = true;
         unregisterReceiver(mReceiver);
         telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_NONE);
         mSensorManager.unregisterListener(this);
@@ -568,48 +565,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
     }
 
-    @Override
-    public void onConnect(KwConnection conn) {
-        Logger.log("正在连接");
-    }
-
-    @Override
-    public void onConnected(KwConnection conn) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(MainActivity.this, "上课连接完成", Toast.LENGTH_SHORT).show();
-            }
-        });
-        Logger.log("连接完成");
-    }
-
-    @Override
-    public void onReceived(KwConnection conn, ByteBuffer data, Integer id) {
-        // Logger.log("接送到的数据" + data);
-    }
-
-    @Override
-    public void onClose() {
-        Logger.log("连接关闭");
-        if (KWApp.instance.isAttenClass)
-            connectTcp(KWApp.instance.teacherIp);
-    }
-
-    @Override
-    public void onError(KwConnection conn, Exception e) {
-        Logger.log("连接错误" + e);
-        if (KWApp.instance.isAttenClass)
-            connectTcp(KWApp.instance.teacherIp);
-    }
-
-    @Override
-    public void onTimeout(KwConnection conn, TimeoutType type) {
-        Logger.log("连接超时" + type);
-        if (KWApp.instance.isAttenClass)
-            connectTcp(KWApp.instance.teacherIp);
-    }
-
 
     public void permission() {
         if (Build.VERSION.SDK_INT >= 23) {
@@ -649,6 +604,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 stopService(new Intent(getApplicationContext(), FxService.class));
                 Toast.makeText(MainActivity.this, "停止共享屏幕了", Toast.LENGTH_SHORT)
                         .show();
+               KWApp.instance.connectTcp(KWApp.instance.teacherIp);
             }
         });
     }
@@ -667,31 +623,28 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
     }
 
-    ShowMessageDailog dailog;
+   public ShowMessageDailog showMessageDailog;
     int showI = -1;
 
     public void Session(final int i) {
-        if (showI == i && dailog != null && dailog.isShowing())
+        if (showI == i && showMessageDailog != null && showMessageDailog.isShowing())
             return;
         showI = i;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                dailog = new ShowMessageDailog(MainActivity.this);
-                dailog.setCancelable(false);
+                showMessageDailog = new ShowMessageDailog(MainActivity.this);
+                showMessageDailog.setCancelable(false);
                 if (i == SIGN) {
-                    dailog.setShowMessage("老师上课签到，请你点击确定确认签到上课", SIGNDIALOG);
+                    showMessageDailog.setShowMessage("老师上课签到，请你点击确定确认签到上课", SIGNDIALOG);
                 } else if (i == ANSWER) {
-                    Logger.log("抢答");
-                    dailog.setShowMessage("老师有道题正在抢答，是否进去抢答", ANSWERDIALOG);
+                    showMessageDailog.setShowMessage("老师有道题正在抢答，是否进去抢答", ANSWERDIALOG);
                 } else if (i == UNANSWER) {
-                    Logger.log("抢答结束");
-                    dailog.setShowMessage("抢答结束了", UNSWERDIALOG);
+                    showMessageDailog.setShowMessage("抢答结束了", UNSWERDIALOG);
                 } else if (i == SUREREPONSE) {
-                    Logger.log("回应是否听懂");
-                    dailog.setShowMessage("同学们，老师这套题清楚了吗？", REPONSEDIALOG);
+                    showMessageDailog.setShowMessage("同学们，老师这套题清楚了吗？", REPONSEDIALOG);
                 }
-                dailog.show();
+                showMessageDailog.show();
             }
         });
     }
@@ -712,18 +665,17 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         });
     }
 
-    public void connectTcp(final String ip) {
+
+    public void goOutClass() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    KwHproseClient.connect(MainActivity.this, ip, Utils.getIMEI(MainActivity.this), MainActivity.this);
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                }
+                showMessageDailog = new ShowMessageDailog(MainActivity.this);
+                showMessageDailog.setCancelable(false);
+                showMessageDailog.setShowMessage("这堂课下课了", DISMISS);
+                showMessageDailog.show();
             }
         });
-
     }
 }
 

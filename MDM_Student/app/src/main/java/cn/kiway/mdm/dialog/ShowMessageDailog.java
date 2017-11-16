@@ -14,6 +14,8 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.UndeclaredThrowableException;
+
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.hprose.socket.KwHproseClient;
@@ -116,6 +118,8 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                             data.put("msgType", SUREREPONSE);
                             if (KwHproseClient.helloClient != null)
                                 KwHproseClient.helloClient.reponse(data.toString());
+                        } catch (UndeclaredThrowableException e) {
+                            e.printStackTrace();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -128,7 +132,9 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                             da.put("msg", "1");
                             if (KwHproseClient.helloClient != null)
                                 KwHproseClient.helloClient.sign(da.toString());
-                        } catch (JSONException e) {
+                        } catch (UndeclaredThrowableException e) {
+                            e.printStackTrace();
+                        }catch (JSONException e) {
                             e.printStackTrace();
                         }
                         break;
@@ -147,7 +153,9 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                             data.put("msgType", SUREREPONSE);
                             if (KwHproseClient.helloClient != null)
                                 KwHproseClient.helloClient.reponse(data.toString());
-                        } catch (JSONException e) {
+                        } catch (UndeclaredThrowableException e) {
+                            e.printStackTrace();
+                        }catch (JSONException e) {
                             e.printStackTrace();
                         }
                         break;
@@ -159,6 +167,8 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                             da.put("msg", "0");
                             if (KwHproseClient.helloClient != null)
                                 KwHproseClient.helloClient.sign(da.toString());
+                        }catch (UndeclaredThrowableException e) {
+                            e.printStackTrace();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -183,7 +193,7 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
         textView = (TextView) findViewById(R.id.message);
         if (textView != null)
             textView.setText(message);
-        if (messageId == REPONSEDIALOG||messageId==ANSWERDIALOG) {
+        if (messageId == REPONSEDIALOG || messageId == ANSWERDIALOG) {
             findViewById(R.id.ok2).setVisibility(View.VISIBLE);
         } else {
             findViewById(R.id.ok2).setVisibility(View.GONE);

@@ -1,11 +1,11 @@
 /**********************************************************\
-|                                                          |
-|                          hprose                          |
-|                                                          |
-| Official WebSite: http://www.hprose.com/                 |
-|                   http://www.hprose.org/                 |
-|                                                          |
-\**********************************************************/
+ |                                                          |
+ |                          hprose                          |
+ |                                                          |
+ | Official WebSite: http://www.hprose.com/                 |
+ |                   http://www.hprose.org/                 |
+ |                                                          |
+ \**********************************************************/
 /**********************************************************\
  *                                                        *
  * Connector.java                                         *
@@ -15,7 +15,7 @@
  * LastModified: Sep 19, 2016                             *
  * Author: Ma Bingyao <andot@hprose.com>                  *
  *                                                        *
-\**********************************************************/
+ \**********************************************************/
 package cn.kiway.mdm.hprose.hprose.net;
 
 import java.io.IOException;
@@ -51,34 +51,32 @@ public final class KwConnector extends Thread {
                 try {
                     process();
                     dispatch();
+                } catch (IOException e) {
                 }
-                catch (IOException e) {}
             }
+        } catch (ClosedSelectorException e) {
         }
-        catch (ClosedSelectorException e) {}
         reactor.close();
     }
 
     public final void close() {
         try {
             selector.close();
+        } catch (IOException e) {
         }
-        catch (IOException e) {}
     }
 
     private void process() {
-        for (;;) {
+        for (; ; ) {
             final KwConnection conn = queue.poll();
             if (conn == null) {
                 break;
             }
             try {
                 conn.connect(selector);
-            }
-            catch (ClosedChannelException e) {
+            } catch (ClosedChannelException e) {
                 conn.errorClose();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 conn.errorClose();
             }
         }
@@ -99,17 +97,15 @@ public final class KwConnector extends Thread {
 
     private void connect(SelectionKey key) {
         final SocketChannel channel = (SocketChannel) key.channel();
-        KwConnection conn = (KwConnection)key.attachment();
+        KwConnection conn = (KwConnection) key.attachment();
         boolean success = false;
         if (channel.isConnectionPending()) {
             try {
                 success = channel.finishConnect();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 conn.errorClose();
             }
-        }
-        else {
+        } else {
             success = true;
         }
         if (success) {
@@ -123,7 +119,8 @@ public final class KwConnector extends Thread {
         selector.wakeup();
     }
 
-    public final void create(String uri, KwConnectionHandler handler, boolean keepAlive, boolean noDelay) throws IOException {
+    public final void create(String uri, KwConnectionHandler handler, boolean keepAlive, boolean noDelay) throws
+            IOException {
         try {
             URI u = new URI(uri);
             SocketChannel channel = SocketChannel.open();
@@ -135,8 +132,7 @@ public final class KwConnector extends Thread {
             channel.socket().setKeepAlive(keepAlive);
             channel.socket().setTcpNoDelay(noDelay);
             register(conn);
-        }
-        catch (URISyntaxException e) {
+        } catch (URISyntaxException e) {
             throw new IOException(e.getMessage());
         }
     }

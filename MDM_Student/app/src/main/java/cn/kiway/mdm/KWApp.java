@@ -14,21 +14,29 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.nio.ByteBuffer;
 
 import cn.kiway.mdm.activity.BaseActivity;
+import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
+import cn.kiway.mdm.dialog.ShowMessageDailog;
+import cn.kiway.mdm.hprose.hprose.net.KwConnection;
+import cn.kiway.mdm.hprose.hprose.net.KwConntectionCallback;
 import cn.kiway.mdm.hprose.socket.KwHproseClient;
+import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.HttpDownload;
 import cn.kiway.mdm.utils.Utils;
+import hprose.net.TimeoutType;
 
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 /**
  * Created by Administrator on 2017/6/9.
  */
 
-public class KWApp extends Application {
+public class KWApp extends Application implements KwConntectionCallback {
 
     public static KWApp instance;
     //    public static final String server = "http://192.168.8.161:8082/mdms/";
@@ -140,15 +148,20 @@ public class KWApp extends Application {
                 Utils.showSMSDialog(KWApp.instance.currentActivity, (SmsMessage) msg.obj);
             } else if (msg.what == MSG_ATTEND_CALSS) {
                 //上课
-//                teacherIp = ((JSONObject) msg.obj).optString("ip");
-//                MainActivity.instance.connectTcp(teacherIp);
-//                isAttenClass = true;
+                connectNumber = 0;
+                isConnect = false;
+                isAttenClass = true;
+                teacherIp = ((JSONObject) msg.obj).optString("ip");
+                connectTcp(teacherIp);
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {//下课
                 isAttenClass = false;
                 KwHproseClient.stop();
+                activity.goOutClass();
             }
         }
     };
+    public int connectNumber = 0;
+    public boolean isConnect = false;
 
     private void handlePushFile(String c) {
         try {
@@ -234,6 +247,12 @@ public class KWApp extends Application {
     private Intent intent;
     private MediaProjectionManager mMediaProjectionManager;
 
+    public void setActivity(MainActivity activity) {
+        this.activity = activity;
+    }
+
+    private MainActivity activity;
+
     public int getResult() {
         return result;
     }
@@ -256,5 +275,66 @@ public class KWApp extends Application {
 
     public void setMediaProjectionManager(MediaProjectionManager mMediaProjectionManager) {
         this.mMediaProjectionManager = mMediaProjectionManager;
+    }
+
+    @Override
+    public void onConnect(KwConnection conn) {
+        Logger.log("正在连接");
+    }
+
+    @Override
+    public void onConnected(KwConnection conn) {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (KWApp.instance.isConnect)
+                    return;
+                KWApp.instance.isConnect = true;
+                activity.showMessageDailog = new ShowMessageDailog(activity);
+                activity.showMessageDailog.setShowMessage("上课连接完成", DISMISS);
+                activity.showMessageDailog.show();
+            }
+        });
+        Logger.log("连接完成");
+    }
+
+    @Override
+    public void onReceived(KwConnection conn, ByteBuffer data, Integer id) {
+        // Logger.log("接送到的数据" + data);
+    }
+
+    @Override
+    public void onClose() {
+        Logger.log("连接关闭");
+        if (KWApp.instance.connectNumber > 5)
+            KWApp.instance.isAttenClass = false;
+        KWApp.instance.connectNumber++;
+        if (KWApp.instance.isAttenClass)
+            connectTcp(KWApp.instance.teacherIp);
+    }
+
+    @Override
+    public void onError(KwConnection conn, Exception e) {
+        Logger.log("连接错误" + e);
+        if (KWApp.instance.connectNumber > 5)
+            KWApp.instance.isAttenClass = false;
+        KWApp.instance.connectNumber++;
+        if (KWApp.instance.isAttenClass)
+            connectTcp(KWApp.instance.teacherIp);
+    }
+
+    @Override
+    public void onTimeout(KwConnection conn, TimeoutType type) {
+        Logger.log("连接超时" + type);
+        if (KWApp.instance.isAttenClass)
+            connectTcp(KWApp.instance.teacherIp);
+    }
+
+    public void connectTcp(String ip) {
+        try {
+            KwHproseClient.connect(activity, ip, Utils.getIMEI(activity), this);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 }
