@@ -16,7 +16,6 @@ import org.json.JSONObject;
 import java.io.File;
 
 import cn.kiway.mdm.activity.BaseActivity;
-import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
 import cn.kiway.mdm.hprose.socket.KwHproseClient;
 import cn.kiway.mdm.mdm.MDMHelper;
@@ -141,9 +140,9 @@ public class KWApp extends Application {
                 Utils.showSMSDialog(KWApp.instance.currentActivity, (SmsMessage) msg.obj);
             } else if (msg.what == MSG_ATTEND_CALSS) {
                 //上课
-                teacherIp = ((JSONObject) msg.obj).optString("ip");
-                MainActivity.instance.connectTcp(teacherIp);
-                isAttenClass = true;
+//                teacherIp = ((JSONObject) msg.obj).optString("ip");
+//                MainActivity.instance.connectTcp(teacherIp);
+//                isAttenClass = true;
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {//下课
                 isAttenClass = false;
                 KwHproseClient.stop();
