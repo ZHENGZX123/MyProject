@@ -11,7 +11,9 @@ import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.hprose.screen.FxService;
+import cn.kiway.mdm.hprose.socket.KwHproseClient;
 import cn.kiway.mdm.mdm.MDMHelper;
+import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.KWApp.MSG_LOCK;
 import static cn.kiway.mdm.KWApp.MSG_REBOOT;
@@ -47,7 +49,6 @@ public class ActionsMessageHandle {
 
     public static void MessageHandle(Context context, String s) {
         try {
-
             JSONObject data = new JSONObject(s);
             int msgType = data.optInt("msgType");
             if (msgType == SIGN) {//签到
@@ -58,8 +59,19 @@ public class ActionsMessageHandle {
                 ((MainActivity) context).Session(UNANSWER);
             } else if (msgType == LOCKSCREEN) {//锁屏
                 KWApp.instance.mHandler.sendEmptyMessage(MSG_LOCK);
+                JSONObject da = new JSONObject();
+                da.put("userId", Utils.getIMEI(context));
+                da.put("msg", "1");
+                if (KwHproseClient.helloClient != null)
+                    KwHproseClient.helloClient.sign(da.toString());
             } else if (msgType == SOLUTIONSCREE) {//解屏
                 KWApp.instance.mHandler.sendEmptyMessage(MSG_UNLOCK);
+                JSONObject da = new JSONObject();
+                da.put("userId", Utils.getIMEI(context));
+                da.put("msg", "0");
+                if (KwHproseClient.helloClient != null)
+                    KwHproseClient.helloClient.sign(da.toString());
+
             } else if (msgType == SCREENSHARE) {//打开屏幕共享
                 FxService.setIp(data.optString("msg"));
                 ((MainActivity) context).startScreen();

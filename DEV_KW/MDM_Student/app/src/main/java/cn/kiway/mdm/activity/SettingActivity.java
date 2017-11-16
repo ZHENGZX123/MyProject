@@ -122,4 +122,7 @@ public class SettingActivity extends BaseActivity {
         finish();
     }
 
+    public void File(View view) {
+        startActivity(new Intent(this, FileListActivity.class));
+    }
 }
