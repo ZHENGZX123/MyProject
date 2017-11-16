@@ -7,7 +7,6 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.mdm.KWApp;
@@ -74,9 +73,9 @@ public class BaseActivity extends Activity {
         //MDMHelper.getAdapter().setSettingsApplicationDisabled(true);
         //3.设置不可卸载
         //TODO 是不是因为这个，搞得不能覆盖安装
-        List<String> packages = new ArrayList<>();
-        packages.add("cn.kiway.mdm");
-        MDMHelper.getAdapter().addDisallowedUninstallPackages(packages);
+//        List<String> packages = new ArrayList<>();
+//        packages.add("cn.kiway.mdm");
+//        MDMHelper.getAdapter().addDisallowedUninstallPackages(packages);
         //保持APP持续运行
         //MDMHelper.getAdapter().addPersistentApp(packages);
         //4.禁止下拉状态栏
