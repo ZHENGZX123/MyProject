@@ -364,10 +364,10 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         String[] args = {a.id};
         int ret = db.update(TABLE_NETWORK, cv, "ids=?", args);
-        db.close();
-
         if (ret == 0) {
             addNetwork(a);
+        } else {
+            db.close();
         }
     }
 
@@ -436,9 +436,10 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         String[] args = {a.id};
         int ret = db.update(TABLE_WIFI, cv, "ids=?", args);
-        db.close();
         if (ret == 0) {
             addWifi(a);
+        } else {
+            db.close();
         }
     }
 
@@ -552,9 +553,10 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         String[] args = {a.id};
         int ret = db.update(TABLE_APP, cv, "ids=?", args);
-        db.close();
         if (ret == 0) {
             addAppcharge(a);
+        } else {
+            db.close();
         }
     }
 
@@ -628,9 +630,10 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         String[] args = {a.id};
         int ret = db.update(TABLE_CALL, cv, "ids=?", args);
-        db.close();
         if (ret == 0) {
             addCall(a);
+        } else {
+            db.close();
         }
     }
 

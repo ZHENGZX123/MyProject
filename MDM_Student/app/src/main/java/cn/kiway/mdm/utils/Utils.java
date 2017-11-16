@@ -653,7 +653,7 @@ public class Utils {
                     client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                     client.setTimeout(10000);
                     RequestParams param = new RequestParams();
-                    String url = server + "device/networkDeviceCharge";
+                    String url = server + "device/networkDeviceCharge?imei=" + getIMEI(c);
                     Log.d("test", "networkDeviceCharge = " + url);
                     client.get(c, url, param, new TextHttpResponseHandler() {
                         @Override
