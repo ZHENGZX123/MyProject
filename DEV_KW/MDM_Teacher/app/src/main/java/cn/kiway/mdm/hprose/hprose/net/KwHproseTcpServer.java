@@ -62,8 +62,8 @@ public class KwHproseTcpServer extends HproseService {
 
     private final static ThreadLocal<TcpContext> currentContext = new ThreadLocal<TcpContext>();
     private volatile ExecutorService threadPool = null;
-    private volatile int readTimeout = 30000;
-    private volatile int writeTimeout = 30000;
+    private volatile int readTimeout = 300*1000;
+    private volatile int writeTimeout =  300*1000;
     private boolean threadPoolEnabled = false;
     private int reactorThreads = 2;
     private KwAcceptor acceptor = null;
@@ -150,36 +150,36 @@ public class KwHproseTcpServer extends HproseService {
         }
 
         public final void onClose(KwConnection conn) {
-            Logger.log("onClose----------------------");
+            //   Logger.log("onClose----------------------");
             fireCloseEvent(conn.socketChannel());
 
-            //// TODO: 2017/11/13 移除通知
-            if (acpHandler != null) {
-                String userId = HproseChannelMapStatic.removeChannel(conn.socketChannel());
-                if (userId.equals(""))
-                    return;
-                Message msg1 = new Message();
-                msg1.what = MessageType.LOGINOUT;
-                msg1.obj = userId;
-                acpHandler.sendMessage(msg1);
-                Logger.log("User:::::" + userId + "leve");
-            }
+//            //// TODO: 2017/11/13 移除通知
+//            if (acpHandler != null) {
+//                String userId = HproseChannelMapStatic.removeChannel(conn.socketChannel());
+//                if (userId.equals(""))
+//                    return;
+//                Message msg1 = new Message();
+//                msg1.what = MessageType.LOGINOUT;
+//                msg1.obj = userId;
+//                acpHandler.sendMessage(msg1);
+//                Logger.log("User:::::" + userId + "leve");
+//            }
         }
 
         public void onError(KwConnection conn, Exception e) {
-            Logger.log("onError----------------------");
             if (conn == null) {
+                Logger.log("onError----------------------");
                 fireErrorEvent(e, null);
-            }
-            if (acpHandler != null) {
-                String userId = HproseChannelMapStatic.removeChannel(conn.socketChannel());
-                if (userId.equals(""))
-                    return;
-                Message msg1 = new Message();
-                msg1.what = MessageType.LOGINOUT;
-                msg1.obj = userId;
-                acpHandler.sendMessage(msg1);
-                Logger.log("User:::::" + userId + "leve");
+                if (acpHandler != null) {
+                    String userId = HproseChannelMapStatic.removeChannel(conn.socketChannel());
+                    if (userId.equals(""))
+                        return;
+                    Message msg1 = new Message();
+                    msg1.what = MessageType.LOGINOUT;
+                    msg1.obj = userId;
+                    acpHandler.sendMessage(msg1);
+                    Logger.log("User:::::" + userId + "leve");
+                }
             }
         }
 

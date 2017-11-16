@@ -8,4 +8,5 @@
     <string name="student_no_inline">学生还没上线</string>
     <string name="upload">正在上传图片</string>
     <string name="upload_fialt">上传图片失败，请稍后再试</string>
+    <string name="choose_file">请选择 kiwaymdm 下面的文件</string>
 </resources>

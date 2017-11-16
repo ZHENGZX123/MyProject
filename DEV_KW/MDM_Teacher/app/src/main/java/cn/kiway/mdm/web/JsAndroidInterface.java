@@ -145,7 +145,7 @@ public class JsAndroidInterface {
                 .withActivity(activity)
                 .withTitle(activity.getString(R.string.filepath))
                 .withRequestCode(requsetFile)
-                .withMutilyMode(true)
+                .withMutilyMode(false)
                 .withfilePath(FilePath)
                 .start();
     }
