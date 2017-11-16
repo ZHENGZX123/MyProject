@@ -818,11 +818,16 @@ public class Utils {
                 }
                 //TODO 版本更新
             }
+            //白名单太危险了。。。
             final ArrayList<String> whiteList = new ArrayList<>();
-            for (AppCharge ac : apps_type1) {
-                //白名单，调用华为的API
+            //白名单，调用华为的API
+            for (AppCharge ac : apps_type0) {
                 whiteList.add(ac.packages);
             }
+            for (AppCharge ac : apps_type1) {
+                whiteList.add(ac.packages);
+            }
+            whiteList.add("cn.kiway.mdm");
             m.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -1073,7 +1078,12 @@ public class Utils {
     public static void openFile(Context context, String filePath) {
         Log.d("test", "openFile filepath = " + filePath);
         filePath = "file://" + filePath;
-        String filetype = filePath.split("\\.")[1].toLowerCase();
+        String[] splits = filePath.split("\\.");
+        if (splits.length <= 1) {
+            Toast.makeText(context, "文件格式不支持", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String filetype = splits[1].toLowerCase();
         Log.d("test", "filetype = " + filetype);
         String typeOpenFile = "*";
         if (filetype.equals("pdf"))
