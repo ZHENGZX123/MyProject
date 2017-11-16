@@ -306,12 +306,12 @@ public class KWApp extends Application implements KwConntectionCallback {
 
     @Override
     public void onClose() {
-        Logger.log("连接关闭");
-        if (KWApp.instance.connectNumber > 5)
-            KWApp.instance.isAttenClass = false;
-        KWApp.instance.connectNumber++;
-        if (KWApp.instance.isAttenClass)
-            connectTcp(KWApp.instance.teacherIp);
+//        Logger.log("连接关闭");
+//        if (KWApp.instance.connectNumber > 5)
+//            KWApp.instance.isAttenClass = false;
+//        KWApp.instance.connectNumber++;
+//        if (KWApp.instance.isAttenClass)
+//            connectTcp(KWApp.instance.teacherIp);
     }
 
     @Override
@@ -326,9 +326,9 @@ public class KWApp extends Application implements KwConntectionCallback {
 
     @Override
     public void onTimeout(KwConnection conn, TimeoutType type) {
-        Logger.log("连接超时" + type);
-        if (KWApp.instance.isAttenClass)
-            connectTcp(KWApp.instance.teacherIp);
+//        Logger.log("连接超时" + type);
+//        if (KWApp.instance.isAttenClass)
+//            connectTcp(KWApp.instance.teacherIp);
     }
 
     public void connectTcp(String ip) {

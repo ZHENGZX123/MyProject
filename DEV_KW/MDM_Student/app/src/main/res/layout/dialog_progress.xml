@@ -23,6 +23,7 @@
         android:layout_marginTop="5dp"
         android:gravity="center"
         android:padding="7dp"
+        android:lineSpacingExtra="5dp"
         android:text="正在接收老师的文件，请勿操作"
         android:textColor="@color/blue"/>
 </LinearLayout>

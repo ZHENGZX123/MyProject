@@ -51,6 +51,7 @@ import cn.kiway.mdm.utils.AppReceiverIn;
 import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.LocationUtils;
 import cn.kiway.mdm.utils.Utils;
+import cn.kiway.mdm.view.viewPager.StereoPagerTransformer;
 
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.ANSWERDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
@@ -101,6 +102,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         setContentView(R.layout.activity_main);
         Log.d("test", "Main onCreate");
         instance = this;
+        KWApp.instance.setActivity(this);
+        initView();
         //1.开启服务
         initService();
         //2.初始化界面
@@ -211,6 +214,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         Utils.checkTemperary(this);
         //2.检查关机
         Utils.checkShutDown(this);
+        KWApp.instance.setActivity(this);
     }
 
     private void checkIncomingCall() {
@@ -385,7 +389,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             classifyView.setAdapter(new AppListAdapter(MainActivity.this, data, allListData, i));
             viewPagerList.add(classifyView);
         }
-        viewPager.setPageTransformer(false, new cn.kiway.mdm.view.viewPager.StereoPagerTransformer());
+        viewPager.setPageTransformer(false, new StereoPagerTransformer());
         viewPager.setAdapter(new MyViewPagerAdapter(viewPagerList));//设置ViewPager适配器
         group.removeAllViews();
         ivPoints = new ImageView[totalPage];//添加小圆点
@@ -619,6 +623,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
     }
 
+
     public ShowMessageDailog showMessageDailog;
     int showI = -1;
 
@@ -640,7 +645,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 } else if (i == SUREREPONSE) {
                     showMessageDailog.setShowMessage("同学们，老师这套题清楚了吗？", REPONSEDIALOG);
                 }
-                showMessageDailog.show();
+                if (!showMessageDailog.isShowing())
+                    showMessageDailog.show();
             }
         });
     }

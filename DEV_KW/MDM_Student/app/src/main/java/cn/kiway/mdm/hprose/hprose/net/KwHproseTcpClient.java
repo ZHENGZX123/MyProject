@@ -32,6 +32,7 @@ import hprose.util.concurrent.Promise;
 
 public class KwHproseTcpClient extends HproseClient {
 
+    private volatile boolean fullDuplex = false;
     private volatile boolean noDelay = false;
     private volatile int maxPoolSize = 4;
     private volatile int idleTimeout = 30000;
@@ -39,6 +40,7 @@ public class KwHproseTcpClient extends HproseClient {
     private volatile int writeTimeout = 30000;
     private volatile int connectTimeout = 30000;
     private volatile boolean keepAlive = true;
+    private KwSocketTransporter fdTrans = new KwFullDuplexSocketTransporter(this);
     private KwSocketTransporter hdTrans = new KwHalfDuplexSocketTransporter(this);
     private String uri;
     private static int reactorThreads = 20;
@@ -51,6 +53,7 @@ public class KwHproseTcpClient extends HproseClient {
         super(uri);
         this.uri = uri;
         hdTrans.setConntectionCallback(conntectionCallback);
+        fdTrans.setConntectionCallback(conntectionCallback);
     }
 
     public KwHproseTcpClient(String uri, HproseMode mode) {
@@ -123,8 +126,17 @@ public class KwHproseTcpClient extends HproseClient {
 
     @Override
     public final void close() {
+        //fdTrans.close();
         hdTrans.close();
         super.close();
+    }
+
+    public final boolean isFullDuplex() {
+        return fullDuplex;
+    }
+
+    public final void setFullDuplex(boolean fullDuplex) {
+        this.fullDuplex = fullDuplex;
     }
 
     public final boolean isNoDelay() {
@@ -190,7 +202,10 @@ public class KwHproseTcpClient extends HproseClient {
 
     protected Promise<ByteBuffer> sendAndReceive(final ByteBuffer request, ClientContext context) {
         final InvokeSettings settings = context.getSettings();
-        return hdTrans.send(request, settings.getTimeout());
+        if (fullDuplex) {
+            return fdTrans.send(request, settings.getTimeout());
+        } else {
+            return hdTrans.send(request, settings.getTimeout());
+        }
     }
-
 }

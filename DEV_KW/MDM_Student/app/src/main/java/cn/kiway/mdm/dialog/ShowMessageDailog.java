@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -88,6 +90,7 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
 
     @Override
     public void onClick(View view) {
+        Message message = new Message();
         switch (view.getId()) {
             case R.id.ok:
                 switch (messageId) {
@@ -99,44 +102,16 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                                 USAGE_STATS);
                         break;
                     case SIGNDIALOG:
-                        try {
-                            JSONObject da = new JSONObject();
-                            da.put("msgType", SIGN);
-                            da.put("userId", Utils.getIMEI(getContext()));
-                            da.put("msg", "签到");
-                            if (KwHproseClient.helloClient != null)
-                                KwHproseClient.helloClient.sign(da.toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        message.what = SIGNDIALOG;
+                        handler.sendMessage(message);
                         break;
                     case REPONSEDIALOG:
-                        try {
-                            JSONObject data = new JSONObject();
-                            data.put("userId", Utils.getIMEI(getContext()));
-                            data.put("msg", "1");
-                            data.put("msgType", SUREREPONSE);
-                            if (KwHproseClient.helloClient != null)
-                                KwHproseClient.helloClient.reponse(data.toString());
-                        } catch (UndeclaredThrowableException e) {
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        message.what = REPONSEDIALOG;
+                        handler.sendMessage(message);
                         break;
                     case ANSWERDIALOG:
-                        try {
-                            JSONObject da = new JSONObject();
-                            da.put("msgType", ANSWER);
-                            da.put("userId", Utils.getIMEI(getContext()));
-                            da.put("msg", "1");
-                            if (KwHproseClient.helloClient != null)
-                                KwHproseClient.helloClient.sign(da.toString());
-                        } catch (UndeclaredThrowableException e) {
-                            e.printStackTrace();
-                        }catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        message.what = ANSWERDIALOG;
+                        handler.sendMessage(message);
                         break;
                     case UNSWERDIALOG:
                         dismiss();
@@ -146,34 +121,15 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
             case R.id.ok2:
                 switch (messageId) {
                     case REPONSEDIALOG:
-                        try {
-                            JSONObject data = new JSONObject();
-                            data.put("userId", Utils.getIMEI(getContext()));
-                            data.put("msg", "0");
-                            data.put("msgType", SUREREPONSE);
-                            if (KwHproseClient.helloClient != null)
-                                KwHproseClient.helloClient.reponse(data.toString());
-                        } catch (UndeclaredThrowableException e) {
-                            e.printStackTrace();
-                        }catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        message.what = REPONSEDIALOG + 100;
+                        handler.sendMessage(message);
                         break;
                     case ANSWERDIALOG:
-                        try {
-                            JSONObject da = new JSONObject();
-                            da.put("msgType", ANSWER);
-                            da.put("userId", Utils.getIMEI(getContext()));
-                            da.put("msg", "0");
-                            if (KwHproseClient.helloClient != null)
-                                KwHproseClient.helloClient.sign(da.toString());
-                        }catch (UndeclaredThrowableException e) {
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        message.what = ANSWERDIALOG + 100;
+                        handler.sendMessage(message);
                         break;
                     case UNSWERDIALOG:
+                        dismiss();
                         break;
                 }
                 break;
@@ -200,4 +156,80 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
         }
     }
 
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case SIGNDIALOG:
+                    try {
+                        JSONObject da = new JSONObject();
+                        da.put("msgType", SIGN);
+                        da.put("userId", Utils.getIMEI(getContext()));
+                        da.put("msg", "签到");
+                        if (KwHproseClient.helloClient != null)
+                            KwHproseClient.helloClient.sign(da.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case REPONSEDIALOG:
+                    try {
+                        JSONObject data = new JSONObject();
+                        data.put("userId", Utils.getIMEI(getContext()));
+                        data.put("msg", "1");
+                        data.put("msgType", SUREREPONSE);
+                        if (KwHproseClient.helloClient != null)
+                            KwHproseClient.helloClient.reponse(data.toString());
+                    } catch (UndeclaredThrowableException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case REPONSEDIALOG + 100:
+                    try {
+                        JSONObject data = new JSONObject();
+                        data.put("userId", Utils.getIMEI(getContext()));
+                        data.put("msg", "0");
+                        data.put("msgType", SUREREPONSE);
+                        if (KwHproseClient.helloClient != null)
+                            KwHproseClient.helloClient.reponse(data.toString());
+                    } catch (UndeclaredThrowableException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case ANSWERDIALOG:
+                    try {
+                        JSONObject da = new JSONObject();
+                        da.put("msgType", ANSWER);
+                        da.put("userId", Utils.getIMEI(getContext()));
+                        da.put("msg", "1");
+                        if (KwHproseClient.helloClient != null)
+                            KwHproseClient.helloClient.answerqusetion(da.toString());
+                    } catch (UndeclaredThrowableException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case ANSWERDIALOG+100:
+                    try {
+                        JSONObject da = new JSONObject();
+                        da.put("msgType", ANSWER);
+                        da.put("userId", Utils.getIMEI(getContext()));
+                        da.put("msg", "0");
+                        if (KwHproseClient.helloClient != null)
+                            KwHproseClient.helloClient.answerqusetion(da.toString());
+                    } catch (UndeclaredThrowableException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+        }
+    };
 }

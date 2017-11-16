@@ -20,8 +20,8 @@ import java.io.IOException;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.hprose.jrf.client.JRFClient;
 import cn.kiway.mdm.hprose.socket.Logger;
-import cn.kiway.mdm.utils.FileUtils;
 import cn.kiway.mdm.utils.MyDBHelper;
+import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.hprose.socket.KwHproseClient.client;
 
@@ -124,9 +124,10 @@ public class ProgressDialog extends Dialog implements JRFClient.DownLoadCallBack
 
     @Override
     public void onClick(View view) {
-        if (textView.getText().toString().equals("失败")) {
+        if (textView.getText().toString().contains("失败")) {
             progressBar.setVisibility(View.VISIBLE);
             textView.setEnabled(false);
+            textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "\n" + "正在接收老师的文件，请勿操作");
             if (client != null) {
                 new Thread(new Runnable() {
                     @Override
@@ -136,7 +137,7 @@ public class ProgressDialog extends Dialog implements JRFClient.DownLoadCallBack
                 }).start();
             }
         } else {
-            FileUtils.openFile(context, depositPath);
+            Utils.openFile(context, depositPath);
             dismiss();
         }
     }
