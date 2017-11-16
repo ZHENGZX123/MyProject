@@ -282,7 +282,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void initView() {
-        stop = false;
         dialog = new CheckPassword(this, this);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         group = (LinearLayout) findViewById(R.id.points);
@@ -467,7 +466,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     protected void onDestroy() {
         super.onDestroy();
         Log.d("test", "Main onDestroy");
-        stop = true;
         unregisterReceiver(mReceiver);
         telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_NONE);
         mSensorManager.unregisterListener(this);
