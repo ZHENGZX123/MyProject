@@ -80,16 +80,12 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private int totalPage; //总的页数
     private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
 
-    private boolean stop;
     public static MainActivity instance;
     private TelephonyManager telephonyManager;
     private MyPhoneStateListener myPhoneStateListener;
 
     private SensorManager mSensorManager;
     private Sensor mSensor;
-
-
-    String ip;//tcp  ip地址
 
     public static final int LOGOUT = 999;
     public static final int USAGE_STATS = 1101;
@@ -98,6 +94,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private static final int MSG_CHECK_COMMAND = 2;
     private static final int MSG_UPLOAD = 3;
     private static final int MSG_GET_COMMAND = 4;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -604,7 +601,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 stopService(new Intent(getApplicationContext(), FxService.class));
                 Toast.makeText(MainActivity.this, "停止共享屏幕了", Toast.LENGTH_SHORT)
                         .show();
-               KWApp.instance.connectTcp(KWApp.instance.teacherIp);
+                KWApp.instance.connectTcp(KWApp.instance.teacherIp);
             }
         });
     }
@@ -623,7 +620,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
     }
 
-   public ShowMessageDailog showMessageDailog;
+    public ShowMessageDailog showMessageDailog;
     int showI = -1;
 
     public void Session(final int i) {

@@ -153,7 +153,8 @@ public class KWApp extends Application implements KwConntectionCallback {
                 isAttenClass = true;
                 teacherIp = ((JSONObject) msg.obj).optString("ip");
                 connectTcp(teacherIp);
-            } else if (msg.what == MSG_GET_OUT_OF_CALASS) {//下课
+            } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
+                //下课
                 isAttenClass = false;
                 KwHproseClient.stop();
                 activity.goOutClass();

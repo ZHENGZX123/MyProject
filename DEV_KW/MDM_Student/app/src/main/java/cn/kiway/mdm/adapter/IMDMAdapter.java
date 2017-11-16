@@ -135,6 +135,6 @@ public interface IMDMAdapter {
     void hangupCalling();
 
     //一键连接wifi
-    void connectWifi(String ssid , String pwd);
+    void connectWifi(String ssid, String pwd);
 
 }
