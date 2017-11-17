@@ -340,7 +340,7 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
@@ -377,7 +377,7 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
@@ -422,7 +422,7 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return "unknown";
     }
 
     @Override
