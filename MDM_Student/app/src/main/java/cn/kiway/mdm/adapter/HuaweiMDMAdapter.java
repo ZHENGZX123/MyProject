@@ -321,7 +321,8 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     @Override
     public void addInstallPackageBlackList(ArrayList<String> packageNames) {
         try {
-            new DeviceApplicationManager().addInstallPackageBlackList(mAdminName, packageNames);
+            //// TODO: 2017/11/17  
+            // new DeviceApplicationManager().addInstallPackageBlackList(mAdminName, packageNames);
         } catch (Exception e) {
             e.printStackTrace();
             
