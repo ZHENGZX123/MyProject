@@ -38,6 +38,7 @@ public class SchoolListActivity extends BaseActivity {
     private ListView lv1;
     private MyAdapter adapter1;
     private ArrayList<School> schools = new ArrayList<>();
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,8 @@ public class SchoolListActivity extends BaseActivity {
         setContentView(R.layout.activity_schoollist);
 
         lv1 = (ListView) findViewById(R.id.lv);
+        textView = (TextView) findViewById(R.id.title);
+        textView.setText("请选择学校");
         adapter1 = new MyAdapter();
         lv1.setAdapter(adapter1);
 
@@ -57,6 +60,10 @@ public class SchoolListActivity extends BaseActivity {
                 finish();
             }
         });
+    }
+
+    public void Before(View view) {
+        finish();
     }
 
     private void initData() {

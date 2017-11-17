@@ -215,11 +215,11 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                         e.printStackTrace();
                     }
                     break;
-                case ANSWERDIALOG+100:
+                case ANSWERDIALOG + 100:
                     try {
                         JSONObject da = new JSONObject();
-                        da.put("msgType", ANSWER);
                         da.put("userId", Utils.getIMEI(getContext()));
+                        da.put("msgType", ANSWER);
                         da.put("msg", "0");
                         if (KwHproseClient.helloClient != null)
                             KwHproseClient.helloClient.answerqusetion(da.toString());
