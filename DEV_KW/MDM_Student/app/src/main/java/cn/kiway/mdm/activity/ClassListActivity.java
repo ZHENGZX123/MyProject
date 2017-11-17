@@ -38,13 +38,15 @@ public class ClassListActivity extends BaseActivity {
     private ListView lv1;
     private MyAdapter adapter1;
     private ArrayList<Class> classes = new ArrayList<>();
-
+    private TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classlist);
 
         lv1 = (ListView) findViewById(R.id.lv);
+        textView = (TextView) findViewById(R.id.title);
+        textView.setText("请选择学校");
         adapter1 = new MyAdapter();
         lv1.setAdapter(adapter1);
 
@@ -58,7 +60,9 @@ public class ClassListActivity extends BaseActivity {
             }
         });
     }
-
+    public void Before(View view) {
+        finish();
+    }
     private void initData() {
         String area = getIntent().getStringExtra("schoolId");
         //根据area获取学校列表
