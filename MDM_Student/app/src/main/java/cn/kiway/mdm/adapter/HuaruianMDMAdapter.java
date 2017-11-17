@@ -11,6 +11,7 @@ import java.util.List;
  */
 
 public class HuaruianMDMAdapter implements IMDMAdapter {
+
     @Override
     public void init(Context c) {
 
@@ -228,6 +229,16 @@ public class HuaruianMDMAdapter implements IMDMAdapter {
 
     @Override
     public void connectWifi(String ssid, String pwd) {
+
+    }
+
+    @Override
+    public String getMdmSdkVersion() {
+        return null;
+    }
+
+    @Override
+    public void setProximityDistance(int distance) {
 
     }
 }

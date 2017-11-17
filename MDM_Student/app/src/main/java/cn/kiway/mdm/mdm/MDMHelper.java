@@ -14,6 +14,8 @@ public class MDMHelper {
     public static IMDMAdapter getAdapter() {
         if (mAdapter == null) {
             mAdapter = new HuaweiMDMAdapter();
+//            mAdapter = new JiChengShiXunAdapter();
+//            mAdapter = new HuaweiMDMAdapter();
         }
         return mAdapter;
     }

@@ -50,6 +50,7 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
         mManager.setUsbDebuggingEnabled(!disabled);
     }
 
+    //暂时没有用到
     @Override
     public void setExternalStorageDisabled(boolean disabled) {
         mManager.setSdCardState(!disabled);
@@ -122,6 +123,7 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
         mManager.setSysTimeDisabled(disabled);
     }
 
+    //暂时没有用到这个
     @Override
     public void addNetworkAccessBlackList(ArrayList<String> addDomainList) {
         for (String s : addDomainList) {
@@ -217,17 +219,18 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
 
     @Override
     public void addInstallPackageWhiteList(ArrayList<String> whiteList) {
-
+        Log.d("test", "addInstallPackageWhiteList没有对应实现");
     }
 
     @Override
     public List<String> getInstallPackageWhiteList() {
+        Log.d("test", "getInstallPackageWhiteList没有对应实现");
         return null;
     }
 
     @Override
     public void removeInstallPackageWhiteList(List<String> currentList) {
-
+        Log.d("test", "removeInstallPackageWhiteList没有对应实现");
     }
 
     @Override
@@ -243,5 +246,14 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     @Override
     public void connectWifi(String ssid, String pwd) {
         Log.d("test", "hangupCalling没有对应实现");
+    }
+
+    public String getMdmSdkVersion() {
+        return mManager.getMdmSdkVersion();
+    }
+
+    @Override
+    public void setProximityDistance(int distance) {
+
     }
 }

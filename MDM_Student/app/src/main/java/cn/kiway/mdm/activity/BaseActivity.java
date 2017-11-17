@@ -1,18 +1,36 @@
 package cn.kiway.mdm.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
 import cn.kiway.mdm.mdm.MDMHelper;
+import cn.kiway.mdm.utils.NetworkUtil;
+import cn.kiway.mdm.utils.Utils;
+
+import static cn.kiway.mdm.KWApp.server;
 
 /**
  * Created by Administrator on 2017/6/9.
@@ -141,5 +159,87 @@ public class BaseActivity extends Activity {
         getSharedPreferences("kiway", 0).edit().putInt("flag_bluetooth", 1).commit();
     }
 
+    //下面是版本更新相关
+    public void checkNewVersion() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+
+                    HttpGet httpRequest = new HttpGet(server + "/static/download/version/zip_student.json");
+                    DefaultHttpClient client = new DefaultHttpClient();
+                    HttpResponse response = client.execute(httpRequest);
+                    String ret = EntityUtils.toString(response.getEntity());
+                    Log.d("test", "new version = " + ret);
+                    String apkVersion = new JSONObject(ret).getString("apkCode");
+                    String apkUrl = new JSONObject(ret).getString("apkUrl");
+                    if (Utils.getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
+                        downloadSilently(apkUrl, apkVersion);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    private void downloadSilently(String apkUrl, String version) {
+        boolean isWifi = NetworkUtil.isWifi(this);
+        if (!isWifi) {
+            Log.d("test", "不是wifi...");
+            return;
+        }
+        final String savedFilePath = "/mnt/sdcard/cache/mdm_student_" + version + ".apk";
+        if (new File(savedFilePath).exists()) {
+            Log.d("test", "该文件已经下载好了");
+            askforInstall(savedFilePath);
+            return;
+        }
+        RequestParams params = new RequestParams(apkUrl);
+        params.setSaveFilePath(savedFilePath);
+        params.setAutoRename(false);
+        params.setAutoResume(true);
+        x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
+            @Override
+            public void onSuccess(File result) {
+                Log.d("test", "下载成功");
+                //成功后弹出对话框询问，是否安装
+                askforInstall(savedFilePath);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                Log.d("test", "下载失败");
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+                Log.d("test", "下载取消");
+            }
+
+            @Override
+            public void onFinished() {
+                Log.d("test", "下载结束");
+            }
+        });
+    }
+
+    private void askforInstall(final String savedFilePath) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+        AlertDialog dialog_download = builder.setMessage("发现新的版本，是否更新？本次更新不消耗流量。").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface d, int arg1) {
+                d.dismiss();
+                Intent intent = new Intent();
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setAction(android.content.Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
+                startActivity(intent);
+                finish();
+            }
+        }).setPositiveButton(android.R.string.cancel, null).create();
+        dialog_download.show();
+    }
 
 }
