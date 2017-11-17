@@ -1,7 +1,10 @@
 package cn.kiway.mdm.mdm;
 
+import android.os.Build;
+
 import cn.kiway.mdm.adapter.HuaweiMDMAdapter;
 import cn.kiway.mdm.adapter.IMDMAdapter;
+import cn.kiway.mdm.adapter.JiChengShiXunAdapter;
 
 /**
  * Created by Administrator on 2017/9/1.
@@ -13,9 +16,13 @@ public class MDMHelper {
 
     public static IMDMAdapter getAdapter() {
         if (mAdapter == null) {
-            mAdapter = new HuaweiMDMAdapter();
-//            mAdapter = new JiChengShiXunAdapter();
-//            mAdapter = new HuaweiMDMAdapter();
+            //根据平板类型来选择用哪个Adapter
+            if (Build.BRAND.equals("HUAWEI")) {
+                mAdapter = new HuaweiMDMAdapter();
+            } else {
+                mAdapter = new JiChengShiXunAdapter();
+                //mAdapter = new HuaweiMDMAdapter();
+            }
         }
         return mAdapter;
     }
