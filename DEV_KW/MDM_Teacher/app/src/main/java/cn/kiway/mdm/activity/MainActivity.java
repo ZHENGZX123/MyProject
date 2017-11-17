@@ -84,13 +84,6 @@ public class MainActivity extends BaseActivity {
         initData();
         load();
         checkNewVersion();
-//        new LFilePicker()
-//                .withActivity(this)
-//                .withTitle(getString(R.string.filepath))
-//                .withRequestCode(requsetFile)
-//                .withMutilyMode(true)
-//                .withfilePath(FilePath)
-//                .start();
     }
 
     private void initView() {
