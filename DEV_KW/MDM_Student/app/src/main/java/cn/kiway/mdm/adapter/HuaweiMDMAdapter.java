@@ -41,7 +41,6 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceRestrictionManager().setWifiDisabled(mAdminName, disabled);
         } catch (Exception e) {
             e.printStackTrace();
-            
         }
     }
 
