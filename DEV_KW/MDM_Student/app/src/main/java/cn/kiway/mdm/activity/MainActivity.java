@@ -299,7 +299,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     public void Camera(View view) {
         Utils.childOperation(this, "useApp", "使用了相机APP");
-     //   KWApp.instance.connectTcp(KWApp.instance.teacherIp);
+        //   KWApp.instance.connectTcp(KWApp.instance.teacherIp);
 //        int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
 //        if (flag_camera == 0) {
 //            toast("相机功能当前不能使用");
@@ -630,9 +630,9 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
 
     public ShowMessageDailog showMessageDailog;
-    int showI = -1;
+    int showI;
 
-    public void Session(final int i) {
+    public void Session(int i) {
         if (showI == i && showMessageDailog != null && showMessageDailog.isShowing())
             return;
         showI = i;
@@ -641,13 +641,13 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             public void run() {
                 showMessageDailog = new ShowMessageDailog(MainActivity.this);
                 showMessageDailog.setCancelable(false);
-                if (i == SIGN) {
+                if (showI == SIGN) {
                     showMessageDailog.setShowMessage("老师上课签到，请你点击确定确认签到上课", SIGNDIALOG);
-                } else if (i == ANSWER) {
+                } else if (showI == ANSWER) {
                     showMessageDailog.setShowMessage("老师有道题正在抢答，是否进去抢答", ANSWERDIALOG);
-                } else if (i == UNANSWER) {
+                } else if (showI == UNANSWER) {
                     showMessageDailog.setShowMessage("抢答结束了", UNSWERDIALOG);
-                } else if (i == SUREREPONSE) {
+                } else if (showI == SUREREPONSE) {
                     showMessageDailog.setShowMessage("同学们，老师这套题清楚了吗？", REPONSEDIALOG);
                 }
                 if (!showMessageDailog.isShowing())
@@ -659,14 +659,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     ProgressDialog progressDialog;
     String proData = "";
 
-    public void downloadFile(final String data) {
+    public void downloadFile(String data) {
         if (proData.equals(data) && progressDialog != null && progressDialog.isShowing())
             return;
         proData = data;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                progressDialog = new ProgressDialog(MainActivity.this, data);
+                progressDialog = new ProgressDialog(MainActivity.this, proData);
                 progressDialog.show();
             }
         });

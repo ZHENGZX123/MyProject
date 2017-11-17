@@ -85,8 +85,8 @@ public class FileListActivity extends BaseActivity {
     }
 
     /*
- * 将时间戳转换为时间
- */
+ `* 将时间戳转换为时间
+`` */
     public static String stampToDate(String s) {
         String res;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
