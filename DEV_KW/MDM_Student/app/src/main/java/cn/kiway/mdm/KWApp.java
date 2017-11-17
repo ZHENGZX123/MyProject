@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xutils.x;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -72,6 +73,8 @@ public class KWApp extends Application implements KwConntectionCallback {
         instance = this;
         //CrashHandler.getInstance().init(this);
         huaweiPush(this);
+        //xutils
+        x.Ext.init(this);
     }
 
     public Handler mHandler = new Handler() {
@@ -231,6 +234,7 @@ public class KWApp extends Application implements KwConntectionCallback {
         //这个没有对应的MDM接口，需要代码控制
 
         int flag_usb = getSharedPreferences("kiway", 0).getInt("flag_usb", 1);
+        //太危险了
         //MDMHelper.getAdapter().setUSBDataDisabled(flag_usb == 0);
 
         int flag_wifi = getSharedPreferences("kiway", 0).getInt("flag_wifi", 1);

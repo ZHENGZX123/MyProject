@@ -137,4 +137,7 @@ public interface IMDMAdapter {
     //一键连接wifi
     void connectWifi(String ssid, String pwd);
 
+    String getMdmSdkVersion();
+
+    void setProximityDistance(int distance);
 }

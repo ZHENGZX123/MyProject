@@ -101,6 +101,17 @@ public class Utils {
                 Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
+    public static String getCurrentVersion(Context c) {
+        String versionName = "1.0.0";
+        try {
+            PackageInfo pkg = c.getPackageManager().getPackageInfo(c.getPackageName(), 0);
+            versionName = pkg.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionName;
+    }
+
     /**
      * Get help string from html file
      *
@@ -847,6 +858,16 @@ public class Utils {
                     }
                 });
             }
+            final ArrayList<String> blackList = new ArrayList<>();
+            for (final AppCharge ac : apps_type2) {
+                blackList.add(ac.packages);
+            }
+            m.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    MDMHelper.getAdapter().addInstallPackageBlackList(blackList);
+                }
+            });
             //2.检查使用时间段
             String runningAPP = Utils.getRunningAPP(m);
             Log.d("test", "runningAPP = " + runningAPP);
@@ -1077,6 +1098,10 @@ public class Utils {
 
     public static void openFile(Context context, String filePath) {
         Log.d("test", "openFile filepath = " + filePath);
+        if (TextUtils.isEmpty(filePath)) {
+            Toast.makeText(context, "文件路径不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
         filePath = "file://" + filePath;
         String[] splits = filePath.split("\\.");
         if (splits.length <= 1) {
