@@ -51,7 +51,6 @@ public class PushServer {
             if (!file.exists())
                 file.mkdirs();
             hproseSrv.setSharedir(FilePath + "/");
-
             Logger.log("开启：：：hprose server start---------------");
         } catch (IOException e) {
             e.printStackTrace();
