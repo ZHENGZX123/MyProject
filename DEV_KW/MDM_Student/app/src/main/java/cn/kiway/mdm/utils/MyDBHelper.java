@@ -738,9 +738,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
         if (db == null)
             db = getWritableDatabase();
         JSONArray array = new JSONArray();
-        Cursor cur = db.query(TABLE_FILE, null, null, null, null, null, null);
+        Cursor cur = db.query(TABLE_FILE, null, null, null, null, null, "time desc");
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-
             try {
                 JSONObject da = new JSONObject();
                 da.put("filename", cur.getString(1));

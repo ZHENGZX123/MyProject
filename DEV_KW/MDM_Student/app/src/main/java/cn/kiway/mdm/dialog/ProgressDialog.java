@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -38,6 +39,7 @@ public class ProgressDialog extends Dialog implements JRFClient.DownLoadCallBack
     JSONObject data;
     String path = Environment.getExternalStorageDirectory().getPath() + "/kiwayFile";
     TextView textView;
+    Button button;
 
     public ProgressDialog(@NonNull Activity context, String data) {
         super(context, R.style.LoadingDialog);
@@ -58,7 +60,8 @@ public class ProgressDialog extends Dialog implements JRFClient.DownLoadCallBack
         setContentView(R.layout.dialog_progress);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         textView = (TextView) findViewById(R.id.ok);
-        textView.setOnClickListener(this);
+        button = (Button) findViewById(R.id.sure);
+        button.setOnClickListener(this);
         textView.setEnabled(false);
         fullWindowCenter();
         downUrl = data.optString("msg");
@@ -99,13 +102,15 @@ public class ProgressDialog extends Dialog implements JRFClient.DownLoadCallBack
             @Override
             public void run() {
                 cn.kiway.mdm.entity.File a = new cn.kiway.mdm.entity.File();//保存记录到本地
-                a.filename = depositPath.split("/")[depositPath.split("/").length-1];
+                a.filename = depositPath.split("/")[depositPath.split("/").length - 1];
                 a.time = System.currentTimeMillis() + "";
                 a.filepath = depositPath;
                 new MyDBHelper(context).addFile(a);
                 textView.setEnabled(true);
                 progressBar.setVisibility(View.GONE);
-                textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "\n接收完成,打开文件");
+                textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "\n接收完成!");
+                button.setVisibility(View.VISIBLE);
+                button.setText("打开文件");
             }
         });
 
@@ -116,14 +121,17 @@ public class ProgressDialog extends Dialog implements JRFClient.DownLoadCallBack
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                button.setVisibility(View.VISIBLE);
+                button.setText("重新接收");
                 textView.setEnabled(true);
-                textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "接收失败,重新接收");
+                textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "\n接收失败！！");
             }
         });
     }
 
     @Override
     public void onClick(View view) {
+        button.setVisibility(View.GONE);
         if (textView.getText().toString().contains("失败")) {
             progressBar.setVisibility(View.VISIBLE);
             textView.setEnabled(false);

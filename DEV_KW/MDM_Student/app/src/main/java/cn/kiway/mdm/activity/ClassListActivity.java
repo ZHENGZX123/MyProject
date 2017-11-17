@@ -39,6 +39,7 @@ public class ClassListActivity extends BaseActivity {
     private MyAdapter adapter1;
     private ArrayList<Class> classes = new ArrayList<>();
     private TextView textView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,9 +61,11 @@ public class ClassListActivity extends BaseActivity {
             }
         });
     }
+
     public void Before(View view) {
         finish();
     }
+
     private void initData() {
         String area = getIntent().getStringExtra("schoolId");
         //根据area获取学校列表

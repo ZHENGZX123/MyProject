@@ -285,7 +285,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     private void checkCommand() {
         mHandler.sendEmptyMessageDelayed(MSG_CHECK_COMMAND, 10000);
-
     }
 
     private void initView() {
@@ -299,8 +298,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void Camera(View view) {
-        // Utils.childOperation(this, "useApp", "使用了相机APP");
-        KWApp.instance.connectTcp(KWApp.instance.teacherIp);
+        Utils.childOperation(this, "useApp", "使用了相机APP");
+     //   KWApp.instance.connectTcp(KWApp.instance.teacherIp);
 //        int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
 //        if (flag_camera == 0) {
 //            toast("相机功能当前不能使用");
