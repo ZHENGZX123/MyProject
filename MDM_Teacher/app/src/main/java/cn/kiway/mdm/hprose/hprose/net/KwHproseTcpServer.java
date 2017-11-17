@@ -62,8 +62,8 @@ public class KwHproseTcpServer extends HproseService {
 
     private final static ThreadLocal<TcpContext> currentContext = new ThreadLocal<TcpContext>();
     private volatile ExecutorService threadPool = null;
-    private volatile int readTimeout = 300*1000;
-    private volatile int writeTimeout =  300*1000;
+    private volatile int readTimeout = 300 * 1000;
+    private volatile int writeTimeout = 300 * 1000;
     private boolean threadPoolEnabled = false;
     private int reactorThreads = 2;
     private KwAcceptor acceptor = null;
