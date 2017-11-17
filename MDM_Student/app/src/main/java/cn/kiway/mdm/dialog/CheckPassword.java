@@ -39,8 +39,8 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
     }
 
     public void setView(View view, int position) {
-        this.view = view;
         this.position = position;
+        this.view = view;
     }
 
     public void setTitle(String title) {
