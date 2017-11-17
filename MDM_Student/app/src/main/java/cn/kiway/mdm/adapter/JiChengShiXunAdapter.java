@@ -32,228 +32,405 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
 
     @Override
     public void setWifiDisabled(boolean disabled) {
-        Log.d("test", "setWifiDisabled没有对应实现");
+        try {
+            Log.d("test", "setWifiDisabled没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setVoiceDisabled(boolean disabled) {
-        Log.d("test", "setVoiceDisabled没有对应实现");
+        try {
+            Log.d("test", "setVoiceDisabled没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setDataConnectivityDisabled(boolean disabled) {
-        Log.d("test", "setDataConnectivityDisabled没有对应实现");
+        try {
+            Log.d("test", "setDataConnectivityDisabled没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setUSBDataDisabled(boolean disabled) {
-        mManager.setUsbDebuggingEnabled(!disabled);
+        try {
+            mManager.setUsbDebuggingEnabled(!disabled);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //暂时没有用到
     @Override
     public void setExternalStorageDisabled(boolean disabled) {
-        mManager.setSdCardState(!disabled);
+        try {
+            mManager.setSdCardState(!disabled);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setStatusBarExpandPanelDisabled(boolean disabled) {
-        mManager.setStatusBarDisabled(!disabled);
+        try {
+            mManager.setStatusBarDisabled(!disabled);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setTaskButtonDisabled(boolean disabled) {
-        mManager.captureRecentKey(disabled ? 0 : 1);
+        try {
+            mManager.captureRecentKey(disabled ? 0 : 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setHomeButtonDisabled(boolean disabled) {
-        mManager.captureHomeKey(disabled ? 0 : 1);
+        try {
+            mManager.captureHomeKey(disabled ? 0 : 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setBackButtonDisabled(boolean disabled) {
-        mManager.captureBackKey(disabled ? 0 : 1);
+        try {
+            mManager.captureBackKey(disabled ? 0 : 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setSettingsApplicationDisabled(boolean disabled) {
-        mManager.setSettingsApplicationDisabled(disabled);
+        try {
+            mManager.setSettingsApplicationDisabled(disabled);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void turnOnGPS(boolean on) {
-        Log.d("test", "turnOnGPS没有对应实现");
+        try {
+            Log.d("test", "turnOnGPS没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void shutdownDevice() {
-        mManager.shutDown();
+        try {
+            mManager.shutDown();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void addPersistentApp(List<String> packageNames) {
-        Log.d("test", "addPersistentApp没有对应实现");
+        try {
+            Log.d("test", "addPersistentApp没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setVpnDisabled(boolean disabled) {
-        Log.d("test", "setVpnDisabled没有对应实现");
+        try {
+            Log.d("test", "setVpnDisabled没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setDefaultLauncher(String packageName, String className) {
-        mManager.setDefaultLauncher(packageName);
+        try {
+            mManager.setDefaultLauncher(packageName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void addDisallowedUninstallPackages(List<String> packageNames) {
-        for (String s : packageNames) {
-            mManager.appNoUnInstallListWrite(s);
+        try {
+            for (String s : packageNames) {
+                mManager.appNoUnInstallListWrite(s);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void clearDefaultLauncher() {
-        mManager.clearDefaultLauncher();
+        try {
+            mManager.clearDefaultLauncher();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setTimeAndDateSetDisabled(boolean disabled) {
-        mManager.setSysTimeDisabled(disabled);
+        try {
+            mManager.setSysTimeDisabled(disabled);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //暂时没有用到这个
     @Override
     public void addNetworkAccessBlackList(ArrayList<String> addDomainList) {
-        for (String s : addDomainList) {
-            mManager.addNetworkAccessWhitelistRule(s);
+        try {
+            for (String s : addDomainList) {
+                mManager.addNetworkAccessWhitelistRule(s);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void setWIFIeditDisabled(boolean b) {
-        Log.d("test", "setWIFIeditDisabled没有对应实现");
+        try {
+            Log.d("test", "setWIFIeditDisabled没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void installPackage(String path) {
-        mManager.installApp(path);
+        try {
+            mManager.installApp(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void uninstallPackage(String packages) {
-        mManager.uninstallApp(packages);
+        try {
+            mManager.uninstallApp(packages);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setBluetoothDisabled(boolean disabled) {
-        mManager.setBluetoothDataDisabled(disabled);
+        try {
+            mManager.setBluetoothDataDisabled(disabled);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setGPSDisabled(boolean b) {
-        Log.d("test", "setGPSDisabled没有对应实现");
+        try {
+            Log.d("test", "setGPSDisabled没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setWifiApDisabled(boolean b) {
-        Log.d("test", "setWifiApDisabled没有对应实现");
+        try {
+            Log.d("test", "setWifiApDisabled没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void rebootDevice() {
-        mManager.reboot();
+        try {
+            mManager.reboot();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setScreenCaptureDisabled(boolean flag) {
-        Log.d("test", "setScreenCaptureDisabled没有对应实现");
+        try {
+            Log.d("test", "setScreenCaptureDisabled没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setMicrophoneDisabled(boolean flag) {
-        Log.d("test", "setMicrophoneDisabled没有对应实现");
+        try {
+            Log.d("test", "setMicrophoneDisabled没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setRestoreFactoryDisabled(boolean disabled) {
-        mManager.allowFactoryReset(!disabled);
+        try {
+            mManager.allowFactoryReset(!disabled);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setSystemUpdateDisabled(boolean flag) {
-        Log.d("test", "setSystemUpdateDisabled没有对应实现");
+        try {
+            Log.d("test", "setSystemUpdateDisabled没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setNetworkLocationDisabled(boolean flag) {
-        Log.d("test", "setNetworkLocationDisabled没有对应实现");
+        try {
+            Log.d("test", "setNetworkLocationDisabled没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void addInstallPackageBlackList(ArrayList<String> packageNames) {
-        Log.d("test", "addInstallPackageBlackList没有对应实现");
+        try {
+            Log.d("test", "addInstallPackageBlackList没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void addDisallowedRunningApp(ArrayList<String> packageNames) {
-        mManager.setDisableApplication(packageNames);
+        try {
+            mManager.setDisableApplication(packageNames);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public List<String> getDisallowedRunningApp() {
-        Log.d("test", "getDisallowedRunningApp没有对应实现");
+        try {
+            Log.d("test", "getDisallowedRunningApp没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
     public void removeDisallowedRunningApp(ArrayList<String> packageNames) {
-        Log.d("test", "removeDisallowedRunningApp没有对应实现");
+        try {
+            Log.d("test", "removeDisallowedRunningApp没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setSilentActiveAdmin() {
-        Log.d("test", "setSilentActiveAdmin没有对应实现");
+        try {
+            Log.d("test", "setSilentActiveAdmin没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void addInstallPackageWhiteList(ArrayList<String> whiteList) {
-        Log.d("test", "addInstallPackageWhiteList没有对应实现");
+        try {
+            Log.d("test", "addInstallPackageWhiteList没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public List<String> getInstallPackageWhiteList() {
-        Log.d("test", "getInstallPackageWhiteList没有对应实现");
+        try {
+            Log.d("test", "getInstallPackageWhiteList没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
     public void removeInstallPackageWhiteList(List<String> currentList) {
-        Log.d("test", "removeInstallPackageWhiteList没有对应实现");
+        try {
+            Log.d("test", "removeInstallPackageWhiteList没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setWIFIStandbyMode(int status) {
-        Log.d("test", "setWIFIStandbyMode没有对应实现");
+        try {
+            Log.d("test", "setWIFIStandbyMode没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void hangupCalling() {
-        Log.d("test", "hangupCalling没有对应实现");
+        try {
+            Log.d("test", "hangupCalling没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void connectWifi(String ssid, String pwd) {
-        Log.d("test", "hangupCalling没有对应实现");
+        try {
+            Log.d("test", "hangupCalling没有对应实现");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public String getMdmSdkVersion() {
-        return mManager.getMdmSdkVersion();
+        try {
+            return mManager.getMdmSdkVersion();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
     public void setProximityDistance(int distance) {
-
+        try {
+            mManager.setProximityDistance(distance);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
