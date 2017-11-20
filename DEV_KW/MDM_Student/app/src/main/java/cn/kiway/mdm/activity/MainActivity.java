@@ -131,6 +131,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         checkIncomingCall();
         //14.距离传感器
         registerSensor();
+        //MDMHelper.getAdapter().setProximityEnable(true);
+        //MDMHelper.getAdapter().setProximityDistance(20);
         //15.设置默认短信app
         setDefaultSMSApp();
         //16.检查版本更新
@@ -314,9 +316,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 //        intent.setAction(Intent.ACTION_VIEW);
 //        intent.setData(Contacts.People.CONTENT_URI);
 //        startActivity(intent);
-//        startActivity(new Intent(this, CallActivity.class));
 
-
+        startActivity(new Intent(this, CallActivity.class));
         String version = MDMHelper.getAdapter().getMdmSdkVersion();
         Log.d("test", "version = " + version);
     }

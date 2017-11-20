@@ -1248,7 +1248,7 @@ public class Utils {
             client.setTimeout(10000);
             Log.d("test", "huaweitoken = " + token);
             JSONObject param = new JSONObject();
-            param.put("appId", "2747ffbb3cfca89d0084d3d95fe42c3f");
+            param.put("appId", "f2ec1fb69b27c7ab5260d2eb7cd95dea");
             param.put("type", "huawei");
             param.put("deviceId", imei);
             param.put("userId", token);
@@ -1829,7 +1829,7 @@ public class Utils {
             m.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    //MDMHelper.getAdapter().shutdownDevice();
+                    MDMHelper.getAdapter().shutdownDevice();
                 }
             });
 

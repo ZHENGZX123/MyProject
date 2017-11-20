@@ -456,5 +456,10 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
 
     }
 
+    @Override
+    public void setProximityEnable(boolean enable) {
+
+    }
+
 
 }

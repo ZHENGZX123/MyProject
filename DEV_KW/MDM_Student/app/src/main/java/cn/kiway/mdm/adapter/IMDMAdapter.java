@@ -140,4 +140,6 @@ public interface IMDMAdapter {
     String getMdmSdkVersion();
 
     void setProximityDistance(int distance);
+
+    void setProximityEnable(boolean enable);
 }
