@@ -433,4 +433,13 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void setProximityEnable(boolean enable) {
+        try {
+            mManager.setProximityEnable(enable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
