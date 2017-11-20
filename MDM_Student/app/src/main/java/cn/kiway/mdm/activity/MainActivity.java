@@ -316,10 +316,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 //        intent.setAction(Intent.ACTION_VIEW);
 //        intent.setData(Contacts.People.CONTENT_URI);
 //        startActivity(intent);
-
-        startActivity(new Intent(this, CallActivity.class));
         String version = MDMHelper.getAdapter().getMdmSdkVersion();
         Log.d("test", "version = " + version);
+
+        startActivity(new Intent(this, CallActivity.class));
     }
 
     public void SMS(View view) {
