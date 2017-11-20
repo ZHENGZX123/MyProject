@@ -325,7 +325,6 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             // new DeviceApplicationManager().addInstallPackageBlackList(mAdminName, packageNames);
         } catch (Exception e) {
             e.printStackTrace();
-            
         }
     }
 
