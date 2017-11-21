@@ -92,6 +92,7 @@ public class KWApp extends Application implements KwConntectionCallback {
             } else if (msg.what == MSG_LOCK) {
                 //强制锁屏
                 MDMHelper.getAdapter().setBackButtonDisabled(true);
+                MDMHelper.getAdapter().setHomeButtonDisabled(true);
                 startActivity(new Intent(getApplicationContext(), ScreenActivity.class).addFlags(Intent
                         .FLAG_ACTIVITY_NEW_TASK));
                 //DevicePolicyManager mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context
@@ -100,6 +101,7 @@ public class KWApp extends Application implements KwConntectionCallback {
             } else if (msg.what == MSG_UNLOCK) {
                 //解除锁屏
                 MDMHelper.getAdapter().setBackButtonDisabled(false);
+                MDMHelper.getAdapter().setHomeButtonDisabled(false);
                 if (currentActivity != null && currentActivity instanceof ScreenActivity) {
                     currentActivity.finish();
                 }

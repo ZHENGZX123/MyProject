@@ -125,7 +125,7 @@
                 android:gravity="center"
                 android:padding="10dp"
                 android:singleLine="true"
-                android:text="0600350230"
+                android:text=""
                 android:textColor="#2b0fa1"
                 android:textSize="14sp"/>
 
@@ -166,7 +166,7 @@
                 android:gravity="center"
                 android:padding="10dp"
                 android:singleLine="true"
-                android:text="测试"
+                android:text=""
                 android:textColor="#2b0fa1"
                 android:textSize="14sp"/>
 

@@ -54,7 +54,7 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
         setContentView(R.layout.dialog_password);
         fullWindowCenter();
         editText = (EditText) findViewById(R.id.password);
-        editText.setText("123456");
+        editText.setText("");
         findViewById(R.id.ok).setOnClickListener(this);
         setOnShowListener(this);
     }
