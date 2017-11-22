@@ -17,30 +17,35 @@ public class KwHproseClient {
     static MainActivity activity;
     public static PushClass helloClient;
 
-    public static void connect(MainActivity activity2, String tcp, String userId, KwConntectionCallback
+    public static void connect(final MainActivity activity2, final String tcp,final String userId, final KwConntectionCallback
             conntectionCallback) {
-        try {
-            stop();
-            System.out.println("-----START------");
-            activity = activity2;
-            // client = new KwHproseTcpClient("tcp://" + tcp + ":30100", conntectionCallback);
-            client = new KwHproseHttpClient("http://" + tcp + ":30100", conntectionCallback);
-            helloClient = client.useService(PushClass.class);
-            GroundActions ground = new GroundActions<>(activity2);
-            OwnerActions owner = new OwnerActions<>(activity2);
-            helloClient.publish(userId);
-            client.setKeepAlive(true);
-            if (!client.isSubscribed("ground"))
-                client.subscribe("ground", ground);//班级组
-            if (!client.isSubscribed(userId + "owner"))
-                client.subscribe(userId + "owner", owner);//个人
-            if (client != null)
-                conntectionCallback.onConnected(null);
-        } catch (Exception e) {
-            conntectionCallback.onError(null, e);
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    stop();
+                    System.out.println("-----START------");
+                    activity = activity2;
+                    // client = new KwHproseTcpClient("tcp://" + tcp + ":30100", conntectionCallback);
+                    client = new KwHproseHttpClient("http://" + tcp + ":30100", conntectionCallback);
+                    helloClient = client.useService(PushClass.class);
+                    GroundActions ground = new GroundActions<>(activity2);
+                    OwnerActions owner = new OwnerActions<>(activity2);
+                    helloClient.publish(userId);
+                    client.setKeepAlive(true);
+                    if (!client.isSubscribed("ground"))
+                        client.subscribe("ground", ground);//班级组
+                    if (!client.isSubscribed(userId + "owner"))
+                        client.subscribe(userId + "owner", owner);//个人
+                    if (client != null)
+                        conntectionCallback.onConnected(null);
+                } catch (Exception e) {
+                    conntectionCallback.onError(null, e);
+                }
+                System.out.println("End");
+            }
+        }).start();
 
-        System.out.println("End");
     }
 
     public static void stop() {
