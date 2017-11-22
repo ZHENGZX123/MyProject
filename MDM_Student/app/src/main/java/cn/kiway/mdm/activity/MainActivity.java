@@ -484,11 +484,21 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     protected void onDestroy() {
         super.onDestroy();
         Log.d("test", "Main onDestroy");
-        unregisterReceiver(mReceiver);
-        telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_NONE);
-        mSensorManager.unregisterListener(this);
-        mHandler.removeCallbacksAndMessages(null);
-        mLocationClient.stop();
+        if (mReceiver != null) {
+            unregisterReceiver(mReceiver);
+        }
+        if (telephonyManager != null) {
+            telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_NONE);
+        }
+        if (mSensorManager != null) {
+            mSensorManager.unregisterListener(this);
+        }
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+        }
+        if (mLocationClient != null) {
+            mLocationClient.stop();
+        }
     }
 
     /**

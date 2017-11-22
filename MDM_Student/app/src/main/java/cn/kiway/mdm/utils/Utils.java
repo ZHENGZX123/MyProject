@@ -465,15 +465,15 @@ public class Utils {
     }
 
     public static String getIMEI(Context c) {
-        TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
-        String imei = tm.getDeviceId();
+        String imei = FileUtils.readSDCardFile("/mnt/sdcard/kiway_mdm/imei.txt", c);
         if (TextUtils.isEmpty(imei)) {
-            imei = c.getSharedPreferences("kiway", 0).getString("imei", "");
+            TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
+            imei = tm.getDeviceId();
             if (TextUtils.isEmpty(imei)) {
                 Log.d("test", "这个IMEI是生成的");
                 imei = genIMEI();
-                c.getSharedPreferences("kiway", 0).edit().putString("imei", imei).commit();
             }
+            FileUtils.saveFile(imei);
         }
         Log.d("test", "IMEI = " + imei);
         return imei;
