@@ -958,13 +958,7 @@ public class Utils {
     }
 
     public static void huaweiPush(final Context c) {
-        new Thread() {
-            @Override
-            public void run() {
-                PushManager.requestToken(c);
-                Log.d("huawei", "try to get Token ,current packageName is " + c.getPackageName());
-            }
-        }.start();
+        PushManager.requestToken(c);
     }
 
     public static String getRunningAPP(Context context) {

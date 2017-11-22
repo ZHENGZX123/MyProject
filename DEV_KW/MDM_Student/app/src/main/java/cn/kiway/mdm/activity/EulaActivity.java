@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spannable;
@@ -37,10 +38,17 @@ public class EulaActivity extends Activity {
         mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
 
-        if (isActiveMe()) {
+        if (Build.BRAND.equals("HUAWEI")) {
+            if (isActiveMe()) {
+                jump();
+                return;
+            }
+        } else {
+            //集成视讯不用做设备管理器。
             jump();
             return;
         }
+
 
         String filename = "huawei_permission_statement.html";
         String content = Utils.getStringFromHtmlFile(this, filename);

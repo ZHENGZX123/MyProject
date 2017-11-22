@@ -113,6 +113,8 @@ public class BaseActivity extends Activity {
     public void unlock() {
         //1.设置默认桌面
         MDMHelper.getAdapter().clearDefaultLauncher();
+        //
+        MDMHelper.getAdapter().removeDisallowedUninstallPackages();
         //2.关闭settings.慎用！！！
         //MDMHelper.getAdapter().setSettingsApplicationDisabled(false);
         //4.禁止下拉状态栏
