@@ -39,7 +39,7 @@ public class AppListActivity3 extends BaseActivity {
                 adapter.notifyDataSetChanged();
             }
         });
-        apps = Utils.scanLocalInstallAppList(getPackageManager(), true);
+        apps = Utils.scanLocalInstallAppList(this, true);
         //这里要过滤掉默认APP、网络APP
         adapter.notifyDataSetChanged();
     }
