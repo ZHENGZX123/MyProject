@@ -19,7 +19,6 @@ import org.json.JSONObject;
 import java.util.List;
 
 import cn.kiway.mdm.R;
-import cn.kiway.mdm.activity.AppListActivity2;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.AppCharge;
@@ -29,7 +28,6 @@ import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.utils.AppListUtils.isAppInstalled;
 import static cn.kiway.mdm.utils.Constant._16;
-import static cn.kiway.mdm.utils.Constant.kiwayQiTa;
 import static cn.kiway.mdm.utils.FileACache.ListFileName;
 
 /**
@@ -125,14 +123,6 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
             App a = mData.get(parentIndex).get(index);
             String packageName = a.packageName;
             String name = a.name;
-            if (packageName.equals(kiwayQiTa)) {//如果点击的是其他应用
-                if (!context.getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
-                    Toast.makeText(context, "请先锁定在进入其他应用", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                context.startActivity(new Intent(context, AppListActivity2.class));
-                return;
-            }
             int flag_app_open = context.getSharedPreferences("kiway", 0).getInt("flag_app_open", 1);
             if (flag_app_open == 0) {
                 Toast.makeText(context, "所有的APP已被禁止使用", Toast.LENGTH_SHORT).show();

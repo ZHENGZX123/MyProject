@@ -454,15 +454,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         });
     }
 
-    //旧代码，单机版用
-    public void clickButton4(View v) {
-        if (!getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
-            toast("请先锁定再进入其他应用");
-            return;
-        }
-        startActivity(new Intent(this, AppListActivity2.class));
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

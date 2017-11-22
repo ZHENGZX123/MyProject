@@ -54,6 +54,25 @@
             android:background="#e5e5e5" />
 
         <TextView
+            android:id="@+id/custom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawableRight="@drawable/ic_chevron_right"
+            android:gravity="center_vertical"
+            android:onClick="custom"
+            android:padding="10dp"
+            android:text="自定义APP"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:background="#e5e5e5" />
+
+        <TextView
             android:id="@+id/code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

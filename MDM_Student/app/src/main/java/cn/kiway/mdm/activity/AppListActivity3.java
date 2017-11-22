@@ -16,8 +16,6 @@ import cn.kiway.mdm.R;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.utils.Utils;
 
-import static cn.kiway.mdm.utils.Constant.otherApps;
-
 
 public class AppListActivity3 extends BaseActivity {
 
@@ -41,14 +39,8 @@ public class AppListActivity3 extends BaseActivity {
                 adapter.notifyDataSetChanged();
             }
         });
-        apps = Utils.scanLocalInstallAppList(getPackageManager());
-        for (App a : apps) {
-            for (App b : otherApps) {
-                if (a.packageName.equals(b.packageName)) {
-                    a.selected = true;
-                }
-            }
-        }
+        apps = Utils.scanLocalInstallAppList(getPackageManager(), true);
+        //这里要过滤掉默认APP、网络APP
         adapter.notifyDataSetChanged();
     }
 
