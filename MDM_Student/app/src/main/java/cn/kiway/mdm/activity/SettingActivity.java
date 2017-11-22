@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.dialog.CheckPassword;
+import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 
@@ -119,6 +120,7 @@ public class SettingActivity extends BaseActivity implements CheckPassword.Check
                 break;
             case 2:
                 setResult(999);
+                FileACache.deleteListCache();
                 finish();
                 new Thread() {
                     @Override
