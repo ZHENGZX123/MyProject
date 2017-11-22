@@ -192,7 +192,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     if (location != null) {
                         String address = "纬度：" + location.getLatitude() + "经度：" + location.getLongitude();
                         Log.d("test", address);
-                        double[] trans = CoordinateTransformUtil.wgs84tobd09(location.getLongitude(), location.getLatitude());
+                        double[] trans = CoordinateTransformUtil.wgs84tobd09(location.getLongitude(), location
+                                .getLatitude());
                         Log.d("test", "转换后 " + trans[0] + " , " + trans[1]);
                         Utils.uploadLocation(MainActivity.this, trans[0], trans[1]);
                     }
@@ -510,10 +511,13 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             String packageName = intent.getStringExtra(PACKAGENAME);
+            boolean b = intent.getBooleanExtra("boolean", false);
             if (action.equals(INSTALL_SUCCESS)) {
                 boolean in = Utils.checkInAppcharges(MainActivity.this, packageName);
-                if (!in) {
-                    return;
+                if (!b) {
+                    if (!in) {
+                        return;
+                    }
                 }
                 ArrayList<App> apps = new ArrayList<>();
                 App a = new App();
@@ -526,7 +530,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     allListData.add(apps);
                 }
                 initData(allListData);
-
             } else if (action.equals(REMOVE_SUCCESS)) {
                 Log.e(AppReceiverIn.TAG, "--------" + allListData.toString());
                 if (allListData.toString().contains(packageName)) {
