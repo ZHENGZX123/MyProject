@@ -38,6 +38,12 @@ public class FileACache {
         new DataCache<T>().saveGlobal(ctx, data, cacheName);
     }
 
+    public static void deleteListCache(){
+        File file=new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+DataCache+"/"+ListFileName);
+        if (file.exists())
+            file.delete();
+    }
+
     /**
      * 保存 一组 数据
      *
