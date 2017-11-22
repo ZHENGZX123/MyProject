@@ -46,7 +46,6 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
     public void setTitle(String title) {
         this.title = title;
     }
-
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +103,8 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
         if (title == null)
             title = "请输入密码";
         textView.setText(title);
+        if (editText!=null)
+            editText.setText("");
     }
 
     public interface CheckPasswordCall {

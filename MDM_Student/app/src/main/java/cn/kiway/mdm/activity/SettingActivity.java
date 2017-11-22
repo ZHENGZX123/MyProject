@@ -12,6 +12,7 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import cn.kiway.mdm.R;
+import cn.kiway.mdm.dialog.CheckPassword;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 
@@ -19,11 +20,12 @@ import cn.kiway.mdm.utils.Utils;
  * Created by Administrator on 2017/10/13.
  */
 
-public class SettingActivity extends BaseActivity {
+public class SettingActivity extends BaseActivity implements CheckPassword.CheckPasswordCall {
 
     private TextView mode;
     private ImageView codeIV;
     private RelativeLayout codeRL;
+    CheckPassword checkPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,7 @@ public class SettingActivity extends BaseActivity {
         mode = (TextView) findViewById(R.id.lock);
         codeIV = (ImageView) findViewById(R.id.codeIV);
         codeRL = (RelativeLayout) findViewById(R.id.codeRL);
-
+        checkPassword = new CheckPassword(this, this);
         if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
             mode.setText("家长模式");
         } else {
@@ -41,17 +43,10 @@ public class SettingActivity extends BaseActivity {
     }
 
     public void Lock(View view) {
-        if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
-            getSharedPreferences("kiway", 0).edit().putBoolean("locked", false).commit();
-            mode.setText("学生模式");
-            Toast.makeText(this, "解锁成功", Toast.LENGTH_SHORT).show();
-            unlock();
-        } else {
-            getSharedPreferences("kiway", 0).edit().putBoolean("locked", true).commit();
-            mode.setText("家长模式");
-            Toast.makeText(this, "锁定成功", Toast.LENGTH_SHORT).show();
-            lock();
-        }
+        checkPassword.setView(null, 1);
+        checkPassword.setCancelable(true);
+        checkPassword.setTitle("请输入密码");
+        checkPassword.show();
     }
 
     public void Code(View view) {
@@ -85,37 +80,10 @@ public class SettingActivity extends BaseActivity {
     }
 
     public void Logout(View view) {
-        setResult(999);
-        finish();
-
-        new Thread() {
-            @Override
-            public void run() {
-                //1.上报状态
-                Utils.deviceRuntime(SettingActivity.this, "2", false);
-                Utils.uninstallPush(SettingActivity.this);
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                //2.注销
-                Utils.logout(SettingActivity.this);
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                //3.清数据
-                getSharedPreferences("kiway", 0).edit().clear().commit();
-                new MyDBHelper(SettingActivity.this).deleteAppcharge(null);
-                new MyDBHelper(SettingActivity.this).deleteWifi(null);
-                new MyDBHelper(SettingActivity.this).deleteNetwork(null);
-                new MyDBHelper(SettingActivity.this).deleteCall(null);
-                new MyDBHelper(SettingActivity.this).deleteSMS(null);
-
-            }
-        }.start();
+        checkPassword.setView(null, 2);
+        checkPassword.setCancelable(true);
+        checkPassword.setTitle("请输入密码");
+        checkPassword.show();
     }
 
     public void Before(View view) {
@@ -124,5 +92,56 @@ public class SettingActivity extends BaseActivity {
 
     public void File(View view) {
         startActivity(new Intent(this, FileListActivity.class));
+    }
+
+    @Override
+    public void success(View vx, int position) throws Exception {
+        switch (position) {
+            case 1:
+                if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+                    getSharedPreferences("kiway", 0).edit().putBoolean("locked", false).commit();
+                    mode.setText("学生模式");
+                    Toast.makeText(this, "解锁成功", Toast.LENGTH_SHORT).show();
+                    unlock();
+                } else {
+                    getSharedPreferences("kiway", 0).edit().putBoolean("locked", true).commit();
+                    mode.setText("家长模式");
+                    Toast.makeText(this, "锁定成功", Toast.LENGTH_SHORT).show();
+                    lock();
+                }
+                break;
+            case 2:
+                setResult(999);
+                finish();
+                new Thread() {
+                    @Override
+                    public void run() {
+                        //1.上报状态
+                        Utils.deviceRuntime(SettingActivity.this, "2", false);
+                        Utils.uninstallPush(SettingActivity.this);
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //2.注销
+                        Utils.logout(SettingActivity.this);
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //3.清数据
+                        getSharedPreferences("kiway", 0).edit().clear().commit();
+                        new MyDBHelper(SettingActivity.this).deleteAppcharge(null);
+                        new MyDBHelper(SettingActivity.this).deleteWifi(null);
+                        new MyDBHelper(SettingActivity.this).deleteNetwork(null);
+                        new MyDBHelper(SettingActivity.this).deleteCall(null);
+                        new MyDBHelper(SettingActivity.this).deleteSMS(null);
+
+                    }
+                }.start();
+                break;
+        }
     }
 }
