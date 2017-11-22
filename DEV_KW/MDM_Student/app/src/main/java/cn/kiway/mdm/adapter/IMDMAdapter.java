@@ -139,7 +139,10 @@ public interface IMDMAdapter {
 
     String getMdmSdkVersion();
 
-    void setProximityDistance(int distance);
+    void setProximityDistance(int distance);//距离感应器距离
 
-    void setProximityEnable(boolean enable);
+    void setProximityEnable(boolean enable);//启动距离感应器
+
+    void setProximityDelay(int delay);//距离感应器反应时间
+
 }

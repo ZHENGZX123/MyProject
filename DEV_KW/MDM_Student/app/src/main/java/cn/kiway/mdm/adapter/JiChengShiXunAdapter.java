@@ -16,7 +16,7 @@ import java.util.List;
 public class JiChengShiXunAdapter implements IMDMAdapter {
 
     private Context c;
-    private MdmPolicyManager mManager;
+    public MdmPolicyManager mManager;
 
     @Override
     public void init(Context c) {
@@ -438,6 +438,22 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     public void setProximityEnable(boolean enable) {
         try {
             mManager.setProximityEnable(enable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void setProximityDelay(int delay) {
+        try {
+            mManager.setProximityDelay(delay);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void setHomeKeyhide(boolean hide){
+        try {
+            mManager.setHomeKeyhide(hide);
         } catch (Exception e) {
             e.printStackTrace();
         }

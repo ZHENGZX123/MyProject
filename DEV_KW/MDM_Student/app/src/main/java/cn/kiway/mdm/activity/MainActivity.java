@@ -131,12 +131,13 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         checkIncomingCall();
         //14.距离传感器
         registerSensor();
-        //MDMHelper.getAdapter().setProximityEnable(true);
-        //MDMHelper.getAdapter().setProximityDistance(20);
         //15.设置默认短信app
         setDefaultSMSApp();
         //16.检查版本更新
         checkNewVersion();
+//        MDMHelper.getAdapter().setProximityEnable(true);
+//        MDMHelper.getAdapter().setProximityDistance(40);
+//        MDMHelper.getAdapter().setProximityDelay(100);
     }
 
     private Handler mHandler = new Handler() {
