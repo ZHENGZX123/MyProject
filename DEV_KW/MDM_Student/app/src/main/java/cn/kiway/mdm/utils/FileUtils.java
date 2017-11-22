@@ -227,6 +227,23 @@ public class FileUtils {
         return "";
     }
 
+    public static void saveFile(String str) {
+        String filePath  = "/mnt/sdcard/kiway_mdm/imei.txt";
+        try {
+            File file = new File(filePath);
+            if (!file.exists()) {
+                File dir = new File(file.getParent());
+                dir.mkdirs();
+                file.createNewFile();
+            }
+            FileOutputStream outStream = new FileOutputStream(file);
+            outStream.write(str.getBytes());
+            outStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void openFile(Context context, String filePath) {
         filePath = "file://" + filePath;
         String type = filePath.split("\\.")[1].toLowerCase();
