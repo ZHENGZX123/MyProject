@@ -195,7 +195,7 @@ public class Utils {
         }
     }
 
-    public static ArrayList<App> scanLocalInstallAppList(PackageManager packageManager) {
+    public static ArrayList<App> scanLocalInstallAppList(PackageManager packageManager, boolean filter) {
         ArrayList<App> apps = new ArrayList<>();
         try {
             List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
@@ -214,10 +214,14 @@ public class Utils {
                 if (!allowPackages.contains(packageInfo.packageName)) {
                     continue;
                 }
-                //屏蔽掉系统设置
-                if (packageInfo.packageName.equals("com.android.settings")
-                        || packageInfo.packageName.equals("cn.kiway.mdm")) {
-                    continue;
+                //过滤
+                if (filter) {
+                    if (packageInfo.packageName.equals("com.android.settings") || packageInfo.packageName.equals("cn.kiway.mdm")) {
+                        continue;
+                    }
+                    if (AppListUtils.preinstallAPP.contains(packageInfo)) {
+                        continue;
+                    }
                 }
                 App a = new App();
                 a.name = packageInfo.applicationInfo.loadLabel(packageManager).toString();
@@ -810,7 +814,7 @@ public class Utils {
             Log.d("test", "apps_type1 = " + apps_type1.size());
             ArrayList<AppCharge> apps_type2 = new MyDBHelper(m).getAllAppCharges(2);
             Log.d("test", "apps_type2 = " + apps_type2.size());
-            ArrayList<App> installApps = scanLocalInstallAppList(m.getPackageManager());
+            ArrayList<App> installApps = scanLocalInstallAppList(m.getPackageManager(), false);
             for (AppCharge ac : apps_type0) {
                 //必须安装的APP，如果没有安装，要安装上去，注意重复下载的问题。
                 boolean installed = false;
@@ -1045,7 +1049,7 @@ public class Utils {
                     String url = server + "device/appInstallation";
                     Log.d("test", "applist url = " + url);
                     JSONArray array = new JSONArray();
-                    ArrayList<App> installApps = scanLocalInstallAppList(c.getPackageManager());
+                    ArrayList<App> installApps = scanLocalInstallAppList(c.getPackageManager(), false);
                     int count = installApps.size();
                     String imei = Utils.getIMEI(c);
                     for (int i = 0; i < count; i++) {

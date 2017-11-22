@@ -49,6 +49,13 @@ public class SettingActivity extends BaseActivity implements CheckPassword.Check
         checkPassword.show();
     }
 
+    public void custom(View view) {
+        checkPassword.setView(null, 3);
+        checkPassword.setCancelable(true);
+        checkPassword.setTitle("请输入密码");
+        checkPassword.show();
+    }
+
     public void Code(View view) {
         String schoolId = getSharedPreferences("kiway", 0).getString("schoolId", "");
         String classId = getSharedPreferences("kiway", 0).getString("classId", "");
@@ -141,6 +148,9 @@ public class SettingActivity extends BaseActivity implements CheckPassword.Check
 
                     }
                 }.start();
+                break;
+            case 3:
+                startActivity(new Intent(this, AppListActivity3.class));
                 break;
         }
     }
