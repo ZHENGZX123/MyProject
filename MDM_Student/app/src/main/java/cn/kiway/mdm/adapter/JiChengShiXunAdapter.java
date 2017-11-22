@@ -9,8 +9,6 @@ import com.android.mdm.MdmPolicyManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.R.attr.packageNames;
-
 /**
  * Created by Administrator on 2017/11/16.
  */
@@ -231,6 +229,15 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     public void installPackage(String path) {
         try {
             mManager.installApp(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void installPackage(String path, boolean open) {
+        try {
+            mManager.installApp(path, true);
         } catch (Exception e) {
             e.printStackTrace();
         }

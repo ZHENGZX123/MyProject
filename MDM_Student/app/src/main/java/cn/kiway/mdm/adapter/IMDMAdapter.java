@@ -81,6 +81,8 @@ public interface IMDMAdapter {
     //安装app
     void installPackage(String path);
 
+    void installPackage(String path , boolean open);
+
     //卸载app
     void uninstallPackage(String packages);
 

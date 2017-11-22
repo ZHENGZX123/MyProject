@@ -224,6 +224,11 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     }
 
     @Override
+    public void installPackage(String path, boolean open) {
+        installPackage(path);
+    }
+
+    @Override
     public void uninstallPackage(String s) {
         try {
             new DevicePackageManager().uninstallPackage(mAdminName, s, false);
