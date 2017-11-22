@@ -9,6 +9,8 @@ import com.android.mdm.MdmPolicyManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.packageNames;
+
 /**
  * Created by Administrator on 2017/11/16.
  */
@@ -172,6 +174,15 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
             for (String s : packageNames) {
                 mManager.appNoUnInstallListWrite(s);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void removeDisallowedUninstallPackages() {
+        try {
+            mManager.appNoUnInstallListDeleteAll();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -451,7 +462,8 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
             e.printStackTrace();
         }
     }
-    public void setHomeKeyhide(boolean hide){
+
+    public void setHomeKeyhide(boolean hide) {
         try {
             mManager.setHomeKeyhide(hide);
         } catch (Exception e) {

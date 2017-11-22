@@ -64,6 +64,8 @@ public interface IMDMAdapter {
     //不允许卸载APP
     void addDisallowedUninstallPackages(List<String> packageNames);//慎用
 
+    void removeDisallowedUninstallPackages();
+
     //清除默认桌面
     void clearDefaultLauncher();
 

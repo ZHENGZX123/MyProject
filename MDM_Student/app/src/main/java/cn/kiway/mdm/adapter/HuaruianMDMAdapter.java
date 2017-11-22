@@ -103,6 +103,11 @@ public class HuaruianMDMAdapter implements IMDMAdapter {
     }
 
     @Override
+    public void removeDisallowedUninstallPackages() {
+
+    }
+
+    @Override
     public void clearDefaultLauncher() {
 
     }
