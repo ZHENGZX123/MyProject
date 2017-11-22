@@ -6,7 +6,6 @@ import android.provider.Settings;
 import android.view.View;
 
 import cn.kiway.mdm.R;
-import cn.kiway.mdm.mdm.MDMHelper;
 
 /**
  * Created by Administrator on 2017/10/27.
@@ -29,7 +28,4 @@ public class TestActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    public void clickUpgrade(View view) {
-        MDMHelper.getAdapter().installPackage("/mnt/sdcard/test.apk");
-    }
 }

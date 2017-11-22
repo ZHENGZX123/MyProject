@@ -470,6 +470,7 @@ public class Utils {
         if (TextUtils.isEmpty(imei)) {
             imei = c.getSharedPreferences("kiway", 0).getString("imei", "");
             if (TextUtils.isEmpty(imei)) {
+                Log.d("test", "这个IMEI是生成的");
                 imei = genIMEI();
                 c.getSharedPreferences("kiway", 0).edit().putString("imei", imei).commit();
             }
