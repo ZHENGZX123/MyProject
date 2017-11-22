@@ -460,5 +460,10 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
 
     }
 
+    @Override
+    public void setProximityDelay(int delay) {
+
+    }
+
 
 }
