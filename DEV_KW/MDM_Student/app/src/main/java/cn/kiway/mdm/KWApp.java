@@ -155,11 +155,11 @@ public class KWApp extends Application implements KwConntectionCallback {
                 Utils.showSMSDialog(KWApp.instance.currentActivity, (SmsMessage) msg.obj);
             } else if (msg.what == MSG_ATTEND_CALSS) {
                 //上课
+                teacherIp = ((JSONObject) msg.obj).optString("ip");
+                connectTcp(teacherIp);
                 connectNumber = 0;
                 isConnect = false;
                 isAttenClass = true;
-                teacherIp = ((JSONObject) msg.obj).optString("ip");
-                connectTcp(teacherIp);
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
                 //下课
                 isAttenClass = false;
