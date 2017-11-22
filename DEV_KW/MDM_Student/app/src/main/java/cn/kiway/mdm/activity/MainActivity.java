@@ -371,10 +371,11 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             dialog.show();
             return;
         }
-        dialog.setView(null, 1);
-        dialog.setCancelable(true);
-        dialog.setTitle("请输入密码");
-        dialog.show();
+//        dialog.setView(null, 1);
+//        dialog.setCancelable(true);
+//        dialog.setTitle("请输入密码");
+//        dialog.show();
+        startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), 999);
     }
 
     @Override

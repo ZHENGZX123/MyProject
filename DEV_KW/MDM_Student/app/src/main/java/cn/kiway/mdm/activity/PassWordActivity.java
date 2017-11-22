@@ -12,7 +12,7 @@ import cn.kiway.mdm.R;
  */
 
 public class PassWordActivity extends BaseActivity {
-    EditText editText1, editText2;
+    EditText editText1, editText2, oldEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,9 +20,18 @@ public class PassWordActivity extends BaseActivity {
         setContentView(R.layout.activity_password);
         editText1 = (EditText) findViewById(R.id.new_password);
         editText2 = (EditText) findViewById(R.id.new_password1);
+        oldEdit = (EditText) findViewById(R.id.old_password);
     }
 
     public void Ok(View view) {
+        if (oldEdit.getText().toString().equals("")) {
+            Toast.makeText(this, "请输入原密码", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!oldEdit.getText().toString().equals(getSharedPreferences("kiway", 0).getString("password", ""))) {
+            Toast.makeText(this, "原密码输入错误", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (editText1.getText().toString().equals("") || editText2.getText().toString().equals("")) {
             Toast.makeText(this, "密码不能为空", Toast.LENGTH_SHORT).show();
             return;
