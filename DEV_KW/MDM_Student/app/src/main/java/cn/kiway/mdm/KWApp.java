@@ -63,8 +63,10 @@ public class KWApp extends Application implements KwConntectionCallback {
     public static final int MSG_ATTEND_CALSS = 15;//上课
     public static final int MSG_GET_OUT_OF_CALASS = 16;//下课
     public static final int MSG_SMS = 17;//下课
+
+    public static final int MSG_CONNECT=18;
     public boolean isAttenClass = false;
-    public String teacherIp = "192.168.43.172";
+    public String teacherIp = "";
     public static boolean temporary_app = false;
 
     @Override
@@ -163,6 +165,12 @@ public class KWApp extends Application implements KwConntectionCallback {
                 isAttenClass = false;
                 KwHproseClient.stop();
                 activity.goOutClass();
+            }else if(msg.what==MSG_CONNECT){
+                try {
+                    KwHproseClient.connect(activity, teacherIp, Utils.getIMEI(activity), KWApp.this);
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }
     };
@@ -338,10 +346,10 @@ public class KWApp extends Application implements KwConntectionCallback {
     }
 
     public void connectTcp(String ip) {
-        try {
-            KwHproseClient.connect(activity, ip, Utils.getIMEI(activity), this);
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
+        if (isAttenClass)
+            return;
+        Message msg=new Message();
+        msg.what=MSG_CONNECT;
+        mHandler.sendMessage(msg);
     }
 }
