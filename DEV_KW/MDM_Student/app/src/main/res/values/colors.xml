@@ -14,4 +14,6 @@
     <color name="bg_dialog">#00000000</color>
     <color name="province_line_border">#333333</color>
     <color name="press_color">#ddaaaaaa</color>
+    <color name="_e5e5e5">#e5e5e5</color>
+    <color name="_20ffffff">#20ffffff</color>
 </resources>
