@@ -141,7 +141,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //14.距离传感器
         registerSensor();
         //15.设置默认短信app
-        setDefaultSMSApp();
+        //setDefaultSMSApp();
         //16.检查版本更新
         checkNewVersion();
         //17.检查通话功能
@@ -154,10 +154,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         boolean telephony = pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
         if (telephony) {
             button5.setVisibility(View.VISIBLE);
-            button6.setVisibility(View.VISIBLE);
+            //button6.setVisibility(View.VISIBLE);
         } else {
             button5.setVisibility(View.GONE);
-            button6.setVisibility(View.GONE);
+            //button6.setVisibility(View.GONE);
         }
     }
 
@@ -350,8 +350,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void SMS(View view) {
-        startActivity(new Intent(this, ComposeSmsActivity.class));
-//        startActivity(new Intent(this, WebViewActivity.class));
+        startActivity(new Intent(this, WebViewActivity.class));
+//        startActivity(new Intent(this, ComposeSmsActivity.class));
 //        try {
 //            Intent intent = new Intent(Intent.ACTION_MAIN);//短信列表界面
 //            intent.addCategory(Intent.CATEGORY_DEFAULT);
