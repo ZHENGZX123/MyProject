@@ -1,5 +1,6 @@
 package cn.kiway.mdm.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +12,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.entity.App;
+import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.Utils;
+
+import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
+import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
+import static cn.kiway.mdm.utils.AppReceiverIn.REMOVE_SUCCESS;
+import static cn.kiway.mdm.utils.FileACache.ListFileName;
 
 
 public class AppListActivity3 extends BaseActivity {
@@ -22,49 +30,42 @@ public class AppListActivity3 extends BaseActivity {
     private ListView lv;
     private ArrayList<App> apps = new ArrayList<>();
     private MyAdapter adapter;
+    public List<List<App>> allListData = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_list3);
         lv = (ListView) findViewById(R.id.lv);
+        allListData = new ArrayList(FileACache.loadListCache(this, ListFileName));
         adapter = new MyAdapter();
         lv.setAdapter(adapter);
-
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 App a = apps.get(position);
                 a.selected = !a.selected;
+                Intent intent = new Intent();
+                intent.putExtra(PACKAGENAME, a.packageName);
+                intent.putExtra("boolean", true);
+                if (a.selected) {
+                    intent.setAction(INSTALL_SUCCESS);
+                } else {
+                    intent.setAction(REMOVE_SUCCESS);
+                }
+                sendOrderedBroadcast(intent, null);
                 adapter.notifyDataSetChanged();
             }
         });
-        apps = Utils.scanLocalInstallAppList(this, true);
-        //这里要过滤掉默认APP、网络APP
+        apps = Utils.scanLocalInstallAppList(this, true);   //这里要过滤掉默认APP、网络APP
+        for (App a : apps) {//标识选中状态
+            if (allListData.toString().contains(a.packageName))
+                a.selected = true;
+        }
         adapter.notifyDataSetChanged();
     }
 
-    public void clickButton1(View view) {
-        int count = 0;
-        for (App a : apps) {
-            if (a.selected) {
-                count++;
-            }
-        }
-        if (count == 0) {
-            toast("请至少选择一个");
-            return;
-        }
-        String temp = "";
-        for (int i = 0; i < apps.size(); i++) {
-            App a = apps.get(i);
-            if (a.selected) {
-                temp += a.packageName + ",";
-            }
-        }
-        //1.存入db
-        getSharedPreferences("kiway", 0).edit().putString("apps", temp).commit();
-        //2.apps
+    public void Before(View view) {
         finish();
     }
 
