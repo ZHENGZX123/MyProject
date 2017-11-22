@@ -24,7 +24,7 @@ public class FileACache {
 
     public static String QzInfo = "Qz_List_Info";
     public static String CyInfo = "Cy_List_Info";
-    private static String DataCache = "kiwaylauncher";
+    private static String DataCache = "kiway_mdm/app";
     public static String ListFileName = "list.txt";
 
     /**
@@ -78,7 +78,7 @@ public class FileACache {
             if (!folder.isEmpty()) {
                 File fileDir = new File(Environment.getExternalStorageDirectory(), folder);
                 if (!fileDir.exists() || !fileDir.isDirectory()) {
-                    fileDir.mkdir();
+                    fileDir.mkdirs();
                 }
                 file = new File(fileDir, name);
             } else {
