@@ -346,6 +346,7 @@ public class KWApp extends Application implements KwConntectionCallback {
     }
 
     public void connectTcp(String ip) {
+
         Message msg = new Message();
         msg.what = MSG_CONNECT;
         mHandler.sendMessage(msg);
