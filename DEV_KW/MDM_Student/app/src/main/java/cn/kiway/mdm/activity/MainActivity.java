@@ -12,7 +12,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.Location;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Build;
@@ -34,6 +33,10 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.anarchy.classify.ClassifyView;
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +54,7 @@ import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.AppListUtils;
 import cn.kiway.mdm.utils.AppReceiverIn;
-import cn.kiway.mdm.utils.CoordinateTransformUtil;
 import cn.kiway.mdm.utils.FileACache;
-import cn.kiway.mdm.utils.LocationUtils;
 import cn.kiway.mdm.utils.Utils;
 import cn.kiway.mdm.view.viewPager.StereoPagerTransformer;
 
@@ -146,6 +147,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         checkNewVersion();
         //17.检查通话功能
         checkTelephoney();
+        //18.获取经纬度
+        getLocation();
     }
 
     private void checkTelephoney() {
@@ -188,23 +191,15 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 }
                 break;
                 case MSG_UPLOAD: {
-                    Location location = LocationUtils.getInstance(MainActivity.this).showLocation();
-                    Log.d("test", "location = " + location);
-                    if (location != null) {
-                        String address = "纬度：" + location.getLatitude() + "经度：" + location.getLongitude();
-                        Log.d("test", address);
-                        double[] trans = CoordinateTransformUtil.wgs84tobd09(location.getLongitude(), location
-                                .getLatitude());
-                        Log.d("test", "转换后 " + trans[0] + " , " + trans[1]);
-                        Utils.uploadLocation(MainActivity.this, trans[0], trans[1]);
-                    }
+                    //1.获取定位
+                    //Utils.uploadLocation(MainActivity.this, trans[0], trans[1]);
                     //2.获取电量，如果电量1%，上报一下
                     Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
                     int level = intent.getIntExtra("level", 0);
                     if (level < 5) {
                         Utils.deviceRuntime(MainActivity.this, "2", true);
                     }
-                    mHandler.sendEmptyMessageDelayed(MSG_UPLOAD, 10 * 1000);
+                    mHandler.sendEmptyMessageDelayed(MSG_UPLOAD, 10 * 60 * 1000);
                 }
                 break;
                 case MSG_GET_COMMAND: {
@@ -493,6 +488,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_NONE);
         mSensorManager.unregisterListener(this);
         mHandler.removeCallbacksAndMessages(null);
+        mLocationClient.stop();
     }
 
     /**
@@ -698,6 +694,72 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 showMessageDailog.show();
             }
         });
+    }
+
+
+    public LocationClient mLocationClient = null;
+
+    public void getLocation() {
+        //获取经纬度
+        mLocationClient = new LocationClient(this);
+        //声明LocationClient类
+        mLocationClient.registerLocationListener(
+                new BDLocationListener() {
+                    @Override
+                    public void onReceiveLocation(BDLocation location) {
+                        Utils.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude());
+                    }
+
+                    @Override
+                    public void onConnectHotSpotMessage(String s, int i) {
+
+                    }
+                }
+        );
+
+        initLocation();
+
+        //start
+        mLocationClient.start();
+    }
+
+    private void initLocation() {
+        LocationClientOption option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+        //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
+
+        option.setCoorType("bd09ll");
+        //可选，默认gcj02，设置返回的定位结果坐标系
+
+        int span = 1000 * 60 * 10;
+        option.setScanSpan(span);
+        //可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+
+        option.setIsNeedAddress(true);
+        //可选，设置是否需要地址信息，默认不需要
+
+        option.setOpenGps(true);
+        //可选，默认false,设置是否使用gps
+
+        option.setLocationNotify(true);
+        //可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
+
+        option.setIsNeedLocationDescribe(true);
+        //可选，默认false，设置是否需要位置语义化结果，可以在BDLocation.getLocationDescribe里得到，结果类似于“在北京天安门附近”
+
+        option.setIsNeedLocationPoiList(true);
+        //可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
+
+        option.setIgnoreKillProcess(false);
+        //可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
+
+        option.SetIgnoreCacheException(false);
+        //可选，默认false，设置是否收集CRASH信息，默认收集
+
+        option.setEnableSimulateGps(false);
+        //可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
+
+        mLocationClient.setLocOption(option);
     }
 }
 
