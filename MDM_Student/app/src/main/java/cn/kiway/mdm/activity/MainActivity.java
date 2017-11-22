@@ -506,7 +506,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             boolean b = intent.getBooleanExtra("boolean", false);
             if (action.equals(INSTALL_SUCCESS)) {
                 boolean in = Utils.checkInAppcharges(MainActivity.this, packageName);
-                if (!b) {
+                if (b) {
                     if (!in) {
                         return;
                     }
