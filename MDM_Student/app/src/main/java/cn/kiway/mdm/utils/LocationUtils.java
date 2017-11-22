@@ -48,6 +48,7 @@ public class LocationUtils {
     private void getLocation() {
         //1.获取位置管理器
         locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+
         //2.获取位置提供器，GPS或是NetWork
         List<String> providers = locationManager.getProviders(true);
         if (providers.contains(LocationManager.NETWORK_PROVIDER)) {

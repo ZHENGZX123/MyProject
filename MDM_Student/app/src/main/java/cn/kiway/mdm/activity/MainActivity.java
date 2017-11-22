@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -18,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.Telephony;
 import android.support.v4.view.ViewPager;
@@ -26,6 +28,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -48,6 +51,7 @@ import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.AppListUtils;
 import cn.kiway.mdm.utils.AppReceiverIn;
+import cn.kiway.mdm.utils.CoordinateTransformUtil;
 import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.LocationUtils;
 import cn.kiway.mdm.utils.Utils;
@@ -73,6 +77,7 @@ import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener {
+
     private CheckPassword dialog;
     public List<List<App>> allListData = new ArrayList<>();
     private ViewPager viewPager;
@@ -91,10 +96,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     public static final int LOGOUT = 999;
     public static final int USAGE_STATS = 1101;
     public static final int SCREEN = 1102;
+
     private static final int MSG_CHECK_SETTING = 1;
     private static final int MSG_CHECK_COMMAND = 2;
     private static final int MSG_UPLOAD = 3;
     private static final int MSG_GET_COMMAND = 4;
+
+    private Button button5;
+    private Button button6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,9 +144,21 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         setDefaultSMSApp();
         //16.检查版本更新
         checkNewVersion();
-//        MDMHelper.getAdapter().setProximityEnable(true);
-//        MDMHelper.getAdapter().setProximityDistance(40);
-//        MDMHelper.getAdapter().setProximityDelay(100);
+        //17.检查通话功能
+        checkTelephoney();
+    }
+
+    private void checkTelephoney() {
+        PackageManager pm = getPackageManager();
+        // 获取是否支持电话
+        boolean telephony = pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
+        if (telephony) {
+            button5.setVisibility(View.VISIBLE);
+            button6.setVisibility(View.VISIBLE);
+        } else {
+            button5.setVisibility(View.GONE);
+            button6.setVisibility(View.GONE);
+        }
     }
 
     private Handler mHandler = new Handler() {
@@ -171,7 +192,9 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     if (location != null) {
                         String address = "纬度：" + location.getLatitude() + "经度：" + location.getLongitude();
                         Log.d("test", address);
-                        Utils.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude());
+                        double[] trans = CoordinateTransformUtil.wgs84tobd09(location.getLongitude(), location.getLatitude());
+                        Log.d("test", "转换后 " + trans[0] + " , " + trans[1]);
+                        Utils.uploadLocation(MainActivity.this, trans[0], trans[1]);
                     }
                     //2.获取电量，如果电量1%，上报一下
                     Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -294,6 +317,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         dialog = new CheckPassword(this, this);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         group = (LinearLayout) findViewById(R.id.points);
+        button5 = (Button) findViewById(R.id.button5);
+        button6 = (Button) findViewById(R.id.button6);
     }
 
     private void uploadStatus() {
@@ -303,13 +328,13 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     public void Camera(View view) {
         Utils.childOperation(this, "useApp", "使用了相机APP");
         //   KWApp.instance.connectTcp(KWApp.instance.teacherIp);
-//        int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
-//        if (flag_camera == 0) {
-//            toast("相机功能当前不能使用");
-//            return;
-//        }
-//        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        startActivity(cameraIntent);
+        int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
+        if (flag_camera == 0) {
+            toast("相机功能当前不能使用");
+            return;
+        }
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivity(cameraIntent);
     }
 
     public void Call(View view) {
