@@ -140,7 +140,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //13.监听来电
         checkIncomingCall();
         //14.距离传感器
-        registerSensor();
+        //registerSensor();
         //15.设置默认短信app
         //setDefaultSMSApp();
         //16.检查版本更新
@@ -497,12 +497,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+
             String action = intent.getAction();
+
             String packageName = intent.getStringExtra(PACKAGENAME);
             boolean b = intent.getBooleanExtra("boolean", false);
             if (action.equals(INSTALL_SUCCESS)) {
-                boolean in = Utils.checkInAppcharges(MainActivity.this, packageName);
-                if (b) {
+                if (!b) {
+                    boolean in = Utils.checkInAppcharges(MainActivity.this, packageName);
                     if (!in) {
                         return;
                     }

@@ -16,6 +16,7 @@ import java.util.List;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.entity.App;
+import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.Utils;
 
