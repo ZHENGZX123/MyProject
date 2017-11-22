@@ -343,6 +343,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     public void SMS(View view) {
         startActivity(new Intent(this, WebViewActivity.class));
+//        MDMHelper.getAdapter().installPackage("/mnt/sdcard/test.apk", true);
 //        startActivity(new Intent(this, ComposeSmsActivity.class));
 //        try {
 //            Intent intent = new Intent(Intent.ACTION_MAIN);//短信列表界面

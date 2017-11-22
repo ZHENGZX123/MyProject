@@ -1,13 +1,9 @@
 package cn.kiway.mdm.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -113,7 +109,7 @@ public class BaseActivity extends Activity {
     public void unlock() {
         //1.设置默认桌面
         MDMHelper.getAdapter().clearDefaultLauncher();
-        //
+        //出厂的时候去掉这个
         MDMHelper.getAdapter().removeDisallowedUninstallPackages();
         //2.关闭settings.慎用！！！
         //MDMHelper.getAdapter().setSettingsApplicationDisabled(false);
@@ -227,21 +223,22 @@ public class BaseActivity extends Activity {
     }
 
     private void askforInstall(final String savedFilePath) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
-        AlertDialog dialog_download = builder.setMessage("发现新的版本，是否更新？本次更新不消耗流量。").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface d, int arg1) {
-                d.dismiss();
-                Intent intent = new Intent();
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setAction(android.content.Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
-                startActivity(intent);
-                finish();
-            }
-        }).setPositiveButton(android.R.string.cancel, null).create();
-        dialog_download.show();
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+//        AlertDialog dialog_download = builder.setMessage("发现新的版本，是否更新？本次更新不消耗流量。").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+//
+//            @Override
+//            public void onClick(DialogInterface d, int arg1) {
+//                d.dismiss();
+//                Intent intent = new Intent();
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                intent.setAction(android.content.Intent.ACTION_VIEW);
+//                intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
+//                startActivity(intent);
+//                finish();
+//            }
+//        }).setPositiveButton(android.R.string.cancel, null).create();
+//        dialog_download.show();
+        MDMHelper.getAdapter().installPackage(savedFilePath, true);
     }
 
 }
