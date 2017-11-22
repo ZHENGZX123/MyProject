@@ -189,6 +189,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 break;
                 case MSG_UPLOAD: {
                     Location location = LocationUtils.getInstance(MainActivity.this).showLocation();
+                    Log.d("test", "location = " + location);
                     if (location != null) {
                         String address = "纬度：" + location.getLatitude() + "经度：" + location.getLongitude();
                         Log.d("test", address);
@@ -203,7 +204,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     if (level < 5) {
                         Utils.deviceRuntime(MainActivity.this, "2", true);
                     }
-                    mHandler.sendEmptyMessageDelayed(MSG_CHECK_COMMAND, 10 * 60 * 1000);
+                    mHandler.sendEmptyMessageDelayed(MSG_UPLOAD, 10 * 1000);
                 }
                 break;
                 case MSG_GET_COMMAND: {
@@ -328,7 +329,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     public void Camera(View view) {
         Utils.childOperation(this, "useApp", "使用了相机APP");
-        //   KWApp.instance.connectTcp(KWApp.instance.teacherIp);
         int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
         if (flag_camera == 0) {
             toast("相机功能当前不能使用");
@@ -343,10 +343,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 //        intent.setAction(Intent.ACTION_VIEW);
 //        intent.setData(Contacts.People.CONTENT_URI);
 //        startActivity(intent);
-
-//        String version = MDMHelper.getAdapter().getMdmSdkVersion();
-//        Log.d("test", "version = " + version);
-
         startActivity(new Intent(this, CallActivity.class));
     }
 
@@ -372,10 +368,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             dialog.show();
             return;
         }
-//        dialog.setView(null, 1);
-//        dialog.setCancelable(true);
-//        dialog.setTitle("请输入密码");
-//        dialog.show();
         startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), 999);
     }
 
