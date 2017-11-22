@@ -57,6 +57,16 @@ public class AppListActivity3 extends BaseActivity {
                 adapter.notifyDataSetChanged();
             }
         });
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                App a = apps.get(position);
+                Intent intent=new Intent(AppListActivity3.this,TimeSetActivity.class);
+                intent.putExtra("app",a);
+                startActivity(intent);
+                return false;
+            }
+        });
         apps = Utils.scanLocalInstallAppList(this, true);   //这里要过滤掉默认APP、网络APP
         for (App a : apps) {//标识选中状态
             if (allListData.toString().contains(a.packageName))
