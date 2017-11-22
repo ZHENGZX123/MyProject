@@ -330,12 +330,12 @@ public class KWApp extends Application implements KwConntectionCallback {
 
     @Override
     public void onError(KwConnection conn, Exception e) {
-        Logger.log("连接错误" + e);
-        if (KWApp.instance.connectNumber > 5)
-            KWApp.instance.isAttenClass = false;
-        KWApp.instance.connectNumber++;
-        if (KWApp.instance.isAttenClass)
-            connectTcp(KWApp.instance.teacherIp);
+//        Logger.log("连接错误" + e);
+//        if (KWApp.instance.connectNumber > 5)
+//            KWApp.instance.isAttenClass = false;
+//        KWApp.instance.connectNumber++;
+//        if (KWApp.instance.isAttenClass)
+//            connectTcp(KWApp.instance.teacherIp);
     }
 
     @Override
@@ -346,8 +346,6 @@ public class KWApp extends Application implements KwConntectionCallback {
     }
 
     public void connectTcp(String ip) {
-        if (isAttenClass)
-            return;
         Message msg = new Message();
         msg.what = MSG_CONNECT;
         mHandler.sendMessage(msg);
