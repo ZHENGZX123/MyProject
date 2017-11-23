@@ -63,8 +63,10 @@ public class KWApp extends Application implements KwConntectionCallback {
     public static final int MSG_ATTEND_CALSS = 15;//上课
     public static final int MSG_GET_OUT_OF_CALASS = 16;//下课
     public static final int MSG_SMS = 17;//下课
+    public static final int MSG_CONNECT = 18;//上课连接
+    public static final int MSG_MESSAGE = 19;//发送消息
 
-    public static final int MSG_CONNECT = 18;
+
     public boolean isAttenClass = false;
     public String teacherIp = "";
     public static boolean temporary_app = false;
@@ -172,6 +174,10 @@ public class KWApp extends Application implements KwConntectionCallback {
                 } catch (Throwable throwable) {
                     throwable.printStackTrace();
                 }
+            } else if (msg.what == MSG_MESSAGE) {
+                if (activity != null)
+                    activity.NotifyShow(((JSONObject) msg.obj).optJSONObject("content").optString("title"), (
+                            (JSONObject) msg.obj).optJSONObject("content").optString("content"));
             }
         }
     };
@@ -347,7 +353,7 @@ public class KWApp extends Application implements KwConntectionCallback {
     }
 
     public void connectTcp(String ip) {
-        if (!Utils.ping(activity, ip)) {
+        if (!Utils.ping(activity, ip)) {//这个判断方法不太靠谱
             activity.goOutClass("无法连接上课，请确认在同个wifi下");
             return;
         }
