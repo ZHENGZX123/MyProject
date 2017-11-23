@@ -55,12 +55,13 @@ import static cn.kiway.mdm.util.Utils.getCurrentVersion;
 import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
 import static cn.kiway.mdm.web.JsAndroidInterface.picPath;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile;
+import static cn.kiway.mdm.web.JsAndroidInterface.setFilePath;
+import static cn.kiway.mdm.web.JsAndroidInterface.userAccount;
 import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
-import static cn.kiway.mdm.web.WebJsCallBack.fileUploadCallback;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.0.1";
+    private static final String currentPackageVersion = "0.0.3";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -77,6 +78,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //  broadCastUdp = new BroadCastUdp("当前班级");//启动广播
+        getAppData();
         instance = this;
         initView();
         Utils.checkNetWork(this, false);
@@ -84,6 +86,21 @@ public class MainActivity extends BaseActivity {
         initData();
         load();
         checkNewVersion();
+    }
+
+    private void getAppData() {
+        Intent intent = getIntent();
+        userAccount = "";
+        if (intent != null && intent.getFlags() == Intent.FLAG_ACTIVITY_NEW_TASK) {
+            String username = intent.getStringExtra("username");
+            String password = intent.getStringExtra("password");
+            if (password == null || username == null) {
+                userAccount = "";
+            } else {
+                userAccount = username + ":::" + password;
+            }
+        }
+        Logger.log("----------------------" + userAccount);
     }
 
     private void initView() {
@@ -209,59 +226,54 @@ public class MainActivity extends BaseActivity {
                         }
                     });
                 }
-                Logger.log(":::::::::::::" + accpterFilePath.replace("fileName", filePath.split("/")
-                        [filePath.split("/").length - 1]).replace("filePath", filePath));
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        wv.loadUrl(accpterFilePath.replace("fileName", filePath.split("/")
-                                [filePath.split("/").length - 1]).replace("filePath", filePath));
-                    }
-                });
+                setFilePath=filePath;
+                uploadFile(filePath);
             } catch (RuntimeException e) {
                 e.printStackTrace();
             }
         } else if (requestCode == REQUEST_ORIGINAL) {
-            String path = picPath;
-            String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
-            File file = new File(path);
-            toast(getString(R.string.upload));
-            ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.show();
-            new Thread() {
-                @Override
-                public void run() {
-                    final String ret = UploadUtil.uploadFile(file, url + "/common/file?accessToken=" + token, file
-                            .getName());
-                    Log.d("test", "upload ret = " + ret);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                progressDialog.dismiss();
-                                if (TextUtils.isEmpty(ret)) {
-                                    toast(getString(R.string.upload_fialt));
-                                    return;
-                                }
-                                JSONObject obj = new JSONObject(ret);
-                                if (obj.optInt("StatusCode") != 200) {
-                                    toast(getString(R.string.upload_fialt));
-                                    return;
-                                }
-                                String url = obj.optJSONObject("data").optString("url");
-                                Log.d("test", "obj = " + obj.toString());
-                                wv.loadUrl(fileUploadCallback.replace("fileName", path.split("/")[path.split("/")
-                                        .length - 1]).replace("filePath", url));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }
-            }.start();
+            uploadFile(picPath);
         }
     }
 
+
+    public void uploadFile(String filePath) {
+        String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
+        File file = new File(filePath);
+        pd.show();
+        pd.setTitle("正在上传");
+        new Thread() {
+            @Override
+            public void run() {
+                final String ret = UploadUtil.uploadFile(file, url + "/common/file?accessToken=" + token, file
+                        .getName());
+                Log.d("test", "upload ret = " + ret);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            pd.dismiss();
+                            if (TextUtils.isEmpty(ret)) {
+                                toast(getString(R.string.upload_fialt));
+                                return;
+                            }
+                            JSONObject obj = new JSONObject(ret);
+                            if (obj.optInt("StatusCode") != 200) {
+                                toast(getString(R.string.upload_fialt));
+                                return;
+                            }
+                            String url = obj.optJSONObject("data").optString("url");
+                            Log.d("test", "obj = " + obj.toString());
+                            wv.loadUrl(accpterFilePath.replace("fileName", filePath.split("/")[filePath.split("/")
+                                    .length - 1]).replace("filePath", url));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        }.start();
+    }
 
     //下面是版本更新相关
     public void checkNewVersion() {
@@ -414,7 +426,7 @@ public class MainActivity extends BaseActivity {
 
     private void askforInstall(final String savedFilePath) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
-        dialog_download = builder.setMessage("发现新的版本，是否更新？本次更新不消耗流量。").setNegativeButton(android.R.string.ok, new
+        dialog_download = builder.setMessage(getString(R.string.new_version)).setNegativeButton(android.R.string.ok, new
                 DialogInterface.OnClickListener() {
 
                     @Override

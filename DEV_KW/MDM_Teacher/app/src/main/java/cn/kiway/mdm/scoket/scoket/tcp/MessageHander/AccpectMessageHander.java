@@ -34,6 +34,7 @@ public class AccpectMessageHander extends Handler {
     @Override
     public void handleMessage(Message msg) {
         super.handleMessage(msg);
+        Logger.log("Message::::::" + msg.obj);
         switch (msg.what) {
             case LOGIN://用户登录
                 Logger.log("Client Login-----" + msg.obj);
