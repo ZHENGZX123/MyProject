@@ -47,11 +47,12 @@ import static cn.kiway.mdm.hprose.socket.MessageType.USE_WIFI_HOTSPOT;
 
 public class ActionsMessageHandle {
     static long time;
+
     public static void MessageHandle(Context context, String s) {
         try {
-            if (System.currentTimeMillis()-time<2000)
+            if (System.currentTimeMillis() - time < 2000)
                 return;
-            time=System.currentTimeMillis();
+            time = System.currentTimeMillis();
             JSONObject data = new JSONObject(s);
             int msgType = data.optInt("msgType");
             if (msgType == SIGN) {//签到

@@ -697,13 +697,13 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
 
-    public void goOutClass() {
+    public void goOutClass(final String s) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 showMessageDailog = new ShowMessageDailog(MainActivity.this);
                 showMessageDailog.setCancelable(false);
-                showMessageDailog.setShowMessage("这堂课下课了", DISMISS);
+                showMessageDailog.setShowMessage(s, DISMISS);
                 showMessageDailog.show();
             }
         });
