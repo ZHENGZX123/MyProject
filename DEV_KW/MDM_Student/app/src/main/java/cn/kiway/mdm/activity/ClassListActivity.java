@@ -47,7 +47,7 @@ public class ClassListActivity extends BaseActivity {
 
         lv1 = (ListView) findViewById(R.id.lv);
         textView = (TextView) findViewById(R.id.title);
-        textView.setText("请选择学校");
+        textView.setText("请选择班级");
         adapter1 = new MyAdapter();
         lv1.setAdapter(adapter1);
 
