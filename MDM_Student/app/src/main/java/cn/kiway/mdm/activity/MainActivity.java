@@ -150,6 +150,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         checkTelephoney();
         //18.获取经纬度
         getLocation();
+        //NotifyShow("标题", "内透", "郑灶欣");
     }
 
     private void checkTelephoney() {
@@ -710,11 +711,11 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         });
     }
 
-    public void NotifyShow(final String title, final String message) {
+    public void NotifyShow(final String title, final String message, final String name) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                NotifyShowDailog notifyShowDailog = new NotifyShowDailog(MainActivity.this, title, message);
+                NotifyShowDailog notifyShowDailog = new NotifyShowDailog(MainActivity.this, title, message, name);
                 notifyShowDailog.show();
             }
         });
