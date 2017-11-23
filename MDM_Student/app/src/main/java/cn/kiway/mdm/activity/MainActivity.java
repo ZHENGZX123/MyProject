@@ -46,6 +46,7 @@ import cn.kiway.mdm.R;
 import cn.kiway.mdm.adapter.AppListAdapter;
 import cn.kiway.mdm.adapter.MyViewPagerAdapter;
 import cn.kiway.mdm.dialog.CheckPassword;
+import cn.kiway.mdm.dialog.NotifyShowDailog;
 import cn.kiway.mdm.dialog.ProgressDialog;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.entity.App;
@@ -709,6 +710,15 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         });
     }
 
+    public void NotifyShow(final String title, final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                NotifyShowDailog notifyShowDailog = new NotifyShowDailog(MainActivity.this, title, message);
+                notifyShowDailog.show();
+            }
+        });
+    }
 
     public LocationClient mLocationClient = null;
 

@@ -34,6 +34,7 @@ import static cn.kiway.mdm.KWApp.MSG_LANDSCAPE;
 import static cn.kiway.mdm.KWApp.MSG_LAUNCH_APP;
 import static cn.kiway.mdm.KWApp.MSG_LAUNCH_MDM;
 import static cn.kiway.mdm.KWApp.MSG_LOCK;
+import static cn.kiway.mdm.KWApp.MSG_MESSAGE;
 import static cn.kiway.mdm.KWApp.MSG_PARENT_BIND;
 import static cn.kiway.mdm.KWApp.MSG_PORTRAIT;
 import static cn.kiway.mdm.KWApp.MSG_PUSH_FILE;
@@ -85,8 +86,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             String dataStr = new JSONObject(receive).getString("data");
             JSONObject data = new JSONObject(dataStr);
             String command = data.optString("command");
-
             Message m = new Message();
+
             if (command.equals("allowAppFunction")) {
                 //重置所有的值为0
                 Utils.resetFunctions(context);
@@ -152,7 +153,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 JSONArray content = data.optJSONArray("content");
                 ArrayList<Wifi> wifis = new GsonBuilder().create().fromJson(content.toString(), new
                         TypeToken<List<Wifi>>() {
-                }.getType());
+                        }.getType());
                 Wifi wifi = wifis.get(0);
                 if (wifi.operation.equals("save")) {
                     new MyDBHelper(context).addWifi(wifi);
@@ -167,7 +168,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 JSONArray content = data.optJSONArray("content");
                 ArrayList<AppCharge> apps = new GsonBuilder().create().fromJson(content.toString(), new
                         TypeToken<List<AppCharge>>() {
-                }.getType());
+                        }.getType());
                 AppCharge app = apps.get(0);
                 if (app.operation.equals("save")) {
                     new MyDBHelper(context).addAppcharge(app);
@@ -182,7 +183,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 JSONArray content = data.optJSONArray("content");
                 ArrayList<Network> networks = new GsonBuilder().create().fromJson(content.toString(), new
                         TypeToken<List<Network>>() {
-                }.getType());
+                        }.getType());
                 Network a = networks.get(0);
                 if (a.operation.equals("save")) {
                     new MyDBHelper(context).addNetwork(a);
@@ -237,7 +238,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 JSONArray content = data.optJSONArray("content");
                 ArrayList<Call> calls = new GsonBuilder().create().fromJson(content.toString(), new
                         TypeToken<List<Call>>() {
-                }.getType());
+                        }.getType());
                 Call c = calls.get(0);
                 if (c.operation.equals("save")) {
                     new MyDBHelper(context).addCall(c);
@@ -282,15 +283,16 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                         }
                     }
                 }
-            }else if (command.equals("shangke")) {
-
+            } else if (command.equals("shangke")) {
                 m.what = MSG_ATTEND_CALSS;
                 m.obj = data;
             } else if (command.equals("xiake")) {
                 m.what = MSG_GET_OUT_OF_CALASS;
                 m.obj = data;
+            } else if (command.equals("send_msg")) {
+                m.what = MSG_MESSAGE;
+                m.obj = data;
             }
-
             if (KWApp.instance == null) {
                 return false;
             }
