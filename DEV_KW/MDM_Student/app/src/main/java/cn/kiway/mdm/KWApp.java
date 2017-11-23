@@ -177,7 +177,8 @@ public class KWApp extends Application implements KwConntectionCallback {
             } else if (msg.what == MSG_MESSAGE) {
                 if (activity != null)
                     activity.NotifyShow(((JSONObject) msg.obj).optJSONObject("content").optString("title"), (
-                            (JSONObject) msg.obj).optJSONObject("content").optString("content"));
+                            (JSONObject) msg.obj).optJSONObject("content").optString("content"), ((JSONObject) msg
+                            .obj).optJSONObject("content").optString("sendName"));
             }
         }
     };
