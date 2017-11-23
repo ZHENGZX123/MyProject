@@ -33,7 +33,6 @@ public class X5WebView extends WebView {
     @SuppressLint("SetJavaScriptEnabled")
     public X5WebView(Context arg0, AttributeSet arg1) {
         super(arg0, arg1);
-
         this.setWebViewClient(client);
         // this.setWebChromeClient(chromeClient);
         // WebStorage webStorage = WebStorage.getInstance();

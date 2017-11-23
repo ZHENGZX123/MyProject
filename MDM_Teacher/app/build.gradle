@@ -16,8 +16,8 @@ android {
         applicationId "cn.kiway.mdm.teacher"
         minSdkVersion 18
         targetSdkVersion 20
-        versionCode 1
-        versionName "0.0.1"
+        versionCode 3
+        versionName "0.0.3"
         jackOptions {
             enabled true
         }

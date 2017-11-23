@@ -24,6 +24,7 @@ import cn.kiway.mdm.scoket.scoket.tcp.netty.PushServer;
 import cn.kiway.mdm.scoket.utils.Logger;
 import cn.kiway.mdm.scoket.utils.WifiUtils;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
 
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.MessageType.SHARE_FILE;
@@ -36,7 +37,7 @@ import static cn.kiway.mdm.util.FileUtils.EnFILEPATH;
  */
 
 public class JsAndroidInterface {
-
+    public static String userAccount = "";
     MainActivity activity;
     AccpectMessageHander accpectMessageHander;
     //BroadCastUdp broadCastUdp;
@@ -86,6 +87,12 @@ public class JsAndroidInterface {
     }
 
     @JavascriptInterface
+    public String getUserAccount() {
+        Logger.log("----------------------" + userAccount);
+        return userAccount;
+    }
+
+    @JavascriptInterface
     public void setScreenOrientation(String orientation) {
         if (orientation.equals("0"))
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -100,6 +107,10 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public void pushTheScreen() {
+        if (!Utils.isAppInstalled(activity, "com.kiway.ikv3")) {
+            Toast.makeText(activity, "请安装“开维互动”应用", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         ComponentName cn = new ComponentName("com.kiway.ikv3", "com.clovsoft.ik.MainActivity");
@@ -109,7 +120,7 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public void multiControl(String userId) {
-        Logger.log("multiControl::::"+userId);
+        Logger.log("multiControl::::" + userId);
         if (HproseChannelMapStatic.getChannel(userId) == null) {
             Toast.makeText(activity, activity.getString(R.string.student_no_inline), Toast.LENGTH_SHORT).show();
             return;
@@ -140,7 +151,8 @@ public class JsAndroidInterface {
     public static final int requsetFile = 45612;
 
     @JavascriptInterface
-    public void chooseFile() {//选择文件
+    public void chooseFile(String token) {//选择文件
+        activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token);
         new LFilePicker()
                 .withActivity(activity)
                 .withTitle(activity.getString(R.string.filepath))
@@ -150,16 +162,19 @@ public class JsAndroidInterface {
                 .start();
     }
 
+    public static String setFilePath = "";
+
     @JavascriptInterface
     public void sendFile(String userId, String filePath) {
         JSONObject da = new JSONObject();
         try {
             Logger.log(filePath);
-            Logger.log(filePath.split("kiwaymdm/")[1]);
-            String path = filePath.split("kiwaymdm/")[filePath.split("kiwaymdm/").length - 1];
+            Logger.log(setFilePath.split("kiwaymdm/")[1]);
+            String path = setFilePath.split("kiwaymdm/")[setFilePath.split("kiwaymdm/").length - 1];
             PushServer.hproseSrv.shareFile("/" + path);
             da.put("msgType", SHARE_FILE);
             da.put("msg", "/" + path);
+            da.put("path", filePath);
             if (userId.equals("all"))
                 PushServer.hproseSrv.push("ground", da.toString());
             else
