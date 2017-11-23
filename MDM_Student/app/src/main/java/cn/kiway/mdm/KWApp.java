@@ -163,6 +163,7 @@ public class KWApp extends Application implements KwConntectionCallback {
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
                 //下课
                 isAttenClass = false;
+                teacherIp = "";
                 KwHproseClient.stop();
                 activity.goOutClass("这堂课下课了");
             } else if (msg.what == MSG_CONNECT) {
@@ -346,11 +347,8 @@ public class KWApp extends Application implements KwConntectionCallback {
     }
 
     public void connectTcp(String ip) {
-        if (!Utils.ping(ip)) {
-            activity.goOutClass("无法连接上课，请确认是否在同个wifi下");
-            connectNumber = 0;
-            isConnect = false;
-            isAttenClass = false;
+        if (!Utils.ping(activity, ip)) {
+            activity.goOutClass("无法连接上课，请确认在同个wifi下");
             return;
         }
         Message msg = new Message();

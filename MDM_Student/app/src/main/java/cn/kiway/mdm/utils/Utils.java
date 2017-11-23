@@ -85,6 +85,7 @@ import cn.kiway.mdm.entity.AppCharge;
 import cn.kiway.mdm.entity.Call;
 import cn.kiway.mdm.entity.Network;
 import cn.kiway.mdm.entity.Wifi;
+import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.mdm.MDMHelper;
 
 import static android.content.Context.WIFI_SERVICE;
@@ -1920,7 +1921,7 @@ public class Utils {
         } else {
             //当前无网络连接,请在设置中打开网络
         }
-        return null;
+        return "0.0.0.0";
     }
 
     /**
@@ -1969,6 +1970,23 @@ public class Utils {
         } finally {
             Log.d("----result---", "result = " + result);
         }
+        return false;
+    }
+    /**
+     * @return
+     * @author sichard
+     * @category 判断是否有外网连接（普通方法不能判断外网的网络是否连接，比如连接上局域网）
+     */
+    public static final boolean ping(Context context,String ip) {
+        Logger.log(getIPAddress(context));
+        String s=getIPAddress(context);
+        String ip1 = s.split("\\.")[0] + "." + s.split("\\.")[1];
+        String ip2 = ip.split("\\.")[0] + "." + ip.split("\\.")[1];
+
+        Logger.log(ip1);
+        Logger.log(ip2);
+        if (ip1.equals(ip2))
+            return true;
         return false;
     }
 }
