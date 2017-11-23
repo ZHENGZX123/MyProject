@@ -2,6 +2,7 @@ package cn.kiway.mdm.scoket.scoket.tcp.MessageHander;
 
 import android.os.Handler;
 import android.os.Message;
+import android.widget.Toast;
 
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.scoket.utils.Logger;
@@ -35,6 +36,7 @@ public class AccpectMessageHander extends Handler {
     public void handleMessage(Message msg) {
         super.handleMessage(msg);
         Logger.log("Message::::::" + msg.obj);
+        Toast.makeText(activity,msg.obj.toString(),Toast.LENGTH_SHORT).show();
         switch (msg.what) {
             case LOGIN://用户登录
                 Logger.log("Client Login-----" + msg.obj);
@@ -58,6 +60,9 @@ public class AccpectMessageHander extends Handler {
 //                } catch (JSONException e) {
 //                    e.printStackTrace();
 //                }
+                break;
+            default:
+                webView.loadUrl(accpterMessage.replace("msg", (String) msg.obj));
                 break;
         }
     }
