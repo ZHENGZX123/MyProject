@@ -262,6 +262,12 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + TABLE_FILE
             + "   (id integer primary key autoincrement,  filename  text,  filepath  text , time text)";
 
+    private static final String TABLE_NOTIFY_MSG = "NOTIFY_MSG";
+    private static final String CREATE_TABLE_NOTIFY_MSG = " create table  IF NOT EXISTS "
+            + TABLE_NOTIFY_MSG
+            + "   (id integer primary key autoincrement,  title  text,  message  text , sendname text,time text)";
+
+
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
@@ -287,6 +293,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FILE);
         db.execSQL(CREATE_TABLE_FILE);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFY_MSG);
+        db.execSQL(CREATE_TABLE_NOTIFY_MSG);
     }
 
     @Override
@@ -298,6 +307,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_CALL);
         db.execSQL(CREATE_TABLE_SMS);
         db.execSQL(CREATE_TABLE_FILE);
+        db.execSQL(CREATE_TABLE_NOTIFY_MSG);
     }
 
     //------------------------------------------Network----------------
@@ -721,6 +731,52 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
         return a;
     }
+
+
+    //-----------------notifyMessage
+
+    public void addNofityMessage(JSONObject a) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("title", a.optString("title"));
+        values.put("message", a.optString("content"));
+        values.put("sendname", a.optString("sendName"));
+        values.put("time", System.currentTimeMillis() + "");
+        db.insert(TABLE_NOTIFY_MSG, null, values);
+        db.close();
+    }
+
+    public JSONArray getNotifyMessage() {
+        if (db == null)
+            db = getWritableDatabase();
+        JSONArray array = new JSONArray();
+        Cursor cur = db.query(TABLE_NOTIFY_MSG, null, null, null, null, null, "time desc");
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            try {
+                JSONObject da = new JSONObject();
+                da.put("title", cur.getString(1));
+                da.put("message", cur.getString(2));
+                da.put("sendname", cur.getString(3));
+                da.put("time", cur.getString(4));
+                array.put(da);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        cur.close();
+        db.close();
+        return array;
+    }
+
+    public void deleteNotifyMessage() {
+        if (db == null)
+            db = getWritableDatabase();
+        db.delete(TABLE_NOTIFY_MSG, null, null);
+        db.close();
+    }
+
+
     //-----------------file
 
     public void addFile(File a) {
@@ -753,5 +809,12 @@ public class MyDBHelper extends SQLiteOpenHelper {
         cur.close();
         db.close();
         return array;
+    }
+
+    public void deleteFile() {
+        if (db == null)
+            db = getWritableDatabase();
+        db.delete(TABLE_FILE, null, null);
+        db.close();
     }
 }

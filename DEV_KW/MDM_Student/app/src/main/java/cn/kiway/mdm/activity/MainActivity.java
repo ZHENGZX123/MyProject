@@ -46,8 +46,6 @@ import cn.kiway.mdm.R;
 import cn.kiway.mdm.adapter.AppListAdapter;
 import cn.kiway.mdm.adapter.MyViewPagerAdapter;
 import cn.kiway.mdm.dialog.CheckPassword;
-import cn.kiway.mdm.dialog.NotifyShowDailog;
-import cn.kiway.mdm.dialog.ProgressDialog;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.hprose.screen.FxService;
@@ -150,7 +148,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         checkTelephoney();
         //18.获取经纬度
         getLocation();
-        //NotifyShow("标题", "内透", "郑灶欣");
     }
 
     private void checkTelephoney() {
@@ -682,22 +679,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         });
     }
 
-    ProgressDialog progressDialog;
-    String proData = "";
-
-    public void downloadFile(String data) {
-        if (proData.equals(data) && progressDialog != null && progressDialog.isShowing())
-            return;
-        proData = data;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                progressDialog = new ProgressDialog(MainActivity.this, proData);
-                progressDialog.show();
-            }
-        });
-    }
-
 
     public void goOutClass(final String s) {
         runOnUiThread(new Runnable() {
@@ -711,15 +692,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         });
     }
 
-    public void NotifyShow(final String title, final String message, final String name) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                NotifyShowDailog notifyShowDailog = new NotifyShowDailog(MainActivity.this, title, message, name);
-                notifyShowDailog.show();
-            }
-        });
-    }
+
 
     public LocationClient mLocationClient = null;
 

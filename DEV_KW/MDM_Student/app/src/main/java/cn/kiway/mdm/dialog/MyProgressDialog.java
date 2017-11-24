@@ -18,7 +18,10 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 
+import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.R;
+import cn.kiway.mdm.activity.FileListActivity;
+import cn.kiway.mdm.activity.NotifyMsgActivity;
 import cn.kiway.mdm.hprose.jrf.client.JRFClient;
 import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.utils.MyDBHelper;
@@ -30,7 +33,7 @@ import static cn.kiway.mdm.hprose.socket.KwHproseClient.client;
  * Created by Administrator on 2017/11/15.
  */
 
-public class ProgressDialog extends Dialog implements JRFClient.DownLoadCallBack, View.OnClickListener {
+public class MyProgressDialog extends Dialog implements JRFClient.DownLoadCallBack, View.OnClickListener {
     protected ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT);
 
@@ -41,7 +44,7 @@ public class ProgressDialog extends Dialog implements JRFClient.DownLoadCallBack
     TextView textView;
     Button button;
 
-    public ProgressDialog(@NonNull Activity context, String data) {
+    public MyProgressDialog(@NonNull Activity context, String data) {
         super(context, R.style.LoadingDialog);
         this.context = context;
         try {
@@ -81,7 +84,7 @@ public class ProgressDialog extends Dialog implements JRFClient.DownLoadCallBack
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    client.getFile(depositPath, downUrl, ProgressDialog.this);
+                    client.getFile(depositPath, downUrl, MyProgressDialog.this);
                 }
             }).start();
         }
@@ -111,6 +114,10 @@ public class ProgressDialog extends Dialog implements JRFClient.DownLoadCallBack
                 textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "\n接收完成!");
                 button.setVisibility(View.VISIBLE);
                 button.setText("打开文件");
+                if (KWApp.instance.currentActivity != null && KWApp.instance.currentActivity instanceof
+                        FileListActivity) {
+                    ((FileListActivity) KWApp.instance.currentActivity).refreshUI();
+                }
             }
         });
 
@@ -140,7 +147,7 @@ public class ProgressDialog extends Dialog implements JRFClient.DownLoadCallBack
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        client.getFile(depositPath, downUrl, ProgressDialog.this);
+                        client.getFile(depositPath, downUrl, MyProgressDialog.this);
                     }
                 }).start();
             }

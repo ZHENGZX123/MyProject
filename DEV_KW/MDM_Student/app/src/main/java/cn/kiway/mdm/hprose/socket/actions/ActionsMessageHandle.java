@@ -2,6 +2,7 @@ package cn.kiway.mdm.hprose.socket.actions;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.os.Message;
 import android.view.View;
 
 import org.json.JSONException;
@@ -16,6 +17,7 @@ import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.KWApp.MSG_LOCK;
+import static cn.kiway.mdm.KWApp.MSG_PUSH_FILE_I;
 import static cn.kiway.mdm.KWApp.MSG_REBOOT;
 import static cn.kiway.mdm.KWApp.MSG_SHUTDOWN;
 import static cn.kiway.mdm.KWApp.MSG_UNLOCK;
@@ -124,7 +126,11 @@ public class ActionsMessageHandle {
                     ((MainActivity) context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
             } else if (msgType == SHARE_FILE) {//下载文件
-                ((MainActivity) context).downloadFile(s);
+                Message msg1 = new Message();
+                msg1.what = MSG_PUSH_FILE_I;
+                msg1.obj = s;
+                KWApp.instance.mHandler.sendMessage(msg1);
+
             }
         } catch (JSONException e) {
             e.printStackTrace();

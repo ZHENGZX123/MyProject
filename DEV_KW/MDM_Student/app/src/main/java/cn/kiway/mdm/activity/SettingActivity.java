@@ -50,6 +50,10 @@ public class SettingActivity extends BaseActivity implements CheckPassword.Check
         checkPassword.show();
     }
 
+    public void NotifyMsg(View view){
+        startActivity(new Intent(this,NotifyMsgActivity.class));
+    }
+
     public void custom(View view) {
         checkPassword.setView(null, 3);
         checkPassword.setCancelable(true);
@@ -147,6 +151,8 @@ public class SettingActivity extends BaseActivity implements CheckPassword.Check
                         new MyDBHelper(SettingActivity.this).deleteNetwork(null);
                         new MyDBHelper(SettingActivity.this).deleteCall(null);
                         new MyDBHelper(SettingActivity.this).deleteSMS(null);
+                        new MyDBHelper(SettingActivity.this).deleteFile();
+                        new MyDBHelper(SettingActivity.this).deleteNotifyMessage();
 
                     }
                 }.start();
