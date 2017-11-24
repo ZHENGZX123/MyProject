@@ -83,6 +83,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             testMsg.obj = receive;
             KWApp.instance.mHandler.sendMessage(testMsg);
 
+            boolean sendToApp = true;
+
             String dataStr = new JSONObject(receive).getString("data");
             JSONObject data = new JSONObject(dataStr);
             String command = data.optString("command");
@@ -104,12 +106,14 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.what = MSG_REBOOT;
                 String currentTime = data.optString("currentTime");
                 if (!Utils.checkCommandAvailable(currentTime)) {
+                    sendToApp = false;
                     return false;
                 }
             } else if (command.equals("shutdown")) {
                 m.what = MSG_SHUTDOWN;
                 String currentTime = data.optString("currentTime");
                 if (!Utils.checkCommandAvailable(currentTime)) {
+                    sendToApp = false;
                     return false;
                 }
                 String operation = data.optString("operation");
@@ -119,14 +123,15 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                     context.getSharedPreferences("kiway", 0).edit().putString("shutdown_startTime", startTime).commit();
                     context.getSharedPreferences("kiway", 0).edit().putString("shutdown_endTime", endTime).commit();
                     Utils.checkShutDown(MainActivity.instance);
+                    sendToApp = false;
                 } else if (operation.equals("delete")) {
                     context.getSharedPreferences("kiway", 0).edit().putString("shutdown_startTime", "").commit();
                     context.getSharedPreferences("kiway", 0).edit().putString("shutdown_endTime", "").commit();
+                    sendToApp = false;
                 }
             } else if (command.equals("temporary_app")) {
                 String currentTime = data.optString("currentTime");
-                context.getSharedPreferences("kiway", 0).edit().putLong("app_time", Utils.dateToLong(currentTime))
-                        .commit();
+                context.getSharedPreferences("kiway", 0).edit().putLong("app_time", Utils.dateToLong(currentTime)).commit();
                 context.getSharedPreferences("kiway", 0).edit().putString("app_data", data.toString()).commit();
                 m.what = MSG_LAUNCH_APP;
                 m.obj = data;
@@ -138,13 +143,14 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.what = MSG_LOCK;
                 String currentTime = data.optString("currentTime");
                 if (!Utils.checkCommandAvailable(currentTime)) {
+                    sendToApp = false;
                     return false;
                 }
-                context.getSharedPreferences("kiway", 0).edit().putLong("lock_time", Utils.dateToLong(currentTime))
-                        .commit();
+                context.getSharedPreferences("kiway", 0).edit().putLong("lock_time", Utils.dateToLong(currentTime)).commit();
             } else if (command.equals("temporary_unlockScreen")) {
                 String currentTime = data.optString("currentTime");
                 if (!Utils.checkCommandAvailable(currentTime)) {
+                    sendToApp = false;
                     return false;
                 }
                 context.getSharedPreferences("kiway", 0).edit().putLong("lock_time", 0).commit();
@@ -294,6 +300,9 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.obj = data;
             }
             if (KWApp.instance == null) {
+                return false;
+            }
+            if (!sendToApp) {
                 return false;
             }
             KWApp.instance.mHandler.sendMessage(m);
