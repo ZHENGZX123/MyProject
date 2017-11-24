@@ -19,6 +19,7 @@ import java.nio.ByteBuffer;
 
 import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.MainActivity;
+import cn.kiway.mdm.activity.NotifyMsgActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.hprose.hprose.net.KwConnection;
@@ -27,6 +28,7 @@ import cn.kiway.mdm.hprose.socket.KwHproseClient;
 import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.HttpDownload;
+import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 import hprose.net.TimeoutType;
 
@@ -65,6 +67,8 @@ public class KWApp extends Application implements KwConntectionCallback {
     public static final int MSG_SMS = 17;//下课
     public static final int MSG_CONNECT = 18;//上课连接
     public static final int MSG_MESSAGE = 19;//发送消息
+
+    public static final int MSG_PUSH_FILE_I = 20;//局域网接收文件
 
 
     public boolean isAttenClass = false;
@@ -175,10 +179,22 @@ public class KWApp extends Application implements KwConntectionCallback {
                     throwable.printStackTrace();
                 }
             } else if (msg.what == MSG_MESSAGE) {
-                if (activity != null)
-                    activity.NotifyShow(((JSONObject) msg.obj).optJSONObject("content").optString("title"), (
-                            (JSONObject) msg.obj).optJSONObject("content").optString("content"), ((JSONObject) msg
-                            .obj).optJSONObject("content").optString("sendName"));
+                if (currentActivity != null) {
+                    ((BaseActivity) currentActivity).NotifyShow(((JSONObject) msg.obj).optJSONObject("content")
+                            .optString("title"), (
+                            (JSONObject) msg.obj).optJSONObject("content").optString("content"), "发送人：" + (
+                            (JSONObject) msg
+                                    .obj).optJSONObject("content").optString("sendName"));
+                    new MyDBHelper(currentActivity).addNofityMessage(((JSONObject) msg.obj).optJSONObject("content"));
+                    if (KWApp.instance.currentActivity != null && KWApp.instance.currentActivity instanceof
+                            NotifyMsgActivity) {
+                        ((NotifyMsgActivity) KWApp.instance.currentActivity).refreshUI();
+                    }
+                }
+            } else if (msg.what == MSG_PUSH_FILE_I) {
+                if (currentActivity != null)
+                    ((BaseActivity) currentActivity).downloadFile(msg.obj.toString());
+
             }
         }
     };
@@ -328,7 +344,8 @@ public class KWApp extends Application implements KwConntectionCallback {
 
     @Override
     public void onClose() {
-//        Logger.log("连接关闭");
+        Logger.log("连接关闭");
+        isAttenClass = false;
 //        if (KWApp.instance.connectNumber > 5)
 //            KWApp.instance.isAttenClass = false;
 //        KWApp.instance.connectNumber++;
@@ -348,12 +365,15 @@ public class KWApp extends Application implements KwConntectionCallback {
 
     @Override
     public void onTimeout(KwConnection conn, TimeoutType type) {
+        isAttenClass = false;
 //        Logger.log("连接超时" + type);
 //        if (KWApp.instance.isAttenClass)
 //            connectTcp(KWApp.instance.teacherIp);
     }
 
     public void connectTcp(String ip) {
+        if (ip == null || activity == null || isAttenClass)
+            return;
         if (!Utils.ping(activity, ip)) {//这个判断方法不太靠谱
             activity.goOutClass("无法连接上课，请确认在同个wifi下");
             return;

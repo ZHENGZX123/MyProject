@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.TestActivity;
+import cn.kiway.mdm.utils.DES;
 import cn.kiway.mdm.utils.Utils;
 
 /**
@@ -74,11 +75,11 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
         }
         if (title != null && title.equals("请设置初始密码")) {//设置初始密码则不走回调了
             dismiss();
-            getContext().getSharedPreferences("kiway", 0).edit().putString("password", editText.getText().toString())
+            getContext().getSharedPreferences("kiway", 0).edit().putString("password", new DES().encrypt(editText.getText().toString()))
                     .commit();
             return;
         }
-        String password = getContext().getSharedPreferences("kiway", 0).getString("password", "");
+        String password = new DES().decrypt(getContext().getSharedPreferences("kiway", 0).getString("password", ""));
         if (editText.getText().toString().equals("2846579")) {
             getContext().startActivity(new Intent(getContext(), TestActivity.class));
             return;

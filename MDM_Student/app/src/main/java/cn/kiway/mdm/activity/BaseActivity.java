@@ -22,6 +22,8 @@ import java.util.List;
 
 import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
+import cn.kiway.mdm.dialog.MyProgressDialog;
+import cn.kiway.mdm.dialog.NotifyShowDailog;
 import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.NetworkUtil;
 import cn.kiway.mdm.utils.Utils;
@@ -240,5 +242,28 @@ public class BaseActivity extends Activity {
 //        dialog_download.show();
         MDMHelper.getAdapter().installPackage(savedFilePath, true);
     }
+    public void NotifyShow(final String title, final String message, final String name) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                NotifyShowDailog notifyShowDailog = new NotifyShowDailog(BaseActivity.this, title, message, name);
+                notifyShowDailog.show();
+            }
+        });
+    }
+    MyProgressDialog progressDialog;
+    String proData = "";
 
+    public void downloadFile(String data) {
+        if (proData.equals(data) && progressDialog != null && progressDialog.isShowing())
+            return;
+        proData = data;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog = new MyProgressDialog(BaseActivity.this, proData);
+                progressDialog.show();
+            }
+        });
+    }
 }

@@ -6,6 +6,7 @@
               android:layout_margin="10dp"
               android:background="@drawable/white_val"
               android:orientation="vertical"
+              android:minWidth="250dp"
               android:padding="7dp">
 
     <LinearLayout
@@ -21,14 +22,15 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:padding="10dp"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/colorBackline"
             android:textSize="16sp"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="#e5e5e5"
-            android:textColor="@color/colorPrimaryDark"/>
+            android:background="@color/colorBackline"
+            android:minWidth="70dp"
+          />
     </LinearLayout>
 
     <TextView
@@ -37,7 +39,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="10dp"
-        android:textColor="@color/colorTipText"
+        android:textColor="#666666"
         android:textSize="14sp"/>
     <TextView
         android:id="@+id/name"
