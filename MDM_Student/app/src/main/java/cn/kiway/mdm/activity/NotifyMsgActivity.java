@@ -33,6 +33,7 @@ public class NotifyMsgActivity extends BaseActivity {
         ((TextView) findViewById(R.id.title)).setText("消息列表");
         array = new MyDBHelper(this).getNotifyMessage();
         listView = (ListView) findViewById(R.id.list_view);
+        listView.setDividerHeight(0);
         adapter = new NotifyMsgAdapter(this);
         listView.setAdapter(adapter);
     }
@@ -67,21 +68,20 @@ public class NotifyMsgActivity extends BaseActivity {
                 holder.message = (TextView) convertView.findViewById(R.id.message);
                 holder.title = (TextView) convertView.findViewById(R.id.title);
                 holder.sendName = (TextView) convertView.findViewById(R.id.name);
-                holder.time = (TextView) convertView.findViewById(R.id.time);
                 convertView.setTag(holder);
             } else {
                 holder = (NotifyHolder) convertView.getTag();
             }
-            holder.sendName.setText(array.optJSONObject(position).optString("sendname"));
+            holder.sendName.setText(array.optJSONObject(position).optString("sendname")+ "\n" + Utils.getDateField(Long
+                    .parseLong(array.optJSONObject(position).optString("time")), 9));
             holder.message.setText(array.optJSONObject(position).optString("message"));
-            holder.title.setText(array.optJSONObject(position).optString("title"));
-            holder.time.setText(Utils.getDateField(Long.parseLong(array.optJSONObject(position).optString("time")), 9));
+            holder.title.setText(array.optJSONObject(position).optString("title") );
 
             return convertView;
         }
 
         class NotifyHolder {
-            TextView title, message, sendName, time;
+            TextView title, message, sendName;
         }
 
         @Override
