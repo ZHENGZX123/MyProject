@@ -76,7 +76,6 @@ public class NotifyMsgActivity extends BaseActivity {
                     .parseLong(array.optJSONObject(position).optString("time")), 9));
             holder.message.setText(array.optJSONObject(position).optString("message"));
             holder.title.setText(array.optJSONObject(position).optString("title") );
-
             return convertView;
         }
 

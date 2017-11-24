@@ -171,7 +171,9 @@ public class KWApp extends Application implements KwConntectionCallback {
                 isAttenClass = false;
                 teacherIp = "";
                 KwHproseClient.stop();
-                activity.goOutClass("这堂课下课了");
+                if (currentActivity != null) {
+                    ((BaseActivity) currentActivity).goOutClass("这堂课下课了");
+                }
             } else if (msg.what == MSG_CONNECT) {
                 try {
                     KwHproseClient.connect(activity, teacherIp, Utils.getIMEI(activity), KWApp.this);
@@ -323,15 +325,16 @@ public class KWApp extends Application implements KwConntectionCallback {
 
     @Override
     public void onConnected(KwConnection conn) {
-        activity.runOnUiThread(new Runnable() {
+        if (currentActivity != null)
+        ((BaseActivity) currentActivity).runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (KWApp.instance.isConnect)
                     return;
                 KWApp.instance.isConnect = true;
-                activity.showMessageDailog = new ShowMessageDailog(activity);
-                activity.showMessageDailog.setShowMessage("上课连接完成", DISMISS);
-                activity.showMessageDailog.show();
+                ((BaseActivity) currentActivity).showMessageDailog = new ShowMessageDailog(activity);
+                ((BaseActivity) currentActivity).showMessageDailog.setShowMessage("上课连接完成", DISMISS);
+                ((BaseActivity) currentActivity).showMessageDailog.show();
             }
         });
         Logger.log("连接完成");
@@ -372,10 +375,10 @@ public class KWApp extends Application implements KwConntectionCallback {
     }
 
     public void connectTcp(String ip) {
-        if (ip == null || activity == null || isAttenClass)
+        if (ip == null || currentActivity == null || isAttenClass)
             return;
-        if (!Utils.ping(activity, ip)) {//这个判断方法不太靠谱
-            activity.goOutClass("无法连接上课，请确认在同个wifi下");
+        if (!Utils.ping(currentActivity, ip)) {//这个判断方法不太靠谱
+            ((BaseActivity) currentActivity).goOutClass("无法连接上课，请确认在同个wifi下");
             return;
         }
         Message msg = new Message();

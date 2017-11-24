@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.R;
+import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.hprose.screen.FxService;
 import cn.kiway.mdm.hprose.socket.KwHproseClient;
@@ -58,11 +59,14 @@ public class ActionsMessageHandle {
             JSONObject data = new JSONObject(s);
             int msgType = data.optInt("msgType");
             if (msgType == SIGN) {//签到
-                ((MainActivity) context).Session(SIGN);
+                if (KWApp.instance.currentActivity != null)
+                    ((BaseActivity) KWApp.instance.currentActivity).Session(SIGN);
             } else if (msgType == ANSWER) {//抢答
-                ((MainActivity) context).Session(ANSWER);
+                if (KWApp.instance.currentActivity != null)
+                    ((BaseActivity) KWApp.instance.currentActivity).Session(ANSWER);
             } else if (msgType == UNANSWER) {//抢答结束
-                ((MainActivity) context).Session(UNANSWER);
+                if (KWApp.instance.currentActivity != null)
+                    ((BaseActivity) KWApp.instance.currentActivity).Session(UNANSWER);
             } else if (msgType == LOCKSCREEN) {//锁屏
                 KWApp.instance.mHandler.sendEmptyMessage(MSG_LOCK);
                 JSONObject da = new JSONObject();
@@ -84,7 +88,8 @@ public class ActionsMessageHandle {
             } else if (msgType == OFFSCREENSHARE) {//关闭屏幕共享
                 ((MainActivity) context).stopScreen();
             } else if (msgType == SUREREPONSE) {//确实是否听懂，是与否在 msg中体现，1听懂，0听不懂
-                ((MainActivity) context).Session(SUREREPONSE);
+                if (KWApp.instance.currentActivity != null)
+                    ((BaseActivity) KWApp.instance.currentActivity).Session(SUREREPONSE);
             } else if (msgType == OFF_MOBLIE) {//关机
                 KWApp.instance.mHandler.sendEmptyMessage(MSG_SHUTDOWN);
             } else if (msgType == REON_MOBLIE) {//重启

@@ -57,16 +57,7 @@ import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.Utils;
 import cn.kiway.mdm.view.viewPager.StereoPagerTransformer;
 
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.ANSWERDIALOG;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.REPONSEDIALOG;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.SIGNDIALOG;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.UNSWERDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
-import static cn.kiway.mdm.hprose.socket.MessageType.ANSWER;
-import static cn.kiway.mdm.hprose.socket.MessageType.SIGN;
-import static cn.kiway.mdm.hprose.socket.MessageType.SUREREPONSE;
-import static cn.kiway.mdm.hprose.socket.MessageType.UNANSWER;
 import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
 import static cn.kiway.mdm.utils.AppReceiverIn.REMOVE_SUCCESS;
@@ -148,6 +139,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         checkTelephoney();
         //18.获取经纬度
         getLocation();
+        //unlock();
     }
 
     private void checkTelephoney() {
@@ -651,48 +643,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
     }
 
-
     public ShowMessageDailog showMessageDailog;
-    int showI;
-
-    public void Session(int i) {
-        if (showI == i && showMessageDailog != null && showMessageDailog.isShowing())
-            return;
-        showI = i;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                showMessageDailog = new ShowMessageDailog(MainActivity.this);
-                showMessageDailog.setCancelable(false);
-                if (showI == SIGN) {
-                    showMessageDailog.setShowMessage("老师上课签到，请你点击确定确认签到上课", SIGNDIALOG);
-                } else if (showI == ANSWER) {
-                    showMessageDailog.setShowMessage("老师有道题正在抢答，是否进去抢答", ANSWERDIALOG);
-                } else if (showI == UNANSWER) {
-                    showMessageDailog.setShowMessage("抢答结束了", UNSWERDIALOG);
-                } else if (showI == SUREREPONSE) {
-                    showMessageDailog.setShowMessage("同学们，老师这套题清楚了吗？", REPONSEDIALOG);
-                }
-                if (!showMessageDailog.isShowing())
-                    showMessageDailog.show();
-            }
-        });
-    }
-
-
-    public void goOutClass(final String s) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                showMessageDailog = new ShowMessageDailog(MainActivity.this);
-                showMessageDailog.setCancelable(false);
-                showMessageDailog.setShowMessage(s, DISMISS);
-                showMessageDailog.show();
-            }
-        });
-    }
-
-
 
     public LocationClient mLocationClient = null;
 
