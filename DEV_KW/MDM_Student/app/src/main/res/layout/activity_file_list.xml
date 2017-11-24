@@ -34,5 +34,6 @@
         android:layout_height="match_parent"
         android:divider="#e5e5e5"
         android:dividerHeight="1px"
+        android:listSelector="@drawable/course_list_selector"
         android:scrollbars="none"></ListView>
 </LinearLayout>
