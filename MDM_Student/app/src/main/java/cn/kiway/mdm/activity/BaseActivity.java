@@ -24,11 +24,21 @@ import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
 import cn.kiway.mdm.dialog.MyProgressDialog;
 import cn.kiway.mdm.dialog.NotifyShowDailog;
+import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.NetworkUtil;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.KWApp.server;
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.ANSWERDIALOG;
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.REPONSEDIALOG;
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.SIGNDIALOG;
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.UNSWERDIALOG;
+import static cn.kiway.mdm.hprose.socket.MessageType.ANSWER;
+import static cn.kiway.mdm.hprose.socket.MessageType.SIGN;
+import static cn.kiway.mdm.hprose.socket.MessageType.SUREREPONSE;
+import static cn.kiway.mdm.hprose.socket.MessageType.UNANSWER;
 
 /**
  * Created by Administrator on 2017/6/9.
@@ -266,4 +276,45 @@ public class BaseActivity extends Activity {
             }
         });
     }
+
+    public ShowMessageDailog showMessageDailog;
+    int showI;
+
+    public void Session(int i) {
+        if (showI == i && showMessageDailog != null && showMessageDailog.isShowing())
+            return;
+        showI = i;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showMessageDailog = new ShowMessageDailog(BaseActivity.this);
+                showMessageDailog.setCancelable(false);
+                if (showI == SIGN) {
+                    showMessageDailog.setShowMessage("老师上课签到，请你点击确定确认签到上课", SIGNDIALOG);
+                } else if (showI == ANSWER) {
+                    showMessageDailog.setShowMessage("老师有道题正在抢答，是否进去抢答", ANSWERDIALOG);
+                } else if (showI == UNANSWER) {
+                    showMessageDailog.setShowMessage("抢答结束了", UNSWERDIALOG);
+                } else if (showI == SUREREPONSE) {
+                    showMessageDailog.setShowMessage("同学们，老师这套题清楚了吗？", REPONSEDIALOG);
+                }
+                if (!showMessageDailog.isShowing())
+                    showMessageDailog.show();
+            }
+        });
+    }
+
+
+    public void goOutClass(final String s) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showMessageDailog = new ShowMessageDailog(BaseActivity.this);
+                showMessageDailog.setCancelable(false);
+                showMessageDailog.setShowMessage(s, DISMISS);
+                showMessageDailog.show();
+            }
+        });
+    }
+
 }

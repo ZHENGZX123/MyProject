@@ -27,6 +27,7 @@ public class FileListActivity extends BaseActivity {
     ListView listView;
     JSONArray array = new JSONArray();
     FileAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +48,7 @@ public class FileListActivity extends BaseActivity {
     public void Before(View view) {
         finish();
     }
+
     public void refreshUI() {
         runOnUiThread(new Runnable() {
             @Override
@@ -56,6 +58,7 @@ public class FileListActivity extends BaseActivity {
             }
         });
     }
+
     public class FileAdapter extends ArrayAdapter {
         FileHolder holder;
 

@@ -1848,6 +1848,7 @@ public class Utils {
             m.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    //1
                     MDMHelper.getAdapter().shutdownDevice();
                 }
             });
