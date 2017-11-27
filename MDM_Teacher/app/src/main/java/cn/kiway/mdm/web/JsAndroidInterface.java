@@ -81,32 +81,32 @@ public class JsAndroidInterface {
         }
     }
 
-    @JavascriptInterface
+    @JavascriptInterface//获取服务器状态
     public String getscoketStaute() {//主动获取服务器状态 1 开启，2关闭，3异常
         return staute;
     }
 
     @JavascriptInterface
-    public String getUserAccount() {
+    public String getUserAccount() {//获取用户名密码
         Logger.log("----------------------" + userAccount);
         return userAccount;
     }
 
     @JavascriptInterface
-    public void setScreenOrientation(String orientation) {
+    public void setScreenOrientation(String orientation) {//设置横竖
         if (orientation.equals("0"))
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         else if (orientation.equals("1"))
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
-    @JavascriptInterface
+    @JavascriptInterface//获取wifi IP
     public String getWifiIp() {
         return WifiUtils.getIPAddress(activity);
     }
 
     @JavascriptInterface
-    public void pushTheScreen() {
+    public void pushTheScreen() {//推屏  ios不用
         if (!Utils.isAppInstalled(activity, "com.kiway.ikv3")) {
             Toast.makeText(activity, "请安装“开维互动”应用", Toast.LENGTH_SHORT).show();
             return;
@@ -119,7 +119,7 @@ public class JsAndroidInterface {
     }
 
     @JavascriptInterface
-    public void multiControl(String userId) {
+    public void multiControl(String userId) {//多屏互动
         Logger.log("multiControl::::" + userId);
         if (HproseChannelMapStatic.getChannel(userId) == null) {
             Toast.makeText(activity, activity.getString(R.string.student_no_inline), Toast.LENGTH_SHORT).show();
@@ -136,7 +136,7 @@ public class JsAndroidInterface {
     public static int REQUEST_ORIGINAL = 2000;// 请求原图信号标识
     public static String picPath = "";
 
-    @JavascriptInterface
+    @JavascriptInterface//拍照上传
     public void takePhoto(String token) {
         activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token);
         if (!new File(EnFILEPATH).exists())
@@ -165,7 +165,7 @@ public class JsAndroidInterface {
     public static String setFilePath = "";
 
     @JavascriptInterface
-    public void sendFile(String userId, String filePath) {
+    public void sendFile(String userId, String filePath) {//发送文件
         JSONObject da = new JSONObject();
         try {
             Logger.log(filePath);
@@ -191,6 +191,10 @@ public class JsAndroidInterface {
         return true;
     }
 
+    @JavascriptInterface
+    public String getPlatform() {
+        return "Android";
+    }
 
     public void startServer() {
         PushServer.startHprose(accpectMessageHander);
