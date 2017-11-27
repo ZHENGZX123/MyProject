@@ -69,11 +69,22 @@ public class WebViewActivity extends BaseActivity {
                 Log.d("test", "shouldOverrideUrlLoading = " + url);
                 if (checkUrlEnable(url)) {
                     wv.loadUrl(url, extHeader);
+                    return false;
                 } else {
                     toast("该网站不能访问");
+                    return true;
                 }
-                return false;
             }
+
+//            @Override
+//            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+//                Log.d("test", "onPageStarted url = " + url);
+//                if (checkUrlEnable(url)) {
+//                    super.onPageStarted(view, url, favicon);
+//                } else {
+//                    toast("该网站不能访问");
+//                }
+//            }
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {

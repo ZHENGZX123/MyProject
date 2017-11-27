@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -23,7 +26,7 @@
                 android:gravity="center"
                 android:text="设置"
                 android:textColor="@color/white"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <ImageView
                 android:id="@+id/before"
@@ -31,7 +34,7 @@
                 android:layout_height="match_parent"
                 android:onClick="Before"
                 android:paddingLeft="10dp"
-                android:src="@drawable/ic_navigate_before"/>
+                android:src="@drawable/ic_navigate_before" />
         </RelativeLayout>
 
         <TextView
@@ -45,14 +48,14 @@
             android:onClick="Lock"
             android:padding="10dp"
             android:text="锁定"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
-            android:background="#e5e5e5"/>
+            android:background="#e5e5e5" />
 
         <TextView
             android:id="@+id/custom"
@@ -65,14 +68,14 @@
             android:onClick="custom"
             android:padding="10dp"
             android:text="自定义APP"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
-            android:background="#e5e5e5"/>
+            android:background="#e5e5e5" />
 
         <TextView
             android:id="@+id/code"
@@ -85,14 +88,14 @@
             android:onClick="Code"
             android:padding="10dp"
             android:text="二维码"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
-            android:background="#e5e5e5"/>
+            android:background="#e5e5e5" />
 
         <TextView
             android:id="@+id/password"
@@ -105,14 +108,14 @@
             android:onClick="Password"
             android:padding="10dp"
             android:text="修改密码"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
-            android:background="#e5e5e5"/>
+            android:background="#e5e5e5" />
 
         <TextView
             android:layout_width="match_parent"
@@ -124,14 +127,14 @@
             android:onClick="File"
             android:padding="10dp"
             android:text="文件列表"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
-            android:background="#e5e5e5"/>
+            android:background="#e5e5e5" />
 
         <TextView
             android:layout_width="match_parent"
@@ -143,14 +146,34 @@
             android:onClick="NotifyMsg"
             android:padding="10dp"
             android:text="消息列表"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
-            android:background="#e5e5e5"/>
+            android:background="#e5e5e5" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/course_list_selector"
+            android:clickable="true"
+            android:drawableRight="@drawable/ic_chevron_right"
+            android:gravity="center_vertical"
+            android:onClick="Grade"
+            android:padding="10dp"
+            android:text="娱乐积分    200分"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:background="#e5e5e5" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -161,14 +184,14 @@
             android:onClick="Logout"
             android:padding="10dp"
             android:text="退出登录"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
-            android:background="#e5e5e5"/>
+            android:background="#e5e5e5" />
     </LinearLayout>
 
     <RelativeLayout
@@ -184,7 +207,7 @@
             android:id="@+id/codeIV"
             android:layout_width="250dp"
             android:layout_height="250dp"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true" />
     </RelativeLayout>
 
 </RelativeLayout>

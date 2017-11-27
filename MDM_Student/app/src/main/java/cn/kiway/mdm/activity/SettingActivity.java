@@ -50,8 +50,8 @@ public class SettingActivity extends BaseActivity implements CheckPassword.Check
         checkPassword.show();
     }
 
-    public void NotifyMsg(View view){
-        startActivity(new Intent(this,NotifyMsgActivity.class));
+    public void NotifyMsg(View view) {
+        startActivity(new Intent(this, NotifyMsgActivity.class));
     }
 
     public void custom(View view) {
@@ -96,6 +96,10 @@ public class SettingActivity extends BaseActivity implements CheckPassword.Check
         checkPassword.setCancelable(true);
         checkPassword.setTitle("请输入密码");
         checkPassword.show();
+    }
+
+    public void Grade(View view) {
+        toast("娱乐积分200分，可以兑换200分钟娱乐时间");
     }
 
     public void Before(View view) {
