@@ -182,9 +182,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 }
                 break;
                 case MSG_UPLOAD: {
-                    //1.获取定位
-                    //Utils.uploadLocation(MainActivity.this, trans[0], trans[1]);
-                    //2.获取电量，如果电量1%，上报一下
+                    //1.获取电量，如果电量1%，上报一下
                     Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
                     int level = intent.getIntExtra("level", 0);
                     if (level < 5) {
@@ -655,6 +653,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 new BDLocationListener() {
                     @Override
                     public void onReceiveLocation(BDLocation location) {
+                        Log.d("test", "onReceiveLocation ：" + location.getLongitude() + " , " + location.getLatitude());
                         Utils.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude());
                     }
 
@@ -664,9 +663,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     }
                 }
         );
-
         initLocation();
-
         //start
         mLocationClient.start();
     }
