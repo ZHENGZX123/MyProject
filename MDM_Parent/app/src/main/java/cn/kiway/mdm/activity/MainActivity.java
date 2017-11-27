@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -42,7 +41,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
@@ -62,7 +60,6 @@ import cn.kiway.mdm.parent.R;
 import cn.kiway.mdm.util.FileUtils;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.NetworkUtil;
-import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
@@ -72,7 +69,7 @@ import static cn.kiway.mdm.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.0.1";
+    private static final String currentPackageVersion = "0.0.4";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -255,26 +252,13 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
+        public String getIMEI() {
+            return Utils.getIMEI(MainActivity.this);
+        }
+
+        @JavascriptInterface
         public void scanQR() {
             startActivityForResult(new Intent(MainActivity.this, CaptureActivity.class), QRSCAN);
-        }
-
-        @JavascriptInterface
-        public void login(String param) {
-            Log.d("test", "login param = " + param);
-            try {
-                String accessToken = new JSONObject(param).getString("accessToken");
-                String userId = new JSONObject(param).getString("userId");
-                getSharedPreferences("kiway", 0).edit().putString("accessToken", accessToken).commit();
-                getSharedPreferences("kiway", 0).edit().putString("userId", userId).commit();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        @JavascriptInterface
-        public void logout() {
-            Log.d("test", "logout");
         }
 
         @JavascriptInterface
@@ -303,42 +287,6 @@ public class MainActivity extends BaseActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-
-        @JavascriptInterface
-        public void fileUpload(String filepath) {
-            filepath = filepath.replace("file://", "");
-            Log.d("test", "fileUpload , filepath = " + filepath);
-            //选择图片
-            final String finalFilepath = filepath;
-            new Thread() {
-                @Override
-                public void run() {
-                    String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
-                    Log.d("test", "取出token=" + token);
-                    File file = new File(finalFilepath);
-                    final String ret = UploadUtil.uploadFile(file, url + "/common/file?access_token=" + token, file.getName());
-                    Log.d("test", "upload ret = " + ret);
-                    if (TextUtils.isEmpty(ret)) {
-                        toast("上传图片失败，请稍后再试");
-                        return;
-                    }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                JSONObject obj = new JSONObject(ret);
-                                String url = WXApplication.url + obj.getJSONObject("data").getString("url");
-                                obj.getJSONObject("data").put("url", url);
-                                Log.d("test", "obj = " + obj.toString());
-                                wv.loadUrl("javascript:fileUploadCallback(" + obj.toString() + ")");
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }
-            }.start();
         }
 
         @JavascriptInterface
