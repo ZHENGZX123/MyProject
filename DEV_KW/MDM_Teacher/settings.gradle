@@ -1,1 +1,1 @@
-include ':app', ':photoview', ':ImagePicker', ':zxing'
+include ':app', ':zxing', ":lfilepickerlibrary"
