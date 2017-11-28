@@ -120,7 +120,7 @@ public class ScreenActivity extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Toast.makeText(this, "请通过关闭按钮退出界面", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.close_Screen), Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onKeyDown(keyCode, event);

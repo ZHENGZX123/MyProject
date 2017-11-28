@@ -241,7 +241,7 @@ public class MainActivity extends BaseActivity {
         String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
         File file = new File(filePath);
         pd.show();
-        pd.setTitle("正在上传");
+        pd.setTitle(getString(R.string.upload));
         new Thread() {
             @Override
             public void run() {
