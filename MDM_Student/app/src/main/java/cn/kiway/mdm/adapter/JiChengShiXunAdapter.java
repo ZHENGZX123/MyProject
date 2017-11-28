@@ -2,12 +2,14 @@ package cn.kiway.mdm.adapter;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.android.mdm.MdmPolicyManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Administrator on 2017/11/16.
@@ -33,7 +35,7 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     @Override
     public void setWifiDisabled(boolean disabled) {
         try {
-            Log.d("test", "setWifiDisabled没有对应实现");
+            mManager.setWifiDisabled(disabled);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -51,7 +53,7 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     @Override
     public void setDataConnectivityDisabled(boolean disabled) {
         try {
-            Log.d("test", "setDataConnectivityDisabled没有对应实现");
+            Log.d("test", "M102 M110不支持移动网络");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -59,6 +61,7 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
 
     @Override
     public void setUSBDataDisabled(boolean disabled) {
+        //???是这个接口吗。
         try {
             mManager.setUsbDebuggingEnabled(!disabled);
         } catch (Exception e) {
@@ -124,7 +127,7 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     @Override
     public void turnOnGPS(boolean on) {
         try {
-            Log.d("test", "turnOnGPS没有对应实现");
+            mManager.turnOnGPS(on);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -151,7 +154,7 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     @Override
     public void setVpnDisabled(boolean disabled) {
         try {
-            Log.d("test", "setVpnDisabled没有对应实现");
+            mManager.setVpnDisabled(disabled);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -262,9 +265,9 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     }
 
     @Override
-    public void setGPSDisabled(boolean b) {
+    public void setGPSDisabled(boolean disabled) {
         try {
-            Log.d("test", "setGPSDisabled没有对应实现");
+            mManager.setGpsDisabled(disabled);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -289,18 +292,18 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     }
 
     @Override
-    public void setScreenCaptureDisabled(boolean flag) {
+    public void setScreenCaptureDisabled(boolean disabled) {
         try {
-            Log.d("test", "setScreenCaptureDisabled没有对应实现");
+            mManager.setScreenCaptureDisabled(disabled);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void setMicrophoneDisabled(boolean flag) {
+    public void setMicrophoneDisabled(boolean disabled) {
         try {
-            Log.d("test", "setMicrophoneDisabled没有对应实现");
+            mManager.setMicrophoneDisabled(disabled);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -309,16 +312,16 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     @Override
     public void setRestoreFactoryDisabled(boolean disabled) {
         try {
-            mManager.allowFactoryReset(!disabled);
+            mManager.setRestoreFactoryDisabled(disabled);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void setSystemUpdateDisabled(boolean flag) {
+    public void setSystemUpdateDisabled(boolean disabled) {
         try {
-            Log.d("test", "setSystemUpdateDisabled没有对应实现");
+            mManager.setSystemUpdateDisabled(disabled);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -373,7 +376,7 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     @Override
     public void setSilentActiveAdmin() {
         try {
-            Log.d("test", "setSilentActiveAdmin没有对应实现");
+            Log.d("test", "setSilentActiveAdmin没有必要");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -382,7 +385,9 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     @Override
     public void addInstallPackageWhiteList(ArrayList<String> whiteList) {
         try {
-            Log.d("test", "addInstallPackageWhiteList没有对应实现");
+            for (String s : whiteList) {
+                mManager.appWhiteListWrite(s);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -391,7 +396,8 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     @Override
     public List<String> getInstallPackageWhiteList() {
         try {
-            Log.d("test", "getInstallPackageWhiteList没有对应实现");
+            Set<String> set = mManager.appWhiteListRead();
+            return new ArrayList<>(set);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -401,7 +407,7 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     @Override
     public void removeInstallPackageWhiteList(List<String> currentList) {
         try {
-            Log.d("test", "removeInstallPackageWhiteList没有对应实现");
+            mManager.appWhiteListDeleteAll();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -409,8 +415,9 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
 
     @Override
     public void setWIFIStandbyMode(int status) {
+        //mode - 默认为2，始终不断开 2 始终 1 仅充电 0 永不 3 智能休眠
         try {
-            Log.d("test", "setWIFIStandbyMode没有对应实现");
+            mManager.setWIFIStandbyMode(Settings.Global.WIFI_SLEEP_POLICY_NEVER);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -470,11 +477,14 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
         }
     }
 
-    public void setHomeKeyhide(boolean hide) {
+    @Override
+    public String getRunningAPP() {
         try {
-            mManager.setHomeKeyhide(hide);
+            return mManager.GetTopAppPackageName();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return "";
     }
+
 }

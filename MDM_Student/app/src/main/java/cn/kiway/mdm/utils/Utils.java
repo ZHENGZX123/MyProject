@@ -971,6 +971,12 @@ public class Utils {
 
     public static String getRunningAPP(Context context) {
         String packageName = "";
+        if (!Build.MODEL.equals("rk3288")) {
+            packageName = MDMHelper.getAdapter().getRunningAPP();
+            Log.d("aaa", "packageName1 = " + packageName);
+            return packageName;
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             UsageStatsManager m = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
             if (m != null) {
@@ -993,7 +999,7 @@ public class Utils {
             ComponentName cn = activityManager.getRunningTasks(1).get(0).topActivity;
             packageName = cn.getPackageName();
         }
-        Log.d("aaa", "packageName = " + packageName);
+        Log.d("aaa", "packageName2 = " + packageName);
         return packageName;
     }
 
@@ -1076,6 +1082,7 @@ public class Utils {
                         o1.put("versionName", a.versionName);
                         o1.put("versionCode", a.versionCode);
                         o1.put("category", a.category);
+                        //o1.put("icon",a.icon);
                         array.put(o1);
                     }
                     Log.d("test", "applist array = " + array.toString());
@@ -1893,6 +1900,7 @@ public class Utils {
         }
         return false;
     }
+
     public static String getIPAddress(Context context) {
         NetworkInfo info = ((ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
@@ -1937,6 +1945,7 @@ public class Utils {
                 ((ip >> 16) & 0xFF) + "." +
                 (ip >> 24 & 0xFF);
     }
+
     /**
      * @return
      * @author sichard
@@ -1973,14 +1982,15 @@ public class Utils {
         }
         return false;
     }
+
     /**
      * @return
      * @author sichard
      * @category 判断是否有外网连接（普通方法不能判断外网的网络是否连接，比如连接上局域网）
      */
-    public static final boolean ping(Context context,String ip) {
+    public static final boolean ping(Context context, String ip) {
         Logger.log(getIPAddress(context));
-        String s=getIPAddress(context);
+        String s = getIPAddress(context);
         String ip1 = s.split("\\.")[0] + "." + s.split("\\.")[1];
         String ip2 = ip.split("\\.")[0] + "." + ip.split("\\.")[1];
 

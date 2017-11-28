@@ -47,6 +47,7 @@ public interface IMDMAdapter {
     void setSettingsApplicationDisabled(boolean disabled);//5.1
 
     //打开GPS定位
+    //Android7.0扫描SSID需要
     void turnOnGPS(boolean on);
 
     //关机
@@ -81,7 +82,7 @@ public interface IMDMAdapter {
     //安装app
     void installPackage(String path);
 
-    void installPackage(String path , boolean open);
+    void installPackage(String path, boolean open);
 
     //卸载app
     void uninstallPackage(String packages);
@@ -148,5 +149,7 @@ public interface IMDMAdapter {
     void setProximityEnable(boolean enable);//启动距离感应器
 
     void setProximityDelay(int delay);//距离感应器反应时间
+
+    String getRunningAPP();
 
 }

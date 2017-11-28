@@ -155,7 +155,7 @@
             android:layout_marginRight="7dp"
             android:background="#e5e5e5" />
 
-        <TextView
+        <!--<TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/course_list_selector"
@@ -172,7 +172,7 @@
             android:layout_height="1px"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
-            android:background="#e5e5e5" />
+            android:background="#e5e5e5" />-->
 
         <TextView
             android:layout_width="match_parent"
