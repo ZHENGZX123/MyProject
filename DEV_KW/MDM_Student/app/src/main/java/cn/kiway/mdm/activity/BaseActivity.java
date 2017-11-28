@@ -114,8 +114,8 @@ public class BaseActivity extends Activity {
         //MDMHelper.getAdapter().setVpnDisabled(true); //这个失效。
         //7.禁止修改时间
         //MDMHelper.getAdapter().setTimeAndDateSetDisabled(true);//这个失效
-        //5.1失效
-        //MDMHelper.getAdapter().setWIFIStandbyMode(2);
+        //5.1华为失效
+        MDMHelper.getAdapter().setWIFIStandbyMode(2);
     }
 
     public void unlock() {
@@ -252,6 +252,7 @@ public class BaseActivity extends Activity {
 //        dialog_download.show();
         MDMHelper.getAdapter().installPackage(savedFilePath, true);
     }
+
     public void NotifyShow(final String title, final String message, final String name) {
         runOnUiThread(new Runnable() {
             @Override
@@ -261,6 +262,7 @@ public class BaseActivity extends Activity {
             }
         });
     }
+
     MyProgressDialog progressDialog;
     String proData = "";
 

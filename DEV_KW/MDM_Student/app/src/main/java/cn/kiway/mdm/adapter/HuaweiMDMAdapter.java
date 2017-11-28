@@ -46,7 +46,11 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
 
     @Override
     public void setVoiceDisabled(boolean disabled) {
-
+        try {
+            new DeviceRestrictionManager().setVoiceDisabled(mAdminName, disabled);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -82,7 +86,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceRestrictionManager().setStatusBarExpandPanelDisabled(mAdminName, disabled);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -92,7 +96,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceRestrictionManager().setTaskButtonDisabled(mAdminName, disabled);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -102,7 +106,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceRestrictionManager().setHomeButtonDisabled(mAdminName, disabled);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
 
 
@@ -114,7 +118,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceRestrictionManager().setBackButtonDisabled(mAdminName, disabled);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -124,7 +128,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceRestrictionManager().setSettingsApplicationDisabled(mAdminName, disable);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -134,7 +138,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceControlManager().setDefaultLauncher(mAdminName, packageName, className);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -144,7 +148,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceControlManager().turnOnGPS(mAdminName, on);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -154,7 +158,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceControlManager().shutdownDevice(mAdminName);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -164,7 +168,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DevicePackageManager().addDisallowedUninstallPackages(mAdminName, packageNames);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -179,7 +183,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceControlManager().clearDefaultLauncher(mAdminName);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -189,7 +193,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceSettingsManager().setTimeAndDateSetDisabled(mAdminName, b);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -199,7 +203,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceNetworkManager().addNetworkAccessBlackList(mAdminName, addDomainList);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -209,7 +213,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceSettingsManager().setWIFIeditDisabled(mAdminName, b);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -219,7 +223,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DevicePackageManager().installPackage(mAdminName, path);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -234,7 +238,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DevicePackageManager().uninstallPackage(mAdminName, s, false);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -244,7 +248,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceRestrictionManager().setBluetoothDisabled(mAdminName, b);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -254,7 +258,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceRestrictionManager().setGPSDisabled(mAdminName, b);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -264,7 +268,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceRestrictionManager().setWifiApDisabled(mAdminName, b);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -274,7 +278,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceControlManager().rebootDevice(mAdminName);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -284,7 +288,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceRestrictionManager().setScreenCaptureDisabled(mAdminName, disabled);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -294,7 +298,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceRestrictionManager().setMicrophoneDisabled(mAdminName, flag);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -304,7 +308,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceSettingsManager().setRestoreFactoryDisabled(mAdminName, flag);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -314,7 +318,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceRestrictionManager().setSystemUpdateDisabled(mAdminName, flag);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -324,14 +328,14 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceSettingsManager().setNetworkLocationDisabled(mAdminName, flag);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
     @Override
     public void addInstallPackageBlackList(ArrayList<String> packageNames) {
         try {
-            //// TODO: 2017/11/17  
+            // TODO: 2017/11/17
             // new DeviceApplicationManager().addInstallPackageBlackList(mAdminName, packageNames);
         } catch (Exception e) {
             e.printStackTrace();
@@ -344,7 +348,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceApplicationManager().addDisallowedRunningApp(mAdminName, packageNames);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -354,7 +358,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             return new DeviceApplicationManager().getDisallowedRunningApp(mAdminName);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
         return null;
     }
@@ -365,7 +369,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceApplicationManager().removeDisallowedRunningApp(mAdminName, packageNames);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -375,7 +379,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceControlManager().setSilentActiveAdmin(mAdminName);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -385,7 +389,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DevicePackageManager().addInstallPackageWhiteList(mAdminName, whiteList);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -406,7 +410,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DevicePackageManager().removeInstallPackageWhiteList(mAdminName, currentList);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -416,7 +420,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceApplicationManager().addPersistentApp(mAdminName, packageNames);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -426,17 +430,17 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DeviceVpnManager().setVpnDisabled(mAdminName, true);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
     @Override
     public void setWIFIStandbyMode(int status) {
         try {
-            new DeviceSettingsManager().setWIFIStandbyMode(mAdminName, status);
+            //5.1
+            //new DeviceSettingsManager().setWIFIStandbyMode(mAdminName, Settings.Global.WIFI_SLEEP_POLICY_NEVER);
         } catch (Exception e) {
             e.printStackTrace();
-            
         }
     }
 
@@ -446,7 +450,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DevicePhoneManager().hangupCalling(mAdminName);
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
@@ -473,6 +477,11 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     @Override
     public void setProximityDelay(int delay) {
 
+    }
+
+    @Override
+    public String getRunningAPP() {
+        return null;
     }
 
 

@@ -140,6 +140,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //18.获取经纬度
         getLocation();
         //unlock();
+        Log.d("test", "BRAND = " + Build.BRAND);
+        Log.d("test", "MODEL = " + Build.MODEL);
     }
 
     private void checkTelephoney() {
@@ -269,13 +271,11 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void setUsageStats() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (!hasPermission()) {
-                showMessageDailog = new ShowMessageDailog(this);
-                showMessageDailog.setShowMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开", YUXUNFANWENJLU);
-                showMessageDailog.setCancelable(false);
-                showMessageDailog.show();
-            }
+        if (Build.BRAND.equals("HUAWEI") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !hasPermission()) {
+            showMessageDailog = new ShowMessageDailog(this);
+            showMessageDailog.setShowMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开", YUXUNFANWENJLU);
+            showMessageDailog.setCancelable(false);
+            showMessageDailog.show();
         }
     }
 
@@ -330,7 +330,12 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         startActivity(new Intent(this, CallActivity.class));
     }
 
+    boolean flag = false;
+
     public void SMS(View view) {
+//        flag = !flag;
+//        MDMHelper.getAdapter().setWifiDisabled(flag);
+
         startActivity(new Intent(this, WebViewActivity.class));
 //        MDMHelper.getAdapter().installPackage("/mnt/sdcard/test.apk", true);
 //        startActivity(new Intent(this, ComposeSmsActivity.class));

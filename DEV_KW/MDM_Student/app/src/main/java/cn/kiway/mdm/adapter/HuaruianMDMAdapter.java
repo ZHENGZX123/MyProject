@@ -261,4 +261,9 @@ public class HuaruianMDMAdapter implements IMDMAdapter {
     public void setProximityDelay(int delay) {
 
     }
+
+    @Override
+    public String getRunningAPP() {
+        return null;
+    }
 }
