@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +24,6 @@ import java.io.IOException;
 import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.FileListActivity;
-import cn.kiway.mdm.activity.NotifyMsgActivity;
 import cn.kiway.mdm.hprose.jrf.client.JRFClient;
 import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.utils.MyDBHelper;
@@ -80,15 +82,7 @@ public class MyProgressDialog extends Dialog implements JRFClient.DownLoadCallBa
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        if (client != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    client.getFile(depositPath, downUrl, MyProgressDialog.this);
-                }
-            }).start();
-        }
-        textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "\n" + "正在接收老师的文件，请勿操作");
+        downloadFile();
     }
 
     protected void fullWindowCenter() {
@@ -140,9 +134,21 @@ public class MyProgressDialog extends Dialog implements JRFClient.DownLoadCallBa
     public void onClick(View view) {
         button.setVisibility(View.GONE);
         if (textView.getText().toString().contains("失败")) {
+            downloadFile();
+        } else {
+            Utils.openFile(context, depositPath);
+            dismiss();
+        }
+    }
+
+    private void downloadFile() {
+        if (progressBar.getVisibility() == View.GONE)
             progressBar.setVisibility(View.VISIBLE);
-            textView.setEnabled(false);
-            textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "\n" + "正在接收老师的文件，请勿操作");
+        textView.setEnabled(false);
+        textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "\n" + "正在接收老师的文件，请勿操作");
+        if (KWApp.instance.isIos) {
+            downloadSilently(downUrl, depositPath);
+        } else {
             if (client != null) {
                 new Thread(new Runnable() {
                     @Override
@@ -151,9 +157,41 @@ public class MyProgressDialog extends Dialog implements JRFClient.DownLoadCallBa
                     }
                 }).start();
             }
-        } else {
-            Utils.openFile(context, depositPath);
-            dismiss();
         }
+    }
+
+    private void downloadSilently(String apkUrl, String savedFilePath) {
+        if (new File(savedFilePath).exists()) {
+            Log.d("test", "该文件已经下载好了");
+            success();
+            return;
+        }
+        RequestParams params = new RequestParams(apkUrl);
+        params.setSaveFilePath(savedFilePath);
+        params.setAutoRename(false);
+        params.setAutoResume(true);
+        x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
+            @Override
+            public void onSuccess(File result) {
+                Log.d("test", "下载成功");
+                success();
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                error();
+                Log.d("test", "下载失败");
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+                Log.d("test", "下载取消");
+            }
+
+            @Override
+            public void onFinished() {
+                Log.d("test", "下载结束");
+            }
+        });
     }
 }

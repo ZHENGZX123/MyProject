@@ -101,7 +101,6 @@ public class ComposeSmsActivity extends BaseActivity {
                 holder = (ViewHolder) rowView.getTag();
             }
             final SMS s = SMSs.get(position);
-
             if (TextUtils.isEmpty(s.name)) {
                 holder.name.setText(s.phone);
             } else {
