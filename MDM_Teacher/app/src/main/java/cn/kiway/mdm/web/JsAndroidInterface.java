@@ -108,7 +108,7 @@ public class JsAndroidInterface {
     @JavascriptInterface
     public void pushTheScreen() {//推屏  ios不用
         if (!Utils.isAppInstalled(activity, "com.kiway.ikv3")) {
-            Toast.makeText(activity, "请安装“开维互动”应用", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, activity.getString(R.string.please_install_kiway_srceen), Toast.LENGTH_SHORT).show();
             return;
         }
         Intent intent = new Intent(Intent.ACTION_MAIN);
