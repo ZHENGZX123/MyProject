@@ -31,7 +31,6 @@ import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.KWApp.server;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.ANSWERDIALOG;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.REPONSEDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.SIGNDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.UNSWERDIALOG;
@@ -306,17 +305,5 @@ public class BaseActivity extends Activity {
         });
     }
 
-
-    public void goOutClass(final String s) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                showMessageDailog = new ShowMessageDailog(BaseActivity.this);
-                showMessageDailog.setCancelable(false);
-                showMessageDailog.setShowMessage(s, DISMISS);
-                showMessageDailog.show();
-            }
-        });
-    }
 
 }

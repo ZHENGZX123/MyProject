@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.UndeclaredThrowableException;
 
+import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.hprose.socket.KwHproseClient;
@@ -167,8 +168,12 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                         da.put("msgType", SIGN);
                         da.put("userId", Utils.getIMEI(getContext()));
                         da.put("msg", "签到");
-                        if (KwHproseClient.helloClient != null)
-                            KwHproseClient.helloClient.sign(da.toString());
+                        if (KWApp.instance.isIos) {
+                            KWApp.instance.client.sendTCP(da.toString());
+                        } else {
+                            if (KwHproseClient.helloClient != null)
+                                KwHproseClient.helloClient.sign(da.toString());
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -179,8 +184,12 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                         data.put("userId", Utils.getIMEI(getContext()));
                         data.put("msg", "1");
                         data.put("msgType", SUREREPONSE);
-                        if (KwHproseClient.helloClient != null)
-                            KwHproseClient.helloClient.reponse(data.toString());
+                        if (KWApp.instance.isIos) {
+                            KWApp.instance.client.sendTCP(data.toString());
+                        } else {
+                            if (KwHproseClient.helloClient != null)
+                                KwHproseClient.helloClient.reponse(data.toString());
+                        }
                     } catch (UndeclaredThrowableException e) {
                         e.printStackTrace();
                     } catch (JSONException e) {
@@ -193,8 +202,12 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                         data.put("userId", Utils.getIMEI(getContext()));
                         data.put("msg", "0");
                         data.put("msgType", SUREREPONSE);
-                        if (KwHproseClient.helloClient != null)
-                            KwHproseClient.helloClient.reponse(data.toString());
+                        if (KWApp.instance.isIos) {
+                            KWApp.instance.client.sendTCP(data.toString());
+                        } else {
+                            if (KwHproseClient.helloClient != null)
+                                KwHproseClient.helloClient.reponse(data.toString());
+                        }
                     } catch (UndeclaredThrowableException e) {
                         e.printStackTrace();
                     } catch (JSONException e) {
@@ -207,8 +220,12 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                         da.put("msgType", ANSWER);
                         da.put("userId", Utils.getIMEI(getContext()));
                         da.put("msg", "1");
-                        if (KwHproseClient.helloClient != null)
-                            KwHproseClient.helloClient.answerqusetion(da.toString());
+                        if (KWApp.instance.isIos) {
+                            KWApp.instance.client.sendTCP(da.toString());
+                        } else {
+                            if (KwHproseClient.helloClient != null)
+                                KwHproseClient.helloClient.answerqusetion(da.toString());
+                        }
                     } catch (UndeclaredThrowableException e) {
                         e.printStackTrace();
                     } catch (JSONException e) {
@@ -221,8 +238,12 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                         da.put("userId", Utils.getIMEI(getContext()));
                         da.put("msgType", ANSWER);
                         da.put("msg", "0");
-                        if (KwHproseClient.helloClient != null)
-                            KwHproseClient.helloClient.answerqusetion(da.toString());
+                        if (KWApp.instance.isIos) {
+                            KWApp.instance.client.sendTCP(da.toString());
+                        } else {
+                            if (KwHproseClient.helloClient != null)
+                                KwHproseClient.helloClient.answerqusetion(da.toString());
+                        }
                     } catch (UndeclaredThrowableException e) {
                         e.printStackTrace();
                     } catch (JSONException e) {

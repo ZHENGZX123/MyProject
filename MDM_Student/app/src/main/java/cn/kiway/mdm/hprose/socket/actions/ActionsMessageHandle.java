@@ -72,16 +72,27 @@ public class ActionsMessageHandle {
                 JSONObject da = new JSONObject();
                 da.put("userId", Utils.getIMEI(context));
                 da.put("msg", "1");
-                if (KwHproseClient.helloClient != null)
-                    KwHproseClient.helloClient.sign(da.toString());
+                if (KWApp.instance.isIos) {
+                    if (KWApp.instance.client==null)
+                        return;
+                    KWApp.instance.client.sendTCP(da.toString());
+                } else {
+                    if (KwHproseClient.helloClient != null)
+                        KwHproseClient.helloClient.sign(da.toString());
+                }
             } else if (msgType == SOLUTIONSCREE) {//解屏
                 KWApp.instance.mHandler.sendEmptyMessage(MSG_UNLOCK);
                 JSONObject da = new JSONObject();
                 da.put("userId", Utils.getIMEI(context));
                 da.put("msg", "0");
-                if (KwHproseClient.helloClient != null)
-                    KwHproseClient.helloClient.sign(da.toString());
-
+                if (KWApp.instance.isIos) {
+                    if (KWApp.instance.client==null)
+                        return;
+                    KWApp.instance.client.sendTCP(da.toString());
+                } else {
+                    if (KwHproseClient.helloClient != null)
+                        KwHproseClient.helloClient.sign(da.toString());
+                }
             } else if (msgType == SCREENSHARE) {//打开屏幕共享
                 FxService.setIp(data.optString("msg"));
                 ((MainActivity) context).startScreen();
@@ -135,7 +146,6 @@ public class ActionsMessageHandle {
                 msg1.what = MSG_PUSH_FILE_I;
                 msg1.obj = s;
                 KWApp.instance.mHandler.sendMessage(msg1);
-
             }
         } catch (JSONException e) {
             e.printStackTrace();

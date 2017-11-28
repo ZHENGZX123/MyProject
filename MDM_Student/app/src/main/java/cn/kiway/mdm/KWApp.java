@@ -26,6 +26,10 @@ import cn.kiway.mdm.hprose.hprose.net.KwConnection;
 import cn.kiway.mdm.hprose.hprose.net.KwConntectionCallback;
 import cn.kiway.mdm.hprose.socket.KwHproseClient;
 import cn.kiway.mdm.hprose.socket.Logger;
+import cn.kiway.mdm.hprose.socket.MessageType;
+import cn.kiway.mdm.hprose.socket.actions.ActionsMessageHandle;
+import cn.kiway.mdm.hprose.socket.tcp.Client;
+import cn.kiway.mdm.hprose.socket.tcp.HandlerClient;
 import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.HttpDownload;
 import cn.kiway.mdm.utils.MyDBHelper;
@@ -41,12 +45,8 @@ import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 public class KWApp extends Application implements KwConntectionCallback {
 
-    public static KWApp instance;
     //    public static final String server = "http://192.168.8.161:8082/mdms/";
     public static final String server = "http://202.104.136.9:8080/mdms/";
-
-    public Activity currentActivity;
-
     public static final int MSG_TOAST = 0;//注册华为
     public static final int MSG_INSTALL = 1;//注册华为
     public static final int MSG_LOCK = 2;//锁屏
@@ -67,24 +67,20 @@ public class KWApp extends Application implements KwConntectionCallback {
     public static final int MSG_SMS = 17;//下课
     public static final int MSG_CONNECT = 18;//上课连接
     public static final int MSG_MESSAGE = 19;//发送消息
-
     public static final int MSG_PUSH_FILE_I = 20;//局域网接收文件
-
-
+    public static KWApp instance;
+    public static boolean temporary_app = false;
+    public Activity currentActivity;
     public boolean isAttenClass = false;
     public String teacherIp = "";
-    public static boolean temporary_app = false;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        instance = this;
-        //CrashHandler.getInstance().init(this);
-        huaweiPush(this);
-        //xutils
-        x.Ext.init(this);
-    }
-
+    public int connectNumber = 0;
+    public boolean isConnect = false;
+    public boolean isIos = false;
+    public HandlerClient client;
+    private int result;
+    private Intent intent;
+    private MediaProjectionManager mMediaProjectionManager;
+    private MainActivity activity;
     public Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -162,6 +158,10 @@ public class KWApp extends Application implements KwConntectionCallback {
             } else if (msg.what == MSG_ATTEND_CALSS) {
                 //上课
                 teacherIp = ((JSONObject) msg.obj).optString("ip");
+                if (((JSONObject) msg.obj).optString("platform").equals("IOS"))
+                    isIos = true;
+                else
+                    isIos = false;
                 connectTcp(teacherIp);
                 connectNumber = 0;
                 isConnect = false;
@@ -172,7 +172,7 @@ public class KWApp extends Application implements KwConntectionCallback {
                 teacherIp = "";
                 KwHproseClient.stop();
                 if (currentActivity != null) {
-                    ((BaseActivity) currentActivity).goOutClass("这堂课下课了");
+                    showMessage("这堂课下课了");
                 }
             } else if (msg.what == MSG_CONNECT) {
                 try {
@@ -200,8 +200,16 @@ public class KWApp extends Application implements KwConntectionCallback {
             }
         }
     };
-    public int connectNumber = 0;
-    public boolean isConnect = false;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        instance = this;
+        //CrashHandler.getInstance().init(this);
+        huaweiPush(this);
+        //xutils
+        x.Ext.init(this);
+    }
 
     private void handlePushFile(String c) {
         try {
@@ -241,7 +249,6 @@ public class KWApp extends Application implements KwConntectionCallback {
             e.printStackTrace();
         }
     }
-
 
     public void excuteFlagCommand() {
         int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
@@ -284,34 +291,28 @@ public class KWApp extends Application implements KwConntectionCallback {
         MDMHelper.getAdapter().setBluetoothDisabled(flag_bluetooth == 0);
     }
 
-    private int result;
-    private Intent intent;
-    private MediaProjectionManager mMediaProjectionManager;
-
     public void setActivity(MainActivity activity) {
         this.activity = activity;
     }
 
-    private MainActivity activity;
-
     public int getResult() {
         return result;
-    }
-
-    public Intent getIntent() {
-        return intent;
-    }
-
-    public MediaProjectionManager getMediaProjectionManager() {
-        return mMediaProjectionManager;
     }
 
     public void setResult(int result1) {
         this.result = result1;
     }
 
+    public Intent getIntent() {
+        return intent;
+    }
+
     public void setIntent(Intent intent1) {
         this.intent = intent1;
+    }
+
+    public MediaProjectionManager getMediaProjectionManager() {
+        return mMediaProjectionManager;
     }
 
     public void setMediaProjectionManager(MediaProjectionManager mMediaProjectionManager) {
@@ -325,18 +326,7 @@ public class KWApp extends Application implements KwConntectionCallback {
 
     @Override
     public void onConnected(KwConnection conn) {
-        if (currentActivity != null)
-        ((BaseActivity) currentActivity).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (KWApp.instance.isConnect)
-                    return;
-                KWApp.instance.isConnect = true;
-                ((BaseActivity) currentActivity).showMessageDailog = new ShowMessageDailog(activity);
-                ((BaseActivity) currentActivity).showMessageDailog.setShowMessage("上课连接完成", DISMISS);
-                ((BaseActivity) currentActivity).showMessageDailog.show();
-            }
-        });
+        showMessage("上课连接完成");
         Logger.log("连接完成");
     }
 
@@ -378,11 +368,70 @@ public class KWApp extends Application implements KwConntectionCallback {
         if (ip == null || currentActivity == null || isAttenClass)
             return;
         if (!Utils.ping(currentActivity, ip)) {//这个判断方法不太靠谱
-            ((BaseActivity) currentActivity).goOutClass("无法连接上课，请确认在同个wifi下");
+            showMessage("无法连接上课，请确认在同个wifi下");
             return;
         }
-        Message msg = new Message();
-        msg.what = MSG_CONNECT;
-        mHandler.sendMessage(msg);
+        if (isIos) {
+            if (client != null && client.isConnect())
+                return;
+            KwHproseClient.stop();
+            client = new HandlerClient();
+            client.connectTCP(ip, new Client.TcpMessageCallBack() {
+                @Override
+                public void accpetMessage(String message) throws Exception {
+                    if (activity == null) return;
+                    ActionsMessageHandle.MessageHandle(activity, message);
+                    Toast.makeText(activity, "IOS::::" + message, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void connectTcpSuccess() throws Exception {
+                    JSONObject da = new JSONObject();
+                    try {
+                        da.put("msgType", MessageType.LOGIN);
+                        da.put("userId", Utils.getIMEI(KWApp.this));
+                        da.put("msg", "我是新用户");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    client.sendTCP(da.toString());
+                    showMessage("IOS 上课连接完成");
+                }
+
+                @Override
+                public void connectTcpFailed() throws Exception {
+                    showMessage("IOS 上课连接失败");
+                }
+
+                @Override
+                public void disconnectTcp() throws Exception {
+                    showMessage("IOS 连接掉线");
+                }
+            });
+        } else {
+            if (client != null && client.isConnect()) {
+                client.close();
+                client = null;
+            }
+            Message msg = new Message();
+            msg.what = MSG_CONNECT;
+            mHandler.sendMessage(msg);
+        }
+
+    }
+
+    public void showMessage(final String message) {
+        if (currentActivity != null)
+            ((BaseActivity) currentActivity).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (KWApp.instance.isConnect)
+                        return;
+                    KWApp.instance.isConnect = true;
+                    ((BaseActivity) currentActivity).showMessageDailog = new ShowMessageDailog(activity);
+                    ((BaseActivity) currentActivity).showMessageDailog.setShowMessage(message, DISMISS);
+                    ((BaseActivity) currentActivity).showMessageDailog.show();
+                }
+            });
     }
 }
