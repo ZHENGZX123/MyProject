@@ -37,6 +37,7 @@ import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.KWApp.server;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.ANSWERDIALOG;
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.REPONSEDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.SIGNDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.UNSWERDIALOG;
@@ -62,6 +63,7 @@ public class BaseActivity extends Activity {
         //初始化MDM
         ComponentName mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
         MDMHelper.getAdapter().init(this, mAdminName);
+        KWApp.instance.currentActivity = this;
     }
 
     public void setScreenOrientation() {
@@ -309,6 +311,17 @@ public class BaseActivity extends Activity {
                 }
                 if (!showMessageDailog.isShowing())
                     showMessageDailog.show();
+            }
+        });
+    }
+
+    public void showMessage(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showMessageDailog = new ShowMessageDailog(BaseActivity.this);
+                showMessageDailog.setShowMessage(message, DISMISS);
+                showMessageDailog.show();
             }
         });
     }
