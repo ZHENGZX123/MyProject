@@ -2,6 +2,7 @@ package cn.kiway.mdm.adapter;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -264,6 +265,11 @@ public class HuaruianMDMAdapter implements IMDMAdapter {
 
     @Override
     public String getRunningAPP() {
+        return null;
+    }
+
+    @Override
+    public Bitmap captureScreen(ComponentName admin) {
         return null;
     }
 }
