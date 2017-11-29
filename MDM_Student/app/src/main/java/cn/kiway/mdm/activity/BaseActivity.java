@@ -3,7 +3,9 @@ package cn.kiway.mdm.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -17,6 +19,9 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +30,7 @@ import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
 import cn.kiway.mdm.dialog.MyProgressDialog;
 import cn.kiway.mdm.dialog.NotifyShowDailog;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
+import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.NetworkUtil;
 import cn.kiway.mdm.utils.Utils;
@@ -235,7 +241,8 @@ public class BaseActivity extends Activity {
 
     private void askforInstall(final String savedFilePath) {
 //        AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
-//        AlertDialog dialog_download = builder.setMessage("发现新的版本，是否更新？本次更新不消耗流量。").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+//        AlertDialog dialog_download = builder.setMessage("发现新的版本，是否更新？本次更新不消耗流量。").setNegativeButton(android.R
+// .string.ok, new DialogInterface.OnClickListener() {
 //
 //            @Override
 //            public void onClick(DialogInterface d, int arg1) {
@@ -243,7 +250,8 @@ public class BaseActivity extends Activity {
 //                Intent intent = new Intent();
 //                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                intent.setAction(android.content.Intent.ACTION_VIEW);
-//                intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
+//                intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android
+// .package-archive");
 //                startActivity(intent);
 //                finish();
 //            }
@@ -305,5 +313,58 @@ public class BaseActivity extends Activity {
         });
     }
 
+    WifiManager.MulticastLock lock;
+    static DatagramSocket udpSocket = null;
+    static DatagramPacket udpPacket = null;
+    boolean isRun;
+    String codeString;
+
+    public void UdpStart() {
+        //红米手机接收不到udp广播,打开udp锁
+        WifiManager manager = (WifiManager) getApplicationContext()
+                .getSystemService(Context.WIFI_SERVICE);
+        lock = manager.createMulticastLock("localWifi");
+        new UDPClientThread().start();
+    }
+
+    public void UdpClose() {
+        isRun = false;
+    }
+
+    private class UDPClientThread extends Thread {
+        public UDPClientThread() {
+            /* 开启线程 */
+            System.out.println("监听广播开启");
+            isRun = true;
+        }
+
+        @Override
+        public void run() {
+            byte[] data = new byte[256];
+            try {
+                udpSocket = new DatagramSocket(43708);
+                udpPacket = new DatagramPacket(data, data.length);
+            } catch (SocketException e1) {
+                e1.printStackTrace();
+            }
+            while (isRun) {
+                try {
+                    lock.acquire();
+                    udpSocket.receive(udpPacket);
+                } catch (Exception e) {
+                }
+                if (udpPacket != null && null != udpPacket.getAddress()) {
+                    codeString = new String(data, 0, udpPacket.getLength());
+                    if (codeString.contains("/"))
+                        return;
+                    System.out.println("内容：：：" + codeString);
+                    final String ip = udpPacket.getAddress().toString()
+                            .substring(1);
+                    Logger.log("ip:::" + ip + "\n内容" + codeString);
+                }
+                lock.release();
+            }
+        }
+    }
 
 }

@@ -487,7 +487,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     }
 
     @Override
-    public Bitmap captureScreen(ComponentName admin) {
+    public Bitmap captureScreen() {
         try {
             return new DeviceControlManager().captureScreen(mAdminName);
         } catch (Exception e) {
@@ -496,4 +496,5 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
         }
         return null;
     }
+
 }

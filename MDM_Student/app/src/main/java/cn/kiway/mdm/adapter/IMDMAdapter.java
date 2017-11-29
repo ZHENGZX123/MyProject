@@ -153,6 +153,6 @@ public interface IMDMAdapter {
 
     String getRunningAPP();
 
-    Bitmap captureScreen(ComponentName admin);
+    Bitmap captureScreen();
 
 }
