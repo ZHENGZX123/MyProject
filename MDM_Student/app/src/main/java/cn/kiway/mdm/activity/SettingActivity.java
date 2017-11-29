@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -37,9 +36,9 @@ public class SettingActivity extends BaseActivity implements CheckPassword.Check
         codeRL = (RelativeLayout) findViewById(R.id.codeRL);
         checkPassword = new CheckPassword(this, this);
         if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
-            mode.setText("家长模式");
+            mode.setText("当前已锁定");
         } else {
-            mode.setText("学生模式");
+            mode.setText("当前未锁定");
         }
     }
 
@@ -116,13 +115,11 @@ public class SettingActivity extends BaseActivity implements CheckPassword.Check
             case 1:
                 if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
                     getSharedPreferences("kiway", 0).edit().putBoolean("locked", false).commit();
-                    mode.setText("学生模式");
-                    Toast.makeText(this, "解锁成功", Toast.LENGTH_SHORT).show();
+                    mode.setText("当前未锁定");
                     unlock();
                 } else {
                     getSharedPreferences("kiway", 0).edit().putBoolean("locked", true).commit();
-                    mode.setText("家长模式");
-                    Toast.makeText(this, "锁定成功", Toast.LENGTH_SHORT).show();
+                    mode.setText("当前已锁定");
                     lock();
                 }
                 break;

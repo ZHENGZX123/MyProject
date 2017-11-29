@@ -96,7 +96,7 @@ public class BaseActivity extends Activity {
         //1.设置默认桌面
         MDMHelper.getAdapter().setDefaultLauncher("cn.kiway.mdm", "cn.kiway.mdm.activity.MainActivity");
         //2.关闭settings.失效
-        //MDMHelper.getAdapter().setSettingsApplicationDisabled(true);
+        MDMHelper.getAdapter().setSettingsApplicationDisabled(true);
         //3.设置不可卸载
         List<String> packages = new ArrayList<>();
         packages.add("cn.kiway.mdm");
@@ -123,7 +123,7 @@ public class BaseActivity extends Activity {
         //出厂的时候去掉这个
         MDMHelper.getAdapter().removeDisallowedUninstallPackages();
         //2.关闭settings.慎用！！！
-        //MDMHelper.getAdapter().setSettingsApplicationDisabled(false);
+        MDMHelper.getAdapter().setSettingsApplicationDisabled(false);
         //4.禁止下拉状态栏
         MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(false);
         //5.禁止USB，调试期间可以关闭

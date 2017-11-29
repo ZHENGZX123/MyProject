@@ -125,7 +125,8 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     @Override
     public void setSettingsApplicationDisabled(boolean disable) {
         try {
-            new DeviceRestrictionManager().setSettingsApplicationDisabled(mAdminName, disable);
+            //5.1会闪退
+            //new DeviceRestrictionManager().setSettingsApplicationDisabled(mAdminName, disable);
         } catch (Exception e) {
             e.printStackTrace();
 
