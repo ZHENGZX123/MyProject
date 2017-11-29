@@ -188,7 +188,7 @@ public class ScreenActivity extends Activity {
                 super.handleMessage(msg);
             } else if (msg.what == 104) {
                 imageView.setVisibility(View.GONE);
-                Toast.makeText(ScreenActivity.this, "连接断线了", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ScreenActivity.this, getString(R.string.con), Toast.LENGTH_SHORT).show();
                 finish();
                 Logger.log("连接断线了");
             }
@@ -202,7 +202,7 @@ public class ScreenActivity extends Activity {
             if (msg.obj != null)
                 Toast.makeText(mContext, msg.obj.toString(), Toast.LENGTH_SHORT).show();
             if (bitmap != null && msg.obj.equals("UI")) {
-                Toast.makeText(mContext, "更新图片", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, getString(R.string.update_pic), Toast.LENGTH_SHORT).show();
                 imageView.setImageBitmap(bitmap);
             }
             super.handleMessage(msg);
