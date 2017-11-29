@@ -12,4 +12,6 @@
     <string name="new_version">发现新的版本，是否更新？本次更新不消耗流量。</string>
     <string name="close_Screen">请通过关闭按钮退出界面</string>
     <string name="please_install_kiway_srceen">请安装“开维互动”应用</string>
+    <string name="update_pic">更新图片</string>
+    <string name="con">连接断线了</string>
 </resources>

@@ -21,6 +21,7 @@ import cn.kiway.mdm.scoket.db.DbUtils;
 import cn.kiway.mdm.scoket.scoket.tcp.MessageHander.AccpectMessageHander;
 import cn.kiway.mdm.scoket.scoket.tcp.netty.HproseChannelMapStatic;
 import cn.kiway.mdm.scoket.scoket.tcp.netty.PushServer;
+import cn.kiway.mdm.scoket.scoket.udp.BroadCastUdp;
 import cn.kiway.mdm.scoket.utils.Logger;
 import cn.kiway.mdm.scoket.utils.WifiUtils;
 import cn.kiway.mdm.teacher.R;
@@ -108,7 +109,8 @@ public class JsAndroidInterface {
     @JavascriptInterface
     public void pushTheScreen() {//推屏  ios不用
         if (!Utils.isAppInstalled(activity, "com.kiway.ikv3")) {
-            Toast.makeText(activity, activity.getString(R.string.please_install_kiway_srceen), Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, activity.getString(R.string.please_install_kiway_srceen), Toast.LENGTH_SHORT)
+                    .show();
             return;
         }
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -196,11 +198,18 @@ public class JsAndroidInterface {
         return "Android";
     }
 
+    BroadCastUdp broadCastUdp;
+
     public void startServer() {
+//        broadCastUdp = new BroadCastUdp("班级id");//有需求再说
+//        broadCastUdp.isRun = true;
+//        broadCastUdp.start();
         PushServer.startHprose(accpectMessageHander);
     }
 
     public void closeServer() {
+//        if (broadCastUdp != null)
+//            broadCastUdp.isRun = false;
         PushServer.stop();
     }
 }
