@@ -57,6 +57,7 @@ import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.Utils;
 import cn.kiway.mdm.view.viewPager.StereoPagerTransformer;
 
+import static android.R.attr.mode;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
@@ -139,9 +140,15 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         checkTelephoney();
         //18.获取经纬度
         getLocation();
-        //unlock();
-        Log.d("test", "BRAND = " + Build.BRAND);
-        Log.d("test", "MODEL = " + Build.MODEL);
+        //19.检查lock状态
+        checkLock();
+    }
+
+    private void checkLock() {
+        boolean locked = getSharedPreferences("kiway", 0).getBoolean("locked", false);
+        if (locked) {
+            lock();
+        }
     }
 
     private void checkTelephoney() {
