@@ -21,7 +21,6 @@ import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.NotifyMsgActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
-import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.hprose.hprose.net.KwConnection;
 import cn.kiway.mdm.hprose.hprose.net.KwConntectionCallback;
 import cn.kiway.mdm.hprose.socket.KwHproseClient;
@@ -36,7 +35,6 @@ import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 import hprose.net.TimeoutType;
 
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 /**
@@ -426,13 +424,6 @@ public class KWApp extends Application implements KwConntectionCallback {
 
     public void showMessage(final String message) {
         if (currentActivity != null)
-            ((BaseActivity) currentActivity).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ((BaseActivity) currentActivity).showMessageDailog = new ShowMessageDailog(activity);
-                    ((BaseActivity) currentActivity).showMessageDailog.setShowMessage(message, DISMISS);
-                    ((BaseActivity) currentActivity).showMessageDailog.show();
-                }
-            });
+            ((BaseActivity) currentActivity).showMessage(message);
     }
 }

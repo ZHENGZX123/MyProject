@@ -598,7 +598,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             Logger.log("start service Service1");
     }
 
-    public ShowMessageDailog showMessageDailog;
 
     public LocationClient mLocationClient = null;
 
