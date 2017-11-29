@@ -17,11 +17,10 @@ public class MDMHelper {
     public static IMDMAdapter getAdapter() {
         if (mAdapter == null) {
             //根据平板类型来选择用哪个Adapter
-            if (Build.BRAND.equals("HUAWEI")) {
-                mAdapter = new HuaweiMDMAdapter();
-            } else {
+            if (Build.MODEL.equals("rk3288")) {
                 mAdapter = new JiChengShiXunAdapter();
-//                mAdapter = new HuaweiMDMAdapter();
+            } else {
+                mAdapter = new HuaweiMDMAdapter();
             }
         }
         return mAdapter;

@@ -971,7 +971,7 @@ public class Utils {
 
     public static String getRunningAPP(Context context) {
         String packageName = "";
-        if (!Build.MODEL.equals("rk3288")) {
+        if (Build.MODEL.equals("rk3288")) {
             packageName = MDMHelper.getAdapter().getRunningAPP();
             Log.d("aaa", "packageName1 = " + packageName);
             return packageName;
