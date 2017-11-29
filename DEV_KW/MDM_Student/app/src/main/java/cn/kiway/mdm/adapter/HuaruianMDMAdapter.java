@@ -269,7 +269,8 @@ public class HuaruianMDMAdapter implements IMDMAdapter {
     }
 
     @Override
-    public Bitmap captureScreen(ComponentName admin) {
+    public Bitmap captureScreen() {
         return null;
     }
+
 }

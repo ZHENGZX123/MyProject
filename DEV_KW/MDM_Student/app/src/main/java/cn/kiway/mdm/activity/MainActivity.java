@@ -1,7 +1,6 @@
 package cn.kiway.mdm.activity;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AppOpsManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,8 +11,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.projection.MediaProjectionManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -57,7 +54,6 @@ import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.Utils;
 import cn.kiway.mdm.view.viewPager.StereoPagerTransformer;
 
-import static android.R.attr.mode;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
@@ -105,8 +101,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         instance = this;
         KWApp.instance.setActivity(this);
         initView();
-        //1.开启服务
-        initService();
         //2.初始化界面
         initView();
         initData(getListdata(AppListUtils.getAppListData(this)));
@@ -214,9 +208,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     };
 
 
-    private void initService() {
-        intent = new Intent(MainActivity.this, FxService.class);
-    }
 
     private void setDefaultSMSApp() {
         Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
@@ -467,19 +458,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             }
         }
 
-        if (requestCode == REQUEST_MEDIA_PROJECTION) {
-            if (resultCode != Activity.RESULT_OK) {
-                return;
-            } else if (data != null && resultCode != 0) {
-                result = resultCode;
-                intent = data;
-                ((KWApp) getApplication()).setResult(resultCode);
-                ((KWApp) getApplication()).setIntent(data);
-                Intent intent = new Intent(getApplicationContext(), FxService.class);
-                startService(intent);
-                Logger.log("start service Service1");
-            }
-        }
     }
 
     @Override
@@ -595,33 +573,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
     }
 
-
-    public void permission() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (!Settings.canDrawOverlays(MainActivity.this)) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + getPackageName()));
-                startActivityForResult(intent, SCREEN);
-            }
-        }
-    }
-
-    private int result = 0;
-    private MediaProjectionManager mMediaProjectionManager;
-    private int REQUEST_MEDIA_PROJECTION = 1;
-    Intent intent;
-
     public void startScreen() {
-        if (Build.VERSION.SDK_INT >= 21) {
-            mMediaProjectionManager = (MediaProjectionManager) getApplication().getSystemService(Context
-                    .MEDIA_PROJECTION_SERVICE);
-            ((KWApp) getApplication()).setMediaProjectionManager(mMediaProjectionManager);
-        }
-        if (FxService.canSendImage) {
-            FxService.setCanSendImage(false);
-            stopService(new Intent(getApplicationContext(), FxService.class));
-        }
-        permission();
         FxService.setCanSendImage(true);
         startIntent();
     }
@@ -640,17 +592,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void startIntent() {
-        if (intent != null && result != 0) {
-            Logger.log("user agree the application to capture screen");
-            ((KWApp) getApplication()).setResult(result);
-            ((KWApp) getApplication()).setIntent(intent);
+   private void startIntent() {
             Intent intent = new Intent(getApplicationContext(), FxService.class);
             startService(intent);
             Logger.log("start service Service1");
-        } else {//申请权限
-            startActivityForResult(mMediaProjectionManager.createScreenCaptureIntent(), REQUEST_MEDIA_PROJECTION);
-        }
     }
 
     public ShowMessageDailog showMessageDailog;

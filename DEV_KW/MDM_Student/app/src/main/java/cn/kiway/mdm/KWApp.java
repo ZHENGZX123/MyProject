@@ -74,7 +74,6 @@ public class KWApp extends Application implements KwConntectionCallback {
     public boolean isAttenClass = false;
     public String teacherIp = "";
     public int connectNumber = 0;
-    public boolean isConnect = false;
     public boolean isIos = false;
     public HandlerClient client;
     private int result;
@@ -157,6 +156,7 @@ public class KWApp extends Application implements KwConntectionCallback {
                 Utils.showSMSDialog(KWApp.instance.currentActivity, (SmsMessage) msg.obj);
             } else if (msg.what == MSG_ATTEND_CALSS) {
                 //上课
+                isAttenClass = false;
                 teacherIp = ((JSONObject) msg.obj).optString("ip");
                 if (((JSONObject) msg.obj).optString("platform").equals("IOS"))
                     isIos = true;
@@ -164,8 +164,7 @@ public class KWApp extends Application implements KwConntectionCallback {
                     isIos = false;
                 connectTcp(teacherIp);
                 connectNumber = 0;
-                isConnect = false;
-                isAttenClass = true;
+
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
                 //下课
                 isAttenClass = false;
@@ -326,6 +325,7 @@ public class KWApp extends Application implements KwConntectionCallback {
 
     @Override
     public void onConnected(KwConnection conn) {
+        isAttenClass = true;
         showMessage("上课连接完成");
         Logger.log("连接完成");
     }
@@ -349,6 +349,7 @@ public class KWApp extends Application implements KwConntectionCallback {
     @Override
     public void onError(KwConnection conn, Exception e) {
         Logger.log("连接错误" + e);
+        isAttenClass = false;
         if (KWApp.instance.connectNumber > 5)
             KWApp.instance.isAttenClass = false;
         KWApp.instance.connectNumber++;
@@ -387,6 +388,7 @@ public class KWApp extends Application implements KwConntectionCallback {
                 @Override
                 public void connectTcpSuccess() throws Exception {
                     JSONObject da = new JSONObject();
+                    isAttenClass = true;
                     try {
                         da.put("msgType", MessageType.LOGIN);
                         da.put("userId", Utils.getIMEI(KWApp.this));
@@ -401,11 +403,13 @@ public class KWApp extends Application implements KwConntectionCallback {
                 @Override
                 public void connectTcpFailed() throws Exception {
                     showMessage("IOS 上课连接失败");
+                    isAttenClass = false;
                 }
 
                 @Override
                 public void disconnectTcp() throws Exception {
                     showMessage("IOS 连接掉线");
+                    isAttenClass = false;
                 }
             });
         } else {
@@ -425,9 +429,6 @@ public class KWApp extends Application implements KwConntectionCallback {
             ((BaseActivity) currentActivity).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (KWApp.instance.isConnect)
-                        return;
-                    KWApp.instance.isConnect = true;
                     ((BaseActivity) currentActivity).showMessageDailog = new ShowMessageDailog(activity);
                     ((BaseActivity) currentActivity).showMessageDailog.setShowMessage(message, DISMISS);
                     ((BaseActivity) currentActivity).showMessageDailog.show();

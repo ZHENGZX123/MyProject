@@ -489,7 +489,7 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     }
 
     @Override
-    public Bitmap captureScreen(ComponentName admin) {
+    public Bitmap captureScreen() {
         try {
             return mManager.captureBitmap();
         } catch (Exception e) {
@@ -497,5 +497,6 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
         }
         return null;
     }
+
 
 }
