@@ -2,6 +2,7 @@ package cn.kiway.mdm.adapter;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.huawei.android.app.admin.DeviceApplicationManager;
 import com.huawei.android.app.admin.DeviceControlManager;
@@ -485,5 +486,14 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
         return null;
     }
 
+    @Override
+    public Bitmap captureScreen(ComponentName admin) {
+        try {
+            return new DeviceControlManager().captureScreen(mAdminName);
+        } catch (Exception e) {
+            e.printStackTrace();
 
+        }
+        return null;
+    }
 }

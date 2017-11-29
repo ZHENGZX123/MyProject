@@ -2,6 +2,7 @@ package cn.kiway.mdm.adapter;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -151,5 +152,7 @@ public interface IMDMAdapter {
     void setProximityDelay(int delay);//距离感应器反应时间
 
     String getRunningAPP();
+
+    Bitmap captureScreen(ComponentName admin);
 
 }

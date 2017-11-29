@@ -2,6 +2,7 @@ package cn.kiway.mdm.adapter;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -485,6 +486,16 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
             e.printStackTrace();
         }
         return "";
+    }
+
+    @Override
+    public Bitmap captureScreen(ComponentName admin) {
+        try {
+            return mManager.captureBitmap();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
