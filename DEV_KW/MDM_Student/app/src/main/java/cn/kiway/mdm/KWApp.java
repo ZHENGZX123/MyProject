@@ -380,7 +380,7 @@ public class KWApp extends Application implements KwConntectionCallback {
                 public void accpetMessage(String message) throws Exception {
                     if (activity == null) return;
                     ActionsMessageHandle.MessageHandle(activity, message);
-                    Toast.makeText(activity, "IOS::::" + message, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(activity, "IOS::::" + message, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
