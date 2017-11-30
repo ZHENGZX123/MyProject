@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
@@ -15,8 +14,6 @@ import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xutils.http.RequestParams;
-import org.xutils.x;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +23,7 @@ import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.FileListActivity;
 import cn.kiway.mdm.hprose.jrf.client.JRFClient;
 import cn.kiway.mdm.hprose.socket.Logger;
+import cn.kiway.mdm.utils.HttpDownload;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 
@@ -42,7 +40,7 @@ public class MyProgressDialog extends Dialog implements JRFClient.DownLoadCallBa
     Activity context;
     ProgressBar progressBar;
     JSONObject data;
-    String path = Environment.getExternalStorageDirectory().getPath() + "/kiwayFile";
+    String path = "/mnt/sdcard/kiwayFile";
     TextView textView;
     Button button;
 
@@ -69,19 +67,8 @@ public class MyProgressDialog extends Dialog implements JRFClient.DownLoadCallBa
         button.setOnClickListener(this);
         textView.setEnabled(false);
         fullWindowCenter();
-        downUrl = data.optString("msg");
-        depositPath = path + "/" + data.optString("msg").split("/")[data
-                .optString("msg").split("/").length - 1];
-        Logger.log(":::::下载地址:::::" + downUrl);
-        Logger.log("::::::存放地址::::" + depositPath);
-        if (!new File(path).exists())//如果文件夹没有创建
-            new File(path).mkdir();
-        if (!new File(depositPath).exists())//如果文件没有创建
-            try {
-                new File(depositPath).createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        downUrl = data.optString("msg").replace("\\/", "/");
+
         downloadFile();
     }
 
@@ -91,6 +78,58 @@ public class MyProgressDialog extends Dialog implements JRFClient.DownLoadCallBa
         View v = getWindow().getDecorView();
         v.getWindowVisibleDisplayFrame(rect);
     }
+
+
+    @Override
+    public void onClick(View view) {
+        button.setVisibility(View.GONE);
+        if (textView.getText().toString().contains("失败")) {
+            downloadFile();
+        } else {
+            Utils.openFile(context, depositPath);
+            dismiss();
+        }
+    }
+
+    private void downloadFile() {
+        if (!new File(path).exists())//如果文件夹没有创建
+            new File(path).mkdir();
+        if (progressBar.getVisibility() == View.GONE)
+            progressBar.setVisibility(View.VISIBLE);
+        textView.setEnabled(false);
+        textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "\n" + "正在接收老师的文件，请勿操作");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (downUrl.startsWith("http://")) {//公网下载
+                    final String filename = downUrl.split("/")[downUrl.split("/").length - 1] + "." + data.optString
+                            ("fileType");//公网地址没有文件名，从JS数据中解析加上后缀名
+                    final String folder = path + "/";//下载存放的文件夹
+                    int ret = new HttpDownload().downFile(downUrl, folder, filename);//开始下载
+                    Log.d("test", "download ret = " + ret);
+                    if (ret == -1) {
+                        error();
+                    } else {
+                        depositPath = folder + filename;
+                        success();
+                    }
+                } else {//局域网下载
+                    depositPath = path + "/" + data.optString("msg").split("/")[data
+                            .optString("msg").split("/").length - 1];//下载的存放路径
+                    if (!new File(depositPath).exists())//如果文件没有创建
+                        try {
+                            new File(depositPath).createNewFile();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    if (client != null) {//开始下载
+                        client.getFile(depositPath, downUrl, MyProgressDialog.this);
+                    }
+                }
+            }
+        }).start();
+    }
+
 
     @Override
     public void success() {
@@ -126,71 +165,6 @@ public class MyProgressDialog extends Dialog implements JRFClient.DownLoadCallBa
                 button.setText("重新接收");
                 textView.setEnabled(true);
                 textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "\n接收失败！！");
-            }
-        });
-    }
-
-    @Override
-    public void onClick(View view) {
-        button.setVisibility(View.GONE);
-        if (textView.getText().toString().contains("失败")) {
-            downloadFile();
-        } else {
-            Utils.openFile(context, depositPath);
-            dismiss();
-        }
-    }
-
-    private void downloadFile() {
-        if (progressBar.getVisibility() == View.GONE)
-            progressBar.setVisibility(View.VISIBLE);
-        textView.setEnabled(false);
-        textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "\n" + "正在接收老师的文件，请勿操作");
-        if (KWApp.instance.isIos) {
-            downloadSilently(downUrl, depositPath);
-        } else {
-            if (client != null) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        client.getFile(depositPath, downUrl, MyProgressDialog.this);
-                    }
-                }).start();
-            }
-        }
-    }
-
-    private void downloadSilently(String apkUrl, String savedFilePath) {
-        if (new File(savedFilePath).exists()) {
-            Log.d("test", "该文件已经下载好了");
-            success();
-            return;
-        }
-        RequestParams params = new RequestParams(apkUrl);
-        params.setSaveFilePath(savedFilePath);
-        params.setAutoRename(false);
-        params.setAutoResume(true);
-        x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
-            @Override
-            public void onSuccess(File result) {
-                Log.d("test", "下载成功");
-                success();
-            }
-
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-                error();
-                Log.d("test", "下载失败");
-            }
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-                Log.d("test", "下载取消");
-            }
-
-            @Override
-            public void onFinished() {
-                Log.d("test", "下载结束");
             }
         });
     }
