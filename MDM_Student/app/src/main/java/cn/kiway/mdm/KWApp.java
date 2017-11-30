@@ -91,9 +91,12 @@ public class KWApp extends Application implements KwConntectionCallback {
                 String imei = Utils.getIMEI(getApplicationContext());
                 Utils.installationPush(instance, token, imei);
             } else if (msg.what == MSG_LOCK) {
-                //强制锁屏
+                if (currentActivity != null && currentActivity instanceof ScreenActivity) {
+                    return;
+                }
                 MDMHelper.getAdapter().setBackButtonDisabled(true);
                 MDMHelper.getAdapter().setHomeButtonDisabled(true);
+                //强制锁屏
                 startActivity(new Intent(getApplicationContext(), ScreenActivity.class).addFlags(Intent
                         .FLAG_ACTIVITY_NEW_TASK));
                 //DevicePolicyManager mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context

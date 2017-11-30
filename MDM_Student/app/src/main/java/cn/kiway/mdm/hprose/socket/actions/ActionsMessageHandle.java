@@ -81,6 +81,7 @@ public class ActionsMessageHandle {
                         KwHproseClient.helloClient.sign(da.toString());
                 }
             } else if (msgType == SOLUTIONSCREE) {//解屏
+                context.getSharedPreferences("kiway", 0).edit().putLong("lock_time", 0).commit();
                 KWApp.instance.mHandler.sendEmptyMessage(MSG_UNLOCK);
                 JSONObject da = new JSONObject();
                 da.put("userId", Utils.getIMEI(context));
