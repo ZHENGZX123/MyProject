@@ -253,7 +253,6 @@ public class Utils {
                     //系统应用
                     a.category = 1;
                 }
-                // a.icon = (packageInfo.applicationInfo.loadIcon(packageManager));
                 apps.add(a);
             }
         } catch (Exception e) {
@@ -262,31 +261,12 @@ public class Utils {
         return apps;
     }
 
-    public static App getAppByPackageName(PackageManager packageManager, String packageName) {
+    public static Drawable getIconByPackageName(PackageManager packageManager, String packageName) {
         try {
             List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
             for (int i = 0; i < packageInfos.size(); i++) {
                 PackageInfo packageInfo = packageInfos.get(i);
                 if (packageInfo.packageName.equals(packageName)) {
-                    App a = new App();
-                    a.name = packageInfo.applicationInfo.loadLabel(packageManager).toString();
-                    a.packageName = packageInfo.packageName;
-                    //  a.icon = (packageInfo.applicationInfo.loadIcon(packageManager));
-                    return a;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static Drawable getIconByPackageName(PackageManager packageManager, App app) {
-        try {
-            List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
-            for (int i = 0; i < packageInfos.size(); i++) {
-                PackageInfo packageInfo = packageInfos.get(i);
-                if (packageInfo.packageName.equals(app.packageName)) {
                     return (packageInfo.applicationInfo.loadIcon(packageManager));
                 }
             }

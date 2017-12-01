@@ -68,10 +68,10 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
             itemViewHolder = (ItemViewHolder) convertView.getTag();
         }
         App app = mData.get(mainPosition).get(subPosition);
-        if (Utils.getIconByPackageName(context.getPackageManager(), app) == null) {
+        if (Utils.getIconByPackageName(context.getPackageManager(), app.packageName) == null) {
             itemViewHolder.iv.setImageResource(R.mipmap.ic_launcher);
         } else {
-            itemViewHolder.iv.setImageDrawable(Utils.getIconByPackageName(context.getPackageManager(), app));
+            itemViewHolder.iv.setImageDrawable(Utils.getIconByPackageName(context.getPackageManager(), app.packageName));
         }
         return convertView;
     }
