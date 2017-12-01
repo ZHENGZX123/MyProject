@@ -872,6 +872,10 @@ public class Utils {
                 }
             });
             //2.检查使用时间段
+            if (KWApp.temporary_app) {
+                Log.d("test", "临时管控期间，不需要检查app使用时间段");
+                return;
+            }
             String runningAPP = Utils.getRunningAPP(m);
             Log.d("test", "runningAPP = " + runningAPP);
             AppCharge app = new MyDBHelper(m).getAppChargesByPackage(runningAPP);
