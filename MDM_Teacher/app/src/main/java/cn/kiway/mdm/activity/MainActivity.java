@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -15,7 +16,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.leon.lfilepickerlibrary.utils.Constant;
@@ -48,6 +48,8 @@ import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
 import cn.kiway.mdm.web.JsAndroidInterface;
 import cn.kiway.mdm.web.MyWebViewClient;
+import top.zibin.luban.Luban;
+import top.zibin.luban.OnCompressListener;
 
 import static cn.kiway.mdm.WXApplication.url;
 import static cn.kiway.mdm.util.ResultMessage.QRSCAN;
@@ -61,7 +63,7 @@ import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.0.5";
+    private static final String currentPackageVersion = "0.0.7";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -226,22 +228,64 @@ public class MainActivity extends BaseActivity {
                         }
                     });
                 }
-                setFilePath=filePath;
+                setFilePath = filePath;
                 uploadFile(filePath);
             } catch (RuntimeException e) {
                 e.printStackTrace();
             }
         } else if (requestCode == REQUEST_ORIGINAL) {
-            uploadFile(picPath);
+            Luban.with(this)
+                    .load(picPath)                                // 传人要压缩的图片列表
+                    .ignoreBy(100)                                  // 忽略不压缩图片的大小
+                    .setTargetDir(getPath())                        // 设置压缩后文件存储位置
+                    .setCompressListener(new OnCompressListener() { //设置回调
+                        @Override
+                        public void onStart() {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (pd == null)
+                                        pd = new ProgressDialog(MainActivity.this, ProgressDialog.THEME_HOLO_LIGHT);
+                                    pd.show();
+                                    pd.setMessage(getString(R.string.yasuo));
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onSuccess(File file) {
+                            uploadFile(file.getAbsolutePath());
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (pd != null)
+                                        pd.dismiss();
+                                    Toast.makeText(MainActivity.this, getString(R.string.yasuoshibai), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }).launch();    //启动压缩
+            //     uploadFile();
         }
     }
-
+    private String getPath() {
+        String path = Environment.getExternalStorageDirectory() + "/kiway_mdm_teacher/pic/";
+        File file = new File(path);
+        if (file.mkdirs()) {
+            return path;
+        }
+        return path;
+    }
 
     public void uploadFile(String filePath) {
         String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
         File file = new File(filePath);
         pd.show();
-        pd.setTitle(getString(R.string.upload));
+        pd.setMessage(getString(R.string.upload));
         new Thread() {
             @Override
             public void run() {
@@ -308,21 +352,21 @@ public class MainActivity extends BaseActivity {
             }
             isSuccess = true;
             if (msg.what == 1) {
-                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
-                int arg1 = msg.arg1;
-                int arg2 = msg.arg2;
-                if (arg1 == 0) {
-                    rl_nonet.setVisibility(View.VISIBLE);
-                    //无网络
-                    Log.d("test", "无网络");
-                } else {
-                    rl_nonet.setVisibility(View.GONE);
-                    //有网络
-                    Log.d("test", "有网络");
-                    if (arg2 == 1) {
-                        wv.loadUrl("javascript:reConnect()");
-                    }
-                }
+//                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
+//                int arg1 = msg.arg1;
+//                int arg2 = msg.arg2;
+//                if (arg1 == 0) {
+//                    rl_nonet.setVisibility(View.VISIBLE);
+//                    //无网络
+//                    Log.d("test", "无网络");
+//                } else {
+//                    rl_nonet.setVisibility(View.GONE);
+//                    //有网络
+//                    Log.d("test", "有网络");
+//                    if (arg2 == 1) {
+//                        wv.loadUrl("javascript:reConnect()");
+//                    }
+//                }
             } else if (msg.what == 2) {
                 String ret = (String) msg.obj;
                 try {
@@ -428,7 +472,6 @@ public class MainActivity extends BaseActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
         dialog_download = builder.setMessage(getString(R.string.new_version)).setNegativeButton(android.R.string.ok, new
                 DialogInterface.OnClickListener() {
-
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         dialog_download.dismiss();
