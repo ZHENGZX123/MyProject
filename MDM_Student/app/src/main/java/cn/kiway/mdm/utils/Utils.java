@@ -3,8 +3,6 @@ package cn.kiway.mdm.utils;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -897,6 +895,7 @@ public class Utils {
             String runningAPP = Utils.getRunningAPP(m);
             Log.d("test", "runningAPP = " + runningAPP);
             AppCharge app = new MyDBHelper(m).getAppChargesByPackage(runningAPP);
+            Log.d("test", "running app = " + app);
             if (app != null) {
                 String timeRange = app.timeRange;// [{start end}{start end}]
                 Log.d("test", "timeRange = " + timeRange);
@@ -916,6 +915,7 @@ public class Utils {
                         }
                     }
                 }
+                Log.d("test", "in = " + in);
                 if (!in) {
                     Intent intent = m.getPackageManager().getLaunchIntentForPackage("cn.kiway.mdm");
                     m.startActivity(intent);
@@ -978,22 +978,8 @@ public class Utils {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            UsageStatsManager m = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
-            if (m != null) {
-                long now = currentTimeMillis();
-                //获取60秒之内的应用数据
-                List<UsageStats> stats = m.queryUsageStats(UsageStatsManager.INTERVAL_BEST, now - 10 * 1000, now);//60
-                //取得最近运行的一个app，即当前运行的app
-                if ((stats != null) && (!stats.isEmpty())) {
-                    int j = 0;
-                    for (int i = 0; i < stats.size(); i++) {
-                        if (stats.get(i).getLastTimeUsed() > stats.get(j).getLastTimeUsed()) {
-                            j = i;
-                        }
-                    }
-                    packageName = stats.get(j).getPackageName();
-                }
-            }
+            ComponentName cn = new RunningTaskUtil(context).getTopRunningTasks();
+            packageName = cn.getPackageName();
         } else {
             ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
             ComponentName cn = activityManager.getRunningTasks(1).get(0).topActivity;
