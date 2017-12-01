@@ -6,7 +6,9 @@
     <string name="downloading">正在下载新版本，请稍等</string>
     <string name="filepath">"请将文件移动到此目录下（kiwaymdm）"</string>
     <string name="student_no_inline">学生还没上线</string>
-    <string name="upload">正在上传</string>
+    <string name="upload">正在上传,请稍后</string>
+    <string name="yasuo">正在压缩图片,请稍后</string>
+    <string name="yasuoshibai">压缩失败,请重试</string>
     <string name="upload_fialt">上传失败，请稍后再试</string>
     <string name="choose_file">请选择 kiwaymdm 下面的文件</string>
     <string name="new_version">发现新的版本，是否更新？本次更新不消耗流量。</string>
