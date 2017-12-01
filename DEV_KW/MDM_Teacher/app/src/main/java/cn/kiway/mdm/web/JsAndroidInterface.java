@@ -14,8 +14,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import cn.kiway.mdm.activity.MainActivity;
+import cn.kiway.mdm.activity.ViewPhotosActivity;
 import cn.kiway.mdm.scoket.ScreenActivity;
 import cn.kiway.mdm.scoket.db.DbUtils;
 import cn.kiway.mdm.scoket.scoket.tcp.MessageHander.AccpectMessageHander;
@@ -66,19 +68,23 @@ public class JsAndroidInterface {
     @JavascriptInterface
     public void sendMessage(String msg, String userId) {//发送消息
         Logger.log(msg + "---------------" + userId);
-        if (userId.equals("all")) {
-            PushServer.hproseSrv.push("ground", msg);
-        } else {
-            if (HproseChannelMapStatic.getChannel(userId) == null) {
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(activity, "student no inline", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                return;
+        try {
+            if (userId.equals("all")) {
+                PushServer.hproseSrv.push("ground", msg);
+            } else {
+                if (HproseChannelMapStatic.getChannel(userId) == null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(activity, "student no inline", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    return;
+                }
+                PushServer.hproseSrv.push(userId + "owner", msg);
             }
-            PushServer.hproseSrv.push(userId + "owner", msg);
+        }catch (RuntimeException e){
+            e.printStackTrace();
         }
     }
 
@@ -177,6 +183,7 @@ public class JsAndroidInterface {
             da.put("msgType", SHARE_FILE);
             da.put("msg", "/" + path);
             da.put("path", filePath);
+            da.put("fileType", path.split("\\.")[path.split("\\.").length - 1]);
             if (userId.equals("all"))
                 PushServer.hproseSrv.push("ground", da.toString());
             else
@@ -191,6 +198,17 @@ public class JsAndroidInterface {
         if (HproseChannelMapStatic.getChannel(userId) == null)
             return false;
         return true;
+    }
+
+    @JavascriptInterface
+    public void ViewPicture(String picUrl, String position) {
+        String[] picSplit = picUrl.split(",");
+        ArrayList<String> picList = new ArrayList<String>();
+        for (String s : picSplit) {
+            picList.add(s);
+        }
+        activity.startActivity(new Intent(activity, ViewPhotosActivity.class).putStringArrayListExtra("urls",
+                picList).putExtra("position", Integer.parseInt(position)));
     }
 
     @JavascriptInterface
