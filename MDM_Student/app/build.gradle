@@ -3,8 +3,8 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         kiway {
-           storeFile file('F:/android_signature/kiway.key')
-           // storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+//           storeFile file('F:/android_signature/kiway.key')
+            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
             storePassword 'kiway123'
             keyAlias 'kiway'
             keyPassword 'kiway123'
@@ -18,8 +18,8 @@ android {
         applicationId "cn.kiway.mdm"
         minSdkVersion 16
         targetSdkVersion 20
-        versionCode 6
-        versionName "0.0.6"
+        versionCode 7
+        versionName "0.0.7"
         jackOptions {
             enabled true
         }
@@ -43,7 +43,6 @@ android {
 }
 
 dependencies {
-    compile files('libs/hwMdm.jar')
     sourceCompatibility = '1.7'
     targetCompatibility = '1.7'
     compile files('libs/HwPush_SDK_V2705.jar')
@@ -57,6 +56,6 @@ dependencies {
     compile project(':classify')
     compile project(':zxing')
     compile files('libs/hprose_for_java_7.jar')
-    compile files('libs/jichengshixun.jar')
     compile files('libs/BaiduLBS_Android.jar')
+    compile project(':mdmsdk')
 }

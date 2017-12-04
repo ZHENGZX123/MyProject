@@ -21,7 +21,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import cn.kiway.mdm.hprose.socket.Logger;
-import cn.kiway.mdm.mdm.MDMHelper;
+import cn.kiway.mdmsdk.MDMHelper;
 
 
 public class FxService extends Service {

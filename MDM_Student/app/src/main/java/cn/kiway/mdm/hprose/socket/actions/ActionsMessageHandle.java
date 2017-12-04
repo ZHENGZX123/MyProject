@@ -14,7 +14,7 @@ import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.hprose.screen.FxService;
 import cn.kiway.mdm.hprose.socket.KwHproseClient;
-import cn.kiway.mdm.mdm.MDMHelper;
+import cn.kiway.mdmsdk.MDMHelper;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.KWApp.MSG_LOCK;

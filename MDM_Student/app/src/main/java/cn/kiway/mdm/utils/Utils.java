@@ -84,7 +84,7 @@ import cn.kiway.mdm.entity.Call;
 import cn.kiway.mdm.entity.Network;
 import cn.kiway.mdm.entity.Wifi;
 import cn.kiway.mdm.hprose.socket.Logger;
-import cn.kiway.mdm.mdm.MDMHelper;
+import cn.kiway.mdmsdk.MDMHelper;
 
 import static android.content.Context.WIFI_SERVICE;
 import static cn.kiway.mdm.KWApp.MSG_LAUNCH_APP;

@@ -31,9 +31,9 @@ import cn.kiway.mdm.dialog.MyProgressDialog;
 import cn.kiway.mdm.dialog.NotifyShowDailog;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.hprose.socket.Logger;
-import cn.kiway.mdm.mdm.MDMHelper;
 import cn.kiway.mdm.utils.NetworkUtil;
 import cn.kiway.mdm.utils.Utils;
+import cn.kiway.mdmsdk.MDMHelper;
 
 import static cn.kiway.mdm.KWApp.server;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.ANSWERDIALOG;
