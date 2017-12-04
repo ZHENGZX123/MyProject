@@ -47,7 +47,7 @@ import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.hprose.screen.FxService;
 import cn.kiway.mdm.hprose.socket.Logger;
-import cn.kiway.mdm.mdm.MDMHelper;
+import cn.kiway.mdmsdk.MDMHelper;
 import cn.kiway.mdm.utils.AppListUtils;
 import cn.kiway.mdm.utils.AppReceiverIn;
 import cn.kiway.mdm.utils.FileACache;

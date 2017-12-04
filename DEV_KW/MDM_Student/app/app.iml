@@ -89,7 +89,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/transforms" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 23 Platform (1)" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="hprose_for_java_7" level="project" />
     <orderEntry type="library" exported="" name="gson-2.8.0" level="project" />
@@ -101,17 +101,18 @@
     <orderEntry type="library" exported="" name="support-v4-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="android-snowfall-1.1.6" level="project" />
     <orderEntry type="library" exported="" name="xutils-3.5.0" level="project" />
-    <orderEntry type="library" exported="" name="hwMdm" level="project" />
-    <orderEntry type="library" exported="" name="jichengshixun" level="project" />
     <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />
     <orderEntry type="library" exported="" name="BaiduLBS_Android" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="support-vector-drawable-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="animated-vector-drawable-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.3.0" level="project" />
+    <orderEntry type="module" module-name="mdmsdk" exported="" />
     <orderEntry type="module" module-name="zxing" exported="" />
     <orderEntry type="module" module-name="classify" exported="" />
     <orderEntry type="library" exported="" name="org.apache.http.legacy-android-23" level="project" />
+    <orderEntry type="library" exported="" name="hwMdm" level="project" />
+    <orderEntry type="library" exported="" name="jichengshixun" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="hamcrest-core-1.3" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="junit-4.12" level="project" />
   </component>

@@ -5,7 +5,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import cn.kiway.mdm.activity.MainActivity;
-import cn.kiway.mdm.mdm.MDMHelper;
+import cn.kiway.mdmsdk.MDMHelper;
 
 /**
  * Created by Administrator on 2017/10/26.

@@ -29,7 +29,7 @@ import cn.kiway.mdm.hprose.socket.MessageType;
 import cn.kiway.mdm.hprose.socket.actions.ActionsMessageHandle;
 import cn.kiway.mdm.hprose.socket.tcp.Client;
 import cn.kiway.mdm.hprose.socket.tcp.HandlerClient;
-import cn.kiway.mdm.mdm.MDMHelper;
+import cn.kiway.mdmsdk.MDMHelper;
 import cn.kiway.mdm.utils.HttpDownload;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
