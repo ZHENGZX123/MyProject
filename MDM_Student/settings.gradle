@@ -1,1 +1,1 @@
-include ':app', ':classify', ':zxing'
+include ':app', ':classify', ':zxing', ':mdmsdk'
