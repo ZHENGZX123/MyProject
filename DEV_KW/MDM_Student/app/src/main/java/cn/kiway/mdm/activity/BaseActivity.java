@@ -1,11 +1,12 @@
 package cn.kiway.mdm.activity;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
-import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -19,32 +20,21 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
-import cn.kiway.mdm.dialog.MyProgressDialog;
 import cn.kiway.mdm.dialog.NotifyShowDailog;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
-import cn.kiway.mdm.hprose.socket.Logger;
+import cn.kiway.mdm.hprose.screen.FxService;
+import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.NetworkUtil;
 import cn.kiway.mdm.utils.Utils;
 import cn.kiway.mdmsdk.MDMHelper;
 
 import static cn.kiway.mdm.KWApp.server;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.ANSWERDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.REPONSEDIALOG;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.SIGNDIALOG;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.UNSWERDIALOG;
-import static cn.kiway.mdm.hprose.socket.MessageType.ANSWER;
-import static cn.kiway.mdm.hprose.socket.MessageType.SIGN;
-import static cn.kiway.mdm.hprose.socket.MessageType.SUREREPONSE;
-import static cn.kiway.mdm.hprose.socket.MessageType.UNANSWER;
 
 /**
  * Created by Administrator on 2017/6/9.
@@ -272,48 +262,11 @@ public class BaseActivity extends Activity {
         });
     }
 
-    MyProgressDialog progressDialog;
-    String proData = "";
 
-    public void downloadFile(String data) {
-        if (proData.equals(data) && progressDialog != null && progressDialog.isShowing())
-            return;
-        proData = data;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                progressDialog = new MyProgressDialog(BaseActivity.this, proData);
-                progressDialog.show();
-            }
-        });
-    }
+
 
     public ShowMessageDailog showMessageDailog;
-    int showI;
 
-    public void Session(int i) {
-        if (showI == i && showMessageDailog != null && showMessageDailog.isShowing())
-            return;
-        showI = i;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                showMessageDailog = new ShowMessageDailog(BaseActivity.this);
-                showMessageDailog.setCancelable(false);
-                if (showI == SIGN) {
-                    showMessageDailog.setShowMessage("老师上课签到，请你点击确定确认签到上课", SIGNDIALOG);
-                } else if (showI == ANSWER) {
-                    showMessageDailog.setShowMessage("老师有道题正在抢答，是否进去抢答", ANSWERDIALOG);
-                } else if (showI == UNANSWER) {
-                    showMessageDailog.setShowMessage("抢答结束了", UNSWERDIALOG);
-                } else if (showI == SUREREPONSE) {
-                    showMessageDailog.setShowMessage("同学们，老师这套题清楚了吗？", REPONSEDIALOG);
-                }
-                if (!showMessageDailog.isShowing())
-                    showMessageDailog.show();
-            }
-        });
-    }
 
     public void showMessage(final String message) {
         runOnUiThread(new Runnable() {
@@ -326,58 +279,29 @@ public class BaseActivity extends Activity {
         });
     }
 
-    WifiManager.MulticastLock lock;
-    static DatagramSocket udpSocket = null;
-    static DatagramPacket udpPacket = null;
-    boolean isRun;
-    String codeString;
 
-    public void UdpStart() {
-        //红米手机接收不到udp广播,打开udp锁
-        WifiManager manager = (WifiManager) getApplicationContext()
-                .getSystemService(Context.WIFI_SERVICE);
-        lock = manager.createMulticastLock("localWifi");
-        new UDPClientThread().start();
+    public void startScreen() {
+        FxService.setCanSendImage(true);
+        startIntent();
     }
 
-    public void UdpClose() {
-        isRun = false;
+    public void stopScreen() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                FxService.setCanSendImage(false);
+                stopService(new Intent(getApplicationContext(), FxService.class));
+                Toast.makeText(BaseActivity.this, "停止共享屏幕了", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
     }
 
-    private class UDPClientThread extends Thread {
-        public UDPClientThread() {
-            /* 开启线程 */
-            System.out.println("监听广播开启");
-            isRun = true;
-        }
-
-        @Override
-        public void run() {
-            byte[] data = new byte[256];
-            try {
-                udpSocket = new DatagramSocket(43708);
-                udpPacket = new DatagramPacket(data, data.length);
-            } catch (SocketException e1) {
-                e1.printStackTrace();
-            }
-            while (isRun) {
-                try {
-                    lock.acquire();
-                    udpSocket.receive(udpPacket);
-                } catch (Exception e) {
-                }
-                if (udpPacket != null && null != udpPacket.getAddress()) {
-                    codeString = new String(data, 0, udpPacket.getLength());
-                    if (codeString.contains("/"))
-                        return;
-                    System.out.println("内容：：：" + codeString);
-                    final String ip = udpPacket.getAddress().toString()
-                            .substring(1);
-                    Logger.log("ip:::" + ip + "\n内容" + codeString);
-                }
-                lock.release();
-            }
-        }
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void startIntent() {
+        Intent intent = new Intent(getApplicationContext(), FxService.class);
+        startService(intent);
+        Logger.log("start service Service1");
     }
 
 }

@@ -45,20 +45,19 @@ import cn.kiway.mdm.adapter.MyViewPagerAdapter;
 import cn.kiway.mdm.dialog.CheckPassword;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.entity.App;
-import cn.kiway.mdm.hprose.screen.FxService;
-import cn.kiway.mdm.hprose.socket.Logger;
-import cn.kiway.mdmsdk.MDMHelper;
 import cn.kiway.mdm.utils.AppListUtils;
 import cn.kiway.mdm.utils.AppReceiverIn;
 import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.Utils;
 import cn.kiway.mdm.view.viewPager.StereoPagerTransformer;
+import cn.kiway.mdmsdk.MDMHelper;
 
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
 import static cn.kiway.mdm.utils.AppReceiverIn.REMOVE_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.REPLACE_SUCCESS;
+import static cn.kiway.mdm.utils.Constant.ZHIHUIKETANGPG;
 import static cn.kiway.mdm.utils.Constant._16;
 import static cn.kiway.mdm.utils.FileACache.ListFileName;
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
@@ -206,7 +205,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             }
         }
     };
-
 
 
     private void setDefaultSMSApp() {
@@ -386,9 +384,38 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         return allListData;
     }
 
+    public List<List<App>> checkList() {
+        if (allListData.toString().contains(ZHIHUIKETANGPG)) {//添加智慧课堂第一个，如果之前有了，先删除在添加
+            k:
+            for (int i = 0; i < allListData.size(); i++) {
+                for (int j = 0; j < allListData.get(i).size(); j++) {
+                    App app = allListData.get(i).get(j);
+                    if (app.packageName.equals(ZHIHUIKETANGPG)) {//存在的
+                        if (allListData.get(i).size() == 1) {//只有一个的时候移除大的
+                            allListData.remove(i);
+                        } else {
+                            allListData.get(i).remove(j);
+                        }
+                        break k;
+                    } else {
+                        //不存咋的
+                    }
+                }
+            }
+        }
+        ArrayList<App> apps = new ArrayList<>();
+        App a = new App();
+        a.name = Utils.getProgramNameByPackageName(this, ZHIHUIKETANGPG);
+        a.packageName = ZHIHUIKETANGPG;
+        apps.add(a);
+        allListData.add(0, apps);
+        return allListData;
+    }
+
     //设置页面数据
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public void initData(List<List<App>> data1) {
+        data1=checkList();
         viewPagerList = new ArrayList<View>();
         totalPage = (int) Math.ceil(data1.size() * 1.0 / _16);
         for (int i = 0; i < totalPage; i++) {
@@ -571,31 +598,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 }
             }
         }
-    }
-
-    public void startScreen() {
-        FxService.setCanSendImage(true);
-        startIntent();
-    }
-
-    public void stopScreen() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                FxService.setCanSendImage(false);
-                stopService(new Intent(getApplicationContext(), FxService.class));
-                Toast.makeText(MainActivity.this, "停止共享屏幕了", Toast.LENGTH_SHORT)
-                        .show();
-                KWApp.instance.connectTcp(KWApp.instance.teacherIp);
-            }
-        });
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-   private void startIntent() {
-            Intent intent = new Intent(getApplicationContext(), FxService.class);
-            startService(intent);
-            Logger.log("start service Service1");
     }
 
 

@@ -3,8 +3,8 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         kiway {
-//           storeFile file('F:/android_signature/kiway.key')
-            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+          storeFile file('F:/android_signature/kiway.key')
+//            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
             storePassword 'kiway123'
             keyAlias 'kiway'
             keyPassword 'kiway123'
@@ -18,8 +18,8 @@ android {
         applicationId "cn.kiway.mdm"
         minSdkVersion 16
         targetSdkVersion 20
-        versionCode 7
-        versionName "0.0.7"
+        versionCode 8
+        versionName "0.0.8"
         jackOptions {
             enabled true
         }
@@ -38,6 +38,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.kiway
+        }
+    }
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java', 'src/main/aidl']
         }
     }
 }

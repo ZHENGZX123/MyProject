@@ -3,7 +3,6 @@ package cn.kiway.mdm;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
-import android.media.projection.MediaProjectionManager;
 import android.os.Handler;
 import android.os.Message;
 import android.telephony.SmsMessage;
@@ -15,39 +14,30 @@ import org.json.JSONObject;
 import org.xutils.x;
 
 import java.io.File;
-import java.nio.ByteBuffer;
 
 import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.MainActivity;
-import cn.kiway.mdm.activity.NotifyMsgActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
-import cn.kiway.mdm.hprose.hprose.net.KwConnection;
-import cn.kiway.mdm.hprose.hprose.net.KwConntectionCallback;
-import cn.kiway.mdm.hprose.socket.KwHproseClient;
-import cn.kiway.mdm.hprose.socket.Logger;
-import cn.kiway.mdm.hprose.socket.MessageType;
-import cn.kiway.mdm.hprose.socket.actions.ActionsMessageHandle;
-import cn.kiway.mdm.hprose.socket.tcp.Client;
-import cn.kiway.mdm.hprose.socket.tcp.HandlerClient;
-import cn.kiway.mdmsdk.MDMHelper;
+import cn.kiway.mdm.aidlservice.RemoteAidlService;
 import cn.kiway.mdm.utils.HttpDownload;
-import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
-import hprose.net.TimeoutType;
+import cn.kiway.mdmsdk.MDMHelper;
 
+import static cn.kiway.mdm.utils.Constant.ZHIHUIKETANGPG;
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 /**
  * Created by Administrator on 2017/6/9.
  */
 
-public class KWApp extends Application implements KwConntectionCallback {
+public class KWApp extends Application {
 
     //    public static final String server = "http://192.168.8.161:8082/mdms/";
     public static final String server = "http://202.104.136.9:8080/mdms/";
     public static final int MSG_TOAST = 0;//注册华为
     public static final int MSG_INSTALL = 1;//注册华为
     public static final int MSG_LOCK = 2;//锁屏
+    public static final int MSG_LOCKONCLASS = -2;//上课锁屏
     public static final int MSG_UNLOCK = 3;//解锁
     public static final int MSG_LAUNCH_APP = 4;//打开某个APP
     public static final int MSG_LAUNCH_MDM = 5;//打开MDM
@@ -69,15 +59,11 @@ public class KWApp extends Application implements KwConntectionCallback {
     public static KWApp instance;
     public static boolean temporary_app = false;
     public Activity currentActivity;
-    public boolean isAttenClass = false;
-    public String teacherIp = "";
-    public int connectNumber = 0;
     public boolean isIos = false;
-    public HandlerClient client;
     private int result;
     private Intent intent;
-    private MediaProjectionManager mMediaProjectionManager;
     private MainActivity activity;
+
     public Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -102,6 +88,9 @@ public class KWApp extends Application implements KwConntectionCallback {
                 //DevicePolicyManager mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context
                 // .DEVICE_POLICY_SERVICE);
                 //mDevicePolicyManager.lockNow();
+            } else if (msg.what == MSG_LOCKONCLASS) {
+                MDMHelper.getAdapter().setBackButtonDisabled(true);
+                MDMHelper.getAdapter().setHomeButtonDisabled(true);
             } else if (msg.what == MSG_UNLOCK) {
                 //解除锁屏
                 MDMHelper.getAdapter().setBackButtonDisabled(false);
@@ -156,47 +145,29 @@ public class KWApp extends Application implements KwConntectionCallback {
             } else if (msg.what == MSG_SMS) {
                 Utils.showSMSDialog(KWApp.instance.currentActivity, (SmsMessage) msg.obj);
             } else if (msg.what == MSG_ATTEND_CALSS) {
-                //上课
-                isAttenClass = false;
-                teacherIp = ((JSONObject) msg.obj).optString("ip");
-                if (((JSONObject) msg.obj).optString("platform").equals("IOS"))
-                    isIos = true;
-                else
-                    isIos = false;
-                connectTcp(teacherIp);
-                connectNumber = 0;
-
+                Intent in = getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
+                in.putExtra("shangke", msg.obj.toString());
+                RemoteAidlService.attendClass(msg.obj.toString());
+                Utils.startPackage(currentActivity, ZHIHUIKETANGPG, in);
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
-                //下课
-                isAttenClass = false;
-                teacherIp = "";
-                KwHproseClient.stop();
-                if (currentActivity != null) {
-                    showMessage("这堂课下课了");
-                }
-            } else if (msg.what == MSG_CONNECT) {
-                try {
-                    KwHproseClient.connect(activity, teacherIp, Utils.getIMEI(activity), KWApp.this);
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                }
+                RemoteAidlService.goOutClass();
             } else if (msg.what == MSG_MESSAGE) {
-                if (currentActivity != null) {
-                    ((BaseActivity) currentActivity).NotifyShow(((JSONObject) msg.obj).optJSONObject("content")
-                            .optString("title"), (
-                            (JSONObject) msg.obj).optJSONObject("content").optString("content"), "发送人：" + (
-                            (JSONObject) msg
-                                    .obj).optJSONObject("content").optString("sendName"));
-                    new MyDBHelper(currentActivity).addNofityMessage(((JSONObject) msg.obj).optJSONObject("content"));
-                    if (KWApp.instance.currentActivity != null && KWApp.instance.currentActivity instanceof
-                            NotifyMsgActivity) {
-                        ((NotifyMsgActivity) KWApp.instance.currentActivity).refreshUI();
-                    }
-                }
+//                if (currentActivity != null) {
+//                    ((BaseActivity) currentActivity).NotifyShow(((JSONObject) msg.obj).optJSONObject("content")
+//                            .optString("title"), (
+//                            (JSONObject) msg.obj).optJSONObject("content").optString("content"), "发送人：" + (
+//                            (JSONObject) msg
+//                                    .obj).optJSONObject("content").optString("sendName"));
+//                    new MyDBHelper(currentActivity).addNofityMessage(((JSONObject) msg.obj).optJSONObject("content"));
+//                    if (KWApp.instance.currentActivity != null && KWApp.instance.currentActivity instanceof
+//                            NotifyMsgActivity) {
+//                        ((NotifyMsgActivity) KWApp.instance.currentActivity).refreshUI();
+//                    }
+//                }
+                RemoteAidlService.accpterMessage(msg.obj.toString());
             } else if (msg.what == MSG_PUSH_FILE_I) {
-                if (currentActivity != null)
-                    ((BaseActivity) currentActivity).downloadFile(msg.obj.toString());
-
+//                if (currentActivity != null)
+//                    ((BaseActivity) currentActivity).downloadFile(msg.obj.toString());
             }
         }
     };
@@ -311,122 +282,5 @@ public class KWApp extends Application implements KwConntectionCallback {
         this.intent = intent1;
     }
 
-    public MediaProjectionManager getMediaProjectionManager() {
-        return mMediaProjectionManager;
-    }
 
-    public void setMediaProjectionManager(MediaProjectionManager mMediaProjectionManager) {
-        this.mMediaProjectionManager = mMediaProjectionManager;
-    }
-
-    @Override
-    public void onConnect(KwConnection conn) {
-        Logger.log("正在连接");
-    }
-
-    @Override
-    public void onConnected(KwConnection conn) {
-        isAttenClass = true;
-        showMessage("上课连接完成");
-        Logger.log("连接完成");
-    }
-
-    @Override
-    public void onReceived(KwConnection conn, ByteBuffer data, Integer id) {
-        // Logger.log("接送到的数据" + data);
-    }
-
-    @Override
-    public void onClose() {
-        Logger.log("连接关闭");
-        isAttenClass = false;
-//        if (KWApp.instance.connectNumber > 5)
-//            KWApp.instance.isAttenClass = false;
-//        KWApp.instance.connectNumber++;
-//        if (KWApp.instance.isAttenClass)
-//            connectTcp(KWApp.instance.teacherIp);
-    }
-
-    @Override
-    public void onError(KwConnection conn, Exception e) {
-        Logger.log("连接错误" + e);
-        isAttenClass = false;
-        if (KWApp.instance.connectNumber > 5)
-            KWApp.instance.isAttenClass = false;
-        KWApp.instance.connectNumber++;
-        if (KWApp.instance.isAttenClass)
-            connectTcp(KWApp.instance.teacherIp);
-    }
-
-    @Override
-    public void onTimeout(KwConnection conn, TimeoutType type) {
-        isAttenClass = false;
-//        Logger.log("连接超时" + type);
-//        if (KWApp.instance.isAttenClass)
-//            connectTcp(KWApp.instance.teacherIp);
-    }
-
-    public void connectTcp(String ip) {
-        if (ip == null || currentActivity == null || isAttenClass)
-            return;
-        if (!Utils.ping(currentActivity, ip)) {//这个判断方法不太靠谱
-            showMessage("无法连接上课，请确认在同个wifi下");
-            return;
-        }
-        if (isIos) {
-            if (client != null && client.isConnect())
-                return;
-            KwHproseClient.stop();
-            client = new HandlerClient();
-            client.connectTCP(ip, new Client.TcpMessageCallBack() {
-                @Override
-                public void accpetMessage(String message) throws Exception {
-                    if (activity == null) return;
-                    ActionsMessageHandle.MessageHandle(activity, message);
-//                    Toast.makeText(activity, "IOS::::" + message, Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void connectTcpSuccess() throws Exception {
-                    JSONObject da = new JSONObject();
-                    isAttenClass = true;
-                    try {
-                        da.put("msgType", MessageType.LOGIN);
-                        da.put("userId", Utils.getIMEI(KWApp.this));
-                        da.put("msg", "我是新用户");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    client.sendTCP(da.toString());
-                    showMessage("IOS 上课连接完成");
-                }
-
-                @Override
-                public void connectTcpFailed() throws Exception {
-                    showMessage("IOS 上课连接失败");
-                    isAttenClass = false;
-                }
-
-                @Override
-                public void disconnectTcp() throws Exception {
-                    showMessage("IOS 连接掉线");
-                    isAttenClass = false;
-                }
-            });
-        } else {
-            if (client != null && client.isConnect()) {
-                client.close();
-                client = null;
-            }
-            Message msg = new Message();
-            msg.what = MSG_CONNECT;
-            mHandler.sendMessage(msg);
-        }
-
-    }
-
-    public void showMessage(final String message) {
-        if (currentActivity != null)
-            ((BaseActivity) currentActivity).showMessage(message);
-    }
 }
