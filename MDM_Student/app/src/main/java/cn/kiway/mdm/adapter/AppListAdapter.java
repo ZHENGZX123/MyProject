@@ -28,6 +28,7 @@ import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.utils.AppListUtils.isAppInstalled;
+import static cn.kiway.mdm.utils.Constant.KIWAYSETTING;
 import static cn.kiway.mdm.utils.Constant.MARKETPLACE;
 import static cn.kiway.mdm.utils.Constant._16;
 import static cn.kiway.mdm.utils.FileACache.ListFileName;
@@ -71,7 +72,9 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
         }
         App app = mData.get(mainPosition).get(subPosition);
         if (app.packageName.equals(MARKETPLACE)) {
-            itemViewHolder.iv.setBackgroundResource(R.drawable.rod_place_icon);
+            itemViewHolder.iv.setImageResource(R.drawable.rod_place_icon);
+        } else if (app.packageName.equals(KIWAYSETTING)) {
+            itemViewHolder.iv.setImageResource(R.drawable.setting);
         } else {
             if (Utils.getIconByPackageName(context.getPackageManager(), app.packageName) == null) {
                 itemViewHolder.iv.setImageResource(R.mipmap.ic_launcher);
@@ -139,7 +142,11 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
                 Toast.makeText(context, "包名错误", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (packageName.equals(MARKETPLACE)){//应用市场
+            if (packageName.equals(MARKETPLACE)) {//应用市场
+                context.startActivity(new Intent(context, SystemSetupActivity.class));
+                return;
+            }
+            if (packageName.equals(KIWAYSETTING)) {//应用市场
                 context.startActivity(new Intent(context, SystemSetupActivity.class));
                 return;
             }

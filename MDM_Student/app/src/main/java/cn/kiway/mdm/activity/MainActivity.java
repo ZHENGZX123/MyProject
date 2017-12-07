@@ -57,6 +57,7 @@ import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
 import static cn.kiway.mdm.utils.AppReceiverIn.REMOVE_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.REPLACE_SUCCESS;
+import static cn.kiway.mdm.utils.Constant.KIWAYSETTING;
 import static cn.kiway.mdm.utils.Constant.MARKETPLACE;
 import static cn.kiway.mdm.utils.Constant.ZHIHUIKETANGPG;
 import static cn.kiway.mdm.utils.Constant._16;
@@ -413,14 +414,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         return allListData;
     }
 
-    public List<List<App>> addMarketplace(String pgName, int positon) {
+    public List<List<App>> addMarketplace(String name, String pgName, int positon) {
         checkList(ZHIHUIKETANGPG, 0);//将智慧课堂放到第一个
-        if (allListData.toString().contains(MARKETPLACE)) {
+        if (allListData.toString().contains(pgName)) {
             return allListData;
         }
         ArrayList<App> apps = new ArrayList<>();
         App a = new App();
-        a.name = "开维应用市场";
+        a.name = name;
         a.packageName = pgName;
         apps.add(a);
         allListData.add(positon, apps);
@@ -430,7 +431,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     //设置页面数据
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public void initData(List<List<App>> data1) {
-        data1 = addMarketplace(MARKETPLACE, 1);//判断有没有应用市场，没有的话添加到第二个
+        data1 = addMarketplace("开维应用市场", MARKETPLACE, 1);//判断有没有应用市场，没有的话添加到第二个
+        data1 = addMarketplace("设置", KIWAYSETTING, 2);
         viewPagerList = new ArrayList<View>();
         totalPage = (int) Math.ceil(data1.size() * 1.0 / _16);
         for (int i = 0; i < totalPage; i++) {
