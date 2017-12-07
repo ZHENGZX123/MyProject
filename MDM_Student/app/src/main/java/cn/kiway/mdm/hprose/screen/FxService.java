@@ -20,7 +20,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import cn.kiway.mdm.hprose.socket.Logger;
+import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdmsdk.MDMHelper;
 
 
@@ -90,8 +90,7 @@ public class FxService extends Service {
         public void run() {
             try {
                 int port = 26891;
-                InetAddress addr = InetAddress
-                        .getByName(ip);
+                InetAddress addr = InetAddress.getByName(ip);
                 sendImage2(this.bitmap, addr, port);
             } catch (UnknownHostException e) {
                 e.printStackTrace();

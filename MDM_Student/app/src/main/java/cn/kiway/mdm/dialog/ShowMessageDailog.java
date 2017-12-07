@@ -6,34 +6,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.UndeclaredThrowableException;
-
-import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.MainActivity;
-import cn.kiway.mdm.hprose.socket.KwHproseClient;
-import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.activity.MainActivity.USAGE_STATS;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.ANSWERDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.REPONSEDIALOG;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.SIGNDIALOG;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.UNSWERDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
-import static cn.kiway.mdm.hprose.socket.MessageType.ANSWER;
-import static cn.kiway.mdm.hprose.socket.MessageType.SIGN;
-import static cn.kiway.mdm.hprose.socket.MessageType.SUREREPONSE;
 
 /**
  * Created by Administrator on 2017/10/12.
@@ -91,7 +76,6 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
 
     @Override
     public void onClick(View view) {
-        Message message = new Message();
         switch (view.getId()) {
             case R.id.ok:
                 switch (messageId) {
@@ -102,37 +86,9 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                                 new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
                                 USAGE_STATS);
                         break;
-                    case SIGNDIALOG:
-                        message.what = SIGNDIALOG;
-                        handler.sendMessage(message);
-                        break;
-                    case REPONSEDIALOG:
-                        message.what = REPONSEDIALOG;
-                        handler.sendMessage(message);
-                        break;
-                    case ANSWERDIALOG:
-                        message.what = ANSWERDIALOG;
-                        handler.sendMessage(message);
-                        break;
-                    case UNSWERDIALOG:
-                        dismiss();
-                        break;
                 }
                 break;
             case R.id.ok2:
-                switch (messageId) {
-                    case REPONSEDIALOG:
-                        message.what = REPONSEDIALOG + 100;
-                        handler.sendMessage(message);
-                        break;
-                    case ANSWERDIALOG:
-                        message.what = ANSWERDIALOG + 100;
-                        handler.sendMessage(message);
-                        break;
-                    case UNSWERDIALOG:
-                        dismiss();
-                        break;
-                }
                 break;
         }
         dismiss();
@@ -156,101 +112,4 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
             findViewById(R.id.ok2).setVisibility(View.GONE);
         }
     }
-
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case SIGNDIALOG:
-                    try {
-                        JSONObject da = new JSONObject();
-                        da.put("msgType", SIGN);
-                        da.put("userId", Utils.getIMEI(getContext()));
-                        da.put("msg", "签到");
-                        if (KWApp.instance.isIos) {
-                            KWApp.instance.client.sendTCP(da.toString());
-                        } else {
-                            if (KwHproseClient.helloClient != null)
-                                KwHproseClient.helloClient.sign(da.toString());
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                case REPONSEDIALOG:
-                    try {
-                        JSONObject data = new JSONObject();
-                        data.put("userId", Utils.getIMEI(getContext()));
-                        data.put("msg", "1");
-                        data.put("msgType", SUREREPONSE);
-                        if (KWApp.instance.isIos) {
-                            KWApp.instance.client.sendTCP(data.toString());
-                        } else {
-                            if (KwHproseClient.helloClient != null)
-                                KwHproseClient.helloClient.reponse(data.toString());
-                        }
-                    } catch (UndeclaredThrowableException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                case REPONSEDIALOG + 100:
-                    try {
-                        JSONObject data = new JSONObject();
-                        data.put("userId", Utils.getIMEI(getContext()));
-                        data.put("msg", "0");
-                        data.put("msgType", SUREREPONSE);
-                        if (KWApp.instance.isIos) {
-                            KWApp.instance.client.sendTCP(data.toString());
-                        } else {
-                            if (KwHproseClient.helloClient != null)
-                                KwHproseClient.helloClient.reponse(data.toString());
-                        }
-                    } catch (UndeclaredThrowableException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                case ANSWERDIALOG:
-                    try {
-                        JSONObject da = new JSONObject();
-                        da.put("msgType", ANSWER);
-                        da.put("userId", Utils.getIMEI(getContext()));
-                        da.put("msg", "1");
-                        if (KWApp.instance.isIos) {
-                            KWApp.instance.client.sendTCP(da.toString());
-                        } else {
-                            if (KwHproseClient.helloClient != null)
-                                KwHproseClient.helloClient.answerqusetion(da.toString());
-                        }
-                    } catch (UndeclaredThrowableException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                case ANSWERDIALOG + 100:
-                    try {
-                        JSONObject da = new JSONObject();
-                        da.put("userId", Utils.getIMEI(getContext()));
-                        da.put("msgType", ANSWER);
-                        da.put("msg", "0");
-                        if (KWApp.instance.isIos) {
-                            KWApp.instance.client.sendTCP(da.toString());
-                        } else {
-                            if (KwHproseClient.helloClient != null)
-                                KwHproseClient.helloClient.answerqusetion(da.toString());
-                        }
-                    } catch (UndeclaredThrowableException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-            }
-        }
-    };
 }

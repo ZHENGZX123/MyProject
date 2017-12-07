@@ -83,7 +83,6 @@ import cn.kiway.mdm.entity.AppCharge;
 import cn.kiway.mdm.entity.Call;
 import cn.kiway.mdm.entity.Network;
 import cn.kiway.mdm.entity.Wifi;
-import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdmsdk.MDMHelper;
 
 import static android.content.Context.WIFI_SERVICE;
@@ -226,7 +225,8 @@ public class Utils {
                 //过滤
                 if (filter) {
                     //1.setting mdm
-                    if (packageInfo.packageName.equals("com.android.settings") || packageInfo.packageName.equals("cn.kiway.mdm")) {
+                    if (packageInfo.packageName.equals("com.android.settings") || packageInfo.packageName.equals("cn" +
+                            ".kiway.mdm")) {
                         continue;
                     }
                     //预设置
@@ -537,7 +537,8 @@ public class Utils {
                         try {
                             String imei = getIMEI(c);
                             AsyncHttpClient client = new AsyncHttpClient();
-                            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+                            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString
+                                    ("x-auth-token", ""));
                             client.setTimeout(10000);
                             JSONArray array = new JSONArray();
                             JSONObject param = new JSONObject();
@@ -634,7 +635,8 @@ public class Utils {
                             check301(c, ret);
                             try {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
-                                ArrayList<AppCharge> networks = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<AppCharge>>() {
+                                ArrayList<AppCharge> networks = new GsonBuilder().create().fromJson(data.toString(),
+                                        new TypeToken<List<AppCharge>>() {
                                 }.getType());
                                 //存进数据库里
                                 new MyDBHelper(c).deleteAppcharge(null);
@@ -676,7 +678,8 @@ public class Utils {
                             check301(c, ret);
                             try {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
-                                ArrayList<Network> networks = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Network>>() {
+                                ArrayList<Network> networks = new GsonBuilder().create().fromJson(data.toString(),
+                                        new TypeToken<List<Network>>() {
                                 }.getType());
                                 //1.存进数据库里
                                 new MyDBHelper(c).deleteNetwork(null);
@@ -719,7 +722,8 @@ public class Utils {
                             check301(c, ret);
                             try {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
-                                ArrayList<Wifi> wifis = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Wifi>>() {
+                                ArrayList<Wifi> wifis = new GsonBuilder().create().fromJson(data.toString(), new
+                                        TypeToken<List<Wifi>>() {
                                 }.getType());
                                 //存进数据库里
                                 new MyDBHelper(c).deleteWifi(null);
@@ -1111,14 +1115,16 @@ public class Utils {
             typeOpenFile = "application/pdf";
         else if (filetype.equals("ppt") || filetype.equals("pptx"))
             typeOpenFile = "application/vnd.ms-powerpoint";
-        else if (filetype.equals("doc") || filetype.equals("docx") || filetype.equals("docm") || filetype.equals("dotx") || filetype
+        else if (filetype.equals("doc") || filetype.equals("docx") || filetype.equals("docm") || filetype.equals
+                ("dotx") || filetype
                 .equals("dotm"))
             typeOpenFile = "application/msword";
         else if (filetype.equals("xlsx") || filetype.equals("xlsm") || filetype.equals("xltx"))
             typeOpenFile = "application/vnd.ms-excel";
         else if (filetype.equals("mp3") || filetype.equals("amr") || filetype.equals("ogg") || filetype.equals("wav")) {
             typeOpenFile = "audio/*";
-        } else if (filetype.equals("mp4") || filetype.equals("3gp") || filetype.equals("avi") || filetype.equals("rmvb") || filetype
+        } else if (filetype.equals("mp4") || filetype.equals("3gp") || filetype.equals("avi") || filetype.equals
+                ("rmvb") || filetype
                 .equals("mpg") | filetype.equals("rm") || filetype.equals("flv")) {
             typeOpenFile = "video/*";
         } else if (filetype.equals("swf")) {
@@ -1202,7 +1208,8 @@ public class Utils {
                     public void run() {
                         try {
                             AsyncHttpClient client = new AsyncHttpClient();
-                            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+                            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString
+                                    ("x-auth-token", ""));
                             client.setTimeout(10000);
                             String url = server + "device/logout";
                             Log.d("test", "url = " + url);
@@ -1680,7 +1687,8 @@ public class Utils {
                             check301(c, ret);
                             try {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
-                                ArrayList<Call> calls = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Call>>() {
+                                ArrayList<Call> calls = new GsonBuilder().create().fromJson(data.toString(), new
+                                        TypeToken<List<Call>>() {
                                 }.getType());
                                 //存进数据库里
                                 new MyDBHelper(c).deleteCall(null);
@@ -1878,9 +1886,11 @@ public class Utils {
             if (info.getType() == ConnectivityManager.TYPE_MOBILE) {//当前使用2G/3G/4G网络
                 try {
                     //Enumeration<NetworkInterface> en=NetworkInterface.getNetworkInterfaces();
-                    for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                    for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en
+                            .hasMoreElements(); ) {
                         NetworkInterface intf = en.nextElement();
-                        for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                        for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr
+                                .hasMoreElements(); ) {
                             InetAddress inetAddress = enumIpAddr.nextElement();
                             if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
                                 return inetAddress.getHostAddress();
@@ -1971,4 +1981,11 @@ public class Utils {
         return false;
     }
 
+    public static void startPackage(Context c, String pkgName, Intent in) {
+        if (DspPackgeUtil.isPackageExist(c, pkgName)) {
+            c.startActivity(in);
+        } else {
+            Toast.makeText(c, "该应用没有安装", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
