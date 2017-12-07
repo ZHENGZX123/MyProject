@@ -91,7 +91,6 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 23 Platform (1)" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="hprose_for_java_7" level="project" />
     <orderEntry type="library" exported="" name="gson-2.8.0" level="project" />
     <orderEntry type="library" exported="" name="kotlin-stdlib-1.0.6" level="project" />
     <orderEntry type="library" exported="" name="HwPush_SDK_V2705" level="project" />
