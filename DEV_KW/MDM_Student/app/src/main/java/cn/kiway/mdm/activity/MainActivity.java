@@ -57,6 +57,7 @@ import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
 import static cn.kiway.mdm.utils.AppReceiverIn.REMOVE_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.REPLACE_SUCCESS;
+import static cn.kiway.mdm.utils.Constant.MARKETPLACE;
 import static cn.kiway.mdm.utils.Constant.ZHIHUIKETANGPG;
 import static cn.kiway.mdm.utils.Constant._16;
 import static cn.kiway.mdm.utils.FileACache.ListFileName;
@@ -384,13 +385,13 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         return allListData;
     }
 
-    public List<List<App>> checkList() {
-        if (allListData.toString().contains(ZHIHUIKETANGPG)) {//添加智慧课堂第一个，如果之前有了，先删除在添加
+    public List<List<App>> checkList(String pgName, int positon) {
+        if (allListData.toString().contains(pgName)) {//添加智慧课堂第一个，如果之前有了，先删除在添加
             k:
             for (int i = 0; i < allListData.size(); i++) {
                 for (int j = 0; j < allListData.get(i).size(); j++) {
                     App app = allListData.get(i).get(j);
-                    if (app.packageName.equals(ZHIHUIKETANGPG)) {//存在的
+                    if (app.packageName.equals(pgName)) {//存在的
                         if (allListData.get(i).size() == 1) {//只有一个的时候移除大的
                             allListData.remove(i);
                         } else {
@@ -405,17 +406,31 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
         ArrayList<App> apps = new ArrayList<>();
         App a = new App();
-        a.name = Utils.getProgramNameByPackageName(this, ZHIHUIKETANGPG);
-        a.packageName = ZHIHUIKETANGPG;
+        a.name = Utils.getProgramNameByPackageName(this, pgName);
+        a.packageName = pgName;
         apps.add(a);
-        allListData.add(0, apps);
+        allListData.add(positon, apps);
+        return allListData;
+    }
+
+    public List<List<App>> addMarketplace(String pgName, int positon) {
+        checkList(ZHIHUIKETANGPG, 0);//将智慧课堂放到第一个
+        if (allListData.toString().contains(MARKETPLACE)) {
+            return allListData;
+        }
+        ArrayList<App> apps = new ArrayList<>();
+        App a = new App();
+        a.name = "开维应用市场";
+        a.packageName = pgName;
+        apps.add(a);
+        allListData.add(positon, apps);
         return allListData;
     }
 
     //设置页面数据
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public void initData(List<List<App>> data1) {
-        data1=checkList();
+        data1 = addMarketplace(MARKETPLACE, 1);//判断有没有应用市场，没有的话添加到第二个
         viewPagerList = new ArrayList<View>();
         totalPage = (int) Math.ceil(data1.size() * 1.0 / _16);
         for (int i = 0; i < totalPage; i++) {

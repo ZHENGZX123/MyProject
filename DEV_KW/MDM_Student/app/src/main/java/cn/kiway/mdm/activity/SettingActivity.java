@@ -108,6 +108,7 @@ public class SettingActivity extends BaseActivity implements CheckPassword.Check
     public void File(View view) {
         startActivity(new Intent(this, FileListActivity.class));
     }
+    public void onSetting(View view){startActivity(new Intent(this,SystemSetupActivity.class));}
 
     @Override
     public void success(View vx, int position) throws Exception {

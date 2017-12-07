@@ -8,7 +8,8 @@ import java.util.concurrent.Executors;
  */
 
 public interface Constant {
-    public   int _16 = 16;
+    public int _16 = 16;
     public ExecutorService executorService = Executors.newCachedThreadPool();
-    public String ZHIHUIKETANGPG="cn.kiway.session";
+    public String ZHIHUIKETANGPG = "cn.kiway.session";
+    public String MARKETPLACE = "cn.kiway.marketplace";
 }

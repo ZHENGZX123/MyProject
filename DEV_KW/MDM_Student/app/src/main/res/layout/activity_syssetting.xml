@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#f7f7f7"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/blue">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="系统设置"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+
+        <ImageView
+            android:id="@+id/before"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:onClick="Before"
+            android:paddingLeft="10dp"
+            android:src="@drawable/ic_navigate_before"/>
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/course_list_selector"
+                android:onClick="onWLAN"
+                android:padding="18dp"
+                android:text="WLAN设置"
+                android:textColor="#666666"
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#e5e5e5"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/course_list_selector"
+                android:onClick="onBlueB"
+                android:padding="18dp"
+                android:text="蓝牙"
+                android:textColor="#666666"
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#e5e5e5"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/course_list_selector"
+                android:onClick="onMobileNetwork"
+                android:padding="18dp"
+                android:text="移动网络"
+                android:textColor="#666666"
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#e5e5e5"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/course_list_selector"
+                android:onClick="onDisPlay"
+                android:padding="18dp"
+                android:text="显示"
+                android:textColor="#666666"
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#e5e5e5"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/course_list_selector"
+                android:onClick="onWarningTone"
+                android:padding="18dp"
+                android:text="提示音和通知"
+                android:textColor="#666666"
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#e5e5e5"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/course_list_selector"
+                android:onClick="onLanguage"
+                android:padding="18dp"
+                android:text="语言和输入法"
+                android:textColor="#666666"
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#e5e5e5"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/course_list_selector"
+                android:onClick="onSafe"
+                android:padding="18dp"
+                android:text="安全"
+                android:textColor="#666666"
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#e5e5e5"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/course_list_selector"
+                android:onClick="onPosition"
+                android:padding="18dp"
+                android:text="位置信息"
+                android:textColor="#666666"
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#e5e5e5"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/course_list_selector"
+                android:onClick="onStorage"
+                android:padding="18dp"
+                android:text="存储"
+                android:textColor="#666666"
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#e5e5e5"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/course_list_selector"
+                android:onClick="onTime"
+                android:padding="18dp"
+                android:text="日期和时间"
+                android:textColor="#666666"
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#e5e5e5"/>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

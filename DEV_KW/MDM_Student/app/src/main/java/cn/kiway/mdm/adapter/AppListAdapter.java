@@ -20,6 +20,7 @@ import java.util.List;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.MainActivity;
+import cn.kiway.mdm.activity.SystemSetupActivity;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.AppCharge;
 import cn.kiway.mdm.utils.FileACache;
@@ -27,6 +28,7 @@ import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.utils.AppListUtils.isAppInstalled;
+import static cn.kiway.mdm.utils.Constant.MARKETPLACE;
 import static cn.kiway.mdm.utils.Constant._16;
 import static cn.kiway.mdm.utils.FileACache.ListFileName;
 
@@ -68,10 +70,15 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
             itemViewHolder = (ItemViewHolder) convertView.getTag();
         }
         App app = mData.get(mainPosition).get(subPosition);
-        if (Utils.getIconByPackageName(context.getPackageManager(), app.packageName) == null) {
-            itemViewHolder.iv.setImageResource(R.mipmap.ic_launcher);
+        if (app.packageName.equals(MARKETPLACE)) {
+            itemViewHolder.iv.setBackgroundResource(R.drawable.rod_place_icon);
         } else {
-            itemViewHolder.iv.setImageDrawable(Utils.getIconByPackageName(context.getPackageManager(), app.packageName));
+            if (Utils.getIconByPackageName(context.getPackageManager(), app.packageName) == null) {
+                itemViewHolder.iv.setImageResource(R.mipmap.ic_launcher);
+            } else {
+                itemViewHolder.iv.setImageDrawable(Utils.getIconByPackageName(context.getPackageManager(), app
+                        .packageName));
+            }
         }
         return convertView;
     }
@@ -130,6 +137,10 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
             }
             if (TextUtils.isEmpty(packageName)) {
                 Toast.makeText(context, "包名错误", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (packageName.equals(MARKETPLACE)){//应用市场
+                context.startActivity(new Intent(context, SystemSetupActivity.class));
                 return;
             }
             //1.判断app是否安装
