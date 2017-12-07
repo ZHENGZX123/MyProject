@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi\\ic_launcher.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_StudentSession\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi\\ic_launcher.png",
+        "source": "F:\\kiway_xm\\MDM_StudentSession\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi\\ic_launcher_round.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_StudentSession\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi\\ic_launcher_round.png",
+        "source": "F:\\kiway_xm\\MDM_StudentSession\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher_round.png"
+    }
+]

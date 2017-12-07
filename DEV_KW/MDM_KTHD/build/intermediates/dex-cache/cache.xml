@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="F:\kiway_xm\MDM_StudentSession\mdmaidl\build\intermediates\bundles\default\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.2"
+        sha1="e06df55e2281908e5775c5cd536205329cd233ad">
+        <dex dex="F:\kiway_xm\MDM_StudentSession\app\build\intermediates\pre-dexed\debug\classes_fa640ac4921d9487795ce48971c5f14f2fea837c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="F:\kiway_xm\MDM_StudentSession\app\libs\hprose_for_java_7.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.2"
+        sha1="a39661f8d41521ec3635ab79f4137f878fe535c1">
+        <dex dex="F:\kiway_xm\MDM_StudentSession\app\build\intermediates\pre-dexed\debug\hprose_for_java_7_604c47eea1c2ff2df083668ee16a201f36b1e9c6.jar" />
+    </item>
+
+</items>
