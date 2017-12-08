@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="#f7f7f7"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f7f7f7"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
             android:gravity="center"
             android:text="系统设置"
             android:textColor="@color/white"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/before"
@@ -25,7 +25,7 @@
             android:layout_height="match_parent"
             android:onClick="Before"
             android:paddingLeft="10dp"
-            android:src="@drawable/ic_navigate_before"/>
+            android:src="@drawable/ic_navigate_before" />
     </RelativeLayout>
 
     <ScrollView
@@ -45,12 +45,12 @@
                 android:padding="18dp"
                 android:text="WLAN设置"
                 android:textColor="#666666"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="#e5e5e5"/>
+                android:background="#e5e5e5" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -60,12 +60,12 @@
                 android:padding="18dp"
                 android:text="蓝牙"
                 android:textColor="#666666"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="#e5e5e5"/>
+                android:background="#e5e5e5" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -75,12 +75,12 @@
                 android:padding="18dp"
                 android:text="移动网络"
                 android:textColor="#666666"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="#e5e5e5"/>
+                android:background="#e5e5e5" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -90,12 +90,12 @@
                 android:padding="18dp"
                 android:text="显示"
                 android:textColor="#666666"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="#e5e5e5"/>
+                android:background="#e5e5e5" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -105,12 +105,12 @@
                 android:padding="18dp"
                 android:text="提示音和通知"
                 android:textColor="#666666"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="#e5e5e5"/>
+                android:background="#e5e5e5" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -120,12 +120,14 @@
                 android:padding="18dp"
                 android:text="语言和输入法"
                 android:textColor="#666666"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="#e5e5e5"/>
+                android:background="#e5e5e5"
+                android:visibility="gone" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -134,12 +136,14 @@
                 android:padding="18dp"
                 android:text="安全"
                 android:textColor="#666666"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:visibility="gone" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="#e5e5e5"/>
+                android:background="#e5e5e5" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -148,12 +152,13 @@
                 android:padding="18dp"
                 android:text="位置信息"
                 android:textColor="#666666"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="#e5e5e5"/>
+                android:background="#e5e5e5" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -162,12 +167,14 @@
                 android:padding="18dp"
                 android:text="存储"
                 android:textColor="#666666"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="#e5e5e5"/>
+                android:background="#e5e5e5"
+                android:visibility="gone" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -176,12 +183,13 @@
                 android:padding="18dp"
                 android:text="日期和时间"
                 android:textColor="#666666"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:visibility="gone" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="#e5e5e5"/>
+                android:background="#e5e5e5" />
         </LinearLayout>
     </ScrollView>
 
