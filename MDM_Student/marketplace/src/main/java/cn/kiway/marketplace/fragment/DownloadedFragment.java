@@ -30,6 +30,7 @@ import java.util.Locale;
 import cn.kiway.marketplace.R;
 import cn.kiway.marketplace.util.BackEventHandler;
 import cn.kiway.marketplace.util.FileManager;
+import cn.kiway.marketplace.widget.SimplePaddingDecoration;
 
 /**
  * Created by 4ndroidev on 16/10/17.
@@ -101,8 +102,7 @@ public class DownloadedFragment extends Fragment implements View.OnClickListener
         contentView.findViewById(R.id.download_delete).setOnClickListener(this);
         contentView.findViewById(R.id.download_manager).setOnClickListener(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-        //RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(context, layoutManager.getOrientation());
-       // recyclerView.addItemDecoration(itemDecoration);
+        recyclerView.addItemDecoration(new SimplePaddingDecoration(getContext()));
         recyclerView.setLayoutManager(layoutManager);
         adapter = new DownloadAdapter();
         recyclerView.setAdapter(adapter);

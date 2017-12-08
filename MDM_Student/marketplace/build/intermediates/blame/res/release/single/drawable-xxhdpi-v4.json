@@ -1,0 +1,254 @@
+[
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\list_icon_more.png",
+        "source": "F:\\kiway_xm\\MDM_Student\\marketplace\\src\\main\\res\\drawable-xxhdpi\\list_icon_more.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_list_focused_holo.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_list_focused_holo.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_spinner_mtrl_am_alpha.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_spinner_mtrl_am_alpha.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ic_search_api_mtrl_alpha.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ic_search_api_mtrl_alpha.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_list_longpressed_holo.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_list_longpressed_holo.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ic_star_black_16dp.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ic_star_black_16dp.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_textfield_search_activated_mtrl_alpha.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_textfield_search_activated_mtrl_alpha.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_textfield_activated_mtrl_alpha.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_textfield_activated_mtrl_alpha.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\white_val.xml",
+        "source": "F:\\kiway_xm\\MDM_Student\\marketplace\\src\\main\\res\\drawable-xxhdpi\\white_val.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_btn_switch_to_on_mtrl_00001.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_btn_switch_to_on_mtrl_00001.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ic_star_half_black_36dp.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ic_star_half_black_36dp.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\ic_launcher.png",
+        "source": "F:\\kiway_xm\\MDM_Student\\marketplace\\src\\main\\res\\drawable-xxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\format_apk.png",
+        "source": "F:\\kiway_xm\\MDM_Student\\marketplace\\src\\main\\res\\drawable-xxhdpi\\format_apk.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ic_star_half_black_16dp.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ic_star_half_black_16dp.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_btn_check_to_on_mtrl_015.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_btn_check_to_on_mtrl_015.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_scrubber_control_off_mtrl_alpha.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_scrubber_control_off_mtrl_alpha.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_switch_track_mtrl_alpha.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_switch_track_mtrl_alpha.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_list_selector_disabled_holo_light.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_list_selector_disabled_holo_light.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\format_vedio.png",
+        "source": "F:\\kiway_xm\\MDM_Student\\marketplace\\src\\main\\res\\drawable-xxhdpi\\format_vedio.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\format_music.png",
+        "source": "F:\\kiway_xm\\MDM_Student\\marketplace\\src\\main\\res\\drawable-xxhdpi\\format_music.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_textfield_search_default_mtrl_alpha.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_textfield_search_default_mtrl_alpha.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ic_star_black_36dp.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ic_star_black_36dp.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_textfield_default_mtrl_alpha.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_textfield_default_mtrl_alpha.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_scrubber_control_to_pressed_mtrl_000.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_scrubber_control_to_pressed_mtrl_000.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_list_pressed_holo_dark.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_list_pressed_holo_dark.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_scrubber_primary_mtrl_alpha.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_scrubber_primary_mtrl_alpha.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\list_icon_manager.png",
+        "source": "F:\\kiway_xm\\MDM_Student\\marketplace\\src\\main\\res\\drawable-xxhdpi\\list_icon_manager.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ic_menu_copy_mtrl_am_alpha.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ic_menu_copy_mtrl_am_alpha.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ic_commit_search_api_mtrl_alpha.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ic_commit_search_api_mtrl_alpha.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\format_unknown.png",
+        "source": "F:\\kiway_xm\\MDM_Student\\marketplace\\src\\main\\res\\drawable-xxhdpi\\format_unknown.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ic_menu_share_mtrl_alpha.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ic_menu_share_mtrl_alpha.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ic_menu_cut_mtrl_alpha.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ic_menu_cut_mtrl_alpha.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ic_go_search_api_mtrl_alpha.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ic_go_search_api_mtrl_alpha.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ab_share_pack_mtrl_alpha.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ab_share_pack_mtrl_alpha.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_list_pressed_holo_light.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_list_pressed_holo_light.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_btn_radio_to_on_mtrl_000.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_btn_radio_to_on_mtrl_000.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_cab_background_top_mtrl_alpha.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_cab_background_top_mtrl_alpha.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\notify_download.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\124fb472ef20342908041fb312cdc2d27ddf967d\\output\\res\\drawable-xxhdpi-v4\\notify_download.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ic_ab_back_mtrl_am_alpha.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ic_ab_back_mtrl_am_alpha.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_btn_rating_star_off_mtrl_alpha.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_btn_rating_star_off_mtrl_alpha.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ic_menu_moreoverflow_mtrl_alpha.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ic_menu_moreoverflow_mtrl_alpha.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ic_clear_mtrl_alpha.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ic_clear_mtrl_alpha.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ic_voice_search_api_mtrl_alpha.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ic_voice_search_api_mtrl_alpha.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\list_icon_pause.png",
+        "source": "F:\\kiway_xm\\MDM_Student\\marketplace\\src\\main\\res\\drawable-xxhdpi\\list_icon_pause.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ic_menu_selectall_mtrl_alpha.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ic_menu_selectall_mtrl_alpha.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\list_icon_download.png",
+        "source": "F:\\kiway_xm\\MDM_Student\\marketplace\\src\\main\\res\\drawable-xxhdpi\\list_icon_download.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_btn_radio_to_on_mtrl_015.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_btn_radio_to_on_mtrl_015.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_tab_indicator_mtrl_alpha.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_tab_indicator_mtrl_alpha.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\list_icon_delete.png",
+        "source": "F:\\kiway_xm\\MDM_Student\\marketplace\\src\\main\\res\\drawable-xxhdpi\\list_icon_delete.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_list_selector_disabled_holo_dark.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_list_selector_disabled_holo_dark.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_btn_rating_star_on_mtrl_alpha.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_btn_rating_star_on_mtrl_alpha.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\list_icon_close.png",
+        "source": "F:\\kiway_xm\\MDM_Student\\marketplace\\src\\main\\res\\drawable-xxhdpi\\list_icon_close.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_scrubber_control_to_pressed_mtrl_005.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_scrubber_control_to_pressed_mtrl_005.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_btn_switch_to_on_mtrl_00012.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_btn_switch_to_on_mtrl_00012.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_scrubber_track_mtrl_alpha.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_scrubber_track_mtrl_alpha.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_menu_hardkey_panel_mtrl_mult.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_menu_hardkey_panel_mtrl_mult.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_popup_background_mtrl_mult.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_popup_background_mtrl_mult.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\format_zip.png",
+        "source": "F:\\kiway_xm\\MDM_Student\\marketplace\\src\\main\\res\\drawable-xxhdpi\\format_zip.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\icon_download.png",
+        "source": "F:\\kiway_xm\\MDM_Student\\marketplace\\src\\main\\res\\drawable-xxhdpi\\icon_download.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_ic_menu_paste_mtrl_am_alpha.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_ic_menu_paste_mtrl_am_alpha.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_list_divider_mtrl_alpha.9.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_list_divider_mtrl_alpha.9.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\list_icon_select.png",
+        "source": "F:\\kiway_xm\\MDM_Student\\marketplace\\src\\main\\res\\drawable-xxhdpi\\list_icon_select.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\abc_btn_check_to_on_mtrl_000.png",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\a95b23b410f3cade4a96375fd6622aab418e18e4\\output\\res\\drawable-xxhdpi-v4\\abc_btn_check_to_on_mtrl_000.png"
+    }
+]

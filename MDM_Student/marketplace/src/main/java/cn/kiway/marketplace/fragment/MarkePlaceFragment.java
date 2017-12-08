@@ -16,6 +16,9 @@ import com.androidev.download.DownloadListener;
 import com.androidev.download.DownloadManager;
 import com.androidev.download.DownloadTask;
 import com.bumptech.glide.Glide;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+import com.zhy.http.okhttp.request.RequestCall;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,10 +29,15 @@ import java.util.List;
 import java.util.Locale;
 
 import cn.kiway.marketplace.R;
+import cn.kiway.marketplace.db.MarkePlaceDBHelper;
 import cn.kiway.marketplace.dialog.AppDialog;
-import cn.kiway.marketplace.util.AssetsHelper;
+import cn.kiway.marketplace.util.FileManager;
 import cn.kiway.marketplace.util.MarketApp;
+import cn.kiway.marketplace.util.MarketClassify;
+import okhttp3.Call;
 
+import static cn.kiway.marketplace.util.IUrContant.APP_LIST_URL;
+import static cn.kiway.marketplace.util.IUrContant.BASE_URL;
 import static com.androidev.download.DownloadState.STATE_FAILED;
 import static com.androidev.download.DownloadState.STATE_FINISHED;
 import static com.androidev.download.DownloadState.STATE_PAUSED;
@@ -39,57 +47,122 @@ import static com.androidev.download.DownloadState.STATE_WAITING;
 
 public class MarkePlaceFragment extends Fragment {
 
-    private List<DownloadTask> tasks;
-    private List<MarketApp> marketAppList;
+    private List<DownloadTask> tasks = new ArrayList<>();
+    ;
+    private List<MarketApp> marketAppList=new ArrayList<>();
+    private int pageSize = 20;
+    private int currentPage = 1;
     DownloadManager controller;
-AppDialog appDialog;
+    AppDialog appDialog;
+    MarketClassify marketClassify;
+    private View contentView;
+
+    public MarkePlaceFragment(MarketClassify marketClassify) {
+        this.marketClassify = marketClassify;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         controller = DownloadManager.getInstance();
-        appDialog=new AppDialog(getContext());
-        initialize();
+        appDialog = new AppDialog(getContext());
     }
 
-    private View contentView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
-
+        loadData();
         if (contentView != null) return contentView;
         contentView = inflater.inflate(R.layout.marke_fragment_main, container, false);
-        RecyclerView recyclerView = (RecyclerView) contentView.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(new DownloadAdapter());
         return contentView;
     }
 
-    private void initialize() {
-
-        tasks = new ArrayList<>();
-        marketAppList = new ArrayList<>();
-        String data = AssetsHelper.readAsString(getContext(), "data.json");
-        try {
-            JSONArray array = new JSONArray(data);
-            for (int id = 0, length = array.length(); id < length; id++) {
-                JSONObject item = array.getJSONObject(id);
-                MarketApp marketApp = new MarketApp();
-                String name = item.optString("name");
-                String icon = item.optString("icon");
-                String url = item.optString("url");
-                marketApp.appName = name;
-                marketApp.appIcon = icon;
-                marketApp.appDownUrl = url;
-                marketApp.appDetial = item.optString("content");
-                marketApp.appDownNumber = item.optString("downNumber");
-                marketAppList.add(marketApp);
-                tasks.add(controller.newTask(id, url, name).extras(icon).create());
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+    private void loadData() {
+        RequestCall requestCall;
+        if (!marketClassify.id.equals("")) {//加载全部的时候 appClassify参数不加上去
+            requestCall = OkHttpUtils.get().url(APP_LIST_URL)
+                    .addParams("appClassify", marketClassify.id)
+                    .addParams("currentPage", currentPage + "")
+                    .addParams("pageSize", pageSize + "")
+                    .build();
+        } else {
+            requestCall = OkHttpUtils.get().url(APP_LIST_URL)
+                    .addParams("currentPage", currentPage + "")
+                    .addParams("pageSize", pageSize + "")
+                    .build();
         }
+        requestCall.execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                initialize();
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                try {
+                    JSONObject data = new JSONObject(response);
+                    if (data.optInt("statusCode") == 200) {
+                        ArrayList<MarketApp> apps = new ArrayList<MarketApp>();
+                        JSONArray array = data.optJSONObject("data").optJSONArray("list");
+                        for (int i = 0; i < array.length(); i++) {
+                            JSONObject item = array.optJSONObject(i);
+                            MarketApp marketApp = new MarketApp();
+                            marketApp.remoteUpdate = item.optString("remoteUpdate");
+                            marketApp.iocn = item.optString("icon");
+                            marketApp.description = item.optString("description");
+                            marketApp.language = item.optString("language");
+                            marketApp.packages = item.optString("packages");
+                            marketApp.systemRequirement = item.optString("systemRequirement");
+                            marketApp.isPublish = item.optString("isPublish");
+                            marketApp.version = item.optString("version");
+                            marketApp.platform = item.optString("platform");
+                            marketApp.url = item.optString("url");
+                            marketApp.removeApp = item.optString("removeApp");
+                            marketApp.supportPlatform = item.optString("supportPlatform");
+                            marketApp.size = item.optString("size");
+                            marketApp.name = item.optString("name");
+                            marketApp.id = item.optString("id");
+                            marketApp.deviceRequirement = item.optString("deviceRequirement");
+                            marketApp.pushInstall = item.optString("pushInstall");
+                            marketApp.downloadCount = item.optString("downloadCount");
+                            marketApp.appClassify = marketClassify.id;
+                            marketApp.appClassifyName=item.optString("appClassify");
+                            marketApp.createDate = item.optString("createDate");
+                            marketApp.page = currentPage + "";
+                            apps.add(marketApp);
+                        }
+                        if (currentPage == 1) {//如果是第一页，则判断头部是否一样，一样不刷新
+                            if (marketAppList.toString().startsWith(apps.toString()))
+                                return;
+                        }
+                        new MarkePlaceDBHelper(getContext()).deleteAppList(marketClassify.id, currentPage + "");
+                        new MarkePlaceDBHelper(getContext()).addAppList(apps);
+                        initialize();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void initialize() {
+        tasks.clear();
+        marketAppList = new MarkePlaceDBHelper(getContext()).getAllAppList(marketClassify.id, currentPage + "");
+        for (int id = 0; id < marketAppList.size(); id++) {
+            tasks.add(controller.newTask(Long.parseLong(marketAppList.get(id).id), marketAppList.get(id).url,
+                    marketAppList.get(id).name+".apk").extras
+                    (marketAppList.get(id).iocn).create());
+        }
+        initDataView();
+    }
+
+    private void initDataView() {
+        RecyclerView recyclerView = (RecyclerView) contentView.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.setAdapter(new DownloadAdapter());
     }
 
     @Override
@@ -134,15 +207,13 @@ AppDialog appDialog;
             task.setListener(holder);
             //-------------------
             MarketApp app = marketAppList.get(position);
-            holder.title.setText(app.appName);
-            holder.downNumber.setText(app.appDownNumber + "次");
-            holder.content.setText(app.appDetial);
-            if (task.size == 0) {
-                holder.size.setText(R.string.download_unknown);
-            } else {
-                holder.size.setText(String.format(Locale.US, "%.1fMB", task.size / 1048576.0f));
-            }
-            Glide.with(MarkePlaceFragment.this).load(app.appIcon).into(holder.icon);
+            holder.title.setText(app.name);
+            holder.downNumber.setText(app.downloadCount + "次");
+            holder.content.setText(app.description);
+            holder.size.setText(app.size);
+            if (!app.iocn.startsWith("http://"))
+                app.iocn = BASE_URL + app.iocn;
+            Glide.with(MarkePlaceFragment.this).load(app.iocn).into(holder.icon);
         }
 
         @Override
@@ -161,7 +232,6 @@ AppDialog appDialog;
         TextView content;
         TextView downNumber;
         Button download;
-
         private DownloadViewHolder(View itemView) {
             super(itemView);
             icon = (ImageView) itemView.findViewById(R.id.icon);
@@ -171,9 +241,6 @@ AppDialog appDialog;
             content = (TextView) itemView.findViewById(R.id.content);
             downNumber = (TextView) itemView.findViewById(R.id.number);
             download.setOnClickListener(this);
-//            icon.setOnClickListener(this);
-//            title.setOnClickListener(this);
-//            content.setOnClickListener(this);
             itemView.setOnClickListener(this);
         }
 
@@ -183,8 +250,8 @@ AppDialog appDialog;
 
         @Override
         public void onClick(View v) {
+            final int position = getAdapterPosition();
             if (v.getId() == R.id.download) {
-                final int position = getAdapterPosition();
                 final DownloadTask task = tasks.get(position);
                 switch (state) {
                     case STATE_FAILED:
@@ -199,10 +266,11 @@ AppDialog appDialog;
                         task.pause();
                         break;
                     case STATE_FINISHED:
-                        //task.path
+                        new FileManager(getContext()).open(task.name,task.path);
                         break;
                 }
-            }else {
+            } else {
+                appDialog.setMarketApp(marketAppList.get(position));
                 appDialog.show();
             }
         }
