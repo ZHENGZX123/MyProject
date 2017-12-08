@@ -32,8 +32,11 @@ import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 public class KWApp extends MarketPlaceApplication {
 
-    //    public static final String server = "http://192.168.8.161:8082/mdms/";
+    //    public static final String server = "http://192.168.8.161:8083/";
     public static final String server = "http://202.104.136.9:8080/mdms/";
+//    public static final String server = "http://www.yuertong.com/mdms/";
+
+
     public static final int MSG_TOAST = 0;//注册华为
     public static final int MSG_INSTALL = 1;//注册华为
     public static final int MSG_LOCK = 2;//锁屏
