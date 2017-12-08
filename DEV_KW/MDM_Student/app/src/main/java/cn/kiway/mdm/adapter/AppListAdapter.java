@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import cn.kiway.marketplace.activity.MarkePlaceViewActivity;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.SystemSetupActivity;
@@ -143,7 +144,8 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
                 return;
             }
             if (packageName.equals(MARKETPLACE)) {//应用市场
-                context.startActivity(new Intent(context, SystemSetupActivity.class));
+               // context.startActivity(new Intent(context, MarkePlaceActivity.class));
+                context.startActivity(new Intent(context, MarkePlaceViewActivity.class));
                 return;
             }
             if (packageName.equals(KIWAYSETTING)) {//应用市场
