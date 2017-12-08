@@ -1,7 +1,6 @@
 package cn.kiway.mdm;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
@@ -15,6 +14,7 @@ import org.xutils.x;
 
 import java.io.File;
 
+import cn.kiway.marketplace.MarketPlaceApplication;
 import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
@@ -30,7 +30,7 @@ import static cn.kiway.mdm.utils.Utils.huaweiPush;
  * Created by Administrator on 2017/6/9.
  */
 
-public class KWApp extends Application {
+public class KWApp extends MarketPlaceApplication {
 
     //    public static final String server = "http://192.168.8.161:8082/mdms/";
     public static final String server = "http://202.104.136.9:8080/mdms/";
