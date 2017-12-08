@@ -5,12 +5,54 @@ package cn.kiway.marketplace.util;
  */
 
 public class MarketApp {
-    public String appClassify;//分类的ID
-    public String appIcon;//应用图标
-    public String appName;//应用名字
-    public String appDownUrl;//应用下载地址
-    public String appSize;//应用大小
-    public String appDetial;//应用详情介绍
-    public String appDownNumber;//应用下载次数
-    public String appVersion;//应用的版本号
+    public String remoteUpdate;
+    public String iocn;
+    public String description;
+    public String language;
+    public String packages;
+    public String systemRequirement;
+    public String isPublish;
+    public String version;
+    public String platform;
+    public String url;
+    public String removeApp;
+    public String supportPlatform;
+    public String size;
+    public String name;
+    public String id;
+    public String deviceRequirement;
+    public String pushInstall;
+    public String downloadCount;
+    public String appClassify;
+    public String createDate;
+    public String page;
+    public String appClassifyName;
+
+    @Override
+    public String toString() {
+        return "MarketApp{" +
+                "remoteUpdate='" + remoteUpdate + '\'' +
+                ", iocn='" + iocn + '\'' +
+                ", description='" + description + '\'' +
+                ", language='" + language + '\'' +
+                ", packages='" + packages + '\'' +
+                ", systemRequirement='" + systemRequirement + '\'' +
+                ", isPublish='" + isPublish + '\'' +
+                ", version='" + version + '\'' +
+                ", platform='" + platform + '\'' +
+                ", url='" + url + '\'' +
+                ", removeApp='" + removeApp + '\'' +
+                ", supportPlatform='" + supportPlatform + '\'' +
+                ", size='" + size + '\'' +
+                ", name='" + name + '\'' +
+                ", id='" + id + '\'' +
+                ", deviceRequirement='" + deviceRequirement + '\'' +
+                ", pushInstall='" + pushInstall + '\'' +
+                ", downloadCount='" + downloadCount + '\'' +
+                ", appClassify='" + appClassify + '\'' +
+                ", createDate='" + createDate + '\'' +
+                ", page='" + page + '\'' +
+                ", appClassifyName='" + appClassifyName + '\'' +
+                '}';
+    }
 }
