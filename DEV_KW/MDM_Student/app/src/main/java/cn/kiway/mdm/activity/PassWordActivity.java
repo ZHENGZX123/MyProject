@@ -6,6 +6,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import cn.kiway.mdm.R;
+import cn.kiway.mdm.utils.DES;
 
 /**
  * Created by Administrator on 2017/10/12.
@@ -28,7 +29,7 @@ public class PassWordActivity extends BaseActivity {
             Toast.makeText(this, "请输入原密码", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (!oldEdit.getText().toString().equals(getSharedPreferences("kiway", 0).getString("password", ""))) {
+        if (!oldEdit.getText().toString().equals(new DES().decrypt(this.getSharedPreferences("kiway", 0).getString("password", "")))) {
             Toast.makeText(this, "原密码输入错误", Toast.LENGTH_SHORT).show();
             return;
         }
