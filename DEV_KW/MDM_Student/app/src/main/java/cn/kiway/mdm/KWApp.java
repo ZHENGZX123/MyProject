@@ -142,14 +142,20 @@ public class KWApp extends MarketPlaceApplication {
                 MDMHelper.getAdapter().uninstallPackage(msg.obj.toString());
             } else if (msg.what == MSG_PARENT_BIND) {
                 //绑定
-                Utils.showBindDialog(KWApp.instance.currentActivity, (JSONObject) msg.obj);
+                if (KWApp.instance != null) {
+                    Utils.showBindDialog(KWApp.instance.currentActivity, (JSONObject) msg.obj);
+                }
             } else if (msg.what == MSG_SMS) {
-                Utils.showSMSDialog(KWApp.instance.currentActivity, (SmsMessage) msg.obj);
+                if (KWApp.instance != null) {
+                    Utils.showSMSDialog(KWApp.instance.currentActivity, (SmsMessage) msg.obj);
+                }
             } else if (msg.what == MSG_ATTEND_CALSS) {
-                Intent in = getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
-                in.putExtra("shangke", msg.obj.toString());
-                RemoteAidlService.attendClass(msg.obj.toString());
-                Utils.startPackage(currentActivity, ZHIHUIKETANGPG, in);
+                if (KWApp.instance != null) {
+                    Intent in = getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
+                    in.putExtra("shangke", msg.obj.toString());
+                    RemoteAidlService.attendClass(msg.obj.toString());
+                    Utils.startPackage(currentActivity, ZHIHUIKETANGPG, in);
+                }
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
                 RemoteAidlService.goOutClass();
             } else if (msg.what == MSG_MESSAGE) {
