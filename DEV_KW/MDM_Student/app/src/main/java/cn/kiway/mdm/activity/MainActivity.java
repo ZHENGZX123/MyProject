@@ -225,7 +225,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
     };
 
-
     private void setDefaultSMSApp() {
         Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
         intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getPackageName());
@@ -277,10 +276,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void uploadApp() {
-        String today = Utils.getToday();
-        if (getSharedPreferences("kiway", 0).getBoolean(today, false)) {
-            return;
-        }
+//        String today = Utils.getToday();
+//        if (getSharedPreferences("kiway", 0).getBoolean(today, false)) {
+//            return;
+//        }
         Utils.uploadApp(this);
     }
 

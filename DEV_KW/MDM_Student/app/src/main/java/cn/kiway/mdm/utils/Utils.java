@@ -1033,58 +1033,66 @@ public class Utils {
     }
 
     public static void uploadApp(final MainActivity c) {
+        //1.判断是不是wifi环境
         if (!NetworkUtil.isWifi(c)) {
             return;
         }
-        c.runOnUiThread(new Runnable() {
+        new Thread() {
             @Override
             public void run() {
-                //判断是不是wifi环境
-                //1.上报APP列表
-                //2.上传APP图标
-                try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-                    client.setTimeout(10000);
-                    String url = clientUrl + "device/appInstallation";
-                    Log.d("test", "applist url = " + url);
-                    JSONArray array = new JSONArray();
-                    ArrayList<App> installApps = scanLocalInstallAppList(c, false);
-                    int count = installApps.size();
-                    String imei = Utils.getIMEI(c);
-                    for (int i = 0; i < count; i++) {
-                        JSONObject o1 = new JSONObject();
-                        App a = installApps.get(i);
-                        o1.put("imei", imei);
-                        o1.put("appName", a.name);
-                        o1.put("packages", a.packageName);
-                        o1.put("versionName", a.versionName);
-                        o1.put("versionCode", a.versionCode);
-                        o1.put("category", a.category);
-                        //o1.put("icon",a.icon);
-                        array.put(o1);
-                    }
-                    Log.d("test", "applist array = " + array.toString());
-                    StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
-                    client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int code, Header[] headers, String ret) {
-                            Log.d("test", "applist onSuccess = " + ret);
-                            check301(c, ret);
-                            String today = getToday();
-                            c.getSharedPreferences("kiway", 0).edit().putBoolean(today, true).commit();
-                        }
-
-                        @Override
-                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            Log.d("test", "applist onFailure = " + s);
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.d("test", "e = " + e.toString());
+                //2.上报APP图标
+                final ArrayList<App> installApps = scanLocalInstallAppList(c, false);
+                for (App a : installApps) {
+                    APPIconUploader.UploadAPPIcon(c, a.packageName);
                 }
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //3.上传APP列表
+                        try {
+                            AsyncHttpClient client = new AsyncHttpClient();
+                            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+                            client.setTimeout(10000);
+                            String url = clientUrl + "device/appInstallation";
+                            Log.d("test", "applist url = " + url);
+                            JSONArray array = new JSONArray();
+                            int count = installApps.size();
+                            String imei = Utils.getIMEI(c);
+                            for (int i = 0; i < count; i++) {
+                                JSONObject o1 = new JSONObject();
+                                App a = installApps.get(i);
+                                o1.put("imei", imei);
+                                o1.put("appName", a.name);
+                                o1.put("packages", a.packageName);
+                                o1.put("versionName", a.versionName);
+                                o1.put("versionCode", a.versionCode);
+                                o1.put("category", a.category);
+                                o1.put("icon", APPIconUploader.getAPPIcon(c, a.packageName));
+                                array.put(o1);
+                            }
+                            Log.d("test", "applist array = " + array.toString());
+                            StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
+                            client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                                @Override
+                                public void onSuccess(int code, Header[] headers, String ret) {
+                                    Log.d("test", "applist onSuccess = " + ret);
+                                    check301(c, ret);
+                                    String today = getToday();
+                                    c.getSharedPreferences("kiway", 0).edit().putBoolean(today, true).commit();
+                                }
+
+                                @Override
+                                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                                    Log.d("test", "applist onFailure = " + s);
+                                }
+                            });
+                        } catch (Exception e) {
+                            Log.d("test", "e = " + e.toString());
+                        }
+                    }
+                });
             }
-        });
+        }.start();
     }
 
     public static String getToday() {
@@ -1551,9 +1559,9 @@ public class Utils {
         if (bindDialog != null && bindDialog.isShowing()) {
             return;
         }
-        ShowMessageDailog dailog=new ShowMessageDailog(m);
+        ShowMessageDailog dailog = new ShowMessageDailog(m);
         dailog.setToken(token);
-        dailog.setShowMessage("家长要绑定这个帐号，是否同意？",PARENT_BIND);
+        dailog.setShowMessage("家长要绑定这个帐号，是否同意？", PARENT_BIND);
         dailog.show();
 //        AlertDialog.Builder builder = new AlertDialog.Builder(m, AlertDialog.THEME_HOLO_LIGHT);
 //        builder.setMessage();
