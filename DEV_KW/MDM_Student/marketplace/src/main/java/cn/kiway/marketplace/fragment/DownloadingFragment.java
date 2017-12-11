@@ -48,6 +48,10 @@ public class DownloadingFragment extends Fragment implements View.OnClickListene
     private DownloadManager manager;
     private FileManager fileManager;
 
+    public DownloadingFragment() {
+        super();
+    }
+
     private DownloadJobListener jobListener = new DownloadJobListener() {
         @Override
         public void onCreated(DownloadInfo info) {

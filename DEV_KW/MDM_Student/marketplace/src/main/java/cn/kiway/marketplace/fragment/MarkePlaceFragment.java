@@ -49,13 +49,17 @@ public class MarkePlaceFragment extends Fragment {
 
     private List<DownloadTask> tasks = new ArrayList<>();
     ;
-    private List<MarketApp> marketAppList=new ArrayList<>();
+    private List<MarketApp> marketAppList = new ArrayList<>();
     private int pageSize = 20;
     private int currentPage = 1;
     DownloadManager controller;
     AppDialog appDialog;
     MarketClassify marketClassify;
     private View contentView;
+
+    public MarkePlaceFragment() {
+        super();
+    }
 
     public MarkePlaceFragment(MarketClassify marketClassify) {
         this.marketClassify = marketClassify;
@@ -81,6 +85,8 @@ public class MarkePlaceFragment extends Fragment {
 
     private void loadData() {
         RequestCall requestCall;
+        if (marketClassify==null)
+            return;
         if (!marketClassify.id.equals("")) {//加载全部的时候 appClassify参数不加上去
             requestCall = OkHttpUtils.get().url(APP_LIST_URL)
                     .addParams("appClassify", marketClassify.id)
@@ -128,7 +134,7 @@ public class MarkePlaceFragment extends Fragment {
                             marketApp.pushInstall = item.optString("pushInstall");
                             marketApp.downloadCount = item.optString("downloadCount");
                             marketApp.appClassify = marketClassify.id;
-                            marketApp.appClassifyName=item.optString("appClassify");
+                            marketApp.appClassifyName = item.optString("appClassify");
                             marketApp.createDate = item.optString("createDate");
                             marketApp.page = currentPage + "";
                             apps.add(marketApp);
@@ -153,7 +159,7 @@ public class MarkePlaceFragment extends Fragment {
         marketAppList = new MarkePlaceDBHelper(getContext()).getAllAppList(marketClassify.id, currentPage + "");
         for (int id = 0; id < marketAppList.size(); id++) {
             tasks.add(controller.newTask(Long.parseLong(marketAppList.get(id).id), marketAppList.get(id).url,
-                    marketAppList.get(id).name+".apk").extras
+                    marketAppList.get(id).name + ".apk").extras
                     (marketAppList.get(id).iocn).create());
         }
         initDataView();
@@ -232,6 +238,7 @@ public class MarkePlaceFragment extends Fragment {
         TextView content;
         TextView downNumber;
         Button download;
+
         private DownloadViewHolder(View itemView) {
             super(itemView);
             icon = (ImageView) itemView.findViewById(R.id.icon);
@@ -266,7 +273,7 @@ public class MarkePlaceFragment extends Fragment {
                         task.pause();
                         break;
                     case STATE_FINISHED:
-                        new FileManager(getContext()).open(task.name,task.path);
+                        new FileManager(getContext()).open(task.name, task.path);
                         break;
                 }
             } else {

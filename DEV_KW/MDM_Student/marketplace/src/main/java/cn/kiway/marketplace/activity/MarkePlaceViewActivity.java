@@ -36,7 +36,7 @@ public class MarkePlaceViewActivity extends FragmentActivity {
     FragmentPagerAdapter adapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.marke_activity_mainview);
         loadData();
