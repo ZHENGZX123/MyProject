@@ -155,4 +155,6 @@ public interface IMDMAdapter {
 
     Bitmap captureScreen();
 
+    void setSystemBrowserDisabled(boolean disabled);
+
 }

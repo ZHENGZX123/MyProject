@@ -170,13 +170,18 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
             new DevicePackageManager().addDisallowedUninstallPackages(mAdminName, packageNames);
         } catch (Exception e) {
             e.printStackTrace();
-
         }
     }
 
     @Override
     public void removeDisallowedUninstallPackages() {
-
+        try {
+            DevicePackageManager devicePackageManager = new DevicePackageManager();
+            List<String> packageName = devicePackageManager.getDisallowedUninstallPackageList(mAdminName);
+            devicePackageManager.removeDisallowedUninstallPackages(mAdminName, packageName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -495,6 +500,16 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
 
         }
         return null;
+    }
+
+    @Override
+    public void setSystemBrowserDisabled(boolean disabled) {
+        try {
+//            new DeviceRestrictionManager().setSystemBrowserDisabled(mAdminName, disabled);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
     }
 
 }

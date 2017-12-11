@@ -498,5 +498,10 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
         return null;
     }
 
+    @Override
+    public void setSystemBrowserDisabled(boolean disabled) {
+        //TODO 暂不支持，看看别的方法能不能代替
+    }
+
 
 }
