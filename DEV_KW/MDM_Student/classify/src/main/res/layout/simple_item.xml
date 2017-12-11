@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.anarchy.classify.simple.widget.InsertAbleGridView
+<com.anarchy.classify.simple.cn.kiway.mdm.widget.InsertAbleGridView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="10dp"
@@ -7,4 +7,4 @@
     android:background="#ffffff"
     android:layout_height="match_parent">
 
-</com.anarchy.classify.simple.widget.InsertAbleGridView>
+</com.anarchy.classify.simple.cn.kiway.mdm.widget.InsertAbleGridView>
