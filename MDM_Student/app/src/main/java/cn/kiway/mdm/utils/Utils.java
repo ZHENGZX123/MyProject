@@ -847,6 +847,7 @@ public class Utils {
                 whiteList.add(ac.packages);
             }
             whiteList.add("cn.kiway.mdm");
+            whiteList.add("cn.kiway.session");
             m.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
