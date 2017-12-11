@@ -32,11 +32,10 @@ public class BroadCastUdp extends Thread {
     public void setMessageData(String data) {
         this.dataString = data;
     }
-
+        @Override
     public void run() {
         byte[] data1 = new byte[256];
         try {
-            if (udpSocket == null)
                 udpSocket = new DatagramSocket(DEFAULT_PORT);
             dataPacket = new DatagramPacket(buffer, MAX_DATA_PACKET_LENGTH);
             udpPacket = new DatagramPacket(data1, data1.length);
@@ -57,7 +56,21 @@ public class BroadCastUdp extends Thread {
                 Logger.log("发送广播：：：" + dataString);
                 sleep(2000);
             } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
+    }
+    public void Close(){
+     isRun = false;
+        try {
+            udpSocket.close();
+            udpSocket=null;
+            dataPacket=null;
+            udpPacket=null;
+            interrupt();
+            join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

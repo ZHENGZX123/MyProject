@@ -172,7 +172,6 @@ public class ScreenActivity extends Activity {
             e.printStackTrace();
         }
         return baos.toByteArray();
-
     }
 
     class MyHandler extends Handler {

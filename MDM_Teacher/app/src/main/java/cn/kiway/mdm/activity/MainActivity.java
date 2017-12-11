@@ -63,7 +63,7 @@ import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.0.8";
+    private static final String currentPackageVersion = "0.0.9";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -309,7 +309,7 @@ public class MainActivity extends BaseActivity {
                             String url = obj.optJSONObject("data").optString("url");
                             Log.d("test", "obj = " + obj.toString());
                             wv.loadUrl(accpterFilePath.replace("fileName", filePath.split("/")[filePath.split("/")
-                                    .length - 1]).replace("filePath", url));
+                                    .length - 1]).replace("filePath", url).replace("fileSize",file.length()+""));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
