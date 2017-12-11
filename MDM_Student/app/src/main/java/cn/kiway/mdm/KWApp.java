@@ -31,11 +31,11 @@ import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 public class KWApp extends MarketPlaceApplication {
 
-    public static final String serverUrl = "http://192.168.8.161:8083/";//mdm
-    public static final String clientUrl = "http://192.168.8.161:8084/";//device开头的
+//    public static final String serverUrl = "http://192.168.8.161:8083/";//mdm
+//    public static final String clientUrl = "http://192.168.8.161:8084/";//device开头的
 
-//    public static final String clientUrl = "http://202.104.136.9:8080/mdms/";
-//    public static final String serverUrl = "http://202.104.136.9:8080/mdms/";
+    public static final String clientUrl = "http://202.104.136.9:8080/mdms/";
+    public static final String serverUrl = "http://202.104.136.9:8080/mdms/";
 
     //public static final String serverUrl = "http://www.yuertong.com/mdms/";
 
@@ -57,9 +57,9 @@ public class KWApp extends MarketPlaceApplication {
     public static final int MSG_PARENT_BIND = 14;//绑定家长
     public static final int MSG_ATTEND_CALSS = 15;//上课
     public static final int MSG_GET_OUT_OF_CALASS = 16;//下课
-    public static final int MSG_SMS = 17;//下课
-    public static final int MSG_MESSAGE = 19;//发送消息
-    public static final int MSG_PUSH_FILE_I = 20;//局域网接收文件
+    public static final int MSG_SMS = 17;//短信
+    public static final int MSG_MESSAGE = 18;//发送消息
+    public static final int MSG_PUSH_FILE_I = 19;//局域网接收文件
 
     public static KWApp instance;
     public static boolean temporary_app = false;
