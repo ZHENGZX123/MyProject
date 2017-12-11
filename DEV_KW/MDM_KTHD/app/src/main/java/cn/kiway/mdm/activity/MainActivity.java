@@ -103,6 +103,7 @@ public class MainActivity extends BaseActivity {
             }
         });
         isRun = false;
+        if(udpSocket!=null)
         udpSocket.close();
         udpSocket=null;
     }
