@@ -1,7 +1,7 @@
 package cn.kiway.mdm.dialog;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -30,9 +30,9 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
     View view;
     int position;
     String title;
-    private Context c;
+    private Activity c;
 
-    public CheckPassword(Context context, CheckPasswordCall checkPasswordCall) {
+    public CheckPassword(Activity context, CheckPasswordCall checkPasswordCall) {
         super(context, R.style.LoadingDialog);
         this.c = context;
         this.checkPasswordCall = checkPasswordCall;
@@ -47,6 +47,7 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
     public void setTitle(String title) {
         this.title = title;
     }
+
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +76,11 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
         }
         if (title != null && title.equals("请设置初始密码")) {//设置初始密码则不走回调了
             dismiss();
-            getContext().getSharedPreferences("kiway", 0).edit().putString("password", new DES().encrypt(editText.getText().toString()))
-                    .commit();
+            String defaultPwd = editText.getText().toString();
+            //1.存到本地
+            getContext().getSharedPreferences("kiway", 0).edit().putString("password", new DES().encrypt(defaultPwd)).commit();
+            //2.存到中心
+            Utils.updateDefaultPwd(c, defaultPwd);
             return;
         }
         String password = new DES().decrypt(getContext().getSharedPreferences("kiway", 0).getString("password", ""));
@@ -104,7 +108,7 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
         if (title == null)
             title = "请输入密码";
         textView.setText(title);
-        if (editText!=null)
+        if (editText != null)
             editText.setText("");
     }
 

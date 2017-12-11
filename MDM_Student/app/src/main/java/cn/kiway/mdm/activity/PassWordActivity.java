@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.utils.DES;
+import cn.kiway.mdm.utils.Utils;
 
 /**
  * Created by Administrator on 2017/10/12.
@@ -41,9 +42,9 @@ public class PassWordActivity extends BaseActivity {
             Toast.makeText(this, "两次输入的密码不一样", Toast.LENGTH_SHORT).show();
             return;
         }
-      //  getSharedPreferences("kiway", 0).edit().putString("password", editText1.getText().toString()).commit();
-        getSharedPreferences("kiway", 0).edit().putString("password", new DES().encrypt(editText1.getText().toString()))
-                .commit();
+        String defaultPwd = editText1.getText().toString();
+        getSharedPreferences("kiway", 0).edit().putString("password", new DES().encrypt(defaultPwd)).commit();
+        Utils.updateDefaultPwd(this, defaultPwd);
         Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
         finish();
     }

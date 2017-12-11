@@ -2027,4 +2027,36 @@ public class Utils {
             }
         });
     }
+
+    public static void updateDefaultPwd(final Activity c, final String defaultPwd) {
+        c.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+                    client.setTimeout(10000);
+                    RequestParams param = new RequestParams();
+                    param.put("imei", Utils.getIMEI(c));
+                    param.put("password", defaultPwd);
+                    Log.d("test", "updateDefaultPwd params = " + param.toString());
+                    String url = clientUrl + "device/student/defaultPassword";
+                    Log.d("test", "updateDefaultPwd = " + url);
+                    client.post(c, url, param, new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "updateDefaultPwd onSuccess = " + ret);
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "updateDefaultPwd onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
+                }
+            }
+        });
+    }
 }
