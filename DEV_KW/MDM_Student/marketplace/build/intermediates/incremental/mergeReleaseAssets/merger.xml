@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="F:\kiway_xm\MDM_Student\marketplace\src\main\assets"><file name="data.json" path="F:\kiway_xm\MDM_Student\marketplace\src\main\assets\data.json"/></source><source path="F:\kiway_xm\MDM_Student\marketplace\build\generated\assets\shaders\release"/></dataSet><dataSet config="release"><source path="F:\kiway_xm\MDM_Student\marketplace\src\release\assets"/></dataSet></merger>
