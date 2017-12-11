@@ -105,9 +105,9 @@
     <orderEntry type="library" exported="" name="download-1.1.0" level="project" />
     <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />
     <orderEntry type="library" exported="" name="BaiduLBS_Android" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="support-vector-drawable-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="animated-vector-drawable-23.3.0" level="project" />
+    <orderEntry type="library" exported="" name="okhttputils-2.6.2" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.3.0" level="project" />
     <orderEntry type="module" module-name="mdmsdk" exported="" />
     <orderEntry type="module" module-name="zxing" exported="" />
@@ -116,8 +116,9 @@
     <orderEntry type="library" exported="" name="org.apache.http.legacy-android-23" level="project" />
     <orderEntry type="library" exported="" name="hwMdm" level="project" />
     <orderEntry type="library" exported="" name="jichengshixun" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="hamcrest-core-1.3" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="junit-4.12" level="project" />
-    <orderEntry type="library" exported="" name="marketplace-unspecified" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-23.3.0" level="project" />
+    <orderEntry type="library" exported="" name="okio-1.8.0" level="project" />
+    <orderEntry type="library" exported="" name="okhttp-3.3.1" level="project" />
+    <orderEntry type="library" exported="" name="glide-3.7.0" level="project" />
   </component>
 </module>
