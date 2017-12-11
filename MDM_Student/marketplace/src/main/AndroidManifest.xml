@@ -8,9 +8,13 @@
 
                  android:supportsRtl="true"
     >
-        <activity android:name=".activity.MarkePlaceActivity">
+        <activity android:name=".activity.MarkePlaceActivity"
+                  android:launchMode="singleTask"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activity.MarkePlaceViewActivity">
+        <activity android:name=".activity.MarkePlaceViewActivity"
+                  android:launchMode="singleTask"
+                  android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activity.DownloadActivity"

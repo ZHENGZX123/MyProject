@@ -49,7 +49,7 @@ public class DownloadedFragment extends Fragment implements View.OnClickListener
     private List<DownloadInfo> downloads;
     private DownloadManager manager;
     private FileManager fileManager;
-
+public DownloadedFragment(){super();}
     private DownloadJobListener jobListener = new DownloadJobListener() {
         @Override
         public void onCreated(DownloadInfo info) {
