@@ -21,7 +21,7 @@ import cn.kiway.mdm.entity.Class;
 import cn.kiway.mdm.entity.School;
 import cn.kiway.mdm.utils.Utils;
 
-import static cn.kiway.mdm.KWApp.server;
+import static cn.kiway.mdm.KWApp.clientUrl;
 
 /**
  * Created by Administrator on 2017/10/17.
@@ -97,7 +97,7 @@ public class LoginActivity extends BaseActivity {
         final String imei = Utils.getIMEI(this);
         String token = getSharedPreferences("huawei", 0).getString("token", "");
         Log.d("test", "token = " + token);
-        if (TextUtils.isEmpty(token)){
+        if (TextUtils.isEmpty(token)) {
             toast("华为token不能为空");
             return;
         }
@@ -106,7 +106,7 @@ public class LoginActivity extends BaseActivity {
             showPD();
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            String url = server + "device/login";
+            String url = clientUrl + "device/login";
             Log.d("test", "url = " + url);
             RequestParams param = new RequestParams();
             param.put("classId", mClass.id);
@@ -116,7 +116,6 @@ public class LoginActivity extends BaseActivity {
             param.put("schoolId", mSchool.schoolId);
             param.put("name", name);
             param.put("IMEI", imei);
-            param.put("id", "");
             param.put("platform", "Android");
             param.put("token", token);
             param.put("operation", "login");
@@ -156,6 +155,7 @@ public class LoginActivity extends BaseActivity {
 
                 @Override
                 public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                    Log.d("test", "onFailure ret = " + ret);
                     dismissPD();
                     toast("请求失败，请稍后再试");
                 }

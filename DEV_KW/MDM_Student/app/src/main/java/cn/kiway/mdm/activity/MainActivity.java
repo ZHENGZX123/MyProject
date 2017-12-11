@@ -47,6 +47,7 @@ import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.utils.AppListUtils;
 import cn.kiway.mdm.utils.AppReceiverIn;
+import cn.kiway.mdm.utils.DESUtil;
 import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.Utils;
 import cn.kiway.mdm.view.viewPager.StereoPagerTransformer;
@@ -63,6 +64,7 @@ import static cn.kiway.mdm.utils.Constant.ZHIHUIKETANGPG;
 import static cn.kiway.mdm.utils.Constant._16;
 import static cn.kiway.mdm.utils.FileACache.ListFileName;
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
+import static cn.kiway.mdm.utils.Utils.oauth;
 
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener {
@@ -100,7 +102,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         setContentView(R.layout.activity_main);
         Log.d("test", "Main onCreate");
         instance = this;
-        KWApp.instance.setActivity(this);
         initView();
         //2.初始化界面
         initView();
@@ -137,6 +138,22 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         getLocation();
         //19.检查lock状态
         checkLock();
+        //20.鉴权
+        //oauth();
+    }
+
+    private void oauth() {
+        //1.网络鉴权
+        Utils.oauth(this, "9a9b01f8ab910e12422bcc0e88d95dff2f95f582", "cn.kiway.kthd");
+        //2.本地鉴权
+        try {
+            DESUtil des = null;
+            des = new DESUtil("cn.kiway.kthd");
+            String ret = des.encrypt("f2ec1fb69b27c7ab5260d2eb7cd95dea" + "9a9b01f8ab910e12422bcc0e88d95dff2f95f582");
+            Log.d("test", "encrypt ret = " + ret);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void checkLock() {
@@ -228,7 +245,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         Utils.checkTemperary(this);
         //2.检查关机
         Utils.checkShutDown(this);
-        KWApp.instance.setActivity(this);
     }
 
     private void checkIncomingCall() {

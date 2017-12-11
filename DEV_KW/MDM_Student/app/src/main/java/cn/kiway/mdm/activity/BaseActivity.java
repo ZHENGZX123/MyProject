@@ -33,7 +33,7 @@ import cn.kiway.mdm.utils.NetworkUtil;
 import cn.kiway.mdm.utils.Utils;
 import cn.kiway.mdmsdk.MDMHelper;
 
-import static cn.kiway.mdm.KWApp.server;
+import static cn.kiway.mdm.KWApp.clientUrl;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
 
 /**
@@ -133,25 +133,15 @@ public class BaseActivity extends Activity {
         //MDMHelper.getAdapter().setVpnDisabled(true); //这个失效。
         //MDMHelper.getAdapter().setTimeAndDateSetDisabled(false);//这个失效
 
-//        MDMHelper.getAdapter().setWifiDisabled(false);
-//        MDMHelper.getAdapter().setDataConnectivityDisabled(false);
-//        MDMHelper.getAdapter().setBluetoothDisabled(false);
-//        MDMHelper.getAdapter().setGPSDisabled(false);
-//        MDMHelper.getAdapter().setWifiApDisabled(false);
-//        MDMHelper.getAdapter().setScreenCaptureDisabled(false);
-//        MDMHelper.getAdapter().setNetworkLocationDisabled(false);
-//        MDMHelper.getAdapter().setMicrophoneDisabled(false);
-//        MDMHelper.getAdapter().setRestoreFactoryDisabled(false);
-//        MDMHelper.getAdapter().setSystemUpdateDisabled(false);
-
         //TODO 各种黑白名单
-
-        //移除白名单
+        //7.移除白名单
         List<String> currentList = MDMHelper.getAdapter().getInstallPackageWhiteList();
+        Log.d("test", "白名单size = " + currentList.size());
         if (currentList.size() > 0) {
             MDMHelper.getAdapter().removeInstallPackageWhiteList(currentList);
         }
 
+        //8.命令重置`
         getSharedPreferences("kiway", 0).edit().putInt("flag_camera", 1).commit();
         getSharedPreferences("kiway", 0).edit().putInt("flag_snapshot", 1).commit();
         getSharedPreferences("kiway", 0).edit().putInt("flag_location", 1).commit();
@@ -164,6 +154,7 @@ public class BaseActivity extends Activity {
         getSharedPreferences("kiway", 0).edit().putInt("flag_wifi", 1).commit();
         getSharedPreferences("kiway", 0).edit().putInt("flag_systemupdate", 1).commit();
         getSharedPreferences("kiway", 0).edit().putInt("flag_bluetooth", 1).commit();
+        KWApp.instance.excuteFlagCommand();
     }
 
     //下面是版本更新相关
@@ -173,7 +164,7 @@ public class BaseActivity extends Activity {
             public void run() {
                 try {
 
-                    HttpGet httpRequest = new HttpGet(server + "/static/download/version/zip_student.json");
+                    HttpGet httpRequest = new HttpGet(clientUrl + "/static/download/version/zip_student.json");
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
@@ -261,8 +252,6 @@ public class BaseActivity extends Activity {
             }
         });
     }
-
-
 
 
     public ShowMessageDailog showMessageDailog;

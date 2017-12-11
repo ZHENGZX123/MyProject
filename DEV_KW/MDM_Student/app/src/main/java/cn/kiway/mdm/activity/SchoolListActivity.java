@@ -27,7 +27,7 @@ import java.util.List;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.entity.School;
 
-import static cn.kiway.mdm.KWApp.server;
+import static cn.kiway.mdm.KWApp.serverUrl;
 
 /**
  * Created by Administrator on 2017/10/17.
@@ -73,7 +73,7 @@ public class SchoolListActivity extends BaseActivity {
             showPD();
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            String url = server + "common/school?addr=" + area;
+            String url = serverUrl + "common/school?addr=" + area;
             Log.d("test", "school url = " + url);
             client.get(this, url, new TextHttpResponseHandler() {
                 @Override

@@ -16,7 +16,6 @@ import java.io.File;
 
 import cn.kiway.marketplace.MarketPlaceApplication;
 import cn.kiway.mdm.activity.BaseActivity;
-import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
 import cn.kiway.mdm.aidlservice.RemoteAidlService;
 import cn.kiway.mdm.utils.HttpDownload;
@@ -32,10 +31,13 @@ import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 public class KWApp extends MarketPlaceApplication {
 
-    //    public static final String server = "http://192.168.8.161:8083/";
-    public static final String server = "http://202.104.136.9:8080/mdms/";
-//    public static final String server = "http://www.yuertong.com/mdms/";
+//    public static final String serverUrl = "http://192.168.8.161:8083/";//mdm
+//    public static final String clientUrl = "http://192.168.8.161:8084/";//device开头的
 
+    public static final String clientUrl = "http://202.104.136.9:8080/mdms/";
+    public static final String serverUrl = "http://202.104.136.9:8080/mdms/";
+
+    //public static final String serverUrl = "http://www.yuertong.com/mdms/";
 
     public static final int MSG_TOAST = 0;//注册华为
     public static final int MSG_INSTALL = 1;//注册华为
@@ -56,16 +58,12 @@ public class KWApp extends MarketPlaceApplication {
     public static final int MSG_ATTEND_CALSS = 15;//上课
     public static final int MSG_GET_OUT_OF_CALASS = 16;//下课
     public static final int MSG_SMS = 17;//下课
-    public static final int MSG_CONNECT = 18;//上课连接
     public static final int MSG_MESSAGE = 19;//发送消息
     public static final int MSG_PUSH_FILE_I = 20;//局域网接收文件
+
     public static KWApp instance;
     public static boolean temporary_app = false;
     public Activity currentActivity;
-    public boolean isIos = false;
-    private int result;
-    private Intent intent;
-    private MainActivity activity;
 
     public Handler mHandler = new Handler() {
         @Override
@@ -155,22 +153,8 @@ public class KWApp extends MarketPlaceApplication {
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
                 RemoteAidlService.goOutClass();
             } else if (msg.what == MSG_MESSAGE) {
-//                if (currentActivity != null) {
-//                    ((BaseActivity) currentActivity).NotifyShow(((JSONObject) msg.obj).optJSONObject("content")
-//                            .optString("title"), (
-//                            (JSONObject) msg.obj).optJSONObject("content").optString("content"), "发送人：" + (
-//                            (JSONObject) msg
-//                                    .obj).optJSONObject("content").optString("sendName"));
-//                    new MyDBHelper(currentActivity).addNofityMessage(((JSONObject) msg.obj).optJSONObject("content"));
-//                    if (KWApp.instance.currentActivity != null && KWApp.instance.currentActivity instanceof
-//                            NotifyMsgActivity) {
-//                        ((NotifyMsgActivity) KWApp.instance.currentActivity).refreshUI();
-//                    }
-//                }
                 RemoteAidlService.accpterMessage(msg.obj.toString());
             } else if (msg.what == MSG_PUSH_FILE_I) {
-//                if (currentActivity != null)
-//                    ((BaseActivity) currentActivity).downloadFile(msg.obj.toString());
             }
         }
     };
@@ -264,26 +248,5 @@ public class KWApp extends MarketPlaceApplication {
         int flag_bluetooth = getSharedPreferences("kiway", 0).getInt("flag_bluetooth", 1);
         MDMHelper.getAdapter().setBluetoothDisabled(flag_bluetooth == 0);
     }
-
-    public void setActivity(MainActivity activity) {
-        this.activity = activity;
-    }
-
-    public int getResult() {
-        return result;
-    }
-
-    public void setResult(int result1) {
-        this.result = result1;
-    }
-
-    public Intent getIntent() {
-        return intent;
-    }
-
-    public void setIntent(Intent intent1) {
-        this.intent = intent1;
-    }
-
 
 }

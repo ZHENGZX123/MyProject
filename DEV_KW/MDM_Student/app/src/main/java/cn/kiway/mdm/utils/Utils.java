@@ -89,7 +89,8 @@ import static android.content.Context.WIFI_SERVICE;
 import static cn.kiway.mdm.KWApp.MSG_LAUNCH_APP;
 import static cn.kiway.mdm.KWApp.MSG_LAUNCH_MDM;
 import static cn.kiway.mdm.KWApp.MSG_LOCK;
-import static cn.kiway.mdm.KWApp.server;
+import static cn.kiway.mdm.KWApp.clientUrl;
+import static cn.kiway.mdm.KWApp.serverUrl;
 import static java.lang.System.currentTimeMillis;
 
 /**
@@ -506,7 +507,7 @@ public class Utils {
                     array.put(o1);
                     Log.d("test", "location array = " + array.toString());
                     StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
-                    String url = server + "device/locationTrack";
+                    String url = clientUrl + "device/locationTrack";
                     Log.d("test", "locationTrack = " + url);
                     client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
                         @Override
@@ -548,7 +549,7 @@ public class Utils {
                             array.put(param);
                             Log.d("test", "array = " + array.toString());
                             StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
-                            String url = server + "device/deviceRuntime";
+                            String url = clientUrl + "device/deviceRuntime";
                             Log.d("test", "deviceRuntime = " + url);
                             client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
                                 @Override
@@ -585,7 +586,7 @@ public class Utils {
             param.put("message", "NullPointException At line 76");
             param.put("operation", "submitData");
             Log.d("test", "param = " + param.toString());
-            String url = server + "device/exceptions";
+            String url = clientUrl + "device/exceptions";
             Log.d("test", "exceptions = " + url);
             client.post(c, url, param, new TextHttpResponseHandler() {
                 @Override
@@ -626,7 +627,7 @@ public class Utils {
                     client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                     client.setTimeout(10000);
                     RequestParams param = new RequestParams();
-                    String url = server + "device/appCharge?imei=" + getIMEI(c);
+                    String url = clientUrl + "device/appCharge?imei=" + getIMEI(c);
                     Log.d("test", "appCharge = " + url);
                     client.get(c, url, param, new TextHttpResponseHandler() {
                         @Override
@@ -637,7 +638,7 @@ public class Utils {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 ArrayList<AppCharge> networks = new GsonBuilder().create().fromJson(data.toString(),
                                         new TypeToken<List<AppCharge>>() {
-                                }.getType());
+                                        }.getType());
                                 //存进数据库里
                                 new MyDBHelper(c).deleteAppcharge(null);
                                 for (AppCharge n : networks) {
@@ -669,7 +670,7 @@ public class Utils {
                     client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                     client.setTimeout(10000);
                     RequestParams param = new RequestParams();
-                    String url = server + "device/networkDeviceCharge?imei=" + getIMEI(c);
+                    String url = clientUrl + "device/networkDeviceCharge?imei=" + getIMEI(c);
                     Log.d("test", "networkDeviceCharge = " + url);
                     client.get(c, url, param, new TextHttpResponseHandler() {
                         @Override
@@ -680,7 +681,7 @@ public class Utils {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 ArrayList<Network> networks = new GsonBuilder().create().fromJson(data.toString(),
                                         new TypeToken<List<Network>>() {
-                                }.getType());
+                                        }.getType());
                                 //1.存进数据库里
                                 new MyDBHelper(c).deleteNetwork(null);
                                 for (Network n : networks) {
@@ -713,7 +714,7 @@ public class Utils {
                     client.setTimeout(10000);
                     RequestParams param = new RequestParams();
                     Log.d("test", "param = " + param.toString());
-                    String url = server + "device/wifi";
+                    String url = clientUrl + "device/wifi";
                     Log.d("test", "wifi = " + url);
                     client.get(c, url, param, new TextHttpResponseHandler() {
                         @Override
@@ -724,7 +725,7 @@ public class Utils {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 ArrayList<Wifi> wifis = new GsonBuilder().create().fromJson(data.toString(), new
                                         TypeToken<List<Wifi>>() {
-                                }.getType());
+                                        }.getType());
                                 //存进数据库里
                                 new MyDBHelper(c).deleteWifi(null);
                                 for (Wifi n : wifis) {
@@ -968,12 +969,13 @@ public class Utils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ComponentName cn = new RunningTaskUtil(context).getTopRunningTasks();
             packageName = cn.getPackageName();
+            Log.d("aaa", "packageName2 = " + packageName);
         } else {
             ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
             ComponentName cn = activityManager.getRunningTasks(1).get(0).topActivity;
             packageName = cn.getPackageName();
+            Log.d("aaa", "packageName3 = " + packageName);
         }
-        Log.d("aaa", "packageName2 = " + packageName);
         return packageName;
     }
 
@@ -1041,7 +1043,7 @@ public class Utils {
                     AsyncHttpClient client = new AsyncHttpClient();
                     client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                     client.setTimeout(10000);
-                    String url = server + "device/appInstallation";
+                    String url = clientUrl + "device/appInstallation";
                     Log.d("test", "applist url = " + url);
                     JSONArray array = new JSONArray();
                     ArrayList<App> installApps = scanLocalInstallAppList(c, false);
@@ -1165,7 +1167,7 @@ public class Utils {
                     client.setTimeout(10000);
                     RequestParams param = new RequestParams();
                     Log.d("test", "param = " + param.toString());
-                    String url = server + "device/appFunction?imei=" + getIMEI(c);
+                    String url = clientUrl + "device/appFunction?imei=" + getIMEI(c);
                     Log.d("test", "appFunction = " + url);
                     client.get(c, url, param, new TextHttpResponseHandler() {
                         @Override
@@ -1211,7 +1213,7 @@ public class Utils {
                             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString
                                     ("x-auth-token", ""));
                             client.setTimeout(10000);
-                            String url = server + "device/logout";
+                            String url = clientUrl + "device/logout";
                             Log.d("test", "url = " + url);
                             RequestParams param = new RequestParams();
                             param.put("operation", "invalidate");
@@ -1258,7 +1260,7 @@ public class Utils {
             param.put("module", "student");
             Log.d("test", "param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            String url = server + "push/installation";
+            String url = serverUrl + "push/installation";
             Log.d("test", "installationPush = " + url);
             client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
                 @Override
@@ -1299,7 +1301,7 @@ public class Utils {
                             param.put("imei", getIMEI(c));
                             param.put("token", token);
                             Log.d("test", "param = " + param.toString());
-                            String url = server + "device/uninstall";
+                            String url = clientUrl + "device/uninstall";
                             Log.d("test", "uninstallPush = " + url);
                             client.post(c, url, param, new TextHttpResponseHandler() {
                                 @Override
@@ -1345,7 +1347,7 @@ public class Utils {
             String token = c.getSharedPreferences("huawei", 0).getString("token", "");
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            String url = server + "device/login";
+            String url = clientUrl + "device/login";
             Log.d("test", "url = " + url);
             RequestParams param = new RequestParams();
             param.put("schoolId", c.getSharedPreferences("kiway", 0).getString("schoolId", ""));
@@ -1566,8 +1568,6 @@ public class Utils {
             }
         });
         bindDialog = builder.create();
-        //bindDialog.setCancelable(false);
-        //bindDialog.setCanceledOnTouchOutside(false);
         bindDialog.show();
     }
 
@@ -1581,7 +1581,7 @@ public class Utils {
                     Log.d("test", "xauthtoken = " + xauthtoken);
                     client.addHeader("x-auth-token", xauthtoken);
                     client.setTimeout(10000);
-                    String url = server + "device/student/response";
+                    String url = clientUrl + "device/student/response";
                     Log.d("test", "doBind = " + url);
                     RequestParams param = new RequestParams();
                     param.put("flag", flag);
@@ -1678,7 +1678,7 @@ public class Utils {
                     client.setTimeout(10000);
                     RequestParams param = new RequestParams();
                     Log.d("test", "param = " + param.toString());
-                    String url = server + "device/calls?imei=" + getIMEI(c);
+                    String url = clientUrl + "device/calls?imei=" + getIMEI(c);
                     Log.d("test", "calls = " + url);
                     client.get(c, url, param, new TextHttpResponseHandler() {
                         @Override
@@ -1689,7 +1689,7 @@ public class Utils {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 ArrayList<Call> calls = new GsonBuilder().create().fromJson(data.toString(), new
                                         TypeToken<List<Call>>() {
-                                }.getType());
+                                        }.getType());
                                 //存进数据库里
                                 new MyDBHelper(c).deleteCall(null);
                                 for (Call n : calls) {
@@ -1764,7 +1764,7 @@ public class Utils {
             param.put("message", message);
             param.put("froms", "studentDevice");
             Log.d("test", "param = " + param.toString());
-            String url = server + "device/parent/child/operation";
+            String url = clientUrl + "device/parent/child/operation";
             Log.d("test", "childOperation = " + url);
             client.post(c, url, param, new TextHttpResponseHandler() {
                 @Override
@@ -1987,5 +1987,38 @@ public class Utils {
         } else {
             Toast.makeText(c, "该应用没有安装", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public static void oauth(final MainActivity c, final String key, final String packageName) {
+        c.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+                    client.setTimeout(10000);
+                    RequestParams param = new RequestParams();
+                    param.put("appId", "f2ec1fb69b27c7ab5260d2eb7cd95dea");
+                    param.put("appKey", key);
+                    param.put("secretKey", packageName);
+                    Log.d("test", "oauth params = " + param.toString());
+                    String url = serverUrl + "mdm/auth";
+                    Log.d("test", "oauth = " + url);
+                    client.post(c, url, param, new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "oauth onSuccess = " + ret);
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "oauth onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
+                }
+            }
+        });
     }
 }
