@@ -139,6 +139,17 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         checkLock();
         //20.鉴权
         //oauth();
+        //21.判断初始密码
+        checkPassword();
+    }
+
+    private void checkPassword() {
+        String password = getSharedPreferences("kiway", 0).getString("password", "");
+        if (TextUtils.isEmpty(password)) {
+            dialog.setTitle("请设置初始密码");
+            dialog.setCancelable(false);
+            dialog.show();
+        }
     }
 
     private void oauth() {
@@ -363,13 +374,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     public void ChangePassWord(View view) {
         //1.设置初始密码
-        String password = getSharedPreferences("kiway", 0).getString("password", "");
-        if (TextUtils.isEmpty(password)) {
-            dialog.setTitle("请设置初始密码");
-            dialog.setCancelable(false);
-            dialog.show();
-            return;
-        }
         dialog.setTitle("请输入密码");
         dialog.setCancelable(true);
         dialog.setView(null, 1);
