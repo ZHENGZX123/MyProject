@@ -11,7 +11,6 @@ import android.widget.TextView;
 import org.json.JSONObject;
 
 import cn.kiway.mdm.R;
-import cn.kiway.mdm.dialog.CheckPassword;
 import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
@@ -20,12 +19,11 @@ import cn.kiway.mdm.utils.Utils;
  * Created by Administrator on 2017/10/13.
  */
 
-public class SettingActivity extends BaseActivity implements CheckPassword.CheckPasswordCall {
+public class SettingActivity extends BaseActivity  {
 
     private TextView mode;
     private ImageView codeIV;
     private RelativeLayout codeRL;
-    CheckPassword checkPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +32,6 @@ public class SettingActivity extends BaseActivity implements CheckPassword.Check
         mode = (TextView) findViewById(R.id.lock);
         codeIV = (ImageView) findViewById(R.id.codeIV);
         codeRL = (RelativeLayout) findViewById(R.id.codeRL);
-        checkPassword = new CheckPassword(this, this);
         if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
             mode.setText("当前已锁定");
         } else {
@@ -43,10 +40,15 @@ public class SettingActivity extends BaseActivity implements CheckPassword.Check
     }
 
     public void Lock(View view) {
-        checkPassword.setView(null, 1);
-        checkPassword.setCancelable(true);
-        checkPassword.setTitle("请输入密码");
-        checkPassword.show();
+        if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+            getSharedPreferences("kiway", 0).edit().putBoolean("locked", false).commit();
+            mode.setText("当前未锁定");
+            unlock();
+        } else {
+            getSharedPreferences("kiway", 0).edit().putBoolean("locked", true).commit();
+            mode.setText("当前已锁定");
+            lock();
+        }
     }
 
     public void NotifyMsg(View view) {
@@ -54,10 +56,7 @@ public class SettingActivity extends BaseActivity implements CheckPassword.Check
     }
 
     public void custom(View view) {
-        checkPassword.setView(null, 3);
-        checkPassword.setCancelable(true);
-        checkPassword.setTitle("请输入密码");
-        checkPassword.show();
+        startActivity(new Intent(this, AppListActivity3.class));
     }
 
     public void Code(View view) {
@@ -91,10 +90,39 @@ public class SettingActivity extends BaseActivity implements CheckPassword.Check
     }
 
     public void Logout(View view) {
-        checkPassword.setView(null, 2);
-        checkPassword.setCancelable(true);
-        checkPassword.setTitle("请输入密码");
-        checkPassword.show();
+        setResult(999);
+        FileACache.deleteListCache();
+        finish();
+        new Thread() {
+            @Override
+            public void run() {
+                //1.上报状态
+                Utils.deviceRuntime(SettingActivity.this, "2", false);
+                Utils.uninstallPush(SettingActivity.this);
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //2.注销
+                Utils.logout(SettingActivity.this);
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //3.清数据
+                getSharedPreferences("kiway", 0).edit().clear().commit();
+                new MyDBHelper(SettingActivity.this).deleteAppcharge(null);
+                new MyDBHelper(SettingActivity.this).deleteWifi(null);
+                new MyDBHelper(SettingActivity.this).deleteNetwork(null);
+                new MyDBHelper(SettingActivity.this).deleteCall(null);
+                new MyDBHelper(SettingActivity.this).deleteSMS(null);
+                new MyDBHelper(SettingActivity.this).deleteFile();
+                new MyDBHelper(SettingActivity.this).deleteNotifyMessage();
+
+            }
+        }.start();
     }
 
     public void Grade(View view) {
@@ -110,58 +138,4 @@ public class SettingActivity extends BaseActivity implements CheckPassword.Check
     }
     public void onSetting(View view){startActivity(new Intent(this,SystemSetupActivity.class));}
 
-    @Override
-    public void success(View vx, int position) throws Exception {
-        switch (position) {
-            case 1:
-                if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
-                    getSharedPreferences("kiway", 0).edit().putBoolean("locked", false).commit();
-                    mode.setText("当前未锁定");
-                    unlock();
-                } else {
-                    getSharedPreferences("kiway", 0).edit().putBoolean("locked", true).commit();
-                    mode.setText("当前已锁定");
-                    lock();
-                }
-                break;
-            case 2:
-                setResult(999);
-                FileACache.deleteListCache();
-                finish();
-                new Thread() {
-                    @Override
-                    public void run() {
-                        //1.上报状态
-                        Utils.deviceRuntime(SettingActivity.this, "2", false);
-                        Utils.uninstallPush(SettingActivity.this);
-                        try {
-                            sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        //2.注销
-                        Utils.logout(SettingActivity.this);
-                        try {
-                            sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        //3.清数据
-                        getSharedPreferences("kiway", 0).edit().clear().commit();
-                        new MyDBHelper(SettingActivity.this).deleteAppcharge(null);
-                        new MyDBHelper(SettingActivity.this).deleteWifi(null);
-                        new MyDBHelper(SettingActivity.this).deleteNetwork(null);
-                        new MyDBHelper(SettingActivity.this).deleteCall(null);
-                        new MyDBHelper(SettingActivity.this).deleteSMS(null);
-                        new MyDBHelper(SettingActivity.this).deleteFile();
-                        new MyDBHelper(SettingActivity.this).deleteNotifyMessage();
-
-                    }
-                }.start();
-                break;
-            case 3:
-                startActivity(new Intent(this, AppListActivity3.class));
-                break;
-        }
-    }
 }

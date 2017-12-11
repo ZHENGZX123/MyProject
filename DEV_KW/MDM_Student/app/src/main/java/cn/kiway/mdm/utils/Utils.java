@@ -78,6 +78,7 @@ import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
 import cn.kiway.mdm.activity.SendSMSActivity;
 import cn.kiway.mdm.activity.SettingActivity;
+import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.AppCharge;
 import cn.kiway.mdm.entity.Call;
@@ -91,6 +92,7 @@ import static cn.kiway.mdm.KWApp.MSG_LAUNCH_MDM;
 import static cn.kiway.mdm.KWApp.MSG_LOCK;
 import static cn.kiway.mdm.KWApp.clientUrl;
 import static cn.kiway.mdm.KWApp.serverUrl;
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.PARENT_BIND;
 import static java.lang.System.currentTimeMillis;
 
 /**
@@ -1549,30 +1551,33 @@ public class Utils {
         if (bindDialog != null && bindDialog.isShowing()) {
             return;
         }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(m, AlertDialog.THEME_HOLO_LIGHT);
-        builder.setMessage("家长要绑定这个帐号，是否同意？");
-        builder.setTitle("提示");
-        final String finalToken = token;
-        builder.setPositiveButton("同意", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                doBind(m, 1, finalToken);
-            }
-        });
-        builder.setNegativeButton("不同意", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                doBind(m, 2, finalToken);
-            }
-        });
-        bindDialog = builder.create();
-        bindDialog.show();
+        ShowMessageDailog dailog=new ShowMessageDailog(m);
+        dailog.setToken(token);
+        dailog.setShowMessage("家长要绑定这个帐号，是否同意？",PARENT_BIND);
+        dailog.show();
+//        AlertDialog.Builder builder = new AlertDialog.Builder(m, AlertDialog.THEME_HOLO_LIGHT);
+//        builder.setMessage();
+//        builder.setTitle("提示");
+//        final String finalToken = token;
+//        builder.setPositiveButton("同意", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//                doBind(m, 1, finalToken);
+//            }
+//        });
+//        builder.setNegativeButton("不同意", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//                doBind(m, 2, finalToken);
+//            }
+//        });
+//        bindDialog = builder.create();
+//        bindDialog.show();
     }
 
-    private static void doBind(final Activity c, final int flag, final String token) {
+    public static void doBind(final Activity c, final int flag, final String token) {
         c.runOnUiThread(new Runnable() {
             @Override
             public void run() {
