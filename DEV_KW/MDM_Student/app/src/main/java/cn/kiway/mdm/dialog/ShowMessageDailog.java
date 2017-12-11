@@ -1,6 +1,5 @@
 package cn.kiway.mdm.dialog;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +12,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.TextView;
 
+import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.utils.Utils;
@@ -91,7 +91,7 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                                 USAGE_STATS);
                         break;
                     case PARENT_BIND:
-                        Utils.doBind((Activity) getContext(), 1, token);
+                        Utils.doBind(KWApp.instance.currentActivity, 1, token);
                         break;
                 }
                 break;
@@ -100,7 +100,7 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                     case YUXUNFANWENJLU:
                         break;
                     case PARENT_BIND:
-                        Utils.doBind((Activity) getContext(), 2, token);
+                        Utils.doBind(KWApp.instance.currentActivity, 2, token);
                         break;
                 }
                 break;
