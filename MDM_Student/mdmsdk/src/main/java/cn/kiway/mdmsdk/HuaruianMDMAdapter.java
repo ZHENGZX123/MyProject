@@ -273,4 +273,9 @@ public class HuaruianMDMAdapter implements IMDMAdapter {
         return null;
     }
 
+    @Override
+    public void setSystemBrowserDisabled(boolean disabled) {
+
+    }
+
 }
