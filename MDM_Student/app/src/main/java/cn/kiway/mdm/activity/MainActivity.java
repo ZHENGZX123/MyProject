@@ -276,10 +276,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void uploadApp() {
-//        String today = Utils.getToday();
-//        if (getSharedPreferences("kiway", 0).getBoolean(today, false)) {
-//            return;
-//        }
+        String today = Utils.getToday();
+        if (getSharedPreferences("kiway", 0).getBoolean(today, false)) {
+            return;
+        }
         Utils.uploadApp(this);
     }
 
