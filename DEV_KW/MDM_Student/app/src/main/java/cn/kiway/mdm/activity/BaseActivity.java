@@ -98,6 +98,7 @@ public class BaseActivity extends Activity {
         //3.设置不可卸载
         List<String> packages = new ArrayList<>();
         packages.add("cn.kiway.mdm");
+        packages.add("cn.kiway.session");
         MDMHelper.getAdapter().addDisallowedUninstallPackages(packages);
         //保持APP持续运行
         //MDMHelper.getAdapter().addPersistentApp(packages);
@@ -118,7 +119,7 @@ public class BaseActivity extends Activity {
     public void unlock() {
         //1.设置默认桌面
         MDMHelper.getAdapter().clearDefaultLauncher();
-        //出厂的时候去掉这个
+        //TODO出厂的时候去掉这个
         MDMHelper.getAdapter().removeDisallowedUninstallPackages();
         //2.关闭settings.慎用！！！
         MDMHelper.getAdapter().setSettingsApplicationDisabled(false);
