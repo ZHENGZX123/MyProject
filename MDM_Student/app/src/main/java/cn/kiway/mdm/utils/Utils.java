@@ -1999,6 +1999,8 @@ public class Utils {
         if (DspPackgeUtil.isPackageExist(c, pkgName)) {
             c.startActivity(in);
         } else {
+            if (c==null)
+                return;
             Toast.makeText(c, "该应用没有安装", Toast.LENGTH_SHORT).show();
         }
     }

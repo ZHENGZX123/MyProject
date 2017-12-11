@@ -54,6 +54,7 @@ import cn.kiway.mdm.view.viewPager.StereoPagerTransformer;
 import cn.kiway.mdmsdk.MDMHelper;
 
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
+import static cn.kiway.mdm.utils.AppListUtils.isAppInstalled;
 import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
 import static cn.kiway.mdm.utils.AppReceiverIn.REMOVE_SUCCESS;
@@ -64,7 +65,6 @@ import static cn.kiway.mdm.utils.Constant.ZHIHUIKETANGPG;
 import static cn.kiway.mdm.utils.Constant._16;
 import static cn.kiway.mdm.utils.FileACache.ListFileName;
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
-import static cn.kiway.mdm.utils.Utils.oauth;
 
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener {
@@ -102,7 +102,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         setContentView(R.layout.activity_main);
         Log.d("test", "Main onCreate");
         instance = this;
-        initView();
         //2.初始化界面
         initView();
         initData(getListdata(AppListUtils.getAppListData(this)));
@@ -373,7 +372,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
         dialog.setTitle("请输入密码");
         dialog.setCancelable(true);
-        dialog.setView(null,1);
+        dialog.setView(null, 1);
         dialog.show();
         //startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), 999);
     }
@@ -424,12 +423,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 }
             }
         }
-        ArrayList<App> apps = new ArrayList<>();
-        App a = new App();
-        a.name = Utils.getProgramNameByPackageName(this, pgName);
-        a.packageName = pgName;
-        apps.add(a);
-        allListData.add(positon, apps);
+        if (isAppInstalled(this, pgName)) {
+            ArrayList<App> apps = new ArrayList<>();
+            App a = new App();
+            a.name = Utils.getProgramNameByPackageName(this, pgName);
+            a.packageName = pgName;
+            apps.add(a);
+            allListData.add(positon, apps);
+        }
         return allListData;
     }
 
