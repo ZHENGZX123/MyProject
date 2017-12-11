@@ -30,6 +30,7 @@ import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
 
+import static cn.kiway.mdm.WXApplication.url;
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.MessageType.SHARE_FILE;
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.NettyServerBootstrap.staute;
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.PushServer.FilePath;
@@ -43,18 +44,17 @@ public class JsAndroidInterface {
     public static String userAccount = "";
     MainActivity activity;
     AccpectMessageHander accpectMessageHander;
-    //BroadCastUdp broadCastUdp;
+    String className;
 
     public JsAndroidInterface(MainActivity activity, X5WebView webView) {
         this.activity = activity;
         accpectMessageHander = new AccpectMessageHander(activity, webView);
-        // this.broadCastUdp = broadCastUdp;
-        startServer();
     }
 
     @JavascriptInterface
-    public void scoketOperate(String state) { //1启动，0关闭
+    public void scoketOperate(String state, String className) { //1启动，0关闭
         Logger.log("--------------Start----------" + state);
+        this.className = className;
         if (state.equals("1")) {
             closeServer();
             startServer();
@@ -83,7 +83,7 @@ public class JsAndroidInterface {
                 }
                 PushServer.hproseSrv.push(userId + "owner", msg);
             }
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             e.printStackTrace();
         }
     }
@@ -174,6 +174,7 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public void sendFile(String userId, String filePath) {//发送文件
+        if (HproseChannelMapStatic.getChannel(userId) != null){
         JSONObject da = new JSONObject();
         try {
             Logger.log(filePath);
@@ -190,7 +191,7 @@ public class JsAndroidInterface {
                 PushServer.hproseSrv.push(userId + "owner", da.toString());
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        }}
     }
 
     @JavascriptInterface
@@ -215,19 +216,34 @@ public class JsAndroidInterface {
     public String getPlatform() {
         return "Android";
     }
+    @JavascriptInterface
+    public String getHost(){
+        return url;
+    }
 
     BroadCastUdp broadCastUdp;
 
     public void startServer() {
-//        broadCastUdp = new BroadCastUdp("班级id");//有需求再说
-//        broadCastUdp.isRun = true;
-//        broadCastUdp.start();
-        PushServer.startHprose(accpectMessageHander);
+        JSONObject data = new JSONObject();
+        try {
+            data.put("className", className);
+            data.put("platform", "Android");
+            if (broadCastUdp == null) {
+                broadCastUdp = new BroadCastUdp(data.toString());
+                broadCastUdp.start();
+            }
+            broadCastUdp.isRun = true;
+            PushServer.startHprose(accpectMessageHander);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void closeServer() {
-//        if (broadCastUdp != null)
-//            broadCastUdp.isRun = false;
+            if (broadCastUdp != null) {
+               broadCastUdp.Close();
+                broadCastUdp = null;
+            }
         PushServer.stop();
     }
 }
