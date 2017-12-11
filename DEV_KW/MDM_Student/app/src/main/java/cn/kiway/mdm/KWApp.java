@@ -31,11 +31,11 @@ import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 public class KWApp extends MarketPlaceApplication {
 
-//    public static final String serverUrl = "http://192.168.8.161:8083/";//mdm
-//    public static final String clientUrl = "http://192.168.8.161:8084/";//device开头的
+    public static final String serverUrl = "http://192.168.8.161:8083/";//mdm
+    public static final String clientUrl = "http://192.168.8.161:8084/";//device开头的
 
-    public static final String clientUrl = "http://202.104.136.9:8080/mdms/";
-    public static final String serverUrl = "http://202.104.136.9:8080/mdms/";
+//    public static final String clientUrl = "http://202.104.136.9:8080/mdms/";
+//    public static final String serverUrl = "http://202.104.136.9:8080/mdms/";
 
     //public static final String serverUrl = "http://www.yuertong.com/mdms/";
 

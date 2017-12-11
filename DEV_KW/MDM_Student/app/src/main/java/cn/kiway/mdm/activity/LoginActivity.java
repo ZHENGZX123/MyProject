@@ -132,6 +132,7 @@ public class LoginActivity extends BaseActivity {
                         int StatusCode = o.optInt("StatusCode");
                         errorMsg = o.optString("errorMsg");
                         String token = o.getJSONObject("data").getString("token");
+                        //TODO 返回pwd，密钥不一样怎么办
                         Log.d("test", "login get token = " + token);
                         if (StatusCode == 200) {
                             toast("登录成功");
