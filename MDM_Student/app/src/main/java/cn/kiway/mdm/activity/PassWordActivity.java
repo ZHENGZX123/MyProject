@@ -42,7 +42,6 @@ public class PassWordActivity extends BaseActivity {
             return;
         }
       //  getSharedPreferences("kiway", 0).edit().putString("password", editText1.getText().toString()).commit();
-
         getSharedPreferences("kiway", 0).edit().putString("password", new DES().encrypt(editText1.getText().toString()))
                 .commit();
         Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();

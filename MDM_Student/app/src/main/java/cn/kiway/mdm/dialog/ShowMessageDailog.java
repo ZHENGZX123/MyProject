@@ -1,5 +1,6 @@
 package cn.kiway.mdm.dialog;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,15 +10,16 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.TextView;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.MainActivity;
+import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.activity.MainActivity.USAGE_STATS;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.ANSWERDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.REPONSEDIALOG;
+import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.PARENT_BIND;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 
 /**
@@ -31,15 +33,12 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
     String message;
     int messageId;
     Context context;
+    Button ok1, ok2;
 
     public static class MessageId {
         public static final int DISMISS = 0;//消失
         public static final int YUXUNFANWENJLU = DISMISS + 1;//允许访问记录
-        public static final int PUSHFILE = YUXUNFANWENJLU + 1;//允许访问记录
-        public static final int SIGNDIALOG = PUSHFILE + 1;//签到
-        public static final int REPONSEDIALOG = SIGNDIALOG + 1;//学生是否听懂
-        public static final int ANSWERDIALOG = REPONSEDIALOG + 1;
-        public static final int UNSWERDIALOG = ANSWERDIALOG + 1;
+        public static final int PARENT_BIND = YUXUNFANWENJLU + 1;
     }
 
     public ShowMessageDailog(Context context) {
@@ -53,7 +52,12 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
         this.messageId = DISMISS;
         if (textView != null)
             textView.setText(message);
+    }
 
+    String token;
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void setShowMessage(String message, int messageId) {
@@ -69,6 +73,8 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
         setContentView(R.layout.dialog_message);
         fullWindowCenter();
         textView = (TextView) findViewById(R.id.message);
+        ok1 = (Button) findViewById(R.id.ok);
+        ok2 = (Button) findViewById(R.id.ok2);
         findViewById(R.id.ok).setOnClickListener(this);
         findViewById(R.id.ok2).setOnClickListener(this);
         setOnShowListener(this);
@@ -79,16 +85,24 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
         switch (view.getId()) {
             case R.id.ok:
                 switch (messageId) {
-                    case DISMISS:
-                        break;
                     case YUXUNFANWENJLU:
                         ((MainActivity) context).startActivityForResult(
                                 new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
                                 USAGE_STATS);
                         break;
+                    case PARENT_BIND:
+                        Utils.doBind((Activity) getContext(), 1, token);
+                        break;
                 }
                 break;
             case R.id.ok2:
+                switch (messageId) {
+                    case YUXUNFANWENJLU:
+                        break;
+                    case PARENT_BIND:
+                        Utils.doBind((Activity) getContext(), 2, token);
+                        break;
+                }
                 break;
         }
         dismiss();
@@ -106,10 +120,13 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
         textView = (TextView) findViewById(R.id.message);
         if (textView != null)
             textView.setText(message);
-        if (messageId == REPONSEDIALOG || messageId == ANSWERDIALOG) {
-            findViewById(R.id.ok2).setVisibility(View.VISIBLE);
+        if (messageId == PARENT_BIND) {
+            ok2.setText("不同意");
+            ok1.setText("同意");
+            ok2.setVisibility(View.VISIBLE);
         } else {
-            findViewById(R.id.ok2).setVisibility(View.GONE);
+            ok1.setText("确定");
+            ok2.setVisibility(View.GONE);
         }
     }
 }
