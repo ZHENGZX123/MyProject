@@ -73,7 +73,7 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
         }
         App app = mData.get(mainPosition).get(subPosition);
         if (app.packageName.equals(MARKETPLACE)) {
-            itemViewHolder.iv.setImageResource(R.drawable.rod_place_icon);
+            itemViewHolder.iv.setImageResource(R.drawable.yysc);
         } else if (app.packageName.equals(KIWAYSETTING)) {
             itemViewHolder.iv.setImageResource(R.drawable.setting);
         } else {
