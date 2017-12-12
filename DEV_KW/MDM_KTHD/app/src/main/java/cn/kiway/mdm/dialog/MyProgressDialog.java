@@ -104,7 +104,7 @@ public class MyProgressDialog extends Dialog implements JRFClient.DownLoadCallBa
             @Override
             public void run() {
                 if (downUrl.startsWith("http://")) {//公网下载
-                    final String filename = downUrl.split("/")[downUrl.split("/").length - 1] + "." + data.optString
+                    final String filename = downUrl.split("/")[downUrl.split("/").length - 2] + "." + data.optString
                             ("fileType");//公网地址没有文件名，从JS数据中解析加上后缀名
                     final String folder = path + "/";//下载存放的文件夹
                     int ret = new HttpDownload().downFile(downUrl, folder, filename);//开始下载

@@ -95,6 +95,7 @@ public class App extends KiwayApplication {
             public void accpetMessage(String message) throws Exception {
                 if (currentActivity == null) return;
                 ActionsMessageHandle.MessageHandle(currentActivity, message);
+
             }
 
             @Override
@@ -158,7 +159,7 @@ public class App extends KiwayApplication {
                                     isAttenClass = true;
                                     showMessage("上课连接完成");
                                     sendEmptyMessage(MSG_HOME_DIS);
-                                  sendEmptyMessageDelayed(MSG_XIAKE, 60 * 1000 * 45);
+                                    sendEmptyMessageDelayed(MSG_XIAKE, 60 * 1000 * 45);
                                     MainActivity.instantce.UdpClose();
                                 }
 

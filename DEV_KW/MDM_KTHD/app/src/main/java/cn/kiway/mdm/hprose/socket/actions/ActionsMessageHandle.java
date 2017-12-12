@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import cn.kiway.mdm.App;
 import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.hprose.socket.KwHproseClient;
+import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.App.MSG_LOCKONCLASS;
@@ -44,6 +45,7 @@ public class ActionsMessageHandle {
     static long time;
 
     public static void MessageHandle(Context context, String s) {
+        Logger.log("Tcp::::::::"+s);
         try {
             if (System.currentTimeMillis() - time < 2000)
                 return;
