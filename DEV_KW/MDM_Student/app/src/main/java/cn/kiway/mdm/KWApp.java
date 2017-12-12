@@ -34,8 +34,8 @@ public class KWApp extends MarketPlaceApplication {
 //    public static final String serverUrl = "http://192.168.8.161:8083/";//mdm
 //    public static final String clientUrl = "http://192.168.8.161:8084/";//device开头的
 
-//    public static final String clientUrl = "http://202.104.136.9:8080/mdms/";
-//    public static final String serverUrl = "http://202.104.136.9:8080/mdms/";
+//    public static final String serverUrl = "http://202.104.136.9:8083/";
+//    public static final String clientUrl = "http://202.104.136.9:8084/";
 
     public static final String serverUrl = "http://www.yuertong.com/mdms/";
     public static final String clientUrl = "http://www.yuertong.com/mdms/";
@@ -153,9 +153,11 @@ public class KWApp extends MarketPlaceApplication {
             } else if (msg.what == MSG_ATTEND_CALSS) {
                 if (KWApp.instance != null) {
                     Intent in = getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
-                    in.putExtra("shangke", msg.obj.toString());
-                    RemoteAidlService.attendClass(msg.obj.toString());
-                    Utils.startPackage(currentActivity, ZHIHUIKETANGPG, in);
+                    if (in != null) {
+                        in.putExtra("shangke", msg.obj.toString());
+                        RemoteAidlService.attendClass(msg.obj.toString());
+                        Utils.startPackage(currentActivity, ZHIHUIKETANGPG, in);
+                    }
                 }
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
                 RemoteAidlService.goOutClass();
