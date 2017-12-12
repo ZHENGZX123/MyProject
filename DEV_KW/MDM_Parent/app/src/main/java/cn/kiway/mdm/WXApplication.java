@@ -26,7 +26,10 @@ import java.io.File;
 
 public class WXApplication extends Application {
 
-    public static String url = "http://202.104.136.9:8080/mdms";//测试地址8390
+    public static String url = "http://www.yuertong.com/mdms";
+//    public static String url = "http://202.104.136.9:8080/mdms";
+
+
     public static String ROOT = "/mnt/sdcard/kiway_mdm_parent/";
     public static String HTML = "mdm_parent/dist/index.html";
     public static String ZIP = "mdm_parent.zip";
