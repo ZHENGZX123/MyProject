@@ -152,7 +152,7 @@ public class BaseActivity extends Activity {
         getSharedPreferences("kiway", 0).edit().putInt("flag_ap", 1).commit();
         getSharedPreferences("kiway", 0).edit().putInt("flag_app_open", 1).commit();
         getSharedPreferences("kiway", 0).edit().putInt("flag_usb", 1).commit();
-        getSharedPreferences("kiway", 0).edit().putInt("flag_wifi", 1).commit();
+        getSharedPreferences("kiway", 0).edit().putInt("flag_allowWifi", 1).commit();
         getSharedPreferences("kiway", 0).edit().putInt("flag_systemupdate", 1).commit();
         getSharedPreferences("kiway", 0).edit().putInt("flag_bluetooth", 1).commit();
         KWApp.instance.excuteFlagCommand();

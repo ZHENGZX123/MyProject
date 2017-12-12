@@ -20,7 +20,7 @@ public class SystemSetupActivity extends BaseActivity {
     }
 
     public void onWLAN(View view) {
-        int flag_wifi = getSharedPreferences("kiway", 0).getInt("flag_wifi", 1);
+        int flag_wifi = getSharedPreferences("kiway", 0).getInt("flag_allowWifi", 1);
         if (flag_wifi == 0) {
             toast("该功能不可用");
             return;

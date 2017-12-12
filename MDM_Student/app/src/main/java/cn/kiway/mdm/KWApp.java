@@ -247,7 +247,7 @@ public class KWApp extends MarketPlaceApplication {
         //太危险了
         //MDMHelper.getAdapter().setUSBDataDisabled(flag_usb == 0);
 
-        int flag_wifi = getSharedPreferences("kiway", 0).getInt("flag_wifi", 1);
+        int flag_wifi = getSharedPreferences("kiway", 0).getInt("flag_allowWifi", 1);
         //太危险了
         //MDMHelper.getAdapter().setWifiDisabled(flag_wifi == 0);
 
