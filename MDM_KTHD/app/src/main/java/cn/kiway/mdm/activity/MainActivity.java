@@ -17,6 +17,7 @@ import java.net.SocketException;
 import cn.kiway.mdm.dialog.UdpConnectDialog;
 import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.modle.IpModel;
+import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
 public class MainActivity extends BaseActivity {
@@ -30,6 +31,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         getAppData();
         udpConnectDialog = new UdpConnectDialog(this);
+        Logger.log(":::::::::::::::::"+Utils.getIMEI(this));
     }
 
     public void onInfo(View view) {//个人信息

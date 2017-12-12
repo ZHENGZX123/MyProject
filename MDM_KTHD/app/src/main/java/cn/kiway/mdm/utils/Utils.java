@@ -92,12 +92,11 @@ public class Utils {
                 Toast.makeText(context, "手机没有安装相关的办公软件，请下载安装", Toast.LENGTH_SHORT).show();
         }
     }
-
     public static String getIMEI(Context c) {
         String imei = FileUtils.readSDCardFile("/mnt/sdcard/kiway_mdm/imei.txt", c);
         if (TextUtils.isEmpty(imei)) {
-            TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
-            imei = tm.getDeviceId();
+            TelephonyManager telephonyManager = (TelephonyManager) c.getSystemService(c.TELEPHONY_SERVICE);
+             imei = telephonyManager.getDeviceId();
             if (TextUtils.isEmpty(imei)) {
                 Log.d("test", "这个IMEI是生成的");
                 imei = genIMEI();
@@ -107,6 +106,7 @@ public class Utils {
         Log.d("test", "IMEI = " + imei);
         return imei;
     }
+
     public static String genIMEI() {// calculator IMEI
         int r1 = 1000000 + new java.util.Random().nextInt(9000000);
         int r2 = 1000000 + new java.util.Random().nextInt(9000000);
@@ -130,6 +130,7 @@ public class Utils {
         }
         return input + last;
     }
+
     /**
      * @return
      * @author sichard
