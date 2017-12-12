@@ -18,7 +18,6 @@ import cn.kiway.marketplace.MarketPlaceApplication;
 import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
 import cn.kiway.mdm.aidlservice.RemoteAidlService;
-import cn.kiway.mdm.utils.AppListUtils;
 import cn.kiway.mdm.utils.HttpDownload;
 import cn.kiway.mdm.utils.Utils;
 import cn.kiway.mdmsdk.MDMHelper;
@@ -35,13 +34,13 @@ public class KWApp extends MarketPlaceApplication {
 //    public static final String serverUrl = "http://192.168.8.161:8083/";//mdm
 //    public static final String clientUrl = "http://192.168.8.161:8084/";//device开头的
 
-//    public static final String clientUrl = "http://202.104.136.9:8080/mdms/";
-//    public static final String serverUrl = "http://202.104.136.9:8080/mdms/";
+    public static final String clientUrl = "http://202.104.136.9:8080/mdms/";
+    public static final String serverUrl = "http://202.104.136.9:8080/mdms/";
 
-    public static final String serverUrl = "http://www.yuertong.com/mdms/";
-    public static final String clientUrl = "http://www.yuertong.com/mdms/";
+//    public static final String serverUrl = "http://www.yuertong.com/mdms/";
+//    public static final String clientUrl = "http://www.yuertong.com/mdms/";
 
-    public static final int MSG_TOAST = 0;//注册华为
+    public static final int MSG_TOAST = 0;//Toast
     public static final int MSG_INSTALL = 1;//注册华为
     public static final int MSG_LOCK = 2;//锁屏
     public static final int MSG_LOCKONCLASS = -2;//上课锁屏
@@ -153,9 +152,6 @@ public class KWApp extends MarketPlaceApplication {
                 }
             } else if (msg.what == MSG_ATTEND_CALSS) {
                 if (KWApp.instance != null) {
-                    if (!AppListUtils.isAppInstalled(KWApp.instance.currentActivity, ZHIHUIKETANGPG)) {
-                        Toast.makeText(KWApp.instance.currentActivity, "智慧课堂未安装", Toast.LENGTH_SHORT).show();
-                    }
                     Intent in = getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
                     in.putExtra("shangke", msg.obj.toString());
                     RemoteAidlService.attendClass(msg.obj.toString());
