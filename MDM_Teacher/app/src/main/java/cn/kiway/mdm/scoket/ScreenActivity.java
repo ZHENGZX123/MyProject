@@ -136,6 +136,7 @@ public class ScreenActivity extends Activity {
             try {
                 datagramSocket = new DatagramSocket(IMAGE_PORT);
             } catch (SocketException e) {
+                e.printStackTrace();
             }
         while (true) {
             datagramPacket = new DatagramPacket(b, b.length);

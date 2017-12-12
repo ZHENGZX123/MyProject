@@ -174,24 +174,25 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public void sendFile(String userId, String filePath) {//发送文件
-        if (HproseChannelMapStatic.getChannel(userId) != null){
-        JSONObject da = new JSONObject();
-        try {
-            Logger.log(filePath);
-            Logger.log(setFilePath.split("kiwaymdm/")[1]);
-            String path = setFilePath.split("kiwaymdm/")[setFilePath.split("kiwaymdm/").length - 1];
-            PushServer.hproseSrv.shareFile("/" + path);
-            da.put("msgType", SHARE_FILE);
-            da.put("msg", "/" + path);
-            da.put("path", filePath);
-            da.put("fileType", path.split("\\.")[path.split("\\.").length - 1]);
-            if (userId.equals("all"))
-                PushServer.hproseSrv.push("ground", da.toString());
-            else
-                PushServer.hproseSrv.push(userId + "owner", da.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }}
+        if (HproseChannelMapStatic.getChannel(userId) != null) {
+            JSONObject da = new JSONObject();
+            try {
+                Logger.log(filePath);
+                Logger.log(setFilePath.split("kiwaymdm/")[1]);
+                String path = setFilePath.split("kiwaymdm/")[setFilePath.split("kiwaymdm/").length - 1];
+                PushServer.hproseSrv.shareFile("/" + path);
+                da.put("msgType", SHARE_FILE);
+                da.put("msg", "/" + path);
+                da.put("path", filePath);
+                da.put("fileType", path.split("\\.")[path.split("\\.").length - 1]);
+                if (userId.equals("all"))
+                    PushServer.hproseSrv.push("ground", da.toString());
+                else
+                    PushServer.hproseSrv.push(userId + "owner", da.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @JavascriptInterface
@@ -216,8 +217,9 @@ public class JsAndroidInterface {
     public String getPlatform() {
         return "Android";
     }
+
     @JavascriptInterface
-    public String getHost(){
+    public String getHost() {
         return url;
     }
 
@@ -240,10 +242,10 @@ public class JsAndroidInterface {
     }
 
     public void closeServer() {
-            if (broadCastUdp != null) {
-               broadCastUdp.Close();
-                broadCastUdp = null;
-            }
+        if (broadCastUdp != null) {
+            broadCastUdp.Close();
+            broadCastUdp = null;
+        }
         PushServer.stop();
     }
 }
