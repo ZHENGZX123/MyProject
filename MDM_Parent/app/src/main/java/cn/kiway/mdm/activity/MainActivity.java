@@ -69,7 +69,7 @@ import static cn.kiway.mdm.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.0.6";
+    private static final String currentPackageVersion = "0.1.0";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -78,7 +78,6 @@ public class MainActivity extends BaseActivity {
     protected ProgressDialog pd;
     private int lastProgress;
     private X5WebView wv;
-    private RelativeLayout root;
     private LinearLayout layout_welcome;
     public static MainActivity instance;
     private long time;
@@ -98,7 +97,6 @@ public class MainActivity extends BaseActivity {
 
 
     private void initView() {
-        root = (RelativeLayout) findViewById(R.id.root);
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
         wv = (X5WebView) findViewById(R.id.wv);
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
@@ -254,6 +252,11 @@ public class MainActivity extends BaseActivity {
         @JavascriptInterface
         public String getIMEI() {
             return Utils.getIMEI(MainActivity.this);
+        }
+
+        @JavascriptInterface
+        public String getHost() {
+            return WXApplication.url;
         }
 
         @JavascriptInterface
