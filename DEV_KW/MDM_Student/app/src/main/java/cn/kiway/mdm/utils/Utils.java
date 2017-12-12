@@ -1412,7 +1412,7 @@ public class Utils {
         context.getSharedPreferences("kiway", 0).edit().putInt("flag_ap", 0).commit();
         context.getSharedPreferences("kiway", 0).edit().putInt("flag_app_open", 0).commit();
         context.getSharedPreferences("kiway", 0).edit().putInt("flag_usb", 0).commit();
-        context.getSharedPreferences("kiway", 0).edit().putInt("flag_wifi", 0).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_allowWifi", 0).commit();
         context.getSharedPreferences("kiway", 0).edit().putInt("flag_systemupdate", 0).commit();
         context.getSharedPreferences("kiway", 0).edit().putInt("flag_bluetooth", 0).commit();
     }
