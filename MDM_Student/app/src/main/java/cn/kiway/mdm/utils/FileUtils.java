@@ -84,7 +84,7 @@ public class FileUtils {
             if (!new File(path).exists()) {
                 new File(path).mkdirs();
             }
-            String savedFilePath = path + fileName;
+            String savedFilePath = path + fileName + ".tmp";
             createSDDir(path);
             file = new File(savedFilePath);
             output = new FileOutputStream(file);
