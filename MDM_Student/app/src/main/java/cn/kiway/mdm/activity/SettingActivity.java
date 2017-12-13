@@ -19,7 +19,7 @@ import cn.kiway.mdm.utils.Utils;
  * Created by Administrator on 2017/10/13.
  */
 
-public class SettingActivity extends BaseActivity  {
+public class SettingActivity extends BaseActivity {
 
     private TextView mode;
     private ImageView codeIV;
@@ -120,7 +120,8 @@ public class SettingActivity extends BaseActivity  {
                 new MyDBHelper(SettingActivity.this).deleteSMS(null);
                 new MyDBHelper(SettingActivity.this).deleteFile();
                 new MyDBHelper(SettingActivity.this).deleteNotifyMessage();
-
+                //4.退出登录要解锁。。。
+                unlock();
             }
         }.start();
     }
@@ -136,6 +137,9 @@ public class SettingActivity extends BaseActivity  {
     public void File(View view) {
         startActivity(new Intent(this, FileListActivity.class));
     }
-    public void onSetting(View view){startActivity(new Intent(this,SystemSetupActivity.class));}
+
+    public void onSetting(View view) {
+        startActivity(new Intent(this, SystemSetupActivity.class));
+    }
 
 }
