@@ -126,7 +126,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //13.监听来电
         checkIncomingCall();
         //14.距离传感器
-        //registerSensor();
+        registerSensor();
         //15.设置默认短信app
         //setDefaultSMSApp();
         //16.检查版本更新
@@ -353,13 +353,15 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         startActivity(new Intent(this, CallActivity.class));
     }
 
-    boolean flag = false;
+//    boolean flag = false;
 
     public void SMS(View view) {
 //        flag = !flag;
-//        MDMHelper.getAdapter().setWifiDisabled(flag);
+//        MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(flag);
 
         startActivity(new Intent(this, WebViewActivity.class));
+
+
 //        MDMHelper.getAdapter().installPackage("/mnt/sdcard/test.apk", true);
 //        startActivity(new Intent(this, ComposeSmsActivity.class));
 //        try {
