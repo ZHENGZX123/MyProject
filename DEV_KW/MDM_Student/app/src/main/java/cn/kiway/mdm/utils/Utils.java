@@ -1271,7 +1271,7 @@ public class Utils {
             param.put("module", "student");
             Log.d("test", "param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            String url = serverUrl + "push/installation";
+            String url = clientUrl + "push/installation";
             Log.d("test", "installationPush = " + url);
             client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
                 @Override

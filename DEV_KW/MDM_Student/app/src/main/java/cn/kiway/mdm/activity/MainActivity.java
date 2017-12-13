@@ -65,6 +65,8 @@ import static cn.kiway.mdm.utils.Constant.ZHIHUIKETANGPG;
 import static cn.kiway.mdm.utils.Constant._16;
 import static cn.kiway.mdm.utils.FileACache.ListFileName;
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
+import static cn.kiway.mdm.utils.Utils.installationPush;
+import static cn.kiway.mdm.utils.Utils.oauth;
 
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener {
@@ -361,6 +363,11 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
         startActivity(new Intent(this, WebViewActivity.class));
 
+//        String token = getSharedPreferences("huawei", 0).getString("token", "");
+//        String imei = Utils.getIMEI(getApplicationContext());
+//        installationPush(this, token, imei);
+
+//        Utils.oauth(this, "9a9b01f8ab910e12422bcc0e88d95dff2f95f582", "cn.kiway.kthd");
 
 //        MDMHelper.getAdapter().installPackage("/mnt/sdcard/test.apk", true);
 //        startActivity(new Intent(this, ComposeSmsActivity.class));

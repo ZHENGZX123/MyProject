@@ -37,6 +37,7 @@ public class KWApp extends MarketPlaceApplication {
     public static final String serverUrl = "http://202.104.136.9:8083/";
     public static final String clientUrl = "http://202.104.136.9:8084/";
 
+
 //    public static final String serverUrl = "http://www.yuertong.com/mdms/";
 //    public static final String clientUrl = "http://www.yuertong.com/mdms/";
 
