@@ -99,7 +99,7 @@ import static cn.kiway.homework.WXApplication.zhengshiUrl;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.5.2";
+    private static final String currentPackageVersion = "0.5.6";
 
     private X5WebView wv;
     private LinearLayout layout_welcome;
