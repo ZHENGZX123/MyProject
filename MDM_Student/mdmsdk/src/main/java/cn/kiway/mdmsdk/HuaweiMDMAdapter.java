@@ -11,7 +11,6 @@ import com.huawei.android.app.admin.DevicePackageManager;
 import com.huawei.android.app.admin.DevicePhoneManager;
 import com.huawei.android.app.admin.DeviceRestrictionManager;
 import com.huawei.android.app.admin.DeviceSettingsManager;
-import com.huawei.android.app.admin.DeviceVpnManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -197,7 +196,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     @Override
     public void setTimeAndDateSetDisabled(boolean b) {
         try {
-            new DeviceSettingsManager().setTimeAndDateSetDisabled(mAdminName, b);
+            //new DeviceSettingsManager().setTimeAndDateSetDisabled(mAdminName, b);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -434,7 +433,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     @Override
     public void setVpnDisabled(boolean disabled) {
         try {
-            new DeviceVpnManager().setVpnDisabled(mAdminName, true);
+            //new DeviceVpnManager().setVpnDisabled(mAdminName, true);
         } catch (Exception e) {
             e.printStackTrace();
 

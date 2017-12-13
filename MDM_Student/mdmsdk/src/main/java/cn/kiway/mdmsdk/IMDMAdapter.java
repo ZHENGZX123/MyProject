@@ -29,7 +29,7 @@ public interface IMDMAdapter {
     //禁用usb口
     void setUSBDataDisabled(boolean disabled);//慎用
 
-    //禁用sd卡
+    //禁用sd卡，暂时用不到
     void setExternalStorageDisabled(boolean disabled);//慎用
 
     //禁用状态栏下拉
