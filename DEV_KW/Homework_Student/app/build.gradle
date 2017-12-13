@@ -17,7 +17,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 20
         versionCode 1
-        versionName "0.2.6"
+        versionName "0.2.7"
         ndk {abiFilters "armeabi", "armeabi-v7a" , "armeabi-v8a", "x86", "mips"}
     }
     buildTypes {
