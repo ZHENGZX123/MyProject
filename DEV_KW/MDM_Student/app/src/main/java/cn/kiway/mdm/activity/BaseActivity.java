@@ -92,7 +92,7 @@ public class BaseActivity extends Activity {
 
     public void lock() {
         //1.设置默认桌面
-        MDMHelper.getAdapter().setDefaultLauncher("cn.kiway.mdm", "cn.kiway.mdm.activity.MainActivity");
+        MDMHelper.getAdapter().setDefaultLauncher("cn.kiway.mdm", "cn.kiway.mdm.activity.EulaActivity");
         //2.关闭settings.失效
         MDMHelper.getAdapter().setSettingsApplicationDisabled(true);
         //3.设置不可卸载
@@ -108,10 +108,10 @@ public class BaseActivity extends Activity {
         //MDMHelper.getAdapter().setUSBDataDisabled(true);
         //6.禁用一些物理键盘
         MDMHelper.getAdapter().setTaskButtonDisabled(true);
-        //MDMHelper.getAdapter().setHomeButtonDisabled(true);
-        //MDMHelper.getAdapter().setVpnDisabled(true); //这个失效。
+        //MDMHelper.getAdapter().setHomeButtonDisabled(true);//没有必要了
+        MDMHelper.getAdapter().setVpnDisabled(true);
         //7.禁止修改时间
-        //MDMHelper.getAdapter().setTimeAndDateSetDisabled(true);//这个失效
+        MDMHelper.getAdapter().setTimeAndDateSetDisabled(true);
         //5.1华为失效
         MDMHelper.getAdapter().setWIFIStandbyMode(2);
     }
@@ -131,8 +131,8 @@ public class BaseActivity extends Activity {
         MDMHelper.getAdapter().setTaskButtonDisabled(false);
         MDMHelper.getAdapter().setHomeButtonDisabled(false);
         MDMHelper.getAdapter().setBackButtonDisabled(false);
-        //MDMHelper.getAdapter().setVpnDisabled(true); //这个失效。
-        //MDMHelper.getAdapter().setTimeAndDateSetDisabled(false);//这个失效
+        MDMHelper.getAdapter().setVpnDisabled(true);
+        MDMHelper.getAdapter().setTimeAndDateSetDisabled(false);
 
         //TODO 各种黑白名单
         //7.移除白名单
