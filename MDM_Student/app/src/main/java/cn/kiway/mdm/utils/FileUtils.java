@@ -227,7 +227,7 @@ public class FileUtils {
     }
 
     public static void saveFile(String str) {
-        String filePath  = "/mnt/sdcard/kiway_mdm/imei.txt";
+        String filePath  = "/mnt/sdcard/kiway_mdm_student/imei.txt";
         try {
             File file = new File(filePath);
             if (!file.exists()) {

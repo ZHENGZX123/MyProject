@@ -190,7 +190,7 @@ public class KWApp extends MarketPlaceApplication {
                 @Override
                 public void run() {
                     final String filename = url.substring(url.lastIndexOf("/") + 1);
-                    final String folder = "/mnt/sdcard/kiway_mdm/file/";
+                    final String folder = "/mnt/sdcard/kiway_mdm_student/file/";
                     final String filePath = folder + filename;
                     //文件已存在,直接打开
                     if (new File(filePath).exists()) {
