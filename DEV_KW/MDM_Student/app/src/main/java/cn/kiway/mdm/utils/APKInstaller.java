@@ -27,7 +27,7 @@ public class APKInstaller {
         new Thread() {
             @Override
             public void run() {
-                final String savePath = "/mnt/sdcard/kiway_mdm/apk/";
+                final String savePath = "/mnt/sdcard/kiway_mdm_student/apk/";
                 final String saveName = name + "_" + version + ".apk";
                 int ret = new HttpDownload().downFile(url, savePath, saveName);
                 Log.d("test", "下载" + name + "，ret = " + ret);

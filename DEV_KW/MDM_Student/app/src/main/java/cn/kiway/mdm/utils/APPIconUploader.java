@@ -78,7 +78,11 @@ public class APPIconUploader {
     }
 
     public static String saveMyBitmap(String bitName, Bitmap mBitmap) {
-        File f = new File("/sdcard/" + bitName + ".png");
+        final String savePath = "/mnt/sdcard/kiway_mdm_student/icon/";
+        if (!new File(savePath).exists()) {
+            new File(savePath).mkdirs();
+        }
+        File f = new File(savePath + bitName + ".png");
         if (f.exists()) {
             return f.getAbsolutePath();
         }
