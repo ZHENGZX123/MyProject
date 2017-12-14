@@ -159,6 +159,13 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                         TypeToken<List<Wifi>>() {
                         }.getType());
                 Wifi wifi = wifis.get(0);
+                //FIXME 接口有毛病
+                if (wifi.timeRange.startsWith("\"")) {
+                    wifi.timeRange = wifi.timeRange.substring(1);
+                }
+                if (wifi.timeRange.endsWith("\"")) {
+                    wifi.timeRange.substring(0, wifi.timeRange.length() - 1);
+                }
                 if (wifi.operation.equals("save")) {
                     new MyDBHelper(context).addWifi(wifi);
                 } else if (wifi.operation.equals("update")) {
@@ -297,7 +304,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.what = MSG_MESSAGE;
                 m.obj = data;
             } else if (command.equals("parent_charge_app")) {
-                String packageName=data.optJSONObject("content").optString("package");
+                String packageName = data.optJSONObject("content").optString("package");
                 TimeSet timeSet = new TimeSet();
                 if (data.optJSONObject("content").optString("operation").equals("detele")) {
                     new MyDBHelper(context).deleteTime(packageName);
