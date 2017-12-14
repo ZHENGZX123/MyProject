@@ -1,12 +1,21 @@
 package cn.kiway.mdm.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Message;
+import android.text.TextUtils;
+import android.util.Log;
+import android.widget.Toast;
+
+import java.io.File;
 
 import cn.kiway.mdm.activity.MainActivity;
+import cn.kiway.mdm.teacher.R;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -77,5 +86,80 @@ public class Utils {
             installed = false;
         }
         return installed;
+    }
+
+    public static void openFile(Context context, String filePath) {
+        Log.d("test", "openFile filepath = " + filePath);
+        if (TextUtils.isEmpty(filePath)) {
+            Toast.makeText(context, "文件路径不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        filePath = "file://" + filePath;
+        String[] splits = filePath.split("\\.");
+        if (splits.length <= 1) {
+            ((Activity) context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, context.getString(R.string.no_support), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            return;
+        }
+        String filetype = splits[1].toLowerCase();
+        Log.d("test", "filetype = " + filetype);
+        String typeOpenFile = "*";
+        if (filetype.equals("pdf"))
+            typeOpenFile = "application/pdf";
+        else if (filetype.equals("ppt") || filetype.equals("pptx"))
+            typeOpenFile = "application/vnd.ms-powerpoint";
+        else if (filetype.equals("doc") || filetype.equals("docx") || filetype.equals("docm") || filetype.equals
+                ("dotx") || filetype
+                .equals("dotm"))
+            typeOpenFile = "application/msword";
+        else if (filetype.equals("xlsx") || filetype.equals("xlsm") || filetype.equals("xltx"))
+            typeOpenFile = "application/vnd.ms-excel";
+        else if (filetype.equals("mp3") || filetype.equals("amr") || filetype.equals("ogg") || filetype.equals("wav")) {
+            typeOpenFile = "audio/*";
+        } else if (filetype.equals("mp4") || filetype.equals("3gp") || filetype.equals("avi") || filetype.equals
+                ("rmvb") || filetype
+                .equals("mpg") | filetype.equals("rm") || filetype.equals("flv")) {
+            typeOpenFile = "video/*";
+        } else if (filetype.equals("swf")) {
+            typeOpenFile = "application/x-shockwave-flash";
+        } else if (filetype.equals("jpg") || filetype.equals("jpeg") || filetype.equals("png")) {
+            typeOpenFile = "image/*";
+        } else if (filetype.equals("apk")) {
+            Intent intent = new Intent();
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
+            context.startActivity(intent);
+            return;
+        }
+        Log.d("test", "typeOpenFile = " + typeOpenFile);
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setDataAndType(Uri.parse(filePath), typeOpenFile);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (typeOpenFile.equals("video/*") || typeOpenFile.equals("audio/*"))
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context,context.getString(R.string.mobile_no_play), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            else
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, context.getString(R.string.mobile_no_office), Toast.LENGTH_SHORT).show();
+                    }
+                });
+        }
     }
 }

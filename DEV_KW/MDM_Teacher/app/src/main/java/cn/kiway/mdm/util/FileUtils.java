@@ -20,7 +20,11 @@ import cn.kiway.mdm.WXApplication;
  */
 public class FileUtils {
 
-   public final static String EnFILEPATH= Environment.getExternalStorageDirectory().getAbsolutePath() + "/kiwaymdm/pic";
+    public final static String EnFILEPATH = Environment.getExternalStorageDirectory().getAbsolutePath() +
+            "/kiwaymdm/pic";
+    public final static String DOWNFILEPATH = Environment.getExternalStorageDirectory().getAbsolutePath() +
+            "/kiway_mdm_teacher/file/";
+
     private String SDPATH;
 
     public String getSDPATH() {

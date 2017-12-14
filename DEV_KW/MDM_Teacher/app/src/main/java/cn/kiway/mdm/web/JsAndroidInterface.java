@@ -1,5 +1,6 @@
 package cn.kiway.mdm.web;
 
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -27,6 +28,7 @@ import cn.kiway.mdm.scoket.scoket.udp.BroadCastUdp;
 import cn.kiway.mdm.scoket.utils.Logger;
 import cn.kiway.mdm.scoket.utils.WifiUtils;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
 
@@ -34,6 +36,7 @@ import static cn.kiway.mdm.WXApplication.url;
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.MessageType.SHARE_FILE;
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.NettyServerBootstrap.staute;
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.PushServer.FilePath;
+import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.FileUtils.EnFILEPATH;
 
 /**
@@ -221,6 +224,44 @@ public class JsAndroidInterface {
     @JavascriptInterface
     public String getHost() {
         return url;
+    }
+
+    @JavascriptInterface
+    public void openFile(final String downUrl, final String fileName) {
+        Logger.log("::::::" + downUrl);
+        Logger.log("::::::" + fileName);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String folder = DOWNFILEPATH;//下载存放的文件夹
+                if (new File(folder + fileName).exists()) {
+                    Utils.openFile(activity, folder + fileName);
+                    return;
+                }
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (activity.pd == null)
+                            activity.pd = new ProgressDialog(activity, ProgressDialog.THEME_HOLO_LIGHT);
+                        activity.pd.setMessage(activity.getString(R.string.openFile));
+                        activity.pd.show();
+                    }
+                });
+                int ret = new HttpDownload().downFile(downUrl, folder, fileName);//开始下载
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        activity.pd.dismiss();
+                        if (ret == -1) {//下载失败
+                            Toast.makeText(activity, activity.getString(R.string.downloadfie), Toast.LENGTH_SHORT)
+                                    .show();
+                        } else {//下载成功
+                            Utils.openFile(activity, folder + fileName);
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     BroadCastUdp broadCastUdp;
