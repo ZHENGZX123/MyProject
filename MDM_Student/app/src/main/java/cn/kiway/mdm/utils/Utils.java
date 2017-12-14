@@ -755,6 +755,10 @@ public class Utils {
             Log.d("test", "没有界面，推过来也没用");
             return;
         }
+        if (!m.getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+            Log.d("test", "解锁状态下，不需要再checkWifis");
+            return;
+        }
         try {
             ArrayList<Wifi> wifis = new MyDBHelper(m).getAllWifis();
             Log.d("test", "wifis = " + wifis);
@@ -810,6 +814,10 @@ public class Utils {
     public synchronized static void checkAppCharges(MainActivity m) {
         if (m == null) {
             Log.d("test", "没有界面，推过来也没用");
+            return;
+        }
+        if (!m.getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+            Log.d("test", "解锁状态下，不需要再checkAppCharges");
             return;
         }
         try {
@@ -1447,6 +1455,10 @@ public class Utils {
         if (KWApp.instance.currentActivity == null) {
             return;
         }
+        if (!c.getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+            Log.d("test", "解锁状态下，不需要再checkTemperary");
+            return;
+        }
         try {
             //1.锁屏
             long lock_time = c.getSharedPreferences("kiway", 0).getLong("lock_time", 0L);
@@ -1828,6 +1840,10 @@ public class Utils {
         if (m == null) {
             return;
         }
+        if (!m.getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+            Log.d("test", "解锁状态下，不需要再checkShutDown");
+            return;
+        }
         try {
             String shutdown_startTime = m.getSharedPreferences("kiway", 0).getString("shutdown_startTime", "");
             String shutdown_endTime = m.getSharedPreferences("kiway", 0).getString("shutdown_endTime", "");
@@ -1999,7 +2015,7 @@ public class Utils {
         if (DspPackgeUtil.isPackageExist(c, pkgName)) {
             c.startActivity(in);
         } else {
-            if (c==null)
+            if (c == null)
                 return;
             Toast.makeText(c, "该应用没有安装", Toast.LENGTH_SHORT).show();
         }

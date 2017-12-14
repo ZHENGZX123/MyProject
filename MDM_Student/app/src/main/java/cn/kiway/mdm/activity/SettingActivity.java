@@ -51,6 +51,8 @@ public class SettingActivity extends BaseActivity {
             getSharedPreferences("kiway", 0).edit().putBoolean("locked", true).commit();
             mode.setText("当前已锁定");
             lock();
+            //锁定的时候调用一次getCommand获取最新命令
+            MainActivity.instance.getCommand();
         }
     }
 

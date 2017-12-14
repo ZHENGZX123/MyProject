@@ -304,8 +304,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     //检测用户是否对本app开启了“Apps with usage access”权限
     private boolean hasPermission() {
-        AppOpsManager appOps = (AppOpsManager)
-                getSystemService(Context.APP_OPS_SERVICE);
+        AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
         int mode = 0;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
@@ -314,7 +313,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         return mode == AppOpsManager.MODE_ALLOWED;
     }
 
-    private void getCommand() {
+    public void getCommand() {
+        if (mHandler.hasMessages(MSG_GET_COMMAND)) {
+            mHandler.removeMessages(MSG_GET_COMMAND);
+        }
         mHandler.sendEmptyMessage(MSG_GET_COMMAND);
     }
 
