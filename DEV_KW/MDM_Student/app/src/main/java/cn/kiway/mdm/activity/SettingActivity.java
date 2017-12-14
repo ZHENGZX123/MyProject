@@ -21,6 +21,7 @@ import cn.kiway.mdm.utils.Utils;
 
 public class SettingActivity extends BaseActivity {
 
+    private TextView versionTV;
     private TextView mode;
     private ImageView codeIV;
     private RelativeLayout codeRL;
@@ -29,6 +30,8 @@ public class SettingActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+        versionTV = (TextView) findViewById(R.id.versionTV);
+        versionTV.setText(Utils.getCurrentVersion(this));
         mode = (TextView) findViewById(R.id.lock);
         codeIV = (ImageView) findViewById(R.id.codeIV);
         codeRL = (RelativeLayout) findViewById(R.id.codeRL);
