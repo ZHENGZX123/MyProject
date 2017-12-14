@@ -14,7 +14,6 @@ import com.anarchy.classify.simple.SimpleAdapter;
 import com.anarchy.classify.simple.widget.MiViewHolder;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -144,7 +143,7 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
                 return;
             }
             if (packageName.equals(MARKETPLACE)) {//应用市场
-               // context.startActivity(new Intent(context, MarkePlaceActivity.class));
+                // context.startActivity(new Intent(context, MarkePlaceActivity.class));
                 context.startActivity(new Intent(context, MarkePlaceViewActivity.class));
                 return;
             }
@@ -158,27 +157,33 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
                 Toast.makeText(context, "该APP未安装", Toast.LENGTH_SHORT).show();
                 return;
             }
+            //zzx 检查当前时间能不能用
+            if (!Utils.checkAPPTimeUse(new MyDBHelper(context).getTime(packageName))){
+                Toast.makeText(context, "该时间段内不可以使用", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             //2.检查当前时间段能不能使用
             AppCharge app = new MyDBHelper(context).getAppChargesByPackage(packageName);
             if (app != null) {
                 String timeRange = app.timeRange;// [{start end}{start end}]
                 Log.d("test", "timeRange = " + timeRange);
                 JSONArray array = new JSONArray(timeRange);
-                int count = array.length();
-                boolean in = false;
-                if (count == 0) {
-                    in = true;
-                } else {
-                    for (int i = 0; i < count; i++) {
-                        JSONObject o = array.getJSONObject(i);
-                        String startTime = o.getString("startTime");
-                        String endTime = o.getString("endTime");
-                        in = Utils.checkInTimes(startTime, endTime);
-                        if (in) {
-                            break;
-                        }
-                    }
-                }
+                //  int count = array.length();
+                boolean in = Utils.checkAPPTimeUse(array);
+//                if (count == 0) {
+//                    in = true;
+//                } else {
+//                    for (int i = 0; i < count; i++) {
+//                        JSONObject o = array.getJSONObject(i);
+//                        String startTime = o.getString("startTime");
+//                        String endTime = o.getString("endTime");
+//                        in = Utils.checkInTimes(startTime, endTime);
+//                        if (in) {
+//                            break;
+//                        }
+//                    }
+//                }
                 if (in) {
                     launchAPP(packageName, name);
                 } else {

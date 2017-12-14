@@ -3,8 +3,8 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         kiway {
-//          storeFile file('F:/android_signature/kiway.key')
-            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+         storeFile file('F:/android_signature/kiway.key')
+          //  storeFile file('C:/Users/Administrator/.android/kiway.keystore')
             storePassword 'kiway123'
             keyAlias 'kiway'
             keyPassword 'kiway123'
@@ -62,4 +62,5 @@ dependencies {
     compile files('libs/hprose_for_java_7.jar')
     compile files('libs/BaiduLBS_Android.jar')
     compile project(':mdmsdk')
+    compile 'com.borax12.materialdaterangepicker:library:1.9'
 }

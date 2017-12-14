@@ -22,6 +22,7 @@ import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.entity.AppCharge;
 import cn.kiway.mdm.entity.Call;
 import cn.kiway.mdm.entity.Network;
+import cn.kiway.mdm.entity.TimeSet;
 import cn.kiway.mdm.entity.Wifi;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
@@ -128,7 +129,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 }
             } else if (command.equals("temporary_app")) {
                 String currentTime = data.optString("currentTime");
-                context.getSharedPreferences("kiway", 0).edit().putLong("app_time", Utils.dateToLong(currentTime)).commit();
+                context.getSharedPreferences("kiway", 0).edit().putLong("app_time", Utils.dateToLong(currentTime))
+                        .commit();
                 context.getSharedPreferences("kiway", 0).edit().putString("app_data", data.toString()).commit();
                 m.what = MSG_LAUNCH_APP;
                 m.obj = data;
@@ -142,7 +144,8 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 if (!Utils.checkCommandAvailable(currentTime)) {
                     return false;
                 }
-                context.getSharedPreferences("kiway", 0).edit().putLong("lock_time", Utils.dateToLong(currentTime)).commit();
+                context.getSharedPreferences("kiway", 0).edit().putLong("lock_time", Utils.dateToLong(currentTime))
+                        .commit();
             } else if (command.equals("temporary_unlockScreen")) {
                 String currentTime = data.optString("currentTime");
                 if (!Utils.checkCommandAvailable(currentTime)) {
@@ -293,6 +296,17 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             } else if (command.equals("send_msg")) {
                 m.what = MSG_MESSAGE;
                 m.obj = data;
+            } else if (command.equals("parent_charge_app")) {
+                String packageName=data.optJSONObject("content").optString("package");
+                TimeSet timeSet = new TimeSet();
+                if (data.optJSONObject("content").optString("operation").equals("detele")) {
+                    new MyDBHelper(context).deleteTime(packageName);
+                } else {
+                    timeSet.packageName = packageName;
+                    timeSet.times = data.optJSONObject("content").optJSONArray("tims").toString();
+                    new MyDBHelper(context).deleteTime(timeSet.packageName);
+                    new MyDBHelper(context).addTime(timeSet);
+                }
             }
             if (KWApp.instance == null) {
                 return false;
