@@ -158,6 +158,8 @@ public class KWApp extends MarketPlaceApplication {
                         in.putExtra("shangke", msg.obj.toString());
                         RemoteAidlService.attendClass(msg.obj.toString());
                         Utils.startPackage(currentActivity, ZHIHUIKETANGPG, in);
+                    }else{
+                        Toast.makeText(currentActivity,"请安装课堂互动",Toast.LENGTH_SHORT).show();
                     }
                 }
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
