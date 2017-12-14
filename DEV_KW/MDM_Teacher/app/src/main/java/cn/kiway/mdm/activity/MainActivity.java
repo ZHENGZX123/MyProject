@@ -51,10 +51,12 @@ import cn.kiway.mdm.web.MyWebViewClient;
 import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
 
+import static cn.kiway.mdm.WXApplication.uploadUrl;
 import static cn.kiway.mdm.WXApplication.url;
 import static cn.kiway.mdm.util.ResultMessage.QRSCAN;
 import static cn.kiway.mdm.util.Utils.getCurrentVersion;
 import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
+import static cn.kiway.mdm.web.JsAndroidInterface.accessToken;
 import static cn.kiway.mdm.web.JsAndroidInterface.picPath;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile;
 import static cn.kiway.mdm.web.JsAndroidInterface.setFilePath;
@@ -282,14 +284,14 @@ public class MainActivity extends BaseActivity {
     }
 
     public void uploadFile(String filePath) {
-        String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
+       // String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
         File file = new File(filePath);
         pd.show();
         pd.setMessage(getString(R.string.upload));
         new Thread() {
             @Override
             public void run() {
-                final String ret = UploadUtil.uploadFile(file, url + "/common/file?accessToken=" + token, file
+                final String ret = UploadUtil.uploadFile(file, uploadUrl + "/common/file?x-auth-token=" + accessToken, file
                         .getName());
                 Log.d("test", "upload ret = " + ret);
                 runOnUiThread(new Runnable() {
