@@ -2069,4 +2069,29 @@ public class Utils {
             }
         });
     }
+    public static boolean checkAPPTimeUse(JSONArray array){
+        boolean in = false;
+        int count = array.length();
+        if (count == 0) {
+            in = true;
+        } else {
+            for (int i = 0; i < count; i++) {
+                JSONObject o = null;
+                try {
+                    o = array.getJSONObject(i);
+                    String startTime = o.getString("startTime");
+                    String endTime = o.getString("endTime");
+                    in = Utils.checkInTimes(startTime, endTime);
+                    if (in) {
+                        break;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return in;
+    }
 }

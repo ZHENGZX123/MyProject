@@ -83,7 +83,7 @@ public class LoginActivity extends BaseActivity {
             return;
         }
 
-        final String code = codeET.getText().toString();
+        final String code = codeET.getText().toString().trim();
         if (TextUtils.isEmpty(code)) {
             toast("请填写学号");
             return;

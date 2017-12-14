@@ -7,22 +7,61 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="10dp">
+        >
+
+        <RelativeLayout
+            android:id="@+id/relat"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/blue">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="应用时间设置"
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
+
+            <ImageView
+                android:id="@+id/before"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:onClick="Before"
+                android:paddingLeft="10dp"
+                android:src="@drawable/ic_navigate_before"/>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/ll_addView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:layout_below="@+id/relat"
+            android:orientation="vertical"/>
+
+        <Button
+            android:id="@+id/btn_addTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_addView"
+            android:layout_margin="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/dialog_selector"
+            android:padding="10dp"
+            android:text="新增时间"/>
 
         <Button
             android:id="@+id/btn_getData"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ll_addView"
+            android:layout_below="@+id/btn_addTime"
+            android:layout_margin="10dp"
             android:layout_marginTop="10dp"
-            android:padding="10dp"
             android:background="@drawable/dialog_selector"
-            android:text="获取数据" />
+            android:padding="10dp"
+            android:text="获取数据"/>
+
     </RelativeLayout>
 </ScrollView>

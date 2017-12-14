@@ -221,6 +221,7 @@ import cn.kiway.mdm.entity.Call;
 import cn.kiway.mdm.entity.File;
 import cn.kiway.mdm.entity.Network;
 import cn.kiway.mdm.entity.SMS;
+import cn.kiway.mdm.entity.TimeSet;
 import cn.kiway.mdm.entity.Wifi;
 
 
@@ -267,6 +268,11 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + TABLE_NOTIFY_MSG
             + "   (id integer primary key autoincrement,  title  text,  message  text , sendname text,time text)";
 
+    private static final String TABLE_TIME_SET = "TABLE_TIME_SET";
+    private static final String CREATE_TABLE_TIMESET = " create table  IF NOT EXISTS "
+            + TABLE_TIME_SET
+            + "   (id integer primary key autoincrement, packageName  text , times text)";
+
 
     private SQLiteDatabase db;
 
@@ -296,6 +302,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFY_MSG);
         db.execSQL(CREATE_TABLE_NOTIFY_MSG);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TIME_SET);
+        db.execSQL(CREATE_TABLE_TIMESET);
     }
 
     @Override
@@ -308,6 +317,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_SMS);
         db.execSQL(CREATE_TABLE_FILE);
         db.execSQL(CREATE_TABLE_NOTIFY_MSG);
+        db.execSQL(CREATE_TABLE_TIMESET);
     }
 
     //------------------------------------------Network----------------
@@ -815,6 +825,44 @@ public class MyDBHelper extends SQLiteOpenHelper {
         if (db == null)
             db = getWritableDatabase();
         db.delete(TABLE_FILE, null, null);
+        db.close();
+    }
+
+    //----------------------------------timeSet----------------
+
+
+    public void addTime(TimeSet a) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("packageName", a.packageName);
+        values.put("times", a.times);
+        db.insert(TABLE_TIME_SET, null, values);
+        db.close();
+    }
+
+    public JSONArray getTime(String packageName) {
+        if (db == null)
+            db = getWritableDatabase();
+        JSONArray array = new JSONArray();
+        Cursor cur = db.query(TABLE_TIME_SET, null, "packageName=?", new String[]{packageName + ""}, null, null,
+                null, null);
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            try {
+                array = new JSONArray(cur.getString(3));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        cur.close();
+        db.close();
+        return array;
+    }
+
+    public void deleteTime(String packageName) {
+        if (db == null)
+            db = getWritableDatabase();
+        db.delete(TABLE_TIME_SET, "packageName=?", new String[]{packageName + ""});
         db.close();
     }
 }
