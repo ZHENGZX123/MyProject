@@ -188,7 +188,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:gravity="center_vertical"
-                android:padding="10dp"
+                 android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingRight="20dp"
                 android:text="0.0.1"
                 android:textSize="16sp" />
 
