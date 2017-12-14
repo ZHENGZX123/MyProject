@@ -236,6 +236,8 @@ public class MainActivity extends BaseActivity {
                 e.printStackTrace();
             }
         } else if (requestCode == REQUEST_ORIGINAL) {
+            if (resultCode != RESULT_OK)
+                return;
             Luban.with(this)
                     .load(picPath)                                // 传人要压缩的图片列表
                     .ignoreBy(100)                                  // 忽略不压缩图片的大小
@@ -266,7 +268,8 @@ public class MainActivity extends BaseActivity {
                                 public void run() {
                                     if (pd != null)
                                         pd.dismiss();
-                                    Toast.makeText(MainActivity.this, getString(R.string.yasuoshibai), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MainActivity.this, getString(R.string.yasuoshibai), Toast
+                                            .LENGTH_SHORT).show();
                                 }
                             });
                         }
@@ -274,6 +277,7 @@ public class MainActivity extends BaseActivity {
             //     uploadFile();
         }
     }
+
     private String getPath() {
         String path = Environment.getExternalStorageDirectory() + "/kiway_mdm_teacher/pic/";
         File file = new File(path);
@@ -284,14 +288,15 @@ public class MainActivity extends BaseActivity {
     }
 
     public void uploadFile(String filePath) {
-       // String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
+        // String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
         File file = new File(filePath);
         pd.show();
         pd.setMessage(getString(R.string.upload));
         new Thread() {
             @Override
             public void run() {
-                final String ret = UploadUtil.uploadFile(file, uploadUrl + "/common/file?x-auth-token=" + accessToken, file
+                final String ret = UploadUtil.uploadFile(file, uploadUrl + "/common/file?x-auth-token=" +
+                        accessToken, file
                         .getName());
                 Log.d("test", "upload ret = " + ret);
                 runOnUiThread(new Runnable() {
@@ -311,7 +316,7 @@ public class MainActivity extends BaseActivity {
                             String url = obj.optJSONObject("data").optString("url");
                             Log.d("test", "obj = " + obj.toString());
                             wv.loadUrl(accpterFilePath.replace("fileName", filePath.split("/")[filePath.split("/")
-                                    .length - 1]).replace("filePath", url).replace("fileSize",file.length()+""));
+                                    .length - 1]).replace("filePath", url).replace("fileSize", file.length() + ""));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -321,7 +326,7 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
-       //下面是版本更新相关
+    //下面是版本更新相关
     public void checkNewVersion() {
         checking = true;
         new Thread() {

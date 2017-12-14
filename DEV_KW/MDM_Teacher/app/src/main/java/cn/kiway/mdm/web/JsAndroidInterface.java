@@ -150,7 +150,7 @@ public class JsAndroidInterface {
     @JavascriptInterface//拍照上传
     public void takePhoto(String token) {
         accessToken=token;
-        activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token);
+       // activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token);
         if (!new File(EnFILEPATH).exists())
             new File(EnFILEPATH).mkdirs();
         picPath = EnFILEPATH + "/" + System.currentTimeMillis() + ".png";
