@@ -171,9 +171,11 @@ public class WebViewActivity extends BaseActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (wv.canGoBack()) {
+                Log.d("test", "goBack");
                 wv.goBack();
                 return true;
             } else {
+                Log.d("test", "finish");
                 finish();
             }
         }
