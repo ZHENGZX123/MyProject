@@ -63,13 +63,13 @@ import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.1.0";
+    private static final String currentPackageVersion = "0.1.1";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
     private boolean checking = false;
     private Dialog dialog_download;
-    protected ProgressDialog pd;
+    public ProgressDialog pd;
     private X5WebView wv;
     private LinearLayout layout_welcome;
     public static MainActivity instance;
@@ -319,7 +319,7 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
-    //下面是版本更新相关
+       //下面是版本更新相关
     public void checkNewVersion() {
         checking = true;
         new Thread() {

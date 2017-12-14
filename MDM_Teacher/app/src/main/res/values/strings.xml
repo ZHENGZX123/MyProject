@@ -16,4 +16,9 @@
     <string name="please_install_kiway_srceen">请安装“开维互动”应用</string>
     <string name="update_pic">更新图片</string>
     <string name="con">连接断线了</string>
+    <string name="openFile">正在打开文件请稍后</string>
+    <string name="no_support">文件格式不支持</string>
+    <string name="mobile_no_play">手机没有安装相关的播放器，请下载安装</string>
+    <string name="mobile_no_office">手机没有安装相关的办公软件，请下载安装</string>
+    <string name="downloadfie">下载失败，无法打开</string>
 </resources>
