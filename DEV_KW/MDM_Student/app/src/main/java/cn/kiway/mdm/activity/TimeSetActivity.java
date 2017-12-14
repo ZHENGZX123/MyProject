@@ -108,14 +108,16 @@ public class TimeSetActivity extends BaseActivity implements View.OnClickListene
         for (int i = 0; i < addTimeView.getChildCount(); i++) {
             View childAt = addTimeView.getChildAt(i);
             TextView time = (TextView) childAt.findViewById(R.id.txt_time);
-            JSONObject jsonObject=new JSONObject();
-            try {
-                jsonObject.put("startTime",time.getText().toString().split("-")[0]);
-                jsonObject.put("endTime",time.getText().toString().split("-")[1]);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (time.getText().toString().contains("-")) {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("startTime", time.getText().toString().split("-")[0]);
+                    jsonObject.put("endTime", time.getText().toString().split("-")[1]);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                array.put(jsonObject);
             }
-            array.put(jsonObject);
             Log.e(TAG, "时间设置：：：：" + time.getText().toString());
         }
         timeSet.times = array.toString();
