@@ -169,21 +169,7 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
                 String timeRange = app.timeRange;// [{start end}{start end}]
                 Log.d("test", "timeRange = " + timeRange);
                 JSONArray array = new JSONArray(timeRange);
-                //  int count = array.length();
                 boolean in = Utils.checkAPPTimeUse(array, "HH:mm:ss");
-//                if (count == 0) {
-//                    in = true;
-//                } else {
-//                    for (int i = 0; i < count; i++) {
-//                        JSONObject o = array.getJSONObject(i);
-//                        String startTime = o.getString("startTime");
-//                        String endTime = o.getString("endTime");
-//                        in = Utils.checkInTimes(startTime, endTime);
-//                        if (in) {
-//                            break;
-//                        }
-//                    }
-//                }
                 if (in) {
                     launchAPP(packageName, name);
                 } else {

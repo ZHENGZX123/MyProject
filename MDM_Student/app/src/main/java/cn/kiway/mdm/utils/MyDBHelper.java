@@ -872,10 +872,10 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return array;
     }
 
-    public void deleteTime(String ids, String packge) {
+    public void deleteTime(String ids, String packageName) {
         if (db == null)
             db = getWritableDatabase();
-        db.delete(TABLE_TIME_SET, "ids=? or packageName=?", new String[]{ids + "", packge + ""});
+        db.delete(TABLE_TIME_SET, "ids=? or packageName=?", new String[]{ids + "", packageName + ""});
         db.close();
     }
 
@@ -911,7 +911,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         if (db == null)
             db = getWritableDatabase();
         ArrayList<InStallAllApp> inStallAllApps = new ArrayList<>();
-        Cursor cur = db.query(TABLE_FILE, null, null, null, null, null, null);
+        Cursor cur = db.query(TABLE_INSTNALL_APP, null, null, null, null, null, null);
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             InStallAllApp allApp = new InStallAllApp();
             allApp.appName = cur.getString(1);
@@ -943,7 +943,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("record", allApp.record);
-        String[] args = {allApp.packages};
+        String[] args = {allApp.ids};
         int ret = db.update(TABLE_INSTNALL_APP, cv, "ids=?", args);
         if (ret == 0) {
             ContentValues values = new ContentValues();
