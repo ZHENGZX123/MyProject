@@ -13,20 +13,25 @@ import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.androidev.download.DefaultNotifier;
+import com.androidev.download.DownloadManager;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+import com.zhy.http.okhttp.log.LoggerInterceptor;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import cn.kiway.marketplace.R;
 import cn.kiway.marketplace.db.MarkePlaceDBHelper;
 import cn.kiway.marketplace.fragment.MarkePlaceFragment;
 import cn.kiway.marketplace.util.MarketClassify;
 import okhttp3.Call;
+import okhttp3.OkHttpClient;
 
 import static cn.kiway.marketplace.util.IUrContant.CALSSFIY_URL;
 
@@ -39,6 +44,16 @@ public class MarkePlaceViewActivity extends FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.marke_activity_mainview);
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new LoggerInterceptor("MarketPlace::::"))
+                .connectTimeout(10000L, TimeUnit.MILLISECONDS)
+                .readTimeout(10000L, TimeUnit.MILLISECONDS)
+                .build();
+        DownloadManager.getInstance().initialize(this, 3);
+        DownloadManager.getInstance().setDownloadNotifier(new DefaultNotifier(this));
+        OkHttpUtils.initClient(okHttpClient);
+
         loadData();
     }
 
