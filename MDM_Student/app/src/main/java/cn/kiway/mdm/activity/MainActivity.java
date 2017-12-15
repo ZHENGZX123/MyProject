@@ -1,6 +1,7 @@
 package cn.kiway.mdm.activity;
 
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.app.AppOpsManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -154,6 +155,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         getAppCanUseData();
     }
 
+
     private void checkPassword() {
         String password = getSharedPreferences("kiway", 0).getString("password", "");
         if (TextUtils.isEmpty(password)) {
@@ -305,7 +307,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void setUsageStats() {
-        if (Build.BRAND.equals("HUAWEI") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !hasPermission()) {
+        if (!Build.MODEL.equals("rk3288") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !hasPermission()) {
             showMessageDailog = new ShowMessageDailog(this);
             showMessageDailog.setShowMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开", YUXUNFANWENJLU);
             showMessageDailog.setCancelable(false);

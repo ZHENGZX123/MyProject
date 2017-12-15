@@ -22,6 +22,7 @@ import cn.kiway.mdm.entity.School;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.KWApp.clientUrl;
+import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 /**
  * Created by Administrator on 2017/10/17.
@@ -98,6 +99,7 @@ public class LoginActivity extends BaseActivity {
         Log.d("test", "token = " + token);
         if (TextUtils.isEmpty(token)) {
             toast("华为token不能为空");
+            huaweiPush(this);
             return;
         }
         //2.提交数据
