@@ -11,18 +11,25 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.entity.App;
+import cn.kiway.mdm.entity.InStallAllApp;
 import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 
+import static cn.kiway.mdm.KWApp.clientUrl;
 import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
 import static cn.kiway.mdm.utils.AppReceiverIn.REMOVE_SUCCESS;
@@ -32,7 +39,7 @@ import static cn.kiway.mdm.utils.FileACache.ListFileName;
 public class AppListActivity3 extends BaseActivity {
 
     private ListView lv;
-    private ArrayList<App> apps = new ArrayList<>();
+    private ArrayList<InStallAllApp> apps = new ArrayList<>();
     private MyAdapter adapter;
     public List<List<App>> allListData = new ArrayList<>();
 
@@ -44,13 +51,14 @@ public class AppListActivity3 extends BaseActivity {
         allListData = new ArrayList(FileACache.loadListCache(this, ListFileName));
         adapter = new MyAdapter();
         lv.setAdapter(adapter);
+        getAppData();
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                App a = apps.get(position);
+                InStallAllApp a = apps.get(position);
                 a.selected = !a.selected;
                 Intent intent = new Intent();
-                intent.putExtra(PACKAGENAME, a.packageName);
+                intent.putExtra(PACKAGENAME, a.packages);
                 intent.putExtra("boolean", true);
                 if (a.selected) {
                     intent.setAction(INSTALL_SUCCESS);
@@ -64,19 +72,14 @@ public class AppListActivity3 extends BaseActivity {
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
-                App a = apps.get(position);
+                InStallAllApp a = apps.get(position);
                 Intent intent = new Intent(AppListActivity3.this, TimeSetActivity.class);
                 intent.putExtra("app", a);
                 startActivity(intent);
                 return false;
             }
         });
-        apps = Utils.scanLocalInstallAppList(this, true);   //这里要过滤掉默认APP、网络APP
-        for (App a : apps) {//标识选中状态
-            if (allListData.toString().contains(a.packageName))
-                a.selected = true;
-        }
-        adapter.notifyDataSetChanged();
+        //apps = Utils.scanLocalInstallAppList(this, true);   //这里要过滤掉默认APP、网络APP
     }
 
     public void Before(View view) {
@@ -101,30 +104,31 @@ public class AppListActivity3 extends BaseActivity {
                 holder.iv = (ImageView) rowView.findViewById(R.id.iv);
                 holder.name = (TextView) rowView.findViewById(R.id.name);
                 holder.cb = (ImageView) rowView.findViewById(R.id.cb);
-                holder.time= (TextView) rowView.findViewById(R.id.time);
+                holder.time = (TextView) rowView.findViewById(R.id.time);
                 rowView.setTag(holder);
             } else {
                 holder = (ViewHolder) rowView.getTag();
             }
-            App app = apps.get(position);
-            holder.name.setText(app.name);
-            try {
-                holder.time.setText(getTimeString(new MyDBHelper(AppListActivity3.this).getTime(app.packageName)));
-            } catch (JSONException e) {
-                e.printStackTrace();
+            InStallAllApp app = apps.get(position);
+            holder.name.setText(app.appName);
+            if (app.record != null) {
+                holder.time.setText("可用时段:" + app.getRecord().optString("startTime") + "-" + app.getRecord().optString
+                        ("endTime"));
+            } else {
+                holder.time.setText("");
             }
             if (app.selected) {
                 holder.cb.setVisibility(View.VISIBLE);
             } else {
                 holder.cb.setVisibility(View.INVISIBLE);
             }
-            holder.iv.setImageDrawable(Utils.getIconByPackageName(getPackageManager(), app.packageName));
+            holder.iv.setImageDrawable(Utils.getIconByPackageName(getPackageManager(), app.packages));
             return rowView;
         }
 
         public class ViewHolder {
             public ImageView iv;
-            public TextView name,time;
+            public TextView name, time;
             public ImageView cb;
         }
 
@@ -134,7 +138,7 @@ public class AppListActivity3 extends BaseActivity {
         }
 
         @Override
-        public App getItem(int arg0) {
+        public InStallAllApp getItem(int arg0) {
             return apps.get(arg0);
         }
 
@@ -156,5 +160,71 @@ public class AppListActivity3 extends BaseActivity {
             }
         }
         return buffer.toString();
+    }
+
+
+    //下面获取app使用时间
+    public void getAppData() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {//+
+                    HttpGet httpRequest = new HttpGet(clientUrl +
+                            "device/parent/findAppInstallation?imei=" + Utils.getIMEI(AppListActivity3.this));
+                    httpRequest.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token",
+                            ""));
+                    DefaultHttpClient client = new DefaultHttpClient();
+                    HttpResponse response = client.execute(httpRequest);
+                    String ret = EntityUtils.toString(response.getEntity());
+                    JSONObject data = new JSONObject(ret);
+                    if (data.optInt("statusCode") == 200) {
+                        JSONArray array = data.optJSONArray("data");
+                        ArrayList<InStallAllApp> appsd = new ArrayList<>();
+                        for (int i = 0; i < array.length(); i++) {
+                            InStallAllApp inapp = new InStallAllApp();
+                            JSONObject item = array.optJSONObject(i);
+                            inapp.appName = item.optString("appName");
+                            inapp.versionNum = item.optString("versionNum");
+                            inapp.icon = item.optString("icon");
+                            inapp.ids = item.optString("id");
+                            inapp.packages = item.optString("packages");
+                            inapp.versionName = item.optString("versionName");
+                            inapp.category = item.optString("category");
+                            inapp.createDate = item.optString("createDate");
+                            if (item.optJSONObject("record") != null)
+                                inapp.record = item.optJSONObject("record").toString();
+                            inapp.flag = item.optString("flag");
+                            inapp.imei = item.optString("imei");
+                            if (!inapp.packages.equals("cn.kiway.mdm"))
+                                appsd.add(inapp);
+                        }
+                        new MyDBHelper(AppListActivity3.this).addInstallApp(appsd);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                notifyView();
+            }
+        }.start();
+    }
+
+    private void notifyView() {
+        apps = new MyDBHelper(this).getALLInStallAllApp();
+        for (InStallAllApp a : apps) {//标识选中状态
+            if (allListData.toString().contains(a.packages))
+                a.selected = true;
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        notifyView();
     }
 }

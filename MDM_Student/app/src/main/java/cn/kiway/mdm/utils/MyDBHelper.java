@@ -219,6 +219,7 @@ import java.util.ArrayList;
 import cn.kiway.mdm.entity.AppCharge;
 import cn.kiway.mdm.entity.Call;
 import cn.kiway.mdm.entity.File;
+import cn.kiway.mdm.entity.InStallAllApp;
 import cn.kiway.mdm.entity.Network;
 import cn.kiway.mdm.entity.SMS;
 import cn.kiway.mdm.entity.TimeSet;
@@ -271,7 +272,14 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_TIME_SET = "TABLE_TIME_SET";
     private static final String CREATE_TABLE_TIMESET = " create table  IF NOT EXISTS "
             + TABLE_TIME_SET
-            + "   (id integer primary key autoincrement, packageName  text , times text)";
+            + "   (id integer primary key autoincrement,ids text, packageName  text , times text)";
+
+    private static final String TABLE_INSTNALL_APP = "TABLE_INSTNALL_APP";
+
+    private static final String CREATE_TABLE_INSTNALL_APP = " create table  IF NOT EXISTS "
+            + TABLE_INSTNALL_APP
+            + "   (id integer primary key autoincrement,appName text, versionNum  text , icon text, ids text, packages " +
+            "text, versionName text, category text, createDate text, record text, flag text)";
 
 
     private SQLiteDatabase db;
@@ -305,6 +313,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TIME_SET);
         db.execSQL(CREATE_TABLE_TIMESET);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_INSTNALL_APP);
+        db.execSQL(CREATE_TABLE_INSTNALL_APP);
     }
 
     @Override
@@ -318,6 +329,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_FILE);
         db.execSQL(CREATE_TABLE_NOTIFY_MSG);
         db.execSQL(CREATE_TABLE_TIMESET);
+        db.execSQL(CREATE_TABLE_INSTNALL_APP);
     }
 
     //------------------------------------------Network----------------
@@ -837,6 +849,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("packageName", a.packageName);
         values.put("times", a.times);
+        values.put("ids", a.ids);
         db.insert(TABLE_TIME_SET, null, values);
         db.close();
     }
@@ -859,10 +872,93 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return array;
     }
 
-    public void deleteTime(String packageName) {
+    public void deleteTime(String ids, String packge) {
         if (db == null)
             db = getWritableDatabase();
-        db.delete(TABLE_TIME_SET, "packageName=?", new String[]{packageName + ""});
+        db.delete(TABLE_TIME_SET, "ids=? or packageName=?", new String[]{ids + "", packge + ""});
+        db.close();
+    }
+
+    public void deleteAllTime() {
+        if (db == null)
+            db = getWritableDatabase();
+        db.delete(TABLE_TIME_SET, null, null);
+        db.close();
+    }
+
+    //-------------------installApp
+    public void addInstallApp(ArrayList<InStallAllApp> inStallAllApps) {
+        if (db == null)
+            db = getWritableDatabase();
+        for (InStallAllApp allApp : inStallAllApps) {
+            ContentValues values = new ContentValues();
+            values.put("appName", allApp.appName);
+            values.put("versionNum", allApp.versionNum);
+            values.put("icon", allApp.icon);
+            values.put("ids", allApp.ids);
+            values.put("packages", allApp.packages);
+            values.put("versionName", allApp.versionName);
+            values.put("category", allApp.category);
+            values.put("createDate", allApp.createDate);
+            values.put("record", allApp.record);
+            values.put("flag", allApp.flag);
+            db.insert(TABLE_INSTNALL_APP, null, values);
+        }
+        db.close();
+    }
+
+    public ArrayList<InStallAllApp> getALLInStallAllApp() {
+        if (db == null)
+            db = getWritableDatabase();
+        ArrayList<InStallAllApp> inStallAllApps = new ArrayList<>();
+        Cursor cur = db.query(TABLE_FILE, null, null, null, null, null, null);
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            InStallAllApp allApp = new InStallAllApp();
+            allApp.appName = cur.getString(1);
+            allApp.versionNum = cur.getString(2);
+            allApp.icon = cur.getString(3);
+            allApp.ids = cur.getString(4);
+            allApp.packages = cur.getString(5);
+            allApp.versionName = cur.getString(6);
+            allApp.category = cur.getString(7);
+            allApp.createDate = cur.getString(8);
+            allApp.record = cur.getString(9);
+            allApp.flag = cur.getString(10);
+            inStallAllApps.add(allApp);
+        }
+        cur.close();
+        db.close();
+        return inStallAllApps;
+    }
+
+    public void deleteAllInstallApp() {
+        if (db == null)
+            db = getWritableDatabase();
+        db.delete(TABLE_INSTNALL_APP, null, null);
+        db.close();
+    }
+
+    public void updateInstallApp(InStallAllApp allApp) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("record", allApp.record);
+        String[] args = {allApp.packages};
+        int ret = db.update(TABLE_INSTNALL_APP, cv, "ids=?", args);
+        if (ret == 0) {
+            ContentValues values = new ContentValues();
+            values.put("appName", allApp.appName);
+            values.put("versionNum", allApp.versionNum);
+            values.put("icon", allApp.icon);
+            values.put("ids", allApp.ids);
+            values.put("packages", allApp.packages);
+            values.put("versionName", allApp.versionName);
+            values.put("category", allApp.category);
+            values.put("createDate", allApp.createDate);
+            values.put("record", allApp.record);
+            values.put("flag", allApp.flag);
+            db.insert(TABLE_INSTNALL_APP, null, values);
+        }
         db.close();
     }
 }

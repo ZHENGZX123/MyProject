@@ -158,7 +158,7 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
                 return;
             }
             //zzx 检查当前时间能不能用
-            if (!Utils.checkAPPTimeUse(new MyDBHelper(context).getTime(packageName))){
+            if (!Utils.checkAPPTimeUse(new MyDBHelper(context).getTime(packageName), "HH:mm")) {
                 Toast.makeText(context, "该时间段内不可以使用", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -170,7 +170,7 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
                 Log.d("test", "timeRange = " + timeRange);
                 JSONArray array = new JSONArray(timeRange);
                 //  int count = array.length();
-                boolean in = Utils.checkAPPTimeUse(array);
+                boolean in = Utils.checkAPPTimeUse(array, "HH:mm:ss");
 //                if (count == 0) {
 //                    in = true;
 //                } else {

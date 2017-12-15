@@ -22,8 +22,10 @@ import cn.kiway.mdm.utils.HttpDownload;
 import cn.kiway.mdm.utils.Utils;
 import cn.kiway.mdmsdk.MDMHelper;
 
+import static cn.kiway.mdm.utils.AppListUtils.isAppInstalled;
 import static cn.kiway.mdm.utils.Constant.ZHIHUIKETANGPG;
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
+import static cn.kiway.mdm.utils.Utils.packageName;
 
 /**
  * Created by Administrator on 2017/6/9.
@@ -153,13 +155,16 @@ public class KWApp extends MarketPlaceApplication {
                 }
             } else if (msg.what == MSG_ATTEND_CALSS) {
                 if (KWApp.instance != null) {
+                    if (!isAppInstalled(currentActivity, packageName)){
+                        Toast.makeText(currentActivity,"请安装课堂互动",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     Intent in = getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
                     if (in != null) {
                         in.putExtra("shangke", msg.obj.toString());
                         RemoteAidlService.attendClass(msg.obj.toString());
                         Utils.startPackage(currentActivity, ZHIHUIKETANGPG, in);
                     }else{
-                        Toast.makeText(currentActivity,"请安装课堂互动",Toast.LENGTH_SHORT).show();
                     }
                 }
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
