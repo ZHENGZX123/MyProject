@@ -847,7 +847,6 @@ public class Utils {
                 }
                 //TODO 版本更新
             }
-            //白名单太危险了。。。
             final ArrayList<String> whiteList = new ArrayList<>();
             //白名单，调用华为的API
             for (AppCharge ac : apps_type0) {
@@ -897,7 +896,7 @@ public class Utils {
             AppCharge app = new MyDBHelper(m).getAppChargesByPackage(runningAPP);
             Log.d("test", "running app = " + app);
             if (app != null) {
-                String timeRange = app.timeRange;// [{start end}{start end}]
+                String timeRange = app.timeRange;
                 Log.d("test", "timeRange = " + timeRange);
                 JSONArray array = new JSONArray(timeRange);
                 int count = array.length();
