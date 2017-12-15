@@ -198,7 +198,9 @@ public class AppListActivity3 extends BaseActivity {
                             if (!inapp.packages.equals("cn.kiway.mdm"))
                                 appsd.add(inapp);
                         }
+                        new MyDBHelper(AppListActivity3.this).deleteAllInstallApp();
                         new MyDBHelper(AppListActivity3.this).addInstallApp(appsd);
+                        notifyView();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

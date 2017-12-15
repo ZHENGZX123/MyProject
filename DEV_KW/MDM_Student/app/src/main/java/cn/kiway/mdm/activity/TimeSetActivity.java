@@ -61,6 +61,7 @@ public class TimeSetActivity extends BaseActivity implements View.OnClickListene
         setContentView(R.layout.activity_dynamic);
         app = (InStallAllApp) getIntent().getSerializableExtra("app");
         addTimeView = (LinearLayout) findViewById(R.id.ll_addView);
+        ((TextView) findViewById(R.id.title)).setText("设置 " + app.appName + " 可用时间");
         findViewById(R.id.btn_getData).setOnClickListener(this);
         findViewById(R.id.btn_addTime).setOnClickListener(this);//默认添加一个Item
         addViewItem(null);
@@ -258,6 +259,7 @@ public class TimeSetActivity extends BaseActivity implements View.OnClickListene
     }
 
     String ids = "";
+
     //上传时间
     public void uploadAppTime() {
         try {
@@ -314,6 +316,7 @@ public class TimeSetActivity extends BaseActivity implements View.OnClickListene
             dismissPD();
         }
     }
+
     //更新时间
     public void upadateAppTime() {
         try {
@@ -368,6 +371,7 @@ public class TimeSetActivity extends BaseActivity implements View.OnClickListene
             dismissPD();
         }
     }
+
     //删除时间
     public void deleteTime() {
         try {
