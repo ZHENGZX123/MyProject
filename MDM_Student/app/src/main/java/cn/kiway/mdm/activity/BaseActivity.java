@@ -134,14 +134,13 @@ public class BaseActivity extends Activity {
         MDMHelper.getAdapter().setVpnDisabled(true);
         MDMHelper.getAdapter().setTimeAndDateSetDisabled(false);
 
-        //TODO 各种黑白名单
+        //TODO 各种黑白名单，
         //7.移除白名单
         List<String> currentList = MDMHelper.getAdapter().getInstallPackageWhiteList();
         Log.d("test", "白名单size = " + currentList.size());
         if (currentList.size() > 0) {
             MDMHelper.getAdapter().removeInstallPackageWhiteList(currentList);
         }
-
         //8.命令重置`
         getSharedPreferences("kiway", 0).edit().putInt("flag_camera", 1).commit();
         getSharedPreferences("kiway", 0).edit().putInt("flag_snapshot", 1).commit();
