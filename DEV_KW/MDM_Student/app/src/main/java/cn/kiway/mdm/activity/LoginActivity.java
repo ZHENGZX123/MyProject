@@ -82,7 +82,6 @@ public class LoginActivity extends BaseActivity {
             toast("请选择班级");
             return;
         }
-
         final String code = codeET.getText().toString().trim();
         if (TextUtils.isEmpty(code)) {
             toast("请填写学号");
@@ -93,7 +92,6 @@ public class LoginActivity extends BaseActivity {
             toast("请填写姓名");
             return;
         }
-
         final String imei = Utils.getIMEI(this);
         String token = getSharedPreferences("huawei", 0).getString("token", "");
         Log.d("test", "token = " + token);
@@ -169,6 +167,4 @@ public class LoginActivity extends BaseActivity {
             dismissPD();
         }
     }
-
-
 }
