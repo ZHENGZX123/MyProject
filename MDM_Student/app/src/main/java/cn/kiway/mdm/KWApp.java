@@ -1,6 +1,7 @@
 package cn.kiway.mdm;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
@@ -14,7 +15,6 @@ import org.xutils.x;
 
 import java.io.File;
 
-import cn.kiway.marketplace.MarketPlaceApplication;
 import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
 import cn.kiway.mdm.aidlservice.RemoteAidlService;
@@ -31,7 +31,7 @@ import static cn.kiway.mdm.utils.Utils.packageName;
  * Created by Administrator on 2017/6/9.
  */
 
-public class KWApp extends MarketPlaceApplication {
+public class KWApp extends Application {
 
 //    public static final String serverUrl = "http://192.168.8.161:8083/";//mdm
 //    public static final String clientUrl = "http://192.168.8.161:8084/";//device开头的
@@ -112,7 +112,7 @@ public class KWApp extends MarketPlaceApplication {
                 //mScreenLock.acquire();
                 //mScreenLock.release();
             } else if (msg.what == MSG_LAUNCH_APP) {
-                //打开APP，如果没安装怎么办
+                //打开APP
                 temporary_app = true;
                 Utils.launchApp(getApplicationContext(), (JSONObject) msg.obj);
             } else if (msg.what == MSG_LAUNCH_MDM) {
@@ -155,16 +155,15 @@ public class KWApp extends MarketPlaceApplication {
                 }
             } else if (msg.what == MSG_ATTEND_CALSS) {
                 if (KWApp.instance != null) {
-                    if (!isAppInstalled(currentActivity, packageName)){
-                        Toast.makeText(currentActivity,"请安装课堂互动",Toast.LENGTH_SHORT).show();
+                    if (!isAppInstalled(KWApp.instance, ZHIHUIKETANGPG)) {
+                        Toast.makeText(KWApp.instance, "请安装课堂互动", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     Intent in = getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
                     if (in != null) {
                         in.putExtra("shangke", msg.obj.toString());
                         RemoteAidlService.attendClass(msg.obj.toString());
-                        Utils.startPackage(currentActivity, ZHIHUIKETANGPG, in);
-                    }else{
+                        Utils.startPackage(KWApp.instance, ZHIHUIKETANGPG, in);
                     }
                 }
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {

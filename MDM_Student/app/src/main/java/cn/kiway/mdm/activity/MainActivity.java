@@ -1,7 +1,6 @@
 package cn.kiway.mdm.activity;
 
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.app.AppOpsManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -112,6 +111,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         setContentView(R.layout.activity_main);
         Log.d("test", "Main onCreate");
         instance = this;
+
         //2.初始化界面
         initView();
         initData(getListdata(AppListUtils.getAppListData(this)));
@@ -136,7 +136,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //13.监听来电
         checkIncomingCall();
         //14.距离传感器
-        registerSensor();
+        //registerSensor();
         //15.设置默认短信app
         //setDefaultSMSApp();
         //16.检查版本更新
@@ -205,6 +205,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_CHECK_SETTING: {
+                    if (!getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+                        return;
+                    }
+                    //TODO 这里和SystemSetup冲突。。。
                     String runningAPP = Utils.getRunningAPP(MainActivity.this);
                     if (runningAPP.equals("com.android.settings")) {
                         //返回MDM桌面
