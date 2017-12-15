@@ -65,7 +65,7 @@ import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.1.1";
+    private static final String currentPackageVersion = "0.1.3";
 
     private boolean isSuccess = false;
     private boolean isJump = false;

@@ -149,8 +149,8 @@ public class JsAndroidInterface {
 
     @JavascriptInterface//拍照上传
     public void takePhoto(String token) {
-        accessToken=token;
-       // activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token);
+        accessToken = token;
+        // activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token);
         if (!new File(EnFILEPATH).exists())
             new File(EnFILEPATH).mkdirs();
         picPath = EnFILEPATH + "/" + System.currentTimeMillis() + ".png";
@@ -162,9 +162,10 @@ public class JsAndroidInterface {
 
     public static final int requsetFile = 45612;
     public static String accessToken;
+
     @JavascriptInterface
     public void chooseFile(String token) {//选择文件
-        accessToken=token;
+        accessToken = token;
         activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token);
         new LFilePicker()
                 .withActivity(activity)
