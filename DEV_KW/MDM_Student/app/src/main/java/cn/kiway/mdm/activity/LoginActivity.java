@@ -45,7 +45,6 @@ public class LoginActivity extends BaseActivity {
         classBtn = (Button) findViewById(R.id.classBtn);
         codeET = (EditText) findViewById(R.id.codeET);
         nameET = (EditText) findViewById(R.id.nameET);
-
     }
 
     public void selectSchool(View view) {

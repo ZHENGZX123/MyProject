@@ -84,7 +84,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             testMsg.obj = receive;
             KWApp.instance.mHandler.sendMessage(testMsg);
 
-            String dataStr = new JSONObject(receive).getString("data");
+            String dataStr = new JSONObject(receive).getString("data").replace("\\","");
             JSONObject data = new JSONObject(dataStr);
             String command = data.optString("command");
             Message m = new Message();
@@ -298,13 +298,17 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 m.obj = data;
             } else if (command.equals("parent_charge_app")) {
                 String packageName = data.optJSONObject("content").optString("package");
+                String ids = data.optJSONObject("content").optString("id");
                 TimeSet timeSet = new TimeSet();
                 if (data.optJSONObject("content").optString("operation").equals("detele")) {
-                    new MyDBHelper(context).deleteTime(packageName);
+                    new MyDBHelper(context).deleteTime(ids,packageName);
                 } else {
                     timeSet.packageName = packageName;
-                    timeSet.times = data.optJSONObject("content").optJSONArray("tims").toString();
-                    new MyDBHelper(context).deleteTime(timeSet.packageName);
+                    JSONArray array = new JSONArray();
+                    array.put(data.optJSONObject("content").optJSONObject("tims"));
+                    timeSet.times = array.toString();
+                    timeSet.ids = ids;
+                    new MyDBHelper(context).deleteTime(timeSet.ids,packageName);
                     new MyDBHelper(context).addTime(timeSet);
                 }
             }

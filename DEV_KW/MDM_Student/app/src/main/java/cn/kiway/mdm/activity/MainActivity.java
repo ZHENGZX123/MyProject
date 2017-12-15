@@ -35,6 +35,13 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,14 +52,17 @@ import cn.kiway.mdm.adapter.MyViewPagerAdapter;
 import cn.kiway.mdm.dialog.CheckPassword;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.entity.App;
+import cn.kiway.mdm.entity.TimeSet;
 import cn.kiway.mdm.utils.AppListUtils;
 import cn.kiway.mdm.utils.AppReceiverIn;
 import cn.kiway.mdm.utils.DESUtil;
 import cn.kiway.mdm.utils.FileACache;
+import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 import cn.kiway.mdm.view.viewPager.StereoPagerTransformer;
 import cn.kiway.mdmsdk.MDMHelper;
 
+import static cn.kiway.mdm.KWApp.clientUrl;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 import static cn.kiway.mdm.utils.AppListUtils.isAppInstalled;
 import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
@@ -94,7 +104,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private static final int MSG_GET_COMMAND = 4;
 
     private Button button5;
-    private Button button6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +150,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //oauth();
         //21.判断初始密码
         checkPassword();
+        //获取app的使用时间
+        getAppCanUseData();
     }
 
     private void checkPassword() {
@@ -329,7 +340,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         group = (LinearLayout) findViewById(R.id.points);
         button5 = (Button) findViewById(R.id.button5);
-        button6 = (Button) findViewById(R.id.button6);
     }
 
     private void uploadStatus() {
@@ -713,6 +723,44 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
 
         mLocationClient.setLocOption(option);
+    }
+
+
+    //下面获取app使用时间
+    public void getAppCanUseData() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {//+
+                    HttpGet httpRequest = new HttpGet(clientUrl + "device/control/record?imei=" + Utils.getIMEI
+                            (MainActivity.this));
+                    httpRequest.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token",
+                            ""));
+                    DefaultHttpClient client = new DefaultHttpClient();
+                    HttpResponse response = client.execute(httpRequest);
+                    String ret = EntityUtils.toString(response.getEntity());
+                    JSONObject data = new JSONObject(ret);
+                    if (data.optInt("statusCode") == 200) {
+                        new MyDBHelper(MainActivity.this).deleteAllTime();
+                        JSONArray array = data.optJSONArray("data");
+                        for (int i = 0; i < array.length(); i++) {//一开始做多时段的，改成单时段，为了防止改回，数据结构按多时段写
+                            TimeSet timeSet = new TimeSet();
+                            JSONArray array1 = new JSONArray();
+                            JSONObject da = new JSONObject(array.optJSONObject(i).optString("extra"));
+                            JSONObject data1 = new JSONObject();
+                            data1.put("startTime", da.optString("startTime"));
+                            data1.put("endTime", da.optString("endTime"));
+                            timeSet.times = array1.put(data1).toString();
+                            timeSet.packageName = da.optString("packages");
+                            timeSet.ids = da.optString("id");
+                            new MyDBHelper(MainActivity.this).addTime(timeSet);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 }
 

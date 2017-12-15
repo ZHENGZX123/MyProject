@@ -5,6 +5,7 @@ package cn.kiway.mdm.entity;
  */
 
 public class TimeSet {
+    public String ids;
     public String packageName;
     public String times;
 }

@@ -775,7 +775,7 @@ public class Utils {
                         JSONObject o = array.getJSONObject(i);
                         String startTime = o.getString("startTime");
                         String endTime = o.getString("endTime");
-                        w.inTimeRange = checkInTimes(startTime, endTime);
+                        w.inTimeRange = checkInTimes(startTime, endTime,"HH:mm:ss");
                         if (w.inTimeRange) {
                             rightWifis.add(w);
                         }
@@ -908,7 +908,7 @@ public class Utils {
                         JSONObject o = array.getJSONObject(i);
                         String startTime = o.getString("startTime");
                         String endTime = o.getString("endTime");
-                        in = Utils.checkInTimes(startTime, endTime);
+                        in = Utils.checkInTimes(startTime, endTime,"HH:mm:ss");
                         if (in) {
                             break;
                         }
@@ -926,8 +926,8 @@ public class Utils {
     }
 
     //startTime小于endTime
-    public static boolean checkInTimes(String startTime, String endTime) throws ParseException {
-        DateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    public static boolean checkInTimes(String startTime, String endTime,String pattern) throws ParseException {
+        DateFormat sdf = new SimpleDateFormat(pattern);
         String current = sdf.format(new Date());
         Date dt1 = sdf.parse(startTime);
         Date dt2 = sdf.parse(endTime);
@@ -2084,7 +2084,7 @@ public class Utils {
             }
         });
     }
-    public static boolean checkAPPTimeUse(JSONArray array){
+    public static boolean checkAPPTimeUse(JSONArray array,String pattern){
         boolean in = false;
         int count = array.length();
         if (count == 0) {
@@ -2096,7 +2096,7 @@ public class Utils {
                     o = array.getJSONObject(i);
                     String startTime = o.getString("startTime");
                     String endTime = o.getString("endTime");
-                    in = Utils.checkInTimes(startTime, endTime);
+                    in = Utils.checkInTimes(startTime, endTime,pattern);
                     if (in) {
                         break;
                     }
