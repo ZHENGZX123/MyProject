@@ -54,7 +54,7 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     @Override
     public void setDataConnectivityDisabled(boolean disabled) {
         try {
-            Log.d("test", "M102 M110不支持移动网络");
+            Log.d("test", "M102 M110没有对应实现");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -83,7 +83,7 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     @Override
     public void setStatusBarExpandPanelDisabled(boolean disabled) {
         try {
-            mManager.setStatusBarDisabled(!disabled);
+            mManager.setStatusBarDisabled(disabled);
         } catch (Exception e) {
             e.printStackTrace();
         }

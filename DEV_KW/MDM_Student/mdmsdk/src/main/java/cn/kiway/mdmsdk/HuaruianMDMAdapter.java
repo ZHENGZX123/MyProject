@@ -282,7 +282,6 @@ public class HuaruianMDMAdapter implements IMDMAdapter {
 
     @Override
     public Bitmap captureScreen() {
-        Log.d("test", "captureScreen有问题");
         return null;
     }
 
