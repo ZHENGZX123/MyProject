@@ -34,7 +34,6 @@ public class AutoReplyService extends AccessibilityService {
     private String name;
     private String scontent;
     private String retContent = "未知错误";
-    AccessibilityNodeInfo itemNodeinfo;
     private KeyguardManager.KeyguardLock kl;
     private Handler handler = new Handler();
     public ArrayList<AccessibilityEvent> events = new ArrayList<>();
@@ -99,7 +98,6 @@ public class AutoReplyService extends AccessibilityService {
                         android.util.Log.d("maptrix", "the screen is unlocked");
                         background = true;
                         android.util.Log.d("maptrix", "is mm in background");
-
 //                        handler.postDelayed(new Runnable() {
 //                            @Override
 //                            public void run() {
@@ -116,18 +114,19 @@ public class AutoReplyService extends AccessibilityService {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 android.util.Log.d("maptrix", "get type window down event");
                 if (!hasAction) {
-                    android.util.Log.d("maptrix", "break");
-                    break;
+                    android.util.Log.d("maptrix", "return1");
+                    return;
                 }
-                itemNodeinfo = null;
                 String className = event.getClassName().toString();
                 if (!className.equals("com.tencent.mm.ui.LauncherUI")) {
+                    android.util.Log.d("maptrix", "return2");
                     return;
                 }
                 if (fill()) {
+                    Log.d("test", "send is called");
                     send();
                 }
-                //bring2Front();
+
                 back2Home();
                 release();
                 hasAction = false;
@@ -217,12 +216,6 @@ public class AutoReplyService extends AccessibilityService {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
             if (nodeInfo == null) {
                 continue;
-            }
-            if (nodeInfo.getContentDescription() != null) {
-                int nindex = nodeInfo.getContentDescription().toString().indexOf(name);
-                if (nindex != -1) {
-                    itemNodeinfo = nodeInfo;
-                }
             }
             if ("android.widget.EditText".equals(nodeInfo.getClassName())) {
                 Bundle arguments = new Bundle();
