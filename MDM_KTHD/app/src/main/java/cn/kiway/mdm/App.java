@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xutils.x;
 
 import java.nio.ByteBuffer;
 
@@ -49,6 +51,8 @@ public class App extends KiwayApplication {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        //xutils
+        x.Ext.init(this);
         connectService(mClientCallback);
     }
 
@@ -62,6 +66,8 @@ public class App extends KiwayApplication {
             isIos = false;
         connectTcp(teacherIp);
         connectNumber = 0;
+        mHandler.removeMessages(MSG_TIME_OUT);
+        mHandler.sendEmptyMessageDelayed(MSG_TIME_OUT,30*1000);
         MainActivity.instantce.onConnect();
     }
 
@@ -95,7 +101,6 @@ public class App extends KiwayApplication {
             public void accpetMessage(String message) throws Exception {
                 if (currentActivity == null) return;
                 ActionsMessageHandle.MessageHandle(currentActivity, message);
-
             }
 
             @Override
@@ -114,6 +119,7 @@ public class App extends KiwayApplication {
                 showMessage("IOS 上课连接完成");
                 mHandler.sendEmptyMessage(MSG_HOME_DIS);
                 mHandler.sendEmptyMessageDelayed(MSG_XIAKE, 60 * 1000 * 45);
+                mHandler.removeMessages(MSG_TIME_OUT);
                 MainActivity.instantce.UdpClose();
             }
 
@@ -121,6 +127,7 @@ public class App extends KiwayApplication {
             public void connectTcpFailed() throws Exception {
                 showMessage("IOS 上课连接失败");
                 isAttenClass = false;
+                mHandler.sendEmptyMessage(MSG_TIME_OUT);
                 mHandler.sendEmptyMessage(MSG_HOME_TURE);
             }
 
@@ -128,6 +135,7 @@ public class App extends KiwayApplication {
             public void disconnectTcp() throws Exception {
                 showMessage("IOS 连接掉线");
                 isAttenClass = false;
+                mHandler.sendEmptyMessage(MSG_TIME_OUT);
             }
         });
     }
@@ -135,10 +143,12 @@ public class App extends KiwayApplication {
 
     public static final int MSG_CONNECT = 0x000;//上课连接
     public static final int MSG_XIAKE = MSG_CONNECT + 1;//下课
+
     public static final int MSG_LOCKONCLASS = MSG_CONNECT + 2;//上课锁屏
     public static final int MSG_UNLOCK = MSG_CONNECT + 3;//解锁
     public static final int MSG_HOME_DIS = MSG_CONNECT + 4;//禁用home
     public static final int MSG_HOME_TURE=MSG_CONNECT+5;//开启home
+    public static final int MSG_TIME_OUT=MSG_CONNECT+6;//上课超时判断
 
 
     public Handler mHandler = new Handler() {
@@ -160,6 +170,7 @@ public class App extends KiwayApplication {
                                     showMessage("上课连接完成");
                                     sendEmptyMessage(MSG_HOME_DIS);
                                     sendEmptyMessageDelayed(MSG_XIAKE, 60 * 1000 * 45);
+                                    removeMessages(MSG_TIME_OUT);
                                     MainActivity.instantce.UdpClose();
                                 }
 
@@ -178,17 +189,23 @@ public class App extends KiwayApplication {
                                 public void onError(KwConnection conn, Exception e) {
                                     Logger.log("连接错误" + e);
                                     isAttenClass = false;
-                                    if (connectNumber > 5)
+                                    if (connectNumber > 5){
+                                        mHandler.removeMessages(MSG_TIME_OUT);
+                                        mHandler.sendEmptyMessage(MSG_TIME_OUT);
                                         isAttenClass = false;
+                                    }
                                     connectNumber++;
                                     if (isAttenClass)
                                         connectTcp(teacherIp);
+
                                 }
 
                                 @Override
                                 public void onTimeout(KwConnection conn, TimeoutType type) {
                                     isAttenClass = false;
                                     sendEmptyMessage(MSG_HOME_TURE);
+                                    mHandler.removeMessages(MSG_TIME_OUT);
+                                    mHandler.sendEmptyMessage(MSG_TIME_OUT);
                                 }
                             });
                 } catch (Throwable throwable) {
@@ -213,13 +230,17 @@ public class App extends KiwayApplication {
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-            }
-            else if(msg.what==MSG_HOME_TURE){//开启home
+            } else if(msg.what==MSG_HOME_TURE){//开启home
                 try {
                     mRemoteInterface.setHomeButtonDisabled(false);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
+            }else if(msg.what==MSG_TIME_OUT){//上课超时
+                Toast.makeText(currentActivity,"连接失败",Toast.LENGTH_SHORT).show();
+                MainActivity.instantce.onConnectTimeOut();
+                //只有老师发下课才能下课
+                mHandler.sendEmptyMessage(MSG_HOME_TURE);
             }
         }
     };
@@ -239,6 +260,7 @@ public class App extends KiwayApplication {
             } else {
                 KwHproseClient.stop();
             }
+            mHandler.removeMessages(MSG_TIME_OUT);
             mHandler.sendEmptyMessage(MSG_HOME_TURE);
         }
 

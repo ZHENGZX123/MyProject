@@ -3,20 +3,22 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         kiway {
-            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+            storeFile file('F:/android_signature/kiway.key')
+            //  storeFile file('C:/Users/Administrator/.android/kiway.keystore')
             storePassword 'kiway123'
             keyAlias 'kiway'
             keyPassword 'kiway123'
         }
     }
+    useLibrary 'org.apache.http.legacy'
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "cn.kiway.session"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 1
-        versionName "0.0.1"
+        versionCode 4
+        versionName "0.0.4"
     }
     buildTypes {
         release {
@@ -32,5 +34,6 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile files('libs/hprose_for_java_7.jar')
     compile 'com.github.jetradarmobile:android-snowfall:1.1.6'
+    compile 'org.xutils:xutils:3.5.0'
     compile project(':mdmaidl')
 }
