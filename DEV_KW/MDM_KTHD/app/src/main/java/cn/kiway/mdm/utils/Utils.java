@@ -2,6 +2,8 @@ package cn.kiway.mdm.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -291,5 +293,15 @@ public class Utils {
             e.printStackTrace();
         }
         return s;
+    }
+    public static String getCurrentVersion(Context c) {
+        String versionName = "1.0.0";
+        try {
+            PackageInfo pkg = c.getPackageManager().getPackageInfo(c.getPackageName(), 0);
+            versionName = pkg.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionName;
     }
 }
