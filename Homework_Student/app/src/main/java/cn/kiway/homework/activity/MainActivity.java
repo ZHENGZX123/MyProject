@@ -74,6 +74,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import cn.kiway.homework.WXApplication;
@@ -99,7 +100,7 @@ import static cn.kiway.homework.WXApplication.zhengshiUrl;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.5.6";
+    private static final String currentPackageVersion = "1.0.6";
 
     private X5WebView wv;
     private LinearLayout layout_welcome;
@@ -971,7 +972,9 @@ public class MainActivity extends BaseActivity {
                             }
                         });
                     } else if (method.equalsIgnoreCase("GET")) {
-                        client.get(MainActivity.this, url, new TextHttpResponseHandler() {
+                        String checkUrl = doCheckUrl(url);
+                        Log.d("test", "checkUrl = " + checkUrl);
+                        client.get(MainActivity.this, checkUrl, new TextHttpResponseHandler() {
                             @Override
                             public void onSuccess(int i, Header[] headers, String ret) {
                                 Log.d("test", "get onSuccess = " + ret);
@@ -1015,6 +1018,15 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private String doCheckUrl(String url) {
+        //1.使用正则
+        String split[] = url.split("\\?");
+        if (split.length > 1) {
+            url = split[0] + "?" + URLEncoder.encode(split[1]);
+        }
+        return url;
     }
 
     public void clickSetToken(View view) {
