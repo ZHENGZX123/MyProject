@@ -35,10 +35,10 @@ import ly.count.android.api.Countly;
 public class WXApplication extends Application {
 
     public static String url;
-    public static final String zhengshiUrl = "http://zy.xtclass.com:8389";//正式地址
-    public static final String ceshiUrl = "http://202.104.136.9:8389";//测试地址8390
+    public static final String zhengshiUrl = "http://xtzy.xtclass.com";//正式地址
+    public static final String ceshiUrl = "http://cszy.xtclass.com:8389";//测试地址8390
 
-    public static boolean isTest = true;
+    public static boolean isTest = false;
 
     static {
         if (isTest) {
@@ -75,7 +75,7 @@ public class WXApplication extends Application {
         }
 
         //countly
-        Countly.sharedInstance().init(this, "http://202.104.136.9:8389/countly", "e3a6f65596ea867c2f739c12d5120d5d76353b5e");
+        Countly.sharedInstance().init(this, zhengshiUrl + "/countly", "e3a6f65596ea867c2f739c12d5120d5d76353b5e");
 
         //jpush
         JPushInterface.setDebugMode(true);
@@ -103,7 +103,8 @@ public class WXApplication extends Application {
             }
 
             @Override
-            public void onCoreInitFinished() {}
+            public void onCoreInitFinished() {
+            }
         };
         //x5内核初始化接口
         QbSdk.initX5Environment(getApplicationContext(), cb);
