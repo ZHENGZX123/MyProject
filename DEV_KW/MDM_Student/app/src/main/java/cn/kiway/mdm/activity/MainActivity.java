@@ -102,6 +102,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private static final int MSG_CHECK_COMMAND = 2;
     private static final int MSG_UPLOAD = 3;
     private static final int MSG_GET_COMMAND = 4;
+    private static final int MSG_CHECK_NEWVERSION = 5;
 
     private Button button5;
 
@@ -140,7 +141,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //15.设置默认短信app
         //setDefaultSMSApp();
         //16.检查版本更新
-        checkNewVersion();
+        checkUpgrade();
         //17.检查通话功能
         checkTelephoney();
         //18.获取经纬度
@@ -155,6 +156,9 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         getAppCanUseData();
     }
 
+    private void checkUpgrade() {
+        mHandler.sendEmptyMessage(MSG_CHECK_NEWVERSION);
+    }
 
     private void checkPassword() {
         String password = getSharedPreferences("kiway", 0).getString("password", "");
@@ -246,6 +250,11 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     Utils.appFunction(MainActivity.this);
                     Utils.getCalls(MainActivity.this);
                     mHandler.sendEmptyMessageDelayed(MSG_GET_COMMAND, 60 * 60 * 1000);
+                }
+                break;
+                case MSG_CHECK_NEWVERSION: {
+                    checkNewVersion();
+                    mHandler.sendEmptyMessageDelayed(MSG_CHECK_NEWVERSION, 60 * 60 * 1000);
                 }
                 break;
             }

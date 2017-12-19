@@ -521,6 +521,7 @@ public class Utils {
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "locationTrack onFailure = " + s);
+                            check301(c, s);
                         }
                     });
                 } catch (Exception e) {
@@ -564,6 +565,9 @@ public class Utils {
 
                                 @Override
                                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                                    if (check301) {
+                                        check301(c, s);
+                                    }
                                     Log.d("test", "deviceRuntime onFailure = " + s);
                                 }
                             });
@@ -599,6 +603,7 @@ public class Utils {
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    check301(c, s);
                     Log.d("test", "exceptions onFailure = " + s);
                 }
             });
@@ -653,6 +658,7 @@ public class Utils {
 
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            check301(c, s);
                             Log.d("test", "appCharge onFailure = " + s);
                         }
                     });
@@ -696,6 +702,7 @@ public class Utils {
 
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            check301(c, s);
                             Log.d("test", "networkDeviceCharge onFailure = " + s);
                         }
                     });
@@ -740,6 +747,7 @@ public class Utils {
 
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            check301(c, s);
                             Log.d("test", "wifi onFailure = " + s);
                         }
                     });
@@ -775,7 +783,7 @@ public class Utils {
                         JSONObject o = array.getJSONObject(i);
                         String startTime = o.getString("startTime");
                         String endTime = o.getString("endTime");
-                        w.inTimeRange = checkInTimes(startTime, endTime,"HH:mm:ss");
+                        w.inTimeRange = checkInTimes(startTime, endTime, "HH:mm:ss");
                         if (w.inTimeRange) {
                             rightWifis.add(w);
                         }
@@ -908,7 +916,7 @@ public class Utils {
                         JSONObject o = array.getJSONObject(i);
                         String startTime = o.getString("startTime");
                         String endTime = o.getString("endTime");
-                        in = Utils.checkInTimes(startTime, endTime,"HH:mm:ss");
+                        in = Utils.checkInTimes(startTime, endTime, "HH:mm:ss");
                         if (in) {
                             break;
                         }
@@ -926,7 +934,7 @@ public class Utils {
     }
 
     //startTime小于endTime
-    public static boolean checkInTimes(String startTime, String endTime,String pattern) throws ParseException {
+    public static boolean checkInTimes(String startTime, String endTime, String pattern) throws ParseException {
         DateFormat sdf = new SimpleDateFormat(pattern);
         String current = sdf.format(new Date());
         Date dt1 = sdf.parse(startTime);
@@ -1090,6 +1098,7 @@ public class Utils {
 
                                 @Override
                                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                                    check301(c, s);
                                     Log.d("test", "applist onFailure = " + s);
                                 }
                             });
@@ -1209,6 +1218,7 @@ public class Utils {
 
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            check301(c, s);
                             Log.d("test", "appFunction onFailure = " + s);
                         }
                     });
@@ -1245,7 +1255,7 @@ public class Utils {
                                 }
 
                                 @Override
-                                public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                                public void onFailure(int arg0, Header[] arg1, String s, Throwable arg3) {
                                     Log.d("test", "logout failure");
                                 }
                             });
@@ -1259,7 +1269,7 @@ public class Utils {
         }.start();
     }
 
-    public static void installationPush(Context c, final String token, final String imei) {
+    public static void installationPush(final Context c, final String token, final String imei) {
         try {
             String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
             if (TextUtils.isEmpty(xtoken)) {
@@ -1366,7 +1376,7 @@ public class Utils {
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
             String url = clientUrl + "device/login";
-            Log.d("test", "url = " + url);
+            Log.d("test", "relogin url = " + url);
             RequestParams param = new RequestParams();
             param.put("schoolId", c.getSharedPreferences("kiway", 0).getString("schoolId", ""));
             param.put("classId", c.getSharedPreferences("kiway", 0).getString("classId", ""));
@@ -1379,12 +1389,12 @@ public class Utils {
             param.put("token", token);
             param.put("operation", "login");
             param.put("froms", "studentDevice");
-            Log.d("test", "param = " + param.toString());
+            Log.d("test", "relogin param = " + param.toString());
             client.post(c, url, param, new TextHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int arg0, Header[] arg1, String ret) {
-                    Log.d("test", "login onSuccess = " + ret);
+                    Log.d("test", "relogin  onSuccess = " + ret);
                     try {
                         JSONObject o = new JSONObject(ret);
                         String token = o.getJSONObject("data").getString("token");
@@ -1396,13 +1406,13 @@ public class Utils {
 
                 @Override
                 public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
-                    Log.d("test", "login failure");
+                    Log.d("test", "relogin  failure");
                     is301 = false;
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
-            Log.d("test", "exception = " + e.toString());
+            Log.d("test", "relogin exception = " + e.toString());
             is301 = false;
         }
 
@@ -1616,7 +1626,12 @@ public class Utils {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "doBind onSuccess = " + ret);
-                            boolean happen301 = check301(c, ret);
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "doBind onFailure = " + s);
+                            boolean happen301 = check301(c, s);
                             if (happen301) {
                                 Log.d("test", "超时了，再次请求doBind");
                                 new Thread() {
@@ -1631,11 +1646,6 @@ public class Utils {
                                     }
                                 }.start();
                             }
-                        }
-
-                        @Override
-                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            Log.d("test", "doBind onFailure = " + s);
                         }
                     });
                 } catch (Exception e) {
@@ -1729,6 +1739,7 @@ public class Utils {
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "calls onFailure = " + s);
+                            check301(c, s);
                         }
                     });
                 } catch (Exception e) {
@@ -1801,6 +1812,7 @@ public class Utils {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", "childOperation onFailure = " + s);
+                    check301(c, s);
                 }
             });
         } catch (Exception e) {
@@ -2038,12 +2050,14 @@ public class Utils {
                     client.post(c, url, param, new TextHttpResponseHandler() {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
+                            check301(c, ret);
                             Log.d("test", "oauth onSuccess = " + ret);
                         }
 
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "oauth onFailure = " + s);
+                            check301(c, s);
                         }
                     });
                 } catch (Exception e) {
@@ -2070,12 +2084,14 @@ public class Utils {
                     client.post(c, url, param, new TextHttpResponseHandler() {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
+                            check301(c, ret);
                             Log.d("test", "updateDefaultPwd onSuccess = " + ret);
                         }
 
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "updateDefaultPwd onFailure = " + s);
+                            check301(c, s);
                         }
                     });
                 } catch (Exception e) {
@@ -2084,7 +2100,8 @@ public class Utils {
             }
         });
     }
-    public static boolean checkAPPTimeUse(JSONArray array,String pattern){
+
+    public static boolean checkAPPTimeUse(JSONArray array, String pattern) {
         boolean in = false;
         int count = array.length();
         if (count == 0) {
@@ -2096,7 +2113,7 @@ public class Utils {
                     o = array.getJSONObject(i);
                     String startTime = o.getString("startTime");
                     String endTime = o.getString("endTime");
-                    in = Utils.checkInTimes(startTime, endTime,pattern);
+                    in = Utils.checkInTimes(startTime, endTime, pattern);
                     if (in) {
                         break;
                     }
