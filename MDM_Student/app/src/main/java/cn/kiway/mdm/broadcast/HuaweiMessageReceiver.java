@@ -84,7 +84,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             testMsg.obj = receive;
             KWApp.instance.mHandler.sendMessage(testMsg);
 
-            String dataStr = new JSONObject(receive).getString("data").replace("\\","");
+            String dataStr = new JSONObject(receive).getString("data");
             JSONObject data = new JSONObject(dataStr);
             String command = data.optString("command");
             Message m = new Message();
