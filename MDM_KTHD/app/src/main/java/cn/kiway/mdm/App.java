@@ -45,7 +45,7 @@ public class App extends KiwayApplication {
     public int connectNumber = 0;
     public boolean isIos = false;
     public Activity currentActivity;
-
+    public static boolean isPublicNetwork = true;//是否全走公网
 
     @Override
     public void onCreate() {
@@ -59,16 +59,21 @@ public class App extends KiwayApplication {
 
     public void onClass(JSONObject data) {//上课
         isAttenClass = false;
-        teacherIp = data.optString("ip");
-        if (data.optString("platform").equals("IOS"))
-            isIos = true;
-        else
-            isIos = false;
-        connectTcp(teacherIp);
-        connectNumber = 0;
-        mHandler.removeMessages(MSG_TIME_OUT);
-        mHandler.sendEmptyMessageDelayed(MSG_TIME_OUT,30*1000);
-        MainActivity.instantce.onConnect();
+        if (isPublicNetwork) {
+            isAttenClass = true;
+            showMessage("连接上课成功");
+        } else {
+            teacherIp = data.optString("ip");
+            if (data.optString("platform").equals("IOS"))
+                isIos = true;
+            else
+                isIos = false;
+            connectTcp(teacherIp);
+            connectNumber = 0;
+            mHandler.removeMessages(MSG_TIME_OUT);
+            mHandler.sendEmptyMessageDelayed(MSG_TIME_OUT, 30 * 1000);
+            MainActivity.instantce.onConnect();
+        }
     }
 
     public void connectTcp(String ip) {//开始连接判断
@@ -147,8 +152,8 @@ public class App extends KiwayApplication {
     public static final int MSG_LOCKONCLASS = MSG_CONNECT + 2;//上课锁屏
     public static final int MSG_UNLOCK = MSG_CONNECT + 3;//解锁
     public static final int MSG_HOME_DIS = MSG_CONNECT + 4;//禁用home
-    public static final int MSG_HOME_TURE=MSG_CONNECT+5;//开启home
-    public static final int MSG_TIME_OUT=MSG_CONNECT+6;//上课超时判断
+    public static final int MSG_HOME_TURE = MSG_CONNECT + 5;//开启home
+    public static final int MSG_TIME_OUT = MSG_CONNECT + 6;//上课超时判断
 
 
     public Handler mHandler = new Handler() {
@@ -182,14 +187,14 @@ public class App extends KiwayApplication {
                                 public void onClose() {
                                     Logger.log("连接关闭");
                                     isAttenClass = false;
-                                   sendEmptyMessage(MSG_HOME_TURE);
+                                    sendEmptyMessage(MSG_HOME_TURE);
                                 }
 
                                 @Override
                                 public void onError(KwConnection conn, Exception e) {
                                     Logger.log("连接错误" + e);
                                     isAttenClass = false;
-                                    if (connectNumber > 5){
+                                    if (connectNumber > 5) {
                                         mHandler.removeMessages(MSG_TIME_OUT);
                                         mHandler.sendEmptyMessage(MSG_TIME_OUT);
                                         isAttenClass = false;
@@ -223,21 +228,23 @@ public class App extends KiwayApplication {
                 }
             } else if (msg.what == MSG_XIAKE) {//
                 showMessage("同学们,到点下课啦");
-               sendEmptyMessage(MSG_HOME_TURE);
-            }else if(msg.what==MSG_HOME_DIS){//禁用home
+                sendEmptyMessage(MSG_HOME_TURE);
+            } else if (msg.what == MSG_HOME_DIS) {//禁用home
                 try {
-                    mRemoteInterface.setHomeButtonDisabled(true);
+                    if (mRemoteInterface != null)
+                        mRemoteInterface.setHomeButtonDisabled(true);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-            } else if(msg.what==MSG_HOME_TURE){//开启home
+            } else if (msg.what == MSG_HOME_TURE) {//开启home
                 try {
-                    mRemoteInterface.setHomeButtonDisabled(false);
+                    if (mRemoteInterface != null)
+                        mRemoteInterface.setHomeButtonDisabled(false);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-            }else if(msg.what==MSG_TIME_OUT){//上课超时
-                Toast.makeText(currentActivity,"连接失败",Toast.LENGTH_SHORT).show();
+            } else if (msg.what == MSG_TIME_OUT) {//上课超时
+                Toast.makeText(currentActivity, "连接失败", Toast.LENGTH_SHORT).show();
                 MainActivity.instantce.onConnectTimeOut();
                 //只有老师发下课才能下课
                 mHandler.sendEmptyMessage(MSG_HOME_TURE);

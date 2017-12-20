@@ -25,7 +25,8 @@ import static cn.kiway.mdm.hprose.socket.MessageType.UNANSWER;
  */
 
 public class BaseActivity extends Activity {
-   public App app;
+    public App app;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,9 +88,9 @@ public class BaseActivity extends Activity {
                     showMessageDailog.setShowMessage("同学们，老师这套题清楚了吗？", REPONSEDIALOG);
                 }
                 try {
-                if (!showMessageDailog.isShowing())
-                    showMessageDailog.show();
-                }catch (WindowManager.BadTokenException e){
+                    if (!showMessageDailog.isShowing())
+                        showMessageDailog.show();
+                } catch (WindowManager.BadTokenException e) {
                     e.printStackTrace();
                 }
             }
@@ -104,7 +105,7 @@ public class BaseActivity extends Activity {
                     showMessageDailog = new ShowMessageDailog(BaseActivity.this);
                     showMessageDailog.setShowMessage(message, DISMISS);
                     showMessageDailog.show();
-                }catch (WindowManager.BadTokenException e){
+                } catch (WindowManager.BadTokenException e) {
                     e.printStackTrace();
                 }
 
