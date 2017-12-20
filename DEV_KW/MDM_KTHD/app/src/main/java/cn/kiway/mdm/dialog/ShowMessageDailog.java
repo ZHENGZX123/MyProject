@@ -21,6 +21,7 @@ import cn.kiway.mdm.hprose.socket.KwHproseClient;
 import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
+import static cn.kiway.mdm.App.isPublicNetwork;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.ANSWERDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.REPONSEDIALOG;
@@ -156,69 +157,90 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case SIGNDIALOG:
+                case SIGNDIALOG://签到
+
                     try {
                         JSONObject da = new JSONObject();
                         da.put("msgType", SIGN);
                         da.put("userId", Utils.getIMEI(getContext()));
                         da.put("msg", "签到");
-                        if (App.instance.isIos) {
-                            App.instance.client.sendTCP(da.toString());
+                        if (isPublicNetwork) {
+                            //TODO
                         } else {
-                            if (KwHproseClient.helloClient != null)
-                                KwHproseClient.helloClient.sign(da.toString());
+                            if (App.instance.isIos) {
+                                App.instance.client.sendTCP(da.toString());
+                            } else {
+                                if (KwHproseClient.helloClient != null)
+                                    KwHproseClient.helloClient.sign(da.toString());
+                            }
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
                     break;
-                case REPONSEDIALOG:
+                case REPONSEDIALOG://响应器回应听懂
                     try {
                         JSONObject data = new JSONObject();
                         data.put("userId", Utils.getIMEI(getContext()));
                         data.put("msg", "1");
                         data.put("msgType", SUREREPONSE);
-                        if (App.instance.isIos) {
-                            App.instance.client.sendTCP(data.toString());
+                        if (isPublicNetwork) {
+                            //TODO
                         } else {
-                            if (KwHproseClient.helloClient != null)
-                                KwHproseClient.helloClient.reponse(data.toString());
+                            if (App.instance.isIos) {
+                                App.instance.client.sendTCP(data.toString());
+                            } else {
+                                if (KwHproseClient.helloClient != null)
+                                    KwHproseClient.helloClient.reponse(data.toString());
+                            }
                         }
                     } catch (UndeclaredThrowableException e) {
                         e.printStackTrace();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
                     break;
-                case REPONSEDIALOG + 100:
+                case REPONSEDIALOG + 100://响应器回应听不懂
+
                     try {
                         JSONObject data = new JSONObject();
                         data.put("userId", Utils.getIMEI(getContext()));
                         data.put("msg", "0");
                         data.put("msgType", SUREREPONSE);
-                        if (App.instance.isIos) {
-                            App.instance.client.sendTCP(data.toString());
+                        if (isPublicNetwork) {
+                            //TODO
                         } else {
-                            if (KwHproseClient.helloClient != null)
-                                KwHproseClient.helloClient.reponse(data.toString());
+                            if (App.instance.isIos) {
+                                App.instance.client.sendTCP(data.toString());
+                            } else {
+                                if (KwHproseClient.helloClient != null)
+                                    KwHproseClient.helloClient.reponse(data.toString());
+                            }
                         }
                     } catch (UndeclaredThrowableException e) {
                         e.printStackTrace();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
                     break;
-                case ANSWERDIALOG:
+                case ANSWERDIALOG://TODO 抢答
                     try {
                         JSONObject da = new JSONObject();
                         da.put("msgType", ANSWER);
                         da.put("userId", Utils.getIMEI(getContext()));
                         da.put("msg", "1");
-                        if (App.instance.isIos) {
-                            App.instance.client.sendTCP(da.toString());
+                        if (isPublicNetwork) {
+                            //TODO
                         } else {
-                            if (KwHproseClient.helloClient != null)
-                                KwHproseClient.helloClient.answerqusetion(da.toString());
+                            if (App.instance.isIos) {
+                                App.instance.client.sendTCP(da.toString());
+                            } else {
+                                if (KwHproseClient.helloClient != null)
+                                    KwHproseClient.helloClient.answerqusetion(da.toString());
+                            }
                         }
                     } catch (UndeclaredThrowableException e) {
                         e.printStackTrace();
@@ -226,17 +248,21 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                         e.printStackTrace();
                     }
                     break;
-                case ANSWERDIALOG + 100:
+                case ANSWERDIALOG + 100://TODO 不抢答
                     try {
                         JSONObject da = new JSONObject();
                         da.put("userId", Utils.getIMEI(getContext()));
                         da.put("msgType", ANSWER);
                         da.put("msg", "0");
-                        if (App.instance.isIos) {
-                            App.instance.client.sendTCP(da.toString());
+                        if (isPublicNetwork) {
+                            //TODO
                         } else {
-                            if (KwHproseClient.helloClient != null)
-                                KwHproseClient.helloClient.answerqusetion(da.toString());
+                            if (App.instance.isIos) {
+                                App.instance.client.sendTCP(da.toString());
+                            } else {
+                                if (KwHproseClient.helloClient != null)
+                                    KwHproseClient.helloClient.answerqusetion(da.toString());
+                            }
                         }
                     } catch (UndeclaredThrowableException e) {
                         e.printStackTrace();
