@@ -36,4 +36,5 @@ dependencies {
     compile 'com.github.jetradarmobile:android-snowfall:1.1.6'
     compile 'org.xutils:xutils:3.5.0'
     compile project(':mdmaidl')
+    compile files('libs/android-async-http-1.4.5.jar')
 }
