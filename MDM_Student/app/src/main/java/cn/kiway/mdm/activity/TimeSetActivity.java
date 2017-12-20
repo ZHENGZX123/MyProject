@@ -245,9 +245,9 @@ public class TimeSetActivity extends BaseActivity implements View.OnClickListene
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ((TextView) findViewById(R.id.time)).setText("此时间段为学生上课时间，不可设置" +
+                                    ((TextView) findViewById(R.id.time)).setText(
                                             sessionStartTime + "-"
-                                            + sessionEndTime);
+                                                    + sessionEndTime + "此时间段为学生上课时间，不可设置");
                                 }
                             });
                     }

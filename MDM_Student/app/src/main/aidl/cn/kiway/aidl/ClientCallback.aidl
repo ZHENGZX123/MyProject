@@ -9,5 +9,5 @@ interface ClientCallback {
    void goOutClass();
    void attendClass(String msg);
     //学生消息
-   void accpterMessage(String msg);
+   void accpterMessage(String msg,String token);
 }

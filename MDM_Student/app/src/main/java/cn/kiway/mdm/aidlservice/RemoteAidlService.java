@@ -1,6 +1,7 @@
 package cn.kiway.mdm.aidlservice;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -86,7 +87,7 @@ public class RemoteAidlService extends Service {
 
         @Override
         public void setHomeButtonDisabled(boolean disabled) throws RemoteException {
-            Logger.log("setHomeButtonDisabled::"+disabled);
+            Logger.log("setHomeButtonDisabled::" + disabled);
             MDMHelper.getAdapter().setHomeButtonDisabled(disabled);
         }
 
@@ -109,18 +110,21 @@ public class RemoteAidlService extends Service {
             e.printStackTrace();
         }
     }
+
     /**
      * 调客户端的接收方法
      */
-    public static void accpterMessage(String msg) {
+    public static void accpterMessage(Context context, String msg) {
         if (clientCallback == null)
             return;
         try {
-            clientCallback.accpterMessage(msg);
+            clientCallback.accpterMessage(msg, context.getSharedPreferences("kiway", 0).getString("x-auth-token",
+                    ""));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
+
     /**
      * 调客户端的接收方法
      */
