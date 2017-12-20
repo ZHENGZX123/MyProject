@@ -10,5 +10,5 @@ interface ClientCallback {
    //上课
    void attendClass(String msg);
    //学生消息
-   void accpterMessage(String msg);
+   void accpterMessage(String msg,String token);
 }
