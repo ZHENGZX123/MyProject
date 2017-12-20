@@ -301,16 +301,22 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 String ids = data.optJSONObject("content").optString("id");
                 TimeSet timeSet = new TimeSet();
                 if (data.optJSONObject("content").optString("operation").equals("detele")) {
-                    new MyDBHelper(context).deleteTime(ids,packageName);
+                    new MyDBHelper(context).deleteTime(ids, packageName);
                 } else {
                     timeSet.packageName = packageName;
                     JSONArray array = new JSONArray();
                     array.put(data.optJSONObject("content").optJSONObject("tims"));
                     timeSet.times = array.toString();
                     timeSet.ids = ids;
-                    new MyDBHelper(context).deleteTime(timeSet.ids,packageName);
+                    new MyDBHelper(context).deleteTime(timeSet.ids, packageName);
                     new MyDBHelper(context).addTime(timeSet);
                 }
+            } else if (command.equals("sgin")) {
+                m.what = MSG_MESSAGE;
+                m.obj = data;
+            } else if (command.equals("responsePush")) {
+                m.what = MSG_MESSAGE;
+                m.obj = data;
             }
             if (KWApp.instance == null) {
                 return false;

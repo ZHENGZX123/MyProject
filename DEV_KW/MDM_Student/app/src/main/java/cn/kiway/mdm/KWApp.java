@@ -169,7 +169,7 @@ public class KWApp extends Application {
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
                 RemoteAidlService.goOutClass();
             } else if (msg.what == MSG_MESSAGE) {
-                RemoteAidlService.accpterMessage(msg.obj.toString());
+                RemoteAidlService.accpterMessage(currentActivity,msg.obj.toString());
             } else if (msg.what == MSG_PUSH_FILE_I) {
             }
         }
