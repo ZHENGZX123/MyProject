@@ -31,6 +31,9 @@ import cn.kiway.mdm.utils.Utils;
 import hprose.net.TimeoutType;
 import studentsession.kiway.cn.mdmaidl.KiwayApplication;
 
+import static cn.kiway.mdm.hprose.socket.MessageType.SIGN;
+import static cn.kiway.mdm.hprose.socket.MessageType.SUREREPONSE;
+
 /**
  * Created by Administrator on 2017/12/4.
  */
@@ -61,7 +64,12 @@ public class App extends KiwayApplication {
         isAttenClass = false;
         if (isPublicNetwork) {
             isAttenClass = true;
-            showMessage("连接上课成功");
+            showMessage("上课连接完成");
+            mHandler.sendEmptyMessage(MSG_HOME_DIS);
+            mHandler.removeMessages(MSG_XIAKE);
+            mHandler.sendEmptyMessageDelayed(MSG_XIAKE, 60 * 1000 * 45);
+            mHandler.removeMessages(MSG_TIME_OUT);
+            MainActivity.instantce.UdpClose();
         } else {
             teacherIp = data.optString("ip");
             if (data.optString("platform").equals("IOS"))
@@ -252,6 +260,7 @@ public class App extends KiwayApplication {
         }
     };
 
+
     //    客户端的ClientCallback对象
     //    在服务端注册后服务端可以调用客户端方法
     private ClientCallback.Stub mClientCallback = new ClientCallback.Stub() {
@@ -272,18 +281,30 @@ public class App extends KiwayApplication {
         }
 
         @Override
-        public void accpterMessage(String msg) throws RemoteException {
+        public void accpterMessage(String msg, String token) throws RemoteException {
+            getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
             try {
                 JSONObject data = new JSONObject(msg);
-                if (currentActivity != null) {
-                    ((BaseActivity) currentActivity).NotifyShow(data.optJSONObject("content")
-                            .optString("title"), data.optJSONObject("content").optString("content"), "发送人：" + (
-                            data.optJSONObject("content").optString("sendName")));
-                    new MyDBHelper(currentActivity).addNofityMessage(data.optJSONObject("content"));
-                    if (App.instance.currentActivity != null && App.instance.currentActivity instanceof
-                            NotifyMsgActivity) {
-                        ((NotifyMsgActivity) App.instance.currentActivity).refreshUI();
+                String command = data.optString("command");
+                if (command.equals("send_msg")) {
+                    if (currentActivity != null) {
+                        ((BaseActivity) currentActivity).NotifyShow(data.optJSONObject("content")
+                                .optString("title"), data.optJSONObject("content").optString("content"), "发送人：" + (
+                                data.optJSONObject("content").optString("sendName")));
+                        new MyDBHelper(currentActivity).addNofityMessage(data.optJSONObject("content"));
+                        if (App.instance.currentActivity != null && App.instance.currentActivity instanceof
+                                NotifyMsgActivity) {
+                            ((NotifyMsgActivity) App.instance.currentActivity).refreshUI();
+                        }
                     }
+                } else if (command.equals("sgin")) {
+                    getSharedPreferences("kiway", 0).edit().putString("Classtoken", data.optString("token")).commit();
+                    if (App.instance.currentActivity != null)
+                        ((BaseActivity) App.instance.currentActivity).Session(SIGN);
+                } else if (command.equals("responsePush")) {
+                    getSharedPreferences("kiway", 0).edit().putString("Classtoken", data.optString("token")).commit();
+                    if (App.instance.currentActivity != null)
+                        ((BaseActivity) App.instance.currentActivity).Session(SUREREPONSE);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

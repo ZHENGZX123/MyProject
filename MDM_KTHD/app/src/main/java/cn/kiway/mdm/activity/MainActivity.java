@@ -28,6 +28,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+import cn.kiway.mdm.App;
 import cn.kiway.mdm.dialog.UdpConnectDialog;
 import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.modle.IpModel;
@@ -35,6 +36,7 @@ import cn.kiway.mdm.utils.NetworkUtil;
 import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
+import static cn.kiway.mdm.hprose.socket.MessageType.SUREREPONSE;
 import static cn.kiway.mdm.utils.IContants.CHECK_VERSION_URL;
 import static cn.kiway.mdm.utils.Utils.getCurrentVersion;
 
@@ -77,9 +79,11 @@ public class MainActivity extends BaseActivity {
     }
 
     public void onUdp(View view) {//连接不上开始udp 手动连
-        UdpStart();
-        udpConnectDialog.show();
-        udpConnectDialog.setCancelable(false);
+        if (App.instance.currentActivity != null)
+            ((BaseActivity) App.instance.currentActivity).Session(SUREREPONSE);
+//        UdpStart();
+//        udpConnectDialog.show();
+//        udpConnectDialog.setCancelable(false);
     }
 
 
