@@ -7,10 +7,16 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,6 +24,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 
 import cn.kiway.mdm.App;
 import cn.kiway.mdm.hprose.socket.KwHproseClient;
+import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
@@ -31,6 +38,8 @@ import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 import static cn.kiway.mdm.hprose.socket.MessageType.ANSWER;
 import static cn.kiway.mdm.hprose.socket.MessageType.SIGN;
 import static cn.kiway.mdm.hprose.socket.MessageType.SUREREPONSE;
+import static cn.kiway.mdm.utils.IContants.REPONSE_URL;
+import static cn.kiway.mdm.utils.IContants.SING_URL;
 
 
 /**
@@ -166,6 +175,7 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                         da.put("msg", "签到");
                         if (isPublicNetwork) {
                             //TODO
+                            uploadSign();
                         } else {
                             if (App.instance.isIos) {
                                 App.instance.client.sendTCP(da.toString());
@@ -187,6 +197,7 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                         data.put("msgType", SUREREPONSE);
                         if (isPublicNetwork) {
                             //TODO
+                            uploadReponse(1 + "");
                         } else {
                             if (App.instance.isIos) {
                                 App.instance.client.sendTCP(data.toString());
@@ -211,6 +222,7 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                         data.put("msgType", SUREREPONSE);
                         if (isPublicNetwork) {
                             //TODO
+                            uploadReponse(0 + "");
                         } else {
                             if (App.instance.isIos) {
                                 App.instance.client.sendTCP(data.toString());
@@ -273,4 +285,59 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
             }
         }
     };
+
+    public void uploadSign() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.setTimeout(10000);
+        client.addHeader("x-auth-token", context.getSharedPreferences("kiway", 0).getString("x-auth-token",
+                ""));
+        String url = SING_URL;
+        Log.d("test", "url = " + url);
+        RequestParams param = new RequestParams();
+        param.put("msgType", SIGN + "");
+        param.put("userId", Utils.getIMEI(context));
+        param.put("msg", "签到");
+        param.put("token", context.getSharedPreferences("kiway", 0).getString("Classtoken",
+                ""));
+        client.post(context, url, param, new TextHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int arg0, Header[] arg1, String ret) {
+                Logger.log("::::::::::::" + ret);
+            }
+
+            @Override
+            public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                Logger.log("::::::::::::" + ret);
+            }
+        });
+    }
+
+    public void uploadReponse(final String msg) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.setTimeout(10000);
+        String url = REPONSE_URL;
+        Log.d("test", "url = " + url);
+        client.addHeader("x-auth-token", context.getSharedPreferences("kiway", 0).getString("x-auth-token",
+                ""));
+        RequestParams param = new RequestParams();
+        param.put("msgType", SUREREPONSE + "");
+        param.put("userId", Utils.getIMEI(context));
+        param.put("msg", msg);
+        param.put("token", context.getSharedPreferences("kiway", 0).getString("Classtoken",
+                ""));
+        client.post(context, url, param, new TextHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int arg0, Header[] arg1, String ret) {
+                Logger.log("::::::::::::" + ret);
+            }
+
+            @Override
+            public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                Logger.log("::::::::::::" + ret);
+            }
+        });
+
+    }
 }
