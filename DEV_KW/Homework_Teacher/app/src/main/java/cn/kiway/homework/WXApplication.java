@@ -76,7 +76,7 @@ public class WXApplication extends Application {
         }
 
         //countly
-        Countly.sharedInstance().init(this, zhengshiUrl + "/countly", "e3a6f65596ea867c2f739c12d5120d5d76353b5e");
+        Countly.sharedInstance().init(this, url + "/countly", "e3a6f65596ea867c2f739c12d5120d5d76353b5e");
         CountlyUtil.getInstance().init(this);
 
         //jpush
