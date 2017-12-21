@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
+import cn.kiway.homework.util.CountlyUtil;
 import ly.count.android.api.Countly;
 
 /**
@@ -76,6 +77,7 @@ public class WXApplication extends Application {
 
         //countly
         Countly.sharedInstance().init(this, zhengshiUrl + "/countly", "fc7c7fd702f527870646af45181593f4ce25b11b");
+        CountlyUtil.getInstance().init(this);
 
         //jpush
         JPushInterface.setDebugMode(true);

@@ -16,16 +16,8 @@ android {
         applicationId "cn.kiway.homework.student"
         minSdkVersion 18
         targetSdkVersion 20
-<<<<<<< .mine
-        versionCode 4
-        versionName "1.0.4"
-||||||| .r7875
-        versionCode 1
-        versionName "0.2.6"
-=======
-        versionCode 1
-        versionName "0.2.7"
->>>>>>> .r8057
+        versionCode 5
+        versionName "1.0.5"
         ndk {abiFilters "armeabi", "armeabi-v7a" , "armeabi-v8a", "x86", "mips"}
     }
     buildTypes {
