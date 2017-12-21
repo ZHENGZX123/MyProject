@@ -1,7 +1,6 @@
 package cn.kiway.homework.activity;
 
 import android.app.Activity;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.webkit.MimeTypeMap;

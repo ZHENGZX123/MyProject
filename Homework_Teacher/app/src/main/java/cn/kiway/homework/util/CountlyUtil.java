@@ -1,5 +1,6 @@
 package cn.kiway.homework.util;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.util.HashMap;
@@ -16,6 +17,7 @@ public class CountlyUtil {
 
     private static CountlyUtil instance;
     private static Map<String, Integer> events;
+    private static Context context;
 
     private CountlyUtil() {
     }
@@ -26,6 +28,10 @@ public class CountlyUtil {
             events = new HashMap<>();
         }
         return instance;
+    }
+
+    public static void init(Context c) {
+        context = c;
     }
 
     public static void addEvent(String event) {
@@ -52,12 +58,15 @@ public class CountlyUtil {
     }
 
     public static synchronized void sendAll() {
+        HashMap<String, String> seg = new HashMap<>();
+        seg.put("school", context.getSharedPreferences("kiway", 0).getString("school", "测试学校"));
         Iterator iterator = events.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String key = (String) entry.getKey();
             int count = (Integer) entry.getValue();
-            Countly.sharedInstance().recordEvent(key, count);
+
+            Countly.sharedInstance().recordEvent(key, seg, count);
         }
         events.clear();
     }
