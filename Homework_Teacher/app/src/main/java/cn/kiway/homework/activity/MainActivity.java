@@ -376,10 +376,10 @@ public class MainActivity extends BaseActivity {
             try {
                 String accessToken = new JSONObject(param).getString("accessToken");
                 String userId = new JSONObject(param).getString("userId");
-                String school = new JSONObject(param).getString("school");
+                String schoolName = new JSONObject(param).getString("schoolName");
                 getSharedPreferences("kiway", 0).edit().putString("accessToken", accessToken).commit();
                 getSharedPreferences("kiway", 0).edit().putString("userId", userId).commit();
-                getSharedPreferences("kiway", 0).edit().putString("school", school).commit();
+                getSharedPreferences("kiway", 0).edit().putString("schoolName", schoolName).commit();
                 installationPush();
                 //getBooks();
             } catch (Exception e) {

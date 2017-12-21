@@ -52,7 +52,6 @@ dependencies {
     compile 'ly.count:sdk-android:14.12'
     compile project(':zxing')
     compile files('libs/HwPush_SDK_V2705.jar')
-    compile files('libs/jcore-android-1.1.6.jar')
     compile files('libs/jpush-android-3.0.8.jar')
     compile 'org.xutils:xutils:3.5.0'
     compile files('libs/tbs_sdk_thirdapp_v3.1.0.1034_43100_sharewithdownload_obfs_20170301_182143.jar')

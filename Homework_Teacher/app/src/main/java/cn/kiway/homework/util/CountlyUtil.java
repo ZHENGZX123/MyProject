@@ -59,13 +59,12 @@ public class CountlyUtil {
 
     public static synchronized void sendAll() {
         HashMap<String, String> seg = new HashMap<>();
-        seg.put("school", context.getSharedPreferences("kiway", 0).getString("school", "测试学校"));
+        seg.put("school", context.getSharedPreferences("kiway", 0).getString("schoolName", "测试学校"));
         Iterator iterator = events.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String key = (String) entry.getKey();
             int count = (Integer) entry.getValue();
-
             Countly.sharedInstance().recordEvent(key, seg, count);
         }
         events.clear();
