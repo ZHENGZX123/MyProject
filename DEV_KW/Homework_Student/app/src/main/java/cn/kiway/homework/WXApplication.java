@@ -39,7 +39,7 @@ public class WXApplication extends Application {
     public static final String zhengshiUrl = "http://xtzy.xtclass.com";//正式地址
     public static final String ceshiUrl = "http://cszy.xtclass.com:8389";    //测试地址8390
 
-    public static boolean isTest = false;//测试true  正式false
+    public static boolean isTest = true;//测试true  正式false
 
     static {
         if (isTest) {
@@ -76,7 +76,7 @@ public class WXApplication extends Application {
         }
 
         //countly
-        Countly.sharedInstance().init(this, zhengshiUrl + "/countly", "fc7c7fd702f527870646af45181593f4ce25b11b");
+        Countly.sharedInstance().init(this, url + "/countly", "fc7c7fd702f527870646af45181593f4ce25b11b");
         CountlyUtil.getInstance().init(this);
 
         //jpush
