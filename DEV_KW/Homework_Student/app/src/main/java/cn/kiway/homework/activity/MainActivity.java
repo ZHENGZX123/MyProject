@@ -100,7 +100,7 @@ import static cn.kiway.homework.WXApplication.zhengshiUrl;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "1.0.6";
+    private static final String currentPackageVersion = "1.0.7";
 
     private X5WebView wv;
     private LinearLayout layout_welcome;
@@ -705,8 +705,10 @@ public class MainActivity extends BaseActivity {
             try {
                 String accessToken = new JSONObject(param).getString("accessToken");
                 String userId = new JSONObject(param).getString("userId");
+                String school = new JSONObject(param).getString("school");
                 getSharedPreferences("kiway", 0).edit().putString("accessToken", accessToken).commit();
                 getSharedPreferences("kiway", 0).edit().putString("userId", userId).commit();
+                getSharedPreferences("kiway", 0).edit().putString("school", school).commit();
                 installationPush();
                 //getBooks();
             } catch (Exception e) {
