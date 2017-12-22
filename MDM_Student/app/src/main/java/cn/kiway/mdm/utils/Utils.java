@@ -228,8 +228,7 @@ public class Utils {
                 //过滤
                 if (filter) {
                     //1.setting mdm
-                    if (packageInfo.packageName.equals("com.android.settings") || packageInfo.packageName.equals("cn" +
-                            ".kiway.mdm")) {
+                    if (packageInfo.packageName.equals("com.android.settings") || packageInfo.packageName.equals("cn.kiway.mdm")) {
                         continue;
                     }
                     //预设置
@@ -1056,7 +1055,7 @@ public class Utils {
             @Override
             public void run() {
                 //2.上报APP图标
-                final ArrayList<App> installApps = scanLocalInstallAppList(c, false);
+                final ArrayList<App> installApps = scanLocalInstallAppList(c, true);
                 for (App a : installApps) {
                     APPIconUploader.UploadAPPIcon(c, a.packageName);
                 }
