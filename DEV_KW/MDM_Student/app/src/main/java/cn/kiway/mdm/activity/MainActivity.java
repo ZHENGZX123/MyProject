@@ -380,21 +380,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         startActivity(new Intent(this, CallActivity.class));
     }
 
-//    boolean flag = false;
+    boolean flag = false;
 
     public void SMS(View view) {
-//        flag = !flag;
-//        MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(flag);
-
-        startActivity(new Intent(this, WebViewActivity.class));
-
-//        String token = getSharedPreferences("huawei", 0).getString("token", "");
-//        String imei = Utils.getIMEI(getApplicationContext());
-//        installationPush(this, token, imei);
-
-//        Utils.oauth(this, "9a9b01f8ab910e12422bcc0e88d95dff2f95f582", "cn.kiway.kthd");
-
-//        MDMHelper.getAdapter().installPackage("/mnt/sdcard/test.apk", true);
+        flag = !flag;
+        toast("flag:" + flag);
+        MDMHelper.getAdapter().setSystemBrowserDisabled(flag);
+        MDMHelper.getAdapter().setSettingsApplicationDisabled(flag);
+//        startActivity(new Intent(this, WebViewActivity.class));
 //        startActivity(new Intent(this, ComposeSmsActivity.class));
 //        try {
 //            Intent intent = new Intent(Intent.ACTION_MAIN);//短信列表界面
@@ -412,7 +405,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         dialog.setCancelable(true);
         dialog.setView(null, 1);
         dialog.show();
-        //startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), 999);
     }
 
     @Override
