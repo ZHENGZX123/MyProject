@@ -311,7 +311,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                     new MyDBHelper(context).deleteTime(timeSet.ids, packageName);
                     new MyDBHelper(context).addTime(timeSet);
                 }
-            } else if (command.equals("sgin")) {
+            } else if (command.equals("sign")) {
                 m.what = MSG_MESSAGE;
                 m.obj = data;
             } else if (command.equals("responsePush")) {
