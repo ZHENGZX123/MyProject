@@ -25,7 +25,6 @@ import cn.kiway.mdmsdk.MDMHelper;
 import static cn.kiway.mdm.utils.AppListUtils.isAppInstalled;
 import static cn.kiway.mdm.utils.Constant.ZHIHUIKETANGPG;
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
-import static cn.kiway.mdm.utils.Utils.packageName;
 
 /**
  * Created by Administrator on 2017/6/9.
