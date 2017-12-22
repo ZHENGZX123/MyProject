@@ -11,6 +11,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -380,13 +381,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         startActivity(new Intent(this, CallActivity.class));
     }
 
-//    boolean flag = false;
 
     public void SMS(View view) {
-//        flag = !flag;
-//        toast("flag:" + flag);
-//        MDMHelper.getAdapter().setSystemBrowserDisabled(flag);
-//        MDMHelper.getAdapter().setSettingsApplicationDisabled(flag);
         startActivity(new Intent(this, WebViewActivity.class));
 //        startActivity(new Intent(this, ComposeSmsActivity.class));
 //        try {
