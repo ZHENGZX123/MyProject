@@ -374,9 +374,9 @@ public class MainActivity extends BaseActivity {
         public void login(String param) {
             Log.d("test", "login param = " + param);
             try {
-                String accessToken = new JSONObject(param).getString("accessToken");
-                String userId = new JSONObject(param).getString("userId");
-                String schoolName = new JSONObject(param).getString("schoolName");
+                String accessToken = new JSONObject(param).optString("accessToken");
+                String userId = new JSONObject(param).optString("userId");
+                String schoolName = new JSONObject(param).optString("schoolName");
                 getSharedPreferences("kiway", 0).edit().putString("accessToken", accessToken).commit();
                 getSharedPreferences("kiway", 0).edit().putString("userId", userId).commit();
                 getSharedPreferences("kiway", 0).edit().putString("schoolName", schoolName).commit();
