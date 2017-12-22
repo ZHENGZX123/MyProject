@@ -380,14 +380,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         startActivity(new Intent(this, CallActivity.class));
     }
 
-    boolean flag = false;
+//    boolean flag = false;
 
     public void SMS(View view) {
-        flag = !flag;
-        toast("flag:" + flag);
-        MDMHelper.getAdapter().setSystemBrowserDisabled(flag);
-        MDMHelper.getAdapter().setSettingsApplicationDisabled(flag);
-//        startActivity(new Intent(this, WebViewActivity.class));
+//        flag = !flag;
+//        toast("flag:" + flag);
+//        MDMHelper.getAdapter().setSystemBrowserDisabled(flag);
+//        MDMHelper.getAdapter().setSettingsApplicationDisabled(flag);
+        startActivity(new Intent(this, WebViewActivity.class));
 //        startActivity(new Intent(this, ComposeSmsActivity.class));
 //        try {
 //            Intent intent = new Intent(Intent.ACTION_MAIN);//短信列表界面
