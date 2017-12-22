@@ -16,8 +16,8 @@ android {
         applicationId "cn.kiway.mdm.parent"
         minSdkVersion 18
         targetSdkVersion 20
-        versionCode 11
-        versionName "0.1.1"
+        versionCode 12
+        versionName "0.1.2"
     }
     buildTypes {
         release {
@@ -43,5 +43,5 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile project(':zxing')
     compile 'org.xutils:xutils:3.5.0'
-    compile files('libs/tbs_sdk_thirdapp_v3.1.0.1034_43100_sharewithdownload_obfs_20170301_182143.jar')
+    compile files('libs/tbs_sdk_thirdapp_v3.5.0.1004_43500_sharewithdownload_withoutGame_obfs_20170801_113025.jar')
 }
