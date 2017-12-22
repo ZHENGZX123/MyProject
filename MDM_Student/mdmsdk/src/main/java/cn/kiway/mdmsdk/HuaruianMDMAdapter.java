@@ -54,7 +54,7 @@ public class HuaruianMDMAdapter implements IMDMAdapter {
 
     @Override
     public void setExternalStorageDisabled(boolean disabled) {
-        Log.d("test", "setExternalStorageDisabled缺少");
+        sendBroadcast("com.hra.disableSDandOTG", "disabled", !disabled ? "1" : "0");
     }
 
     @Override
@@ -79,7 +79,7 @@ public class HuaruianMDMAdapter implements IMDMAdapter {
 
     @Override
     public void setSettingsApplicationDisabled(boolean disabled) {
-        Log.d("test", "setSettingsApplicationDisabled待定");
+        sendBroadcast("com.hra.settings", "setting", !disabled);
     }
 
     @Override
@@ -164,7 +164,7 @@ public class HuaruianMDMAdapter implements IMDMAdapter {
 
     @Override
     public void setWifiApDisabled(boolean b) {
-        Log.d("test", "setWifiApDisabled缺少");
+        sendBroadcast("com.hra.androidAp", "androidAp", !b);
     }
 
     @Override
@@ -287,7 +287,7 @@ public class HuaruianMDMAdapter implements IMDMAdapter {
 
     @Override
     public void setSystemBrowserDisabled(boolean disabled) {
-        Log.d("test", "setSystemBrowserDisabled缺少");
+        sendBroadcast("com.hra.browser", "browser", !disabled);
     }
 
 
