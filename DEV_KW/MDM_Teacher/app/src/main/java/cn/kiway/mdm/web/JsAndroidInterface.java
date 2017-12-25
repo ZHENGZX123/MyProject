@@ -45,6 +45,7 @@ import static cn.kiway.mdm.util.FileUtils.EnFILEPATH;
 
 public class JsAndroidInterface {
     public static String userAccount = "";
+
     MainActivity activity;
     AccpectMessageHander accpectMessageHander;
     String className;
@@ -56,15 +57,18 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public void scoketOperate(String state, String className) { //1启动，0关闭
-        Logger.log("--------------Start----------" + state);
         this.className = className;
         if (state.equals("1")) {
             closeServer();
             startServer();
             Logger.log("--------------Start----------");
+            setScreenOrientation("0");
+            showTools();
         } else if (state.equals("0")) {
             closeServer();
             Logger.log("--------------Stop-----------");
+            setScreenOrientation("1");
+            hideTools();
         }
     }
 
@@ -150,12 +154,11 @@ public class JsAndroidInterface {
     @JavascriptInterface//拍照上传
     public void takePhoto(String token) {
         accessToken = token;
-        // activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token);
         if (!new File(EnFILEPATH).exists())
             new File(EnFILEPATH).mkdirs();
         picPath = EnFILEPATH + "/" + System.currentTimeMillis() + ".png";
         Intent intent2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Uri uri = Uri.fromFile(new File(picPath));//为拍摄的图片指定一个存储的路径
+        Uri uri = Uri.fromFile(new File(picPath));
         intent2.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         activity.startActivityForResult(intent2, REQUEST_ORIGINAL);
     }
@@ -291,5 +294,24 @@ public class JsAndroidInterface {
             broadCastUdp = null;
         }
         PushServer.stop();
+    }
+
+    //---------------------------------2.0版本新增的接口--------------------------------------
+
+    @JavascriptInterface
+    public void showTools() {//显示上课悬浮按钮
+        this.activity.showTools();
+    }
+
+    @JavascriptInterface
+    public void hideTools() {//隐藏上课悬浮按钮
+        this.activity.hideTools();
+    }
+
+    @JavascriptInterface
+    public void openFileByX5(String path) {
+        //1.检查本地有没有对应文件
+        //2.如果有，直接打开
+        //3.如果没有，下载再打开
     }
 }

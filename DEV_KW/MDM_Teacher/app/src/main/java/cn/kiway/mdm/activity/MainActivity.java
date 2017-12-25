@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.leon.lfilepickerlibrary.utils.Constant;
@@ -76,12 +77,13 @@ public class MainActivity extends BaseActivity {
     private LinearLayout layout_welcome;
     public static MainActivity instance;
     private long time;
+    private JsAndroidInterface jsInterface;
+    private ScrollView tools;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //  broadCastUdp = new BroadCastUdp("当前班级");//启动广播
         getAppData();
         instance = this;
         initView();
@@ -111,6 +113,7 @@ public class MainActivity extends BaseActivity {
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
         wv = (X5WebView) findViewById(R.id.wv);
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
+        tools = (ScrollView) findViewById(R.id.tools);
     }
 
     @Override
@@ -168,15 +171,11 @@ public class MainActivity extends BaseActivity {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
-//        if (Utils.isTabletDevice(this)) {
-//            settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.LARGER);
-//        } else {
-//            settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.NORMAL);
-//        }
         wv.setWebViewClient(new MyWebViewClient());
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new com.tencent.smtt.sdk.WebChromeClient());
-        wv.addJavascriptInterface(new JsAndroidInterface(this, wv), "scoket");
+        jsInterface = new JsAndroidInterface(this, wv);
+        wv.addJavascriptInterface(jsInterface, "scoket");
     }
 
     @Override
@@ -198,8 +197,10 @@ public class MainActivity extends BaseActivity {
         long t = System.currentTimeMillis();
         if (t - time >= 2000) {
             time = t;
-            toast("Click again to exit");
+            toast("再按一次退出");
         } else {
+            //close
+            jsInterface.closeServer();
             finish();
         }
     }
@@ -274,7 +275,6 @@ public class MainActivity extends BaseActivity {
                             });
                         }
                     }).launch();    //启动压缩
-            //     uploadFile();
         }
     }
 
@@ -288,7 +288,6 @@ public class MainActivity extends BaseActivity {
     }
 
     public void uploadFile(String filePath) {
-        // String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
         File file = new File(filePath);
         pd.show();
         pd.setMessage(getString(R.string.upload));
@@ -369,10 +368,6 @@ public class MainActivity extends BaseActivity {
 //                } else {
 //                    rl_nonet.setVisibility(View.GONE);
 //                    //有网络
-//                    Log.d("test", "有网络");
-//                    if (arg2 == 1) {
-//                        wv.loadUrl("javascript:reConnect()");
-//                    }
 //                }
             } else if (msg.what == 2) {
                 String ret = (String) msg.obj;
@@ -602,4 +597,21 @@ public class MainActivity extends BaseActivity {
     }
 
 
+    public void showTools() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tools.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    public void hideTools() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tools.setVisibility(View.GONE);
+            }
+        });
+    }
 }
