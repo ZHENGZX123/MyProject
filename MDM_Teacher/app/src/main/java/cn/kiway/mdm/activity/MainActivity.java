@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -235,7 +236,7 @@ public class MainActivity extends BaseActivity {
             if (resultCode != RESULT_OK)
                 return;
             Luban.with(this)
-                    .load(picPath)                                // 传人要压缩的图片列表
+                    .load(picPath)                                  // 传入要压缩的图片列表
                     .ignoreBy(100)                                  // 忽略不压缩图片的大小
                     .setTargetDir(getPath())                        // 设置压缩后文件存储位置
                     .setCompressListener(new OnCompressListener() { //设置回调
@@ -588,6 +589,7 @@ public class MainActivity extends BaseActivity {
         startActivity(new Intent(this, NoNetActivity.class));
     }
 
+    //--------------------2.0新增-------------------------------------------------------
 
     public void showTools() {
         runOnUiThread(new Runnable() {
@@ -653,4 +655,40 @@ public class MainActivity extends BaseActivity {
         str = path.substring(i + 1);
         return str;
     }
+
+    //-------------------------工具类----------------------
+
+    public void jieping(View view) {
+        Utils.GetandSaveCurrentImage(this);
+    }
+
+    public void paizhao(View view) {
+        //众人通是拍照后，放在画布上。
+        String picPath = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Uri uri = Uri.fromFile(new File(picPath));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivity(intent);
+    }
+
+    public void huabi(View view) {
+        //等彭毅
+    }
+
+    public void chaping(View view) {
+        //查看学生屏幕，需要获取学生列表。
+    }
+
+    public void suoping(View view) {
+        //锁定学生屏幕，需要获取学生列表。
+    }
+
+    public void wenjian(View view) {
+        //给学生发文件，需要获取学生列表。
+    }
+
+    public void shezhi(View view) {
+        //设置？？？
+    }
+
 }

@@ -6,13 +6,18 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.teacher.R;
@@ -150,7 +155,7 @@ public class Utils {
                 ((Activity) context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context,context.getString(R.string.mobile_no_play), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, context.getString(R.string.mobile_no_play), Toast.LENGTH_SHORT).show();
                     }
                 });
             else
@@ -162,4 +167,47 @@ public class Utils {
                 });
         }
     }
+
+
+    /**
+     * 获取和保存当前屏幕的截图
+     */
+    public static void GetandSaveCurrentImage(Activity c) {
+        //1.构建Bitmap
+        WindowManager windowManager = c.getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        int w = display.getWidth();
+        int h = display.getHeight();
+        Bitmap Bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        //2.获取屏幕
+        View decorview = c.getWindow().getDecorView();
+        decorview.setDrawingCacheEnabled(true);
+        Bmp = decorview.getDrawingCache();
+        String SavePath = "/mnt/sdcard/";
+        //3.保存Bitmap
+        try {
+            File path = new File(SavePath);
+            //文件
+            String filepath = SavePath + System.currentTimeMillis() + ".png";
+            File file = new File(filepath);
+            if (!path.exists()) {
+                path.mkdirs();
+            }
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileOutputStream fos = null;
+            fos = new FileOutputStream(file);
+            if (null != fos) {
+                Bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
+                fos.flush();
+                fos.close();
+                Toast.makeText(c, "截屏文件已保存至SDCard下", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

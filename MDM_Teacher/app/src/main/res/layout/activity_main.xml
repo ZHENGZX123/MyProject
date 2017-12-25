@@ -51,39 +51,45 @@
                 android:orientation="vertical">
 
                 <Button
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="jieping"
                     android:text="截屏" />
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="paizhao"
                     android:text="拍照" />
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="huabi"
                     android:text="画笔" />
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="chaping"
                     android:text="查屏" />
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="suoping"
                     android:text="锁屏" />
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="wenjian"
                     android:text="文件" />
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="shezhi"
                     android:text="设置" />
             </LinearLayout>
         </ScrollView>
