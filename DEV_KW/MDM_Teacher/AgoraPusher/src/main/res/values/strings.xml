@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">教师端</string>
+
+    <!-- PLEASE KEEP THIS App ID IN SAFE PLACE -->
+    <!-- Get your own App ID at https://dashboard.agora.io/ -->
+    <!-- After you entered the App ID, remove <##> outside of Your App ID -->
+    <!-- For formal released project, please use Dynamic Key
+        http://docs.agora.io/en/user_guide/Component_and_Others/Dynamic_Key_User_Guide.html -->
+    <!-- Tutorial Step 1 -->
+    <string name="agora_app_id">0808f1f5e079491896e0bf5bd16b158e</string>
+
+    <string name="label_hello_agora">Hello, welcome</string>
+    <string name="label_start_sharing_your_screen">上课，屏幕共享+声音</string>
+    <string name="label_stop_sharing_your_screen">下课</string>
+
+    <string name="label_channel_info">教室: %s</string>
+</resources>
