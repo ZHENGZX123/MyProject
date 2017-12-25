@@ -306,8 +306,6 @@ public class JsAndroidInterface {
     @JavascriptInterface
     public void xiake() {
         Log.d("test", "xiake");
-        setScreenOrientation("1");
-        hideTools();
     }
 
     @JavascriptInterface

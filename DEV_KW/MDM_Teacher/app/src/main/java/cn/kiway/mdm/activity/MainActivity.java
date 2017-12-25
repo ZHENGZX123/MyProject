@@ -82,6 +82,7 @@ public class MainActivity extends BaseActivity {
     private JsAndroidInterface jsInterface;
     private ScrollView tools;
     private FrameLayout fileview;
+    private TbsReaderView readerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,6 +169,9 @@ public class MainActivity extends BaseActivity {
             Log.d("test", "url = " + url);
             //1.文件打开，先关闭
             if (fileview.isShown()) {
+                readerView.onStop();
+                readerView = null;
+                fileview.removeAllViews();
                 fileview.setVisibility(View.GONE);
                 return true;
             }
@@ -612,7 +616,7 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 fileview.setVisibility(View.VISIBLE);
 
-                TbsReaderView readerView = new TbsReaderView(MainActivity.this, new TbsReaderView.ReaderCallback() {
+                readerView = new TbsReaderView(MainActivity.this, new TbsReaderView.ReaderCallback() {
                     @Override
                     public void onCallBackAction(Integer integer, Object o, Object o1) {
 
