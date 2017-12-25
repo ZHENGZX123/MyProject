@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -81,7 +82,8 @@ public class MainActivity extends BaseActivity {
     public static MainActivity instance;
     private long time;
     private JsAndroidInterface jsInterface;
-    private ScrollView tools;
+    private ScrollView tools1;
+    private HorizontalScrollView tools2;
     private FrameLayout fileview;
     private TbsReaderView readerView;
 
@@ -118,7 +120,8 @@ public class MainActivity extends BaseActivity {
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
         wv = (X5WebView) findViewById(R.id.wv);
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
-        tools = (ScrollView) findViewById(R.id.tools);
+        tools1 = (ScrollView) findViewById(R.id.tools1);
+        tools2 = (HorizontalScrollView) findViewById(R.id.tools2);
         fileview = (FrameLayout) findViewById(R.id.fileview);
     }
 
@@ -174,11 +177,13 @@ public class MainActivity extends BaseActivity {
                 readerView = null;
                 fileview.removeAllViews();
                 fileview.setVisibility(View.GONE);
+
+                hideTools2();
                 return true;
             }
             if (url.endsWith("inClass")) {
                 //2.在上课页面点返回
-                hideTools();
+                hideTools1();
                 jsInterface.setScreenOrientation("1");
             }
             if (wv.canGoBack()) {
@@ -310,8 +315,10 @@ public class MainActivity extends BaseActivity {
                             }
                             String url = obj.optJSONObject("data").optString("url");
                             Log.d("test", "obj = " + obj.toString());
+                            //1.callback给前端
                             wv.loadUrl(accpterFilePath.replace("fileName", filePath.split("/")[filePath.split("/")
                                     .length - 1]).replace("filePath", url).replace("fileSize", file.length() + ""));
+                            //2.把这个文件拷贝到缓存目录
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -591,20 +598,38 @@ public class MainActivity extends BaseActivity {
 
     //--------------------2.0新增-------------------------------------------------------
 
-    public void showTools() {
+    public void showTools1() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                tools.setVisibility(View.VISIBLE);
+                tools1.setVisibility(View.VISIBLE);
             }
         });
     }
 
-    public void hideTools() {
+    public void hideTools1() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                tools.setVisibility(View.GONE);
+                tools1.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    public void showTools2() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tools2.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    public void hideTools2() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tools2.setVisibility(View.GONE);
             }
         });
     }
@@ -656,7 +681,7 @@ public class MainActivity extends BaseActivity {
         return str;
     }
 
-    //-------------------------工具类----------------------
+    //-------------------------tools1----------------------
 
     public void jieping(View view) {
         Utils.GetandSaveCurrentImage(this);
@@ -688,7 +713,31 @@ public class MainActivity extends BaseActivity {
     }
 
     public void shezhi(View view) {
-        //设置？？？
+        //设置？？？不知道是什么
     }
 
+    //-------------------------tools2----------------------
+    public void tongji(View view) {
+
+    }
+
+    public void dianmingda(View view) {
+
+    }
+
+    public void qiangda(View view) {
+
+    }
+
+    public void suijichouda(View view) {
+
+    }
+
+    public void ceping(View view) {
+
+    }
+
+    public void gongju(View view) {
+
+    }
 }

@@ -300,24 +300,12 @@ public class JsAndroidInterface {
     public void shangke() {
         Log.d("test", "shangke");
         setScreenOrientation("0");
-        showTools();
+        this.activity.showTools1();
     }
 
     @JavascriptInterface
     public void xiake() {
         Log.d("test", "xiake");
-    }
-
-    @JavascriptInterface
-    public void showTools() {//显示上课悬浮按钮
-        Log.d("test", "showTools");
-        this.activity.showTools();
-    }
-
-    @JavascriptInterface
-    public void hideTools() {//隐藏上课悬浮按钮
-        Log.d("test", "hideTools");
-        this.activity.hideTools();
     }
 
     @JavascriptInterface
@@ -327,10 +315,12 @@ public class JsAndroidInterface {
         //2.如果有，直接打开
         //3.如果没有，下载再打开
         this.activity.openFileByX5(path);
+        this.activity.showTools2();
     }
 
     @JavascriptInterface
     public void prepareFile(String token) {//选择文件-备课专用，同chooseFile，上传完成后拷贝文件到FilePath
+        Log.d("test", "prepareFile is called");
         accessToken = token;
         activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token);
         new LFilePicker()

@@ -39,7 +39,7 @@
             android:visibility="gone"></FrameLayout>
 
         <ScrollView
-            android:id="@+id/tools"
+            android:id="@+id/tools1"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
@@ -93,6 +93,58 @@
                     android:text="设置" />
             </LinearLayout>
         </ScrollView>
+
+        <HorizontalScrollView
+            android:id="@+id/tools2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="tongji"
+                    android:text="统计" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="dianmingda"
+                    android:text="点名单" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="qiangda"
+                    android:text="抢答" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="suijichouda"
+                    android:text="随机抽答" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="ceping"
+                    android:text="测评" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="gongju"
+                    android:text="工具" />
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
 
 
         <LinearLayout
