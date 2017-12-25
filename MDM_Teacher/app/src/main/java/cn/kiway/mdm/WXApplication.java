@@ -1,10 +1,13 @@
 package cn.kiway.mdm;
 
 import android.app.Application;
+import android.content.Intent;
 
 import com.tencent.smtt.sdk.QbSdk;
 
 import org.xutils.x;
+
+import cn.kiway.mdm.service.RecordService;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -27,6 +30,8 @@ public class WXApplication extends Application {
         x.Ext.init(this);
         //x5
         initTBS();
+        //录屏
+        startService(new Intent(this, RecordService.class));
     }
 
     /**
