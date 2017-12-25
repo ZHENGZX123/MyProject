@@ -166,9 +166,13 @@ public class MainActivity extends BaseActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             String url = wv.getUrl();
             Log.d("test", "url = " + url);
+            //1.文件打开，先关闭
+            if (fileview.isShown()) {
+                fileview.setVisibility(View.GONE);
+                return true;
+            }
             if (url.endsWith("inClass")) {
-                //在上课页面点返回
-                //TODO 先这么干
+                //2.在上课页面点返回
                 hideTools();
                 jsInterface.setScreenOrientation("1");
             }
@@ -624,6 +628,8 @@ public class MainActivity extends BaseActivity {
                 boolean b = readerView.preOpen(getFileType(finalPath), false);
                 if (b) {
                     readerView.openFile(bundle);
+                } else {
+                    toast("打开文件失败");
                 }
                 fileview.addView(readerView);
             }
