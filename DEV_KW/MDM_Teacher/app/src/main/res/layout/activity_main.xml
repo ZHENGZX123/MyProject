@@ -32,11 +32,11 @@
             android:layout_height="match_parent"
             android:layout_below="@id/rl_nonet"></cn.kiway.mdm.view.X5WebView>
 
-        <cn.kiway.mdm.view.SuperFileView2
+        <FrameLayout
             android:id="@+id/fileview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"></cn.kiway.mdm.view.SuperFileView2>
+            android:visibility="gone"></FrameLayout>
 
         <ScrollView
             android:id="@+id/tools"
@@ -51,6 +51,7 @@
                 android:orientation="vertical">
 
                 <Button
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="截屏" />

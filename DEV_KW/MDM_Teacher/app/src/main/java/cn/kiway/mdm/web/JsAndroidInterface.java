@@ -161,6 +161,7 @@ public class JsAndroidInterface {
     }
 
     public static final int requsetFile = 45612;
+    public static final int requsetFile2 = 45613;
     public static String accessToken;
 
     @JavascriptInterface
@@ -297,12 +298,14 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public void shangke() {
+        Log.d("test", "shangke");
         setScreenOrientation("0");
         showTools();
     }
 
     @JavascriptInterface
     public void xiake() {
+        Log.d("test", "xiake");
         setScreenOrientation("1");
         hideTools();
     }
@@ -321,12 +324,23 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public void openFileByX5(String path) {
-        Log.d("test", "openFileByX5 is called");
+        Log.d("test", "openFileByX5 is called , path = " + path);
         //1.检查本地有没有对应文件
         //2.如果有，直接打开
         //3.如果没有，下载再打开
-
-
         this.activity.openFileByX5(path);
+    }
+
+    @JavascriptInterface
+    public void prepareFile(String token) {//选择文件-备课专用，同chooseFile，上传完成后拷贝文件到FilePath
+        accessToken = token;
+        activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token);
+        new LFilePicker()
+                .withActivity(activity)
+                .withTitle(activity.getString(R.string.filepath2))
+                .withRequestCode(requsetFile2)
+                .withMutilyMode(false)
+                .withfilePath(FilePath)
+                .start();
     }
 }

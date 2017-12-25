@@ -15,11 +15,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.leon.lfilepickerlibrary.utils.Constant;
+import com.tencent.smtt.sdk.TbsReaderView;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -46,7 +48,6 @@ import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.NetworkUtil;
 import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
-import cn.kiway.mdm.view.SuperFileView2;
 import cn.kiway.mdm.view.X5WebView;
 import cn.kiway.mdm.web.JsAndroidInterface;
 import cn.kiway.mdm.web.MyWebViewClient;
@@ -61,6 +62,7 @@ import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
 import static cn.kiway.mdm.web.JsAndroidInterface.accessToken;
 import static cn.kiway.mdm.web.JsAndroidInterface.picPath;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile;
+import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile2;
 import static cn.kiway.mdm.web.JsAndroidInterface.setFilePath;
 import static cn.kiway.mdm.web.JsAndroidInterface.userAccount;
 import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
@@ -79,7 +81,7 @@ public class MainActivity extends BaseActivity {
     private long time;
     private JsAndroidInterface jsInterface;
     private ScrollView tools;
-    private SuperFileView2 fileview;
+    private FrameLayout fileview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +117,7 @@ public class MainActivity extends BaseActivity {
         wv = (X5WebView) findViewById(R.id.wv);
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
         tools = (ScrollView) findViewById(R.id.tools);
-        fileview = (SuperFileView2) findViewById(R.id.fileview);
+        fileview = (FrameLayout) findViewById(R.id.fileview);
     }
 
     private void load() {
@@ -164,6 +166,12 @@ public class MainActivity extends BaseActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             String url = wv.getUrl();
             Log.d("test", "url = " + url);
+            if (url.endsWith("inClass")) {
+                //在上课页面点返回
+                //TODO 先这么干
+                hideTools();
+                jsInterface.setScreenOrientation("1");
+            }
             if (wv.canGoBack()) {
                 wv.goBack();
                 return true;
@@ -202,21 +210,19 @@ public class MainActivity extends BaseActivity {
                 return;
             List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
             String filePath = list.get(0);
-            try {
-                if (!filePath.contains("/kiwaymdm")) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(MainActivity.this, getString(R.string.choose_file), Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                    });
-                }
-                setFilePath = filePath;
-                uploadFile(filePath);
-            } catch (RuntimeException e) {
-                e.printStackTrace();
+            if (!filePath.contains("/kiwaymdm")) {
+                toast(R.string.choose_file);
+                return;
             }
+            setFilePath = filePath;
+            uploadFile(filePath);
+        } else if (requestCode == requsetFile2) {
+            if (data == null)
+                return;
+            List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
+            String filePath = list.get(0);
+            setFilePath = filePath;
+            uploadFile(filePath);
         } else if (requestCode == REQUEST_ORIGINAL) {
             if (resultCode != RESULT_OK)
                 return;
@@ -594,12 +600,47 @@ public class MainActivity extends BaseActivity {
     }
 
     public void openFileByX5(String path) {
+        path = "/mnt/sdcard/test.docx";
+
+        String finalPath = path;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 fileview.setVisibility(View.VISIBLE);
-                fileview.displayFile(new File("/mnt/sdcard/test.doc"));
+
+                TbsReaderView readerView = new TbsReaderView(MainActivity.this, new TbsReaderView.ReaderCallback() {
+                    @Override
+                    public void onCallBackAction(Integer integer, Object o, Object o1) {
+
+                    }
+                });
+                //通过bundle把文件传给x5,打开的事情交由x5处理
+                Bundle bundle = new Bundle();
+                //传递文件路径
+                bundle.putString("filePath", finalPath);
+                //加载插件保存的路径
+                bundle.putString("tempPath", Environment.getExternalStorageDirectory() + File.separator + "temp");
+                //加载文件前的初始化工作,加载支持不同格式的插件
+                boolean b = readerView.preOpen(getFileType(finalPath), false);
+                if (b) {
+                    readerView.openFile(bundle);
+                }
+                fileview.addView(readerView);
             }
         });
+    }
+
+    private String getFileType(String path) {
+        String str = "";
+
+        if (TextUtils.isEmpty(path)) {
+            return str;
+        }
+        int i = path.lastIndexOf('.');
+        if (i <= -1) {
+            return str;
+        }
+        str = path.substring(i + 1);
+        return str;
     }
 }
