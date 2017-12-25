@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
-import android.widget.Toast;
 
 import com.leon.lfilepickerlibrary.LFilePicker;
 
@@ -78,12 +77,7 @@ public class JsAndroidInterface {
                 PushServer.hproseSrv.push("ground", msg);
             } else {
                 if (HproseChannelMapStatic.getChannel(userId) == null) {
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(activity, "student no inline", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    this.activity.toast("student no inline");
                     return;
                 }
                 PushServer.hproseSrv.push(userId + "owner", msg);
@@ -120,8 +114,7 @@ public class JsAndroidInterface {
     @JavascriptInterface
     public void pushTheScreen() {//推屏  ios不用
         if (!Utils.isAppInstalled(activity, "com.kiway.ikv3")) {
-            Toast.makeText(activity, activity.getString(R.string.please_install_kiway_srceen), Toast.LENGTH_SHORT)
-                    .show();
+            this.activity.toast(R.string.please_install_kiway_srceen);
             return;
         }
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -135,7 +128,7 @@ public class JsAndroidInterface {
     public void multiControl(String userId) {//多屏互动
         Logger.log("multiControl::::" + userId);
         if (HproseChannelMapStatic.getChannel(userId) == null) {
-            Toast.makeText(activity, activity.getString(R.string.student_no_inline), Toast.LENGTH_SHORT).show();
+            this.activity.toast(R.string.student_no_inline);
             return;
         }
         activity.startActivity(new Intent(activity, ScreenActivity.class).putExtra("clientId", userId));
@@ -258,8 +251,7 @@ public class JsAndroidInterface {
                     public void run() {
                         activity.pd.dismiss();
                         if (ret == -1) {//下载失败
-                            Toast.makeText(activity, activity.getString(R.string.downloadfie), Toast.LENGTH_SHORT)
-                                    .show();
+                            JsAndroidInterface.this.activity.toast(R.string.downloadfie);
                         } else {//下载成功
                             Utils.openFile(activity, folder + fileName);
                         }
@@ -309,6 +301,7 @@ public class JsAndroidInterface {
     @JavascriptInterface
     public void shangke() {
         Log.d("test", "shangke");
+        this.activity.toast("上课");
         //1.横屏
         setScreenOrientation("0");
         //2.显示右侧工具栏
@@ -321,6 +314,7 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public void xiake() {
+        this.activity.toast("下课");
         Log.d("test", "xiake");
         //1.上传课程的视频
         this.activity.stopRecord();
