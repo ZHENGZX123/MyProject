@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="studentsession.kiway.cn.mdm_studentsession">
+    package="studentsession.kiway.cn.mdm_studentsession">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
 
-      <application
+    <application
         android:name="cn.kiway.mdm.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,6 +20,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Light.NoTitleBar">
+
+        <activity
+            android:name="cn.kiway.mdm.activity.LoginActivity"
+            android:screenOrientation="landscape"></activity>
+
         <activity
             android:name="cn.kiway.mdm.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -27,13 +32,14 @@
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="cn.kiway.mdm.activity.ScreenActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name="cn.kiway.mdm.activity.ScreenActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="cn.kiway.mdm.activity.FileListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -46,12 +52,12 @@
             android:launchMode="singleTask"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
-          <activity
-              android:name="cn.kiway.mdm.activity.UserInfoActivity"
-              android:configChanges="orientation|keyboardHidden|screenSize"
-              android:launchMode="singleTask"
-              android:screenOrientation="landscape"
-              android:windowSoftInputMode="adjustPan|stateHidden"></activity>
+        <activity
+            android:name="cn.kiway.mdm.activity.UserInfoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
     </application>
 
 </manifest>

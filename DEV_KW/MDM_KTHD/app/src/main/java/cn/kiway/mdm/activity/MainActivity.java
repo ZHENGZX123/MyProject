@@ -63,11 +63,15 @@ public class MainActivity extends BaseActivity {
     }
 
     public void onInfo(View view) {//个人信息
-        startActivity(new Intent(this,UserInfoActivity.class));
+        startActivity(new Intent(this, UserInfoActivity.class));
     }
 
     public void onFile(View view) {//查看文件
         startActivity(new Intent(this, FileListActivity.class));
+    }
+
+    public void logout(View view) {
+
     }
 
     public void onMsg(View view) {//查看消息
@@ -144,6 +148,7 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
+
     public void onConnectTimeOut() {//启动连接失败显示界面
         runOnUiThread(new Runnable() {
             @Override
@@ -153,6 +158,7 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
+
     private class UDPClientThread extends Thread {//开启udp广播
 
         public UDPClientThread() {
