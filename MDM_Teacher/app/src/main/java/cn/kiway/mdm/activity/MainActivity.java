@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -60,6 +61,7 @@ import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
 import cn.kiway.mdm.web.JsAndroidInterface;
 import cn.kiway.mdm.web.MyWebViewClient;
+import io.agora.rtc.ss.app.HelloAgoraScreenSharingActivity;
 import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
 
@@ -78,7 +80,7 @@ import static cn.kiway.mdm.web.JsAndroidInterface.userAccount;
 import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
 
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends HelloAgoraScreenSharingActivity {
 
     private static final String currentPackageVersion = "0.2.0";
 
@@ -112,7 +114,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initRecord() {
-        projectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
+        projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
         Intent intent = new Intent(this, RecordService.class);
         bindService(intent, connection, BIND_AUTO_CREATE);
@@ -714,8 +716,22 @@ public class MainActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    private boolean tuiping = false;
+
     public void tuiping(View view) {
         //先接入声网
+        //startActivity(new Intent(this, HelloAgoraScreenSharingActivity.class));
+        if (tuiping) {
+            toast("结束推屏");
+            mRtcEngine.leaveChannel();
+            stopCapture();
+        } else {
+            toast("开始推屏");
+            initModules();
+            startCapture();
+            mRtcEngine.joinChannel(null, "kiway", "", 0);
+        }
+        tuiping = !tuiping;
     }
 
     public void huabi(View view) {
@@ -771,11 +787,17 @@ public class MainActivity extends BaseActivity {
 
 
     public void startRecord() {
+        if (true) {
+            return;
+        }
         Intent captureIntent = projectionManager.createScreenCaptureIntent();
         startActivityForResult(captureIntent, RECORD_REQUEST_CODE);
     }
 
     public void stopRecord() {
+        if (true) {
+            return;
+        }
         if (recordService.isRunning()) {
             recordService.stopRecord();
         }
