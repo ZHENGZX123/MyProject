@@ -718,26 +718,26 @@ public class MainActivity extends BaseActivity {
 
     //-------------------------tools2----------------------
     public void tongji(View view) {
-
+        //知识点统计，给全班发送统计命令。
     }
 
     public void dianmingda(View view) {
-
+        //点名答，需要获取学生列表。
     }
 
     public void qiangda(View view) {
-
+        //抢答，给全班发送抢答命令。
     }
 
     public void suijichouda(View view) {
-
+        //随机抽答，给全班发送抽答命令。
     }
 
     public void ceping(View view) {
-
+        //测评，给全班发测评命令
     }
 
     public void gongju(View view) {
-
+        //工具？？？
     }
 }

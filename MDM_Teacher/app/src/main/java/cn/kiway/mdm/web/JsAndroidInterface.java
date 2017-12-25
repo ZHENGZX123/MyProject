@@ -299,13 +299,19 @@ public class JsAndroidInterface {
     @JavascriptInterface
     public void shangke() {
         Log.d("test", "shangke");
+        //1.横屏
         setScreenOrientation("0");
+        //2.显示右侧工具栏
         this.activity.showTools1();
+        //3.开始录制屏幕
+
+        //4.开始进行上课统计
     }
 
     @JavascriptInterface
     public void xiake() {
         Log.d("test", "xiake");
+        //1.上传课程的视频
     }
 
     @JavascriptInterface
