@@ -46,6 +46,7 @@ import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.NetworkUtil;
 import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
+import cn.kiway.mdm.view.SuperFileView2;
 import cn.kiway.mdm.view.X5WebView;
 import cn.kiway.mdm.web.JsAndroidInterface;
 import cn.kiway.mdm.web.MyWebViewClient;
@@ -66,11 +67,10 @@ import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.1.3";
+    private static final String currentPackageVersion = "0.2.0";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
-    private boolean checking = false;
     private Dialog dialog_download;
     public ProgressDialog pd;
     private X5WebView wv;
@@ -79,6 +79,7 @@ public class MainActivity extends BaseActivity {
     private long time;
     private JsAndroidInterface jsInterface;
     private ScrollView tools;
+    private SuperFileView2 fileview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,28 +115,8 @@ public class MainActivity extends BaseActivity {
         wv = (X5WebView) findViewById(R.id.wv);
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
         tools = (ScrollView) findViewById(R.id.tools);
+        fileview = (SuperFileView2) findViewById(R.id.fileview);
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d("test", "onresume checking = " + checking);
-        new Thread() {
-            @Override
-            public void run() {
-                while (checking) {
-                    Log.d("test", "checking loop...");
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                Log.d("test", "checking loop end");
-            }
-        }.start();
-    }
-
 
     private void load() {
         wv.clearCache(true);
@@ -327,7 +308,6 @@ public class MainActivity extends BaseActivity {
 
     //下面是版本更新相关
     public void checkNewVersion() {
-        checking = true;
         new Thread() {
             @Override
             public void run() {
@@ -360,7 +340,6 @@ public class MainActivity extends BaseActivity {
             if (msg.what == 1) {
 //                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
 //                int arg1 = msg.arg1;
-//                int arg2 = msg.arg2;
 //                if (arg1 == 0) {
 //                    rl_nonet.setVisibility(View.VISIBLE);
 //                    //无网络
@@ -587,7 +566,6 @@ public class MainActivity extends BaseActivity {
                     load();
                 }
                 //更新完成完成
-                checking = false;
             }
         });
     }
@@ -611,6 +589,16 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 tools.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    public void openFileByX5(String path) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                fileview.setVisibility(View.VISIBLE);
+                fileview.displayFile(new File("/mnt/sdcard/test.doc"));
             }
         });
     }
