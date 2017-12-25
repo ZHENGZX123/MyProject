@@ -9,4 +9,5 @@ public class ResultMessage {
     public static final int SELECT_PHOTO = 8888;
     public static final int SAOMAWANG = 7777;
     public static final int QRSCAN = 6666;
+    public static final int RECORD_REQUEST_CODE = 5555;
 }

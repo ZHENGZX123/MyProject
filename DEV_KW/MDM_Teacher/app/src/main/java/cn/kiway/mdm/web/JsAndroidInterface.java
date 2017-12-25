@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import cn.kiway.mdm.activity.MainActivity;
+import cn.kiway.mdm.activity.VideoActivity;
 import cn.kiway.mdm.activity.ViewPhotosActivity;
 import cn.kiway.mdm.scoket.ScreenActivity;
 import cn.kiway.mdm.scoket.db.DbUtils;
@@ -297,14 +298,24 @@ public class JsAndroidInterface {
     //---------------------------------2.0版本新增的接口--------------------------------------
 
     @JavascriptInterface
+    public void playVideo(String path) {
+        Log.d("test", "playVideo is called");
+        //1.查找本地有没有该视频文件
+        //2.如果没有边下载边播放
+
+        this.activity.startActivity(new Intent(this.activity, VideoActivity.class));
+    }
+
+    @JavascriptInterface
     public void shangke() {
         Log.d("test", "shangke");
         //1.横屏
         setScreenOrientation("0");
         //2.显示右侧工具栏
         this.activity.showTools1();
+        this.activity.showTools2();
         //3.开始录制屏幕
-
+        this.activity.startRecord();
         //4.开始进行上课统计
     }
 
@@ -312,6 +323,7 @@ public class JsAndroidInterface {
     public void xiake() {
         Log.d("test", "xiake");
         //1.上传课程的视频
+        this.activity.stopRecord();
     }
 
     @JavascriptInterface
@@ -321,7 +333,6 @@ public class JsAndroidInterface {
         //2.如果有，直接打开
         //3.如果没有，下载再打开
         this.activity.openFileByX5(path);
-        this.activity.showTools2();
     }
 
     @JavascriptInterface

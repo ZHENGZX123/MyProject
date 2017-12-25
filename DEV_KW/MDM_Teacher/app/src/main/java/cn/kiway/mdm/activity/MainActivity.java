@@ -3,16 +3,22 @@ package cn.kiway.mdm.activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -44,6 +50,7 @@ import java.util.List;
 
 import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.scoket.utils.Logger;
+import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.FileUtils;
 import cn.kiway.mdm.util.HttpDownload;
@@ -59,6 +66,7 @@ import top.zibin.luban.OnCompressListener;
 import static cn.kiway.mdm.WXApplication.uploadUrl;
 import static cn.kiway.mdm.WXApplication.url;
 import static cn.kiway.mdm.util.ResultMessage.QRSCAN;
+import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
 import static cn.kiway.mdm.util.Utils.getCurrentVersion;
 import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
 import static cn.kiway.mdm.web.JsAndroidInterface.accessToken;
@@ -71,6 +79,7 @@ import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
 
 
 public class MainActivity extends BaseActivity {
+
     private static final String currentPackageVersion = "0.2.0";
 
     private boolean isSuccess = false;
@@ -99,6 +108,14 @@ public class MainActivity extends BaseActivity {
         initData();
         load();
         checkNewVersion();
+        initRecord();
+    }
+
+    private void initRecord() {
+        projectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
+
+        Intent intent = new Intent(this, RecordService.class);
+        bindService(intent, connection, BIND_AUTO_CREATE);
     }
 
     private void getAppData() {
@@ -177,13 +194,12 @@ public class MainActivity extends BaseActivity {
                 readerView = null;
                 fileview.removeAllViews();
                 fileview.setVisibility(View.GONE);
-
-                hideTools2();
                 return true;
             }
             if (url.endsWith("inClass")) {
                 //2.在上课页面点返回
                 hideTools1();
+                hideTools2();
                 jsInterface.setScreenOrientation("1");
             }
             if (wv.canGoBack()) {
@@ -202,8 +218,10 @@ public class MainActivity extends BaseActivity {
             time = t;
             toast("再按一次退出");
         } else {
-            //close
+            //1.closeServer
             jsInterface.closeServer();
+            //2.关闭录制
+            stopRecord();
             finish();
         }
     }
@@ -240,42 +258,42 @@ public class MainActivity extends BaseActivity {
         } else if (requestCode == REQUEST_ORIGINAL) {
             if (resultCode != RESULT_OK)
                 return;
-            Luban.with(this)
-                    .load(picPath)                                  // 传入要压缩的图片列表
-                    .ignoreBy(100)                                  // 忽略不压缩图片的大小
-                    .setTargetDir(getPath())                        // 设置压缩后文件存储位置
-                    .setCompressListener(new OnCompressListener() { //设置回调
+            Luban.with(this).load(picPath).ignoreBy(100).setTargetDir(getPath()).setCompressListener(new OnCompressListener() {
+                @Override
+                public void onStart() {
+                    runOnUiThread(new Runnable() {
                         @Override
-                        public void onStart() {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (pd == null)
-                                        pd = new ProgressDialog(MainActivity.this, ProgressDialog.THEME_HOLO_LIGHT);
-                                    pd.show();
-                                    pd.setMessage(getString(R.string.yasuo));
-                                }
-                            });
+                        public void run() {
+                            if (pd == null)
+                                pd = new ProgressDialog(MainActivity.this, ProgressDialog.THEME_HOLO_LIGHT);
+                            pd.show();
+                            pd.setMessage(getString(R.string.yasuo));
                         }
+                    });
+                }
 
-                        @Override
-                        public void onSuccess(File file) {
-                            uploadFile(file.getAbsolutePath());
-                        }
+                @Override
+                public void onSuccess(File file) {
+                    uploadFile(file.getAbsolutePath());
+                }
 
+                @Override
+                public void onError(Throwable e) {
+                    runOnUiThread(new Runnable() {
                         @Override
-                        public void onError(Throwable e) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (pd != null)
-                                        pd.dismiss();
-                                    Toast.makeText(MainActivity.this, getString(R.string.yasuoshibai), Toast
-                                            .LENGTH_SHORT).show();
-                                }
-                            });
+                        public void run() {
+                            if (pd != null)
+                                pd.dismiss();
+                            Toast.makeText(MainActivity.this, getString(R.string.yasuoshibai), Toast
+                                    .LENGTH_SHORT).show();
                         }
-                    }).launch();    //启动压缩
+                    });
+                }
+            }).launch();    //启动压缩
+        } else if (requestCode == RECORD_REQUEST_CODE && resultCode == RESULT_OK) {
+            mediaProjection = projectionManager.getMediaProjection(resultCode, data);
+            recordService.setMediaProject(mediaProjection);
+            recordService.startRecord();
         }
     }
 
@@ -696,6 +714,10 @@ public class MainActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    public void tuiping(View view) {
+        //先接入声网
+    }
+
     public void huabi(View view) {
         //等彭毅
     }
@@ -713,7 +735,8 @@ public class MainActivity extends BaseActivity {
     }
 
     public void shezhi(View view) {
-        //设置？？？不知道是什么
+        //设置？？？不知道是什么。测试用
+        //jsInterface.playVideo("www.baidu.com");
     }
 
     //-------------------------tools2----------------------
@@ -740,4 +763,39 @@ public class MainActivity extends BaseActivity {
     public void gongju(View view) {
         //工具？？？
     }
+
+    //-------------------------------录屏相关-----------------------------
+    private MediaProjectionManager projectionManager;
+    private MediaProjection mediaProjection;
+    private RecordService recordService;
+
+
+    public void startRecord() {
+        Intent captureIntent = projectionManager.createScreenCaptureIntent();
+        startActivityForResult(captureIntent, RECORD_REQUEST_CODE);
+    }
+
+    public void stopRecord() {
+        if (recordService.isRunning()) {
+            recordService.stopRecord();
+        }
+        //上传视频文件。。。
+        //上传课程记录。。。
+    }
+
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            RecordService.RecordBinder binder = (RecordService.RecordBinder) service;
+            recordService = binder.getRecordService();
+            recordService.setConfig(metrics.widthPixels, metrics.heightPixels, metrics.densityDpi);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+        }
+    };
+
 }

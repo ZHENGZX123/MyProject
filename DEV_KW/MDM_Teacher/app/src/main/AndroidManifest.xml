@@ -5,9 +5,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -43,11 +43,17 @@
             android:name="cn.kiway.mdm.activity.ViewPhotosActivity"
             android:screenOrientation="portrait"></activity>
 
+        <activity
+            android:name="cn.kiway.mdm.activity.VideoActivity"
+            android:screenOrientation="landscape"></activity>
+
         <receiver android:name="cn.kiway.mdm.broadcast.NetChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+
+        <service android:name="cn.kiway.mdm.service.RecordService" />
     </application>
 
 </manifest>
