@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
@@ -62,13 +63,9 @@ public class JsAndroidInterface {
             closeServer();
             startServer();
             Logger.log("--------------Start----------");
-            setScreenOrientation("0");
-            showTools();
         } else if (state.equals("0")) {
             closeServer();
             Logger.log("--------------Stop-----------");
-            setScreenOrientation("1");
-            hideTools();
         }
     }
 
@@ -299,19 +296,37 @@ public class JsAndroidInterface {
     //---------------------------------2.0版本新增的接口--------------------------------------
 
     @JavascriptInterface
+    public void shangke() {
+        setScreenOrientation("0");
+        showTools();
+    }
+
+    @JavascriptInterface
+    public void xiake() {
+        setScreenOrientation("1");
+        hideTools();
+    }
+
+    @JavascriptInterface
     public void showTools() {//显示上课悬浮按钮
+        Log.d("test", "showTools");
         this.activity.showTools();
     }
 
     @JavascriptInterface
     public void hideTools() {//隐藏上课悬浮按钮
+        Log.d("test", "hideTools");
         this.activity.hideTools();
     }
 
     @JavascriptInterface
     public void openFileByX5(String path) {
+        Log.d("test", "openFileByX5 is called");
         //1.检查本地有没有对应文件
         //2.如果有，直接打开
         //3.如果没有，下载再打开
+
+
+        this.activity.openFileByX5(path);
     }
 }
