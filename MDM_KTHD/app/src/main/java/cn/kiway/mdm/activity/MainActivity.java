@@ -34,6 +34,9 @@ import cn.kiway.mdm.hprose.socket.Logger;
 import cn.kiway.mdm.modle.IpModel;
 import cn.kiway.mdm.utils.NetworkUtil;
 import cn.kiway.mdm.utils.Utils;
+import io.agora.openlive.model.ConstantApp;
+import io.agora.openlive.ui.LiveRoomActivity;
+import io.agora.rtc.Constants;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
 import static cn.kiway.mdm.hprose.socket.MessageType.SUREREPONSE;
@@ -63,7 +66,8 @@ public class MainActivity extends BaseActivity {
     }
 
     public void onInfo(View view) {//个人信息
-        startActivity(new Intent(this, UserInfoActivity.class));
+//        startActivity(new Intent(this, UserInfoActivity.class));
+        startPlayer();
     }
 
     public void onFile(View view) {//查看文件
@@ -357,4 +361,16 @@ public class MainActivity extends BaseActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
+    //--------------------------------------------------2.0新增--------------------------
+
+    public void startPlayer() {
+        //1.开始播放教师推屏
+        Intent i = new Intent(MainActivity.this, LiveRoomActivity.class);
+        i.putExtra(ConstantApp.ACTION_KEY_CROLE, Constants.CLIENT_ROLE_AUDIENCE);
+        i.putExtra(ConstantApp.ACTION_KEY_ROOM_NAME, "kiway");
+        startActivity(i);
+    }
+
+
 }

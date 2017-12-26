@@ -74,8 +74,8 @@ public class UdpConnectDialog extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_list);
         fullWindowCenter();
-        listView = findViewById(R.id.listView);
-        progressBar = findViewById(R.id.progressBar);
+        listView = (ListView) findViewById(R.id.listView);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         listView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         adapter = new IpAdapter(context);
@@ -121,7 +121,7 @@ public class UdpConnectDialog extends Dialog {
             if (convertView == null) {
                 holder = new ipHolder();
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_ip, null);
-                holder.name = convertView.findViewById(R.id.name);
+                holder.name = (TextView) convertView.findViewById(R.id.name);
                 convertView.setTag(holder);
             } else {
                 holder = (ipHolder) convertView.getTag();

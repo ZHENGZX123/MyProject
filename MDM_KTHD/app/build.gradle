@@ -11,8 +11,8 @@ android {
         }
     }
     useLibrary 'org.apache.http.legacy'
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "cn.kiway.session"
         minSdkVersion 16
@@ -26,15 +26,26 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'com.android.support') {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion '25.3.0'
+            }
+        }
+    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:26.+'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile files('libs/hprose_for_java_7.jar')
     compile 'com.github.jetradarmobile:android-snowfall:1.1.6'
     compile 'org.xutils:xutils:3.5.0'
     compile project(':mdmaidl')
     compile files('libs/android-async-http-1.4.5.jar')
+    compile project(':AgoraPlayer')
 }
