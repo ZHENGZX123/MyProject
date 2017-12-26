@@ -37,7 +37,6 @@ import cn.kiway.mdm.hprose.socket.Logger;
 public class Utils {
 
 
-
     public static void openFile(Context context, String filePath) {
         Log.d("test", "openFile filepath = " + filePath);
         if (TextUtils.isEmpty(filePath)) {
@@ -57,14 +56,16 @@ public class Utils {
             typeOpenFile = "application/pdf";
         else if (filetype.equals("ppt") || filetype.equals("pptx"))
             typeOpenFile = "application/vnd.ms-powerpoint";
-        else if (filetype.equals("doc") || filetype.equals("docx") || filetype.equals("docm") || filetype.equals("dotx") || filetype
+        else if (filetype.equals("doc") || filetype.equals("docx") || filetype.equals("docm") || filetype.equals
+                ("dotx") || filetype
                 .equals("dotm"))
             typeOpenFile = "application/msword";
         else if (filetype.equals("xlsx") || filetype.equals("xlsm") || filetype.equals("xltx"))
             typeOpenFile = "application/vnd.ms-excel";
         else if (filetype.equals("mp3") || filetype.equals("amr") || filetype.equals("ogg") || filetype.equals("wav")) {
             typeOpenFile = "audio/*";
-        } else if (filetype.equals("mp4") || filetype.equals("3gp") || filetype.equals("avi") || filetype.equals("rmvb") || filetype
+        } else if (filetype.equals("mp4") || filetype.equals("3gp") || filetype.equals("avi") || filetype.equals
+                ("rmvb") || filetype
                 .equals("mpg") | filetype.equals("rm") || filetype.equals("flv")) {
             typeOpenFile = "video/*";
         } else if (filetype.equals("swf")) {
@@ -94,11 +95,12 @@ public class Utils {
                 Toast.makeText(context, "手机没有安装相关的办公软件，请下载安装", Toast.LENGTH_SHORT).show();
         }
     }
+
     public static String getIMEI(Context c) {
-        String imei = FileUtils.readSDCardFile("/mnt/sdcard/kiway_mdm/imei.txt", c);
+        String imei = FileUtils.readSDCardFile("/mnt/sdcard/kiway_mdm_student/imei.txt", c);
         if (TextUtils.isEmpty(imei)) {
-            TelephonyManager telephonyManager = (TelephonyManager) c.getSystemService(c.TELEPHONY_SERVICE);
-             imei = telephonyManager.getDeviceId();
+            TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
+            imei = tm.getDeviceId();
             if (TextUtils.isEmpty(imei)) {
                 Log.d("test", "这个IMEI是生成的");
                 imei = genIMEI();
@@ -187,6 +189,7 @@ public class Utils {
             return true;
         return false;
     }
+
     public static String getIPAddress(Context context) {
         NetworkInfo info = ((ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
@@ -194,9 +197,11 @@ public class Utils {
             if (info.getType() == ConnectivityManager.TYPE_MOBILE) {//当前使用2G/3G/4G网络
                 try {
                     //Enumeration<NetworkInterface> en=NetworkInterface.getNetworkInterfaces();
-                    for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                    for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en
+                            .hasMoreElements(); ) {
                         NetworkInterface intf = en.nextElement();
-                        for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                        for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr
+                                .hasMoreElements(); ) {
                             InetAddress inetAddress = enumIpAddr.nextElement();
                             if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
                                 return inetAddress.getHostAddress();
@@ -231,6 +236,7 @@ public class Utils {
                 ((ip >> 16) & 0xFF) + "." +
                 (ip >> 24 & 0xFF);
     }
+
     public static String getDateField(long time, int filed) {
         String s = null;
         Date date = new Date(time);
@@ -294,6 +300,7 @@ public class Utils {
         }
         return s;
     }
+
     public static String getCurrentVersion(Context c) {
         String versionName = "1.0.0";
         try {

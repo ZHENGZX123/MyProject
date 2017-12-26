@@ -65,11 +65,12 @@ public class App extends KiwayApplication {
         if (isPublicNetwork) {
             isAttenClass = true;
             showMessage("上课连接完成");
+            MainActivity.instantce.UdpClose();
             mHandler.sendEmptyMessage(MSG_HOME_DIS);
             mHandler.removeMessages(MSG_XIAKE);
             mHandler.sendEmptyMessageDelayed(MSG_XIAKE, 60 * 1000 * 45);
             mHandler.removeMessages(MSG_TIME_OUT);
-            MainActivity.instantce.UdpClose();
+
         } else {
             teacherIp = data.optString("ip");
             if (data.optString("platform").equals("IOS"))
@@ -297,7 +298,7 @@ public class App extends KiwayApplication {
                             ((NotifyMsgActivity) App.instance.currentActivity).refreshUI();
                         }
                     }
-                } else if (command.equals("sgin")) {
+                } else if (command.equals("sign")) {
                     getSharedPreferences("kiway", 0).edit().putString("Classtoken", data.optString("token")).commit();
                     if (App.instance.currentActivity != null)
                         ((BaseActivity) App.instance.currentActivity).Session(SIGN);
