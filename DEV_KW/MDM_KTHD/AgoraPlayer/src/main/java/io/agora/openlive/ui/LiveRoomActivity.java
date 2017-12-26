@@ -1,10 +1,8 @@
 package io.agora.openlive.ui;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -98,13 +96,12 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
     }
 
     private void doConfigEngine(int cRole) {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        int prefIndex = pref.getInt(ConstantApp.PrefManager.PREF_PROPERTY_PROFILE_IDX, ConstantApp.DEFAULT_PROFILE_IDX);
-        if (prefIndex > ConstantApp.VIDEO_PROFILES.length - 1) {
-            prefIndex = ConstantApp.DEFAULT_PROFILE_IDX;
-        }
-        int vProfile = ConstantApp.VIDEO_PROFILES[prefIndex];
-
+//        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+//        int prefIndex = pref.getInt(ConstantApp.PrefManager.PREF_PROPERTY_PROFILE_IDX, ConstantApp.DEFAULT_PROFILE_IDX);
+//        if (prefIndex > ConstantApp.VIDEO_PROFILES.length - 1) {
+//            prefIndex = ConstantApp.DEFAULT_PROFILE_IDX;
+//        }
+        int vProfile = ConstantApp.VIDEO_PROFILES[5];
         worker().configEngine(cRole, vProfile);
     }
 
