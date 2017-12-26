@@ -249,14 +249,16 @@ public class MainActivity extends HelloAgoraScreenSharingActivity {
                 return;
             }
             setFilePath = filePath;
-            uploadFile(filePath);
+            uploadFile(filePath, false);
         } else if (requestCode == requsetFile2) {
             if (data == null)
                 return;
             List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
             String filePath = list.get(0);
             setFilePath = filePath;
-            uploadFile(filePath);
+            //1.上传
+            uploadFile(filePath, true);
+
         } else if (requestCode == REQUEST_ORIGINAL) {
             if (resultCode != RESULT_OK)
                 return;
@@ -308,7 +310,7 @@ public class MainActivity extends HelloAgoraScreenSharingActivity {
         return path;
     }
 
-    public void uploadFile(String filePath) {
+    public void uploadFile(String filePath, boolean copy) {
         File file = new File(filePath);
         pd.show();
         pd.setMessage(getString(R.string.upload));
@@ -335,10 +337,12 @@ public class MainActivity extends HelloAgoraScreenSharingActivity {
                             }
                             String url = obj.optJSONObject("data").optString("url");
                             Log.d("test", "obj = " + obj.toString());
-                            //1.callback给前端
                             wv.loadUrl(accpterFilePath.replace("fileName", filePath.split("/")[filePath.split("/")
                                     .length - 1]).replace("filePath", url).replace("fileSize", file.length() + ""));
-                            //2.把这个文件拷贝到缓存目录
+                            //2.拷贝到缓存
+                            if (copy) {
+
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -716,6 +720,10 @@ public class MainActivity extends HelloAgoraScreenSharingActivity {
         startActivity(intent);
     }
 
+    public void huabi(View view) {
+        //等彭毅
+    }
+
     private boolean tuiping = false;
 
     public void tuiping(View view) {
@@ -732,10 +740,6 @@ public class MainActivity extends HelloAgoraScreenSharingActivity {
             mRtcEngine.joinChannel(null, "kiway", "", 0);
         }
         tuiping = !tuiping;
-    }
-
-    public void huabi(View view) {
-        //等彭毅
     }
 
     public void chaping(View view) {
@@ -769,15 +773,11 @@ public class MainActivity extends HelloAgoraScreenSharingActivity {
     }
 
     public void suijichouda(View view) {
-        //随机抽答，给全班发送抽答命令。
+        //随机抽答，随机找几个发命令。
     }
 
     public void ceping(View view) {
         //测评，给全班发测评命令
-    }
-
-    public void gongju(View view) {
-        //工具？？？
     }
 
     //-------------------------------录屏相关-----------------------------

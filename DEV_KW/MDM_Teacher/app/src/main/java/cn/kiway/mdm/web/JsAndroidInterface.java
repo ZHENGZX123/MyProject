@@ -294,7 +294,6 @@ public class JsAndroidInterface {
         Log.d("test", "playVideo is called");
         //1.查找本地有没有该视频文件
         //2.如果没有边下载边播放
-
         this.activity.startActivity(new Intent(this.activity, VideoActivity.class));
     }
 
