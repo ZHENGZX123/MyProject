@@ -17,11 +17,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
-
 import io.agora.common.Constant;
 import io.agora.openlive.AGApplication;
 import io.agora.openlive.BuildConfig;
@@ -32,7 +27,6 @@ import io.agora.openlive.model.WorkerThread;
 import io.agora.rtc.RtcEngine;
 
 public abstract class BaseActivity extends Activity {
-    private final static Logger log = LoggerFactory.getLogger(BaseActivity.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,14 +103,12 @@ public abstract class BaseActivity extends Activity {
                 public void run() {
                     InputMethodManager mgr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                     boolean result = mgr.showSoftInput(v, InputMethodManager.SHOW_FORCED);
-                    log.debug("openIME " + focus + " " + result);
                 }
             });
         }
     }
 
     public boolean checkSelfPermission(String permission, int requestCode) {
-        log.debug("checkSelfPermission " + permission + " " + requestCode);
         if (ContextCompat.checkSelfPermission(this,
                 permission)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -161,7 +153,6 @@ public abstract class BaseActivity extends Activity {
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[], @NonNull int[] grantResults) {
-        log.debug("onRequestPermissionsResult " + requestCode + " " + Arrays.toString(permissions) + " " + Arrays.toString(grantResults));
         switch (requestCode) {
             case ConstantApp.PERMISSION_REQ_ID_RECORD_AUDIO: {
                 if (grantResults.length > 0
