@@ -13,9 +13,6 @@ import android.view.ViewParent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,7 +22,6 @@ import io.agora.openlive.model.ConstantApp;
 import io.agora.openlive.model.VideoStatusData;
 
 public class GridVideoViewContainerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private final static Logger log = LoggerFactory.getLogger(GridVideoViewContainerAdapter.class);
 
     protected final LayoutInflater mInflater;
     protected final Context mContext;
@@ -91,7 +87,6 @@ public class GridVideoViewContainerAdapter extends RecyclerView.Adapter<Recycler
             VideoStatusData status = it.next();
 
             if (uids.get(status.mUid) == null) {
-                log.warn("after_changed remove not exited members " + (status.mUid & 0xFFFFFFFFL) + " " + status.mView);
                 it.remove();
             }
         }
@@ -136,8 +131,6 @@ public class GridVideoViewContainerAdapter extends RecyclerView.Adapter<Recycler
         VideoUserStatusHolder myHolder = ((VideoUserStatusHolder) holder);
 
         final VideoStatusData user = mUsers.get(position);
-
-        log.debug("onBindViewHolder " + position + " " + user + " " + myHolder + " " + myHolder.itemView);
 
         FrameLayout holderView = (FrameLayout) myHolder.itemView;
 

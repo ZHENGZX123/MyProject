@@ -12,9 +12,6 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -23,7 +20,6 @@ import io.agora.openlive.model.VideoStatusData;
 
 public abstract class VideoViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final static Logger log = LoggerFactory.getLogger(VideoViewAdapter.class);
 
     protected final LayoutInflater mInflater;
     protected final Context mContext;
@@ -84,8 +80,6 @@ public abstract class VideoViewAdapter extends RecyclerView.Adapter<RecyclerView
         final VideoStatusData user = mUsers.get(position);
 
         Log.d("VideoViewAdapter", "onBindViewHolder " + position + " " + user + " " + myHolder + " " + myHolder.itemView);
-
-        log.debug("onBindViewHolder " + position + " " + user + " " + myHolder + " " + myHolder.itemView);
 
         FrameLayout holderView = (FrameLayout) myHolder.itemView;
 
