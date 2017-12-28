@@ -94,20 +94,33 @@ public class CourseListActivity extends BaseActivity {
                 holder.title1 = (TextView) rowView.findViewById(R.id.title1);
                 holder.title2 = (TextView) rowView.findViewById(R.id.title2);
                 holder.yishangke = (ImageView) rowView.findViewById(R.id.yishangke);
+                holder.clock = (ImageView) rowView.findViewById(R.id.clock);
+                holder.ball = (ImageView) rowView.findViewById(R.id.ball);
+                holder.aline = (TextView) rowView.findViewById(R.id.aline);
 
                 rowView.setTag(holder);
             } else {
                 holder = (ViewHolder) rowView.getTag();
             }
+            if (position == 0) {
+                holder.clock.setVisibility(View.VISIBLE);
+                holder.aline.setVisibility(View.VISIBLE);
+            } else {
+                holder.clock.setVisibility(View.GONE);
+                holder.aline.setVisibility(View.GONE);
+            }
+
             final Course s = courses.get(position);
             if (s.status == 0) {
                 holder.title1.setTextColor(Color.parseColor("#6699ff"));
                 holder.title2.setTextColor(Color.parseColor("#6699ff"));
                 holder.yishangke.setVisibility(View.GONE);
+                holder.ball.setImageResource(R.drawable.ball2);
             } else {
                 holder.title1.setTextColor(Color.parseColor("#cccccc"));
                 holder.title2.setTextColor(Color.parseColor("#cccccc"));
                 holder.yishangke.setVisibility(View.VISIBLE);
+                holder.ball.setImageResource(R.drawable.ball1);
             }
             holder.title1.setText(s.title1);
             holder.title2.setText(s.title2);
@@ -118,6 +131,10 @@ public class CourseListActivity extends BaseActivity {
             public TextView title1;
             public TextView title2;
             public ImageView yishangke;
+            public ImageView clock;
+            public TextView aline;
+            public ImageView ball;
+
         }
 
         @Override
