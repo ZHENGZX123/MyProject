@@ -18,6 +18,7 @@ public class BaseActivity extends Activity {
     public TextView teacherName;
     public ImageView teacherIcon;
     public TextView titleName;
+    public ImageButton videoBtn;
 
     public ImageButton gj;
     public ImageButton dm;
@@ -31,6 +32,7 @@ public class BaseActivity extends Activity {
         titleName = (TextView) findViewById(R.id.titleName);
         teacherName = (TextView) findViewById(R.id.teacherName);
         teacherIcon = (ImageView) findViewById(R.id.teacherIcon);
+        videoBtn = (ImageButton) findViewById(R.id.video);
 
         gj = (ImageButton) findViewById(R.id.gj);
         dm = (ImageButton) findViewById(R.id.dm);
@@ -65,9 +67,10 @@ public class BaseActivity extends Activity {
         });
     }
 
+    //----------------------------------工具栏点击事件------------------------------
+
     private boolean expandTool = true;
 
-    //工具栏点击事件：放base合适吗
     public void gj(View view) {
         expandTool = !expandTool;
         if (expandTool) {
@@ -104,5 +107,6 @@ public class BaseActivity extends Activity {
     public void rk(View view) {
 
     }
+
 
 }

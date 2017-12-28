@@ -17,10 +17,16 @@ public class Course2Activity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course2);
 
-
+        initView();
     }
 
-    public void testVideo(View view) {
+    @Override
+    public void initView() {
+        super.initView();
+        videoBtn.setVisibility(View.VISIBLE);
+    }
+
+    public void clickVideo(View view) {
         startActivity(new Intent(this, VideoActivity.class));
     }
 }

@@ -34,5 +34,17 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
+
+    <ImageButton
+        android:id="@+id/video"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/video"
+        android:onClick="clickVideo"
+        android:visibility="gone" />
+
 </RelativeLayout>
 
