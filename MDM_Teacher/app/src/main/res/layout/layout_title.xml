@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/titleRL"
     android:layout_width="match_parent"
-    android:layout_height="55dp"
+    android:layout_height="50dp"
     android:background="#6699ff">
 
     <ImageView
@@ -37,8 +37,8 @@
 
     <ImageButton
         android:id="@+id/video"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
