@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
+    android:background="#001100"
     android:orientation="vertical">
 
     <include layout="@layout/layout_title"></include>
@@ -10,6 +10,11 @@
     <ListView
         android:id="@+id/courseLV"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        android:layout_marginTop="10dp"
+        android:divider="#001100"
+        android:dividerHeight="0dp"></ListView>
 
 </LinearLayout>

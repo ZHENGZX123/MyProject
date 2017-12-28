@@ -1,6 +1,7 @@
 package cn.kiway.mdm.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,10 +61,12 @@ public class CourseListActivity extends BaseActivity {
 
     private void initData() {
         Course c1 = new Course();
-        c1.title = "正数和负数";
+        c1.title1 = "1.1 正数和负数、数轴";
+        c1.title2 = "知识点1：用正数、负数表示具有相反意义的事\n知识点2：数轴的概念及画法";
         c1.status = 0;
         Course c2 = new Course();
-        c2.title = "绝对值";
+        c2.title1 = "1.2 绝对值";
+        c2.title2 = "知识点1：绝对值的意义";
         c2.status = 2;
 
         courses.add(c1);
@@ -88,21 +91,29 @@ public class CourseListActivity extends BaseActivity {
                 rowView = inflater.inflate(R.layout.item_course, null);
                 holder = new ViewHolder();
 
-                holder.title = (TextView) rowView.findViewById(R.id.title);
+                holder.title1 = (TextView) rowView.findViewById(R.id.title1);
+                holder.title2 = (TextView) rowView.findViewById(R.id.title2);
 
                 rowView.setTag(holder);
             } else {
                 holder = (ViewHolder) rowView.getTag();
             }
-
             final Course s = courses.get(position);
-            holder.title.setText(s.title);
-
+            if (s.status == 0) {
+                holder.title1.setTextColor(Color.parseColor("#6699ff"));
+                holder.title2.setTextColor(Color.parseColor("#6699ff"));
+            } else {
+                holder.title1.setTextColor(Color.parseColor("#cccccc"));
+                holder.title2.setTextColor(Color.parseColor("#cccccc"));
+            }
+            holder.title1.setText(s.title1);
+            holder.title2.setText(s.title2);
             return rowView;
         }
 
         public class ViewHolder {
-            public TextView title;
+            public TextView title1;
+            public TextView title2;
         }
 
         @Override
