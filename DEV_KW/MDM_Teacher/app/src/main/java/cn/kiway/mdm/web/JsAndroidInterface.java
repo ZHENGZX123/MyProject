@@ -17,8 +17,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 
+import cn.kiway.mdm.activity.HomeActivity;
 import cn.kiway.mdm.activity.MainActivity;
-import cn.kiway.mdm.activity.VideoActivity;
 import cn.kiway.mdm.activity.ViewPhotosActivity;
 import cn.kiway.mdm.scoket.ScreenActivity;
 import cn.kiway.mdm.scoket.db.DbUtils;
@@ -290,42 +290,12 @@ public class JsAndroidInterface {
     //---------------------------------2.0版本新增的接口--------------------------------------
 
     @JavascriptInterface
-    public void playVideo(String path) {
-        Log.d("test", "playVideo is called");
-        //1.查找本地有没有该视频文件
-        //2.如果没有边下载边播放
-        this.activity.startActivity(new Intent(this.activity, VideoActivity.class));
-    }
-
-    @JavascriptInterface
-    public void shangke() {
-        Log.d("test", "shangke");
+    public void shangke(String info) {
+        Log.d("test", "shangke info = " + info);
         this.activity.toast("上课");
-        //1.横屏
-        setScreenOrientation("0");
-        //2.显示右侧工具栏
-        this.activity.showTools1();
-        this.activity.showTools2();
-        //3.开始录制屏幕
-        this.activity.startRecord();
-        //4.开始进行上课统计
-    }
-
-    @JavascriptInterface
-    public void xiake() {
-        this.activity.toast("下课");
-        Log.d("test", "xiake");
-        //1.上传课程的视频
-        this.activity.stopRecord();
-    }
-
-    @JavascriptInterface
-    public void openFileByX5(String path) {
-        Log.d("test", "openFileByX5 is called , path = " + path);
-        //1.检查本地有没有对应文件
-        //2.如果有，直接打开
-        //3.如果没有，下载再打开
-        this.activity.openFileByX5(path);
+        //1.发“上课”推送命令
+        //2.跳页
+        this.activity.startActivity(new Intent(this.activity, HomeActivity.class));
     }
 
     @JavascriptInterface

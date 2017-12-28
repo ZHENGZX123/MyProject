@@ -209,5 +209,18 @@ public class Utils {
         }
     }
 
+    public static String getFileType(String path) {
+        String str = "";
+
+        if (TextUtils.isEmpty(path)) {
+            return str;
+        }
+        int i = path.lastIndexOf('.');
+        if (i <= -1) {
+            return str;
+        }
+        str = path.substring(i + 1);
+        return str;
+    }
 
 }
