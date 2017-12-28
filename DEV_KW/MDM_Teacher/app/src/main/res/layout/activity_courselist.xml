@@ -15,6 +15,7 @@
         android:layout_below="@+id/titleRL"
         android:layout_marginLeft="100dp"
         android:layout_marginRight="100dp"
+        android:layout_marginTop="10dp"
         android:divider="#001100"
         android:dividerHeight="0dp"></ListView>
 

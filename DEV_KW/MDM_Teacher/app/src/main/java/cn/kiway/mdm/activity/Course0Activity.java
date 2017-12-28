@@ -40,7 +40,7 @@ import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile;
  */
 
 //未上课
-public class Course0Activity extends HelloAgoraScreenSharingActivity {
+public class Course0Activity extends BaseActivity {
 
     private FrameLayout x5FileLayout;
     private TbsReaderView readerView;
@@ -51,8 +51,16 @@ public class Course0Activity extends HelloAgoraScreenSharingActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course0);
 
+        initView();
         x5FileLayout = (FrameLayout) findViewById(R.id.x5FileLayout);
         initRecord();
+    }
+
+    @Override
+    public void initView() {
+        super.initView();
+
+        titleName.setText("1.1 正数和负数、数轴");
     }
 
     private void initRecord() {
@@ -136,7 +144,7 @@ public class Course0Activity extends HelloAgoraScreenSharingActivity {
         //等彭毅
     }
 
-    private boolean tuiping = false;
+   /* private boolean tuiping = false;
 
     public void tuiping(View view) {
         //先接入声网
@@ -151,7 +159,7 @@ public class Course0Activity extends HelloAgoraScreenSharingActivity {
             mRtcEngine.joinChannel(null, "kiway", "", 0);
         }
         tuiping = !tuiping;
-    }
+    }*/
 
     public void chaping(View view) {
         //查看学生屏幕，需要获取学生列表。

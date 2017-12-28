@@ -96,7 +96,8 @@ public class CourseListActivity extends BaseActivity {
                 holder.yishangke = (ImageView) rowView.findViewById(R.id.yishangke);
                 holder.clock = (ImageView) rowView.findViewById(R.id.clock);
                 holder.ball = (ImageView) rowView.findViewById(R.id.ball);
-                holder.aline = (TextView) rowView.findViewById(R.id.aline);
+                holder.line0 = (TextView) rowView.findViewById(R.id.line0);
+                holder.line2 = (TextView) rowView.findViewById(R.id.line2);
 
                 rowView.setTag(holder);
             } else {
@@ -104,10 +105,10 @@ public class CourseListActivity extends BaseActivity {
             }
             if (position == 0) {
                 holder.clock.setVisibility(View.VISIBLE);
-                holder.aline.setVisibility(View.VISIBLE);
+                holder.line0.setVisibility(View.VISIBLE);
             } else {
                 holder.clock.setVisibility(View.GONE);
-                holder.aline.setVisibility(View.GONE);
+                holder.line0.setVisibility(View.GONE);
             }
 
             final Course s = courses.get(position);
@@ -116,11 +117,13 @@ public class CourseListActivity extends BaseActivity {
                 holder.title2.setTextColor(Color.parseColor("#6699ff"));
                 holder.yishangke.setVisibility(View.GONE);
                 holder.ball.setImageResource(R.drawable.ball2);
+                holder.line2.setBackgroundColor(Color.parseColor("#6699ff"));
             } else {
                 holder.title1.setTextColor(Color.parseColor("#cccccc"));
                 holder.title2.setTextColor(Color.parseColor("#cccccc"));
                 holder.yishangke.setVisibility(View.VISIBLE);
                 holder.ball.setImageResource(R.drawable.ball1);
+                holder.line2.setBackgroundColor(Color.parseColor("#cccccc"));
             }
             holder.title1.setText(s.title1);
             holder.title2.setText(s.title2);
@@ -132,7 +135,8 @@ public class CourseListActivity extends BaseActivity {
             public TextView title2;
             public ImageView yishangke;
             public ImageView clock;
-            public TextView aline;
+            public TextView line0;
+            public TextView line2;
             public ImageView ball;
 
         }
