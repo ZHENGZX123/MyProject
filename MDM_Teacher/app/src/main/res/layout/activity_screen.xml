@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
         android:onClick="OffSrceen"
-        android:padding="@dimen/_10dp"
+        android:padding="10dp"
         android:text="关闭屏幕共享"
         android:layout_alignParentBottom="true"
         android:textColor="@color/_ffffff"/>

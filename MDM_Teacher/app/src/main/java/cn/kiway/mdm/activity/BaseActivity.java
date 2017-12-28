@@ -1,7 +1,6 @@
 package cn.kiway.mdm.activity;
 
 import android.app.Activity;
-import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -11,7 +10,6 @@ import android.widget.Toast;
 public class BaseActivity extends Activity {
 
     public void toast(final String txt) {
-        Log.d("test", "toast is called");
         runOnUiThread(new Runnable() {
 
             @Override

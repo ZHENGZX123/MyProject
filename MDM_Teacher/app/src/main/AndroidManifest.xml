@@ -34,18 +34,16 @@
         </activity>
         <activity
             android:name="cn.kiway.mdm.activity.NoNetActivity"
-            android:screenOrientation="portrait"></activity>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name="cn.kiway.mdm.scoket.ScreenActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="cn.kiway.mdm.activity.ViewPhotosActivity"
-            android:screenOrientation="portrait"></activity>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name="cn.kiway.mdm.activity.VideoActivity"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
 
         <receiver android:name="cn.kiway.mdm.broadcast.NetChangeReceiver">
             <intent-filter>
@@ -54,6 +52,22 @@
         </receiver>
 
         <service android:name="cn.kiway.mdm.service.RecordService" />
+
+        <activity
+            android:name="cn.kiway.mdm.activity.HomeActivity"
+            android:screenOrientation="landscape"></activity>
+
+        <activity
+            android:name="cn.kiway.mdm.activity.CourseListActivity"
+            android:screenOrientation="landscape"></activity>
+
+        <activity
+            android:name="cn.kiway.mdm.activity.Course0Activity"
+            android:screenOrientation="landscape"></activity>
+
+        <activity
+            android:name="cn.kiway.mdm.activity.Course2Activity"
+            android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>

@@ -95,7 +95,7 @@ public class MainActivity extends HelloAgoraScreenSharingActivity {
     private JsAndroidInterface jsInterface;
     private ScrollView tools1;
     private HorizontalScrollView tools2;
-    private FrameLayout fileview;
+    private FrameLayout x5FileLayout;
     private TbsReaderView readerView;
 
     @Override
@@ -141,7 +141,7 @@ public class MainActivity extends HelloAgoraScreenSharingActivity {
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
         tools1 = (ScrollView) findViewById(R.id.tools1);
         tools2 = (HorizontalScrollView) findViewById(R.id.tools2);
-        fileview = (FrameLayout) findViewById(R.id.fileview);
+        x5FileLayout = (FrameLayout) findViewById(R.id.x5FileLayout);
     }
 
     private void load() {
@@ -190,20 +190,6 @@ public class MainActivity extends HelloAgoraScreenSharingActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             String url = wv.getUrl();
             Log.d("test", "url = " + url);
-            //1.文件打开，先关闭
-            if (fileview.isShown()) {
-                readerView.onStop();
-                readerView = null;
-                fileview.removeAllViews();
-                fileview.setVisibility(View.GONE);
-                return true;
-            }
-            if (url.endsWith("inClass")) {
-                //2.在上课页面点返回
-                hideTools1();
-                hideTools2();
-                jsInterface.setScreenOrientation("1");
-            }
             if (wv.canGoBack()) {
                 wv.goBack();
                 return true;
@@ -278,7 +264,7 @@ public class MainActivity extends HelloAgoraScreenSharingActivity {
 
                 @Override
                 public void onSuccess(File file) {
-                    uploadFile(file.getAbsolutePath());
+                    uploadFile(file.getAbsolutePath(), false);
                 }
 
                 @Override
@@ -622,88 +608,46 @@ public class MainActivity extends HelloAgoraScreenSharingActivity {
 
     //--------------------2.0新增-------------------------------------------------------
 
-    public void showTools1() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                tools1.setVisibility(View.VISIBLE);
-            }
-        });
+    public void showTools() {
+        tools1.setVisibility(View.VISIBLE);
+        tools2.setVisibility(View.VISIBLE);
     }
 
-    public void hideTools1() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                tools1.setVisibility(View.GONE);
-            }
-        });
+    public void hideTools() {
+        tools1.setVisibility(View.GONE);
+        tools2.setVisibility(View.GONE);
     }
 
-    public void showTools2() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                tools2.setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
-    public void hideTools2() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                tools2.setVisibility(View.GONE);
-            }
-        });
-    }
 
     public void openFileByX5(String path) {
         path = "/mnt/sdcard/test.docx";
 
         String finalPath = path;
-        runOnUiThread(new Runnable() {
+
+        x5FileLayout.setVisibility(View.VISIBLE);
+
+        readerView = new TbsReaderView(MainActivity.this, new TbsReaderView.ReaderCallback() {
             @Override
-            public void run() {
-                fileview.setVisibility(View.VISIBLE);
+            public void onCallBackAction(Integer integer, Object o, Object o1) {
 
-                readerView = new TbsReaderView(MainActivity.this, new TbsReaderView.ReaderCallback() {
-                    @Override
-                    public void onCallBackAction(Integer integer, Object o, Object o1) {
-
-                    }
-                });
-                //通过bundle把文件传给x5,打开的事情交由x5处理
-                Bundle bundle = new Bundle();
-                //传递文件路径
-                bundle.putString("filePath", finalPath);
-                //加载插件保存的路径
-                bundle.putString("tempPath", Environment.getExternalStorageDirectory() + File.separator + "temp");
-                //加载文件前的初始化工作,加载支持不同格式的插件
-                boolean b = readerView.preOpen(getFileType(finalPath), false);
-                if (b) {
-                    readerView.openFile(bundle);
-                } else {
-                    toast("打开文件失败");
-                }
-                fileview.addView(readerView);
             }
         });
+        //通过bundle把文件传给x5,打开的事情交由x5处理
+        Bundle bundle = new Bundle();
+        //传递文件路径
+        bundle.putString("filePath", finalPath);
+        //加载插件保存的路径
+        bundle.putString("tempPath", Environment.getExternalStorageDirectory() + File.separator + "temp");
+        //加载文件前的初始化工作,加载支持不同格式的插件
+        boolean b = readerView.preOpen(Utils.getFileType(finalPath), false);
+        if (b) {
+            readerView.openFile(bundle);
+        } else {
+            toast("打开文件失败");
+        }
+        x5FileLayout.addView(readerView);
     }
 
-    private String getFileType(String path) {
-        String str = "";
-
-        if (TextUtils.isEmpty(path)) {
-            return str;
-        }
-        int i = path.lastIndexOf('.');
-        if (i <= -1) {
-            return str;
-        }
-        str = path.substring(i + 1);
-        return str;
-    }
 
     //-------------------------tools1----------------------
 
@@ -728,7 +672,6 @@ public class MainActivity extends HelloAgoraScreenSharingActivity {
 
     public void tuiping(View view) {
         //先接入声网
-        //startActivity(new Intent(this, HelloAgoraScreenSharingActivity.class));
         if (tuiping) {
             toast("结束推屏");
             mRtcEngine.leaveChannel();
@@ -756,7 +699,6 @@ public class MainActivity extends HelloAgoraScreenSharingActivity {
 
     public void shezhi(View view) {
         //设置？？？不知道是什么。测试用
-        //jsInterface.playVideo("www.baidu.com");
     }
 
     //-------------------------tools2----------------------
@@ -787,17 +729,11 @@ public class MainActivity extends HelloAgoraScreenSharingActivity {
 
 
     public void startRecord() {
-        if (true) {
-            return;
-        }
         Intent captureIntent = projectionManager.createScreenCaptureIntent();
         startActivityForResult(captureIntent, RECORD_REQUEST_CODE);
     }
 
     public void stopRecord() {
-        if (true) {
-            return;
-        }
         if (recordService.isRunning()) {
             recordService.stopRecord();
         }
