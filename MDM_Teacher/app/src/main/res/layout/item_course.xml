@@ -16,7 +16,7 @@
             android:src="@drawable/clock" />
 
         <TextView
-            android:id="@+id/aline"
+            android:id="@+id/line0"
             android:layout_width="2dp"
             android:layout_height="13dp"
             android:layout_below="@+id/clock"
@@ -35,18 +35,27 @@
 
         <ImageView
             android:id="@+id/ball"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_below="@id/aline"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_below="@id/line0"
             android:layout_marginLeft="60dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="12dp"
             android:src="@drawable/ball1" />
+
+        <TextView
+            android:id="@+id/line2"
+            android:layout_width="20dp"
+            android:layout_height="2dp"
+            android:layout_alignTop="@+id/ball"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/ball"
+            android:background="#cccccc" />
 
         <RelativeLayout
             android:id="@+id/contentRL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/aline"
+            android:layout_below="@+id/line0"
             android:layout_toRightOf="@+id/line">
 
             <TextView
@@ -75,7 +84,7 @@
             android:id="@+id/date1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/aline"
+            android:layout_below="@id/line0"
             android:layout_marginTop="5dp"
             android:text="12.13"
             android:textSize="18sp" />
