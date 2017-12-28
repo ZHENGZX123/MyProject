@@ -20,10 +20,6 @@ import cn.kiway.mdm.teacher.R;
 //首页：点名、上课
 public class HomeActivity extends BaseActivity {
 
-    private TextView teacherName;
-    private ImageView teacherIcon;
-    private TextView titleName;
-
     private GridView gv;
     private MyAdapter adapter;
     private ArrayList<Student> students = new ArrayList<>();
@@ -38,11 +34,10 @@ public class HomeActivity extends BaseActivity {
         initListener();
     }
 
-    private void initView() {
-        titleName = (TextView) findViewById(R.id.titleName);
+    public void initView() {
+        super.initView();
+
         titleName.setText("二年级一班");
-        teacherName = (TextView) findViewById(R.id.teacherName);
-        teacherIcon = (ImageView) findViewById(R.id.teacherIcon);
 
         gv = (GridView) findViewById(R.id.studentGV);
         adapter = new MyAdapter();

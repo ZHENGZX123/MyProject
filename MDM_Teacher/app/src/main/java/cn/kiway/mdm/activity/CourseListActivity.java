@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,7 +20,6 @@ import cn.kiway.mdm.teacher.R;
 
 public class CourseListActivity extends BaseActivity {
 
-    private TextView title;
 
     private ListView lv;
     private MyAdapter adapter;
@@ -35,9 +35,9 @@ public class CourseListActivity extends BaseActivity {
         iniListener();
     }
 
-    private void initView() {
-        title = (TextView) findViewById(R.id.titleName);
-        title.setText("上课");
+    public void initView() {
+        super.initView();
+        titleName.setText("上课");
         lv = (ListView) findViewById(R.id.courseLV);
         adapter = new MyAdapter();
         lv.setAdapter(adapter);
@@ -93,6 +93,7 @@ public class CourseListActivity extends BaseActivity {
 
                 holder.title1 = (TextView) rowView.findViewById(R.id.title1);
                 holder.title2 = (TextView) rowView.findViewById(R.id.title2);
+                holder.yishangke = (ImageView) rowView.findViewById(R.id.yishangke);
 
                 rowView.setTag(holder);
             } else {
@@ -102,9 +103,11 @@ public class CourseListActivity extends BaseActivity {
             if (s.status == 0) {
                 holder.title1.setTextColor(Color.parseColor("#6699ff"));
                 holder.title2.setTextColor(Color.parseColor("#6699ff"));
+                holder.yishangke.setVisibility(View.GONE);
             } else {
                 holder.title1.setTextColor(Color.parseColor("#cccccc"));
                 holder.title2.setTextColor(Color.parseColor("#cccccc"));
+                holder.yishangke.setVisibility(View.VISIBLE);
             }
             holder.title1.setText(s.title1);
             holder.title2.setText(s.title2);
@@ -114,6 +117,7 @@ public class CourseListActivity extends BaseActivity {
         public class ViewHolder {
             public TextView title1;
             public TextView title2;
+            public ImageView yishangke;
         }
 
         @Override

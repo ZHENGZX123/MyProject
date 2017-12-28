@@ -111,7 +111,7 @@ public class MainActivity extends BaseActivity {
         Logger.log("----------------------" + userAccount);
     }
 
-    private void initView() {
+    public void initView() {
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
         wv = (X5WebView) findViewById(R.id.wv);
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolsLL"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#00ffffff"
+    android:orientation="vertical">
+
+    <ImageButton
+        android:id="@+id/gj"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gj"
+        android:onClick="gj" />
+
+    <View
+        android:layout_width="5dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ll"
+        android:layout_below="@+id/gj"
+        android:layout_marginLeft="10dp"
+        android:background="#c2d6ff"></View>
+
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/gj"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/dm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/dm"
+            android:onClick="dm" />
+
+        <ImageButton
+            android:id="@+id/sk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/sk"
+            android:onClick="sk" />
+
+        <ImageButton
+            android:id="@+id/wdq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/wdq"
+            android:onClick="wdq" />
+
+        <ImageButton
+            android:id="@+id/cp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/cp"
+            android:onClick="cp" />
+
+        <ImageButton
+            android:id="@+id/rk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/rk"
+            android:onClick="rk" />
+    </LinearLayout>
+
+
+</RelativeLayout>
