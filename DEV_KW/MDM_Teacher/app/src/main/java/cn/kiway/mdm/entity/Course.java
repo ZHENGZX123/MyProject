@@ -9,6 +9,7 @@ import java.io.Serializable;
 public class Course implements Serializable {
 
     public int id;
-    public String title;
+    public String title1;
+    public String title2;
     public int status; //0未上课 1上课中 2已上课
 }
