@@ -18,6 +18,7 @@ public class HomeActivity extends BaseActivity {
 
 
     public void dianming(View view) {
+        //点名结束，跳到上课
         startActivity(new Intent(this, CourseListActivity.class));
     }
 

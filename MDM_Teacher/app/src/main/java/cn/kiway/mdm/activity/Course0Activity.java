@@ -105,6 +105,18 @@ public class Course0Activity extends HelloAgoraScreenSharingActivity {
         x5FileLayout.addView(readerView);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (x5FileLayout.isShown()) {
+            readerView.onStop();
+            readerView = null;
+            x5FileLayout.removeAllViews();
+            x5FileLayout.setVisibility(View.GONE);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     //-------------------------tools1----------------------
 
     public void jieping(View view) {
