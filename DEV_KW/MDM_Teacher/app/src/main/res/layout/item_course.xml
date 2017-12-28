@@ -4,41 +4,55 @@
     android:layout_height="match_parent"
     android:background="#001100">
 
-    <TextView
-        android:id="@+id/line"
-        android:layout_width="2dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/contentRL"
-        android:layout_alignTop="@+id/contentRL"
-        android:layout_marginLeft="10dp"
-        android:background="#6699ff" />
+   <RelativeLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:id="@+id/contentRL"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/line">
+       <TextView
+           android:id="@+id/line"
+           android:layout_width="2dp"
+           android:layout_height="wrap_content"
+           android:layout_alignBottom="@+id/contentRL"
+           android:layout_alignTop="@+id/contentRL"
+           android:layout_marginLeft="10dp"
+           android:background="#6699ff" />
 
-        <TextView
-            android:id="@+id/title1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="5dp"
-            android:text="课程标题"
-            android:textSize="18sp" />
+       <RelativeLayout
+           android:id="@+id/contentRL"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_toRightOf="@+id/line">
 
-        <TextView
-            android:id="@+id/title2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/title1"
-            android:layout_marginLeft="30dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:text="知识点1：\n知识点2：" />
+           <TextView
+               android:id="@+id/title1"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginLeft="30dp"
+               android:layout_marginTop="5dp"
+               android:text="课程标题"
+               android:textSize="18sp" />
 
-    </RelativeLayout>
+           <TextView
+               android:id="@+id/title2"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_below="@+id/title1"
+               android:layout_marginLeft="30dp"
+               android:layout_marginBottom="5dp"
+               android:layout_marginTop="5dp"
+               android:text="知识点1：\n知识点2：" />
+
+       </RelativeLayout>
+
+
+       <ImageView
+           android:id="@+id/yishangke"
+           android:layout_centerInParent="true"
+           android:background="@drawable/yishangke"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content" />
+
+   </RelativeLayout>
 
 
 </RelativeLayout>
