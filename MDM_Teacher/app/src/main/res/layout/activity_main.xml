@@ -32,11 +32,6 @@
             android:layout_height="match_parent"
             android:layout_below="@id/rl_nonet"></cn.kiway.mdm.view.X5WebView>
 
-
-
-
-
-
         <LinearLayout
             android:id="@+id/layout_welcome"
             android:layout_width="match_parent"

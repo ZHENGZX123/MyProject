@@ -35,7 +35,8 @@ public class CourseListActivity extends BaseActivity {
     }
 
     private void initView() {
-        title = (TextView) findViewById(R.id.titleTV);
+        title = (TextView) findViewById(R.id.titleName);
+        title.setText("上课");
         lv = (ListView) findViewById(R.id.courseLV);
         adapter = new MyAdapter();
         lv.setAdapter(adapter);
@@ -48,10 +49,10 @@ public class CourseListActivity extends BaseActivity {
                 Course c = courses.get(position);
                 if (c.status == 0) {
                     //未上课
-                    startActivity(new Intent(CourseListActivity.this , Course0Activity.class));
+                    startActivity(new Intent(CourseListActivity.this, Course0Activity.class));
                 } else if (c.status == 2) {
                     //已上课
-                    startActivity(new Intent(CourseListActivity.this , Course2Activity.class));
+                    startActivity(new Intent(CourseListActivity.this, Course2Activity.class));
                 }
             }
         });
