@@ -233,7 +233,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/toolbutton_val"
+                android:background="@drawable/toolbutton"
                 android:gravity="center"
                 android:onClick="tongji">
 
@@ -258,7 +258,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:background="@drawable/toolbutton_val"
+                android:background="@drawable/toolbutton"
                 android:gravity="center"
                 android:onClick="dianmingda">
 
@@ -285,7 +285,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:background="@drawable/toolbutton_val"
+                android:background="@drawable/toolbutton"
                 android:gravity="center"
                 android:onClick="qiangda">
 
@@ -312,7 +312,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:background="@drawable/toolbutton_val"
+                android:background="@drawable/toolbutton"
                 android:gravity="center"
                 android:onClick="suijichouda">
 
@@ -339,7 +339,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:background="@drawable/toolbutton_val"
+                android:background="@drawable/toolbutton"
                 android:gravity="center"
                 android:onClick="ceping">
 

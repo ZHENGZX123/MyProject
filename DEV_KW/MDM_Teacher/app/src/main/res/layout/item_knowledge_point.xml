@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#001100">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/clock"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="50dp"
+            android:src="@drawable/clock" />
+
+        <TextView
+            android:id="@+id/line0"
+            android:layout_width="2dp"
+            android:layout_height="13dp"
+            android:layout_below="@+id/clock"
+            android:layout_marginLeft="64dp"
+            android:layout_marginTop="-3dp"
+            android:background="#6699ff" />
+
+        <TextView
+            android:id="@+id/line"
+            android:layout_width="2dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/contentRL"
+            android:layout_alignTop="@+id/contentRL"
+            android:layout_marginLeft="64dp"
+            android:background="#6699ff" />
+
+        <ImageView
+            android:id="@+id/ball"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_below="@id/line0"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="12dp"
+            android:src="@drawable/ball2" />
+
+        <TextView
+            android:id="@+id/line2"
+            android:layout_width="20dp"
+            android:layout_height="2dp"
+            android:layout_alignTop="@+id/ball"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/ball"
+            android:background="#6699ff" />
+
+        <RelativeLayout
+            android:id="@+id/contentRL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/line0"
+            android:layout_toRightOf="@+id/line">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="5dp"
+                android:text="课程标题"
+                android:textColor="#6699ff"
+                android:textSize="18sp" />
+
+            <!-- 根据类型显示不同的样式 暂时50dp-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/title"
+                android:layout_marginLeft="25dp">
+
+                <RelativeLayout
+                    android:id="@+id/type0RL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1111111111111111111111111" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/type1RL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/testBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="测试doc" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/type_2RL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/endBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/endbutton"
+                        android:padding="5dp"
+                        android:text="结束课程"
+                        android:textColor="#ffffff" />
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/date1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/line0"
+            android:layout_marginTop="5dp"
+            android:text="12.13"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/date2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/date1"
+            android:layout_below="@id/date1"
+            android:text="2017"
+            android:textSize="12sp" />
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

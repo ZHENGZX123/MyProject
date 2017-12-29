@@ -96,8 +96,8 @@ public class CourseListActivity extends BaseActivity {
                 holder.yishangke = (ImageView) rowView.findViewById(R.id.yishangke);
                 holder.clock = (ImageView) rowView.findViewById(R.id.clock);
                 holder.ball = (ImageView) rowView.findViewById(R.id.ball);
-                holder.line0 = (TextView) rowView.findViewById(R.id.line0);
                 holder.line2 = (TextView) rowView.findViewById(R.id.line2);
+                holder.line0 = (TextView) rowView.findViewById(R.id.line0);
 
                 rowView.setTag(holder);
             } else {
