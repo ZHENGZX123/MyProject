@@ -67,28 +67,6 @@ public class HomeActivity extends BaseActivity {
         });
     }
 
-    public void dm(View view) {
-        final Dialog dialog = new Dialog(this, R.style.popupDialog);
-        dialog.setContentView(R.layout.dialog_dianming);
-        dialog.show();
-
-        Button dianming = (Button) dialog.findViewById(R.id.dianming);
-        dianming.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (dianming.getText().toString().equals("开始点名")) {
-                    dianming.setBackgroundResource(R.drawable.dianmingbutton2);
-                    dianming.setText("结束点名");
-                } else {
-                    dialog.dismiss();
-                    //点名结束，跳到上课
-                    startActivity(new Intent(HomeActivity.this, CourseListActivity.class));
-                    finish();
-                }
-            }
-        });
-    }
-
     private class MyAdapter extends BaseAdapter {
 
         private final LayoutInflater inflater;
@@ -143,6 +121,28 @@ public class HomeActivity extends BaseActivity {
         public long getItemId(int arg0) {
             return arg0;
         }
+    }
+
+    public void dm(View view) {
+        final Dialog dialog = new Dialog(this, R.style.popupDialog);
+        dialog.setContentView(R.layout.dialog_dianming);
+        dialog.show();
+
+        Button dianming = (Button) dialog.findViewById(R.id.dianming);
+        dianming.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dianming.getText().toString().equals("开始点名")) {
+                    dianming.setBackgroundResource(R.drawable.dianmingbutton2);
+                    dianming.setText("结束点名");
+                } else {
+                    dialog.dismiss();
+                    //点名结束，跳到上课
+                    startActivity(new Intent(HomeActivity.this, CourseListActivity.class));
+                    finish();
+                }
+            }
+        });
     }
 
 }
