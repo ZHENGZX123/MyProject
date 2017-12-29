@@ -8,29 +8,17 @@
         android:id="@+id/titleRL"
         layout="@layout/layout_title"></include>
 
-    <RelativeLayout
-        android:id="@+id/contentRL"
+
+    <ListView
+        android:id="@+id/KnowledgePointLV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/titleRL">
-
-        <ListView
-            android:id="@+id/courseLV"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="100dp"
-            android:layout_marginRight="100dp"
-            android:layout_marginTop="10dp"
-            android:divider="#001100"
-            android:dividerHeight="0dp"></ListView>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:onClick="testX5"
-            android:text="testX5" />
-    </RelativeLayout>
+        android:layout_below="@+id/titleRL"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        android:layout_marginTop="10dp"
+        android:divider="#001100"
+        android:dividerHeight="0dp"></ListView>
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -69,7 +57,7 @@
                 android:onClick="jieping"
                 android:orientation="vertical">
 
-                <ImageButton
+                <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:background="@drawable/u1742" />
@@ -89,7 +77,7 @@
                 android:onClick="paizhao"
                 android:orientation="vertical">
 
-                <ImageButton
+                <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:background="@drawable/u1744" />
@@ -110,7 +98,7 @@
                 android:onClick="huabi"
                 android:orientation="vertical">
 
-                <ImageButton
+                <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:background="@drawable/u1750" />
@@ -131,7 +119,7 @@
                 android:onClick="tuiping"
                 android:orientation="vertical">
 
-                <ImageButton
+                <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:background="@drawable/screen_control" />
@@ -152,7 +140,7 @@
                 android:onClick="chaping"
                 android:orientation="vertical">
 
-                <ImageButton
+                <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:background="@drawable/linkage" />
@@ -172,7 +160,7 @@
                 android:onClick="suoping"
                 android:orientation="vertical">
 
-                <ImageButton
+                <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:background="@drawable/sys_lock" />
@@ -193,7 +181,7 @@
                 android:onClick="wenjian"
                 android:orientation="vertical">
 
-                <ImageButton
+                <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:background="@drawable/send_msg" />
@@ -213,7 +201,7 @@
                 android:onClick="shezhi"
                 android:orientation="vertical">
 
-                <ImageButton
+                <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:background="@drawable/setting" />
@@ -252,7 +240,6 @@
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
