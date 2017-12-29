@@ -181,7 +181,7 @@ public class Course0Activity extends BaseActivity {
     public void tongji(View view) {
         //知识点统计，给全班发送统计命令。
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
-        dialog.setContentView(R.layout.dialog_dianming);
+        dialog.setContentView(R.layout.dialog_tongji);
         dialog.show();
         Button tongji = (Button) dialog.findViewById(R.id.tongji);
         Button cancel = (Button) dialog.findViewById(R.id.cancel);
