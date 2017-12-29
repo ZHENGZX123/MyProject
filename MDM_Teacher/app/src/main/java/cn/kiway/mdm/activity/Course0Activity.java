@@ -142,6 +142,7 @@ public class Course0Activity extends BaseActivity {
 
     public void huabi(View view) {
         //等彭毅
+        startActivity(new Intent(this, WhiteBoardActivity.class));
     }
 
     private boolean tuiping = false;

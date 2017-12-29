@@ -59,6 +59,10 @@ public class HomeActivity extends BaseActivity {
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Student s = students.get(position);
+
+                toast(s.name + (s.status == 0 ? "没到" : "到了"));
+
             }
         });
     }
@@ -79,6 +83,7 @@ public class HomeActivity extends BaseActivity {
                     dialog.dismiss();
                     //点名结束，跳到上课
                     startActivity(new Intent(HomeActivity.this, CourseListActivity.class));
+                    finish();
                 }
             }
         });

@@ -72,10 +72,17 @@
         <activity
             android:name="cn.kiway.mdm.activity.ResultActivity"
             android:screenOrientation="landscape"></activity>
+        <activity
+            android:name="cn.kiway.mdm.activity.Result2Activity"
+            android:screenOrientation="landscape"></activity>
+        <activity
+            android:name="cn.kiway.mdm.activity.Result3Activity"
+            android:screenOrientation="landscape"></activity>
 
         <activity
-            android:name="cn.kiway.mdm.activity.CepingActivity"
+            android:name="cn.kiway.mdm.activity.WhiteBoardActivity"
             android:screenOrientation="landscape"></activity>
+
     </application>
 
 </manifest>
