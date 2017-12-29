@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
@@ -20,6 +21,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -164,6 +166,7 @@ public class Course0Activity extends BaseActivity {
 
     public void chaping(View view) {
         //查看学生屏幕，需要获取学生列表。
+        startActivity(new Intent(this, MultiScreenActivity.class));
     }
 
     public void suoping(View view) {
@@ -305,10 +308,9 @@ public class Course0Activity extends BaseActivity {
 
                 holder.title = (TextView) rowView.findViewById(R.id.title);
                 holder.clock = (ImageView) rowView.findViewById(R.id.clock);
-                holder.type0RL = (RelativeLayout) rowView.findViewById(R.id.type0RL);
-                holder.type1RL = (RelativeLayout) rowView.findViewById(R.id.type1RL);
-                holder.type_2RL = (RelativeLayout) rowView.findViewById(R.id.type_2RL);
-                holder.testBtn = (Button) rowView.findViewById(R.id.testBtn);
+                holder.type0RL = (LinearLayout) rowView.findViewById(R.id.type0RL);
+                holder.type1RL = (LinearLayout) rowView.findViewById(R.id.type1RL);
+                holder.type_2RL = (LinearLayout) rowView.findViewById(R.id.type_2RL);
                 holder.endBtn = (Button) rowView.findViewById(R.id.endBtn);
                 holder.ball = (ImageView) rowView.findViewById(R.id.ball);
                 holder.line2 = (TextView) rowView.findViewById(R.id.line2);
@@ -333,26 +335,29 @@ public class Course0Activity extends BaseActivity {
                 holder.type_2RL.setVisibility(View.GONE);
                 holder.ball.setVisibility(View.VISIBLE);
                 holder.line2.setVisibility(View.VISIBLE);
+
+                //add content0
+                addContent0(holder);
+
             } else if (s.type == TYPE1) {
                 holder.type0RL.setVisibility(View.GONE);
                 holder.type1RL.setVisibility(View.VISIBLE);
                 holder.type_2RL.setVisibility(View.GONE);
                 holder.ball.setVisibility(View.VISIBLE);
                 holder.line2.setVisibility(View.VISIBLE);
+
+                //add content1
+                addContent1(holder);
+
             } else if (s.type == TYPE_END) {
                 holder.type0RL.setVisibility(View.GONE);
                 holder.type1RL.setVisibility(View.GONE);
                 holder.type_2RL.setVisibility(View.VISIBLE);
+                holder.ball.setVisibility(View.GONE);
                 holder.line2.setVisibility(View.GONE);
             }
 
 
-            holder.testBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openFileByX5("");
-                }
-            });
             holder.endBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -363,13 +368,37 @@ public class Course0Activity extends BaseActivity {
             return rowView;
         }
 
+        private void addContent1(ViewHolder holder) {
+            holder.type1RL.removeAllViews();
+            Button btn = new Button(Course0Activity.this);
+            btn.setBackgroundColor(Color.WHITE);
+            btn.setTextColor(Color.BLACK);
+            btn.setText("有理数.doc");
+            holder.type1RL.addView(btn);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openFileByX5("");
+                }
+            });
+        }
+
+        private void addContent0(ViewHolder holder) {
+            holder.type0RL.removeAllViews();
+            TextView tv = new TextView(Course0Activity.this);
+            tv.setText("（一）创设情境，导入新课");
+            holder.type0RL.addView(tv);
+            TextView tv2 = new TextView(Course0Activity.this);
+            tv2.setText("（二）合作交流，解读探究");
+            holder.type0RL.addView(tv2);
+        }
+
         public class ViewHolder {
             public TextView title;
             public ImageView clock;
-            public RelativeLayout type0RL;
-            public RelativeLayout type1RL;
-            public RelativeLayout type_2RL;
-            public Button testBtn;
+            public LinearLayout type0RL;
+            public LinearLayout type1RL;
+            public LinearLayout type_2RL;
             public Button endBtn;
             public TextView line2;
             public ImageView ball;
