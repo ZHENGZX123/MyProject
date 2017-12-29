@@ -37,6 +37,8 @@ import cn.kiway.mdm.util.Utils;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE1;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
+import static cn.kiway.mdm.teacher.R.id.close;
+import static cn.kiway.mdm.teacher.R.id.tongji;
 import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
 
 /**
@@ -181,7 +183,7 @@ public class Course0Activity extends BaseActivity {
     public void tongji(View view) {
         //知识点统计，给全班发送统计命令。
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
-        dialog.setContentView(R.layout.dialog_tongji);
+        dialog.setContentView(R.layout.dialog_dianming);
         dialog.show();
         Button tongji = (Button) dialog.findViewById(R.id.tongji);
         Button cancel = (Button) dialog.findViewById(R.id.cancel);
@@ -214,6 +216,25 @@ public class Course0Activity extends BaseActivity {
 
     public void qiangda(View view) {
         //抢答，给全班发送抢答命令。
+        final Dialog dialog = new Dialog(this, R.style.popupDialog);
+        dialog.setContentView(R.layout.dialog_qiangda);
+        dialog.show();
+        Button kaishidati = (Button) dialog.findViewById(R.id.kaishidati);
+        Button close = (Button) dialog.findViewById(R.id.close);
+        ListView lv = (ListView) dialog.findViewById(R.id.lv);
+
+        kaishidati.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     public void suijichouda(View view) {
