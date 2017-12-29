@@ -249,6 +249,8 @@ public class Course0Activity extends BaseActivity {
                 holder.type_2RL = (RelativeLayout) rowView.findViewById(R.id.type_2RL);
                 holder.testBtn = (Button) rowView.findViewById(R.id.testBtn);
                 holder.endBtn = (Button) rowView.findViewById(R.id.endBtn);
+                holder.ball = (ImageView) rowView.findViewById(R.id.ball);
+                holder.line2 = (TextView) rowView.findViewById(R.id.line2);
 
                 rowView.setTag(holder);
             } else {
@@ -268,14 +270,20 @@ public class Course0Activity extends BaseActivity {
                 holder.type0RL.setVisibility(View.VISIBLE);
                 holder.type1RL.setVisibility(View.GONE);
                 holder.type_2RL.setVisibility(View.GONE);
+                holder.ball.setVisibility(View.VISIBLE);
+                holder.line2.setVisibility(View.VISIBLE);
             } else if (s.type == TYPE1) {
                 holder.type0RL.setVisibility(View.GONE);
                 holder.type1RL.setVisibility(View.VISIBLE);
                 holder.type_2RL.setVisibility(View.GONE);
+                holder.ball.setVisibility(View.VISIBLE);
+                holder.line2.setVisibility(View.VISIBLE);
             } else if (s.type == TYPE_END) {
                 holder.type0RL.setVisibility(View.GONE);
                 holder.type1RL.setVisibility(View.GONE);
                 holder.type_2RL.setVisibility(View.VISIBLE);
+                holder.ball.setVisibility(View.GONE);
+                holder.line2.setVisibility(View.GONE);
             }
 
 
@@ -298,13 +306,13 @@ public class Course0Activity extends BaseActivity {
         public class ViewHolder {
             public TextView title;
             public ImageView clock;
-
             public RelativeLayout type0RL;
             public RelativeLayout type1RL;
             public RelativeLayout type_2RL;
-
             public Button testBtn;
             public Button endBtn;
+            public TextView line2;
+            public ImageView ball;
         }
 
         @Override
