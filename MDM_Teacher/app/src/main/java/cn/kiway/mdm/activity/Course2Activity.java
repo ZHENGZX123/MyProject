@@ -9,7 +9,7 @@ import cn.kiway.mdm.teacher.R;
 /**
  * Created by Administrator on 2017/12/28.
  */
-
+//这个listview暂时没写。
 public class Course2Activity extends BaseActivity {
 
     @Override

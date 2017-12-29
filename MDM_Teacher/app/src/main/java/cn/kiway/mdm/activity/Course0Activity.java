@@ -23,7 +23,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tencent.smtt.sdk.TbsReaderView;
@@ -46,7 +45,7 @@ import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
  */
 
 //未上课
-public class Course0Activity extends BaseActivity {
+public class Course0Activity extends ScreenSharingActivity {
 
     private FrameLayout x5FileLayout;
     private TbsReaderView readerView;
@@ -153,13 +152,13 @@ public class Course0Activity extends BaseActivity {
         //先接入声网
         if (tuiping) {
             toast("结束推屏");
-            //mRtcEngine.leaveChannel();
-            //stopCapture();
+            mRtcEngine.leaveChannel();
+            stopCapture();
         } else {
             toast("开始推屏");
-            //initModules();
-            //startCapture();
-            //mRtcEngine.joinChannel(null, "kiway", "", 0);
+            initModules();
+            startCapture();
+            mRtcEngine.joinChannel(null, "kiway", "", 0);
         }
         tuiping = !tuiping;
     }
