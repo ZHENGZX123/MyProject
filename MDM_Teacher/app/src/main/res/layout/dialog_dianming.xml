@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/dianming"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/dianmingbutton1"
+            android:text="开始点名"
+            android:textColor="#ffffff" />
+
+        <TextView
+            android:id="@+id/count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dianming"
+            android:layout_centerHorizontal="true"
+            android:text="0/45"
+            android:textColor="#6699ff"
+            android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/count"
+            android:layout_centerHorizontal="true"
+            android:text="已完成点名学生/班级学生总数"
+            android:textColor="#ffffff" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/hint"
+            android:layout_centerHorizontal="true"
+            android:text="倒计时 05:00"
+            android:textColor="#ffffff" />
+
+    </RelativeLayout>
+</RelativeLayout>

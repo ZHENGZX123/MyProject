@@ -1,10 +1,10 @@
 package cn.kiway.mdm.activity;
 
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Color;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
@@ -81,10 +81,18 @@ public class Course0Activity extends BaseActivity {
         c2.title = "知识点2：数轴的概念及画法";
         c2.type = TYPE1;
         KnowledgePoint c3 = new KnowledgePoint();
-        c3.type = TYPE_END;
+        c3.title = "知识点3：三角形勾股定理";
+        c3.type = TYPE0;
+        KnowledgePoint c4 = new KnowledgePoint();
+        c4.title = "知识点4：三角形内角和";
+        c4.type = TYPE1;
+        KnowledgePoint c5 = new KnowledgePoint();
+        c5.type = TYPE_END;
         KnowledgePoints.add(c1);
         KnowledgePoints.add(c2);
         KnowledgePoints.add(c3);
+        KnowledgePoints.add(c4);
+        KnowledgePoints.add(c5);
         adapter.notifyDataSetChanged();
     }
 
@@ -172,6 +180,32 @@ public class Course0Activity extends BaseActivity {
     //-------------------------tools2----------------------
     public void tongji(View view) {
         //知识点统计，给全班发送统计命令。
+        final Dialog dialog = new Dialog(this, R.style.popupDialog);
+        dialog.setContentView(R.layout.dialog_tongji);
+        dialog.show();
+        Button tongji = (Button) dialog.findViewById(R.id.tongji);
+        Button cancel = (Button) dialog.findViewById(R.id.cancel);
+        Button close = (Button) dialog.findViewById(R.id.close);
+        ListView lv = (ListView) dialog.findViewById(R.id.lv);
+
+        tongji.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     public void dianmingda(View view) {
@@ -282,7 +316,6 @@ public class Course0Activity extends BaseActivity {
                 holder.type0RL.setVisibility(View.GONE);
                 holder.type1RL.setVisibility(View.GONE);
                 holder.type_2RL.setVisibility(View.VISIBLE);
-                holder.ball.setVisibility(View.GONE);
                 holder.line2.setVisibility(View.GONE);
             }
 
