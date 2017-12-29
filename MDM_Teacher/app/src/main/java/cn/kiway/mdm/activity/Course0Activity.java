@@ -1,10 +1,10 @@
 package cn.kiway.mdm.activity;
 
-import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
@@ -13,27 +13,31 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.Toast;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import com.leon.lfilepickerlibrary.utils.Constant;
 import com.tencent.smtt.sdk.TbsReaderView;
 
 import java.io.File;
-import java.util.List;
+import java.util.ArrayList;
 
+import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
-import io.agora.rtc.ss.app.HelloAgoraScreenSharingActivity;
-import top.zibin.luban.Luban;
-import top.zibin.luban.OnCompressListener;
 
+import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
+import static cn.kiway.mdm.entity.KnowledgePoint.TYPE1;
+import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
 import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
-import static cn.kiway.mdm.web.JsAndroidInterface.picPath;
-import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile;
 
 /**
  * Created by Administrator on 2017/12/28.
@@ -44,6 +48,9 @@ public class Course0Activity extends BaseActivity {
 
     private FrameLayout x5FileLayout;
     private TbsReaderView readerView;
+    private ListView lv;
+    private MyAdapter adapter;
+    private ArrayList<KnowledgePoint> KnowledgePoints = new ArrayList<>();
 
 
     @Override
@@ -52,15 +59,33 @@ public class Course0Activity extends BaseActivity {
         setContentView(R.layout.activity_course0);
 
         initView();
-        x5FileLayout = (FrameLayout) findViewById(R.id.x5FileLayout);
+        initData();
         initRecord();
     }
 
     @Override
     public void initView() {
         super.initView();
-
         titleName.setText("1.1 正数和负数、数轴");
+        x5FileLayout = (FrameLayout) findViewById(R.id.x5FileLayout);
+        lv = (ListView) findViewById(R.id.KnowledgePointLV);
+        adapter = new MyAdapter();
+        lv.setAdapter(adapter);
+    }
+
+    private void initData() {
+        KnowledgePoint c1 = new KnowledgePoint();
+        c1.title = "知识点1：用正数、负数表示具有相反意义的量";
+        c1.type = TYPE0;
+        KnowledgePoint c2 = new KnowledgePoint();
+        c2.title = "知识点2：数轴的概念及画法";
+        c2.type = TYPE1;
+        KnowledgePoint c3 = new KnowledgePoint();
+        c3.type = TYPE_END;
+        KnowledgePoints.add(c1);
+        KnowledgePoints.add(c2);
+        KnowledgePoints.add(c3);
+        adapter.notifyDataSetChanged();
     }
 
     private void initRecord() {
@@ -78,39 +103,6 @@ public class Course0Activity extends BaseActivity {
             recordService.setMediaProject(mediaProjection);
             recordService.startRecord();
         }
-    }
-
-    public void testX5(View view) {
-        openFileByX5("");
-    }
-
-    public void openFileByX5(String path) {
-        path = "/mnt/sdcard/test.docx";
-
-        String finalPath = path;
-
-        x5FileLayout.setVisibility(View.VISIBLE);
-
-        readerView = new TbsReaderView(this, new TbsReaderView.ReaderCallback() {
-            @Override
-            public void onCallBackAction(Integer integer, Object o, Object o1) {
-
-            }
-        });
-        //通过bundle把文件传给x5,打开的事情交由x5处理
-        Bundle bundle = new Bundle();
-        //传递文件路径
-        bundle.putString("filePath", finalPath);
-        //加载插件保存的路径
-        bundle.putString("tempPath", Environment.getExternalStorageDirectory() + File.separator + "temp");
-        //加载文件前的初始化工作,加载支持不同格式的插件
-        boolean b = readerView.preOpen(Utils.getFileType(finalPath), false);
-        if (b) {
-            readerView.openFile(bundle);
-        } else {
-            toast("打开文件失败");
-        }
-        x5FileLayout.addView(readerView);
     }
 
     @Override
@@ -231,4 +223,132 @@ public class Course0Activity extends BaseActivity {
         public void onServiceDisconnected(ComponentName arg0) {
         }
     };
+
+    //------------------------内容列表相关-------------------------------------------------
+
+    private class MyAdapter extends BaseAdapter {
+
+        private final LayoutInflater inflater;
+
+        public MyAdapter() {
+            inflater = LayoutInflater.from(Course0Activity.this);
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View rowView = convertView;
+            ViewHolder holder;
+            if (rowView == null) {
+                rowView = inflater.inflate(R.layout.item_knowledge_point, null);
+                holder = new ViewHolder();
+
+                holder.title = (TextView) rowView.findViewById(R.id.title);
+                holder.clock = (ImageView) rowView.findViewById(R.id.clock);
+                holder.type0RL = (RelativeLayout) rowView.findViewById(R.id.type0RL);
+                holder.type1RL = (RelativeLayout) rowView.findViewById(R.id.type1RL);
+                holder.type_2RL = (RelativeLayout) rowView.findViewById(R.id.type_2RL);
+                holder.testBtn = (Button) rowView.findViewById(R.id.testBtn);
+                holder.endBtn = (Button) rowView.findViewById(R.id.endBtn);
+
+                rowView.setTag(holder);
+            } else {
+                holder = (ViewHolder) rowView.getTag();
+            }
+
+            if (position == 0) {
+                holder.clock.setVisibility(View.VISIBLE);
+            } else {
+                holder.clock.setVisibility(View.GONE);
+            }
+
+            final KnowledgePoint s = KnowledgePoints.get(position);
+            holder.title.setText(s.title);
+
+            if (s.type == TYPE0) {
+                holder.type0RL.setVisibility(View.VISIBLE);
+                holder.type1RL.setVisibility(View.GONE);
+                holder.type_2RL.setVisibility(View.GONE);
+            } else if (s.type == TYPE1) {
+                holder.type0RL.setVisibility(View.GONE);
+                holder.type1RL.setVisibility(View.VISIBLE);
+                holder.type_2RL.setVisibility(View.GONE);
+            } else if (s.type == TYPE_END) {
+                holder.type0RL.setVisibility(View.GONE);
+                holder.type1RL.setVisibility(View.GONE);
+                holder.type_2RL.setVisibility(View.VISIBLE);
+            }
+
+
+            holder.testBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openFileByX5("");
+                }
+            });
+            holder.endBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+
+            return rowView;
+        }
+
+        public class ViewHolder {
+            public TextView title;
+            public ImageView clock;
+
+            public RelativeLayout type0RL;
+            public RelativeLayout type1RL;
+            public RelativeLayout type_2RL;
+
+            public Button testBtn;
+            public Button endBtn;
+        }
+
+        @Override
+        public int getCount() {
+            return KnowledgePoints.size();
+        }
+
+        @Override
+        public KnowledgePoint getItem(int arg0) {
+            return KnowledgePoints.get(arg0);
+        }
+
+        @Override
+        public long getItemId(int arg0) {
+            return arg0;
+        }
+    }
+
+    public void openFileByX5(String path) {
+        path = "/mnt/sdcard/test.docx";
+
+        String finalPath = path;
+
+        x5FileLayout.setVisibility(View.VISIBLE);
+
+        readerView = new TbsReaderView(this, new TbsReaderView.ReaderCallback() {
+            @Override
+            public void onCallBackAction(Integer integer, Object o, Object o1) {
+
+            }
+        });
+        //通过bundle把文件传给x5,打开的事情交由x5处理
+        Bundle bundle = new Bundle();
+        //传递文件路径
+        bundle.putString("filePath", finalPath);
+        //加载插件保存的路径
+        bundle.putString("tempPath", Environment.getExternalStorageDirectory() + File.separator + "temp");
+        //加载文件前的初始化工作,加载支持不同格式的插件
+        boolean b = readerView.preOpen(Utils.getFileType(finalPath), false);
+        if (b) {
+            readerView.openFile(bundle);
+        } else {
+            toast("打开文件失败");
+        }
+        x5FileLayout.addView(readerView);
+    }
 }
