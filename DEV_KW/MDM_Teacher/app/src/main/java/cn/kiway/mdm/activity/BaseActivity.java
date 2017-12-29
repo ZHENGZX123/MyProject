@@ -108,5 +108,8 @@ public class BaseActivity extends Activity {
 
     }
 
+    public void clickBack(View view) {
+        finish();
+    }
 
 }

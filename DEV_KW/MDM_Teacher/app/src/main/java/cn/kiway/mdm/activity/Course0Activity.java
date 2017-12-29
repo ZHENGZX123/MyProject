@@ -37,8 +37,6 @@ import cn.kiway.mdm.util.Utils;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE1;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
-import static cn.kiway.mdm.teacher.R.id.close;
-import static cn.kiway.mdm.teacher.R.id.tongji;
 import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
 
 /**
@@ -216,6 +214,20 @@ public class Course0Activity extends BaseActivity {
 
     public void qiangda(View view) {
         //抢答，给全班发送抢答命令。
+        qiangda_suijichouda_ceping(1);
+    }
+
+    public void suijichouda(View view) {
+        //随机抽答，随机找几个发命令。
+        qiangda_suijichouda_ceping(2);
+    }
+
+    public void ceping(View view) {
+        //测评，给全班发测评命令
+        qiangda_suijichouda_ceping(3);
+    }
+
+    private void qiangda_suijichouda_ceping(int type) {
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_qiangda);
         dialog.show();
@@ -227,6 +239,7 @@ public class Course0Activity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type));
             }
         });
         close.setOnClickListener(new View.OnClickListener() {
@@ -235,14 +248,6 @@ public class Course0Activity extends BaseActivity {
                 dialog.dismiss();
             }
         });
-    }
-
-    public void suijichouda(View view) {
-        //随机抽答，随机找几个发命令。
-    }
-
-    public void ceping(View view) {
-        //测评，给全班发测评命令
     }
 
     //-------------------------------录屏相关-----------------------------
