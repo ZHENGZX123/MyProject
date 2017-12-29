@@ -144,22 +144,22 @@ public class Course0Activity extends BaseActivity {
         //等彭毅
     }
 
-   /* private boolean tuiping = false;
+    private boolean tuiping = false;
 
     public void tuiping(View view) {
         //先接入声网
         if (tuiping) {
             toast("结束推屏");
-            mRtcEngine.leaveChannel();
-            stopCapture();
+            //mRtcEngine.leaveChannel();
+            //stopCapture();
         } else {
             toast("开始推屏");
-            initModules();
-            startCapture();
-            mRtcEngine.joinChannel(null, "kiway", "", 0);
+            //initModules();
+            //startCapture();
+            //mRtcEngine.joinChannel(null, "kiway", "", 0);
         }
         tuiping = !tuiping;
-    }*/
+    }
 
     public void chaping(View view) {
         //查看学生屏幕，需要获取学生列表。
