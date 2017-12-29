@@ -1,5 +1,6 @@
 package cn.kiway.mdm.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -62,8 +64,24 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void dm(View view) {
-        //点名结束，跳到上课
-        startActivity(new Intent(this, CourseListActivity.class));
+        final Dialog dialog = new Dialog(this, R.style.popupDialog);
+        dialog.setContentView(R.layout.dialog_dianming);
+        dialog.show();
+
+        Button dianming = (Button) dialog.findViewById(R.id.dianming);
+        dianming.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dianming.getText().toString().equals("开始点名")) {
+                    dianming.setBackgroundResource(R.drawable.dianmingbutton2);
+                    dianming.setText("结束点名");
+                } else {
+                    dialog.dismiss();
+                    //点名结束，跳到上课
+                    startActivity(new Intent(HomeActivity.this, CourseListActivity.class));
+                }
+            }
+        });
     }
 
     private class MyAdapter extends BaseAdapter {
