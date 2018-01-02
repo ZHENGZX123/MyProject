@@ -24,7 +24,9 @@ import org.apache.http.Header;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.activity.HomeActivity;
@@ -232,6 +234,26 @@ public class Utils {
         return str;
     }
 
+    public static boolean saveBitmap(Bitmap bm, String picName) {
+        File f = new File("/mnt/sdcard/", picName);
+        if (f.exists()) {
+            f.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(f);
+            bm.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.flush();
+            out.close();
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
     public static void shangke(Activity c, String info) {
         try {
             String token = new JSONObject(info).optString("token");
@@ -239,7 +261,7 @@ public class Utils {
             c.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
 
             //1.发“上课”推送命令
-            String url = WXApplication.serverUrl + "/device/teacher/attendClass?flag=1&ip=" + wifiIp + "&platform=Android";
+            String url = WXApplication.serverUrl + "/device/push/teacher/attendClass?flag=1&ip=" + wifiIp + "&platform=Android";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -312,7 +334,7 @@ public class Utils {
     public static void xiake(Activity activity) {
         try {
             //1.发“下课”推送命令
-            String url = WXApplication.serverUrl + "/device/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
+            String url = WXApplication.serverUrl + "/device/push/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", activity.getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
