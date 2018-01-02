@@ -51,8 +51,10 @@ import static cn.kiway.homework.util.Utils.SYS_MIUI;
 public class BaseActivity extends Activity {
 
     public void huaweiPush() {
-        PushManager.requestToken(this);
-        Log.i("huawei", "try to get Token ,current packageName is " + this.getPackageName());
+        if (Utils.getSystem().equals(SYS_EMUI)) {
+            PushManager.requestToken(this);
+            Log.i("huawei", "try to get Token ,current packageName is " + this.getPackageName());
+        }
     }
 
     public void toast(final String txt) {
@@ -343,7 +345,6 @@ public class BaseActivity extends Activity {
             }
         }.start();
     }
-
 
 
 }
