@@ -1,10 +1,7 @@
 package io.agora.rtc.ss.app;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-
-import com.yinghe.whiteboardlib.fragment.WhiteBoardFragment;
 
 /**
  * Created by Administrator on 2017/12/7.
@@ -17,9 +14,9 @@ public class WhiteboardActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_whiteboard2);
 
-        FragmentTransaction ts = getSupportFragmentManager().beginTransaction();
-        WhiteBoardFragment whiteBoardFragment = WhiteBoardFragment.newInstance();
-        ts.add(R.id.fl_main, whiteBoardFragment, "wb").commit();
+//        FragmentTransaction ts = getSupportFragmentManager().beginTransaction();
+//        WhiteBoardFragment whiteBoardFragment = WhiteBoardFragment.newInstance();
+//        ts.add(R.id.fl_main, whiteBoardFragment, "wb").commit();
     }
 
 
