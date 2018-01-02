@@ -9,16 +9,31 @@
         layout="@layout/layout_title"></include>
 
 
-    <ListView
-        android:id="@+id/KnowledgePointLV"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/titleRL"
-        android:layout_marginLeft="100dp"
-        android:layout_marginRight="100dp"
         android:layout_marginTop="10dp"
-        android:divider="#001100"
-        android:dividerHeight="0dp"></ListView>
+        android:gravity="center">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"></View>
+
+        <ListView
+            android:id="@+id/KnowledgePointLV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:divider="#001100"
+            android:dividerHeight="0dp"></ListView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"></View>
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -39,8 +54,9 @@
     <ScrollView
         android:id="@+id/tools1"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true">
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true">
 
         <LinearLayout
             android:layout_width="50dp"
