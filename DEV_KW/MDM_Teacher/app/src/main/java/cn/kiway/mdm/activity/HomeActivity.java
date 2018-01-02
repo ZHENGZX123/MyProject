@@ -29,6 +29,7 @@ import java.util.List;
 import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.Utils;
 
 
 //首页：点名、上课
@@ -158,22 +159,19 @@ public class HomeActivity extends BaseActivity {
 
     }
 
+    private Button dianming;
+
     public void dm(View view) {
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_dianming);
         dialog.show();
-
-        Button dianming = (Button) dialog.findViewById(R.id.dianming);
+        dianming = (Button) dialog.findViewById(R.id.dianming);
         dianming.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (dianming.getText().toString().equals("开始点名")) {
-                    dianming.setBackgroundResource(R.drawable.dianmingbutton2);
-                    dianming.setText("结束点名");
                     //1.发送点名请求并实时刷新界面
-//                    /device/push/teacher/sign/order
-
-
+                    doSign();
                 } else {
                     //点名结束，跳到上课
                     dialog.dismiss();
@@ -182,6 +180,32 @@ public class HomeActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    public void doSign() {
+        try {
+            //1.发“点名”推送命令
+            String url = WXApplication.serverUrl + "/device/push/teacher/sign/order";
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.setTimeout(10000);
+            client.post(HomeActivity.this, url, null, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", " onSuccess = " + ret);
+                    dianming.setBackgroundResource(R.drawable.dianmingbutton2);
+                    dianming.setText("结束点名");
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", " onFailure = " + s);
+                    Utils.check301(HomeActivity.this, s, "dianming");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

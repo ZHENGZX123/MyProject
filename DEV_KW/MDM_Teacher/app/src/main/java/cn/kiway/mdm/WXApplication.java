@@ -1,5 +1,6 @@
 package cn.kiway.mdm;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 
@@ -21,6 +22,8 @@ public class WXApplication extends Application {
     public static String ROOT = "/mnt/sdcard/kiway_mdm_teacher/";
     public static String HTML = "mdm_teacher/dist/index.html";
     public static String ZIP = "mdm_teacher.zip";
+
+    public static Activity currentActivity;
 
     @Override
     public void onCreate() {
