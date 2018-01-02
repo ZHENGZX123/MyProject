@@ -6,8 +6,19 @@ package cn.kiway.mdm.entity;
 
 public class Student {
 
-    public int id;
+    public String id;
     public String name;
+    public String classId;
+    public String mobileBrand;
+    public String studentNumber;
+    public String mobileModel;
+    public String schoolId;
+    public String platform;
+    public String token;
+    public String defaultPassword;
+    public String lastLoginDate;
+    public String createDate;
+    public String imei;
     public int status; //0没到 1到了
 
 }

@@ -253,13 +253,11 @@ public class Utils {
         return false;
     }
 
+    private static String wifiIp;
 
-    public static void shangke(Activity c, String info) {
+    public static void shangke(Activity c, String wifiIp) {
+        //TODO 老师名字、老师头像要陈峰给。。。
         try {
-            String token = new JSONObject(info).optString("token");
-            String wifiIp = new JSONObject(info).optString("wifiIp");
-            c.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
-
             //1.发“上课”推送命令
             String url = WXApplication.serverUrl + "/device/push/teacher/attendClass?flag=1&ip=" + wifiIp + "&platform=Android";
             AsyncHttpClient client = new AsyncHttpClient();
@@ -276,7 +274,7 @@ public class Utils {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
-                    check301(c, s);
+                    check301(c, s, "shangke");
                 }
             });
         } catch (Exception e) {
@@ -285,7 +283,7 @@ public class Utils {
     }
 
 
-    public static boolean check301(final Activity c, String result) {
+    public static boolean check301(final Activity c, String result, String type) {
         if (c == null) {
             return false;
         }
@@ -303,7 +301,7 @@ public class Utils {
             String url = WXApplication.serverUrl + "/device/teacher/login";
             Log.d("test", "relogin url = " + url);
             RequestParams param = new RequestParams();
-            param.put("userName", "18870263457");
+            param.put("userName", "15986812191");
             param.put("password", "123456");
             Log.d("test", "relogin param = " + param.toString());
             client.post(c, url, param, new TextHttpResponseHandler() {
@@ -315,6 +313,11 @@ public class Utils {
                         JSONObject o = new JSONObject(ret);
                         String token = o.getJSONObject("data").getString("token");
                         c.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
+                        if (type.equals("shangke")) {
+                            shangke(c, wifiIp);
+                        }else if (type.equals("xiake")){
+                            xiake(c);
+                        }
                     } catch (Exception e) {
                     }
                 }
@@ -331,14 +334,14 @@ public class Utils {
         return true;
     }
 
-    public static void xiake(Activity activity) {
+    public static void xiake(Activity c) {
         try {
             //1.发“下课”推送命令
             String url = WXApplication.serverUrl + "/device/push/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
             AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", activity.getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
-            client.post(activity, url, null, new TextHttpResponseHandler() {
+            client.post(c, url, null, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
@@ -347,6 +350,7 @@ public class Utils {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
+                    check301(c, s, "xiake");
                 }
             });
         } catch (Exception e) {
