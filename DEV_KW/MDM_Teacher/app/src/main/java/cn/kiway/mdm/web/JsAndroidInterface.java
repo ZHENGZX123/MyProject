@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 
+import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ViewPhotosActivity;
 import cn.kiway.mdm.scoket.ScreenActivity;
@@ -32,7 +33,6 @@ import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
 
-import static cn.kiway.mdm.WXApplication.url;
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.MessageType.SHARE_FILE;
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.NettyServerBootstrap.staute;
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.PushServer.FilePath;
@@ -220,7 +220,7 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public String getHost() {
-        return url;
+        return WXApplication.serverUrl;
     }
 
     @JavascriptInterface
