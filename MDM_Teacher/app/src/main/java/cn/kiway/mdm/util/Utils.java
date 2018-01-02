@@ -317,6 +317,8 @@ public class Utils {
                             shangke(c, wifiIp);
                         } else if (type.equals("xiake")) {
                             xiake(c);
+                        } else if (type.equals("dianming")) {
+                            ((HomeActivity) WXApplication.currentActivity).doSign();
                         }
                     } catch (Exception e) {
                     }
