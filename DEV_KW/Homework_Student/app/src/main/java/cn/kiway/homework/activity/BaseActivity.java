@@ -43,6 +43,7 @@ import ly.count.android.api.Countly;
 
 import static cn.kiway.homework.util.Utils.SYS_EMUI;
 import static cn.kiway.homework.util.Utils.SYS_MIUI;
+import static cn.kiway.homework.util.Utils.SYS_OTHER;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -50,8 +51,10 @@ import static cn.kiway.homework.util.Utils.SYS_MIUI;
 
 public class BaseActivity extends Activity {
     public void huaweiPush() {
-        PushManager.requestToken(this);
-        Log.i("huawei", "try to get Token ,current packageName is " + this.getPackageName());
+        if (Utils.getSystem().equals(SYS_EMUI)) {
+            PushManager.requestToken(this);
+            Log.i("huawei", "try to get Token ,current packageName is " + this.getPackageName());
+        }
     }
 
     public void toast(final String txt) {
@@ -174,7 +177,7 @@ public class BaseActivity extends Activity {
                 case SYS_EMUI:
                     deviceId = huaweitoken;
                     break;
-                case Utils.SYS_OTHER:
+                case SYS_OTHER:
                     deviceId = othertoken;
                     break;
             }
@@ -226,7 +229,7 @@ public class BaseActivity extends Activity {
                 case SYS_EMUI:
                     deviceId = huaweitoken;
                     break;
-                case Utils.SYS_OTHER:
+                case SYS_OTHER:
                     deviceId = othertoken;
                     break;
             }
