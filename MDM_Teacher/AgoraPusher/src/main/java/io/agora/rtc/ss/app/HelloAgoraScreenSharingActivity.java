@@ -146,7 +146,7 @@ public class HelloAgoraScreenSharingActivity extends Activity {
                 throw new RuntimeException("Can not work on device do not supporting texture" + mRtcEngine.isTextureEncodeSupported());
             }
 
-            mRtcEngine.setVideoProfile(Constants.VIDEO_PROFILE_720P, true);
+            mRtcEngine.setVideoProfile(Constants.VIDEO_PROFILE_1080P, true);
 
             mRtcEngine.setClientRole(Constants.CLIENT_ROLE_BROADCASTER, null);
         }
@@ -219,6 +219,8 @@ public class HelloAgoraScreenSharingActivity extends Activity {
             button.setText(R.string.label_stop_sharing_your_screen);
 
             mRtcEngine.joinChannel(null, channel, "", 0);
+
+
         } else {
             TextView tv = (TextView) findViewById(R.id.channel_name_info);
             tv.setText(R.string.label_hello_agora);
@@ -297,7 +299,6 @@ public class HelloAgoraScreenSharingActivity extends Activity {
 //    }
 
     public void toast(final String txt) {
-        Log.d("test", "toast is called");
         runOnUiThread(new Runnable() {
 
             @Override
