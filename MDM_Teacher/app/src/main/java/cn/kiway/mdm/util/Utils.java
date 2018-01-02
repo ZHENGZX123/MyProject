@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -231,39 +232,87 @@ public class Utils {
         return str;
     }
 
-    public static void shangke(Activity activity, String info) {
+    public static void shangke(Activity c, String info) {
         try {
             String token = new JSONObject(info).optString("token");
             String wifiIp = new JSONObject(info).optString("wifiIp");
-            activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
+            c.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
 
             //1.发“上课”推送命令
-            String url = WXApplication.url + "/device/teacher/attendClass?flag=1&ip=" + wifiIp + "&platform=Android";
+            String url = WXApplication.serverUrl + "/device/teacher/attendClass?flag=1&ip=" + wifiIp + "&platform=Android";
             AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", activity.getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
-            client.post(activity, url, null, new TextHttpResponseHandler() {
+            client.post(c, url, null, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
+                    //2.跳页
+                    c.startActivity(new Intent(c, HomeActivity.class));
                 }
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
+                    check301(c, s);
                 }
             });
-            //2.跳页
-            activity.startActivity(new Intent(activity, HomeActivity.class));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
+    public static boolean check301(final Activity c, String result) {
+        if (c == null) {
+            return false;
+        }
+        if (TextUtils.isEmpty(result)) {
+            return false;
+        }
+        try {
+            int statusCode = new JSONObject(result).optInt("statusCode");
+            if (statusCode != 301) {
+                return false;
+            }
+            Log.d("test", "301 happen");
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            String url = WXApplication.serverUrl + "/device/teacher/login";
+            Log.d("test", "relogin url = " + url);
+            RequestParams param = new RequestParams();
+            param.put("userName", "18870263457");
+            param.put("password", "123456");
+            Log.d("test", "relogin param = " + param.toString());
+            client.post(c, url, param, new TextHttpResponseHandler() {
+
+                @Override
+                public void onSuccess(int arg0, Header[] arg1, String ret) {
+                    Log.d("test", "relogin  onSuccess = " + ret);
+                    try {
+                        JSONObject o = new JSONObject(ret);
+                        String token = o.getJSONObject("data").getString("token");
+                        c.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
+                    } catch (Exception e) {
+                    }
+                }
+
+                @Override
+                public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                    Log.d("test", "relogin  failure");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("test", "relogin exception = " + e.toString());
+        }
+        return true;
+    }
+
     public static void xiake(Activity activity) {
         try {
             //1.发“下课”推送命令
-            String url = WXApplication.url + "/device/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
+            String url = WXApplication.serverUrl + "/device/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", activity.getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);

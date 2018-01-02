@@ -15,9 +15,10 @@ import cn.kiway.mdm.service.RecordService;
 
 public class WXApplication extends Application {
 
-    public static String url = "http://202.104.136.9:8084";//测试地址8390
-    public static String uploadUrl = "http://202.104.136.9:8083";//测试地址8390
-    //public static String url = "http://yuertong.com/mdms";//测试地址8390
+    //public static String url = "http://yuertong.com/mdms";
+
+    public static String serverUrl = "http://192.168.8.161:8085";
+    public static String clientUrl = "http://192.168.8.161:8083";
 
     public static String ROOT = "/mnt/sdcard/kiway_mdm_teacher/";
     public static String HTML = "mdm_teacher/dist/index.html";
