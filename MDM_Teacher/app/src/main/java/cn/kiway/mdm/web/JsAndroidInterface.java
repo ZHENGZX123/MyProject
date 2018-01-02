@@ -291,7 +291,14 @@ public class JsAndroidInterface {
     @JavascriptInterface
     public void shangke(String info) {
         Log.d("test", "shangke info = " + info);
-        Utils.shangke(this.activity, info);
+        try {
+            String token = new JSONObject(info).optString("token");
+            String wifiIp = new JSONObject(info).optString("wifiIp");
+            activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
+            Utils.shangke(this.activity, wifiIp);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 

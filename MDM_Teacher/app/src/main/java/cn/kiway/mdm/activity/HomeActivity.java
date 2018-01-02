@@ -3,6 +3,7 @@ package cn.kiway.mdm.activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,19 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
 
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
 
@@ -47,12 +59,33 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void initData() {
-        for (int i = 0; i < 50; i++) {
-            Student s = new Student();
-            s.name = "学生" + i;
-            students.add(s);
+        try {
+            String url = WXApplication.serverUrl + "/device/teacher/class/students";
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.setTimeout(10000);
+            client.get(this, url, null, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", " onSuccess = " + ret);
+                    try {
+                        JSONArray data = new JSONObject(ret).optJSONArray("data");
+                        students = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Student>>() {
+                        }.getType());
+                        adapter.notifyDataSetChanged();
+                    } catch (Exception e) {
+                        Log.d("test", " onFailure = " + e.toString());
+                    }
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", " onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        adapter.notifyDataSetChanged();
     }
 
     private void initListener() {
@@ -121,6 +154,7 @@ public class HomeActivity extends BaseActivity {
         public long getItemId(int arg0) {
             return arg0;
         }
+
     }
 
     public void dm(View view) {
