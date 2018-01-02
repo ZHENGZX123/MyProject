@@ -49,7 +49,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/android-async-http-1.4.5.jar')
     compile files('libs/zip4j_1.3.1.jar')
-    compile project(':photoview')
     compile files('libs/netty-all-4.0.51.Final.jar')
     sourceCompatibility = '1.7'
     targetCompatibility = '1.7'
