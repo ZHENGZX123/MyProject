@@ -16,9 +16,17 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 
+import cn.kiway.mdm.WXApplication;
+import cn.kiway.mdm.activity.HomeActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.teacher.R;
 
@@ -223,4 +231,55 @@ public class Utils {
         return str;
     }
 
+    public static void shangke(Activity activity, String info) {
+        try {
+            String token = new JSONObject(info).optString("token");
+            String wifiIp = new JSONObject(info).optString("wifiIp");
+            activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
+
+            //1.发“上课”推送命令
+            String url = WXApplication.url + "/device/teacher/attendClass?flag=1&ip=" + wifiIp + "&platform=Android";
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", activity.getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.setTimeout(10000);
+            client.post(activity, url, null, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", " onSuccess = " + ret);
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", " onFailure = " + s);
+                }
+            });
+            //2.跳页
+            activity.startActivity(new Intent(activity, HomeActivity.class));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void xiake(Activity activity) {
+        try {
+            //1.发“下课”推送命令
+            String url = WXApplication.url + "/device/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", activity.getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.setTimeout(10000);
+            client.post(activity, url, null, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", " onSuccess = " + ret);
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", " onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

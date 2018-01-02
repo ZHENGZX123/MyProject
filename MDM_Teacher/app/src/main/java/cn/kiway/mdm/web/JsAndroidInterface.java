@@ -17,7 +17,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 
-import cn.kiway.mdm.activity.HomeActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ViewPhotosActivity;
 import cn.kiway.mdm.scoket.ScreenActivity;
@@ -161,7 +160,7 @@ public class JsAndroidInterface {
     @JavascriptInterface
     public void chooseFile(String token) {//选择文件
         accessToken = token;
-        activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token);
+        activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
         new LFilePicker()
                 .withActivity(activity)
                 .withTitle(activity.getString(R.string.filepath))
@@ -292,17 +291,15 @@ public class JsAndroidInterface {
     @JavascriptInterface
     public void shangke(String info) {
         Log.d("test", "shangke info = " + info);
-        this.activity.toast("上课");
-        //1.发“上课”推送命令
-        //2.跳页
-        this.activity.startActivity(new Intent(this.activity, HomeActivity.class));
+        Utils.shangke(this.activity, info);
     }
+
 
     @JavascriptInterface
     public void prepareFile(String token) {//选择文件-备课专用，同chooseFile，上传完成后拷贝文件到FilePath
         Log.d("test", "prepareFile is called");
         accessToken = token;
-        activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token);
+        activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
         new LFilePicker()
                 .withActivity(activity)
                 .withTitle(activity.getString(R.string.filepath2))
