@@ -106,6 +106,7 @@ public class RecordService extends Service {
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);//AMR_NB
         mediaRecorder.setVideoEncodingBitRate(5 * 1024 * 1024);
         mediaRecorder.setVideoFrameRate(12);//30
+        mediaRecorder.setMaxDuration(45 * 60 * 1000);//45分钟
         try {
             mediaRecorder.prepare();
         } catch (IOException e) {
