@@ -337,7 +337,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         }
         if (db == null)
             db = getWritableDatabase();
-        Log.d("test", "删除记录:" + tagname);
+        MLog.d("test", "删除记录:" + tagname);
 
         if (tagname.contains(",")) {
             String[] tagnames = tagname.split(",");

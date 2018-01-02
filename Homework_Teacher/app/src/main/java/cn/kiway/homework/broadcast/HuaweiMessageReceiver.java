@@ -10,6 +10,7 @@ import android.util.Log;
 import com.huawei.android.pushagent.api.PushEventReceiver;
 
 import cn.kiway.homework.activity.MainActivity;
+import cn.kiway.homework.util.MLog;
 import cn.kiway.homework.util.MyDBHelper;
 
 /*
@@ -53,7 +54,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             }
             String content = "收到通知附加消息： " + extras.getString(BOUND_KEY.pushMsgKey);
             Log.d("huawei", content);
-            Log.d("test", "存了一个event");
+            MLog.d("test", "存了一个event");
             context.getSharedPreferences("kiway", 0).edit().putString("event", content.replace("[", "").replace("]", "")).commit();
 
             //没有接收消息的event，只好暂时放这里了 TODO

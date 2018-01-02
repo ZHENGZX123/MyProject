@@ -69,7 +69,7 @@ public class Utils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d("test", "SYS = " + SYS);
+        MLog.d("test", "SYS = " + SYS);
         return SYS;
     }
 

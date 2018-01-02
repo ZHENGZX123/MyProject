@@ -72,7 +72,7 @@ public class UploadUtil {
                 dos.write(end_data);
                 dos.flush();
                 int code = conn.getResponseCode();
-                Log.d("test", "code = " + code);
+                MLog.d("test", "code = " + code);
                 if (code == 200) {
                     InputStream input = conn.getInputStream();
                     StringBuffer sb1 = new StringBuffer();
@@ -81,7 +81,7 @@ public class UploadUtil {
                         sb1.append((char) ss);
                     }
                     result = sb1.toString();
-                    Log.d("test", "upload result = " + result);
+                    MLog.d("test", "upload result = " + result);
                 }
             }
         } catch (MalformedURLException e) {
