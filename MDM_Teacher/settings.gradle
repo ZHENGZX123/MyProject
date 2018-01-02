@@ -1,1 +1,1 @@
-include ':app', ':zxing', ":lfilepickerlibrary", ":photoview", ':AgoraPusher'
+include ':app', ":lfilepickerlibrary", ":photoview", ':AgoraPusher'
