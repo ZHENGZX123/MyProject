@@ -70,11 +70,11 @@ public class WhiteBoardActivity extends BaseActivity {
         wv.setWebViewClient(new MyWebViewClient());
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new com.tencent.smtt.sdk.WebChromeClient());
-        wv.addJavascriptInterface(new JsAndroidInterface(), "wx");
+        wv.addJavascriptInterface(new JsAndroidInterface2(), "wx");
     }
 
-    public class JsAndroidInterface {
-        public JsAndroidInterface() {
+    public class JsAndroidInterface2 {
+        public JsAndroidInterface2() {
         }
 
         @JavascriptInterface
