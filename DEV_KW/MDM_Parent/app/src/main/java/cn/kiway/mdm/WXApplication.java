@@ -68,8 +68,6 @@ public class WXApplication extends Application {
         displayImageOptionsBuilder
                 .imageScaleType(ImageScaleType.NONE);
 
-        File cacheDir = StorageUtils.getOwnCacheDirectory(this,
-                "imageloader/weex");
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
                 this)
                 .memoryCacheExtraOptions(displayMetrics.widthPixels,
