@@ -34,9 +34,9 @@ import javax.crypto.spec.DESKeySpec;
 
 import cn.kiway.homework.WXApplication;
 import cn.kiway.homework.entity.KV;
-import cn.kiway.homework.util.CountlyUtil;
 import cn.kiway.homework.util.FileUtils;
 import cn.kiway.homework.util.HttpDownload;
+import cn.kiway.homework.util.MLog;
 import cn.kiway.homework.util.MyDBHelper;
 import cn.kiway.homework.util.Utils;
 import ly.count.android.api.Countly;
@@ -130,7 +130,7 @@ public class BaseActivity extends Activity {
             byte[] result = decrypt(read, "kiwaykiway123456abcdefghijklmnop");
             System.out.println("解密后：" + new String(result));
             InputStream is2 = new ByteArrayInputStream(result);
-            Log.d("test", "解密文件" + url + "，耗时:" + (System.currentTimeMillis() - start));
+            MLog.d("test", "解密文件" + url + "，耗时:" + (System.currentTimeMillis() - start));
             return is2;
         } catch (Exception e) {
             e.printStackTrace();
@@ -165,9 +165,9 @@ public class BaseActivity extends Activity {
             String huaweitoken = getSharedPreferences("kiway", 0).getString("huaweitoken", "");
             String othertoken = getSharedPreferences("kiway", 0).getString("othertoken", "");
             client.addHeader("X-Auth-Token", accessToken);
-            Log.d("test", "xiaomitoken = " + xiaomitoken);
-            Log.d("test", "huaweitoken = " + huaweitoken);
-            Log.d("test", "othertoken = " + othertoken);
+            MLog.d("test", "xiaomitoken = " + xiaomitoken);
+            MLog.d("test", "huaweitoken = " + huaweitoken);
+            MLog.d("test", "othertoken = " + othertoken);
             String type = Utils.getSystem();
             String deviceId = "";
             switch (type) {
@@ -217,9 +217,9 @@ public class BaseActivity extends Activity {
             String huaweitoken = getSharedPreferences("kiway", 0).getString("huaweitoken", "");
             String othertoken = getSharedPreferences("kiway", 0).getString("othertoken", "");
             client.addHeader("X-Auth-Token", accessToken);
-            Log.d("test", "xiaomitoken = " + xiaomitoken);
-            Log.d("test", "huaweitoken = " + huaweitoken);
-            Log.d("test", "othertoken = " + othertoken);
+            MLog.d("test", "xiaomitoken = " + xiaomitoken);
+            MLog.d("test", "huaweitoken = " + huaweitoken);
+            MLog.d("test", "othertoken = " + othertoken);
             String type = Utils.getSystem();
             String deviceId = "";
             switch (type) {
@@ -290,13 +290,13 @@ public class BaseActivity extends Activity {
         client.get(this, url, new TextHttpResponseHandler() {
             @Override
             public void onSuccess(int code, Header[] headers, String ret) {
-                Log.d("test", "getBooks onSuccess = " + ret);
+                MLog.d("test", "getBooks onSuccess = " + ret);
                 downloadBooks(ret);
             }
 
             @Override
             public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                Log.d("test", "getBooks onFailure = " + s);
+                MLog.d("test", "getBooks onFailure = " + s);
             }
         });
     }
@@ -311,7 +311,7 @@ public class BaseActivity extends Activity {
                     for (int i = 0; i < count; i++) {
                         JSONObject o = array.getJSONObject(i);
                         String id = o.getString("id");
-                        Log.d("test", "id = " + id);
+                        MLog.d("test", "id = " + id);
                         //0.检查本地是否存在
                         if (new File(WXApplication.BOOKS + id + ".zip").exists()) {
                             continue;
@@ -319,30 +319,30 @@ public class BaseActivity extends Activity {
                         //1.下载
                         String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
                         String downloadurl = WXApplication.url + "/resource/book/" + id + "?access_token=" + token;
-                        Log.d("test", "downloadurl = " + downloadurl);
+                        MLog.d("test", "downloadurl = " + downloadurl);
                         int ret = new HttpDownload().downFile(downloadurl, "/mnt/sdcard/books/", id + ".zip");
-                        Log.d("test", "下载结果 ret = " + ret);
+                        MLog.d("test", "下载结果 ret = " + ret);
                         if (ret == 0) {
                             //2.解压
                             new ZipFile(WXApplication.BOOKS + id + ".zip").extractAll(WXApplication.BOOKS + id);
                             //3.读取data.json文件
                             String filepath = WXApplication.BOOKS + id + "/data.json";
                             String content = FileUtils.readSDCardFile(filepath, getApplicationContext());
-                            Log.d("test", "content = " + content);
+                            MLog.d("test", "content = " + content);
                             JSONObject all = new JSONObject(content);
                             Iterator<String> keys = all.keys();
                             while (keys.hasNext()) {
                                 String key = keys.next();
                                 String value = all.getString(key);
-                                Log.d("test", "key = " + key);
-                                Log.d("test", "value = " + value);
+                                MLog.d("test", "key = " + key);
+                                MLog.d("test", "value = " + value);
                                 //4.插入数据库
                                 KV a = new KV();
                                 a.k = key;
                                 a.v = value;
                                 new MyDBHelper(getApplicationContext()).addKV(a);
                             }
-                            Log.d("test", "book" + id + "插入sql完毕");
+                            MLog.d("test", "book" + id + "插入sql完毕");
                         }
                     }
                 } catch (Exception e) {
