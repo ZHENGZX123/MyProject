@@ -369,12 +369,9 @@ public class Course0Activity extends ScreenSharingActivity {
 
         private void addContent1(ViewHolder holder) {
             holder.type1RL.removeAllViews();
-            Button btn = new Button(Course0Activity.this);
-            btn.setBackgroundColor(Color.WHITE);
-            btn.setTextColor(Color.BLACK);
-            btn.setText("有理数.doc");
-            holder.type1RL.addView(btn);
-            btn.setOnClickListener(new View.OnClickListener() {
+            LinearLayout layout_doc = (LinearLayout) inflater.inflate(R.layout.layout_doc, null);
+            holder.type1RL.addView(layout_doc, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            layout_doc.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     openFileByX5("");
@@ -385,11 +382,11 @@ public class Course0Activity extends ScreenSharingActivity {
         private void addContent0(ViewHolder holder) {
             holder.type0RL.removeAllViews();
             TextView tv = new TextView(Course0Activity.this);
-            tv.setBackgroundColor(Color.WHITE);
+            tv.setTextColor(Color.WHITE);
             tv.setText("（一）创设情境，导入新课");
             holder.type0RL.addView(tv);
             TextView tv2 = new TextView(Course0Activity.this);
-            tv2.setBackgroundColor(Color.WHITE);
+            tv2.setTextColor(Color.WHITE);
             tv2.setText("（二）合作交流，解读探究");
             holder.type0RL.addView(tv2);
         }
