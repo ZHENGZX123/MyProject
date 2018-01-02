@@ -42,6 +42,16 @@ public class BaseActivity extends Activity {
         rk = (ImageButton) findViewById(R.id.rk);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        boolean expandTool = getSharedPreferences("kiway", 0).getBoolean("expandTool", true);
+        if (expandTool) {
+            showTool();
+        } else {
+            hideTool();
+        }
+    }
 
     public void toast(final String txt) {
         runOnUiThread(new Runnable() {
@@ -60,7 +70,6 @@ public class BaseActivity extends Activity {
 
             @Override
             public void run() {
-
                 Toast.makeText(BaseActivity.this, txt, Toast.LENGTH_SHORT)
                         .show();
             }
@@ -69,22 +78,37 @@ public class BaseActivity extends Activity {
 
     //----------------------------------工具栏点击事件------------------------------
 
-    private boolean expandTool = true;
 
     public void gj(View view) {
+        boolean expandTool = getSharedPreferences("kiway", 0).getBoolean("expandTool", true);
         expandTool = !expandTool;
         if (expandTool) {
+            showTool();
+        } else {
+            hideTool();
+        }
+        getSharedPreferences("kiway", 0).edit().putBoolean("expandTool", expandTool).commit();
+    }
+
+    private void showTool() {
+        try {
             dm.setVisibility(View.VISIBLE);
             sk.setVisibility(View.VISIBLE);
             wdq.setVisibility(View.VISIBLE);
             cp.setVisibility(View.VISIBLE);
             rk.setVisibility(View.VISIBLE);
-        } else {
+        } catch (Exception e) {
+        }
+    }
+
+    private void hideTool() {
+        try {
             dm.setVisibility(View.GONE);
             sk.setVisibility(View.GONE);
             wdq.setVisibility(View.GONE);
             cp.setVisibility(View.GONE);
             rk.setVisibility(View.GONE);
+        } catch (Exception e) {
         }
     }
 
