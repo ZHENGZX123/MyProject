@@ -65,8 +65,10 @@ public class KWApp extends Application {
     public static final int MSG_PUSH_FILE_I = 19;//局域网接收文件
 
     public static KWApp instance;
-    public static boolean temporary_app = false;
     public Activity currentActivity;
+
+    public static boolean temporary_app = false;//临时管控
+    private static boolean attendClass = false;//上课
 
     public Handler mHandler = new Handler() {
         @Override
@@ -116,7 +118,7 @@ public class KWApp extends Application {
                 Utils.launchApp(getApplicationContext(), (JSONObject) msg.obj);
             } else if (msg.what == MSG_LAUNCH_MDM) {
                 temporary_app = false;
-                //返回MDM桌面
+                //TODO这里不能回到MDM桌面
                 Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.mdm");
                 startActivity(intent);
             } else if (msg.what == MSG_FLAGCOMMAND) {
@@ -160,15 +162,17 @@ public class KWApp extends Application {
                     }
                     Intent in = getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
                     if (in != null) {
+                        attendClass = true;
                         in.putExtra("shangke", msg.obj.toString());
                         RemoteAidlService.attendClass(msg.obj.toString());
                         Utils.startPackage(KWApp.instance, ZHIHUIKETANGPG, in);
                     }
                 }
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
+                attendClass = false;
                 RemoteAidlService.goOutClass();
             } else if (msg.what == MSG_MESSAGE) {
-                RemoteAidlService.accpterMessage(currentActivity,msg.obj.toString());
+                RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
             } else if (msg.what == MSG_PUSH_FILE_I) {
             }
         }

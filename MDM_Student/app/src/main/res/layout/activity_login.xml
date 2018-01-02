@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/login">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -28,14 +28,14 @@
                 android:paddingTop="10dp"
                 android:text="学校："
                 android:textColor="#2b0fa1"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="1px"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
-                android:background="#342086"/>
+                android:background="#342086" />
 
             <Button
                 android:id="@+id/schollBtn"
@@ -46,7 +46,7 @@
                 android:padding="10dp"
                 android:text="请点击选择学校"
                 android:textColor="#2b0fa1"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -68,14 +68,14 @@
                 android:paddingTop="10dp"
                 android:text="班级："
                 android:textColor="#2b0fa1"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="1px"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
-                android:background="#342086"/>
+                android:background="#342086" />
 
             <Button
                 android:id="@+id/classBtn"
@@ -86,7 +86,7 @@
                 android:padding="10dp"
                 android:text="请点击选择班级"
                 android:textColor="#2b0fa1"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -108,14 +108,14 @@
                 android:paddingTop="10dp"
                 android:text="学号："
                 android:textColor="#2b0fa1"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="1px"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
-                android:background="#342086"/>
+                android:background="#342086" />
 
             <EditText
                 android:id="@+id/codeET"
@@ -127,7 +127,7 @@
                 android:singleLine="true"
                 android:text=""
                 android:textColor="#2b0fa1"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -149,14 +149,14 @@
                 android:paddingTop="10dp"
                 android:text="姓名："
                 android:textColor="#2b0fa1"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="1px"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
-                android:background="#342086"/>
+                android:background="#342086" />
 
             <EditText
                 android:id="@+id/nameET"
@@ -168,7 +168,7 @@
                 android:singleLine="true"
                 android:text=""
                 android:textColor="#2b0fa1"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -182,6 +182,6 @@
             android:onClick="clickLogin"
             android:padding="15dp"
             android:text="登录"
-            android:textColor="#2b0fa1"/>
+            android:textColor="#2b0fa1" />
     </LinearLayout>
 </RelativeLayout>
