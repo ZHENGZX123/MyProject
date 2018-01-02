@@ -79,8 +79,8 @@ public class WhiteBoardActivity extends BaseActivity {
 
         @JavascriptInterface
         public String setBackgroundImage() {
-            Log.d("test", "setBackgroundImage");
-            return "file:///mnt/sdcard/test.jpg";
+            Log.d("test", "setBackgroundImage is called");
+            return "/mnt/sdcard/test.jpg";
         }
 
         @JavascriptInterface
