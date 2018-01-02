@@ -385,9 +385,11 @@ public class Course0Activity extends ScreenSharingActivity {
         private void addContent0(ViewHolder holder) {
             holder.type0RL.removeAllViews();
             TextView tv = new TextView(Course0Activity.this);
+            tv.setBackgroundColor(Color.WHITE);
             tv.setText("（一）创设情境，导入新课");
             holder.type0RL.addView(tv);
             TextView tv2 = new TextView(Course0Activity.this);
+            tv2.setBackgroundColor(Color.WHITE);
             tv2.setText("（二）合作交流，解读探究");
             holder.type0RL.addView(tv2);
         }
