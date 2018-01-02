@@ -1873,15 +1873,12 @@ public class Utils {
             m.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    //1
                     MDMHelper.getAdapter().shutdownDevice();
                 }
             });
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public static boolean checkCallEnable(Context c, String incomingNumber) {
