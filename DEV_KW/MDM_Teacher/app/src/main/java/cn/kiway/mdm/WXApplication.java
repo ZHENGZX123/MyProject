@@ -15,8 +15,6 @@ import cn.kiway.mdm.service.RecordService;
 
 public class WXApplication extends Application {
 
-    //public static String url = "http://yuertong.com/mdms";
-
     public static String serverUrl = "http://192.168.8.161:8085";
     public static String clientUrl = "http://192.168.8.161:8083";
 
