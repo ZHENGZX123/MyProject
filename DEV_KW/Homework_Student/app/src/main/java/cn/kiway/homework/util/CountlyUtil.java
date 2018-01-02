@@ -52,7 +52,7 @@ public class CountlyUtil {
             totalcount += count;
         }
         //3.攒够50条，发出去
-        if (totalcount >= 50) {
+        if (totalcount >= 10) {
             sendAll();
         }
     }
