@@ -38,8 +38,6 @@ public class WhiteBoardActivity extends BaseActivity {
 
     private void load() {
         wv.loadUrl("file:///android_asset/dist/index.html");
-
-        wv.loadUrl();
     }
 
     private void initData() {
@@ -77,6 +75,12 @@ public class WhiteBoardActivity extends BaseActivity {
 
     public class JsAndroidInterface {
         public JsAndroidInterface() {
+        }
+
+        @JavascriptInterface
+        public String setBackgroundImage() {
+            Log.d("test", "setBackgroundImage");
+            return "file:///mnt/sdcard/test.jpg";
         }
 
         @JavascriptInterface
