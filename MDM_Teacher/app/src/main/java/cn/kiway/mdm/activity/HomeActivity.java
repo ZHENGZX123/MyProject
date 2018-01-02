@@ -81,6 +81,7 @@ public class HomeActivity extends BaseActivity {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
+                    //TODO Utils.check301(HomeActivity.this, s, "students");
                 }
             });
         } catch (Exception e) {
@@ -169,9 +170,13 @@ public class HomeActivity extends BaseActivity {
                 if (dianming.getText().toString().equals("开始点名")) {
                     dianming.setBackgroundResource(R.drawable.dianmingbutton2);
                     dianming.setText("结束点名");
+                    //1.发送点名请求并实时刷新界面
+//                    /device/push/teacher/sign/order
+
+
                 } else {
-                    dialog.dismiss();
                     //点名结束，跳到上课
+                    dialog.dismiss();
                     startActivity(new Intent(HomeActivity.this, CourseListActivity.class));
                     finish();
                 }
