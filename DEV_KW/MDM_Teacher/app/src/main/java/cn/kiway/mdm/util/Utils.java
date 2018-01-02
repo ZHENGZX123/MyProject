@@ -257,6 +257,7 @@ public class Utils {
 
     public static void shangke(Activity c, String wifiIp) {
         //TODO 老师名字、老师头像要陈峰给。。。
+        Utils.wifiIp = wifiIp;
         try {
             //1.发“上课”推送命令
             String url = WXApplication.serverUrl + "/device/push/teacher/attendClass?flag=1&ip=" + wifiIp + "&platform=Android";
@@ -282,7 +283,6 @@ public class Utils {
         }
     }
 
-
     public static boolean check301(final Activity c, String result, String type) {
         if (c == null) {
             return false;
@@ -301,7 +301,7 @@ public class Utils {
             String url = WXApplication.serverUrl + "/device/teacher/login";
             Log.d("test", "relogin url = " + url);
             RequestParams param = new RequestParams();
-            param.put("userName", "15986812191");
+            param.put("userName", "15986812191");//FIXME
             param.put("password", "123456");
             Log.d("test", "relogin param = " + param.toString());
             client.post(c, url, param, new TextHttpResponseHandler() {
@@ -315,7 +315,7 @@ public class Utils {
                         c.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
                         if (type.equals("shangke")) {
                             shangke(c, wifiIp);
-                        }else if (type.equals("xiake")){
+                        } else if (type.equals("xiake")) {
                             xiake(c);
                         }
                     } catch (Exception e) {
