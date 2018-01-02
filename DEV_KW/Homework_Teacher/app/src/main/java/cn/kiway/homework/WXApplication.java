@@ -26,7 +26,11 @@ import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.kiway.homework.util.CountlyUtil;
+import cn.kiway.homework.util.Utils;
 import ly.count.android.api.Countly;
+
+import static cn.kiway.homework.util.Utils.SYS_MIUI;
+import static cn.kiway.homework.util.Utils.SYS_OTHER;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -70,7 +74,7 @@ public class WXApplication extends Application {
         //小米推送
         // 注册push服务，注册成功后会向DemoMessageReceiver发送广播
         // 可以从DemoMessageReceiver的onCommandResult方法中MiPushCommandMessage对象参数中获取注册信息
-        if (shouldInit()) {
+        if (Utils.getSystem().equals(SYS_MIUI) && shouldInit()) {
             MiPushClient.registerPush(this, APP_ID, APP_KEY);
         }
 
@@ -79,8 +83,10 @@ public class WXApplication extends Application {
         CountlyUtil.getInstance().init(this);
 
         //jpush
-        JPushInterface.setDebugMode(true);
-        JPushInterface.init(this);
+        if (Utils.getSystem().equals(SYS_OTHER)){
+            JPushInterface.setDebugMode(false);
+            JPushInterface.init(this);
+        }
 
         //xutils
         x.Ext.init(this);
