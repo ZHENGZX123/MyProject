@@ -15,6 +15,7 @@ import java.util.List;
 import cn.kiway.homework.activity.MainActivity;
 import cn.kiway.homework.teacher.R;
 import cn.kiway.homework.util.BadgeUtil;
+import cn.kiway.homework.util.MLog;
 import cn.kiway.homework.util.MyDBHelper;
 
 
@@ -67,7 +68,7 @@ public class XiaomiMessageReceiver extends PushMessageReceiver {
     public void onNotificationMessageClicked(Context context, MiPushMessage message) {
         Log.v(TAG, "onNotificationMessageClicked is called. " + message.toString());
         String value = message.getExtra().get("extras");
-        Log.d("test", "value = " + value);
+        MLog.d("test", "value = " + value);
         context.getSharedPreferences("kiway", 0).edit().putString("event", value).commit();
         context.startActivity(new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
@@ -167,7 +168,7 @@ public class XiaomiMessageReceiver extends PushMessageReceiver {
         if (MiPushClient.COMMAND_REGISTER.equals(command)) {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
                 token = cmdArg1;
-                Log.d("test", "regId = " + token);
+                MLog.d("test", "regId = " + token);
                 context.getSharedPreferences("kiway", 0).edit().putString("xiaomitoken", token).commit();
                 log = context.getString(R.string.register_success);
             } else {

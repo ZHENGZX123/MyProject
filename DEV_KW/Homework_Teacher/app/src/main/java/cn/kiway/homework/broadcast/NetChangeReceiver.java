@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import java.text.DecimalFormat;
 
+import cn.kiway.homework.util.MLog;
 import cn.kiway.homework.util.Utils;
 
 public class NetChangeReceiver extends BroadcastReceiver {
@@ -17,7 +17,7 @@ public class NetChangeReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("test", "NetChangeBroadcast onReceive");
+        MLog.d("test", "NetChangeBroadcast onReceive");
         Utils.checkNetWork(context, true);
     }
 

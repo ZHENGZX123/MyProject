@@ -15,6 +15,7 @@ import java.util.Iterator;
 import cn.jpush.android.api.JPushInterface;
 import cn.kiway.homework.activity.MainActivity;
 import cn.kiway.homework.util.BadgeUtil;
+import cn.kiway.homework.util.MLog;
 import cn.kiway.homework.util.MyDBHelper;
 
 /**
@@ -61,7 +62,7 @@ public class JPushMessageReceiver extends BroadcastReceiver {
                 Log.d(TAG, "[MyReceiver] 用户点击打开了通知");
                 String extra = bundle.getString(JPushInterface.EXTRA_EXTRA);
                 Log.d(TAG, "extra = " + extra);
-                Log.d("test", "存了一个event");
+                MLog.d("test", "存了一个event");
                 context.getSharedPreferences("kiway", 0).edit().putString("event", extra).commit();
                 Intent i = new Intent(context, MainActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);

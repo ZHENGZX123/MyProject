@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
@@ -70,6 +69,7 @@ import cn.kiway.homework.util.BadgeUtil;
 import cn.kiway.homework.util.CountlyUtil;
 import cn.kiway.homework.util.FileUtils;
 import cn.kiway.homework.util.HttpDownload;
+import cn.kiway.homework.util.MLog;
 import cn.kiway.homework.util.MyDBHelper;
 import cn.kiway.homework.util.NetworkUtil;
 import cn.kiway.homework.util.ResourceUtil;
@@ -136,7 +136,7 @@ public class MainActivity extends BaseActivity {
         username = intent.getStringExtra("username");
         password = intent.getStringExtra("password");
         tab = intent.getStringExtra("tab");
-        Log.d("test", "checkIsPad is called " + "username = " + username + " , password = " + password);
+        MLog.d("test", "checkIsPad is called " + "username = " + username + " , password = " + password);
         if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
             //手机
             user = "";
@@ -163,11 +163,11 @@ public class MainActivity extends BaseActivity {
             String lastPassword = getSharedPreferences("kiway", 0).getString("password", "");
             String lastTab = getSharedPreferences("kiway", 0).getString("tab", "");
             if (username.equals(lastUsername) && password.equals(lastPassword) && tab.equals(lastTab)) {
-                Log.d("test", "同样的用户，不用再次登录。");
+                MLog.d("test", "同样的用户，不用再次登录。");
                 return;
             }
             if (username.equals(lastUsername) && password.equals(lastPassword)) {
-                Log.d("test", "load局部，不重刷");
+                MLog.d("test", "load局部，不重刷");
                 wv.loadUrl("javascript:loadTab(" + tab + ")");
                 getSharedPreferences("kiway", 0).edit().putString("tab", tab).commit();
                 return;
@@ -192,20 +192,20 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         BadgeUtil.sendBadgeNumber(getApplicationContext(), "0");
-        Log.d("test", "onresume checking = " + checking);
+        MLog.d("test", "onresume checking = " + checking);
         if (checking) {
             new Thread() {
                 @Override
                 public void run() {
                     while (checking) {
-                        Log.d("test", "checking loop...");
+                        MLog.d("test", "checking loop...");
                         try {
                             sleep(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
-                    Log.d("test", "checking loop end");
+                    MLog.d("test", "checking loop end");
                     try {
                         sleep(3000);
                     } catch (InterruptedException e) {
@@ -222,7 +222,7 @@ public class MainActivity extends BaseActivity {
 
     private synchronized void checkNotification() {
         final String event = getSharedPreferences("kiway", 0).getString("event", "");
-        Log.d("test", "取了一个event = " + event);
+        MLog.d("test", "取了一个event = " + event);
         if (TextUtils.isEmpty(event)) {
             return;
         }
@@ -231,7 +231,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 //告诉前端做动作。
-                Log.d("test", "notificationCallback");
+                MLog.d("test", "notificationCallback");
                 wv.loadUrl("javascript:notificationCallback('" + event + "')");
             }
         });
@@ -280,7 +280,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                Log.d("test", "onPageFinished url = " + url);
+                MLog.d("test", "onPageFinished url = " + url);
             }
 
             @Override
@@ -291,7 +291,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-                Log.d("test", "shouldInterceptRequest url = " + url);
+                MLog.d("test", "shouldInterceptRequest url = " + url);
                 if ((url.startsWith("http") || url.startsWith("https"))
                         && (url.endsWith("jpg") || url.endsWith("JPG") || url.endsWith("jpeg") || url.endsWith("JPEG") || url.endsWith("png") || url.endsWith("PNG"))) {
                     InputStream is = getStreamByUrl(url);
@@ -318,7 +318,7 @@ public class MainActivity extends BaseActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             String url = wv.getUrl();
-            Log.d("test", "url = " + url);
+            MLog.d("test", "url = " + url);
             if (url.endsWith("login") || url.endsWith("exam") || url.endsWith("mine") || url.endsWith("message") || url.endsWith("index")) {
                 doFinish();
                 return true;
@@ -361,7 +361,7 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public String getOS() {
-            Log.d("test", "getOS is called");
+            MLog.d("test", "getOS is called");
             return "Android";
         }
 
@@ -372,7 +372,7 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public void login(String param) {
-            Log.d("test", "login param = " + param);
+            MLog.d("test", "login param = " + param);
             try {
                 String accessToken = new JSONObject(param).optString("accessToken");
                 String userId = new JSONObject(param).optString("userId");
@@ -389,7 +389,7 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public void logout() {
-            Log.d("test", "logout");
+            MLog.d("test", "logout");
             uninstallationPush();
         }
 
@@ -407,8 +407,8 @@ public class MainActivity extends BaseActivity {
         public void showPhoto(String param1, String param2) {
             try {
                 try {
-                    Log.d("test", "showPhoto param1 = " + param1);
-                    Log.d("test", "showPhoto param2 = " + param2);
+                    MLog.d("test", "showPhoto param1 = " + param1);
+                    MLog.d("test", "showPhoto param2 = " + param2);
                     ViewPagerActivity.sDrawables = param1.replace("[", "").replace("]", "").replace("\"", "").split(",");
                     Intent intent = new Intent(MainActivity.this, ViewPagerActivity.class);
                     intent.putExtra("position", Integer.parseInt(param2));
@@ -424,17 +424,17 @@ public class MainActivity extends BaseActivity {
         @JavascriptInterface
         public void fileUpload(String filepath) {
             filepath = filepath.replace("file://", "");
-            Log.d("test", "fileUpload , filepath = " + filepath);
+            MLog.d("test", "fileUpload , filepath = " + filepath);
             //选择图片
             final String finalFilepath = filepath;
             new Thread() {
                 @Override
                 public void run() {
                     String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
-                    Log.d("test", "取出token=" + token);
+                    MLog.d("test", "取出token=" + token);
                     File file = new File(finalFilepath);
                     final String ret = UploadUtil.uploadFile(file, url + "/common/file?access_token=" + token, file.getName());
-                    Log.d("test", "upload ret = " + ret);
+                    MLog.d("test", "upload ret = " + ret);
                     if (TextUtils.isEmpty(ret)) {
                         toast("上传图片失败，请稍后再试");
                         return;
@@ -446,7 +446,7 @@ public class MainActivity extends BaseActivity {
                                 JSONObject obj = new JSONObject(ret);
                                 String url = WXApplication.url + obj.getJSONObject("data").getString("url");
                                 obj.getJSONObject("data").put("url", url);
-                                Log.d("test", "obj = " + obj.toString());
+                                MLog.d("test", "obj = " + obj.toString());
                                 wv.loadUrl("javascript:fileUploadCallback(" + obj.toString() + ")");
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -459,14 +459,14 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public String getUser() {
-            Log.d("test", "getUser is called , user = " + user);
+            MLog.d("test", "getUser is called , user = " + user);
             return user;
         }
 
         @JavascriptInterface
         public String getVersionCode() {
             //return getCurrentVersion(MainActivity.this);
-            Log.d("test", "getVersionCode");
+            MLog.d("test", "getVersionCode");
             return getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
         }
 
@@ -543,7 +543,7 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public void setRequestedOrientation(String screen) {
-            Log.d("test", "setRequestedOrientation = " + screen);
+            MLog.d("test", "setRequestedOrientation = " + screen);
             if (Integer.parseInt(screen) == 1) {
                 MainActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             } else {
@@ -553,7 +553,7 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public String isTest() {
-            Log.d("test", "isTest is called");
+            MLog.d("test", "isTest is called");
             return WXApplication.isTest ? "1" : "0";
         }
 
@@ -572,10 +572,10 @@ public class MainActivity extends BaseActivity {
                     param = param.substring(0, param.length() - 1);
                 }
             } catch (Exception e) {
-                Log.d("test", "参数错误");
+                MLog.d("test", "参数错误");
                 return;
             }
-            Log.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , time = " + time + " , tagname = " + tagname + " , related = " + related + ", event = " + event);
+            MLog.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , time = " + time + " , tagname = " + tagname + " , related = " + related + ", event = " + event);
             CountlyUtil.getInstance().addEvent(event);
 
             //0.检查网络
@@ -592,7 +592,7 @@ public class MainActivity extends BaseActivity {
                 String request = url + param + method;
                 HTTPCache cache1 = new MyDBHelper(MainActivity.this).getHttpCacheByRequest(request, Integer.parseInt(time));
                 if (cache1 == null) {
-                    Log.d("test", "没有缓存");
+                    MLog.d("test", "没有缓存");
                     //3.如果是查询题目的话，还要再查一下资源包
                     HTTPCache cache2 = new ResourceUtil(MainActivity.this).searchResourceByUrl(url, tagname);
                     if (cache2 == null) {
@@ -601,7 +601,7 @@ public class MainActivity extends BaseActivity {
                         httpRequestCallback(cache2.tagname, cache2.response);
                     }
                 } else {
-                    Log.d("test", "有缓存");
+                    MLog.d("test", "有缓存");
                     httpRequestCallback(cache1.tagname, cache1.response);
                 }
             }
@@ -623,7 +623,7 @@ public class MainActivity extends BaseActivity {
 
                             @Override
                             public void onSuccess(int arg0, Header[] arg1, String ret) {
-                                Log.d("test", "post onSuccess = " + ret);
+                                MLog.d("test", "post onSuccess = " + ret);
                                 httpRequestCallback(tagname, ret);
                                 //如果是post，related不为空，查找一下相关的缓存，并清除掉
                                 new MyDBHelper(getApplicationContext()).deleteHttpCache(related);
@@ -631,7 +631,7 @@ public class MainActivity extends BaseActivity {
 
                             @Override
                             public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
-                                Log.d("test", "post onFailure = " + ret);
+                                MLog.d("test", "post onFailure = " + ret);
                                 httpRequestCallback(tagname, ret);
                             }
                         });
@@ -641,7 +641,7 @@ public class MainActivity extends BaseActivity {
 
                             @Override
                             public void onSuccess(int arg0, Header[] arg1, String ret) {
-                                Log.d("test", "put onSuccess = " + ret);
+                                MLog.d("test", "put onSuccess = " + ret);
                                 httpRequestCallback(tagname, ret);
                                 //如果是post，related不为空，查找一下相关的缓存，并清除掉
                                 new MyDBHelper(getApplicationContext()).deleteHttpCache(related);
@@ -649,24 +649,24 @@ public class MainActivity extends BaseActivity {
 
                             @Override
                             public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
-                                Log.d("test", "put onFailure = " + ret);
+                                MLog.d("test", "put onFailure = " + ret);
                                 httpRequestCallback(tagname, ret);
                             }
                         });
                     } else if (method.equalsIgnoreCase("GET")) {
                         String checkUrl = doCheckUrl(url);
-                        Log.d("test", "checkUrl = " + checkUrl);
+                        MLog.d("test", "checkUrl = " + checkUrl);
                         client.get(MainActivity.this, checkUrl, new TextHttpResponseHandler() {
                             @Override
                             public void onSuccess(int i, Header[] headers, String ret) {
-                                Log.d("test", "get onSuccess = " + ret);
+                                MLog.d("test", "get onSuccess = " + ret);
                                 saveDB(url, param, method, ret, tagname);
                                 httpRequestCallback(tagname, ret);
                             }
 
                             @Override
                             public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
-                                Log.d("test", "get onFailure = " + ret);
+                                MLog.d("test", "get onFailure = " + ret);
                                 //如果是get，把缓存回它
                                 String request = url + param + method;
                                 HTTPCache cache = new MyDBHelper(getApplicationContext()).getHttpCacheByRequest(request, Integer.parseInt(time));
@@ -681,7 +681,7 @@ public class MainActivity extends BaseActivity {
                         client.delete(MainActivity.this, url, new TextHttpResponseHandler() {
                             @Override
                             public void onSuccess(int i, Header[] headers, String ret) {
-                                Log.d("test", "get onSuccess = " + ret);
+                                MLog.d("test", "get onSuccess = " + ret);
                                 httpRequestCallback(tagname, ret);
                                 //如果是post，related不为空，查找一下相关的缓存，并清除掉
                                 new MyDBHelper(getApplicationContext()).deleteHttpCache(related);
@@ -689,14 +689,14 @@ public class MainActivity extends BaseActivity {
 
                             @Override
                             public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
-                                Log.d("test", "get onFailure = " + ret);
+                                MLog.d("test", "get onFailure = " + ret);
                                 httpRequestCallback(tagname, ret);
                             }
                         });
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.d("test", "exception = " + e.toString());
+                    MLog.d("test", "exception = " + e.toString());
                 }
             }
         });
@@ -719,7 +719,7 @@ public class MainActivity extends BaseActivity {
         if (kill.getVisibility() == View.VISIBLE) {
             return;
         }
-        Log.d("test", "saveDB");
+        MLog.d("test", "saveDB");
         String request = url + param + method;
         HTTPCache cache = new MyDBHelper(this).getHttpCacheByRequest(request);
         if (cache == null) {
@@ -746,7 +746,7 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 try {
                     String r = finalResult.replace("null", "\"\"").replace("\"\"\"\"", "\"\"");
-                    Log.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + r);
+                    MLog.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + r);
                     wv.loadUrl("javascript:" + tagname + "(" + r + ")");
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -806,11 +806,11 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SNAPSHOT && resultCode == RESULT_OK) {
-            Log.d("test", "snapshotCallback");
+            MLog.d("test", "snapshotCallback");
 //            wv.loadUrl("javascript:snapshotCallback('file://" + snapshotFile + "')");
-            Log.d("test", "压缩前大小" + new File(snapshotFile).length());
+            MLog.d("test", "压缩前大小" + new File(snapshotFile).length());
             File newFile = CompressHelper.getDefault(this).compressToFile(new File(snapshotFile));
-            Log.d("test", "压缩后大小" + newFile.length());
+            MLog.d("test", "压缩后大小" + newFile.length());
             wv.loadUrl("javascript:snapshotCallback('file://" + newFile.getAbsolutePath() + "')");
         } else if (requestCode == SELECT_PHOTO && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
             if (data == null) {
@@ -819,27 +819,27 @@ public class MainActivity extends BaseActivity {
             boolean isOrig = data.getBooleanExtra(ImagePreviewActivity.ISORIGIN, false);
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             if (!isOrig) {
-                Log.d("test", "压缩前大小" + new File(images.get(0).path).length());
+                MLog.d("test", "压缩前大小" + new File(images.get(0).path).length());
                 File newFile = CompressHelper.getDefault(this).compressToFile(new File(images.get(0).path));
                 images.get(0).path = newFile.getAbsolutePath();
                 images.get(0).size = newFile.length();
-                Log.d("test", "压缩后大小" + images.get(0).size);
+                MLog.d("test", "压缩后大小" + images.get(0).size);
             }
             String path = images.get(0).path;
-            Log.d("test", "path = " + path);
+            MLog.d("test", "path = " + path);
             wv.loadUrl("javascript:selectPhotoCallback('file://" + path + "')");
         } else if (requestCode == SAOMAWANG) {
             if (data == null) {
                 return;
             }
             int responseCode = data.getIntExtra("RESULT_OK", -1);
-            Log.d("test", "responseCode = " + responseCode);
+            MLog.d("test", "responseCode = " + responseCode);
         } else if (requestCode == QRSCAN) {
             if (data == null) {
                 return;
             }
             String result = data.getStringExtra("result");
-            Log.d("test", "result = " + result);
+            MLog.d("test", "result = " + result);
             wv.loadUrl("javascript:scanQRCallback('" + result + "')");
         }
     }
@@ -858,7 +858,7 @@ public class MainActivity extends BaseActivity {
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
-                    Log.d("test", "new version = " + ret);
+                    MLog.d("test", "new version = " + ret);
                     Message msg = new Message();
                     msg.what = 2;
                     msg.obj = ret;
@@ -884,11 +884,11 @@ public class MainActivity extends BaseActivity {
                 if (arg1 == 0) {
                     rl_nonet.setVisibility(View.VISIBLE);
                     //无网络
-                    Log.d("test", "无网络");
+                    MLog.d("test", "无网络");
                 } else {
                     rl_nonet.setVisibility(View.GONE);
                     //有网络
-                    Log.d("test", "有网络");
+                    MLog.d("test", "有网络");
                     if (arg2 == 1) {
                         wv.loadUrl("javascript:reConnect()");
                     }
@@ -897,7 +897,7 @@ public class MainActivity extends BaseActivity {
                 String ret = (String) msg.obj;
                 try {
                     //1.apk更新
-                    Log.d("test", "新版本返回值" + ret);
+                    MLog.d("test", "新版本返回值" + ret);
                     String apkVersion = new JSONObject(ret).getString("apkCode");
                     String apkUrl = new JSONObject(ret).getString("apkUrl");
 
@@ -913,7 +913,7 @@ public class MainActivity extends BaseActivity {
                         boolean flag = false;
                         String currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
                         if (currentPackage.compareTo(currentPackageVersion) < 0) {
-                            Log.d("test", "内置包的版本大，替换新包");
+                            MLog.d("test", "内置包的版本大，替换新包");
                             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
                             checkIsFirst();
                             flag = true;
@@ -923,10 +923,10 @@ public class MainActivity extends BaseActivity {
                         String outer_package = zipCode;
                         if (currentPackage.compareTo(outer_package) < 0) {
                             //提示有新的包，下载新的包
-                            Log.d("test", "下载新的H5包");
+                            MLog.d("test", "下载新的H5包");
                             updatePackage(outer_package, zipUrl);
                         } else {
-                            Log.d("test", "H5包是最新的");
+                            MLog.d("test", "H5包是最新的");
                             jump(flag);
                         }
                     }
@@ -960,12 +960,12 @@ public class MainActivity extends BaseActivity {
     private void downloadSilently(String apkUrl, String version) {
         boolean isWifi = NetworkUtil.isWifi(this);
         if (!isWifi) {
-            Log.d("test", "不是wifi...");
+            MLog.d("test", "不是wifi...");
             return;
         }
         final String savedFilePath = "/mnt/sdcard/cache/xtzy_teacher_" + version + ".apk";
         if (new File(savedFilePath).exists()) {
-            Log.d("test", "该文件已经下载好了");
+            MLog.d("test", "该文件已经下载好了");
             askforInstall(savedFilePath);
             return;
         }
@@ -1022,9 +1022,9 @@ public class MainActivity extends BaseActivity {
         new Thread() {
             @Override
             public void run() {
-                Log.d("test", "updatePackage downloadUrl = " + downloadUrl);
+                MLog.d("test", "updatePackage downloadUrl = " + downloadUrl);
                 final int ret = new HttpDownload().downFile(downloadUrl, WXApplication.ROOT, WXApplication.ZIP);
-                Log.d("test", "下载新包 ret = " + ret);
+                MLog.d("test", "下载新包 ret = " + ret);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -1032,19 +1032,19 @@ public class MainActivity extends BaseActivity {
                             jump(false);
                             return;
                         }
-                        Log.d("test", "删除旧包");
+                        MLog.d("test", "删除旧包");
                         if (new File(WXApplication.ROOT + "xtzy_teacher").exists()) {
                             FileUtils.delFolder(WXApplication.ROOT + "xtzy_teacher");
                         }
                         try {
-                            Log.d("test", "解压新包");
+                            MLog.d("test", "解压新包");
                             new ZipFile(WXApplication.ROOT + WXApplication.ZIP).extractAll(WXApplication.ROOT);
                         } catch (ZipException e) {
                             e.printStackTrace();
                         }
                         //解压完毕，删掉zip文件
                         new File(WXApplication.ROOT + WXApplication.ZIP).delete();
-                        Log.d("test", "解压完毕");
+                        MLog.d("test", "解压完毕");
                         getSharedPreferences("kiway", 0).edit().putString("version_package", outer_package).commit();
                         jump(true);
                     }
@@ -1153,7 +1153,7 @@ public class MainActivity extends BaseActivity {
 
     protected void checkIsFirst() {
         if (!checkFileComplete()) {
-            Log.d("test", "文件不完整");
+            MLog.d("test", "文件不完整");
             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
         }
         if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
