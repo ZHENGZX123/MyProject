@@ -1,24 +1,16 @@
 package cn.kiway.homework.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
@@ -42,15 +34,10 @@ import com.lzy.imagepicker.view.CropImageView;
 import com.nanchen.compresshelper.CompressHelper;
 import com.scanlibrary.ScanActivity;
 import com.scanlibrary.ScanConstants;
-import com.sonix.oid.Dots;
-import com.sonix.oidbluetooth.BluetoothLEService;
-import com.sonix.oidbluetooth.SelectDeviceActivity;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
-import com.tqltech.tqlpencomm.Dot;
-import com.tqltech.tqlpencomm.PenCommAgent;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -92,7 +79,6 @@ import cn.kiway.homework.util.Utils;
 import cn.kiway.homework.view.X5WebView;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static android.content.ContentValues.TAG;
 import static cn.kiway.homework.WXApplication.ceshiUrl;
 import static cn.kiway.homework.WXApplication.url;
 import static cn.kiway.homework.WXApplication.zhengshiUrl;
@@ -132,13 +118,13 @@ public class MainActivity extends BaseActivity {
         load();
         checkNewVersion();
         huaweiPush();
-        initPen();
+        //initPen();
     }
 
-    private void initPen() {
-        Intent gattServiceIntent = new Intent(this, BluetoothLEService.class);
-        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-    }
+//    private void initPen() {
+//        Intent gattServiceIntent = new Intent(this, BluetoothLEService.class);
+//        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+//    }
 
     private void initView() {
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
@@ -316,7 +302,7 @@ public class MainActivity extends BaseActivity {
     private File recordFile;
     private long start;
     private String snapshotFile;
-    private BluetoothLEService mService = null;
+    /*private BluetoothLEService mService = null;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder rawBinder) {
@@ -488,13 +474,13 @@ public class MainActivity extends BaseActivity {
         public void onServiceDisconnected(ComponentName classname) {
             mService = null;
         }
-    };
+    };*/
 
     public class JsAndroidInterface {
         public JsAndroidInterface() {
         }
 
-        @JavascriptInterface
+        /*@JavascriptInterface
         public void bindPen() {
             Log.d("test", "bindPen");
             mAction = 0;
@@ -685,7 +671,7 @@ public class MainActivity extends BaseActivity {
             param = "[" + param + "]";
             Log.d("test", "page = " + p + " , param = " + param);
             return param;
-        }
+        }*/
 
         @JavascriptInterface
         public String getOS() {
@@ -1161,7 +1147,7 @@ public class MainActivity extends BaseActivity {
             }
             int responseCode = data.getIntExtra("RESULT_OK", -1);
             Log.d("test", "responseCode = " + responseCode);
-        } else if (requestCode == REQUEST_SELECT_DEVICE) {
+        } /*else if (requestCode == REQUEST_SELECT_DEVICE) {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 String deviceAddress = data.getStringExtra(BluetoothDevice.EXTRA_DEVICE);
                 String deviceName = data.getStringExtra(BluetoothDevice.EXTRA_NAME);
@@ -1173,8 +1159,7 @@ public class MainActivity extends BaseActivity {
             } else {
                 checkBLEEnable();
             }
-        }
-
+        }*/
     }
 
 
@@ -1537,7 +1522,7 @@ public class MainActivity extends BaseActivity {
         startActivity(new Intent(this, NoNetActivity.class));
     }
 
-    private boolean checkBLEEnable() {
+    /*private boolean checkBLEEnable() {
         BluetoothManager mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         BluetoothAdapter mBluetoothAdapter = mBluetoothManager.getAdapter();
         if (mBluetoothAdapter.isEnabled()) {
@@ -1547,13 +1532,13 @@ public class MainActivity extends BaseActivity {
                 BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         return false;
-    }
+    }*/
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mServiceConnection);
+       /* unbindService(mServiceConnection);
         mService.stopSelf();
-        mService = null;
+        mService = null;*/
     }
 }

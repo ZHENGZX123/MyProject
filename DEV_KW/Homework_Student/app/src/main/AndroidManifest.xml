@@ -51,7 +51,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <!--腾千里SDK-->
-    <uses-feature
+    <!--<uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
 
@@ -61,9 +61,9 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <!-- 5.0之后蓝牙还需要位置权限 -->
+    &lt;!&ndash; 5.0之后蓝牙还需要位置权限 &ndash;&gt;
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
 
     <application
         android:name="cn.kiway.homework.WXApplication"
@@ -160,7 +160,7 @@
                 <!-- 可选，查看push通道是否连接，不查看则不需要-->
                 <action android:name="com.huawei.intent.action.PUSH_STATE" />
                 <!-- 可选，标签、地理位置上报回应，不上报则不需要 -->
-                <action android:name="com.huawei.android.push.plugin.RESPONSE" />
+                <!--<action android:name="com.huawei.android.push.plugin.RESPONSE" />-->
             </intent-filter>
             <meta-data
                 android:name="CS_cloud_ablitity"
