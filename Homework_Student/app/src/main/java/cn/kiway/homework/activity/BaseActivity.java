@@ -277,7 +277,6 @@ public class BaseActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        CountlyUtil.getInstance().sendAll();
         Countly.sharedInstance().onStop();
     }
 
