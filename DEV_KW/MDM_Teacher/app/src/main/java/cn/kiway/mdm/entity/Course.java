@@ -1,6 +1,7 @@
 package cn.kiway.mdm.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2017/12/28.
@@ -8,8 +9,13 @@ import java.io.Serializable;
 
 public class Course implements Serializable {
 
-    public int id;
-    public String title1;
-    public String title2;
-    public int status; //0未上课 1上课中 2已上课
+    public String id;
+    public String name;
+    public String attachInfo;
+    public String attach;
+    public String userId;
+    public int type;//1未上课 2已上课
+    public String createDate;
+    public int attendCourse;
+    public ArrayList<KnowledgePoint> knowledgePoints;
 }
