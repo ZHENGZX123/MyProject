@@ -43,9 +43,12 @@ import static cn.kiway.mdm.util.FileUtils.EnFILEPATH;
 public class JsAndroidInterface {
     public static String userAccount = "";
 
-    MainActivity activity;
-    AccpectMessageHander accpectMessageHander;
-    String className;
+    private MainActivity activity;
+    private AccpectMessageHander accpectMessageHander;
+    private String className;
+    public static final int requsetFile = 45612;
+    public static final int requsetFile2 = 45613;
+    public static String accessToken;
 
     public JsAndroidInterface(MainActivity activity, X5WebView webView) {
         this.activity = activity;
@@ -136,10 +139,6 @@ public class JsAndroidInterface {
         intent2.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         activity.startActivityForResult(intent2, REQUEST_ORIGINAL);
     }
-
-    public static final int requsetFile = 45612;
-    public static final int requsetFile2 = 45613;
-    public static String accessToken;
 
     @JavascriptInterface
     public void chooseFile(String token) {//选择文件
@@ -242,7 +241,16 @@ public class JsAndroidInterface {
         try {
             String token = new JSONObject(info).optString("token");
             String wifiIp = new JSONObject(info).optString("wifiIp");
+            String classId = new JSONObject(info).optString("classId");
+            String className = new JSONObject(info).optString("className");
+            String username = new JSONObject(info).optString("user");
+            String password = new JSONObject(info).optString("password");
+
             activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
+            activity.getSharedPreferences("kiway", 0).edit().putString("classId", classId).commit();
+            activity.getSharedPreferences("kiway", 0).edit().putString("className", className).commit();
+            activity.getSharedPreferences("kiway", 0).edit().putString("username", username).commit();
+            activity.getSharedPreferences("kiway", 0).edit().putString("password", password).commit();
             Utils.shangke(this.activity, wifiIp);
         } catch (JSONException e) {
             e.printStackTrace();

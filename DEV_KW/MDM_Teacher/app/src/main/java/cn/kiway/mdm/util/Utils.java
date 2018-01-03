@@ -338,6 +338,7 @@ public class Utils {
                     Log.d("test", "relogin  onSuccess = " + ret);
                     try {
                         JSONObject o = new JSONObject(ret);
+                        //relogin 其他参数存不存都可以
                         String token = o.getJSONObject("data").getString("token");
                         c.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
                         if (type.equals("shangke")) {
@@ -370,7 +371,6 @@ public class Utils {
     private static void toast(Activity c, String txt) {
         ((BaseActivity) c).toast(txt);
     }
-
 
 
 }
