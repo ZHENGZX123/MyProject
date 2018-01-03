@@ -873,10 +873,6 @@ public class MainActivity extends BaseActivity {
 
     public Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
-            if (isJump) {
-                return;
-            }
-            isSuccess = true;
             if (msg.what == 1) {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 int arg1 = msg.arg1;
@@ -893,7 +889,13 @@ public class MainActivity extends BaseActivity {
                         wv.loadUrl("javascript:reConnect()");
                     }
                 }
-            } else if (msg.what == 2) {
+                return;
+            }
+            if (isJump) {
+                return;
+            }
+            isSuccess = true;
+            if (msg.what == 2) {
                 String ret = (String) msg.obj;
                 try {
                     //1.apk更新
