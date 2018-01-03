@@ -30,6 +30,7 @@ import java.io.IOException;
 
 import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.activity.BaseActivity;
+import cn.kiway.mdm.activity.Course0Activity;
 import cn.kiway.mdm.activity.CourseListActivity;
 import cn.kiway.mdm.activity.HomeActivity;
 import cn.kiway.mdm.activity.MainActivity;
@@ -310,6 +311,40 @@ public class Utils {
         }
     }
 
+    private static String courseID;
+
+    public static void endClass(Activity c, String courseID) {
+        Utils.courseID = courseID;
+        try {
+            ((BaseActivity) c).showPD();
+            //1.发“下课”推送命令
+            String url = WXApplication.serverUrl + "/device/teacher/course/" + courseID + "/attend";
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.setTimeout(10000);
+            client.post(c, url, null, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "endClass onSuccess = " + ret);
+                    ((BaseActivity) c).dismissPD();
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "endClass onFailure = " + s);
+                    if (!check301(c, s, "endclass")) {
+                        toast(c, "请求失败，请稍后再试");
+                        ((BaseActivity) c).dismissPD();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            toast(c, "请求失败，请稍后再试");
+            ((BaseActivity) c).dismissPD();
+        }
+    }
+
     public static boolean check301(final Activity c, String result, String type) {
         if (c == null) {
             return false;
@@ -346,12 +381,16 @@ public class Utils {
                             shangke(c, wifiIp);
                         } else if (type.equals("xiake")) {
                             xiake(c);
+                        } else if (type.equals("endclass")) {
+                            endClass(c, courseID);
                         } else if (type.equals("students")) {
                             ((HomeActivity) WXApplication.currentActivity).initData();
                         } else if (type.equals("dianming")) {
                             ((HomeActivity) WXApplication.currentActivity).doSign();
                         } else if (type.equals("courselist")) {
                             ((CourseListActivity) WXApplication.currentActivity).initData();
+                        } else if (type.equals("coursedetail")) {
+                            ((Course0Activity) WXApplication.currentActivity).initData();
                         }
                     } catch (Exception e) {
                     }
