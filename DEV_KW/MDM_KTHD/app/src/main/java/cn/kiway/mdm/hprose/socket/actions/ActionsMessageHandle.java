@@ -9,9 +9,7 @@ import org.json.JSONObject;
 
 import cn.kiway.mdm.App;
 import cn.kiway.mdm.activity.BaseActivity;
-import cn.kiway.mdm.hprose.socket.KwHproseClient;
 import cn.kiway.mdm.hprose.socket.Logger;
-import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.App.MSG_LOCKONCLASS;
 import static cn.kiway.mdm.App.MSG_UNLOCK;
@@ -53,30 +51,19 @@ public class ActionsMessageHandle {
             JSONObject data = new JSONObject(s);
             int msgType = data.optInt("msgType");
             if (msgType == SIGN) {//签到
-                if (App.instance.currentActivity != null)
-                    ((BaseActivity) App.instance.currentActivity).Session(SIGN);
+             //   if (App.instance.currentActivity != null)
+                   // ((BaseActivity) App.instance.currentActivity).Session(SIGN);
             } else if (msgType == ANSWER) {//抢答
-                if (App.instance.currentActivity != null)
-                    ((BaseActivity) App.instance.currentActivity).Session(SIGN);
+             //   if (App.instance.currentActivity != null)
+               //     ((BaseActivity) App.instance.currentActivity).Session(SIGN);
             } else if (msgType == UNANSWER) {//抢答结束
-                if (App.instance.currentActivity != null)
-                    ((BaseActivity) App.instance.currentActivity).Session(SIGN);
+               // if (App.instance.currentActivity != null)
+                 //   ((BaseActivity) App.instance.currentActivity).Session(SIGN);
             } else if (msgType == LOCKSCREEN) {//锁屏
                 try {
                     if (App.instance.mRemoteInterface != null)
                         App.instance.mRemoteInterface.lockScreen(true);
                     App.instance.mHandler.sendEmptyMessage(MSG_LOCKONCLASS);
-                    JSONObject da = new JSONObject();
-                    da.put("userId", Utils.getIMEI(context));
-                    da.put("msg", "1");
-                    if (App.instance.isIos) {
-                        if (App.instance.client == null)
-                            return;
-                        App.instance.client.sendTCP(da.toString());
-                    } else {
-                        if (KwHproseClient.helloClient != null)
-                            KwHproseClient.helloClient.sign(da.toString());
-                    }
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -85,17 +72,6 @@ public class ActionsMessageHandle {
                     if (App.instance.mRemoteInterface != null)
                         App.instance.mRemoteInterface.lockScreen(false);
                     App.instance.mHandler.sendEmptyMessage(MSG_UNLOCK);
-                    JSONObject da = new JSONObject();
-                    da.put("userId", Utils.getIMEI(context));
-                    da.put("msg", "0");
-                    if (App.instance.isIos) {
-                        if (App.instance.client == null)
-                            return;
-                        App.instance.client.sendTCP(da.toString());
-                    } else {
-                        if (KwHproseClient.helloClient != null)
-                            KwHproseClient.helloClient.sign(da.toString());
-                    }
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -114,8 +90,8 @@ public class ActionsMessageHandle {
                     e.printStackTrace();
                 }
             } else if (msgType == SUREREPONSE) {//确实是否听懂，是与否在 msg中体现，1听懂，0听不懂
-                if (App.instance.currentActivity != null)
-                    ((BaseActivity) App.instance.currentActivity).Session(SUREREPONSE);
+             //   if (App.instance.currentActivity != null)
+                    //((BaseActivity) App.instance.currentActivity).Session(SUREREPONSE);
             } else if (msgType == OFF_MOBLIE) {//关机
             } else if (msgType == REON_MOBLIE) {//重启
             } else if (msgType == USE_CAMARE) {//使用相机

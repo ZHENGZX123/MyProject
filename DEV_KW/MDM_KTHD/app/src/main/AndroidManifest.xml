@@ -22,8 +22,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@android:style/Theme.Light.NoTitleBar">
 
+        android:theme="@android:style/Theme.Light.NoTitleBar">
         <activity
             android:name="cn.kiway.mdm.activity.LoginActivity"
             android:screenOrientation="landscape"
@@ -47,9 +47,16 @@
                  <category android:name="android.intent.category.LAUNCHER" />
              </intent-filter>-->
         </activity>
+
         <activity
             android:name="cn.kiway.mdm.activity.ScreenActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.kiway.mdm.activity.AnswerQuestionsAcitivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <activity
             android:name="cn.kiway.mdm.activity.FileListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

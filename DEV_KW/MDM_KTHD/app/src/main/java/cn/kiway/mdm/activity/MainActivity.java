@@ -16,7 +16,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
@@ -61,14 +60,14 @@ public class MainActivity extends BaseActivity {
         ZbusConfiguration.instance.setHost(zbusHost);
         ZbusConfiguration.instance.setPort(zbusPost);
         try {
-            ZbusUtils.consumeMsg(zbusTopic + Utils.getIMEI(this), new ZbusMessageHandler());
+            ZbusUtils.consumeMsg(zbusTopic + Utils.getIMEI(this), new ZbusMessageHandler(this));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void onInfo(View view) {//个人信息
-//        startActivity(new Intent(this, UserInfoActivity.class));
+     // startActivity(new Intent(this, UserInfoActivity.class));
         startPlayer();
     }
 
@@ -98,42 +97,17 @@ public class MainActivity extends BaseActivity {
             String shangke = intent.getStringExtra("shangke");
             Logger.log("shangke::::::" + shangke);
             if (shangke != null && !shangke.equals("")) {
-                try {
-                    app.onClass(new JSONObject(shangke));
-                    findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
             } else {
-                findViewById(R.id.connect).setVisibility(View.VISIBLE);
+              //  findViewById(R.id.connect).setVisibility(View.VISIBLE);
                 checkNewVersion();
             }
         } else {
-            findViewById(R.id.connect).setVisibility(View.VISIBLE);
+           // findViewById(R.id.connect).setVisibility(View.VISIBLE);
             checkNewVersion();
         }
     }
 
 
-    public void onConnect() {//启动连接是显示界面
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                MainActivity.instantce.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-                MainActivity.instantce.findViewById(R.id.connect).setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
-    public void onConnectTimeOut() {//启动连接失败显示界面
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                MainActivity.instantce.findViewById(R.id.progressBar).setVisibility(View.GONE);
-                MainActivity.instantce.findViewById(R.id.connect).setVisibility(View.VISIBLE);
-            }
-        });
-    }
 
     //下面是版本更新相关
     public void checkNewVersion() {

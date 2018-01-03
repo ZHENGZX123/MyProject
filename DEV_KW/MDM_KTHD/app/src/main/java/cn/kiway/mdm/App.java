@@ -6,11 +6,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xutils.x;
 
 import cn.kiway.aidl.ClientCallback;
+import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
 import studentsession.kiway.cn.mdmaidl.KiwayApplication;
+
+import static cn.kiway.mdm.zbus.ZbusHost.zbusTeacherTopic;
 
 /**
  * Created by Administrator on 2017/12/4.
@@ -21,11 +26,7 @@ public class App extends KiwayApplication {
 
     public static App instance;
     public boolean isAttenClass = false;
-    public String teacherIp = "";
-    public int connectNumber = 0;
-    public boolean isIos = false;
     public Activity currentActivity;
-    public static boolean isPublicNetwork = true;//是否全走公网
 
     @Override
     public void onCreate() {
@@ -92,7 +93,21 @@ public class App extends KiwayApplication {
         @Override
         public void accpterMessage(String msg, String token) throws RemoteException {
             getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
-
+            try {
+                JSONObject data = new JSONObject(msg).optJSONObject("data");
+                if (data.optString("command").equals("question")) {//回答问题的
+                    ((BaseActivity) currentActivity).onQuestion(data);
+                    zbusTeacherTopic = data.optString("userId");
+                } else if (data.optString("command").equals("sign")) {//签到
+                    ((BaseActivity) currentActivity).onSign();
+                    zbusTeacherTopic = data.optString("userId");
+                } else if (data.optString("command").equals("responsePush")) {//知识点统计
+                    ((BaseActivity) currentActivity).onResponsePush();
+                    zbusTeacherTopic = data.optString("userId");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
