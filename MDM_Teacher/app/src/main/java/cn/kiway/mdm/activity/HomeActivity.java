@@ -64,7 +64,7 @@ public class HomeActivity extends BaseActivity {
     public void initData() {
         try {
             showPD();
-            String url = WXApplication.serverUrl + "/device/teacher/class/students";
+            String url = WXApplication.clientUrl + "/device/teacher/class/students";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -194,7 +194,7 @@ public class HomeActivity extends BaseActivity {
         try {
             //1.发“点名”推送命令
             showPD();
-            String url = WXApplication.serverUrl + "/device/push/teacher/sign/order";
+            String url = WXApplication.clientUrl + "/device/push/teacher/sign/order";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);

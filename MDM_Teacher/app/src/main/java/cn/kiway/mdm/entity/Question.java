@@ -1,0 +1,19 @@
+package cn.kiway.mdm.entity;
+
+import java.io.Serializable;
+
+/**
+ * Created by Administrator on 2018/1/3.
+ */
+
+public class Question implements Serializable {
+
+    public String knowledgeId;
+    public String content;
+    public String img;
+    public String options;
+    public String id;
+    public int type;
+    public String createDate;
+
+}

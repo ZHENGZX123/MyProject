@@ -54,7 +54,7 @@ import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
 import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
 
-import static cn.kiway.mdm.WXApplication.clientUrl;
+import static cn.kiway.mdm.WXApplication.serverUrl;
 import static cn.kiway.mdm.util.ResultMessage.QRSCAN;
 import static cn.kiway.mdm.util.Utils.getCurrentVersion;
 import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
@@ -287,7 +287,7 @@ public class MainActivity extends BaseActivity {
         new Thread() {
             @Override
             public void run() {
-                final String ret = UploadUtil.uploadFile(file, clientUrl + "/common/file?x-auth-token=" +
+                final String ret = UploadUtil.uploadFile(file, serverUrl + "/common/file?x-auth-token=" +
                         accessToken, file
                         .getName());
                 Log.d("test", "upload ret = " + ret);
@@ -330,7 +330,7 @@ public class MainActivity extends BaseActivity {
                 try {
                     sleep(1500);
                     checkTimeout();
-                    HttpGet httpRequest = new HttpGet(WXApplication.serverUrl + "/static/download/version/zip_teacher.json");
+                    HttpGet httpRequest = new HttpGet(WXApplication.clientUrl + "/static/download/version/zip_teacher.json");
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());

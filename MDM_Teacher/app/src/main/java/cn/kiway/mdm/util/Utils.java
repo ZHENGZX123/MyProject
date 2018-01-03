@@ -252,7 +252,7 @@ public class Utils {
         try {
             //1.发“上课”推送命令
             ((BaseActivity) c).showPD();
-            String url = WXApplication.serverUrl + "/device/push/teacher/attendClass?flag=1&ip=" + wifiIp + "&platform=Android";
+            String url = WXApplication.clientUrl + "/device/push/teacher/attendClass?flag=1&ip=" + wifiIp + "&platform=Android";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -284,7 +284,7 @@ public class Utils {
         try {
             ((BaseActivity) c).showPD();
             //1.发“下课”推送命令
-            String url = WXApplication.serverUrl + "/device/push/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
+            String url = WXApplication.clientUrl + "/device/push/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -318,7 +318,7 @@ public class Utils {
         try {
             ((BaseActivity) c).showPD();
             //1.发“下课”推送命令
-            String url = WXApplication.serverUrl + "/device/teacher/course/" + courseID + "/attend";
+            String url = WXApplication.clientUrl + "/device/teacher/course/" + courseID + "/attend";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -360,7 +360,7 @@ public class Utils {
             Log.d("test", "301 happen");
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            String url = WXApplication.serverUrl + "/device/teacher/login";
+            String url = WXApplication.clientUrl + "/device/teacher/login";
             Log.d("test", "relogin url = " + url);
             RequestParams param = new RequestParams();
             param.put("userName", c.getSharedPreferences("kiway", 0).getString("username", ""));

@@ -184,7 +184,7 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public String getHost() {
-        return WXApplication.serverUrl;
+        return WXApplication.clientUrl;
     }
 
     @JavascriptInterface
