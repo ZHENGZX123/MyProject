@@ -45,7 +45,6 @@ import cn.kiway.mdm.util.Utils;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE1;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
-import static cn.kiway.mdm.teacher.R.id.dianming;
 import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
 import static cn.kiway.mdm.util.Utils.check301;
 
@@ -94,7 +93,7 @@ public class Course0Activity extends ScreenSharingActivity {
         //1.知识点详情
         try {
             showPD();
-            String url = WXApplication.serverUrl + "/device/teacher/course/" + course.id;
+            String url = WXApplication.clientUrl + "/device/teacher/course/" + course.id;
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -121,7 +120,34 @@ public class Course0Activity extends ScreenSharingActivity {
             dismissPD();
         }
         //2.问题详情
+        try {
+            showPD();
+            String url = WXApplication.clientUrl + "/device/teacher/course/" + course.id + "/knowledges/questions";
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.setTimeout(10000);
+            client.get(this, url, null, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "questions onSuccess = " + ret);
+                    //解析得到什么
+                    dismissPD();
+                }
 
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "questions onFailure = " + s);
+                    if (!check301(Course0Activity.this, s, "questions")) {
+                        toast("请求失败，请稍后再试");
+                        dismissPD();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            toast("请求失败，请稍后再试");
+            dismissPD();
+        }
     }
 
     private void initRecord() {
