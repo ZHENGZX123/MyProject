@@ -85,30 +85,31 @@ public class Course0Activity extends ScreenSharingActivity {
         lv.setAdapter(adapter);
     }
 
-    private void initData() {
-        KnowledgePoints = course.knowledgePoints;
-        KnowledgePoint end = new KnowledgePoint();
-        end.type = TYPE_END;
-        KnowledgePoints.add(end);
-        adapter.notifyDataSetChanged();
-
+    public void initData() {
+//        KnowledgePoints = course.knowledgePoints;
+//        KnowledgePoint end = new KnowledgePoint();
+//        end.type = TYPE_END;
+//        KnowledgePoints.add(end);
+//        adapter.notifyDataSetChanged();
+        //1.知识点详情
         try {
             showPD();
             String url = WXApplication.serverUrl + "/device/teacher/course/" + course.id;
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
-            client.post(this, url, null, new TextHttpResponseHandler() {
+            client.get(this, url, null, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "course onSuccess = " + ret);
+                    //解析得到TeachingContentVO
                     dismissPD();
                 }
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", "course onFailure = " + s);
-                    if (!check301(Course0Activity.this, s, "course")) {
+                    if (!check301(Course0Activity.this, s, "coursedetail")) {
                         toast("请求失败，请稍后再试");
                         dismissPD();
                     }
@@ -119,6 +120,7 @@ public class Course0Activity extends ScreenSharingActivity {
             toast("请求失败，请稍后再试");
             dismissPD();
         }
+        //2.问题详情
 
     }
 
@@ -386,6 +388,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 @Override
                 public void onClick(View v) {
                     Utils.xiake(Course0Activity.this);
+                    //Utils.endClass(Course0Activity.this , course.id);
                     finish();
                 }
             });
