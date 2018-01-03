@@ -164,7 +164,7 @@ public class BaseActivity extends Activity {
             public void run() {
                 try {
 
-                    HttpGet httpRequest = new HttpGet(clientUrl + "/static/download/version/zip_student.json");
+                    HttpGet httpRequest = new HttpGet(clientUrl + "static/download/version/zip_student.json");
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
