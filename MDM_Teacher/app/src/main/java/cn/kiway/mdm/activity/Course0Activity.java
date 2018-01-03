@@ -30,6 +30,7 @@ import com.tencent.smtt.sdk.TbsReaderView;
 import java.io.File;
 import java.util.ArrayList;
 
+import cn.kiway.mdm.entity.Course;
 import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
@@ -52,12 +53,14 @@ public class Course0Activity extends ScreenSharingActivity {
     private ListView lv;
     private MyAdapter adapter;
     private ArrayList<KnowledgePoint> KnowledgePoints = new ArrayList<>();
-
+    private Course course;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course0);
+
+        course = (Course) getIntent().getSerializableExtra("course");
 
         initView();
         initData();
@@ -67,7 +70,7 @@ public class Course0Activity extends ScreenSharingActivity {
     @Override
     public void initView() {
         super.initView();
-        titleName.setText("1.1 正数和负数、数轴");
+        titleName.setText(course.name);
         x5FileLayout = (FrameLayout) findViewById(R.id.x5FileLayout);
         lv = (ListView) findViewById(R.id.KnowledgePointLV);
         adapter = new MyAdapter();
@@ -75,25 +78,10 @@ public class Course0Activity extends ScreenSharingActivity {
     }
 
     private void initData() {
-        KnowledgePoint c1 = new KnowledgePoint();
-        c1.title = "知识点1：用正数、负数表示具有相反意义的量";
-        c1.type = TYPE0;
-        KnowledgePoint c2 = new KnowledgePoint();
-        c2.title = "知识点2：数轴的概念及画法";
-        c2.type = TYPE1;
-        KnowledgePoint c3 = new KnowledgePoint();
-        c3.title = "知识点3：三角形勾股定理";
-        c3.type = TYPE0;
-        KnowledgePoint c4 = new KnowledgePoint();
-        c4.title = "知识点4：三角形内角和";
-        c4.type = TYPE1;
-        KnowledgePoint c5 = new KnowledgePoint();
-        c5.type = TYPE_END;
-        KnowledgePoints.add(c1);
-        KnowledgePoints.add(c2);
-        KnowledgePoints.add(c3);
-        KnowledgePoints.add(c4);
-        KnowledgePoints.add(c5);
+        KnowledgePoints = course.knowledgePoints;
+        KnowledgePoint end = new KnowledgePoint();
+        end.type = TYPE_END;
+        KnowledgePoints.add(end);
         adapter.notifyDataSetChanged();
     }
 
@@ -326,7 +314,7 @@ public class Course0Activity extends ScreenSharingActivity {
             }
 
             final KnowledgePoint s = KnowledgePoints.get(position);
-            holder.title.setText(s.title);
+            holder.title.setText(s.content);
 
             if (s.type == TYPE0) {
                 holder.type0RL.setVisibility(View.VISIBLE);

@@ -31,6 +31,8 @@ import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
 
+import static cn.kiway.mdm.util.Utils.check301;
+
 
 //首页：点名、上课
 public class HomeActivity extends BaseActivity {
@@ -59,8 +61,9 @@ public class HomeActivity extends BaseActivity {
         gv.setAdapter(adapter);
     }
 
-    private void initData() {
+    public void initData() {
         try {
+            showPD();
             String url = WXApplication.serverUrl + "/device/teacher/class/students";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
@@ -69,24 +72,29 @@ public class HomeActivity extends BaseActivity {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
+                    dismissPD();
                     try {
                         JSONArray data = new JSONObject(ret).optJSONArray("data");
                         students = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Student>>() {
                         }.getType());
                         adapter.notifyDataSetChanged();
                     } catch (Exception e) {
-                        Log.d("test", " onFailure = " + e.toString());
                     }
                 }
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
-                    //TODO Utils.check301(HomeActivity.this, s, "students");
+                    if (!Utils.check301(HomeActivity.this, s, "students")) {
+                        toast("请求失败，请稍后再试");
+                        dismissPD();
+                    }
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
+            toast("请求失败，请稍后再试");
+            dismissPD();
         }
     }
 
@@ -185,6 +193,7 @@ public class HomeActivity extends BaseActivity {
     public void doSign() {
         try {
             //1.发“点名”推送命令
+            showPD();
             String url = WXApplication.serverUrl + "/device/push/teacher/sign/order";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
@@ -193,6 +202,7 @@ public class HomeActivity extends BaseActivity {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
+                    dismissPD();
                     dianming.setBackgroundResource(R.drawable.dianmingbutton2);
                     dianming.setText("结束点名");
                 }
@@ -200,11 +210,16 @@ public class HomeActivity extends BaseActivity {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
-                    Utils.check301(HomeActivity.this, s, "dianming");
+                    if (!check301(HomeActivity.this, s, "dianming")) {
+                        toast("请求失败，请稍后再试");
+                        dismissPD();
+                    }
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
+            toast("请求失败，请稍后再试");
+            dismissPD();
         }
     }
 

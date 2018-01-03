@@ -29,6 +29,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import cn.kiway.mdm.WXApplication;
+import cn.kiway.mdm.activity.BaseActivity;
+import cn.kiway.mdm.activity.CourseListActivity;
 import cn.kiway.mdm.activity.HomeActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.teacher.R;
@@ -59,17 +61,6 @@ public class Utils {
             e.printStackTrace();
         }
         return versionName;
-    }
-
-    public static String getTimeFormLong(long time) {
-        if (time <= 0) {
-            return "00:00";
-        }
-        int secondnd = (int) ((time / 1000) / 60);
-        int million = (int) ((time / 1000) % 60);
-        String f = secondnd >= 10 ? String.valueOf(secondnd) : "0" + String.valueOf(secondnd);
-        String m = million >= 10 ? String.valueOf(million) : "0" + String.valueOf(million);
-        return f + ":" + m;
     }
 
     public static void checkNetWork(Context context, boolean reConnect) {
@@ -179,7 +170,6 @@ public class Utils {
         }
     }
 
-
     /**
      * 获取和保存当前屏幕的截图
      */
@@ -260,6 +250,7 @@ public class Utils {
         Utils.wifiIp = wifiIp;
         try {
             //1.发“上课”推送命令
+            ((BaseActivity) c).showPD();
             String url = WXApplication.serverUrl + "/device/push/teacher/attendClass?flag=1&ip=" + wifiIp + "&platform=Android";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
@@ -268,18 +259,54 @@ public class Utils {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
-                    //2.跳页
+                    ((BaseActivity) c).dismissPD();
                     c.startActivity(new Intent(c, HomeActivity.class));
                 }
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
-                    check301(c, s, "shangke");
+                    if (!check301(c, s, "shangke")) {
+                        ((BaseActivity) c).dismissPD();
+                        toast(c, "请求失败，请稍后再试");
+                    }
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
+            toast(c, "请求失败，请稍后再试");
+            ((BaseActivity) c).dismissPD();
+        }
+    }
+
+    public static void xiake(Activity c) {
+        try {
+            ((BaseActivity) c).showPD();
+            //1.发“下课”推送命令
+            String url = WXApplication.serverUrl + "/device/push/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.setTimeout(10000);
+            client.post(c, url, null, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", " onSuccess = " + ret);
+                    ((BaseActivity) c).dismissPD();
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", " onFailure = " + s);
+                    if (!check301(c, s, "xiake")) {
+                        toast(c, "请求失败，请稍后再试");
+                        ((BaseActivity) c).dismissPD();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            toast(c, "请求失败，请稍后再试");
+            ((BaseActivity) c).dismissPD();
         }
     }
 
@@ -317,8 +344,12 @@ public class Utils {
                             shangke(c, wifiIp);
                         } else if (type.equals("xiake")) {
                             xiake(c);
+                        } else if (type.equals("students")) {
+                            ((HomeActivity) WXApplication.currentActivity).initData();
                         } else if (type.equals("dianming")) {
                             ((HomeActivity) WXApplication.currentActivity).doSign();
+                        } else if (type.equals("courselist")) {
+                            ((CourseListActivity) WXApplication.currentActivity).initData();
                         }
                     } catch (Exception e) {
                     }
@@ -336,28 +367,8 @@ public class Utils {
         return true;
     }
 
-    public static void xiake(Activity c) {
-        try {
-            //1.发“下课”推送命令
-            String url = WXApplication.serverUrl + "/device/push/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
-            client.setTimeout(10000);
-            client.post(c, url, null, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", " onSuccess = " + ret);
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", " onFailure = " + s);
-                    check301(c, s, "xiake");
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private static void toast(Activity c, String txt) {
+        ((BaseActivity) c).toast(txt);
     }
 
 

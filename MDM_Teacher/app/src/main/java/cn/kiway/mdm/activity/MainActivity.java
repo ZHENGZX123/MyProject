@@ -71,7 +71,7 @@ import static cn.kiway.mdm.zbus.ZbusHost.zbusPost;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.2.1";
+    private static final String currentPackageVersion = "0.2.3";
     private static final String zburPath = "file:///android_asset";
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -349,10 +349,6 @@ public class MainActivity extends BaseActivity {
 
     public Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
-            if (isJump) {
-                return;
-            }
-            isSuccess = true;
             if (msg.what == 1) {
 //                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
 //                int arg1 = msg.arg1;
@@ -364,7 +360,14 @@ public class MainActivity extends BaseActivity {
 //                    rl_nonet.setVisibility(View.GONE);
 //                    //有网络
 //                }
-            } else if (msg.what == 2) {
+                return;
+            }
+            if (isJump) {
+                return;
+            }
+            isSuccess = true;
+            if (msg.what == 2) {
+
                 String ret = (String) msg.obj;
                 try {
                     //1.apk更新
