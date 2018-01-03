@@ -289,5 +289,13 @@ public class MainActivity extends BaseActivity {
         startActivity(i);
     }
 
+    public void clickSnapshot(View view) {
+
+    }
+
+    public void clickAsk(View view) {
+
+    }
+
 
 }

@@ -69,7 +69,7 @@
 
         <ImageButton
             android:layout_width="118dp"
-            android:layout_height="309dp"
+            android:layout_height="300dp"
             android:layout_marginLeft="50dp"
             android:background="@drawable/mainbutton2"
             android:text="已上课程" />
@@ -85,7 +85,7 @@
 
         <ImageButton
             android:layout_width="118dp"
-            android:layout_height="315dp"
+            android:layout_height="300dp"
             android:layout_marginLeft="50dp"
             android:background="@drawable/mainbutton4"
             android:text="测评分析" />
@@ -157,4 +157,58 @@
             android:text="连接中，请稍后"
             android:textColor="@color/blue" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/ball"
+            android:gravity="center"
+            android:onClick="clickSnapshot"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/snapshot" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="截图"
+                android:textColor="#6699ff" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/ball"
+            android:gravity="center"
+            android:onClick="clickAsk"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ask" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="提问器"
+                android:textColor="#6699ff" />
+        </LinearLayout>
+    </LinearLayout>
+
 </RelativeLayout>
