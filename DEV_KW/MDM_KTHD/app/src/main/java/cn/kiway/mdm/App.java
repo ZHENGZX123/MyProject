@@ -5,34 +5,12 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
-import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.xutils.x;
 
-import java.nio.ByteBuffer;
-
 import cn.kiway.aidl.ClientCallback;
-import cn.kiway.mdm.activity.BaseActivity;
-import cn.kiway.mdm.activity.MainActivity;
-import cn.kiway.mdm.activity.NotifyMsgActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
-import cn.kiway.mdm.db.MyDBHelper;
-import cn.kiway.mdm.hprose.hprose.net.KwConnection;
-import cn.kiway.mdm.hprose.hprose.net.KwConntectionCallback;
-import cn.kiway.mdm.hprose.socket.KwHproseClient;
-import cn.kiway.mdm.hprose.socket.Logger;
-import cn.kiway.mdm.hprose.socket.MessageType;
-import cn.kiway.mdm.hprose.socket.actions.ActionsMessageHandle;
-import cn.kiway.mdm.hprose.socket.tcp.Client;
-import cn.kiway.mdm.hprose.socket.tcp.HandlerClient;
-import cn.kiway.mdm.utils.Utils;
-import hprose.net.TimeoutType;
 import studentsession.kiway.cn.mdmaidl.KiwayApplication;
-
-import static cn.kiway.mdm.hprose.socket.MessageType.SIGN;
-import static cn.kiway.mdm.hprose.socket.MessageType.SUREREPONSE;
 
 /**
  * Created by Administrator on 2017/12/4.
@@ -42,7 +20,6 @@ public class App extends KiwayApplication {
 
 
     public static App instance;
-    public HandlerClient client;
     public boolean isAttenClass = false;
     public String teacherIp = "";
     public int connectNumber = 0;
@@ -60,101 +37,6 @@ public class App extends KiwayApplication {
     }
 
 
-    public void onClass(JSONObject data) {//上课
-        isAttenClass = false;
-        if (isPublicNetwork) {
-            isAttenClass = true;
-            showMessage("上课连接完成");
-            MainActivity.instantce.UdpClose();
-            mHandler.sendEmptyMessage(MSG_HOME_DIS);
-            mHandler.removeMessages(MSG_XIAKE);
-            mHandler.sendEmptyMessageDelayed(MSG_XIAKE, 60 * 1000 * 45);
-            mHandler.removeMessages(MSG_TIME_OUT);
-
-        } else {
-            teacherIp = data.optString("ip");
-            if (data.optString("platform").equals("IOS"))
-                isIos = true;
-            else
-                isIos = false;
-            connectTcp(teacherIp);
-            connectNumber = 0;
-            mHandler.removeMessages(MSG_TIME_OUT);
-            mHandler.sendEmptyMessageDelayed(MSG_TIME_OUT, 30 * 1000);
-            MainActivity.instantce.onConnect();
-        }
-    }
-
-    public void connectTcp(String ip) {//开始连接判断
-        if (ip == null || currentActivity == null || isAttenClass)
-            return;
-        if (!Utils.ping(currentActivity, ip)) {//这个判断方法不太靠谱
-            showMessage("无法连接上课，请确认在同个wifi下");
-            return;
-        }
-        if (isIos) {//ios tcp连接
-            connectIOS(ip);
-        } else {//
-            if (client != null && client.isConnect()) {
-                client.close();
-                client = null;
-            }
-            Message msg = new Message();
-            msg.what = MSG_CONNECT;
-            mHandler.sendMessage(msg);
-        }
-    }
-
-    public void connectIOS(String ip) {
-        if (client != null && client.isConnect())
-            return;
-        KwHproseClient.stop();
-        client = new HandlerClient();
-        client.connectTCP(ip, new Client.TcpMessageCallBack() {
-            @Override
-            public void accpetMessage(String message) throws Exception {
-                if (currentActivity == null) return;
-                ActionsMessageHandle.MessageHandle(currentActivity, message);
-            }
-
-            @Override
-            public void connectTcpSuccess() throws Exception {
-                JSONObject da = new JSONObject();
-                isAttenClass = true;
-                try {
-                    da.put("msgType", MessageType.LOGIN);
-                    da.put("userId", Utils.getIMEI(App.this));
-                    da.put("msg", "我是新用户");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                MainActivity.instantce.UdpClose();
-                client.sendTCP(da.toString());
-                showMessage("IOS 上课连接完成");
-                mHandler.sendEmptyMessage(MSG_HOME_DIS);
-                mHandler.sendEmptyMessageDelayed(MSG_XIAKE, 60 * 1000 * 45);
-                mHandler.removeMessages(MSG_TIME_OUT);
-                MainActivity.instantce.UdpClose();
-            }
-
-            @Override
-            public void connectTcpFailed() throws Exception {
-                showMessage("IOS 上课连接失败");
-                isAttenClass = false;
-                mHandler.sendEmptyMessage(MSG_TIME_OUT);
-                mHandler.sendEmptyMessage(MSG_HOME_TURE);
-            }
-
-            @Override
-            public void disconnectTcp() throws Exception {
-                showMessage("IOS 连接掉线");
-                isAttenClass = false;
-                mHandler.sendEmptyMessage(MSG_TIME_OUT);
-            }
-        });
-    }
-
-
     public static final int MSG_CONNECT = 0x000;//上课连接
     public static final int MSG_XIAKE = MSG_CONNECT + 1;//下课
 
@@ -169,63 +51,7 @@ public class App extends KiwayApplication {
         @Override
         public void handleMessage(final Message msg) {
             super.handleMessage(msg);
-            if (msg.what == MSG_CONNECT) {//android hprose 上课连接件
-                try {
-                    KwHproseClient.connect((BaseActivity) currentActivity, teacherIp, Utils.getIMEI(currentActivity),
-                            new KwConntectionCallback() {
-                                @Override
-                                public void onConnect(KwConnection conn) {
-                                    Logger.log("正在连接");
-                                }
-
-                                @Override
-                                public void onConnected(KwConnection conn) {
-                                    isAttenClass = true;
-                                    showMessage("上课连接完成");
-                                    sendEmptyMessage(MSG_HOME_DIS);
-                                    sendEmptyMessageDelayed(MSG_XIAKE, 60 * 1000 * 45);
-                                    removeMessages(MSG_TIME_OUT);
-                                    MainActivity.instantce.UdpClose();
-                                }
-
-                                @Override
-                                public void onReceived(KwConnection conn, ByteBuffer data, Integer id) {
-                                }
-
-                                @Override
-                                public void onClose() {
-                                    Logger.log("连接关闭");
-                                    isAttenClass = false;
-                                    sendEmptyMessage(MSG_HOME_TURE);
-                                }
-
-                                @Override
-                                public void onError(KwConnection conn, Exception e) {
-                                    Logger.log("连接错误" + e);
-                                    isAttenClass = false;
-                                    if (connectNumber > 5) {
-                                        mHandler.removeMessages(MSG_TIME_OUT);
-                                        mHandler.sendEmptyMessage(MSG_TIME_OUT);
-                                        isAttenClass = false;
-                                    }
-                                    connectNumber++;
-                                    if (isAttenClass)
-                                        connectTcp(teacherIp);
-
-                                }
-
-                                @Override
-                                public void onTimeout(KwConnection conn, TimeoutType type) {
-                                    isAttenClass = false;
-                                    sendEmptyMessage(MSG_HOME_TURE);
-                                    mHandler.removeMessages(MSG_TIME_OUT);
-                                    mHandler.sendEmptyMessage(MSG_TIME_OUT);
-                                }
-                            });
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                }
-            } else if (msg.what == MSG_LOCKONCLASS) {//锁屏
+            if (msg.what == MSG_LOCKONCLASS) {//锁屏
                 if (currentActivity != null && currentActivity instanceof ScreenActivity) {
                     return;
                 }
@@ -235,9 +61,6 @@ public class App extends KiwayApplication {
                 if (currentActivity != null && currentActivity instanceof ScreenActivity) {
                     currentActivity.finish();
                 }
-            } else if (msg.what == MSG_XIAKE) {//
-                showMessage("同学们,到点下课啦");
-                sendEmptyMessage(MSG_HOME_TURE);
             } else if (msg.what == MSG_HOME_DIS) {//禁用home
                 try {
                     if (mRemoteInterface != null)
@@ -252,11 +75,6 @@ public class App extends KiwayApplication {
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-            } else if (msg.what == MSG_TIME_OUT) {//上课超时
-                Toast.makeText(currentActivity, "连接失败", Toast.LENGTH_SHORT).show();
-                MainActivity.instantce.onConnectTimeOut();
-                //只有老师发下课才能下课
-                mHandler.sendEmptyMessage(MSG_HOME_TURE);
             }
         }
     };
@@ -267,16 +85,6 @@ public class App extends KiwayApplication {
     private ClientCallback.Stub mClientCallback = new ClientCallback.Stub() {
         @Override
         public void goOutClass() throws RemoteException {
-            showMessage("下课啦，同学们");
-            isAttenClass = false;
-            connectNumber = 0;
-            if (isIos) {
-                if (client != null)
-                    client.close();
-                client = null;
-            } else {
-                KwHproseClient.stop();
-            }
             mHandler.removeMessages(MSG_TIME_OUT);
             mHandler.sendEmptyMessage(MSG_HOME_TURE);
         }
@@ -284,46 +92,12 @@ public class App extends KiwayApplication {
         @Override
         public void accpterMessage(String msg, String token) throws RemoteException {
             getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
-            try {
-                JSONObject data = new JSONObject(msg);
-                String command = data.optString("command");
-                if (command.equals("send_msg")) {
-                    if (currentActivity != null) {
-                        ((BaseActivity) currentActivity).NotifyShow(data.optJSONObject("content")
-                                .optString("title"), data.optJSONObject("content").optString("content"), "发送人：" + (
-                                data.optJSONObject("content").optString("sendName")));
-                        new MyDBHelper(currentActivity).addNofityMessage(data.optJSONObject("content"));
-                        if (App.instance.currentActivity != null && App.instance.currentActivity instanceof
-                                NotifyMsgActivity) {
-                            ((NotifyMsgActivity) App.instance.currentActivity).refreshUI();
-                        }
-                    }
-                } else if (command.equals("sign")) {
-                    getSharedPreferences("kiway", 0).edit().putString("Classtoken", data.optString("token")).commit();
-                    if (App.instance.currentActivity != null)
-                        ((BaseActivity) App.instance.currentActivity).Session(SIGN);
-                } else if (command.equals("responsePush")) {
-                    getSharedPreferences("kiway", 0).edit().putString("Classtoken", data.optString("token")).commit();
-                    if (App.instance.currentActivity != null)
-                        ((BaseActivity) App.instance.currentActivity).Session(SUREREPONSE);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+
         }
 
         @Override
         public void attendClass(String msg) throws RemoteException {
-            try {
-                onClass(new JSONObject(msg));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+
         }
     };
-
-    public void showMessage(final String message) {
-        if (currentActivity != null)
-            ((BaseActivity) currentActivity).showMessage(message);
-    }
 }

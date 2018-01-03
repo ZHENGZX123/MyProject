@@ -2,11 +2,9 @@ package cn.kiway.mdm.activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,35 +22,28 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
 
-import cn.kiway.mdm.App;
-import cn.kiway.mdm.dialog.UdpConnectDialog;
-import cn.kiway.mdm.hprose.socket.Logger;
-import cn.kiway.mdm.modle.IpModel;
+import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.NetworkUtil;
 import cn.kiway.mdm.utils.Utils;
+import cn.kiway.mdm.zbus.ZbusMessageHandler;
+import cn.kiway.web.kthd.zbus.ZbusConfiguration;
+import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
 import io.agora.openlive.model.ConstantApp;
 import io.agora.openlive.ui.LiveRoomActivity;
 import io.agora.rtc.Constants;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
-import static cn.kiway.mdm.hprose.socket.MessageType.SUREREPONSE;
 import static cn.kiway.mdm.utils.IContants.CHECK_VERSION_URL;
 import static cn.kiway.mdm.utils.Utils.getCurrentVersion;
+import static cn.kiway.mdm.zbus.ZbusHost.zbusHost;
+import static cn.kiway.mdm.zbus.ZbusHost.zbusPost;
+import static cn.kiway.mdm.zbus.ZbusHost.zbusTopic;
 
 public class MainActivity extends BaseActivity {
 
     public static MainActivity instantce;
     private Dialog dialog_download;
-    WifiManager.MulticastLock lock;
-    DatagramSocket udpSocket = null;
-    DatagramPacket udpPacket = null;
-    boolean isRun;
-    String codeString;
-    UdpConnectDialog udpConnectDialog;
 
 
     @Override
@@ -61,8 +52,19 @@ public class MainActivity extends BaseActivity {
         instantce = this;
         setContentView(R.layout.activity_main);
         getAppData();
-        udpConnectDialog = new UdpConnectDialog(this);
-        Logger.log(":::::::::::::::::" + Utils.getIMEI(this));
+        initzbus();
+    }
+
+
+    //初始化zbus
+    private void initzbus() {
+        ZbusConfiguration.instance.setHost(zbusHost);
+        ZbusConfiguration.instance.setPort(zbusPost);
+        try {
+            ZbusUtils.consumeMsg(zbusTopic + Utils.getIMEI(this), new ZbusMessageHandler());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void onInfo(View view) {//个人信息
@@ -86,12 +88,7 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.connect).setVisibility(View.GONE);
     }
 
-    public void onUdp(View view) {//连接不上开始udp 手动连
-        if (App.instance.currentActivity != null)
-            ((BaseActivity) App.instance.currentActivity).Session(SUREREPONSE);
-//        UdpStart();
-//        udpConnectDialog.show();
-//        udpConnectDialog.setCancelable(false);
+    public void onUdp(View view) {
     }
 
 
@@ -118,31 +115,6 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    public void UdpStart() {//开始udp
-        //红米手机接收不到udp广播,打开udp锁
-        WifiManager manager = (WifiManager) getApplicationContext()
-                .getSystemService(Context.WIFI_SERVICE);
-        lock = manager.createMulticastLock("localWifi");
-        new UDPClientThread().start();
-    }
-
-    public void UdpClose() {//关闭udp
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (udpConnectDialog != null)
-                    udpConnectDialog.dismiss();
-                findViewById(R.id.connect).setVisibility(View.GONE);
-                findViewById(R.id.progressBar).setVisibility(View.GONE);
-            }
-        });
-        isRun = false;
-        if (udpSocket != null)
-            udpSocket.close();
-        udpSocket = null;
-    }
-
-
     public void onConnect() {//启动连接是显示界面
         runOnUiThread(new Runnable() {
             @Override
@@ -161,61 +133,6 @@ public class MainActivity extends BaseActivity {
                 MainActivity.instantce.findViewById(R.id.connect).setVisibility(View.VISIBLE);
             }
         });
-    }
-
-    private class UDPClientThread extends Thread {//开启udp广播
-
-        public UDPClientThread() {
-            /* 开启线程 */
-            System.out.println("监听广播开启");
-            isRun = true;
-        }
-
-        @Override
-        public void run() {
-            byte[] data = new byte[256];
-            try {
-                udpSocket = new DatagramSocket(30200);
-                udpPacket = new DatagramPacket(data, data.length);
-            } catch (SocketException e1) {
-                e1.printStackTrace();
-            }
-            while (isRun) {
-                try {
-                    lock.acquire();
-                    udpSocket.receive(udpPacket);
-                } catch (Exception e) {
-                }
-                if (udpPacket != null && null != udpPacket.getAddress()) {
-                    codeString = new String(data, 0, udpPacket.getLength());
-                    final String ip = udpPacket.getAddress().toString()
-                            .substring(1);
-                    Logger.log("ip:::" + ip + "\n内容" + codeString);
-
-                    try {
-                        JSONObject dc = new JSONObject(codeString);
-                        final IpModel ipModel = new IpModel();
-                        ipModel.ip = ip;
-                        ipModel.className = dc.optString("className");
-                        ipModel.platform = dc.optString("platform");
-                        ipModel.time = System.currentTimeMillis();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (System.currentTimeMillis() - time < 2000)
-                                    return;
-                                time = System.currentTimeMillis();
-                                if (udpConnectDialog != null)
-                                    udpConnectDialog.setList(ipModel);
-                            }
-                        });
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                lock.release();
-            }
-        }
     }
 
     //下面是版本更新相关
