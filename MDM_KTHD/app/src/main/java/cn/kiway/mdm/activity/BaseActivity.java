@@ -3,22 +3,16 @@ package cn.kiway.mdm.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.WindowManager;
+
+import org.json.JSONObject;
 
 import cn.kiway.mdm.App;
+import cn.kiway.mdm.dialog.AnswerDialog;
+import cn.kiway.mdm.dialog.KnowledgeStatistics;
 import cn.kiway.mdm.dialog.MyProgressDialog;
 import cn.kiway.mdm.dialog.NotifyShowDailog;
-import cn.kiway.mdm.dialog.ShowMessageDailog;
-
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.ANSWERDIALOG;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.REPONSEDIALOG;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.SIGNDIALOG;
-import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.UNSWERDIALOG;
-import static cn.kiway.mdm.hprose.socket.MessageType.ANSWER;
-import static cn.kiway.mdm.hprose.socket.MessageType.SIGN;
-import static cn.kiway.mdm.hprose.socket.MessageType.SUREREPONSE;
-import static cn.kiway.mdm.hprose.socket.MessageType.UNANSWER;
+import cn.kiway.mdm.dialog.SignDialog;
+import cn.kiway.mdm.dialog.SmokeAnswerDialog;
 
 /**
  * Created by Administrator on 2017/12/4.
@@ -26,6 +20,10 @@ import static cn.kiway.mdm.hprose.socket.MessageType.UNANSWER;
 
 public class BaseActivity extends Activity {
     public App app;
+    AnswerDialog answerDialog;
+    SmokeAnswerDialog smokeAnswerDialog;
+    SignDialog signDialog;
+    KnowledgeStatistics knowDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,49 +64,41 @@ public class BaseActivity extends Activity {
         });
     }
 
-    public ShowMessageDailog showMessageDailog;
-    int showI;
-
-    public void Session(int i) {
-        if (showI == i && showMessageDailog != null && showMessageDailog.isShowing())
-            return;
-        showI = i;
+    public void onQuestion(final JSONObject data) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                showMessageDailog = new ShowMessageDailog(BaseActivity.this);
-                showMessageDailog.setCancelable(false);
-                if (showI == SIGN) {
-                    showMessageDailog.setShowMessage("老师上课签到，请你点击确定确认签到上课", SIGNDIALOG);
-                } else if (showI == ANSWER) {
-                    showMessageDailog.setShowMessage("老师有道题正在抢答，是否进去抢答", ANSWERDIALOG);
-                } else if (showI == UNANSWER) {
-                    showMessageDailog.setShowMessage("抢答结束了", UNSWERDIALOG);
-                } else if (showI == SUREREPONSE) {
-                    showMessageDailog.setShowMessage("同学们，老师这套题清楚了吗？", REPONSEDIALOG);
-                }
-                try {
-                    if (!showMessageDailog.isShowing())
-                        showMessageDailog.show();
-                } catch (WindowManager.BadTokenException e) {
-                    e.printStackTrace();
+                if (data.optString("command").equals("question")) {
+                    if (data.optJSONObject("content").optInt("questionType") == 1) {//点名答
+                    } else if (data.optJSONObject("content").optInt("questionType") == 2) {//抢答
+                        answerDialog = new AnswerDialog(BaseActivity.this);
+                        answerDialog.show();
+                    } else if (data.optJSONObject("content").optInt("questionType") == 3) {//随机抽签
+                        smokeAnswerDialog = new SmokeAnswerDialog(BaseActivity.this);
+                        smokeAnswerDialog.show();
+                    } else if (data.optJSONObject("content").optInt("questionType") == 4) {//测评
+                    }
                 }
             }
         });
     }
 
-    public void showMessage(final String message) {
+    public void onSign() {//签到
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    showMessageDailog = new ShowMessageDailog(BaseActivity.this);
-                    showMessageDailog.setShowMessage(message, DISMISS);
-                    showMessageDailog.show();
-                } catch (WindowManager.BadTokenException e) {
-                    e.printStackTrace();
-                }
+                signDialog = new SignDialog(BaseActivity.this);
+                signDialog.show();
+            }
+        });
+    }
 
+    public void onResponsePush() {//知识点反馈
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                knowDialog = new KnowledgeStatistics(BaseActivity.this);
+                knowDialog.show();
             }
         });
     }

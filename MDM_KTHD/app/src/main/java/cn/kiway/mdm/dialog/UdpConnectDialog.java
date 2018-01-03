@@ -88,7 +88,7 @@ public class UdpConnectDialog extends Dialog {
                     JSONObject data=new JSONObject();
                     data.put("ip",ipModels.get(position).ip);
                     data.put("platform",ipModels.get(position).platform);
-                    ((BaseActivity) context).app.onClass(data);
+                    //((BaseActivity) context).app.onClass(data);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
