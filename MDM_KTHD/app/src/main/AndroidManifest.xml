@@ -26,12 +26,6 @@
 
         <activity
             android:name="cn.kiway.mdm.activity.LoginActivity"
-            android:screenOrientation="landscape"></activity>
-
-        <activity
-            android:name="cn.kiway.mdm.activity.MainActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:launchMode="singleTask"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden">
             <intent-filter>
@@ -39,6 +33,19 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name="cn.kiway.mdm.activity.MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden">
+            <!--<intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+
+                 <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>-->
         </activity>
         <activity
             android:name="cn.kiway.mdm.activity.ScreenActivity"
