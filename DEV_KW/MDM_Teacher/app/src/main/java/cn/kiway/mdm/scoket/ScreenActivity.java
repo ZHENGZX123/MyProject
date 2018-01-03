@@ -13,9 +13,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -23,13 +20,8 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 
-import cn.kiway.mdm.scoket.scoket.tcp.netty.PushServer;
 import cn.kiway.mdm.scoket.utils.Logger;
-import cn.kiway.mdm.scoket.utils.WifiUtils;
 import cn.kiway.mdm.teacher.R;
-
-import static cn.kiway.mdm.scoket.scoket.tcp.netty.MessageType.OFFSCREENSHARE;
-import static cn.kiway.mdm.scoket.scoket.tcp.netty.MessageType.SCREENSHARE;
 
 
 /**
@@ -95,25 +87,11 @@ public class ScreenActivity extends Activity {
     }
 
     void sendMsg() {
-        try {
-            JSONObject da = new JSONObject();
-            da.put("msgType", SCREENSHARE);
-            da.put("msg", WifiUtils.getIPAddress(this));
-            PushServer.hproseSrv.push(getIntent().getStringExtra("clientId") + "owner", da.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
     }
 
     public void OffSrceen(View view) {
-        try {
-            JSONObject da = new JSONObject();
-            da.put("msgType", OFFSCREENSHARE);
-            da.put("msg", WifiUtils.getIPAddress(this));
-            PushServer.hproseSrv.push(getIntent().getStringExtra("clientId") + "owner", da.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
         finish();
     }
 
