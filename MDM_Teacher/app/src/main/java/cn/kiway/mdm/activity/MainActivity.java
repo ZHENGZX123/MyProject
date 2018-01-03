@@ -71,7 +71,7 @@ import static cn.kiway.mdm.zbus.ZbusHost.zbusPost;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.2.3";
+    private static final String currentPackageVersion = "0.2.4";
     private static final String zburPath = "file:///android_asset";
     private boolean isSuccess = false;
     private boolean isJump = false;
