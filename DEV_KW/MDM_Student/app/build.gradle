@@ -3,8 +3,8 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         kiway {
-//            storeFile file('F:/android_signature/kiway.key')
-            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+            storeFile file('F:/android_signature/kiway.key')
+            //storeFile file('C:/Users/Administrator/.android/kiway.keystore')
             storePassword 'kiway123'
             keyAlias 'kiway'
             keyPassword 'kiway123'
@@ -23,6 +23,7 @@ android {
         jackOptions {
             enabled true
         }
+        multiDexEnabled true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -63,6 +64,5 @@ dependencies {
     compile 'com.borax12.materialdaterangepicker:library:1.9'
     compile 'com.android.support:support-v4:23.3.0'
     compile 'com.android.support:appcompat-v7:23.3.0'
-    compile files('libs/hprose_for_java_7.jar')
-//    compile project(':marketplace')
+    compile 'com.android.support:multidex:1.0.0'
 }
