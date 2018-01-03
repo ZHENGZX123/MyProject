@@ -253,6 +253,7 @@ public class Utils {
             //1.发“上课”推送命令
             ((BaseActivity) c).showPD();
             String url = WXApplication.clientUrl + "/device/push/teacher/attendClass?flag=1&ip=" + wifiIp + "&platform=Android";
+            Log.d("test", "shangke url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -260,8 +261,18 @@ public class Utils {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "shangke onSuccess = " + ret);
-                    ((BaseActivity) c).dismissPD();
-                    c.startActivity(new Intent(c, HomeActivity.class));
+                    try {
+                        ((BaseActivity) c).dismissPD();
+                        int statusCode = new JSONObject(ret).optInt("statusCode");
+                        if (statusCode == 200) {
+                            c.startActivity(new Intent(c, HomeActivity.class));
+                        } else {
+                            String errorMsg = new JSONObject(ret).optString("errorMsg");
+                            toast(c, errorMsg);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
