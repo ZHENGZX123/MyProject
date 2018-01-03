@@ -201,7 +201,7 @@ public class HomeActivity extends BaseActivity {
             client.post(HomeActivity.this, url, null, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", " onSuccess = " + ret);
+                    Log.d("test", "dianming onSuccess = " + ret);
                     dismissPD();
                     dianming.setBackgroundResource(R.drawable.dianmingbutton2);
                     dianming.setText("结束点名");
@@ -209,7 +209,7 @@ public class HomeActivity extends BaseActivity {
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", " onFailure = " + s);
+                    Log.d("test", "dianming onFailure = " + s);
                     if (!check301(HomeActivity.this, s, "dianming")) {
                         toast("请求失败，请稍后再试");
                         dismissPD();

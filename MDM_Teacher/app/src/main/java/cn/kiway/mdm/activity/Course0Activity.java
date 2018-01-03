@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +26,16 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.tencent.smtt.sdk.TbsReaderView;
+
+import org.apache.http.Header;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.entity.Course;
 import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.service.RecordService;
@@ -39,7 +45,9 @@ import cn.kiway.mdm.util.Utils;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE1;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
+import static cn.kiway.mdm.teacher.R.id.dianming;
 import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
+import static cn.kiway.mdm.util.Utils.check301;
 
 /**
  * Created by Administrator on 2017/12/28.
@@ -83,6 +91,35 @@ public class Course0Activity extends ScreenSharingActivity {
         end.type = TYPE_END;
         KnowledgePoints.add(end);
         adapter.notifyDataSetChanged();
+
+        try {
+            showPD();
+            String url = WXApplication.serverUrl + "/device/teacher/course/" + course.id;
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.setTimeout(10000);
+            client.post(this, url, null, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "course onSuccess = " + ret);
+                    dismissPD();
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "course onFailure = " + s);
+                    if (!check301(Course0Activity.this, s, "course")) {
+                        toast("请求失败，请稍后再试");
+                        dismissPD();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            toast("请求失败，请稍后再试");
+            dismissPD();
+        }
+
     }
 
     private void initRecord() {

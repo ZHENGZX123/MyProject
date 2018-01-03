@@ -245,18 +245,20 @@ public class JsAndroidInterface {
             String className = new JSONObject(info).optString("className");
             String username = new JSONObject(info).optString("user");
             String password = new JSONObject(info).optString("password");
-
+            String teacherName = new JSONObject(info).optString("realName");
+            String teacherAvatar = new JSONObject(info).optString("avatar");
             activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
             activity.getSharedPreferences("kiway", 0).edit().putString("classId", classId).commit();
             activity.getSharedPreferences("kiway", 0).edit().putString("className", className).commit();
             activity.getSharedPreferences("kiway", 0).edit().putString("username", username).commit();
             activity.getSharedPreferences("kiway", 0).edit().putString("password", password).commit();
+            activity.getSharedPreferences("kiway", 0).edit().putString("teacherName", teacherName).commit();
+            activity.getSharedPreferences("kiway", 0).edit().putString("teacherAvatar", teacherAvatar).commit();
             Utils.shangke(this.activity, wifiIp);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-
 
     @JavascriptInterface
     public void prepareFile(String token) {//选择文件-备课专用，同chooseFile，上传完成后拷贝文件到FilePath
