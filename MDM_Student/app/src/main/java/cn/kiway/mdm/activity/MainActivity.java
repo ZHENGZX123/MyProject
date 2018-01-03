@@ -105,6 +105,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private static final int MSG_CHECK_NEWVERSION = 5;
 
     private Button button5;
+    private static final String zburPath = "file:///android_asset";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +155,11 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         checkPassword();
         //获取app的使用时间
         getAppCanUseData();
+
+
     }
+
+
 
     private void checkUpgrade() {
         mHandler.sendEmptyMessage(MSG_CHECK_NEWVERSION);
@@ -383,6 +388,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     public void SMS(View view) {
         startActivity(new Intent(this, WebViewActivity.class));
+
+
 //        startActivity(new Intent(this, ComposeSmsActivity.class));
 //        try {
 //            Intent intent = new Intent(Intent.ACTION_MAIN);//短信列表界面

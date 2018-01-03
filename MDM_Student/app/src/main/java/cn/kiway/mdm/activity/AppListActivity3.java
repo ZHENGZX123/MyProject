@@ -171,8 +171,7 @@ public class AppListActivity3 extends BaseActivity {
                 try {//+
                     HttpGet httpRequest = new HttpGet(clientUrl +
                             "device/parent/findAppInstallation?imei=" + Utils.getIMEI(AppListActivity3.this));
-                    httpRequest.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token",
-                            ""));
+                    httpRequest.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());

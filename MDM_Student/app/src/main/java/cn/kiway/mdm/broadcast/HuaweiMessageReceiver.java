@@ -296,6 +296,9 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             } else if (command.equals("send_msg")) {
                 m.what = MSG_MESSAGE;
                 m.obj = data;
+            } else if (command.equals("question")) {
+                m.what = MSG_MESSAGE;
+                m.obj = data;
             } else if (command.equals("parent_charge_app")) {
                 String packageName = data.optJSONObject("content").optString("package");
                 String ids = data.optJSONObject("content").optString("id");
