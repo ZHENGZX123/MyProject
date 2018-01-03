@@ -258,14 +258,14 @@ public class Utils {
             client.post(c, url, null, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", " onSuccess = " + ret);
+                    Log.d("test", "shangke onSuccess = " + ret);
                     ((BaseActivity) c).dismissPD();
                     c.startActivity(new Intent(c, HomeActivity.class));
                 }
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", " onFailure = " + s);
+                    Log.d("test", "shangke onFailure = " + s);
                     if (!check301(c, s, "shangke")) {
                         ((BaseActivity) c).dismissPD();
                         toast(c, "请求失败，请稍后再试");
@@ -328,9 +328,10 @@ public class Utils {
             String url = WXApplication.serverUrl + "/device/teacher/login";
             Log.d("test", "relogin url = " + url);
             RequestParams param = new RequestParams();
-            param.put("userName", "15986812191");//FIXME
-            param.put("password", "123456");
+            param.put("userName", c.getSharedPreferences("kiway", 0).getString("username", ""));
+            param.put("password", c.getSharedPreferences("kiway", 0).getString("password", ""));
             Log.d("test", "relogin param = " + param.toString());
+
             client.post(c, url, param, new TextHttpResponseHandler() {
 
                 @Override
@@ -340,7 +341,7 @@ public class Utils {
                         JSONObject o = new JSONObject(ret);
                         //relogin 其他参数存不存都可以
                         String token = o.getJSONObject("data").getString("token");
-                        c.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
+                        c.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
                         if (type.equals("shangke")) {
                             shangke(c, wifiIp);
                         } else if (type.equals("xiake")) {
