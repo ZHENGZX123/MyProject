@@ -11,9 +11,6 @@ import android.webkit.JavascriptInterface;
 
 import com.leon.lfilepickerlibrary.LFilePicker;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.util.ArrayList;
 
@@ -24,7 +21,6 @@ import cn.kiway.mdm.scoket.ScreenActivity;
 import cn.kiway.mdm.scoket.db.DbUtils;
 import cn.kiway.mdm.scoket.scoket.tcp.MessageHander.AccpectMessageHander;
 import cn.kiway.mdm.scoket.scoket.tcp.netty.HproseChannelMapStatic;
-import cn.kiway.mdm.scoket.scoket.tcp.netty.PushServer;
 import cn.kiway.mdm.scoket.scoket.udp.BroadCastUdp;
 import cn.kiway.mdm.scoket.utils.Logger;
 import cn.kiway.mdm.scoket.utils.WifiUtils;
@@ -33,9 +29,7 @@ import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
 
-import static cn.kiway.mdm.scoket.scoket.tcp.netty.MessageType.SHARE_FILE;
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.NettyServerBootstrap.staute;
-import static cn.kiway.mdm.scoket.scoket.tcp.netty.PushServer.FilePath;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.FileUtils.EnFILEPATH;
 
@@ -70,20 +64,7 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public void sendMessage(String msg, String userId) {//发送消息
-        Logger.log(msg + "---------------" + userId);
-        try {
-            if (userId.equals("all")) {
-                PushServer.hproseSrv.push("ground", msg);
-            } else {
-                if (HproseChannelMapStatic.getChannel(userId) == null) {
-                    this.activity.toast("student no inline");
-                    return;
-                }
-                PushServer.hproseSrv.push(userId + "owner", msg);
-            }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @JavascriptInterface//获取服务器状态
@@ -166,7 +147,6 @@ public class JsAndroidInterface {
                 .withTitle(activity.getString(R.string.filepath))
                 .withRequestCode(requsetFile)
                 .withMutilyMode(false)
-                .withfilePath(FilePath)
                 .start();
     }
 
@@ -174,25 +154,7 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public void sendFile(String userId, String filePath) {//发送文件
-        if (HproseChannelMapStatic.getChannel(userId) != null) {
-            JSONObject da = new JSONObject();
-            try {
-                Logger.log(filePath);
-                Logger.log(setFilePath.split("kiwaymdm/")[1]);
-                String path = setFilePath.split("kiwaymdm/")[setFilePath.split("kiwaymdm/").length - 1];
-                PushServer.hproseSrv.shareFile("/" + path);
-                da.put("msgType", SHARE_FILE);
-                da.put("msg", "/" + path);
-                da.put("path", filePath);
-                da.put("fileType", path.split("\\.")[path.split("\\.").length - 1]);
-                if (userId.equals("all"))
-                    PushServer.hproseSrv.push("ground", da.toString());
-                else
-                    PushServer.hproseSrv.push(userId + "owner", da.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+
     }
 
     @JavascriptInterface
@@ -263,27 +225,10 @@ public class JsAndroidInterface {
     BroadCastUdp broadCastUdp;
 
     public void startServer() {
-        JSONObject data = new JSONObject();
-        try {
-            data.put("className", className);
-            data.put("platform", "Android");
-            if (broadCastUdp == null) {
-                broadCastUdp = new BroadCastUdp(data.toString());
-                broadCastUdp.start();
-            }
-            broadCastUdp.isRun = true;
-            PushServer.startHprose(accpectMessageHander);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
     }
 
     public void closeServer() {
-        if (broadCastUdp != null) {
-            broadCastUdp.Close();
-            broadCastUdp = null;
-        }
-        PushServer.stop();
     }
 
     //---------------------------------2.0版本新增的接口--------------------------------------
@@ -312,7 +257,6 @@ public class JsAndroidInterface {
                 .withTitle(activity.getString(R.string.filepath2))
                 .withRequestCode(requsetFile2)
                 .withMutilyMode(false)
-                .withfilePath(FilePath)
                 .start();
     }
 }

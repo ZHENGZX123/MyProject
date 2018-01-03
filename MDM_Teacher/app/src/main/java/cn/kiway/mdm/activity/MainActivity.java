@@ -48,6 +48,9 @@ import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
 import cn.kiway.mdm.web.JsAndroidInterface;
 import cn.kiway.mdm.web.MyWebViewClient;
+import cn.kiway.mdm.zbus.ZbusMessageHandler;
+import cn.kiway.web.kthd.zbus.ZbusConfiguration;
+import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
 import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
 
@@ -62,12 +65,14 @@ import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile2;
 import static cn.kiway.mdm.web.JsAndroidInterface.setFilePath;
 import static cn.kiway.mdm.web.JsAndroidInterface.userAccount;
 import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
+import static cn.kiway.mdm.zbus.ZbusHost.zbusHost;
+import static cn.kiway.mdm.zbus.ZbusHost.zbusPost;
 
 
 public class MainActivity extends BaseActivity {
 
     private static final String currentPackageVersion = "0.2.1";
-
+    private static final String zburPath = "file:///android_asset";
     private boolean isSuccess = false;
     private boolean isJump = false;
     private Dialog dialog_download;
@@ -91,7 +96,19 @@ public class MainActivity extends BaseActivity {
         initData();
         load();
         checkNewVersion();
+        initzbus();
+    }
 
+    //初始化zbus
+    private void initzbus() {
+        ZbusConfiguration.instance.setHost(zbusHost);
+        ZbusConfiguration.instance.setPort(zbusPost);
+        try {
+            //// TODO: 2018/1/2
+            ZbusUtils.consumeMsg("userId", new ZbusMessageHandler());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
