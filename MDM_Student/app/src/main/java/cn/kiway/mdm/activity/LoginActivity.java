@@ -128,7 +128,7 @@ public class LoginActivity extends BaseActivity {
                     String errorMsg = "";
                     try {
                         JSONObject o = new JSONObject(ret);
-                        int StatusCode = o.optInt("StatusCode");
+                        int StatusCode = o.optInt("statusCode");
                         errorMsg = o.optString("errorMsg");
                         String token = o.getJSONObject("data").getString("token");
                         //TODO 返回pwd，密钥不一样怎么办
