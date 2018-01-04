@@ -47,4 +47,6 @@ dependencies {
     compile 'com.android.support:support-v4:25.3.0'
     compile 'com.android.support:design:25.3.0'
     compile project(':libvideoprp')
+    sourceCompatibility = '1.7'
+    targetCompatibility = '1.7'
 }
