@@ -26,14 +26,18 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.tencent.smtt.sdk.TbsReaderView;
 
 import org.apache.http.Header;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.entity.Course;
@@ -42,6 +46,7 @@ import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
 
+import static android.R.id.list;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE1;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
@@ -85,11 +90,6 @@ public class Course0Activity extends ScreenSharingActivity {
     }
 
     public void initData() {
-//        KnowledgePoints = course.knowledgePoints;
-//        KnowledgePoint end = new KnowledgePoint();
-//        end.type = TYPE_END;
-//        KnowledgePoints.add(end);
-//        adapter.notifyDataSetChanged();
         //1.知识点详情
         try {
             showPD();
@@ -101,8 +101,22 @@ public class Course0Activity extends ScreenSharingActivity {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "course onSuccess = " + ret);
-                    //解析得到TeachingContentVO
+                    //解析得到TeachingContentVO、
                     dismissPD();
+                    try {
+                        JSONObject data = new JSONObject(ret).getJSONObject("data");
+                        course = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<Course>() {
+                        }.getType());
+                        //add attchment
+                        //add end
+                        KnowledgePoints = course.knowledgePoints;
+                        KnowledgePoint end = new KnowledgePoint();
+                        end.type = TYPE_END;
+                        KnowledgePoints.add(end);
+                        adapter.notifyDataSetChanged();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
@@ -119,40 +133,12 @@ public class Course0Activity extends ScreenSharingActivity {
             toast("请求失败，请稍后再试");
             dismissPD();
         }
-        //2.问题详情
-        try {
-            showPD();
-            String url = WXApplication.clientUrl + "/device/teacher/course/" + course.id + "/knowledges/questions";
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
-            client.setTimeout(10000);
-            client.get(this, url, null, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "questions onSuccess = " + ret);
-                    //解析得到什么
-                    dismissPD();
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "questions onFailure = " + s);
-                    if (!check301(Course0Activity.this, s, "questions")) {
-                        toast("请求失败，请稍后再试");
-                        dismissPD();
-                    }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            toast("请求失败，请稍后再试");
-            dismissPD();
-        }
     }
 
     private void initRecord() {
         projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
+        //bind放这里好像不对。。。回头看。
         Intent intent = new Intent(this, RecordService.class);
         bindService(intent, connection, BIND_AUTO_CREATE);
     }

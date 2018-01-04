@@ -14,8 +14,8 @@ public class Course implements Serializable {
     public String attachInfo;//附件的info，是数组
     public String attach;//附件的url，用逗号隔开
     public String userId;
-    public int type;//1未上课 2已上课
+    public int type;//1正式2草稿
     public String createDate;
-    public int attendCourse;
+    public int attendCourse;//0未上课1已上课
     public ArrayList<KnowledgePoint> knowledgePoints;
 }
