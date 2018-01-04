@@ -16,7 +16,7 @@ import cn.kiway.mdm.service.RecordService;
 
 public class WXApplication extends Application {
 
-    public static String serverUrl = "http://192.168.8.161:8083";
+    public static String serverUrl = "http://192.168.8.161:8084";
     public static String clientUrl = "http://192.168.8.161:8085";
 
     public static String ROOT = "/mnt/sdcard/kiway_mdm_teacher/";

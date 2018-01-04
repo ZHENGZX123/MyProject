@@ -8,6 +8,10 @@ import android.support.annotation.Nullable;
 import android.util.Base64;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,7 +19,6 @@ import java.lang.reflect.Method;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
-import cn.kiway.mdm.web.MyWebViewClient;
 
 
 /**
@@ -24,7 +27,7 @@ import cn.kiway.mdm.web.MyWebViewClient;
 
 public class WhiteBoardActivity extends BaseActivity {
 
-    private X5WebView wv;
+    private WebView wv;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,7 +62,7 @@ public class WhiteBoardActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
-        com.tencent.smtt.sdk.WebSettings settings = wv.getSettings();
+        WebSettings settings = wv.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setAppCacheEnabled(true);
         settings.setUseWideViewPort(true);
@@ -67,9 +70,9 @@ public class WhiteBoardActivity extends BaseActivity {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
-        wv.setWebViewClient(new MyWebViewClient());
+        wv.setWebViewClient(new WebViewClient());
         wv.setVerticalScrollBarEnabled(false);
-        wv.setWebChromeClient(new com.tencent.smtt.sdk.WebChromeClient());
+        wv.setWebChromeClient(new WebChromeClient());
         wv.addJavascriptInterface(new JsAndroidInterface2(), "wx");
     }
 
@@ -103,6 +106,6 @@ public class WhiteBoardActivity extends BaseActivity {
         super.initView();
 
         titleName.setText("画笔");
-        wv = (X5WebView) findViewById(R.id.wv);
+        wv = (WebView) findViewById(R.id.wv);
     }
 }

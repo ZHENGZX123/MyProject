@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebView;
 
 import com.leon.lfilepickerlibrary.LFilePicker;
 
@@ -50,7 +51,7 @@ public class JsAndroidInterface {
     public static final int requsetFile2 = 45613;
     public static String accessToken;
 
-    public JsAndroidInterface(MainActivity activity, X5WebView webView) {
+    public JsAndroidInterface(MainActivity activity, WebView webView) {
         this.activity = activity;
         accpectMessageHander = new AccpectMessageHander(activity, webView);
     }
@@ -239,14 +240,15 @@ public class JsAndroidInterface {
     public void shangke(String info) {
         Log.d("test", "shangke info = " + info);
         try {
-            String token = new JSONObject(info).optString("token");
-            String wifiIp = new JSONObject(info).optString("wifiIp");
-            String classId = new JSONObject(info).optString("classId");
-            String className = new JSONObject(info).optString("className");
-            String username = new JSONObject(info).optString("user");
-            String password = new JSONObject(info).optString("password");
-            String teacherName = new JSONObject(info).optString("realName");
-            String teacherAvatar = new JSONObject(info).optString("avatar");
+            JSONObject o = new JSONObject(info);
+            String token = o.optString("token");
+            String wifiIp = o.optString("wifiIp");
+            String classId = o.optString("classId");
+            String className = o.optString("className");
+            String username = o.optString("user");
+            String password = o.optString("password");
+            String teacherName = o.optString("realName");
+            String teacherAvatar = o.optString("avatar");
             activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
             activity.getSharedPreferences("kiway", 0).edit().putString("classId", classId).commit();
             activity.getSharedPreferences("kiway", 0).edit().putString("className", className).commit();
