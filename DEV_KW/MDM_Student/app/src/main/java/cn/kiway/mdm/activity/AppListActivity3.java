@@ -26,6 +26,7 @@ import cn.kiway.mdm.R;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.InStallAllApp;
 import cn.kiway.mdm.utils.FileACache;
+import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 
@@ -165,16 +166,19 @@ public class AppListActivity3 extends BaseActivity {
 
     //下面获取app使用时间
     public void getAppData() {
+
         new Thread() {
             @Override
             public void run() {
                 try {//+
                     HttpGet httpRequest = new HttpGet(clientUrl +
-                            "device/parent/findAppInstallation?imei=" + Utils.getIMEI(AppListActivity3.this));
+                            "device/findAppInstallation?imei=" + Utils.getIMEI(AppListActivity3.this));
                     httpRequest.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+                  Logger.log("::::"+getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
+                    Logger.log("::::::::::::"+ret);
                     JSONObject data = new JSONObject(ret);
                     if (data.optInt("statusCode") == 200) {
                         JSONArray array = data.optJSONArray("data");
@@ -202,6 +206,7 @@ public class AppListActivity3 extends BaseActivity {
                         notifyView();
                     }
                 } catch (Exception e) {
+                    Logger.log("::::::::::::");
                     e.printStackTrace();
                 }
                 notifyView();
