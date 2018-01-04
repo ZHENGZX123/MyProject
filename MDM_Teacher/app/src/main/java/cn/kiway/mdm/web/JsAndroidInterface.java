@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
-import android.webkit.WebView;
 
 import com.leon.lfilepickerlibrary.LFilePicker;
 
@@ -51,7 +50,7 @@ public class JsAndroidInterface {
     public static final int requsetFile2 = 45613;
     public static String accessToken;
 
-    public JsAndroidInterface(MainActivity activity, WebView webView) {
+    public JsAndroidInterface(MainActivity activity, X5WebView webView) {
         this.activity = activity;
         accpectMessageHander = new AccpectMessageHander(activity, webView);
     }
@@ -185,6 +184,7 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public String getHost() {
+        Log.d("test", "getHost is called");
         return WXApplication.clientUrl;
     }
 

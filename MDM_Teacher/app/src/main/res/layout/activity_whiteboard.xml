@@ -8,9 +8,10 @@
         android:id="@+id/titleRL"
         layout="@layout/layout_title2"></include>
 
-    <WebView
+    <cn.kiway.mdm.view.X5WebView
         android:id="@+id/wv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></WebView>
+        android:layout_height="match_parent"
+        android:layerType="software"></cn.kiway.mdm.view.X5WebView>
 
 </RelativeLayout>

@@ -15,10 +15,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -49,7 +45,9 @@ import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.NetworkUtil;
 import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
+import cn.kiway.mdm.view.X5WebView;
 import cn.kiway.mdm.web.JsAndroidInterface;
+import cn.kiway.mdm.web.MyWebViewClient;
 import cn.kiway.mdm.zbus.ZbusMessageHandler;
 import cn.kiway.web.kthd.zbus.ZbusConfiguration;
 import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
@@ -79,7 +77,7 @@ public class MainActivity extends BaseActivity {
     private boolean isJump = false;
     private Dialog dialog_download;
     public ProgressDialog pd;
-    private WebView wv;
+    private X5WebView wv;
     private LinearLayout layout_welcome;
     public static MainActivity instance;
     private long time;
@@ -131,7 +129,7 @@ public class MainActivity extends BaseActivity {
 
     public void initView() {
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
-        wv = (WebView) findViewById(R.id.wv);
+        wv = (X5WebView) findViewById(R.id.wv);
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
     }
 
@@ -161,7 +159,7 @@ public class MainActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
-        WebSettings settings = wv.getSettings();
+        com.tencent.smtt.sdk.WebSettings settings = wv.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setAppCacheEnabled(true);
         settings.setUseWideViewPort(true);
@@ -169,9 +167,9 @@ public class MainActivity extends BaseActivity {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
-        wv.setWebViewClient(new WebViewClient());
+        wv.setWebViewClient(new MyWebViewClient());
         wv.setVerticalScrollBarEnabled(false);
-        wv.setWebChromeClient(new WebChromeClient());
+        wv.setWebChromeClient(new com.tencent.smtt.sdk.WebChromeClient());
         jsInterface = new JsAndroidInterface(this, wv);
         wv.addJavascriptInterface(jsInterface, "scoket");
     }
