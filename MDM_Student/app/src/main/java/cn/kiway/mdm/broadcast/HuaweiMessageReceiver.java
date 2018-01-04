@@ -79,10 +79,10 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             }
 
             //FIXME 测试用
-            Message testMsg = new Message();
-            testMsg.what = MSG_TOAST;
-            testMsg.obj = receive;
-            KWApp.instance.mHandler.sendMessage(testMsg);
+//            Message testMsg = new Message();
+//            testMsg.what = MSG_TOAST;
+//            testMsg.obj = receive;
+//            KWApp.instance.mHandler.sendMessage(testMsg);
 
             String dataStr = new JSONObject(receive).getString("data");
             JSONObject data = new JSONObject(dataStr);
