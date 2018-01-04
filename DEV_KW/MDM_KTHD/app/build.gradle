@@ -62,4 +62,6 @@ dependencies {
     sourceCompatibility = '1.7'
     targetCompatibility = '1.7'
     compile 'com.android.support:multidex:1.0.0'
+    compile project(':ImagePicker')
+    compile files('libs/image_compress.jar')
 }
