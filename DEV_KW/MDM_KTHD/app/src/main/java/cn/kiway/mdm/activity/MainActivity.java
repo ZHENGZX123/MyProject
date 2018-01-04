@@ -67,8 +67,9 @@ public class MainActivity extends BaseActivity {
     }
 
     public void onInfo(View view) {//个人信息
-     // startActivity(new Intent(this, UserInfoActivity.class));
-        startPlayer();
+        // startActivity(new Intent(this, UserInfoActivity.class));
+        // startPlayer();
+        startActivity(new Intent(this, AnswerQuestionsAcitivity.class));
     }
 
     public void onFile(View view) {//查看文件
@@ -98,15 +99,14 @@ public class MainActivity extends BaseActivity {
             Logger.log("shangke::::::" + shangke);
             if (shangke != null && !shangke.equals("")) {
             } else {
-              //  findViewById(R.id.connect).setVisibility(View.VISIBLE);
+                //  findViewById(R.id.connect).setVisibility(View.VISIBLE);
                 checkNewVersion();
             }
         } else {
-           // findViewById(R.id.connect).setVisibility(View.VISIBLE);
+            // findViewById(R.id.connect).setVisibility(View.VISIBLE);
             checkNewVersion();
         }
     }
-
 
 
     //下面是版本更新相关
