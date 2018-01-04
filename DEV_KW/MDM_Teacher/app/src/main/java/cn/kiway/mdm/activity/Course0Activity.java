@@ -108,6 +108,7 @@ public class Course0Activity extends ScreenSharingActivity {
                         course = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<Course>() {
                         }.getType());
                         //add attchment
+
                         //add end
                         KnowledgePoints = course.knowledgePoints;
                         KnowledgePoint end = new KnowledgePoint();
