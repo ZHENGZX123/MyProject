@@ -1,1 +1,1 @@
-include ':app', ':mdmaidl', ':AgoraPlayer', ':libvideoprp'
+include ':app', ':mdmaidl', ':AgoraPlayer', ':libvideoprp', ':ImagePicker', ':photoview'
