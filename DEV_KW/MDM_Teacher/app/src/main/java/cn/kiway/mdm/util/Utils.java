@@ -247,7 +247,6 @@ public class Utils {
     private static String wifiIp;
 
     public static void shangke(Activity c, String wifiIp) {
-        //TODO 老师名字、老师头像要陈峰给。。。
         Utils.wifiIp = wifiIp;
         try {
             //1.发“上课”推送命令

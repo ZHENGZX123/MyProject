@@ -85,7 +85,6 @@ public class MainActivity extends BaseActivity {
     private long time;
     private JsAndroidInterface jsInterface;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
