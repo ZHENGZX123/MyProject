@@ -8,10 +8,6 @@ import android.support.annotation.Nullable;
 import android.util.Base64;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -19,6 +15,7 @@ import java.lang.reflect.Method;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
+import cn.kiway.mdm.web.MyWebViewClient;
 
 
 /**
@@ -27,7 +24,7 @@ import cn.kiway.mdm.view.X5WebView;
 
 public class WhiteBoardActivity extends BaseActivity {
 
-    private WebView wv;
+    private X5WebView wv;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,7 +59,7 @@ public class WhiteBoardActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
-        WebSettings settings = wv.getSettings();
+        com.tencent.smtt.sdk.WebSettings settings = wv.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setAppCacheEnabled(true);
         settings.setUseWideViewPort(true);
@@ -70,9 +67,9 @@ public class WhiteBoardActivity extends BaseActivity {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
-        wv.setWebViewClient(new WebViewClient());
+        wv.setWebViewClient(new MyWebViewClient());
         wv.setVerticalScrollBarEnabled(false);
-        wv.setWebChromeClient(new WebChromeClient());
+        wv.setWebChromeClient(new com.tencent.smtt.sdk.WebChromeClient());
         wv.addJavascriptInterface(new JsAndroidInterface2(), "wx");
     }
 
@@ -106,6 +103,6 @@ public class WhiteBoardActivity extends BaseActivity {
         super.initView();
 
         titleName.setText("画笔");
-        wv = (WebView) findViewById(R.id.wv);
+        wv = (X5WebView) findViewById(R.id.wv);
     }
 }
