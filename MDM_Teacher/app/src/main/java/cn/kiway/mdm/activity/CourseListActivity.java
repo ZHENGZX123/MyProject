@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import cn.kiway.mdm.WXApplication;
@@ -88,8 +89,17 @@ public class CourseListActivity extends BaseActivity {
                         JSONArray list = new JSONObject(ret).getJSONObject("data").getJSONArray("list");
                         courses = new GsonBuilder().create().fromJson(list.toString(), new TypeToken<List<Course>>() {
                         }.getType());
+                        //过滤一下“草稿”
+                        Iterator<Course> it = courses.iterator();
+                        while (it.hasNext()) {
+                            Course c = it.next();
+                            if (c.type == 2) {
+                                it.remove();
+                            }
+                        }
                         adapter.notifyDataSetChanged();
                     } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
 
@@ -145,13 +155,13 @@ public class CourseListActivity extends BaseActivity {
             }
 
             final Course s = courses.get(position);
-            if (s.type == 1) {
+            if (s.attendCourse == 0) {
                 holder.title1.setTextColor(Color.parseColor("#6699ff"));
                 holder.title2.setTextColor(Color.parseColor("#6699ff"));
                 holder.yishangke.setVisibility(View.GONE);
                 holder.ball.setImageResource(R.drawable.ball2);
                 holder.line2.setBackgroundColor(Color.parseColor("#6699ff"));
-            } else if (s.type == 2) {
+            } else if (s.attendCourse == 1) {
                 holder.title1.setTextColor(Color.parseColor("#cccccc"));
                 holder.title2.setTextColor(Color.parseColor("#cccccc"));
                 holder.yishangke.setVisibility(View.VISIBLE);
