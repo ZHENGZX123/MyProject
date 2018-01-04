@@ -286,7 +286,7 @@ public class TimeSetActivity extends BaseActivity implements View.OnClickListene
                     String errorMsg = "";
                     try {
                         JSONObject o = new JSONObject(ret);
-                        int StatusCode = o.optInt("StatusCode");
+                        int StatusCode = o.optInt("statusCode");
                         errorMsg = o.optString("errorMsg");
                         if (StatusCode == 200) {
                             //finish();
@@ -390,7 +390,7 @@ public class TimeSetActivity extends BaseActivity implements View.OnClickListene
                     String errorMsg = "";
                     try {
                         JSONObject o = new JSONObject(ret);
-                        int StatusCode = o.optInt("StatusCode");
+                        int StatusCode = o.optInt("statusCode");
                         errorMsg = o.optString("errorMsg");
                         if (StatusCode == 200) {
                             app.record = null;
