@@ -105,7 +105,7 @@ public class LoginActivity extends BaseActivity {
             showPD();
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            String url = clientUrl + "device/login";
+            String url = clientUrl + "device/student/login";
             Log.d("test", "url = " + url);
             RequestParams param = new RequestParams();
             param.put("classId", mClass.id);
