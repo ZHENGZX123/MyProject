@@ -21,6 +21,7 @@ public class WXApplication extends Application {
 
     public static String ROOT = "/mnt/sdcard/kiway_mdm_teacher/";
     public static String HTML = "mdm_teacher/dist/index.html";
+    public static String HTML2 = "mdm_teacher/whiteboard/index.html";
     public static String ZIP = "mdm_teacher.zip";
 
     public static Activity currentActivity;
