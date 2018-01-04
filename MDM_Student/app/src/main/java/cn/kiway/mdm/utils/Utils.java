@@ -1374,7 +1374,7 @@ public class Utils {
             String token = c.getSharedPreferences("huawei", 0).getString("token", "");
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            String url = clientUrl + "device/login";
+            String url = clientUrl + "device/student/login";
             Log.d("test", "relogin url = " + url);
             RequestParams param = new RequestParams();
             param.put("schoolId", c.getSharedPreferences("kiway", 0).getString("schoolId", ""));
