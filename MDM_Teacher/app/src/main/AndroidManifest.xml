@@ -15,7 +15,6 @@
     <application
         android:name="cn.kiway.mdm.WXApplication"
         android:allowBackup="true"
-        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -24,7 +23,6 @@
         <activity
             android:name="cn.kiway.mdm.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:hardwareAccelerated="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -82,7 +80,6 @@
 
         <activity
             android:name="cn.kiway.mdm.activity.WhiteBoardActivity"
-            android:hardwareAccelerated="false"
             android:screenOrientation="landscape">
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />

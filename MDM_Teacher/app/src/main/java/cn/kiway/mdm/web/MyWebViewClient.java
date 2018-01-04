@@ -2,10 +2,10 @@ package cn.kiway.mdm.web;
 
 import android.graphics.Bitmap;
 import android.util.Log;
-
-import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
-import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
-import com.tencent.smtt.sdk.WebView;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import cn.kiway.mdm.scoket.utils.Logger;
 
@@ -13,9 +13,10 @@ import cn.kiway.mdm.scoket.utils.Logger;
  * Created by Administrator on 2017/11/9.
  */
 
-public class MyWebViewClient extends com.tencent.smtt.sdk.WebViewClient {
+public class MyWebViewClient extends WebViewClient {
     public MyWebViewClient() {
     }
+
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -23,25 +24,22 @@ public class MyWebViewClient extends com.tencent.smtt.sdk.WebViewClient {
     }
 
     @Override
-    public void onPageFinished(com.tencent.smtt.sdk.WebView webView, String s) {
+    public void onPageFinished(WebView webView, String s) {
         super.onPageFinished(webView, s);
         Log.d("test", "onPageFinished url = " + s);
     }
 
     @Override
-    public boolean shouldOverrideUrlLoading(com.tencent.smtt.sdk.WebView webView, String url) {
-        // 重写此方法表明点击网页里面的链接还是在当前的webview里跳转，不另跳浏览器
-        // 在2.3上面不加这句话，可以加载出页面，在4.0上面必须要加入，不然出现白屏
+    public boolean shouldOverrideUrlLoading(WebView webView, String url) {
         if (url.startsWith("http://") || url.startsWith("https://")) {
             webView.loadUrl(url);
-            webView.stopLoading();
             return true;
         }
         return false;
     }
 
     @Override
-    public WebResourceResponse shouldInterceptRequest(com.tencent.smtt.sdk.WebView webView, String url) {
+    public WebResourceResponse shouldInterceptRequest(WebView webView, String url) {
         Log.d("test", "shouldInterceptRequest url = " + url);
         return super.shouldInterceptRequest(webView, url);
     }
