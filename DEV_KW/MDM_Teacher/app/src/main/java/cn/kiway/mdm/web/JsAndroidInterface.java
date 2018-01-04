@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebView;
 
 import com.leon.lfilepickerlibrary.LFilePicker;
 
@@ -30,7 +31,6 @@ import cn.kiway.mdm.scoket.utils.WifiUtils;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Utils;
-import cn.kiway.mdm.view.X5WebView;
 
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.NettyServerBootstrap.staute;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
@@ -50,7 +50,7 @@ public class JsAndroidInterface {
     public static final int requsetFile2 = 45613;
     public static String accessToken;
 
-    public JsAndroidInterface(MainActivity activity, X5WebView webView) {
+    public JsAndroidInterface(MainActivity activity, WebView webView) {
         this.activity = activity;
         accpectMessageHander = new AccpectMessageHander(activity, webView);
     }

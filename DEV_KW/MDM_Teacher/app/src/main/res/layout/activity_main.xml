@@ -8,7 +8,6 @@
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true">
 
         <RelativeLayout
@@ -28,12 +27,11 @@
 
         </RelativeLayout>
 
-        <cn.kiway.mdm.view.X5WebView
+        <WebView
             android:id="@+id/wv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/rl_nonet"
-            android:layerType="software"></cn.kiway.mdm.view.X5WebView>
+            android:layout_below="@id/rl_nonet"></WebView>
 
         <LinearLayout
             android:id="@+id/layout_welcome"
