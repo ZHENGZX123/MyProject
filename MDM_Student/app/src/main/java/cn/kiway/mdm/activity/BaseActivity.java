@@ -168,7 +168,7 @@ public class BaseActivity extends Activity {
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
-                    Log.d("test", "new version = " + ret);
+                    Log.e("test", "new version = " + ret);
                     String apkVersion = new JSONObject(ret).getString("apkCode");
                     String apkUrl = new JSONObject(ret).getString("apkUrl");
                     if (Utils.getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {

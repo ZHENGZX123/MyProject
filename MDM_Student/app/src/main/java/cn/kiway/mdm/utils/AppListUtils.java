@@ -14,7 +14,7 @@ import cn.kiway.mdm.entity.App;
  */
 
 public class AppListUtils {
-
+//
     public static ArrayList<String> preinstallAPP = new ArrayList<>();
 
     static {
