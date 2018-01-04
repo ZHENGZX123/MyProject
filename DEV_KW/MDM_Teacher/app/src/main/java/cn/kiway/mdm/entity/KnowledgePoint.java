@@ -1,7 +1,6 @@
 package cn.kiway.mdm.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2017/12/29.
@@ -16,10 +15,8 @@ public class KnowledgePoint implements Serializable {
     public String id;
     public String courseId;
     public String content;
-    public String img;
     public String createDate;
-    public String questions;
-    public ArrayList<TeachingContentVO> teachingContentVo;
+    public TeachingContentVo teachingContentVo;
 
-    public int type;
+    public int type;//我自己用的。。。
 }
