@@ -146,7 +146,7 @@ public class AnswerQuestionsAcitivity extends BaseActivity implements RadioGroup
         @JavascriptInterface
         public String setBackgroundImage() {
             Log.d("test", "setBackgroundImage is called");
-            return "/mnt/sdcard/test.jpg";
+            return "";///mnt/sdcard/test.jpg
         }
 
         @JavascriptInterface
