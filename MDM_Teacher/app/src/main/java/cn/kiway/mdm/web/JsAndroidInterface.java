@@ -184,7 +184,7 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public String getHost() {
-        Log.d("test", "getHost is called");
+        Log.d("test", "getHost is called return " + WXApplication.clientUrl);
         return WXApplication.clientUrl;
     }
 

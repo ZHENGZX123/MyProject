@@ -12,6 +12,7 @@ import android.webkit.JavascriptInterface;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
@@ -37,7 +38,10 @@ public class WhiteBoardActivity extends BaseActivity {
     }
 
     private void load() {
-        wv.loadUrl("file:///android_asset/dist/index.html");
+        wv.clearCache(true);
+        String url = "file://" + WXApplication.ROOT + WXApplication.HTML2;
+        Log.d("test", "url = " + url);
+        wv.loadUrl(url);
     }
 
     private void initData() {
