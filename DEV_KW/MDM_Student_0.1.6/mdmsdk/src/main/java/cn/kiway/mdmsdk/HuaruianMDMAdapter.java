@@ -297,7 +297,9 @@ public class HuaruianMDMAdapter implements IMDMAdapter {
         if (!TextUtils.isEmpty(key)) {
             intent.putExtra(key, value);
         }
-        c.sendBroadcast(intent);
+        if (c != null) {
+            c.sendBroadcast(intent);
+        }
     }
 
     private void sendBroadcast(String action, String key, String value) {
@@ -306,7 +308,9 @@ public class HuaruianMDMAdapter implements IMDMAdapter {
         if (!TextUtils.isEmpty(key)) {
             intent.putExtra(key, value);
         }
-        c.sendBroadcast(intent);
+        if (c != null) {
+            c.sendBroadcast(intent);
+        }
     }
 
     private void sendBroadcast(String action, String key1, String value1, String key2, String value2) {
@@ -318,6 +322,8 @@ public class HuaruianMDMAdapter implements IMDMAdapter {
         if (!TextUtils.isEmpty(key2)) {
             intent.putExtra(key2, value2);
         }
-        c.sendBroadcast(intent);
+        if (c != null) {
+            c.sendBroadcast(intent);
+        }
     }
 }
