@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorAccent">#92B4F4</color>
+    <color name="colorPrimary">#92B4F4</color>
+    <color name="colorPrimaryDark">#92B4F4</color>
+    <color name="defaultColor">#92B4F4</color>
+    <color name="gray">#cccccc</color>
+    <color name="lightgray">#dddddd</color>
+    <color name="white">#fff</color>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <string name="Cancel">Cancel</string>
+    <string name="Detail">detail</string>
+    <string name="FileSize">size : </string>
+    <string name="LItem">item</string>
+    <string name="NotFoundBooks">Please select a file at least</string>
+    <string name="NotFoundPath">The sd card is not available</string>
+    <string name="OutSize">Has reached the maximum number</string>
+    <string name="SelectAll">SelectAll</string>
+    <string name="Selected">selected</string>
+    <string name="UpOneLevel">Up</string>
+    <string name="app_name">MDM教师</string>
+    <style name="CheckBoxTheme" parent="LibraryAppTheme">
+        <!-- 溢出菜单图标颜色-->
+        <item name="colorControlNormal">@color/gray</item>
+    </style>
+    <style name="LibraryAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="ToolbarTheme" parent="LibraryAppTheme">
+        <!-- 溢出菜单图标颜色-->
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+
+    </style>
+    <style name="item_text_detail">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:textColor">#999999</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="item_text_name">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">#101010</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+</resources>

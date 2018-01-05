@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "F:\\Copy\\MDM_TeacherCopy\\app\\build\\intermediates\\res\\merged\\release\\menu\\menu_main_toolbar.xml",
+        "source": "F:\\Copy\\MDM_TeacherCopy\\lfilepickerlibrary\\build\\intermediates\\bundles\\default\\res\\menu\\menu_main_toolbar.xml"
+    },
+    {
+        "merged": "F:\\Copy\\MDM_TeacherCopy\\app\\build\\intermediates\\res\\merged\\release\\menu\\main_menu.xml",
+        "source": "F:\\Copy\\MDM_TeacherCopy\\photoview\\build\\intermediates\\bundles\\default\\res\\menu\\main_menu.xml"
+    },
+    {
+        "merged": "F:\\Copy\\MDM_TeacherCopy\\app\\build\\intermediates\\res\\merged\\release\\menu\\capture.xml",
+        "source": "F:\\Copy\\MDM_TeacherCopy\\zxing\\build\\intermediates\\bundles\\default\\res\\menu\\capture.xml"
+    },
+    {
+        "merged": "F:\\Copy\\MDM_TeacherCopy\\app\\build\\intermediates\\res\\merged\\release\\menu\\encode.xml",
+        "source": "F:\\Copy\\MDM_TeacherCopy\\zxing\\build\\intermediates\\bundles\\default\\res\\menu\\encode.xml"
+    },
+    {
+        "merged": "F:\\Copy\\MDM_TeacherCopy\\app\\build\\intermediates\\res\\merged\\release\\menu\\history.xml",
+        "source": "F:\\Copy\\MDM_TeacherCopy\\zxing\\build\\intermediates\\bundles\\default\\res\\menu\\history.xml"
+    }
+]

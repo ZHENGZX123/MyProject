@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "F:\\Copy\\MDM_Teacher_0.1.5\\zxing\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-land\\encode.xml",
+        "source": "F:\\Copy\\MDM_Teacher_0.1.5\\zxing\\build\\intermediates\\bundles\\debug\\res\\layout-land\\encode.xml"
+    },
+    {
+        "merged": "F:\\Copy\\MDM_Teacher_0.1.5\\zxing\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-land\\share.xml",
+        "source": "F:\\Copy\\MDM_Teacher_0.1.5\\zxing\\build\\intermediates\\bundles\\debug\\res\\layout-land\\share.xml"
+    },
+    {
+        "merged": "F:\\Copy\\MDM_TeacherCopy\\zxing\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-land\\share.xml",
+        "source": "F:\\Copy\\MDM_TeacherCopy\\zxing\\build\\intermediates\\bundles\\debug\\res\\layout-land\\share.xml"
+    },
+    {
+        "merged": "F:\\Copy\\MDM_TeacherCopy\\zxing\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-land\\encode.xml",
+        "source": "F:\\Copy\\MDM_TeacherCopy\\zxing\\build\\intermediates\\bundles\\debug\\res\\layout-land\\encode.xml"
+    }
+]

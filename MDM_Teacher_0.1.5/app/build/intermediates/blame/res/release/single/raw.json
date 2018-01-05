@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "F:\\Copy\\MDM_TeacherCopy\\app\\build\\intermediates\\res\\merged\\release\\raw\\mdm_teacher.zip",
+        "source": "F:\\Copy\\MDM_TeacherCopy\\app\\src\\main\\res\\raw\\mdm_teacher.zip"
+    },
+    {
+        "merged": "F:\\Copy\\MDM_TeacherCopy\\app\\build\\intermediates\\res\\merged\\release\\raw\\beep.ogg",
+        "source": "F:\\Copy\\MDM_TeacherCopy\\zxing\\build\\intermediates\\bundles\\default\\res\\raw\\beep.ogg"
+    }
+]

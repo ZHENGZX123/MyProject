@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "F:\\Copy\\MDM_TeacherCopy\\app\\build\\intermediates\\res\\merged\\debug\\raw\\beep.ogg",
+        "source": "F:\\Copy\\MDM_TeacherCopy\\zxing\\build\\intermediates\\bundles\\default\\res\\raw\\beep.ogg"
+    },
+    {
+        "merged": "F:\\Copy\\MDM_Teacher_0.1.5\\app\\build\\intermediates\\res\\merged\\debug\\raw\\mdm_teacher.zip",
+        "source": "F:\\Copy\\MDM_Teacher_0.1.5\\app\\src\\main\\res\\raw\\mdm_teacher.zip"
+    },
+    {
+        "merged": "F:\\Copy\\MDM_TeacherCopy\\app\\build\\intermediates\\res\\merged\\debug\\raw\\mdm_teacher.zip",
+        "source": "F:\\Copy\\MDM_TeacherCopy\\app\\src\\main\\res\\raw\\mdm_teacher.zip"
+    },
+    {
+        "merged": "F:\\Copy\\MDM_Teacher_0.1.5\\app\\build\\intermediates\\res\\merged\\debug\\raw\\beep.ogg",
+        "source": "F:\\Copy\\MDM_Teacher_0.1.5\\zxing\\build\\intermediates\\bundles\\default\\res\\raw\\beep.ogg"
+    }
+]
