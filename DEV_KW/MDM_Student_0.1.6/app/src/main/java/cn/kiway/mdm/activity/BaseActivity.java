@@ -108,7 +108,6 @@ public class BaseActivity extends Activity {
         //MDMHelper.getAdapter().setUSBDataDisabled(true);
         //6.禁用一些物理键盘
         MDMHelper.getAdapter().setTaskButtonDisabled(true);
-        //MDMHelper.getAdapter().setHomeButtonDisabled(true);//没有必要了
         MDMHelper.getAdapter().setVpnDisabled(true);
         //7.禁止修改时间
         MDMHelper.getAdapter().setTimeAndDateSetDisabled(true);
