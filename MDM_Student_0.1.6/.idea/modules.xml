@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/MDM_Student_0.1.6.iml" filepath="$PROJECT_DIR$/MDM_Student_0.1.6.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/classify/classify.iml" filepath="$PROJECT_DIR$/classify/classify.iml" />
+      <module fileurl="file://$PROJECT_DIR$/marketplace/marketplace.iml" filepath="$PROJECT_DIR$/marketplace/marketplace.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mdmsdk/mdmsdk.iml" filepath="$PROJECT_DIR$/mdmsdk/mdmsdk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zxing/zxing.iml" filepath="$PROJECT_DIR$/zxing/zxing.iml" />
+    </modules>
+  </component>
+</project>
