@@ -348,9 +348,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void getCommand() {
-        if (mHandler.hasMessages(MSG_GET_COMMAND)) {
-            mHandler.removeMessages(MSG_GET_COMMAND);
-        }
+        mHandler.removeMessages(MSG_GET_COMMAND);
         mHandler.sendEmptyMessage(MSG_GET_COMMAND);
     }
 

@@ -227,20 +227,20 @@ public class KWApp extends Application {
         //这个没有对应的MDM接口，需要代码控制
 
         int flag_snapshot = getSharedPreferences("kiway", 0).getInt("flag_snapshot", 1);
-        //MDMHelper.getAdapter().setScreenCaptureDisabled(flag_snapshot == 0);
+        MDMHelper.getAdapter().setScreenCaptureDisabled(flag_snapshot == 0);
 
         int flag_location = getSharedPreferences("kiway", 0).getInt("flag_location", 1);
-        //MDMHelper.getAdapter().setNetworkLocationDisabled(flag_location == 0);
+        MDMHelper.getAdapter().setNetworkLocationDisabled(flag_location == 0);
         MDMHelper.getAdapter().setGPSDisabled(flag_location == 0);
 
         int flag_dataconnectivity = getSharedPreferences("kiway", 0).getInt("flag_dataconnectivity", 1);
         MDMHelper.getAdapter().setDataConnectivityDisabled(flag_dataconnectivity == 0);
 
         int flag_microphone = getSharedPreferences("kiway", 0).getInt("flag_microphone", 1);
-        //MDMHelper.getAdapter().setMicrophoneDisabled(flag_microphone == 0);
+        MDMHelper.getAdapter().setMicrophoneDisabled(flag_microphone == 0);
 
         int flag_restore = getSharedPreferences("kiway", 0).getInt("flag_restore", 1);
-        //MDMHelper.getAdapter().setRestoreFactoryDisabled(flag_restore == 0);
+        MDMHelper.getAdapter().setRestoreFactoryDisabled(flag_restore == 0);
 
         int flag_ap = getSharedPreferences("kiway", 0).getInt("flag_ap", 1);
         MDMHelper.getAdapter().setWifiApDisabled(flag_ap == 0);
@@ -257,7 +257,7 @@ public class KWApp extends Application {
         //MDMHelper.getAdapter().setWifiDisabled(flag_wifi == 0);
 
         int flag_systemupdate = getSharedPreferences("kiway", 0).getInt("flag_systemupdate", 1);
-        //MDMHelper.getAdapter().setSystemUpdateDisabled(flag_systemupdate == 0);
+        MDMHelper.getAdapter().setSystemUpdateDisabled(flag_systemupdate == 0);
 
         int flag_bluetooth = getSharedPreferences("kiway", 0).getInt("flag_bluetooth", 1);
         MDMHelper.getAdapter().setBluetoothDisabled(flag_bluetooth == 0);
