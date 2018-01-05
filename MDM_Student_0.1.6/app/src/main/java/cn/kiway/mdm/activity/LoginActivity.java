@@ -141,6 +141,7 @@ public class LoginActivity extends BaseActivity {
                             getSharedPreferences("kiway", 0).edit().putString("schoolId", mSchool.schoolId).commit();
                             getSharedPreferences("kiway", 0).edit().putString("classId", mClass.id).commit();
                             getSharedPreferences("kiway", 0).edit().putString("studentNumber", code).commit();
+                            getSharedPreferences("kiway", 0).edit().putString("className", mClass.name).commit();
                             getSharedPreferences("kiway", 0).edit().putString("name", name).commit();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
