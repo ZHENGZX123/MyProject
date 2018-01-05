@@ -1418,19 +1418,19 @@ public class Utils {
         return true;
     }
 
-    public static void resetFunctions(Context context) {
-        context.getSharedPreferences("kiway", 0).edit().putInt("flag_camera", 0).commit();
-        context.getSharedPreferences("kiway", 0).edit().putInt("flag_snapshot", 0).commit();
-        context.getSharedPreferences("kiway", 0).edit().putInt("flag_location", 0).commit();
-        context.getSharedPreferences("kiway", 0).edit().putInt("flag_dataconnectivity", 0).commit();
-        context.getSharedPreferences("kiway", 0).edit().putInt("flag_microphone", 0).commit();
-        context.getSharedPreferences("kiway", 0).edit().putInt("flag_restore", 0).commit();
-        context.getSharedPreferences("kiway", 0).edit().putInt("flag_ap", 0).commit();
-        context.getSharedPreferences("kiway", 0).edit().putInt("flag_app_open", 0).commit();
-        context.getSharedPreferences("kiway", 0).edit().putInt("flag_usb", 0).commit();
-        context.getSharedPreferences("kiway", 0).edit().putInt("flag_allowWifi", 0).commit();
-        context.getSharedPreferences("kiway", 0).edit().putInt("flag_systemupdate", 0).commit();
-        context.getSharedPreferences("kiway", 0).edit().putInt("flag_bluetooth", 0).commit();
+    public static void resetFunctions(Context context, int value) {
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_camera", value).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_snapshot", value).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_location", value).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_dataconnectivity", value).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_microphone", value).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_restore", value).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_ap", value).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_app_open", value).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_usb", value).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_allowWifi", value).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_systemupdate", value).commit();
+        context.getSharedPreferences("kiway", 0).edit().putInt("flag_bluetooth", value).commit();
     }
 
 

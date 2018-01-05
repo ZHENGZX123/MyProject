@@ -45,7 +45,9 @@ public class FunctionActivity extends BaseActivity {
     }
 
     private void initData() {
-        ++
+
+
+
         adapter1.notifyDataSetChanged();
     }
 
