@@ -26,7 +26,18 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
-            android:background="@drawable/enable1" />
+            android:background="@drawable/enable1"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:text="清除该命令"
+            android:visibility="gone" />
 
     </RelativeLayout>
 

@@ -73,6 +73,11 @@ public class FunctionActivity extends BaseActivity {
         functions.add(new Function(11, "系统更新", flag_systemupdate == 1));
         functions.add(new Function(12, "允许使用蓝牙", flag_bluetooth == 1));
 
+        //定时关机。
+        String shutdown_startTime = getSharedPreferences("kiway", 0).getString("shutdown_startTime", "");
+        String shutdown_endTime = getSharedPreferences("kiway", 0).getString("shutdown_endTime", "");
+        functions.add(new Function(13, "定时关机", true));
+
         adapter1.notifyDataSetChanged();
     }
 
@@ -93,18 +98,32 @@ public class FunctionActivity extends BaseActivity {
                 holder = new ViewHolder();
                 holder.name = (TextView) rowView.findViewById(R.id.name);
                 holder.enable = (Button) rowView.findViewById(R.id.enable);
+                holder.clear = (Button) rowView.findViewById(R.id.clear);
                 rowView.setTag(holder);
             } else {
                 holder = (ViewHolder) rowView.getTag();
             }
             final Function s = functions.get(position);
             holder.name.setText(s.name);
-            if (s.enable) {
-                holder.enable.setBackgroundResource(R.drawable.enable1);
+            if (s.id == 13) {
+                holder.enable.setVisibility(View.GONE);
+                holder.clear.setVisibility(View.VISIBLE);
             } else {
-                holder.enable.setBackgroundResource(R.drawable.enable2);
+                holder.enable.setVisibility(View.VISIBLE);
+                holder.clear.setVisibility(View.GONE);
+                if (s.enable) {
+                    holder.enable.setBackgroundResource(R.drawable.enable1);
+                } else {
+                    holder.enable.setBackgroundResource(R.drawable.enable2);
+                }
             }
-
+            holder.clear.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getSharedPreferences("kiway", 0).edit().putString("shutdown_startTime", "").commit();
+                    getSharedPreferences("kiway", 0).edit().putString("shutdown_endTime", "").commit();
+                }
+            });
             holder.enable.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -164,6 +183,7 @@ public class FunctionActivity extends BaseActivity {
         public class ViewHolder {
             public TextView name;
             public Button enable;
+            public Button clear;
         }
 
         @Override
