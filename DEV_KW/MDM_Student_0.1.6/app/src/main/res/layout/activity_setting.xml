@@ -78,6 +78,26 @@
             android:background="#e5e5e5" />
 
         <TextView
+            android:id="@+id/permission"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/course_list_selector"
+            android:clickable="true"
+            android:drawableRight="@drawable/ic_chevron_right"
+            android:gravity="center_vertical"
+            android:onClick="permission"
+            android:padding="10dp"
+            android:text="查看权限"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:background="#e5e5e5" />
+
+        <TextView
             android:id="@+id/code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -188,9 +208,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:gravity="center_vertical"
-                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:paddingRight="20dp"
+                android:paddingTop="10dp"
                 android:text="0.0.1"
                 android:textSize="16sp" />
 

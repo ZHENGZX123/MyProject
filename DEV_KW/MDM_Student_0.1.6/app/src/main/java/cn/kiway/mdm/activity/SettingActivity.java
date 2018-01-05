@@ -64,6 +64,10 @@ public class SettingActivity extends BaseActivity {
         startActivity(new Intent(this, AppListActivity3.class));
     }
 
+    public void permission(View view) {
+        startActivity(new Intent(this, FunctionActivity.class));
+    }
+
     public void Code(View view) {
         String schoolId = getSharedPreferences("kiway", 0).getString("schoolId", "");
         String classId = getSharedPreferences("kiway", 0).getString("classId", "");
