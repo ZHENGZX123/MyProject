@@ -1,1 +1,1 @@
-include ':app', ':classify', ':zxing', ':mdmsdk', ':marketplace'
+include ':app', ':classify', ':zxing', ':mdmsdk', ':marketplace', ':materiallockview'
