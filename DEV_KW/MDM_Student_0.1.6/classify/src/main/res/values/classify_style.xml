@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ClassifyViewTheme" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:windowIsTranslucent">true</item>
+
+    </style>
+
+    <style name="DefaultStyle">
+        <item name="MainSpanCount">4</item>
+        <item name="SubRatio">40%</item>
+        <item name="SubSpanCount">4</item>
+        <item name="ShadowColor">#f4221231</item>
+        <item name="AnimationDuration">@android:integer/config_mediumAnimTime</item>
+        <item name="EdgeWidth">0dp</item>
+    </style>
+    <style name="SubStyle">
+        <item name="MainSpanCount">4</item>
+        <item name="SubRatio">40%</item>
+        <item name="SubSpanCount">4</item>
+        <item name="ShadowColor">#f4221231</item>
+        <item name="AnimationDuration">@android:integer/config_mediumAnimTime</item>
+        <item name="EdgeWidth">0dp</item>
+    </style>
+    <style name="InsertAbleGridViewDefaultStyle">
+        <item name="RowCount">2</item>
+        <item name="ColumnCount">2</item>
+        <item name="RowGap">5dp</item>
+        <item name="ColumnGap">5dp</item>
+        <item name="OutlinePadding">8dp</item>
+        <item name="OutlineWidth">1dp</item>
+        <item name="OutlineColor">#ffffff</item>
+        <item name="InnerPadding">6dp</item>
+    </style>
+
+    <style name="DefaultAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_down</item>
+    </style>
+</resources>

@@ -1,0 +1,488 @@
+[
+    {
+        "outputFile": "E:\\repo_ali\\Dev_KW\\MDM_Student_0.1.6\\classify\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values\\values.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 38,
+                    "endOffset": 89
+                },
+                "from": {
+                    "file": "E:\\repo_ali\\Dev_KW\\MDM_Student_0.1.6\\classify\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 55,
+                        "endColumn": 38,
+                        "endOffset": 89
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 12,
+                    "startColumn": 4,
+                    "startOffset": 2160,
+                    "endColumn": 74,
+                    "endOffset": 2230
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\.android\\build-cache\\05985ac41ca57afc4b310f96d4a3fa89227e93f8\\output\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 327,
+                        "endColumn": 74,
+                        "endOffset": 397
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 13,
+                    "startColumn": 4,
+                    "startOffset": 2235,
+                    "endColumn": 75,
+                    "endOffset": 2306
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\.android\\build-cache\\05985ac41ca57afc4b310f96d4a3fa89227e93f8\\output\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 402,
+                        "endColumn": 75,
+                        "endOffset": 473
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 14,
+                    "startColumn": 4,
+                    "startOffset": 2311,
+                    "endColumn": 71,
+                    "endOffset": 2378
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\.android\\build-cache\\05985ac41ca57afc4b310f96d4a3fa89227e93f8\\output\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 5,
+                        "startColumn": 4,
+                        "startOffset": 478,
+                        "endColumn": 71,
+                        "endOffset": 545
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 15,
+                    "startColumn": 4,
+                    "startOffset": 2383,
+                    "endColumn": 65,
+                    "endOffset": 2444
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\.android\\build-cache\\05985ac41ca57afc4b310f96d4a3fa89227e93f8\\output\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 6,
+                        "startColumn": 4,
+                        "startOffset": 550,
+                        "endColumn": 65,
+                        "endOffset": 611
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 16,
+                    "startColumn": 4,
+                    "startOffset": 2449,
+                    "endColumn": 45,
+                    "endOffset": 2490
+                },
+                "from": {
+                    "file": "E:\\repo_ali\\Dev_KW\\MDM_Student_0.1.6\\classify\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 11,
+                        "startColumn": 4,
+                        "startOffset": 1888,
+                        "endColumn": 45,
+                        "endOffset": 1929
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 17,
+                    "startColumn": 4,
+                    "startOffset": 2495,
+                    "endColumn": 55,
+                    "endOffset": 2546
+                },
+                "from": {
+                    "file": "E:\\repo_ali\\Dev_KW\\MDM_Student_0.1.6\\classify\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 12,
+                        "startColumn": 4,
+                        "startOffset": 1934,
+                        "endColumn": 55,
+                        "endOffset": 1985
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 18,
+                    "startColumn": 4,
+                    "startOffset": 2551,
+                    "endLine": 28,
+                    "endColumn": 12,
+                    "endOffset": 3177
+                },
+                "from": {
+                    "file": "E:\\repo_ali\\Dev_KW\\MDM_Student_0.1.6\\classify\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 13,
+                        "startColumn": 4,
+                        "startOffset": 1990,
+                        "endLine": 23,
+                        "endColumn": 12,
+                        "endOffset": 2616
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 29,
+                    "startColumn": 4,
+                    "startOffset": 3182,
+                    "endLine": 32,
+                    "endColumn": 12,
+                    "endOffset": 3371
+                },
+                "from": {
+                    "file": "E:\\repo_ali\\Dev_KW\\MDM_Student_0.1.6\\classify\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 24,
+                        "startColumn": 4,
+                        "startOffset": 2621,
+                        "endLine": 27,
+                        "endColumn": 12,
+                        "endOffset": 2810
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 33,
+                    "startColumn": 4,
+                    "startOffset": 3376,
+                    "endLine": 40,
+                    "endColumn": 12,
+                    "endOffset": 3721
+                },
+                "from": {
+                    "file": "E:\\repo_ali\\Dev_KW\\MDM_Student_0.1.6\\classify\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 28,
+                        "startColumn": 4,
+                        "startOffset": 2815,
+                        "endLine": 35,
+                        "endColumn": 12,
+                        "endOffset": 3160
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 41,
+                    "startColumn": 4,
+                    "startOffset": 3726,
+                    "endLine": 50,
+                    "endColumn": 12,
+                    "endOffset": 4132
+                },
+                "from": {
+                    "file": "E:\\repo_ali\\Dev_KW\\MDM_Student_0.1.6\\classify\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 36,
+                        "startColumn": 4,
+                        "startOffset": 3165,
+                        "endLine": 45,
+                        "endColumn": 12,
+                        "endOffset": 3571
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 51,
+                    "startColumn": 4,
+                    "startOffset": 4137,
+                    "endLine": 58,
+                    "endColumn": 12,
+                    "endOffset": 4478
+                },
+                "from": {
+                    "file": "E:\\repo_ali\\Dev_KW\\MDM_Student_0.1.6\\classify\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 46,
+                        "startColumn": 4,
+                        "startOffset": 3576,
+                        "endLine": 53,
+                        "endColumn": 12,
+                        "endOffset": 3917
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "outputFile": "E:\\repo_ali\\Dev_KW\\MDM_Student\\classify\\build\\intermediates\\incremental\\mergeDebugAndroidTestResources\\merged.dir\\values\\values.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 38,
+                    "endOffset": 89
+                },
+                "from": {
+                    "file": "E:\\repo_ali\\Dev_KW\\MDM_Student\\classify\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 55,
+                        "endColumn": 38,
+                        "endOffset": 89
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 12,
+                    "startColumn": 4,
+                    "startOffset": 2160,
+                    "endColumn": 74,
+                    "endOffset": 2230
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\.android\\build-cache\\05985ac41ca57afc4b310f96d4a3fa89227e93f8\\output\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 327,
+                        "endColumn": 74,
+                        "endOffset": 397
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 13,
+                    "startColumn": 4,
+                    "startOffset": 2235,
+                    "endColumn": 75,
+                    "endOffset": 2306
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\.android\\build-cache\\05985ac41ca57afc4b310f96d4a3fa89227e93f8\\output\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 402,
+                        "endColumn": 75,
+                        "endOffset": 473
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 14,
+                    "startColumn": 4,
+                    "startOffset": 2311,
+                    "endColumn": 71,
+                    "endOffset": 2378
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\.android\\build-cache\\05985ac41ca57afc4b310f96d4a3fa89227e93f8\\output\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 5,
+                        "startColumn": 4,
+                        "startOffset": 478,
+                        "endColumn": 71,
+                        "endOffset": 545
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 15,
+                    "startColumn": 4,
+                    "startOffset": 2383,
+                    "endColumn": 65,
+                    "endOffset": 2444
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\.android\\build-cache\\05985ac41ca57afc4b310f96d4a3fa89227e93f8\\output\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 6,
+                        "startColumn": 4,
+                        "startOffset": 550,
+                        "endColumn": 65,
+                        "endOffset": 611
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 16,
+                    "startColumn": 4,
+                    "startOffset": 2449,
+                    "endColumn": 45,
+                    "endOffset": 2490
+                },
+                "from": {
+                    "file": "E:\\repo_ali\\Dev_KW\\MDM_Student\\classify\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 11,
+                        "startColumn": 4,
+                        "startOffset": 1888,
+                        "endColumn": 45,
+                        "endOffset": 1929
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 17,
+                    "startColumn": 4,
+                    "startOffset": 2495,
+                    "endColumn": 55,
+                    "endOffset": 2546
+                },
+                "from": {
+                    "file": "E:\\repo_ali\\Dev_KW\\MDM_Student\\classify\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 12,
+                        "startColumn": 4,
+                        "startOffset": 1934,
+                        "endColumn": 55,
+                        "endOffset": 1985
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 18,
+                    "startColumn": 4,
+                    "startOffset": 2551,
+                    "endLine": 28,
+                    "endColumn": 12,
+                    "endOffset": 3177
+                },
+                "from": {
+                    "file": "E:\\repo_ali\\Dev_KW\\MDM_Student\\classify\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 13,
+                        "startColumn": 4,
+                        "startOffset": 1990,
+                        "endLine": 23,
+                        "endColumn": 12,
+                        "endOffset": 2616
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 29,
+                    "startColumn": 4,
+                    "startOffset": 3182,
+                    "endLine": 32,
+                    "endColumn": 12,
+                    "endOffset": 3371
+                },
+                "from": {
+                    "file": "E:\\repo_ali\\Dev_KW\\MDM_Student\\classify\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 24,
+                        "startColumn": 4,
+                        "startOffset": 2621,
+                        "endLine": 27,
+                        "endColumn": 12,
+                        "endOffset": 2810
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 33,
+                    "startColumn": 4,
+                    "startOffset": 3376,
+                    "endLine": 40,
+                    "endColumn": 12,
+                    "endOffset": 3721
+                },
+                "from": {
+                    "file": "E:\\repo_ali\\Dev_KW\\MDM_Student\\classify\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 28,
+                        "startColumn": 4,
+                        "startOffset": 2815,
+                        "endLine": 35,
+                        "endColumn": 12,
+                        "endOffset": 3160
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 41,
+                    "startColumn": 4,
+                    "startOffset": 3726,
+                    "endLine": 50,
+                    "endColumn": 12,
+                    "endOffset": 4132
+                },
+                "from": {
+                    "file": "E:\\repo_ali\\Dev_KW\\MDM_Student\\classify\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 36,
+                        "startColumn": 4,
+                        "startOffset": 3165,
+                        "endLine": 45,
+                        "endColumn": 12,
+                        "endOffset": 3571
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 51,
+                    "startColumn": 4,
+                    "startOffset": 4137,
+                    "endLine": 58,
+                    "endColumn": 12,
+                    "endOffset": 4478
+                },
+                "from": {
+                    "file": "E:\\repo_ali\\Dev_KW\\MDM_Student\\classify\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 46,
+                        "startColumn": 4,
+                        "startOffset": 3576,
+                        "endLine": 53,
+                        "endColumn": 12,
+                        "endOffset": 3917
+                    }
+                }
+            }
+        ]
+    }
+]

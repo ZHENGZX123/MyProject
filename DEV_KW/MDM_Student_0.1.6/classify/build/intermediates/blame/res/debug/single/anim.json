@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "E:\\repo_ali\\Dev_KW\\MDM_Student_0.1.6\\classify\\build\\intermediates\\res\\merged\\debug\\anim\\slide_up.xml",
+        "source": "E:\\repo_ali\\Dev_KW\\MDM_Student_0.1.6\\classify\\src\\main\\res\\anim\\slide_up.xml"
+    },
+    {
+        "merged": "E:\\repo_ali\\Dev_KW\\MDM_Student\\classify\\build\\intermediates\\res\\merged\\debug\\anim\\slide_up.xml",
+        "source": "E:\\repo_ali\\Dev_KW\\MDM_Student\\classify\\src\\main\\res\\anim\\slide_up.xml"
+    },
+    {
+        "merged": "E:\\repo_ali\\Dev_KW\\MDM_Student_0.1.6\\classify\\build\\intermediates\\res\\merged\\debug\\anim\\slide_down.xml",
+        "source": "E:\\repo_ali\\Dev_KW\\MDM_Student_0.1.6\\classify\\src\\main\\res\\anim\\slide_down.xml"
+    },
+    {
+        "merged": "E:\\repo_ali\\Dev_KW\\MDM_Student\\classify\\build\\intermediates\\res\\merged\\debug\\anim\\slide_down.xml",
+        "source": "E:\\repo_ali\\Dev_KW\\MDM_Student\\classify\\src\\main\\res\\anim\\slide_down.xml"
+    }
+]
