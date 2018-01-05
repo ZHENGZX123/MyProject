@@ -122,6 +122,7 @@ public class FunctionActivity extends BaseActivity {
                 public void onClick(View view) {
                     getSharedPreferences("kiway", 0).edit().putString("shutdown_startTime", "").commit();
                     getSharedPreferences("kiway", 0).edit().putString("shutdown_endTime", "").commit();
+                    toast("已清除定时关机命令");
                 }
             });
             holder.enable.setOnClickListener(new View.OnClickListener() {

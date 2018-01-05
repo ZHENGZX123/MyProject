@@ -113,11 +113,13 @@
     <orderEntry type="library" exported="" name="appcompat-v7-23.3.0" level="project" />
     <orderEntry type="module" module-name="mdmsdk" exported="" />
     <orderEntry type="module" module-name="zxing" exported="" />
+    <orderEntry type="module" module-name="materiallockview" exported="" />
     <orderEntry type="module" module-name="classify" exported="" />
     <orderEntry type="module" module-name="marketplace" exported="" />
     <orderEntry type="library" exported="" name="org.apache.http.legacy-android-23" level="project" />
     <orderEntry type="library" exported="" name="hwMdm" level="project" />
     <orderEntry type="library" exported="" name="jichengshixun" level="project" />
+    <orderEntry type="library" exported="" name="materiallockview-unspecified" level="project" />
     <orderEntry type="library" exported="" name="okio-1.8.0" level="project" />
     <orderEntry type="library" exported="" name="okhttp-3.3.1" level="project" />
     <orderEntry type="library" exported="" name="glide-3.7.0" level="project" />
