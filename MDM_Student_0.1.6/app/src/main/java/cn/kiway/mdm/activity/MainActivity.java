@@ -681,6 +681,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 new BDLocationListener() {
                     @Override
                     public void onReceiveLocation(BDLocation location) {
+                        Log.d("test", "onReceiveLocation ：" + location.getLongitude() + " , " + location.getLatitude());
                         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                         String dateStr = df.format(new Date());
                         double lastLongitude = getSharedPreferences("kiway", 0).getFloat(dateStr + "_lastLongitude", 0.0f);
@@ -689,7 +690,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                             Log.d("test", "坐标距离小于100，不用上报");
                             return;
                         }
-                        Log.d("test", "onReceiveLocation ：" + location.getLongitude() + " , " + location.getLatitude());
                         getSharedPreferences("kiway", 0).edit().putFloat(dateStr + "_lastLongitude", (float) location.getLongitude()).commit();
                         getSharedPreferences("kiway", 0).edit().putFloat(dateStr + "_lastLatitude", (float) location.getLatitude()).commit();
                         Utils.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude());
@@ -714,7 +714,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         option.setCoorType("bd09ll");
         //可选，默认gcj02，设置返回的定位结果坐标系
 
-        int span = 1000 * 10;//1000 * 60 * 10
+        int span = 1000 * 60 * 10;//1000 * 60 * 10
         option.setScanSpan(span);
         //可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
 
