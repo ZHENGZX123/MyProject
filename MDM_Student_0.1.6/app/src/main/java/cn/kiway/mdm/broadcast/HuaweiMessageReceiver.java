@@ -41,7 +41,6 @@ import static cn.kiway.mdm.KWApp.MSG_PORTRAIT;
 import static cn.kiway.mdm.KWApp.MSG_PUSH_FILE;
 import static cn.kiway.mdm.KWApp.MSG_REBOOT;
 import static cn.kiway.mdm.KWApp.MSG_SHUTDOWN;
-import static cn.kiway.mdm.KWApp.MSG_TOAST;
 import static cn.kiway.mdm.KWApp.MSG_UNINSTALL;
 import static cn.kiway.mdm.KWApp.MSG_UNLOCK;
 
@@ -91,7 +90,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
 
             if (command.equals("allowAppFunction")) {
                 //重置所有的值为0
-                Utils.resetFunctions(context);
+                Utils.resetFunctions(context, 0);
                 JSONArray content = data.getJSONArray("content");
                 int count = content.length();
                 for (int i = 0; i < count; i++) {

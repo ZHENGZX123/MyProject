@@ -132,8 +132,7 @@ public class BaseActivity extends Activity {
         MDMHelper.getAdapter().setBackButtonDisabled(false);
         MDMHelper.getAdapter().setVpnDisabled(true);
         MDMHelper.getAdapter().setTimeAndDateSetDisabled(false);
-
-        //TODO 各种黑白名单，
+        
         //7.移除白名单
         List<String> currentList = MDMHelper.getAdapter().getInstallPackageWhiteList();
         Log.d("test", "白名单size = " + currentList.size());
@@ -141,18 +140,7 @@ public class BaseActivity extends Activity {
             MDMHelper.getAdapter().removeInstallPackageWhiteList(currentList);
         }
         //8.命令重置`
-        getSharedPreferences("kiway", 0).edit().putInt("flag_camera", 1).commit();
-        getSharedPreferences("kiway", 0).edit().putInt("flag_snapshot", 1).commit();
-        getSharedPreferences("kiway", 0).edit().putInt("flag_location", 1).commit();
-        getSharedPreferences("kiway", 0).edit().putInt("flag_dataconnectivity", 1).commit();
-        getSharedPreferences("kiway", 0).edit().putInt("flag_microphone", 1).commit();
-        getSharedPreferences("kiway", 0).edit().putInt("flag_restore", 1).commit();
-        getSharedPreferences("kiway", 0).edit().putInt("flag_ap", 1).commit();
-        getSharedPreferences("kiway", 0).edit().putInt("flag_app_open", 1).commit();
-        getSharedPreferences("kiway", 0).edit().putInt("flag_usb", 1).commit();
-        getSharedPreferences("kiway", 0).edit().putInt("flag_allowWifi", 1).commit();
-        getSharedPreferences("kiway", 0).edit().putInt("flag_systemupdate", 1).commit();
-        getSharedPreferences("kiway", 0).edit().putInt("flag_bluetooth", 1).commit();
+        Utils.resetFunctions(this, 1);
         KWApp.instance.excuteFlagCommand();
     }
 
