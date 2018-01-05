@@ -1,3 +1,0 @@
-D com/anarchy/classify/ClassifyView$MyGravity
-D com/anarchy/classify/ClassifyView$Region
-D com/anarchy/classify/ClassifyView$State
