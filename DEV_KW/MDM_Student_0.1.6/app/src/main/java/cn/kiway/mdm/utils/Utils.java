@@ -93,6 +93,8 @@ import static cn.kiway.mdm.KWApp.MSG_LOCK;
 import static cn.kiway.mdm.KWApp.clientUrl;
 import static cn.kiway.mdm.KWApp.serverUrl;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.PARENT_BIND;
+import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
+import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
 import static java.lang.System.currentTimeMillis;
 
 /**
@@ -846,6 +848,14 @@ public class Utils {
                     }
                 }
                 if (installed) {
+                    if (!m.allListData.toString().contains(ac.packages)) {
+                        Log.d("test", "发广播");
+                        Intent intent = new Intent();
+                        intent.putExtra(PACKAGENAME, ac.packages);
+                        intent.putExtra("boolean", true);
+                        intent.setAction(INSTALL_SUCCESS);
+                        m.sendOrderedBroadcast(intent, null);
+                    }
                     Log.d("test", ac.name + "_" + ac.packages + "已安装");
                 } else {
                     Log.d("test", ac.name + "_" + ac.packages + "未安装");
