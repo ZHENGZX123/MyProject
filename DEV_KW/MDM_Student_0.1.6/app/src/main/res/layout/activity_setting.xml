@@ -127,7 +127,7 @@
             android:gravity="center_vertical"
             android:onClick="Password"
             android:padding="10dp"
-            android:text="修改密码"
+            android:text="设置解锁方式"
             android:textSize="16sp" />
 
         <View

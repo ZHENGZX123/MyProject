@@ -100,6 +100,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     public static final int LOGOUT = 999;
     public static final int USAGE_STATS = 1101;
     public static final int SCREEN = 1102;
+    public static final int LOCK = 1103;
 
     private static final int MSG_CHECK_SETTING = 1;
     private static final int MSG_CHECK_COMMAND = 2;
@@ -328,7 +329,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void setUsageStats() {
-        if (!Build.MODEL.equals("rk3288") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !hasPermission()) {
+        if (!Build.MODEL.equals("rk3288") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !hasPermission
+                ()) {
             showMessageDailog = new ShowMessageDailog(this);
             showMessageDailog.setShowMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开", YUXUNFANWENJLU);
             showMessageDailog.setCancelable(false);
@@ -401,11 +403,15 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void ChangePassWord(View view) {
-        //1.设置初始密码
-        dialog.setTitle("请输入密码");
-        dialog.setCancelable(true);
-        dialog.setView(null, 1);
-        dialog.show();
+        if (!getSharedPreferences("kiway", 0).getBoolean("isLock", false)) {//判断是否为手势密码
+            //1.设置初始密码
+            dialog.setTitle("请输入密码");
+            dialog.setCancelable(true);
+            dialog.setView(null, 1);
+            dialog.show();
+        } else {
+        startActivity(new Intent(this, LockActvitity.class).putExtra("isLock", true));
+        }
     }
 
     @Override
@@ -420,7 +426,9 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     @Override
     public void success(View vx, int position) throws Exception {
         if (position == 1) {
-            startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), 999);
+            startActivityForResult(new Intent(MainActivity.this, SettingActivity.class), LOGOUT);
+        } else if (position == -1) {
+            startActivityForResult(new Intent(MainActivity.this, LockActvitity.class), LOCK);
         }
     }
 
@@ -551,6 +559,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     Toast.makeText(MainActivity.this, "not granted", Toast.LENGTH_SHORT);
                 }
             }
+        } else if (requestCode == LOCK) {
+            //设置手势密码回来
         }
 
     }

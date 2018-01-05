@@ -41,6 +41,8 @@ public class KWApp extends Application {
     public static final String serverUrl = "http://www.yuertong.com:8083/";
     public static final String clientUrl = "http://www.yuertong.com:8084/";
 
+
+
     public static final int MSG_TOAST = 0;//Toast
     public static final int MSG_INSTALL = 1;//注册华为
     public static final int MSG_LOCK = 2;//锁屏
@@ -160,6 +162,10 @@ public class KWApp extends Application {
                     Intent in = getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
                     if (in != null) {
                         in.putExtra("shangke", msg.obj.toString());
+                        in.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name",""));
+                        in.putExtra("className", getSharedPreferences("kiway", 0).getString("className",""));
+                        in.putExtra("studentNumber", getSharedPreferences("kiway", 0).getString("studentNumber",""));
+
                         RemoteAidlService.attendClass(msg.obj.toString());
                         Utils.startPackage(KWApp.instance, ZHIHUIKETANGPG, in);
                     }

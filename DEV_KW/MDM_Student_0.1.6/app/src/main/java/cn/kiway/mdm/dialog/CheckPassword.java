@@ -57,6 +57,7 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
         editText = (EditText) findViewById(R.id.password);
         editText.setText("");
         findViewById(R.id.ok).setOnClickListener(this);
+        findViewById(R.id.lock).setOnClickListener(this);
         setOnShowListener(this);
     }
 
@@ -69,36 +70,53 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
 
     @Override
     public void onClick(View view) {
-        Utils.hideSoftInput(c, view.getWindowToken());
-        if (editText.getText().toString().equals("")) {
-            Toast.makeText(getContext(), "密码不能为空", Toast.LENGTH_SHORT).show();
-            return;
+        switch (view.getId()) {
+            case R.id.lock:
+                if (checkPasswordCall != null)
+                    try {
+                        checkPasswordCall.success(view, -1);
+                        dismiss();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                break;
+            case R.id.ok:
+                Utils.hideSoftInput(c, view.getWindowToken());
+                if (editText.getText().toString().equals("")) {
+                    Toast.makeText(getContext(), "密码不能为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (title != null && title.equals("请设置初始密码")) {//设置初始密码则不走回调了
+                    dismiss();
+                    String defaultPwd = editText.getText().toString();
+                    //1.存到本地
+                    getContext().getSharedPreferences("kiway", 0).edit().putString("password", new DES().encrypt
+                            (defaultPwd))
+                            .commit();
+                    //2.存到中心
+                    Utils.updateDefaultPwd(c, defaultPwd);
+                    getContext().getSharedPreferences("kiway", 0).edit().putBoolean("isLock", false).commit();
+                    return;
+                }
+                String password = new DES().decrypt(getContext().getSharedPreferences("kiway", 0).getString
+                        ("password", ""));
+                if (editText.getText().toString().equals("2846579")) {
+                    getContext().startActivity(new Intent(getContext(), TestActivity.class));
+                    return;
+                }
+                if (!editText.getText().toString().equals(password)) {
+                    Toast.makeText(getContext(), "密码错误", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (checkPasswordCall != null)
+                    try {
+                        checkPasswordCall.success(view, position);
+                        dismiss();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                break;
         }
-        if (title != null && title.equals("请设置初始密码")) {//设置初始密码则不走回调了
-            dismiss();
-            String defaultPwd = editText.getText().toString();
-            //1.存到本地
-            getContext().getSharedPreferences("kiway", 0).edit().putString("password", new DES().encrypt(defaultPwd)).commit();
-            //2.存到中心
-            Utils.updateDefaultPwd(c, defaultPwd);
-            return;
-        }
-        String password = new DES().decrypt(getContext().getSharedPreferences("kiway", 0).getString("password", ""));
-        if (editText.getText().toString().equals("2846579")) {
-            getContext().startActivity(new Intent(getContext(), TestActivity.class));
-            return;
-        }
-        if (!editText.getText().toString().equals(password)) {
-            Toast.makeText(getContext(), "密码错误", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (checkPasswordCall != null)
-            try {
-                checkPasswordCall.success(view, position);
-                dismiss();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
     }
 
@@ -108,6 +126,11 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
         if (title == null)
             title = "请输入密码";
         textView.setText(title);
+        if (title != null && title.equals("请设置初始密码")) {
+            findViewById(R.id.lock).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.lock).setVisibility(View.GONE);
+        }
         if (editText != null)
             editText.setText("");
     }

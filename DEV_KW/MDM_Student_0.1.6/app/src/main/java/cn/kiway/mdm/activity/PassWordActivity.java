@@ -23,17 +23,18 @@ public class PassWordActivity extends BaseActivity {
         editText1 = (EditText) findViewById(R.id.new_password);
         editText2 = (EditText) findViewById(R.id.new_password1);
         oldEdit = (EditText) findViewById(R.id.old_password);
+        oldEdit.setVisibility(View.GONE);
     }
 
     public void Ok(View view) {
-        if (oldEdit.getText().toString().equals("")) {
-            Toast.makeText(this, "请输入原密码", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!oldEdit.getText().toString().equals(new DES().decrypt(this.getSharedPreferences("kiway", 0).getString("password", "")))) {
-            Toast.makeText(this, "原密码输入错误", Toast.LENGTH_SHORT).show();
-            return;
-        }
+//        if (oldEdit.getText().toString().equals("")) {
+//            Toast.makeText(this, "请输入原密码", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//        if (!oldEdit.getText().toString().equals(new DES().decrypt(this.getSharedPreferences("kiway", 0).getString("password", "")))) {
+//            Toast.makeText(this, "原密码输入错误", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
         if (editText1.getText().toString().equals("") || editText2.getText().toString().equals("")) {
             Toast.makeText(this, "密码不能为空", Toast.LENGTH_SHORT).show();
             return;
@@ -46,6 +47,7 @@ public class PassWordActivity extends BaseActivity {
         getSharedPreferences("kiway", 0).edit().putString("password", new DES().encrypt(defaultPwd)).commit();
         Utils.updateDefaultPwd(this, defaultPwd);
         Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
+        getSharedPreferences("kiway", 0).edit().putBoolean("isLock", false).commit();
         finish();
     }
 
