@@ -291,7 +291,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     @Override
     public void setScreenCaptureDisabled(boolean disabled) {
         try {
-            new DeviceRestrictionManager().setScreenCaptureDisabled(mAdminName, disabled);
+            //new DeviceRestrictionManager().setScreenCaptureDisabled(mAdminName, disabled);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -301,7 +301,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     @Override
     public void setMicrophoneDisabled(boolean flag) {
         try {
-            new DeviceRestrictionManager().setMicrophoneDisabled(mAdminName, flag);
+//            new DeviceRestrictionManager().setMicrophoneDisabled(mAdminName, flag);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -311,7 +311,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     @Override
     public void setRestoreFactoryDisabled(boolean flag) {
         try {
-            new DeviceSettingsManager().setRestoreFactoryDisabled(mAdminName, flag);
+//            new DeviceSettingsManager().setRestoreFactoryDisabled(mAdminName, flag);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -321,7 +321,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     @Override
     public void setSystemUpdateDisabled(boolean flag) {
         try {
-            new DeviceRestrictionManager().setSystemUpdateDisabled(mAdminName, flag);
+//            new DeviceRestrictionManager().setSystemUpdateDisabled(mAdminName, flag);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -331,7 +331,7 @@ public class HuaweiMDMAdapter implements IMDMAdapter {
     @Override
     public void setNetworkLocationDisabled(boolean flag) {
         try {
-            new DeviceSettingsManager().setNetworkLocationDisabled(mAdminName, flag);
+            //new DeviceSettingsManager().setNetworkLocationDisabled(mAdminName, flag);
         } catch (Exception e) {
             e.printStackTrace();
 
