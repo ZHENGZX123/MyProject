@@ -115,6 +115,7 @@ public class FunctionActivity extends BaseActivity {
                     } else {
                         value = 1;
                     }
+                    s.enable = !s.enable;
                     switch (id) {
                         case 1:
                             getSharedPreferences("kiway", 0).edit().putInt("flag_camera", value).commit();
@@ -154,6 +155,7 @@ public class FunctionActivity extends BaseActivity {
                             break;
                     }
                     KWApp.instance.excuteFlagCommand();
+                    notifyDataSetChanged();
                 }
             });
             return rowView;
