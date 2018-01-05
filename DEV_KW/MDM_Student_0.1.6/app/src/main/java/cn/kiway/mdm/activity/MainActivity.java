@@ -100,9 +100,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     private static final int MSG_CHECK_SETTING = 1;
     private static final int MSG_CHECK_COMMAND = 2;
-    private static final int MSG_UPLOAD = 3;
+    private static final int MSG_UPLOAD_STATUS = 3;
     private static final int MSG_GET_COMMAND = 4;
     private static final int MSG_CHECK_NEWVERSION = 5;
+    private static final int MSG_CHECK_SHUTDOWN = 6;
 
     private Button button5;
 
@@ -233,14 +234,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     mHandler.sendEmptyMessageDelayed(MSG_CHECK_COMMAND, 60 * 1000);
                 }
                 break;
-                case MSG_UPLOAD: {
+                case MSG_UPLOAD_STATUS: {
                     //1.获取电量，如果电量1%，上报一下
                     Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
                     int level = intent.getIntExtra("level", 0);
                     if (level < 5) {
                         Utils.deviceRuntime(MainActivity.this, "2", true);
                     }
-                    mHandler.sendEmptyMessageDelayed(MSG_UPLOAD, 10 * 60 * 1000);
+                    mHandler.sendEmptyMessageDelayed(MSG_UPLOAD_STATUS, 10 * 60 * 1000);
                 }
                 break;
                 case MSG_GET_COMMAND: {
@@ -255,6 +256,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 case MSG_CHECK_NEWVERSION: {
                     checkNewVersion();
                     mHandler.sendEmptyMessageDelayed(MSG_CHECK_NEWVERSION, 60 * 60 * 1000);
+                }
+                break;
+                case MSG_CHECK_SHUTDOWN: {
+                    Utils.checkShutDown(MainActivity.this);
                 }
                 break;
             }
@@ -279,8 +284,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //1.检查锁屏
         Utils.checkTemperary(this);
         //2.检查关机
-        //给2分钟时间。。。
-        Utils.checkShutDown(this);
+        mHandler.sendEmptyMessageDelayed(MSG_CHECK_SHUTDOWN, 2 * 60 * 1000);
     }
 
     private void checkIncomingCall() {
@@ -359,7 +363,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void uploadStatus() {
-        mHandler.sendEmptyMessage(MSG_UPLOAD);
+        mHandler.sendEmptyMessage(MSG_UPLOAD_STATUS);
     }
 
     public void Camera(View view) {
@@ -470,7 +474,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         a.name = name;
         a.packageName = pgName;
         apps.add(a);
-        allListData.add(positon, apps);
+        allListData.add(apps);
         return allListData;
     }
 
@@ -674,6 +678,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 new BDLocationListener() {
                     @Override
                     public void onReceiveLocation(BDLocation location) {
+                        toast("onReceiveLocation");
                         Log.d("test", "onReceiveLocation ：" + location.getLongitude() + " , " + location.getLatitude());
                         Utils.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude());
                     }
@@ -707,7 +712,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         option.setOpenGps(true);
         //可选，默认false,设置是否使用gps
 
-        option.setLocationNotify(true);
+        option.setLocationNotify(false);
         //可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
 
         option.setIsNeedLocationDescribe(true);
