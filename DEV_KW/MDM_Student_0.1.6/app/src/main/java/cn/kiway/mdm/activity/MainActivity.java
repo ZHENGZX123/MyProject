@@ -2,11 +2,13 @@ package cn.kiway.mdm.activity;
 
 import android.annotation.TargetApi;
 import android.app.AppOpsManager;
+import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -77,7 +79,6 @@ import static cn.kiway.mdm.utils.Constant.ZHIHUIKETANGPG;
 import static cn.kiway.mdm.utils.Constant._16;
 import static cn.kiway.mdm.utils.FileACache.ListFileName;
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
-import static com.baidu.mapapi.Mj.l;
 
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener {
@@ -159,6 +160,15 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         checkPassword();
         //获取app的使用时间
         getAppCanUseData();
+        setBg();
+    }
+
+    void setBg() {//设置壁纸
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+        //获取壁纸图片
+        Drawable wallpaperDrawable = wallpaperManager.getDrawable();
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout);
+        linearLayout.setBackground(wallpaperDrawable);
     }
 
     private void checkUpgrade() {
@@ -410,7 +420,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             dialog.setView(null, 1);
             dialog.show();
         } else {
-        startActivity(new Intent(this, LockActvitity.class).putExtra("isLock", true));
+            startActivity(new Intent(this, LockActvitity.class).putExtra("isLock", true));
         }
     }
 
@@ -692,14 +702,19 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                         Log.d("test", "onReceiveLocation ：" + location.getLongitude() + " , " + location.getLatitude());
                         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                         String dateStr = df.format(new Date());
-                        double lastLongitude = getSharedPreferences("kiway", 0).getFloat(dateStr + "_lastLongitude", 0.0f);
-                        double lastLatitude = getSharedPreferences("kiway", 0).getFloat(dateStr + "_lastLatitude", 0.0f);
-                        if (Utils.getDistance(lastLatitude, lastLongitude, location.getLatitude(), location.getLongitude()) < 100) {
+                        double lastLongitude = getSharedPreferences("kiway", 0).getFloat(dateStr + "_lastLongitude",
+                                0.0f);
+                        double lastLatitude = getSharedPreferences("kiway", 0).getFloat(dateStr + "_lastLatitude",
+                                0.0f);
+                        if (Utils.getDistance(lastLatitude, lastLongitude, location.getLatitude(), location
+                                .getLongitude()) < 100) {
                             Log.d("test", "坐标距离小于100，不用上报");
                             return;
                         }
-                        getSharedPreferences("kiway", 0).edit().putFloat(dateStr + "_lastLongitude", (float) location.getLongitude()).commit();
-                        getSharedPreferences("kiway", 0).edit().putFloat(dateStr + "_lastLatitude", (float) location.getLatitude()).commit();
+                        getSharedPreferences("kiway", 0).edit().putFloat(dateStr + "_lastLongitude", (float) location
+                                .getLongitude()).commit();
+                        getSharedPreferences("kiway", 0).edit().putFloat(dateStr + "_lastLatitude", (float) location
+                                .getLatitude()).commit();
                         Utils.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude());
                     }
 
