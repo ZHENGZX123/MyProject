@@ -14,6 +14,7 @@ import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,7 +44,9 @@ public class EulaActivity extends Activity {
         mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
 
-        if (Build.BRAND.equals("HUAWEI")) {
+        Log.d("test", "brand = " + Build.BRAND);
+
+        if (Build.BRAND.equalsIgnoreCase("HUAWEI") || Build.BRAND.equalsIgnoreCase("HONOR")) {
             if (isActiveMe()) {
                 jump();
                 return;
