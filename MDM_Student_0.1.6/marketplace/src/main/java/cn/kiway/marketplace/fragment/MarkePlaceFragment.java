@@ -31,6 +31,7 @@ import java.util.Locale;
 import cn.kiway.marketplace.R;
 import cn.kiway.marketplace.db.MarkePlaceDBHelper;
 import cn.kiway.marketplace.dialog.AppDialog;
+import cn.kiway.marketplace.util.AppUtils;
 import cn.kiway.marketplace.util.FileManager;
 import cn.kiway.marketplace.util.MarketApp;
 import cn.kiway.marketplace.util.MarketClassify;
@@ -85,7 +86,7 @@ public class MarkePlaceFragment extends Fragment {
 
     private void loadData() {
         RequestCall requestCall;
-        if (marketClassify==null)
+        if (marketClassify == null)
             return;
         if (!marketClassify.id.equals("")) {//加载全部的时候 appClassify参数不加上去
             requestCall = OkHttpUtils.get().url(APP_LIST_URL)
@@ -220,6 +221,11 @@ public class MarkePlaceFragment extends Fragment {
             if (!app.iocn.startsWith("http://"))
                 app.iocn = BASE_URL + app.iocn;
             Glide.with(MarkePlaceFragment.this).load(app.iocn).into(holder.icon);
+            if (AppUtils.isApplicationAvilible(getContext(), app.packages)) {
+                holder.download.setText("打开");
+            } else {
+                holder.download.setText("下载");
+            }
         }
 
         @Override
@@ -259,22 +265,27 @@ public class MarkePlaceFragment extends Fragment {
         public void onClick(View v) {
             final int position = getAdapterPosition();
             if (v.getId() == R.id.download) {
-                final DownloadTask task = tasks.get(position);
-                switch (state) {
-                    case STATE_FAILED:
-                    case STATE_PREPARED:
-                        task.start();
-                        break;
-                    case STATE_PAUSED:
-                        task.resume();
-                        break;
-                    case STATE_WAITING:
-                    case STATE_RUNNING:
-                        task.pause();
-                        break;
-                    case STATE_FINISHED:
-                        new FileManager(getContext()).open(task.name, task.path);
-                        break;
+                MarketApp app = marketAppList.get(position);
+                if (AppUtils.isApplicationAvilible(getContext(), app.packages)) {
+                    AppUtils.startApp(getContext(), app.packages);
+                } else {
+                    final DownloadTask task = tasks.get(position);
+                    switch (state) {
+                        case STATE_FAILED:
+                        case STATE_PREPARED:
+                            task.start();
+                            break;
+                        case STATE_PAUSED:
+                            task.resume();
+                            break;
+                        case STATE_WAITING:
+                        case STATE_RUNNING:
+                            task.pause();
+                            break;
+                        case STATE_FINISHED:
+                            new FileManager(getContext()).open(task.name, task.path);
+                            break;
+                    }
                 }
             } else {
                 appDialog.setMarketApp(marketAppList.get(position));
@@ -284,6 +295,7 @@ public class MarkePlaceFragment extends Fragment {
 
         @Override
         public void onStateChanged(String key, int state) {
+
             if (!key.equals(this.key)) return;
             this.state = state;
             switch (state) {
