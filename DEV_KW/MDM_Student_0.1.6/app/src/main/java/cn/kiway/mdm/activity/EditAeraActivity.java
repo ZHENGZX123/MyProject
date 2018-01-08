@@ -3,7 +3,11 @@ package cn.kiway.mdm.activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -69,6 +73,9 @@ public class EditAeraActivity extends BaseActivity implements
      **/
     protected String mCurrentZipCode = "";
 
+    private EditText nameET;
+    private LinearLayout ll;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +86,8 @@ public class EditAeraActivity extends BaseActivity implements
     }
 
     private void setUpViews() {
+        ll = (LinearLayout) findViewById(R.id.ll);
+        nameET = (EditText) findViewById(R.id.nameET);
         mViewProvince = (WheelView) findViewById(R.id.id_province);
         mViewCity = (WheelView) findViewById(R.id.id_city);
         mViewDistrict = (WheelView) findViewById(R.id.id_district);
@@ -90,6 +99,27 @@ public class EditAeraActivity extends BaseActivity implements
         mViewDistrict.addChangingListener(this);
         findViewById(R.id.previos).setOnClickListener(this);
         findViewById(R.id.btn_confirm).setOnClickListener(this);
+        nameET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String name = nameET.getText().toString().trim();
+                if (name.equals("")) {
+                    ll.setVisibility(View.VISIBLE);
+                } else {
+                    ll.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private void setUpData() {
@@ -155,8 +185,9 @@ public class EditAeraActivity extends BaseActivity implements
             case R.id.btn_confirm:
                 String area = mCurrentProviceName + "*" + mCurrentCityName
                         + "*" + mCurrentDistrictName;
+                String name = nameET.getText().toString().trim();
                 //获取学校列表
-                startActivityForResult(new Intent(EditAeraActivity.this, SchoolListActivity.class).putExtra("area", area), 999);
+                startActivityForResult(new Intent(EditAeraActivity.this, SchoolListActivity.class).putExtra("name", name).putExtra("area", area), 999);
                 break;
             case R.id.previos:
                 finish();
