@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -64,13 +63,11 @@ import cn.kiway.mdm.utils.DESUtil;
 import cn.kiway.mdm.utils.FileACache;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
-import cn.kiway.mdm.view.WallpaperDrawable;
 import cn.kiway.mdm.view.viewPager.StereoPagerTransformer;
 import cn.kiway.mdmsdk.MDMHelper;
 
 import static cn.kiway.mdm.KWApp.clientUrl;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
-import static cn.kiway.mdm.utils.APPIconUploader.drawableToBitmap;
 import static cn.kiway.mdm.utils.AppListUtils.isAppInstalled;
 import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
@@ -167,33 +164,23 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     void setBg() {//设置壁纸
-//        WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
-//        //获取壁纸图片
-//        Drawable wallpaperDrawable = wallpaperManager.getFastDrawable();
-//        Bitmap bm = ((BitmapDrawable) wallpaperDrawable).getBitmap();
-//        float step = 0;
-//        // 计算出屏幕的偏移量
-//        step = (bm.getWidth() - LauncherPreferenceModel.mScreenWidth)
-//                / (LauncherPreferenceModel.mScreenCount - 1);
-//        // 截取相应屏幕的Bitmap
-//        Bitmap pbm = Bitmap.createBitmap(bm, (int) (mLauncher
-//                        .getCurrentWorkspaceScreen() * step), 0,
-//                (int) (LauncherPreferenceModel.mScreenWidth),
-//                (int) (LauncherPreferenceModel.mScreenHeight));
-//        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout);
-//        linearLayout.setBackground(wallpaperDrawable);
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+        //获取壁纸图片
+        Drawable wallpaperDrawable = wallpaperManager.getFastDrawable();
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout);
+        linearLayout.setBackground(wallpaperDrawable);
 
-        LinearLayout rl = (LinearLayout) findViewById(R.id.layout);
-        WallpaperManager wm = WallpaperManager.getInstance(this);
-        Drawable d = wm.getDrawable();
-        if (d != null) {
-            Bitmap bitmap = drawableToBitmap(d);
-            WallpaperDrawable wd = new WallpaperDrawable();
-            wd.setBitmap(bitmap);
-            rl.setBackground(wd);
-        } else {
-            rl.setBackgroundResource(R.drawable.beijing);
-        }
+//        LinearLayout rl = (LinearLayout) findViewById(R.id.layout);
+//        WallpaperManager wm = WallpaperManager.getInstance(this);
+//        Drawable d = wm.getDrawable();
+//        if (d != null) {
+//            Bitmap bitmap = drawableToBitmap(d);
+//            WallpaperDrawable wd = new WallpaperDrawable();
+//            wd.setBitmap(bitmap);
+//            rl.setBackground(wd);
+//        } else {
+//            rl.setBackgroundResource(R.drawable.beijing);
+//        }
 
     }
 

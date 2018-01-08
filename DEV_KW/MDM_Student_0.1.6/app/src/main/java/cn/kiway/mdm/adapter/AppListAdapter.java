@@ -185,10 +185,12 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
 
     private void launchAPP(String packageName, String name) {
         Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
-        intent.putExtra("studentName", context.getSharedPreferences("kiway", 0).getString("name",""));
-        intent.putExtra("className", context.getSharedPreferences("kiway", 0).getString("className",""));
-        intent.putExtra("studentNumber", context.getSharedPreferences("kiway", 0).getString("studentNumber",""));
-
+        intent.putExtra("studentName", context. getSharedPreferences("kiway", 0).getString("name",""));
+        intent.putExtra("className", context. getSharedPreferences("kiway", 0).getString("className",""));
+        intent.putExtra("studentNumber",  context.getSharedPreferences("kiway", 0).getString("studentNumber",""));
+        intent.putExtra("classId", context.getSharedPreferences("kiway", 0).getString("classId",""));
+        intent.putExtra("schoolId", context.getSharedPreferences("kiway", 0).getString("schoolId",""));
+        intent.putExtra("huaweiToken", context.getSharedPreferences("huawei", 0).getString("token",""));
 
         context.startActivity(intent);
         Utils.childOperation(context, "useApp", "使用了" + name + "APP");
