@@ -68,12 +68,17 @@ public class SchoolListActivity extends BaseActivity {
 
     private void initData() {
         String area = getIntent().getStringExtra("area");
+        String name = getIntent().getStringExtra("name");
+        //如果关键字不为空，按关键字查找即可
+        if (!name.equals("")) {
+            area = "";
+        }
         //根据area获取学校列表
         try {
             showPD();
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            String url = serverUrl + "common/school?addr=" + area;
+            String url = serverUrl + "common/school?addr=" + area + "&name=" + name;
             Log.d("test", "school url = " + url);
             client.get(this, url, new TextHttpResponseHandler() {
                 @Override
