@@ -165,7 +165,9 @@ public class KWApp extends Application {
                         in.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name",""));
                         in.putExtra("className", getSharedPreferences("kiway", 0).getString("className",""));
                         in.putExtra("studentNumber", getSharedPreferences("kiway", 0).getString("studentNumber",""));
-
+                        in.putExtra("classId",getSharedPreferences("kiway", 0).getString("classId",""));
+                        in.putExtra("schoolId",getSharedPreferences("kiway", 0).getString("schoolId",""));
+                        in.putExtra("huaweiToken",getSharedPreferences("huawei", 0).getString("token",""));
                         RemoteAidlService.attendClass(msg.obj.toString());
                         Utils.startPackage(KWApp.instance, ZHIHUIKETANGPG, in);
                     }
