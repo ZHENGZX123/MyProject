@@ -12,12 +12,9 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.tencent.smtt.sdk.QbSdk;
 
 import org.xutils.x;
-
-import java.io.File;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -25,9 +22,8 @@ import java.io.File;
 
 public class WXApplication extends Application {
 
-    //    public static String url = "http://www.yuertong.com/mdms";
-    public static String url = "http://202.104.136.9:8084";
-
+    public static String url = "http://www.yuertong.com:8084";
+//    public static String url = "http://202.104.136.9:8084";
 
     public static String ROOT = "/mnt/sdcard/kiway_mdm_parent/";
     public static String HTML = "mdm_parent/dist/index.html";
