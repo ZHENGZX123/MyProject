@@ -62,6 +62,7 @@ import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile;
 import static cn.kiway.mdm.web.JsAndroidInterface.setFilePath;
 import static cn.kiway.mdm.web.JsAndroidInterface.userAccount;
 import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
+import static cn.kiway.mdm.web.WebJsCallBack.loginTimeOut;
 
 
 public class MainActivity extends BaseActivity {
@@ -311,6 +312,7 @@ public class MainActivity extends BaseActivity {
                             JSONObject obj = new JSONObject(ret);
                             if (obj.optInt("StatusCode") != 200) {
                                 toast(getString(R.string.upload_fialt));
+                                wv.loadUrl(loginTimeOut);
                                 return;
                             }
                             String url = obj.optJSONObject("data").optString("url");
