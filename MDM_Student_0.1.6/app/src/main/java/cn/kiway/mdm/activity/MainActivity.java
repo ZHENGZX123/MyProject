@@ -2,6 +2,7 @@ package cn.kiway.mdm.activity;
 
 import android.annotation.TargetApi;
 import android.app.AppOpsManager;
+import android.app.NotificationManager;
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -111,6 +113,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private static final int MSG_CHECK_SHUTDOWN = 6;
 
     private Button button5;
+    private Button button4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,8 +147,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         checkIncomingCall();
         //14.距离传感器
         //registerSensor();
-        //15.设置默认短信app
-        //setDefaultSMSApp();
         //16.检查版本更新
         checkUpgrade();
         //17.检查通话功能
@@ -158,9 +159,24 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //oauth();
         //21.判断初始密码
         checkPassword();
-        //获取app的使用时间
+        //22.获取app的使用时间
         getAppCanUseData();
+        //23.设置背景图片
         setBg();
+        //24.静音权限
+        //getDoNotDisturb();
+    }
+
+    private void getDoNotDisturb() {
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= 24
+                && !notificationManager.isNotificationPolicyAccessGranted()) {
+            Intent intent = new Intent(
+                    android.provider.Settings
+                            .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+            startActivity(intent);
+        }
     }
 
     void setBg() {//设置壁纸
@@ -224,10 +240,12 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         boolean telephony = pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
         if (telephony) {
             button5.setVisibility(View.VISIBLE);
-            //button6.setVisibility(View.VISIBLE);
+            button4.setVisibility(View.VISIBLE);
+            //15.设置默认短信app
+            setDefaultSMSApp();
         } else {
             button5.setVisibility(View.GONE);
-            //button6.setVisibility(View.GONE);
+            button4.setVisibility(View.GONE);
         }
     }
 
@@ -240,7 +258,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     if (!getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
                         return;
                     }
-                    //TODO 这里和SystemSetup冲突。。。
+                    //TODO 这里和SystemSetup冲突，要想办法解决
                     String runningAPP = Utils.getRunningAPP(MainActivity.this);
                     if (runningAPP.equals("com.android.settings")) {
                         //返回MDM桌面
@@ -386,6 +404,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         group = (LinearLayout) findViewById(R.id.points);
         button5 = (Button) findViewById(R.id.button5);
+        button4 = (Button) findViewById(R.id.button4);
     }
 
     private void uploadStatus() {
@@ -411,8 +430,19 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         startActivity(new Intent(this, CallActivity.class));
     }
 
-
     public void SMS(View view) {
+        startActivity(new Intent(this, ComposeSmsActivity.class));
+    }
+
+    boolean flag = false;
+
+    public void Browser(View view) {
+//        flag = !flag;
+//        if (flag) {
+//            silentSwitchOn();
+//        } else {
+//            silentSwitchOff();
+//        }
         startActivity(new Intent(this, WebViewActivity.class));
 //        startActivity(new Intent(this, ComposeSmsActivity.class));
 //        try {
@@ -817,6 +847,24 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 }
             }
         }.start();
+    }
+
+    private void silentSwitchOn() {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        if (audioManager != null) {
+            audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+            audioManager.getStreamVolume(AudioManager.STREAM_RING);
+            Log.d("Silent:", "RINGING 已被静音");
+        }
+    }
+
+    private void silentSwitchOff() {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        if (audioManager != null) {
+            audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+            audioManager.getStreamVolume(AudioManager.STREAM_RING);
+            Log.d("SilentListenerService", "RINGING 取消静音");
+        }
     }
 }
 
