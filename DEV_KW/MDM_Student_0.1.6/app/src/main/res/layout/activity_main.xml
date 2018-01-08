@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/beijing"
-    android:id="@+id/layout"
-              android:orientation="vertical"
+    android:orientation="vertical"
     android:padding="10dp">
 
     <cn.kiway.mdm.view.viewPager.OverViewPager
@@ -41,13 +41,24 @@
             android:textColor="#fff" />
 
         <Button
+            android:id="@+id/button4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:drawableTop="@drawable/ic_message"
+            android:onClick="SMS"
+            android:text="短信"
+            android:textColor="#fff" />
+
+        <Button
             android:id="@+id/button6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@null"
             android:drawableTop="@drawable/ic_chrome"
-            android:onClick="SMS"
+            android:onClick="Browser"
             android:text="浏览器"
             android:textColor="#fff" />
 
@@ -70,8 +81,8 @@
             android:background="@null"
             android:drawableTop="@drawable/ic_calock"
             android:onClick="ChangePassWord"
-            android:textColor="#fff"
-            android:text="设置" />
+            android:text="设置"
+            android:textColor="#fff" />
 
     </LinearLayout>
 
