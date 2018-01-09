@@ -128,9 +128,25 @@ public class KWApp extends Application {
                 Utils.launchApp(getApplicationContext(), (JSONObject) msg.obj);
             } else if (msg.what == MSG_LAUNCH_MDM) {
                 temporary_app = false;
-                //返回MDM桌面
-                Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.mdm");
-                startActivity(intent);
+                if (isAttendClass) {
+
+                    Intent in = getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
+                    if (in != null) {
+                        in.putExtra("shangke", "open");
+                        in.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name", ""));
+                        in.putExtra("className", getSharedPreferences("kiway", 0).getString("className", ""));
+                        in.putExtra("studentNumber", getSharedPreferences("kiway", 0).getString("studentNumber", ""));
+                        in.putExtra("classId", getSharedPreferences("kiway", 0).getString("classId", ""));
+                        in.putExtra("schoolId", getSharedPreferences("kiway", 0).getString("schoolId", ""));
+                        in.putExtra("huaweiToken", getSharedPreferences("huawei", 0).getString("token", ""));
+                        //RemoteAidlService.attendClass(msg.obj.toString());
+                        Utils.startPackage(KWApp.instance, ZHIHUIKETANGPG, in);
+                    }
+                } else {
+                    //返回MDM桌面
+                    Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.mdm");
+                    startActivity(intent);
+                }
             } else if (msg.what == MSG_FLAGCOMMAND) {
                 //执行flag命令
                 excuteFlagCommand();
