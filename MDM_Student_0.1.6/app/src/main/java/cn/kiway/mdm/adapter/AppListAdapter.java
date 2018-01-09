@@ -20,6 +20,7 @@ import java.util.List;
 import cn.kiway.marketplace.activity.MarkePlaceViewActivity;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.MainActivity;
+import cn.kiway.mdm.activity.ParentMessageActivity;
 import cn.kiway.mdm.activity.SystemSetupActivity;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.AppCharge;
@@ -30,6 +31,7 @@ import cn.kiway.mdm.utils.Utils;
 import static cn.kiway.mdm.utils.AppListUtils.isAppInstalled;
 import static cn.kiway.mdm.utils.Constant.KIWAYSETTING;
 import static cn.kiway.mdm.utils.Constant.MARKETPLACE;
+import static cn.kiway.mdm.utils.Constant.PARENTMESSAGE;
 import static cn.kiway.mdm.utils.Constant._16;
 import static cn.kiway.mdm.utils.FileACache.ListFileName;
 
@@ -73,6 +75,8 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
         App app = mData.get(mainPosition).get(subPosition);
         if (app.packageName.equals(MARKETPLACE)) {
             itemViewHolder.iv.setImageResource(R.drawable.yysc);
+        } else if (app.packageName.equals(PARENTMESSAGE)) {
+            itemViewHolder.iv.setImageResource(R.drawable.leavemessage);
         } else if (app.packageName.equals(KIWAYSETTING)) {
             itemViewHolder.iv.setImageResource(R.drawable.setting);
         } else {
@@ -143,8 +147,11 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
                 return;
             }
             if (packageName.equals(MARKETPLACE)) {//应用市场
-                //TODO 记得打开
                 context.startActivity(new Intent(context, MarkePlaceViewActivity.class));
+                return;
+            }
+            if (packageName.equals(PARENTMESSAGE)) {//应用市场
+                context.startActivity(new Intent(context, ParentMessageActivity.class));
                 return;
             }
             if (packageName.equals(KIWAYSETTING)) {//设置
@@ -185,12 +192,12 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
 
     private void launchAPP(String packageName, String name) {
         Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
-        intent.putExtra("studentName", context. getSharedPreferences("kiway", 0).getString("name",""));
-        intent.putExtra("className", context. getSharedPreferences("kiway", 0).getString("className",""));
-        intent.putExtra("studentNumber",  context.getSharedPreferences("kiway", 0).getString("studentNumber",""));
-        intent.putExtra("classId", context.getSharedPreferences("kiway", 0).getString("classId",""));
-        intent.putExtra("schoolId", context.getSharedPreferences("kiway", 0).getString("schoolId",""));
-        intent.putExtra("huaweiToken", context.getSharedPreferences("huawei", 0).getString("token",""));
+        intent.putExtra("studentName", context.getSharedPreferences("kiway", 0).getString("name", ""));
+        intent.putExtra("className", context.getSharedPreferences("kiway", 0).getString("className", ""));
+        intent.putExtra("studentNumber", context.getSharedPreferences("kiway", 0).getString("studentNumber", ""));
+        intent.putExtra("classId", context.getSharedPreferences("kiway", 0).getString("classId", ""));
+        intent.putExtra("schoolId", context.getSharedPreferences("kiway", 0).getString("schoolId", ""));
+        intent.putExtra("huaweiToken", context.getSharedPreferences("huawei", 0).getString("token", ""));
 
         context.startActivity(intent);
         Utils.childOperation(context, "useApp", "使用了" + name + "APP");
