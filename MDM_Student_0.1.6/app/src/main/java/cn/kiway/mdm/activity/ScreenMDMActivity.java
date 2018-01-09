@@ -9,7 +9,7 @@ import cn.kiway.mdm.R;
  */
 
 //锁屏页面
-public class ScreenActivity extends BaseActivity {
+public class ScreenMDMActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
