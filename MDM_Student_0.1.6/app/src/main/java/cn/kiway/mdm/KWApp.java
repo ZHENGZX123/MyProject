@@ -42,7 +42,6 @@ public class KWApp extends Application {
     public static final String clientUrl = "http://www.yuertong.com:8084/";
 
 
-
     public static final int MSG_TOAST = 0;//Toast
     public static final int MSG_INSTALL = 1;//注册华为
     public static final int MSG_LOCK = 2;//锁屏
@@ -69,6 +68,7 @@ public class KWApp extends Application {
     public static boolean temporary_app = false;
     public Activity currentActivity;
 
+    private boolean isAttendClass;
     public Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -94,12 +94,17 @@ public class KWApp extends Application {
                 // .DEVICE_POLICY_SERVICE);
                 //mDevicePolicyManager.lockNow();
             } else if (msg.what == MSG_LOCKONCLASS) {
-                MDMHelper.getAdapter().setBackButtonDisabled(true);
-                MDMHelper.getAdapter().setHomeButtonDisabled(true);
+                if (isAttendClass){
+                    RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
+                }else {
+                    MDMHelper.getAdapter().setBackButtonDisabled(true);
+                    MDMHelper.getAdapter().setHomeButtonDisabled(true);
+                }
             } else if (msg.what == MSG_UNLOCK) {
                 //解除锁屏
                 MDMHelper.getAdapter().setBackButtonDisabled(false);
                 MDMHelper.getAdapter().setHomeButtonDisabled(false);
+                RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
                 if (currentActivity != null && currentActivity instanceof ScreenActivity) {
                     currentActivity.finish();
                 }
@@ -159,21 +164,23 @@ public class KWApp extends Application {
                         Toast.makeText(KWApp.instance, "请安装课堂互动", Toast.LENGTH_SHORT).show();
                         return;
                     }
+                    isAttendClass = true;
                     Intent in = getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
                     if (in != null) {
                         in.putExtra("shangke", msg.obj.toString());
-                        in.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name",""));
-                        in.putExtra("className", getSharedPreferences("kiway", 0).getString("className",""));
-                        in.putExtra("studentNumber", getSharedPreferences("kiway", 0).getString("studentNumber",""));
-                        in.putExtra("classId",getSharedPreferences("kiway", 0).getString("classId",""));
-                        in.putExtra("schoolId",getSharedPreferences("kiway", 0).getString("schoolId",""));
-                        in.putExtra("huaweiToken",getSharedPreferences("huawei", 0).getString("token",""));
+                        in.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name", ""));
+                        in.putExtra("className", getSharedPreferences("kiway", 0).getString("className", ""));
+                        in.putExtra("studentNumber", getSharedPreferences("kiway", 0).getString("studentNumber", ""));
+                        in.putExtra("classId", getSharedPreferences("kiway", 0).getString("classId", ""));
+                        in.putExtra("schoolId", getSharedPreferences("kiway", 0).getString("schoolId", ""));
+                        in.putExtra("huaweiToken", getSharedPreferences("huawei", 0).getString("token", ""));
                         RemoteAidlService.attendClass(msg.obj.toString());
                         Utils.startPackage(KWApp.instance, ZHIHUIKETANGPG, in);
                     }
                 }
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
                 RemoteAidlService.goOutClass();
+                isAttendClass = false;
             } else if (msg.what == MSG_MESSAGE) {
                 RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
             } else if (msg.what == MSG_PUSH_FILE_I) {
