@@ -16,7 +16,7 @@ import org.xutils.x;
 import java.io.File;
 
 import cn.kiway.mdm.activity.BaseActivity;
-import cn.kiway.mdm.activity.ScreenActivity;
+import cn.kiway.mdm.activity.ScreenMDMActivity;
 import cn.kiway.mdm.aidlservice.RemoteAidlService;
 import cn.kiway.mdm.utils.HttpDownload;
 import cn.kiway.mdm.utils.Utils;
@@ -82,30 +82,32 @@ public class KWApp extends Application {
                 String imei = Utils.getIMEI(getApplicationContext());
                 Utils.installationPush(instance, token, imei);
             } else if (msg.what == MSG_LOCK) {
-                if (currentActivity != null && currentActivity instanceof ScreenActivity) {
-                    return;
+                if (isAttendClass) {
+                    RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
+                } else {
+                    if (currentActivity != null && currentActivity instanceof ScreenMDMActivity) {
+                        return;
+                    }
+                    MDMHelper.getAdapter().setBackButtonDisabled(true);
+                    MDMHelper.getAdapter().setHomeButtonDisabled(true);
+                    //强制锁屏
+                    startActivity(new Intent(getApplicationContext(), ScreenMDMActivity.class).addFlags(Intent
+                            .FLAG_ACTIVITY_NEW_TASK));
                 }
-                MDMHelper.getAdapter().setBackButtonDisabled(true);
-                MDMHelper.getAdapter().setHomeButtonDisabled(true);
-                //强制锁屏
-                startActivity(new Intent(getApplicationContext(), ScreenActivity.class).addFlags(Intent
-                        .FLAG_ACTIVITY_NEW_TASK));
                 //DevicePolicyManager mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context
                 // .DEVICE_POLICY_SERVICE);
                 //mDevicePolicyManager.lockNow();
             } else if (msg.what == MSG_LOCKONCLASS) {
-                if (isAttendClass){
-                    RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
-                }else {
-                    MDMHelper.getAdapter().setBackButtonDisabled(true);
-                    MDMHelper.getAdapter().setHomeButtonDisabled(true);
-                }
+
+                MDMHelper.getAdapter().setBackButtonDisabled(true);
+                MDMHelper.getAdapter().setHomeButtonDisabled(true);
+
             } else if (msg.what == MSG_UNLOCK) {
                 //解除锁屏
                 MDMHelper.getAdapter().setBackButtonDisabled(false);
                 MDMHelper.getAdapter().setHomeButtonDisabled(false);
                 RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
-                if (currentActivity != null && currentActivity instanceof ScreenActivity) {
+                if (currentActivity != null && currentActivity instanceof ScreenMDMActivity) {
                     currentActivity.finish();
                 }
                 //PowerManager mPowerManager = ((PowerManager) getSystemService(POWER_SERVICE));

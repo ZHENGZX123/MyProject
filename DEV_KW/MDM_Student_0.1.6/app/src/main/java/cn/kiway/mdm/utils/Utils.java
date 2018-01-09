@@ -75,7 +75,7 @@ import java.util.Set;
 import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.activity.ComposeSmsActivity;
 import cn.kiway.mdm.activity.MainActivity;
-import cn.kiway.mdm.activity.ScreenActivity;
+import cn.kiway.mdm.activity.ScreenMDMActivity;
 import cn.kiway.mdm.activity.SendSMSActivity;
 import cn.kiway.mdm.activity.SettingActivity;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
@@ -1484,14 +1484,14 @@ public class Utils {
                 long currentTime = currentTimeMillis();
                 if (currentTime < (lock_time + 60 * 60 * 1000)) {
                     //自动锁屏
-                    if (!(KWApp.instance.currentActivity instanceof ScreenActivity)) {
+                    if (!(KWApp.instance.currentActivity instanceof ScreenMDMActivity)) {
                         Message m = new Message();
                         m.what = MSG_LOCK;
                         KWApp.instance.mHandler.sendMessage(m);
                     }
                 } else {
                     //自动解锁屏幕
-                    if (KWApp.instance.currentActivity instanceof ScreenActivity) {
+                    if (KWApp.instance.currentActivity instanceof ScreenMDMActivity) {
                         Message m = new Message();
                         m.what = MSG_LOCK;
                         KWApp.instance.mHandler.sendMessage(m);

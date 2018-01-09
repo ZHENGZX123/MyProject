@@ -139,6 +139,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 context.getSharedPreferences("kiway", 0).edit().putString("app_data", "").commit();
             } else if (command.equals("temporary_lockScreen")) {
                 m.what = MSG_LOCK;
+                m.obj = data;
                 String currentTime = data.optString("currentTime");
                 if (!Utils.checkCommandAvailable(currentTime)) {
                     return false;
@@ -151,6 +152,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                     return false;
                 }
                 context.getSharedPreferences("kiway", 0).edit().putLong("lock_time", 0).commit();
+                m.obj = data;
                 m.what = MSG_UNLOCK;
             } else if (command.equals("wifi")) {
                 JSONArray content = data.optJSONArray("content");
