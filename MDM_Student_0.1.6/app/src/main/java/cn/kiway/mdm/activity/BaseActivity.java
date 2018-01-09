@@ -54,6 +54,8 @@ public class BaseActivity extends Activity {
         ComponentName mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
         MDMHelper.getAdapter().init(this, mAdminName);
         KWApp.instance.currentActivity = this;
+        //2.GPS要开启
+        MDMHelper.getAdapter().turnOnGPS(true);
     }
 
     public void setScreenOrientation() {
@@ -132,7 +134,7 @@ public class BaseActivity extends Activity {
         MDMHelper.getAdapter().setBackButtonDisabled(false);
         MDMHelper.getAdapter().setVpnDisabled(true);
         MDMHelper.getAdapter().setTimeAndDateSetDisabled(false);
-        
+
         //7.移除白名单
         List<String> currentList = MDMHelper.getAdapter().getInstallPackageWhiteList();
         Log.d("test", "白名单size = " + currentList.size());
