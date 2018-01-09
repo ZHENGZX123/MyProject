@@ -384,20 +384,13 @@ public class Utils {
         if (TextUtils.isEmpty(password)) {
             return;
         }
-        //0.判断当前连接的是不是这个
+        //1.判断当前连接的是不是这个
         String currentSSID = getCurrentSSID(c);
         Log.d("test", "currentSSID = " + currentSSID);
         if (currentSSID.equals(SSID)) {
             Log.d("test", "当前连接着这个wifi");
             return;
         }
-        //1.先打开位置服务
-        c.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                MDMHelper.getAdapter().turnOnGPS(true);
-            }
-        });
         //2.搜索附近wifi
         boolean has = false;
         WifiAdmin admin = new WifiAdmin(c);
