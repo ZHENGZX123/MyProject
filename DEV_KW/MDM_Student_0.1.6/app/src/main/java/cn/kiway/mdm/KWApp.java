@@ -83,6 +83,8 @@ public class KWApp extends Application {
                 Utils.installationPush(instance, token, imei);
             } else if (msg.what == MSG_LOCK) {
                 if (isAttendClass) {
+                    if (msg.obj == null)
+                        msg.obj = "";
                     RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
                 } else {
                     if (currentActivity != null && currentActivity instanceof ScreenMDMActivity) {
@@ -106,6 +108,8 @@ public class KWApp extends Application {
                 //解除锁屏
                 MDMHelper.getAdapter().setBackButtonDisabled(false);
                 MDMHelper.getAdapter().setHomeButtonDisabled(false);
+                if (msg.obj == null)
+                    msg.obj = "";
                 RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
                 if (currentActivity != null && currentActivity instanceof ScreenMDMActivity) {
                     currentActivity.finish();
