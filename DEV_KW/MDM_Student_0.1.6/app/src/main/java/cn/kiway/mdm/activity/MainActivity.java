@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -17,6 +19,7 @@ import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -46,6 +49,9 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -77,6 +83,7 @@ import static cn.kiway.mdm.utils.AppReceiverIn.REMOVE_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.REPLACE_SUCCESS;
 import static cn.kiway.mdm.utils.Constant.KIWAYSETTING;
 import static cn.kiway.mdm.utils.Constant.MARKETPLACE;
+import static cn.kiway.mdm.utils.Constant.PARENTMESSAGE;
 import static cn.kiway.mdm.utils.Constant.ZHIHUIKETANGPG;
 import static cn.kiway.mdm.utils.Constant._16;
 import static cn.kiway.mdm.utils.FileACache.ListFileName;
@@ -185,19 +192,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         Drawable wallpaperDrawable = wallpaperManager.getFastDrawable();
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout);
         linearLayout.setBackground(wallpaperDrawable);
-
-//        LinearLayout rl = (LinearLayout) findViewById(R.id.layout);
-//        WallpaperManager wm = WallpaperManager.getInstance(this);
-//        Drawable d = wm.getDrawable();
-//        if (d != null) {
-//            Bitmap bitmap = drawableToBitmap(d);
-//            WallpaperDrawable wd = new WallpaperDrawable();
-//            wd.setBitmap(bitmap);
-//            rl.setBackground(wd);
-//        } else {
-//            rl.setBackgroundResource(R.drawable.beijing);
-//        }
-
     }
 
     private void checkUpgrade() {
@@ -544,7 +538,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public void initData(List<List<App>> data1) {
         data1 = addMarketplace("开维应用市场", MARKETPLACE, 1);//判断有没有应用市场，没有的话添加到第二个
-        data1 = addMarketplace("设置", KIWAYSETTING, 2);
+        data1 = addMarketplace("家长留言", PARENTMESSAGE, 2);
+        data1 = addMarketplace("设置", KIWAYSETTING, 3);
         viewPagerList = new ArrayList<View>();
         totalPage = (int) Math.ceil(data1.size() * 1.0 / _16);
         for (int i = 0; i < totalPage; i++) {

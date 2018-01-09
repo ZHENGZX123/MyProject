@@ -12,5 +12,6 @@ public interface Constant {
     public ExecutorService executorService = Executors.newCachedThreadPool();
     public String ZHIHUIKETANGPG = "cn.kiway.session";
     public String MARKETPLACE = "cn.kiway.marketplace";
+    public String PARENTMESSAGE = "cn.kiway.parentmessage";
     public String KIWAYSETTING = "cn.kiway.setting";
 }

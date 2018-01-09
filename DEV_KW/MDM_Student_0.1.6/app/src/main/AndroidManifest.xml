@@ -191,6 +191,13 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
+        <activity
+            android:name=".activity.ParentMessageActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
+
 
         <receiver
             android:name="cn.kiway.mdm.broadcast.SampleDeviceReceiver"
