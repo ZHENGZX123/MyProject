@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.GsonBuilder;
@@ -25,6 +24,8 @@ import java.util.List;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.entity.Message;
 import cn.kiway.mdm.utils.Utils;
+import cn.kiway.mdm.view.refresh.PullToRefreshLayout;
+import cn.kiway.mdm.view.refresh.PullableListView;
 
 import static cn.kiway.mdm.KWApp.clientUrl;
 import static cn.kiway.mdm.utils.HttpUtil.check301;
@@ -35,7 +36,12 @@ import static cn.kiway.mdm.utils.HttpUtil.check301;
 
 public class ParentMessageActivity extends BaseActivity {
 
-    private ListView lv1;
+    private int currentPage = 1;
+    private int pageCount = 10;
+
+    private PullToRefreshLayout pullToRefreshLayout;
+
+    private PullableListView lv1;
     private MyAdapter adapter1;
     private ArrayList<Message> messages = new ArrayList<>();
 
@@ -44,13 +50,31 @@ public class ParentMessageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parent_msg);
 
-        lv1 = (ListView) findViewById(R.id.lv);
+        pullToRefreshLayout = ((PullToRefreshLayout) findViewById(R.id.refresh_view));
+        pullToRefreshLayout.setOnRefreshListener(new MyListener());
+        lv1 = (PullableListView) findViewById(R.id.lv);
         adapter1 = new MyAdapter();
         lv1.setAdapter(adapter1);
 
         getLeaveMsg();
     }
 
+    public class MyListener implements PullToRefreshLayout.OnRefreshListener {
+
+        @Override
+        public void onRefresh(final PullToRefreshLayout pullToRefreshLayout) {
+            // 下拉刷新操作
+            currentPage = 1;
+            getLeaveMsg();
+        }
+
+        @Override
+        public void onLoadMore(final PullToRefreshLayout pullToRefreshLayout) {
+            // 加载操作
+            currentPage += 1;
+            getLeaveMsg();
+        }
+    }
 
     public void getLeaveMsg() {
         showPD();
@@ -59,18 +83,29 @@ public class ParentMessageActivity extends BaseActivity {
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             RequestParams param = new RequestParams();
-            String url = clientUrl + "device/student/leaveMsg?currentPage=1&pageSize=100";
+            String url = clientUrl + "device/student/leaveMsg?currentPage=" + currentPage + "&pageSize=" + pageCount;
             Log.d("test", "leaveMsg = " + url);
             client.get(this, url, param, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "leaveMsg onSuccess = " + ret);
+                    pullToRefreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
+                    pullToRefreshLayout.loadmoreFinish(PullToRefreshLayout.SUCCEED);
                     if (!check301(ParentMessageActivity.this, ret)) {
                         try {
                             JSONArray data = new JSONObject(ret).getJSONArray("data");
-                            messages = new GsonBuilder().create().fromJson(data.toString(), new
+                            ArrayList<Message> temp = new GsonBuilder().create().fromJson(data.toString(), new
                                     TypeToken<List<Message>>() {
                                     }.getType());
+                            if (currentPage == 1) {
+                                messages.clear();
+                            }
+                            int count = temp.size();
+                            if (count == 0 && currentPage > 1) {
+                                toast("没有更多数据");
+                                currentPage -= 1;
+                            }
+                            messages.addAll(temp);
                             adapter1.notifyDataSetChanged();
                         } catch (Exception e) {
                             e.printStackTrace();

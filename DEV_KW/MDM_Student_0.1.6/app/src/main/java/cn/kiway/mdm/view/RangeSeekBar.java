@@ -140,7 +140,7 @@ public class RangeSeekBar extends ViewGroup {
         //画背景
         Paint paint=new Paint();
         paint.setAntiAlias(true);
-        paint.setColor(getResources().getColor(R.color.grey));
+        paint.setColor(getResources().getColor(R.color.gray));
         Rect rect=new Rect(mLeftLimit,mProBaseline,mRightLimit,mProBaseline+mProgressBarHeight);
         canvas.drawRect(rect,paint);
 
@@ -157,7 +157,7 @@ public class RangeSeekBar extends ViewGroup {
     protected void drawRule(Canvas canvas){
         Paint paint=new Paint();
         paint.setStrokeWidth(1);
-        paint.setColor(getResources().getColor(R.color.grey));
+        paint.setColor(getResources().getColor(R.color.gray));
         paint.setTextSize(20);
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setAntiAlias(true);
