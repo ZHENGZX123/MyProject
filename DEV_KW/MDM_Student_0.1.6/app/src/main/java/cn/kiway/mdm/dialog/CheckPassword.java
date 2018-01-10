@@ -15,6 +15,7 @@ import android.widget.Toast;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.TestActivity;
 import cn.kiway.mdm.utils.DES;
+import cn.kiway.mdm.utils.HttpUtil;
 import cn.kiway.mdm.utils.Utils;
 
 /**
@@ -94,7 +95,7 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
                             (defaultPwd))
                             .commit();
                     //2.存到中心
-                    Utils.updateDefaultPwd(c, defaultPwd);
+                    HttpUtil.updateDefaultPwd(c, defaultPwd);
                     getContext().getSharedPreferences("kiway", 0).edit().putBoolean("isLock", false).commit();
                     return;
                 }

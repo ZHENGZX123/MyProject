@@ -14,7 +14,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -63,6 +62,7 @@ import cn.kiway.mdm.utils.AppListUtils;
 import cn.kiway.mdm.utils.AppReceiverIn;
 import cn.kiway.mdm.utils.DESUtil;
 import cn.kiway.mdm.utils.FileACache;
+import cn.kiway.mdm.utils.HttpUtil;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 import cn.kiway.mdm.view.viewPager.StereoPagerTransformer;
@@ -81,6 +81,8 @@ import static cn.kiway.mdm.utils.Constant.PARENTMESSAGE;
 import static cn.kiway.mdm.utils.Constant.ZHIHUIKETANGPG;
 import static cn.kiway.mdm.utils.Constant._16;
 import static cn.kiway.mdm.utils.FileACache.ListFileName;
+import static cn.kiway.mdm.utils.HttpUtil.APPID;
+import static cn.kiway.mdm.utils.HttpUtil.APPKEY;
 import static cn.kiway.mdm.utils.Utils.huaweiPush;
 
 
@@ -203,12 +205,12 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     private void oauth() {
         //1.网络鉴权
-        Utils.oauth(this, "9a9b01f8ab910e12422bcc0e88d95dff2f95f582", "cn.kiway.kthd");
+        HttpUtil.oauth(this, APPKEY, "cn.kiway.kthd");
         //2.本地鉴权
         try {
             DESUtil des = null;
             des = new DESUtil("cn.kiway.kthd");
-            String ret = des.encrypt("f2ec1fb69b27c7ab5260d2eb7cd95dea" + "9a9b01f8ab910e12422bcc0e88d95dff2f95f582");
+            String ret = des.encrypt(APPID + APPKEY);
             Log.d("test", "encrypt ret = " + ret);
         } catch (Exception e) {
             e.printStackTrace();
@@ -272,17 +274,17 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
                     int level = intent.getIntExtra("level", 0);
                     if (level < 5) {
-                        Utils.deviceRuntime(MainActivity.this, "2", true);
+                        HttpUtil.deviceRuntime(MainActivity.this, "2", true);
                     }
                     mHandler.sendEmptyMessageDelayed(MSG_UPLOAD_STATUS, 10 * 60 * 1000);
                 }
                 break;
                 case MSG_GET_COMMAND: {
-                    Utils.appCharge(MainActivity.this);
-                    Utils.networkDeviceCharge(MainActivity.this);
-                    Utils.wifi(MainActivity.this);
-                    Utils.appFunction(MainActivity.this);
-                    Utils.getCalls(MainActivity.this);
+                    HttpUtil.appCharge(MainActivity.this);
+                    HttpUtil.networkDeviceCharge(MainActivity.this);
+                    HttpUtil.wifi(MainActivity.this);
+                    HttpUtil.appFunction(MainActivity.this);
+                    HttpUtil.getCalls(MainActivity.this);
                     mHandler.sendEmptyMessageDelayed(MSG_GET_COMMAND, 60 * 60 * 1000);
                 }
                 break;
@@ -354,7 +356,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         if (getSharedPreferences("kiway", 0).getBoolean(today, false)) {
             return;
         }
-        Utils.uploadApp(this);
+        HttpUtil.uploadApp(this);
     }
 
     private void setUsageStats() {
@@ -400,7 +402,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void Camera(View view) {
-        Utils.childOperation(this, "useApp", "使用了相机APP");
+        HttpUtil.childOperation(this, "useApp", "使用了相机APP");
         int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
         if (flag_camera == 0) {
             toast("相机功能当前不能使用");
@@ -738,7 +740,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                                 .getLongitude()).commit();
                         getSharedPreferences("kiway", 0).edit().putFloat(dateStr + "_lastLatitude", (float) location
                                 .getLatitude()).commit();
-                        Utils.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude());
+                        HttpUtil.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude());
                     }
 
                     @Override

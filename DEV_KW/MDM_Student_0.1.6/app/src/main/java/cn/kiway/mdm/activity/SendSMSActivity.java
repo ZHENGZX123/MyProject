@@ -20,8 +20,8 @@ import cn.kiway.mdm.R;
 import cn.kiway.mdm.adapter.ChatMsgViewAdapter;
 import cn.kiway.mdm.entity.Call;
 import cn.kiway.mdm.entity.SMS;
+import cn.kiway.mdm.utils.HttpUtil;
 import cn.kiway.mdm.utils.MyDBHelper;
-import cn.kiway.mdm.utils.Utils;
 
 /**
  * @author way
@@ -124,7 +124,7 @@ public class SendSMSActivity extends BaseActivity implements OnClickListener {
         mListView.setSelection(mListView.getCount() - 1);
 
         //4.记录请求
-        Utils.childOperation(this, "sendSms", "发送短信给" + phone);
+        HttpUtil.childOperation(this, "sendSms", "发送短信给" + phone);
 
     }
 

@@ -25,6 +25,7 @@ import cn.kiway.mdm.activity.SystemSetupActivity;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.AppCharge;
 import cn.kiway.mdm.utils.FileACache;
+import cn.kiway.mdm.utils.HttpUtil;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 
@@ -200,7 +201,7 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
         intent.putExtra("huaweiToken", context.getSharedPreferences("huawei", 0).getString("token", ""));
 
         context.startActivity(intent);
-        Utils.childOperation(context, "useApp", "使用了" + name + "APP");
+        HttpUtil.childOperation(context, "useApp", "使用了" + name + "APP");
     }
 
 

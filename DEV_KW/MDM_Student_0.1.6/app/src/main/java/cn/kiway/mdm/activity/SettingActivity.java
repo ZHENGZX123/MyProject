@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.utils.FileACache;
+import cn.kiway.mdm.utils.HttpUtil;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 
@@ -107,15 +108,15 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void run() {
                 //1.上报状态
-                Utils.deviceRuntime(SettingActivity.this, "2", false);
-                Utils.uninstallPush(SettingActivity.this);
+                HttpUtil.deviceRuntime(SettingActivity.this, "2", false);
+                HttpUtil.uninstallPush(SettingActivity.this);
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 //2.注销
-                Utils.logout(SettingActivity.this);
+                HttpUtil.logout(SettingActivity.this);
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {

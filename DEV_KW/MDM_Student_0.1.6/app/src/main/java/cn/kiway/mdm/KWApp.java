@@ -21,6 +21,7 @@ import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.ScreenMDMActivity;
 import cn.kiway.mdm.aidlservice.RemoteAidlService;
 import cn.kiway.mdm.utils.HttpDownload;
+import cn.kiway.mdm.utils.HttpUtil;
 import cn.kiway.mdm.utils.Utils;
 import cn.kiway.mdmsdk.MDMHelper;
 
@@ -82,7 +83,7 @@ public class KWApp extends Application {
             } else if (msg.what == MSG_INSTALL) {
                 String token = getSharedPreferences("huawei", 0).getString("token", "");
                 String imei = Utils.getIMEI(getApplicationContext());
-                Utils.installationPush(instance, token, imei);
+                HttpUtil.installationPush(instance, token, imei);
             } else if (msg.what == MSG_LOCK) {
                 if (isAttendClass) {
                     if (msg.obj == null)

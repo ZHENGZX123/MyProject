@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.utils.DES;
-import cn.kiway.mdm.utils.Utils;
+import cn.kiway.mdm.utils.HttpUtil;
 
 /**
  * Created by Administrator on 2017/10/12.
@@ -45,7 +45,7 @@ public class PassWordActivity extends BaseActivity {
         }
         String defaultPwd = editText1.getText().toString();
         getSharedPreferences("kiway", 0).edit().putString("password", new DES().encrypt(defaultPwd)).commit();
-        Utils.updateDefaultPwd(this, defaultPwd);
+        HttpUtil.updateDefaultPwd(this, defaultPwd);
         Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
         getSharedPreferences("kiway", 0).edit().putBoolean("isLock", false).commit();
         finish();

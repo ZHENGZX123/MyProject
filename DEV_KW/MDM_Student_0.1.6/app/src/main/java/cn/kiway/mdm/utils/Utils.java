@@ -34,20 +34,13 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.huawei.android.pushagent.api.PushManager;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.TextHttpResponseHandler;
 
-import org.apache.http.Header;
-import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,7 +73,6 @@ import cn.kiway.mdm.activity.ComposeSmsActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ScreenMDMActivity;
 import cn.kiway.mdm.activity.SendSMSActivity;
-import cn.kiway.mdm.activity.SettingActivity;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.AppCharge;
@@ -93,8 +85,6 @@ import static android.content.Context.WIFI_SERVICE;
 import static cn.kiway.mdm.KWApp.MSG_LAUNCH_APP;
 import static cn.kiway.mdm.KWApp.MSG_LAUNCH_MDM;
 import static cn.kiway.mdm.KWApp.MSG_LOCK;
-import static cn.kiway.mdm.KWApp.clientUrl;
-import static cn.kiway.mdm.KWApp.serverUrl;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.PARENT_BIND;
 import static cn.kiway.mdm.utils.AppReceiverIn.INSTALL_SUCCESS;
 import static cn.kiway.mdm.utils.AppReceiverIn.PACKAGENAME;
@@ -309,10 +299,6 @@ public class Utils {
         return name;
     }
 
-    public static boolean rangeInDefined(int current, int min, int max) {
-        return Math.max(min, current) == Math.min(current, max);
-    }
-
     public static String getDateField(long time, int filed) {
         String s = null;
         Date date = new Date(time);
@@ -465,7 +451,7 @@ public class Utils {
         return imei;
     }
 
-    public static String genIMEI() {// calculator IMEI
+    public static String genIMEI() {
         int r1 = 1000000 + new java.util.Random().nextInt(9000000);
         int r2 = 1000000 + new java.util.Random().nextInt(9000000);
         String input = r1 + "" + r2;
@@ -489,127 +475,7 @@ public class Utils {
         return input + last;
     }
 
-    public static void uploadLocation(final MainActivity c, final double longitude, final double latitude) {
-        c.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-                    client.setTimeout(10000);
-                    JSONArray array = new JSONArray();
-                    JSONObject o1 = new JSONObject();
-                    o1.put("imei", Utils.getIMEI(c));
-                    o1.put("longitude", "" + longitude);
-                    o1.put("latitude", "" + latitude);
-                    o1.put("operation", "GPS");
-                    array.put(o1);
-                    Log.d("test", "location array = " + array.toString());
-                    StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
-                    String url = clientUrl + "device/locationTrack";
-                    Log.d("test", "locationTrack = " + url);
-                    client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int code, Header[] headers, String ret) {
-                            Log.d("test", "locationTrack onSuccess = " + ret);
-                            check301(c, ret);
-                        }
-
-                        @Override
-                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            Log.d("test", "locationTrack onFailure = " + s);
-                            check301(c, s);
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.d("test", "e = " + e.toString());
-                }
-            }
-        });
-    }
-
-    public static void deviceRuntime(final Activity c, final String flag, final boolean check301) {
-        new Thread() {
-            @Override
-            public void run() {
-                c.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            String imei = getIMEI(c);
-                            AsyncHttpClient client = new AsyncHttpClient();
-                            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString
-                                    ("x-auth-token", ""));
-                            client.setTimeout(10000);
-                            JSONArray array = new JSONArray();
-                            JSONObject param = new JSONObject();
-                            param.put("imei", imei);
-                            param.put("flag", flag);
-                            param.put("operation", "submitData");
-                            array.put(param);
-                            Log.d("test", "array = " + array.toString());
-                            StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
-                            String url = clientUrl + "device/deviceRuntime";
-                            Log.d("test", "deviceRuntime = " + url);
-                            client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
-                                @Override
-                                public void onSuccess(int code, Header[] headers, String ret) {
-                                    Log.d("test", "deviceRuntime onSuccess = " + ret);
-                                    if (check301) {
-                                        check301(c, ret);
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                                    if (check301) {
-                                        check301(c, s);
-                                    }
-                                    Log.d("test", "deviceRuntime onFailure = " + s);
-                                }
-                            });
-                        } catch (Exception e) {
-                            Log.d("test", "e = " + e.toString());
-                        }
-                    }
-                });
-            }
-        }.start();
-    }
-
-    public static void exceptions(final MainActivity c) {
-        try {
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-            client.setTimeout(10000);
-            RequestParams param = new RequestParams();
-            param.put("imei", getIMEI(c));
-            param.put("ip", getIP(c));
-            param.put("className", "MainActivity");
-            param.put("message", "NullPointException At line 76");
-            param.put("operation", "submitData");
-            Log.d("test", "param = " + param.toString());
-            String url = clientUrl + "device/exceptions";
-            Log.d("test", "exceptions = " + url);
-            client.post(c, url, param, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "exceptions onSuccess = " + ret);
-                    check301(c, ret);
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    check301(c, s);
-                    Log.d("test", "exceptions onFailure = " + s);
-                }
-            });
-        } catch (Exception e) {
-            Log.d("test", "e = " + e.toString());
-        }
-    }
-
-    private static String getIP(MainActivity c) {
+    public static String getIP(MainActivity c) {
         try {
             WifiManager wifi_service = (WifiManager) c.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             DhcpInfo dhcpInfo = wifi_service.getDhcpInfo();
@@ -620,139 +486,6 @@ public class Utils {
             Log.d("test", "getIp ex = " + ex.toString());
         }
         return "unknown";
-    }
-
-    public static void appCharge(final MainActivity c) {
-        c.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-                    client.setTimeout(10000);
-                    RequestParams param = new RequestParams();
-                    String url = clientUrl + "device/appCharge?imei=" + getIMEI(c);
-                    Log.d("test", "appCharge = " + url);
-                    client.get(c, url, param, new TextHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int code, Header[] headers, String ret) {
-                            Log.d("test", "appCharge onSuccess = " + ret);
-                            check301(c, ret);
-                            try {
-                                JSONArray data = new JSONObject(ret).getJSONArray("data");
-                                ArrayList<AppCharge> networks = new GsonBuilder().create().fromJson(data.toString(),
-                                        new TypeToken<List<AppCharge>>() {
-                                        }.getType());
-                                //存进数据库里
-                                new MyDBHelper(c).deleteAppcharge(null);
-                                for (AppCharge n : networks) {
-                                    new MyDBHelper(c).addAppcharge(n);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            check301(c, s);
-                            Log.d("test", "appCharge onFailure = " + s);
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.d("test", "e = " + e.toString());
-                }
-            }
-        });
-    }
-
-    public static void networkDeviceCharge(final MainActivity c) {
-        c.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-                    client.setTimeout(10000);
-                    RequestParams param = new RequestParams();
-                    String url = clientUrl + "device/networkDeviceCharge?imei=" + getIMEI(c);
-                    Log.d("test", "networkDeviceCharge = " + url);
-                    client.get(c, url, param, new TextHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int code, Header[] headers, String ret) {
-                            Log.d("test", "networkDeviceCharge onSuccess = " + ret);
-                            check301(c, ret);
-                            try {
-                                JSONArray data = new JSONObject(ret).getJSONArray("data");
-                                ArrayList<Network> networks = new GsonBuilder().create().fromJson(data.toString(),
-                                        new TypeToken<List<Network>>() {
-                                        }.getType());
-                                //1.存进数据库里
-                                new MyDBHelper(c).deleteNetwork(null);
-                                for (Network n : networks) {
-                                    new MyDBHelper(c).addNetwork(n);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            check301(c, s);
-                            Log.d("test", "networkDeviceCharge onFailure = " + s);
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.d("test", "e = " + e.toString());
-                }
-            }
-        });
-    }
-
-    public static void wifi(final MainActivity c) {
-        c.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-                    client.setTimeout(10000);
-                    RequestParams param = new RequestParams();
-                    Log.d("test", "param = " + param.toString());
-                    String url = clientUrl + "device/wifi";
-                    Log.d("test", "wifi = " + url);
-                    client.get(c, url, param, new TextHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int code, Header[] headers, String ret) {
-                            Log.d("test", "wifi onSuccess = " + ret);
-                            check301(c, ret);
-                            try {
-                                JSONArray data = new JSONObject(ret).getJSONArray("data");
-                                ArrayList<Wifi> wifis = new GsonBuilder().create().fromJson(data.toString(), new
-                                        TypeToken<List<Wifi>>() {
-                                        }.getType());
-                                //存进数据库里
-                                new MyDBHelper(c).deleteWifi(null);
-                                for (Wifi n : wifis) {
-                                    new MyDBHelper(c).addWifi(n);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            check301(c, s);
-                            Log.d("test", "wifi onFailure = " + s);
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.d("test", "e = " + e.toString());
-                }
-            }
-        });
     }
 
     public synchronized static void checkWifis(final MainActivity m) {
@@ -1052,70 +785,6 @@ public class Utils {
         temporary_appThread.start();
     }
 
-    public static void uploadApp(final MainActivity c) {
-        //1.判断是不是wifi环境
-        if (!NetworkUtil.isWifi(c)) {
-            return;
-        }
-        new Thread() {
-            @Override
-            public void run() {
-                //2.上报APP图标
-                final ArrayList<App> installApps = scanLocalInstallAppList(c, true);
-                for (App a : installApps) {
-                    APPIconUploader.UploadAPPIcon(c, a.packageName);
-                }
-                c.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //3.上传APP列表
-                        try {
-                            AsyncHttpClient client = new AsyncHttpClient();
-                            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-                            client.setTimeout(10000);
-                            String url = clientUrl + "device/appInstallation";
-                            Log.d("test", "applist url = " + url);
-                            JSONArray array = new JSONArray();
-                            int count = installApps.size();
-                            String imei = Utils.getIMEI(c);
-                            for (int i = 0; i < count; i++) {
-                                JSONObject o1 = new JSONObject();
-                                App a = installApps.get(i);
-                                o1.put("imei", imei);
-                                o1.put("appName", a.name);
-                                o1.put("packages", a.packageName);
-                                o1.put("versionName", a.versionName);
-                                o1.put("versionCode", a.versionCode);
-                                o1.put("category", a.category);
-                                o1.put("icon", APPIconUploader.getAPPIcon(c, a.packageName));
-                                array.put(o1);
-                            }
-                            Log.d("test", "applist array = " + array.toString());
-                            StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
-                            client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
-                                @Override
-                                public void onSuccess(int code, Header[] headers, String ret) {
-                                    Log.d("test", "applist onSuccess = " + ret);
-                                    check301(c, ret);
-                                    String today = getToday();
-                                    c.getSharedPreferences("kiway", 0).edit().putBoolean(today, true).commit();
-                                }
-
-                                @Override
-                                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                                    check301(c, s);
-                                    Log.d("test", "applist onFailure = " + s);
-                                }
-                            });
-                        } catch (Exception e) {
-                            Log.d("test", "e = " + e.toString());
-                        }
-                    }
-                });
-            }
-        }.start();
-    }
-
     public static String getToday() {
         Date d = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -1187,241 +856,6 @@ public class Utils {
             else
                 Toast.makeText(context, "手机没有安装相关的办公软件，请下载安装", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public static void appFunction(final MainActivity c) {
-        c.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-                    client.setTimeout(10000);
-                    RequestParams param = new RequestParams();
-                    Log.d("test", "param = " + param.toString());
-                    String url = clientUrl + "device/appFunction?imei=" + getIMEI(c);
-                    Log.d("test", "appFunction = " + url);
-                    client.get(c, url, param, new TextHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int code, Header[] headers, String ret) {
-                            Log.d("test", "appFunction onSuccess = " + ret);
-                            check301(c, ret);
-                            try {
-                                JSONArray data = new JSONObject(ret).getJSONArray("data");
-                                int count = data.length();
-                                for (int i = 0; i < count; i++) {
-                                    JSONObject o = data.getJSONObject(i);
-                                    String commandT = o.optString("command");
-                                    int flag = o.optInt("flag");
-                                    c.getSharedPreferences("kiway", 0).edit().putInt("flag_" + commandT, flag).commit();
-                                }
-                                KWApp.instance.excuteFlagCommand();
-                            } catch (Exception e) {
-                                Log.d("test", "e = " + e.toString());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            check301(c, s);
-                            Log.d("test", "appFunction onFailure = " + s);
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.d("test", "e = " + e.toString());
-                }
-            }
-        });
-    }
-
-    public static void logout(final SettingActivity c) {
-        new Thread() {
-            @Override
-            public void run() {
-                c.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            AsyncHttpClient client = new AsyncHttpClient();
-                            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString
-                                    ("x-auth-token", ""));
-                            client.setTimeout(10000);
-                            String url = clientUrl + "device/logout";
-                            Log.d("test", "url = " + url);
-                            RequestParams param = new RequestParams();
-                            param.put("operation", "invalidate");
-                            param.put("froms", "studentDevice");
-                            Log.d("test", "param = " + param.toString());
-                            client.post(c, url, param, new TextHttpResponseHandler() {
-
-                                @Override
-                                public void onSuccess(int arg0, Header[] arg1, String ret) {
-                                    Log.d("test", "logout success");
-                                }
-
-                                @Override
-                                public void onFailure(int arg0, Header[] arg1, String s, Throwable arg3) {
-                                    Log.d("test", "logout failure");
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Log.d("test", "exception = " + e.toString());
-                        }
-                    }
-                });
-            }
-        }.start();
-    }
-
-    public static void installationPush(final Context c, final String token, final String imei) {
-        try {
-            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-            if (TextUtils.isEmpty(xtoken)) {
-                return;
-            }
-            AsyncHttpClient client = new AsyncHttpClient();
-            Log.d("test", "xtoken = " + xtoken);
-            client.addHeader("x-auth-token", xtoken);
-            client.setTimeout(10000);
-            Log.d("test", "huaweitoken = " + token);
-            JSONObject param = new JSONObject();
-            param.put("appId", "f2ec1fb69b27c7ab5260d2eb7cd95dea");
-            param.put("type", "huawei");
-            param.put("deviceId", imei);
-            param.put("userId", token);
-            param.put("module", "student");
-            Log.d("test", "param = " + param.toString());
-            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            String url = clientUrl + "push/installation";
-            Log.d("test", "installationPush = " + url);
-            client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "installationPush onSuccess = " + ret);
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "installationPush onFailure = " + s);
-                }
-            });
-        } catch (Exception e) {
-            Log.d("test", "e = " + e.toString());
-        }
-    }
-
-    public static void uninstallPush(final SettingActivity c) {
-        new Thread() {
-            @Override
-            public void run() {
-                c.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-                            if (TextUtils.isEmpty(xtoken)) {
-                                return;
-                            }
-                            String token = c.getSharedPreferences("huawei", 0).getString("token", "");
-                            Log.d("test", "huaweitoken = " + token);
-                            AsyncHttpClient client = new AsyncHttpClient();
-                            Log.d("test", "xtoken = " + xtoken);
-                            client.addHeader("x-auth-token", xtoken);
-                            client.setTimeout(10000);
-                            RequestParams param = new RequestParams();
-                            param.put("type", "huawei");
-                            param.put("imei", getIMEI(c));
-                            param.put("token", token);
-                            Log.d("test", "param = " + param.toString());
-                            String url = clientUrl + "device/uninstall";
-                            Log.d("test", "uninstallPush = " + url);
-                            client.post(c, url, param, new TextHttpResponseHandler() {
-                                @Override
-                                public void onSuccess(int code, Header[] headers, String ret) {
-                                    Log.d("test", "uninstallPush onSuccess = " + ret);
-                                }
-
-                                @Override
-                                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                                    Log.d("test", "uninstallPush onFailure = " + s);
-                                }
-                            });
-                        } catch (Exception e) {
-                            Log.d("test", "e = " + e.toString());
-                        }
-                    }
-                });
-            }
-        }.start();
-    }
-
-    private static boolean is301 = false;
-
-    public static boolean check301(final Activity c, String result) {
-        if (c == null) {
-            return false;
-        }
-        if (TextUtils.isEmpty(result)) {
-            return false;
-        }
-        try {
-            int statusCode = new JSONObject(result).optInt("statusCode");
-            if (statusCode != 301) {
-                return false;
-            }
-            Log.d("test", "301 happen");
-            if (is301) {
-                return true;
-            }
-            is301 = true;
-
-            final String imei = Utils.getIMEI(c);
-            String token = c.getSharedPreferences("huawei", 0).getString("token", "");
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
-            String url = clientUrl + "device/login";
-            Log.d("test", "relogin url = " + url);
-            RequestParams param = new RequestParams();
-            param.put("schoolId", c.getSharedPreferences("kiway", 0).getString("schoolId", ""));
-            param.put("classId", c.getSharedPreferences("kiway", 0).getString("classId", ""));
-            param.put("studentNumber", c.getSharedPreferences("kiway", 0).getString("studentNumber", ""));
-            param.put("name", c.getSharedPreferences("kiway", 0).getString("name", ""));
-            param.put("mobileModel", Build.MODEL);
-            param.put("mobileBrand", Build.BRAND);
-            param.put("IMEI", imei);
-            param.put("platform", "Android");
-            param.put("token", token);
-            param.put("operation", "login");
-            param.put("froms", "studentDevice");
-            Log.d("test", "relogin param = " + param.toString());
-            client.post(c, url, param, new TextHttpResponseHandler() {
-
-                @Override
-                public void onSuccess(int arg0, Header[] arg1, String ret) {
-                    Log.d("test", "relogin  onSuccess = " + ret);
-                    try {
-                        JSONObject o = new JSONObject(ret);
-                        String token = o.getJSONObject("data").getString("token");
-                        c.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
-                    } catch (Exception e) {
-                    }
-                    is301 = false;
-                }
-
-                @Override
-                public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
-                    Log.d("test", "relogin  failure");
-                    is301 = false;
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d("test", "relogin exception = " + e.toString());
-            is301 = false;
-        }
-
-        return true;
     }
 
     public static void resetFunctions(Context context, int value) {
@@ -1589,75 +1023,6 @@ public class Utils {
         dailog.setToken(token);
         dailog.setShowMessage("家长要绑定这个帐号，是否同意？", PARENT_BIND);
         dailog.show();
-//        AlertDialog.Builder builder = new AlertDialog.Builder(m, AlertDialog.THEME_HOLO_LIGHT);
-//        builder.setMessage();
-//        builder.setTitle("提示");
-//        final String finalToken = token;
-//        builder.setPositiveButton("同意", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//                doBind(m, 1, finalToken);
-//            }
-//        });
-//        builder.setNegativeButton("不同意", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//                doBind(m, 2, finalToken);
-//            }
-//        });
-//        bindDialog = builder.create();
-//        bindDialog.show();
-    }
-
-    public static void doBind(final Activity c, final int flag, final String token) {
-        c.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    String xauthtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-                    Log.d("test", "xauthtoken = " + xauthtoken);
-                    client.addHeader("x-auth-token", xauthtoken);
-                    client.setTimeout(10000);
-                    String url = clientUrl + "device/student/response";
-                    Log.d("test", "doBind = " + url);
-                    RequestParams param = new RequestParams();
-                    param.put("flag", flag);
-                    param.put("token", token);
-                    Log.d("test", "doBind param = " + param.toString());
-                    client.post(c, url, param, new TextHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int code, Header[] headers, String ret) {
-                            Log.d("test", "doBind onSuccess = " + ret);
-                        }
-
-                        @Override
-                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            Log.d("test", "doBind onFailure = " + s);
-                            boolean happen301 = check301(c, s);
-                            if (happen301) {
-                                Log.d("test", "超时了，再次请求doBind");
-                                new Thread() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            sleep(3000);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-                                        doBind(c, flag, token);
-                                    }
-                                }.start();
-                            }
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.d("test", "e = " + e.toString());
-                }
-            }
-        });
     }
 
     //0：没有设置network 1：白名单启用  2：黑名单启用
@@ -1695,8 +1060,6 @@ public class Utils {
         builder.setTitle("提示");
         builder.setPositiveButton("知道了", null);
         closerDialog = builder.create();
-        //closerDialog.setCancelable(false);
-        //closerDialog.setCanceledOnTouchOutside(false);
         closerDialog = builder.create();
         closerDialog.show();
     }
@@ -1706,52 +1069,6 @@ public class Utils {
             return;
         }
         closerDialog.dismiss();
-    }
-
-    public static void getCalls(final MainActivity c) {
-        c.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-                    client.setTimeout(10000);
-                    RequestParams param = new RequestParams();
-                    Log.d("test", "param = " + param.toString());
-                    String url = clientUrl + "device/calls?imei=" + getIMEI(c);
-                    Log.d("test", "calls = " + url);
-                    client.get(c, url, param, new TextHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int code, Header[] headers, String ret) {
-                            Log.d("test", "calls onSuccess = " + ret);
-                            check301(c, ret);
-                            try {
-                                JSONArray data = new JSONObject(ret).getJSONArray("data");
-                                ArrayList<Call> calls = new GsonBuilder().create().fromJson(data.toString(), new
-                                        TypeToken<List<Call>>() {
-                                        }.getType());
-                                //存进数据库里
-                                new MyDBHelper(c).deleteCall(null);
-                                for (Call n : calls) {
-                                    new MyDBHelper(c).addCall(n);
-                                }
-                                //TODO 这里要调用一下华为的方法
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            Log.d("test", "calls onFailure = " + s);
-                            check301(c, s);
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.d("test", "e = " + e.toString());
-                }
-            }
-        });
     }
 
     //超出10分钟，命令无效
@@ -1790,40 +1107,9 @@ public class Utils {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(intent);
 
-        Utils.childOperation(c, "calls", "打电话给" + number);
+        HttpUtil.childOperation(c, "calls", "打电话给" + number);
     }
 
-
-    public static void childOperation(final Activity c, String type, String message) {
-        try {
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-            client.setTimeout(10000);
-            RequestParams param = new RequestParams();
-            param.put("IMEI", getIMEI(c));
-            param.put("type", type);
-            param.put("message", message);
-            param.put("froms", "studentDevice");
-            Log.d("test", "param = " + param.toString());
-            String url = clientUrl + "device/parent/child/operation";
-            Log.d("test", "childOperation = " + url);
-            client.post(c, url, param, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "childOperation onSuccess = " + ret);
-                    check301(c, ret);
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "childOperation onFailure = " + s);
-                    check301(c, s);
-                }
-            });
-        } catch (Exception e) {
-            Log.d("test", "e = " + e.toString());
-        }
-    }
 
     public static void showSMSDialog(final Activity m, SmsMessage sms) {
         if (m == null) {
@@ -1972,61 +1258,6 @@ public class Utils {
                 (ip >> 24 & 0xFF);
     }
 
-    /**
-     * @return
-     * @author sichard
-     * @category 判断是否有外网连接（普通方法不能判断外网的网络是否连接，比如连接上局域网）
-     */
-    public static final boolean ping(String ip) {
-        String result = null;
-        try {
-            Process p = Runtime.getRuntime().exec("ping -c 3 -w 100 " + ip);// ping网址3次
-            // 读取ping的内容，可以不加
-            InputStream input = p.getInputStream();
-            BufferedReader in = new BufferedReader(new InputStreamReader(input));
-            StringBuffer stringBuffer = new StringBuffer();
-            String content = "";
-            while ((content = in.readLine()) != null) {
-                stringBuffer.append(content);
-            }
-            Log.d("------ping-----",
-                    "result content : " + stringBuffer.toString());
-            // ping的状态
-            int status = p.waitFor();
-            if (status == 0) {
-                result = "success";
-                return true;
-            } else {
-                result = "failed";
-            }
-        } catch (IOException e) {
-            result = "IOException";
-        } catch (InterruptedException e) {
-            result = "InterruptedException";
-        } finally {
-            Log.d("----result---", "result = " + result);
-        }
-        return false;
-    }
-
-    /**
-     * @return
-     * @author sichard
-     * @category 判断是否有外网连接（普通方法不能判断外网的网络是否连接，比如连接上局域网）
-     */
-    public static final boolean ping(Context context, String ip) {
-        Logger.log(getIPAddress(context));
-        String s = getIPAddress(context);
-        String ip1 = s.split("\\.")[0] + "." + s.split("\\.")[1];
-        String ip2 = ip.split("\\.")[0] + "." + ip.split("\\.")[1];
-
-        Logger.log(ip1);
-        Logger.log(ip2);
-        if (ip1.equals(ip2))
-            return true;
-        return false;
-    }
-
     public static void startPackage(Context c, String pkgName, Intent in) {
         if (DspPackgeUtil.isPackageExist(c, pkgName)) {
             c.startActivity(in);
@@ -2035,75 +1266,6 @@ public class Utils {
                 return;
             Toast.makeText(c, "该应用没有安装", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public static void oauth(final MainActivity c, final String key, final String packageName) {
-        c.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-                    client.setTimeout(10000);
-                    RequestParams param = new RequestParams();
-                    param.put("appId", "f2ec1fb69b27c7ab5260d2eb7cd95dea");
-                    param.put("appKey", key);
-                    param.put("secretKey", packageName);
-                    Log.d("test", "oauth params = " + param.toString());
-                    String url = serverUrl + "mdm/auth";
-                    Log.d("test", "oauth = " + url);
-                    client.post(c, url, param, new TextHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int code, Header[] headers, String ret) {
-                            check301(c, ret);
-                            Log.d("test", "oauth onSuccess = " + ret);
-                        }
-
-                        @Override
-                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            Log.d("test", "oauth onFailure = " + s);
-                            check301(c, s);
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.d("test", "e = " + e.toString());
-                }
-            }
-        });
-    }
-
-    public static void updateDefaultPwd(final Activity c, final String defaultPwd) {
-        c.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-                    client.setTimeout(10000);
-                    RequestParams param = new RequestParams();
-                    param.put("imei", Utils.getIMEI(c));
-                    param.put("password", defaultPwd);
-                    Log.d("test", "updateDefaultPwd params = " + param.toString());
-                    String url = clientUrl + "device/student/defaultPassword";
-                    Log.d("test", "updateDefaultPwd = " + url);
-                    client.post(c, url, param, new TextHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int code, Header[] headers, String ret) {
-                            check301(c, ret);
-                            Log.d("test", "updateDefaultPwd onSuccess = " + ret);
-                        }
-
-                        @Override
-                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            Log.d("test", "updateDefaultPwd onFailure = " + s);
-                            check301(c, s);
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.d("test", "e = " + e.toString());
-                }
-            }
-        });
     }
 
     public static boolean checkAPPTimeUse(JSONArray array, String pattern) {
@@ -2162,14 +1324,10 @@ public class Utils {
             // 打开指定文件输出流
             out = new FileOutputStream(file);
             // 将位图输出到指定文件
-            bitmap.compress(format, 100,
-                    out);
+            bitmap.compress(format, 100, out);
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
-
 }

@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.entity.Class;
 import cn.kiway.mdm.entity.School;
+import cn.kiway.mdm.utils.HttpUtil;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.KWApp.clientUrl;
@@ -135,7 +136,7 @@ public class LoginActivity extends BaseActivity {
                         Log.d("test", "login get token = " + token);
                         if (StatusCode == 200) {
                             toast("登录成功");
-                            Utils.deviceRuntime(LoginActivity.this, "1", true);
+                            HttpUtil.deviceRuntime(LoginActivity.this, "1", true);
                             getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
                             getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
                             getSharedPreferences("kiway", 0).edit().putString("schoolId", mSchool.schoolId).commit();
