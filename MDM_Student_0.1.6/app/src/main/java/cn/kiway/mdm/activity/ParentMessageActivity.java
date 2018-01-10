@@ -59,7 +59,7 @@ public class ParentMessageActivity extends BaseActivity {
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             RequestParams param = new RequestParams();
-            String url = clientUrl + "device/student/leaveMsg";
+            String url = clientUrl + "device/student/leaveMsg?currentPage=1&pageSize=100";
             Log.d("test", "leaveMsg = " + url);
             client.get(this, url, param, new TextHttpResponseHandler() {
                 @Override

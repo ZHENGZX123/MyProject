@@ -2,7 +2,9 @@ package cn.kiway.mdm;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
 import android.telephony.SmsMessage;
@@ -96,14 +98,16 @@ public class KWApp extends Application {
                     startActivity(new Intent(getApplicationContext(), ScreenMDMActivity.class).addFlags(Intent
                             .FLAG_ACTIVITY_NEW_TASK));
                 }
+                //1.熄灭屏幕
                 //DevicePolicyManager mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context
                 // .DEVICE_POLICY_SERVICE);
                 //mDevicePolicyManager.lockNow();
+                //2.静音
+                mute();
             } else if (msg.what == MSG_LOCKONCLASS) {
-
                 MDMHelper.getAdapter().setBackButtonDisabled(true);
                 MDMHelper.getAdapter().setHomeButtonDisabled(true);
-
+                mute();
             } else if (msg.what == MSG_UNLOCK) {
                 //解除锁屏
                 MDMHelper.getAdapter().setBackButtonDisabled(false);
@@ -114,6 +118,7 @@ public class KWApp extends Application {
                 if (currentActivity != null && currentActivity instanceof ScreenMDMActivity) {
                     currentActivity.finish();
                 }
+                //1.点亮屏幕
                 //PowerManager mPowerManager = ((PowerManager) getSystemService(POWER_SERVICE));
                 //PowerManager.WakeLock mScreenLock = mPowerManager.newWakeLock(
                 //        PowerManager.ACQUIRE_CAUSES_WAKEUP
@@ -122,6 +127,8 @@ public class KWApp extends Application {
                 //                | PowerManager.ON_AFTER_RELEASE, "screenOnWakeLock");
                 //mScreenLock.acquire();
                 //mScreenLock.release();
+                //2.恢复声音
+                unMute();
             } else if (msg.what == MSG_LAUNCH_APP) {
                 //打开APP
                 temporary_app = true;
@@ -300,4 +307,18 @@ public class KWApp extends Application {
         MDMHelper.getAdapter().setBluetoothDisabled(flag_bluetooth == 0);
     }
 
+    private int lastVolume = 0;
+
+    public void mute() {
+        Log.d("test", "RINGING 已被静音");
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        lastVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+    }
+
+    public void unMute() {
+        Log.d("test", "RINGING 取消静音");
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, lastVolume, 0);
+    }
 }

@@ -9,8 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -19,7 +17,6 @@ import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -49,9 +46,6 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -171,7 +165,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //23.设置背景图片
         setBg();
         //24.静音权限
-        //getDoNotDisturb();
+        getDoNotDisturb();
     }
 
     private void getDoNotDisturb() {
@@ -428,17 +422,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         startActivity(new Intent(this, ComposeSmsActivity.class));
     }
 
-    boolean flag = false;
-
     public void Browser(View view) {
-//        flag = !flag;
-//        if (flag) {
-//            silentSwitchOn();
-//        } else {
-//            silentSwitchOff();
-//        }
         startActivity(new Intent(this, WebViewActivity.class));
-//        startActivity(new Intent(this, ComposeSmsActivity.class));
 //        try {
 //            Intent intent = new Intent(Intent.ACTION_MAIN);//短信列表界面
 //            intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -844,22 +829,5 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }.start();
     }
 
-    private void silentSwitchOn() {
-        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        if (audioManager != null) {
-            audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-            audioManager.getStreamVolume(AudioManager.STREAM_RING);
-            Log.d("Silent:", "RINGING 已被静音");
-        }
-    }
-
-    private void silentSwitchOff() {
-        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        if (audioManager != null) {
-            audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-            audioManager.getStreamVolume(AudioManager.STREAM_RING);
-            Log.d("SilentListenerService", "RINGING 取消静音");
-        }
-    }
 }
 
