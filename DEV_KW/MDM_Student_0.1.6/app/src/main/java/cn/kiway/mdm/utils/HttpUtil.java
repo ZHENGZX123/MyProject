@@ -547,7 +547,7 @@ public class HttpUtil {
                 return true;
             }
             is301 = true;
-
+            //TODO 重新登录后没有再次请求上一个接口。。。
             final String imei = Utils.getIMEI(c);
             String token = c.getSharedPreferences("huawei", 0).getString("token", "");
             AsyncHttpClient client = new AsyncHttpClient();
