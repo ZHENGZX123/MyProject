@@ -66,7 +66,7 @@ import static cn.kiway.mdm.web.WebJsCallBack.loginTimeOut;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.1.6";
+    private static final String currentPackageVersion = "0.2.0";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
