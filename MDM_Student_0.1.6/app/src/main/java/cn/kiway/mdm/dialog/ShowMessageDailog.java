@@ -15,7 +15,7 @@ import android.widget.TextView;
 import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.activity.MainActivity;
-import cn.kiway.mdm.utils.Utils;
+import cn.kiway.mdm.utils.HttpUtil;
 
 import static cn.kiway.mdm.activity.MainActivity.USAGE_STATS;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.DISMISS;
@@ -91,7 +91,7 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                                 USAGE_STATS);
                         break;
                     case PARENT_BIND:
-                        Utils.doBind(KWApp.instance.currentActivity, 1, token);
+                        HttpUtil.doBind(KWApp.instance.currentActivity, 1, token);
                         break;
                 }
                 break;
@@ -100,7 +100,7 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                     case YUXUNFANWENJLU:
                         break;
                     case PARENT_BIND:
-                        Utils.doBind(KWApp.instance.currentActivity, 2, token);
+                        HttpUtil.doBind(KWApp.instance.currentActivity, 2, token);
                         break;
                 }
                 break;

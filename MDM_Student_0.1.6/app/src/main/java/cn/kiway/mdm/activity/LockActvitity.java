@@ -12,8 +12,8 @@ import java.util.List;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.utils.DES;
+import cn.kiway.mdm.utils.HttpUtil;
 import cn.kiway.mdm.utils.Logger;
-import cn.kiway.mdm.utils.Utils;
 
 /**
  * Created by Administrator on 2018/1/5.
@@ -80,7 +80,7 @@ public class LockActvitity extends BaseActivity {
                                     .commit();
                             getSharedPreferences("kiway", 0).edit().putBoolean("isLock", true).commit();
                             //2.存到中心
-                            Utils.updateDefaultPwd(LockActvitity.this, SimplePattern);
+                            HttpUtil.updateDefaultPwd(LockActvitity.this, SimplePattern);
                             Toast.makeText(LockActvitity.this,"设置成功",Toast.LENGTH_SHORT).show();
                             setResult(RESULT_OK);
                             finish();

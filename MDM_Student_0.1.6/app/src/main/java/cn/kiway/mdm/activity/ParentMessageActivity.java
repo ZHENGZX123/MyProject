@@ -27,7 +27,7 @@ import cn.kiway.mdm.entity.Message;
 import cn.kiway.mdm.utils.Utils;
 
 import static cn.kiway.mdm.KWApp.clientUrl;
-import static cn.kiway.mdm.utils.Utils.check301;
+import static cn.kiway.mdm.utils.HttpUtil.check301;
 
 /**
  * Created by Administrator on 2018/1/9.

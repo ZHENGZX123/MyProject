@@ -18,6 +18,7 @@ import java.util.HashMap;
 
 import cn.kiway.mdm.R;
 import cn.kiway.mdm.entity.Network;
+import cn.kiway.mdm.utils.HttpUtil;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.MyWebChromeClient;
 import cn.kiway.mdm.utils.Utils;
@@ -128,7 +129,7 @@ public class WebViewActivity extends BaseActivity {
         }
         if (checkUrlEnable(content)) {
             wv.loadUrl(content, extHeader);
-            Utils.childOperation(this, "surfInternet", "上网" + content);
+            HttpUtil.childOperation(this, "surfInternet", "上网" + content);
         } else {
             toast("该网站不能访问");
         }
