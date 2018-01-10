@@ -61,7 +61,6 @@ public class HttpUtil {
                     client.post(c, url, param, new TextHttpResponseHandler() {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
-                            check301(c, ret);
                             Log.d("test", "updateDefaultPwd onSuccess = " + ret);
                         }
 
@@ -101,7 +100,6 @@ public class HttpUtil {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "locationTrack onSuccess = " + ret);
-                            check301(c, ret);
                         }
 
                         @Override
@@ -144,9 +142,6 @@ public class HttpUtil {
                                 @Override
                                 public void onSuccess(int code, Header[] headers, String ret) {
                                     Log.d("test", "deviceRuntime onSuccess = " + ret);
-                                    if (check301) {
-                                        check301(c, ret);
-                                    }
                                 }
 
                                 @Override
@@ -181,7 +176,6 @@ public class HttpUtil {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "appCharge onSuccess = " + ret);
-                            check301(c, ret);
                             try {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 ArrayList<AppCharge> networks = new GsonBuilder().create().fromJson(data.toString(),
@@ -225,7 +219,6 @@ public class HttpUtil {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "networkDeviceCharge onSuccess = " + ret);
-                            check301(c, ret);
                             try {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 ArrayList<Network> networks = new GsonBuilder().create().fromJson(data.toString(),
@@ -270,7 +263,7 @@ public class HttpUtil {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "wifi onSuccess = " + ret);
-                            check301(c, ret);
+
                             try {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 ArrayList<Wifi> wifis = new GsonBuilder().create().fromJson(data.toString(), new
@@ -343,7 +336,7 @@ public class HttpUtil {
                                 @Override
                                 public void onSuccess(int code, Header[] headers, String ret) {
                                     Log.d("test", "applist onSuccess = " + ret);
-                                    check301(c, ret);
+
                                     String today = Utils.getToday();
                                     c.getSharedPreferences("kiway", 0).edit().putBoolean(today, true).commit();
                                 }
@@ -379,7 +372,7 @@ public class HttpUtil {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "appFunction onSuccess = " + ret);
-                            check301(c, ret);
+
                             try {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 int count = data.length();
@@ -530,72 +523,6 @@ public class HttpUtil {
         }.start();
     }
 
-    public static boolean check301(final Activity c, String result) {
-        if (c == null) {
-            return false;
-        }
-        if (TextUtils.isEmpty(result)) {
-            return false;
-        }
-        try {
-            int statusCode = new JSONObject(result).optInt("statusCode");
-            if (statusCode != 301) {
-                return false;
-            }
-            Log.d("test", "301 happen");
-            if (is301) {
-                return true;
-            }
-            is301 = true;
-            //TODO 重新登录后没有再次请求上一个接口。。。
-            final String imei = Utils.getIMEI(c);
-            String token = c.getSharedPreferences("huawei", 0).getString("token", "");
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
-            String url = clientUrl + "device/login";
-            Log.d("test", "relogin url = " + url);
-            RequestParams param = new RequestParams();
-            param.put("schoolId", c.getSharedPreferences("kiway", 0).getString("schoolId", ""));
-            param.put("classId", c.getSharedPreferences("kiway", 0).getString("classId", ""));
-            param.put("studentNumber", c.getSharedPreferences("kiway", 0).getString("studentNumber", ""));
-            param.put("name", c.getSharedPreferences("kiway", 0).getString("name", ""));
-            param.put("mobileModel", Build.MODEL);
-            param.put("mobileBrand", Build.BRAND);
-            param.put("IMEI", imei);
-            param.put("platform", "Android");
-            param.put("token", token);
-            param.put("operation", "login");
-            param.put("froms", "studentDevice");
-            Log.d("test", "relogin param = " + param.toString());
-            client.post(c, url, param, new TextHttpResponseHandler() {
-
-                @Override
-                public void onSuccess(int arg0, Header[] arg1, String ret) {
-                    Log.d("test", "relogin  onSuccess = " + ret);
-                    try {
-                        JSONObject o = new JSONObject(ret);
-                        String token = o.getJSONObject("data").getString("token");
-                        c.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
-                    } catch (Exception e) {
-                    }
-                    is301 = false;
-                }
-
-                @Override
-                public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
-                    Log.d("test", "relogin  failure");
-                    is301 = false;
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d("test", "relogin exception = " + e.toString());
-            is301 = false;
-        }
-
-        return true;
-    }
-
     public static void doBind(final Activity c, final int flag, final String token) {
         c.runOnUiThread(new Runnable() {
             @Override
@@ -661,7 +588,7 @@ public class HttpUtil {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "calls onSuccess = " + ret);
-                            check301(c, ret);
+
                             try {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 ArrayList<Call> calls = new GsonBuilder().create().fromJson(data.toString(), new
@@ -708,7 +635,7 @@ public class HttpUtil {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "childOperation onSuccess = " + ret);
-                    check301(c, ret);
+
                 }
 
                 @Override
@@ -740,7 +667,7 @@ public class HttpUtil {
                     client.post(c, url, param, new TextHttpResponseHandler() {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
-                            check301(c, ret);
+
                             Log.d("test", "oauth onSuccess = " + ret);
                         }
 
@@ -775,7 +702,7 @@ public class HttpUtil {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "exceptions onSuccess = " + ret);
-                    check301(c, ret);
+
                 }
 
                 @Override
@@ -787,5 +714,71 @@ public class HttpUtil {
         } catch (Exception e) {
             Log.d("test", "e = " + e.toString());
         }
+    }
+
+    public static boolean check301(final Activity c, String result) {
+        if (c == null) {
+            return false;
+        }
+        if (TextUtils.isEmpty(result)) {
+            return false;
+        }
+        try {
+            int statusCode = new JSONObject(result).optInt("statusCode");
+            if (statusCode != 301) {
+                return false;
+            }
+            Log.d("test", "301 happen");
+            if (is301) {
+                return true;
+            }
+            is301 = true;
+            //TODO 重新登录后没有再次请求上一个接口。。。
+            final String imei = Utils.getIMEI(c);
+            String token = c.getSharedPreferences("huawei", 0).getString("token", "");
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            String url = clientUrl + "device/login";
+            Log.d("test", "relogin url = " + url);
+            RequestParams param = new RequestParams();
+            param.put("schoolId", c.getSharedPreferences("kiway", 0).getString("schoolId", ""));
+            param.put("classId", c.getSharedPreferences("kiway", 0).getString("classId", ""));
+            param.put("studentNumber", c.getSharedPreferences("kiway", 0).getString("studentNumber", ""));
+            param.put("name", c.getSharedPreferences("kiway", 0).getString("name", ""));
+            param.put("mobileModel", Build.MODEL);
+            param.put("mobileBrand", Build.BRAND);
+            param.put("IMEI", imei);
+            param.put("platform", "Android");
+            param.put("token", token);
+            param.put("operation", "login");
+            param.put("froms", "studentDevice");
+            Log.d("test", "relogin param = " + param.toString());
+            client.post(c, url, param, new TextHttpResponseHandler() {
+
+                @Override
+                public void onSuccess(int arg0, Header[] arg1, String ret) {
+                    Log.d("test", "relogin  onSuccess = " + ret);
+                    try {
+                        JSONObject o = new JSONObject(ret);
+                        String token = o.getJSONObject("data").getString("token");
+                        c.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
+                    } catch (Exception e) {
+                    }
+                    is301 = false;
+                }
+
+                @Override
+                public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                    Log.d("test", "relogin  failure");
+                    is301 = false;
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("test", "relogin exception = " + e.toString());
+            is301 = false;
+        }
+
+        return true;
     }
 }
