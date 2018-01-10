@@ -4,7 +4,7 @@
         <item name="android:indeterminateOnly">false</item>
         <item name="android:progressDrawable">@drawable/progress_horizontal_my
         </item><!-- progress_horizontal -->
-        <item name="android:indeterminateDrawable">@color/grey</item>
+        <item name="android:indeterminateDrawable">@color/gray</item>
         <item name="android:minHeight">4dip</item>
         <item name="android:maxHeight">4dip</item>
     </style>
