@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.leon.lfilepickerlibrary.utils.Constant;
@@ -70,7 +71,6 @@ public class MainActivity extends BaseActivity {
 
     private boolean isSuccess = false;
     private boolean isJump = false;
-    private boolean checking = false;
     private Dialog dialog_download;
     public ProgressDialog pd;
     private X5WebView wv;
@@ -114,27 +114,6 @@ public class MainActivity extends BaseActivity {
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d("test", "onresume checking = " + checking);
-        new Thread() {
-            @Override
-            public void run() {
-                while (checking) {
-                    Log.d("test", "checking loop...");
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                Log.d("test", "checking loop end");
-            }
-        }.start();
-    }
-
-
     private void load() {
         wv.clearCache(true);
         String url = "file://" + WXApplication.ROOT + WXApplication.HTML;
@@ -169,11 +148,6 @@ public class MainActivity extends BaseActivity {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
-//        if (Utils.isTabletDevice(this)) {
-//            settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.LARGER);
-//        } else {
-//            settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.NORMAL);
-//        }
         wv.setWebViewClient(new MyWebViewClient());
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new com.tencent.smtt.sdk.WebChromeClient());
@@ -199,7 +173,7 @@ public class MainActivity extends BaseActivity {
         long t = System.currentTimeMillis();
         if (t - time >= 2000) {
             time = t;
-            toast("Click again to exit");
+            toast("再按一次退出");
         } else {
             finish();
         }
@@ -275,7 +249,6 @@ public class MainActivity extends BaseActivity {
                             });
                         }
                     }).launch();    //启动压缩
-            //     uploadFile();
         }
     }
 
@@ -330,7 +303,6 @@ public class MainActivity extends BaseActivity {
 
     //下面是版本更新相关
     public void checkNewVersion() {
-        checking = true;
         new Thread() {
             @Override
             public void run() {
@@ -356,39 +328,35 @@ public class MainActivity extends BaseActivity {
 
     public Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
+            if (msg.what == 1) {
+                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
+                int arg1 = msg.arg1;
+                if (arg1 == 0) {
+                    rl_nonet.setVisibility(View.VISIBLE);
+                    //无网络
+                    Log.d("test", "无网络");
+                } else {
+                    rl_nonet.setVisibility(View.GONE);
+                    //有网络
+                    Log.d("test", "有网络");
+                }
+                return;
+            }
             if (isJump) {
                 return;
             }
             isSuccess = true;
-            if (msg.what == 1) {
-//                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
-//                int arg1 = msg.arg1;
-//                int arg2 = msg.arg2;
-//                if (arg1 == 0) {
-//                    rl_nonet.setVisibility(View.VISIBLE);
-//                    //无网络
-//                    Log.d("test", "无网络");
-//                } else {
-//                    rl_nonet.setVisibility(View.GONE);
-//                    //有网络
-//                    Log.d("test", "有网络");
-//                    if (arg2 == 1) {
-//                        wv.loadUrl("javascript:reConnect()");
-//                    }
-//                }
-            } else if (msg.what == 2) {
+            if (msg.what == 2) {
                 String ret = (String) msg.obj;
                 try {
                     //1.apk更新
                     Log.d("test", "新版本返回值" + ret);
                     String apkVersion = new JSONObject(ret).getString("apkCode");
                     String apkUrl = new JSONObject(ret).getString("apkUrl");
-
                     String zipCode = new JSONObject(ret).getString("zipCode");
                     String zipUrl = new JSONObject(ret).getString("zipUrl");
-
                     if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
-//                        showUpdateConfirmDialog(apkUrl);
+                        //showUpdateConfirmDialog(apkUrl);
                         downloadSilently(apkUrl, apkVersion);
                         jump(false);
                     } else {
@@ -438,7 +406,6 @@ public class MainActivity extends BaseActivity {
             }
         }
     };
-
 
     private void downloadSilently(String apkUrl, String version) {
         boolean isWifi = NetworkUtil.isWifi(this);
@@ -593,8 +560,6 @@ public class MainActivity extends BaseActivity {
                 if (refresh) {
                     load();
                 }
-                //更新完成完成
-                checking = false;
             }
         });
     }
