@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
@@ -52,6 +53,13 @@ public class JsAndroidInterface {
     public JsAndroidInterface(MainActivity activity, X5WebView webView) {
         this.activity = activity;
         accpectMessageHander = new AccpectMessageHander(activity, webView);
+    }
+
+    @JavascriptInterface
+    public String getVersionCode() {
+        //return getCurrentVersion(MainActivity.this);
+        Log.d("test", "getVersionCode");
+        return this.activity.getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
     }
 
     @JavascriptInterface
