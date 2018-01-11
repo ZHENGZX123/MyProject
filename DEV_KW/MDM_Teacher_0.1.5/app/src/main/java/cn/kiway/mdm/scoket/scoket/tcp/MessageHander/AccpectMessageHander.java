@@ -3,9 +3,10 @@ package cn.kiway.mdm.scoket.scoket.tcp.MessageHander;
 import android.os.Handler;
 import android.os.Message;
 
+import com.tencent.smtt.sdk.WebView;
+
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.scoket.utils.Logger;
-import cn.kiway.mdm.view.X5WebView;
 
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.MessageType.ANSWER;
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.MessageType.LOGIN;
@@ -24,9 +25,9 @@ import static cn.kiway.mdm.web.WebJsCallBack.scoketStaute;
 
 public class AccpectMessageHander extends Handler {
     MainActivity activity;
-    X5WebView webView;
+    WebView webView;
 
-    public AccpectMessageHander(MainActivity activity, X5WebView webView) {
+    public AccpectMessageHander(MainActivity activity, WebView webView) {
         this.activity = activity;
         this.webView = webView;
     }
