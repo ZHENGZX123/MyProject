@@ -11,6 +11,7 @@ import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
 import com.leon.lfilepickerlibrary.LFilePicker;
+import com.tencent.smtt.sdk.WebView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,8 +31,8 @@ import cn.kiway.mdm.scoket.utils.Logger;
 import cn.kiway.mdm.scoket.utils.WifiUtils;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
+import cn.kiway.mdm.util.NetworkUtil;
 import cn.kiway.mdm.util.Utils;
-import cn.kiway.mdm.view.X5WebView;
 
 import static cn.kiway.mdm.WXApplication.url;
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.MessageType.SHARE_FILE;
@@ -50,9 +51,15 @@ public class JsAndroidInterface {
     AccpectMessageHander accpectMessageHander;
     String className;
 
-    public JsAndroidInterface(MainActivity activity, X5WebView webView) {
+    public JsAndroidInterface(MainActivity activity, WebView webView) {
         this.activity = activity;
         accpectMessageHander = new AccpectMessageHander(activity, webView);
+    }
+
+    @JavascriptInterface
+    public int isNetworkAvailable() {
+        Log.d("test", "isNetworkAvailable is called");
+        return NetworkUtil.isNetworkAvailable(activity) ? 1 : 0;
     }
 
     @JavascriptInterface

@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.leon.lfilepickerlibrary.utils.Constant;
+import com.tencent.smtt.sdk.WebView;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -46,7 +47,6 @@ import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.NetworkUtil;
 import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
-import cn.kiway.mdm.view.X5WebView;
 import cn.kiway.mdm.web.JsAndroidInterface;
 import cn.kiway.mdm.web.MyWebViewClient;
 import top.zibin.luban.Luban;
@@ -73,7 +73,7 @@ public class MainActivity extends BaseActivity {
     private boolean isJump = false;
     private Dialog dialog_download;
     public ProgressDialog pd;
-    private X5WebView wv;
+    private WebView wv;
     private LinearLayout layout_welcome;
     public static MainActivity instance;
     private long time;
@@ -110,7 +110,7 @@ public class MainActivity extends BaseActivity {
 
     private void initView() {
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
-        wv = (X5WebView) findViewById(R.id.wv);
+        wv = (WebView) findViewById(R.id.wv);
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
     }
 
