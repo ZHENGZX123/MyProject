@@ -18,24 +18,15 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 
-import cn.kiway.mdm.App;
-import cn.kiway.mdm.activity.FileListActivity;
-import cn.kiway.mdm.db.MyDBHelper;
-import cn.kiway.mdm.hprose.jrf.client.JRFClient;
-import cn.kiway.mdm.hprose.socket.Logger;
-import cn.kiway.mdm.modle.FileModel;
 import cn.kiway.mdm.utils.HttpDownload;
 import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
-
-import static cn.kiway.mdm.hprose.socket.KwHproseClient.client;
-
 
 /**
  * Created by Administrator on 2017/11/15.
  */
 
-public class MyProgressDialog extends Dialog implements JRFClient.DownLoadCallBack, View.OnClickListener {
+public class MyProgressDialog extends Dialog implements View.OnClickListener {
     protected ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT);
 
@@ -110,10 +101,10 @@ public class MyProgressDialog extends Dialog implements JRFClient.DownLoadCallBa
                     int ret = new HttpDownload().downFile(downUrl, folder, filename);//开始下载
                     Log.d("test", "download ret = " + ret);
                     if (ret == -1) {
-                        error();
+                        //error();
                     } else {
                         depositPath = folder + filename;
-                        success();
+                        //success();
                     }
                 } else {//局域网下载
                     depositPath = path + "/" + data.optString("msg").split("/")[data
@@ -124,50 +115,48 @@ public class MyProgressDialog extends Dialog implements JRFClient.DownLoadCallBa
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    if (client != null) {//开始下载
-                        client.getFile(depositPath, downUrl, MyProgressDialog.this);
-                    }
+                    //开始下载
                 }
             }
         }).start();
     }
 
 
-    @Override
-    public void success() {
-        Logger.log("dialogSucess");
-        context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                FileModel a = new FileModel();//保存记录到本地
-                a.filename = depositPath.split("/")[depositPath.split("/").length - 1];
-                a.time = System.currentTimeMillis() + "";
-                a.filepath = depositPath;
-                new MyDBHelper(context).addFile(a);
-                textView.setEnabled(true);
-                progressBar.setVisibility(View.GONE);
-                textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "\n接收完成!");
-                button.setVisibility(View.VISIBLE);
-                button.setText("打开文件");
-                if (App.instance.currentActivity != null && App.instance.currentActivity instanceof
-                        FileListActivity) {
-                    ((FileListActivity) App.instance.currentActivity).refreshUI();
-                }
-            }
-        });
-
-    }
-
-    @Override
-    public void error() {
-        context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                button.setVisibility(View.VISIBLE);
-                button.setText("重新接收");
-                textView.setEnabled(true);
-                textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "\n接收失败！！");
-            }
-        });
-    }
+//    @Override
+//    public void success() {
+//        Logger.log("dialogSucess");
+//        context.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                FileModel a = new FileModel();//保存记录到本地
+//                a.filename = depositPath.split("/")[depositPath.split("/").length - 1];
+//                a.time = System.currentTimeMillis() + "";
+//                a.filepath = depositPath;
+//                new MyDBHelper(context).addFile(a);
+//                textView.setEnabled(true);
+//                progressBar.setVisibility(View.GONE);
+//                textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "\n接收完成!");
+//                button.setVisibility(View.VISIBLE);
+//                button.setText("打开文件");
+//                if (App.instance.currentActivity != null && App.instance.currentActivity instanceof
+//                        FileListActivity) {
+//                    ((FileListActivity) App.instance.currentActivity).refreshUI();
+//                }
+//            }
+//        });
+//
+//    }
+//
+//    @Override
+//    public void error() {
+//        context.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                button.setVisibility(View.VISIBLE);
+//                button.setText("重新接收");
+//                textView.setEnabled(true);
+//                textView.setText(downUrl.split("/")[downUrl.split("/").length - 1] + "\n接收失败！！");
+//            }
+//        });
+//    }
 }

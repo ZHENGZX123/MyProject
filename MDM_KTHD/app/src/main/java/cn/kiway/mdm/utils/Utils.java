@@ -31,8 +31,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Locale;
 
-import cn.kiway.mdm.hprose.socket.Logger;
-
 /**
  * Created by Administrator on 2017/6/8.
  */

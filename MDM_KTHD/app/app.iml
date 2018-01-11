@@ -102,7 +102,6 @@
     <orderEntry type="library" exported="" name="support-core-utils-25.3.0" level="project" />
     <orderEntry type="library" exported="" name="support-fragment-25.3.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="multidex-instrumentation-1.0.1" level="project" />
-    <orderEntry type="library" exported="" name="hprose_for_java_7" level="project" />
     <orderEntry type="library" exported="" name="netty-all-4.0.51.Final" level="project" />
     <orderEntry type="library" exported="" name="kotlin-stdlib-1.0.6" level="project" />
     <orderEntry type="library" exported="" name="fastjson-1.2.24" level="project" />
