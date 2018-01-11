@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import cn.kiway.mdm.hprose.socket.Logger;
-
 
 /**
  * Created by Android on 2016/4/20.

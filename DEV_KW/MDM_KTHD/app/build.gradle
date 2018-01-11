@@ -53,7 +53,6 @@ configurations.all {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('libs/hprose_for_java_7.jar')
     compile 'com.github.jetradarmobile:android-snowfall:1.1.6'
     compile 'org.xutils:xutils:3.5.0'
     compile project(':mdmaidl')
