@@ -264,7 +264,7 @@ public class JsAndroidInterface {
     }
 
     @JavascriptInterface
-    public void prepareFile(String token) {//选择文件-备课专用，同chooseFile，上传完成后拷贝文件到FilePath
+    public void prepareFile(String token , int type) {//选择文件-备课专用，同chooseFile，上传完成后拷贝文件到FilePath
         Log.d("test", "prepareFile is called");
         accessToken = token;
         activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
