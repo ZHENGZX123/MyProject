@@ -32,9 +32,11 @@ import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.Course0Activity;
 import cn.kiway.mdm.activity.CourseListActivity;
-import cn.kiway.mdm.activity.HomeActivity;
+import cn.kiway.mdm.activity.StudentGridActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.teacher.R;
+
+import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMING;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -264,7 +266,7 @@ public class Utils {
                         ((BaseActivity) c).dismissPD();
                         int statusCode = new JSONObject(ret).optInt("statusCode");
                         if (statusCode == 200) {
-                            c.startActivity(new Intent(c, HomeActivity.class));
+                            c.startActivity(new Intent(c, StudentGridActivity.class).putExtra("type", TYPE_DIANMING));
                         } else {
                             String errorMsg = new JSONObject(ret).optString("errorMsg");
                             toast(c, errorMsg);
@@ -394,9 +396,9 @@ public class Utils {
                         } else if (type.equals("endclass")) {
                             endClass(c, courseID);
                         } else if (type.equals("students")) {
-                            ((HomeActivity) WXApplication.currentActivity).initData();
+                            ((StudentGridActivity) WXApplication.currentActivity).initData();
                         } else if (type.equals("dianming")) {
-                            ((HomeActivity) WXApplication.currentActivity).doSign();
+                            ((StudentGridActivity) WXApplication.currentActivity).doSign();
                         } else if (type.equals("courselist")) {
                             ((CourseListActivity) WXApplication.currentActivity).initData();
                         } else if (type.equals("coursedetail")) {

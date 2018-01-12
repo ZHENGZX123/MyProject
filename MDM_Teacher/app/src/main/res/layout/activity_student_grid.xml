@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    tools:context="cn.kiway.mdm.activity.HomeActivity">
+    tools:context="cn.kiway.mdm.activity.StudentGridActivity">
 
     <include
         android:id="@+id/titleRL"

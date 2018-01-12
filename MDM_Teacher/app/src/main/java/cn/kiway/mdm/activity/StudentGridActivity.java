@@ -33,10 +33,16 @@ import cn.kiway.mdm.util.Utils;
 
 import static cn.kiway.mdm.util.Utils.check301;
 
-
+//该页面做多个地方使用
 //首页：点名、上课
-public class HomeActivity extends BaseActivity {
+//学生表格
+public class StudentGridActivity extends BaseActivity {
 
+    public static final int TYPE_DIANMING = 1;
+    public static final int TYPE_DIANMINGDA = 2;
+
+
+    private int type;
     private GridView gv;
     private MyAdapter adapter;
     private ArrayList<Student> students = new ArrayList<>();
@@ -44,7 +50,9 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_student_grid);
+
+        type = getIntent().getIntExtra("type", 0);
 
         initView();
         initData();
@@ -53,9 +61,7 @@ public class HomeActivity extends BaseActivity {
 
     public void initView() {
         super.initView();
-
         titleName.setText("二年级一班");
-
         gv = (GridView) findViewById(R.id.studentGV);
         adapter = new MyAdapter();
         gv.setAdapter(adapter);
@@ -85,7 +91,7 @@ public class HomeActivity extends BaseActivity {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
-                    if (!Utils.check301(HomeActivity.this, s, "students")) {
+                    if (!Utils.check301(StudentGridActivity.this, s, "students")) {
                         toast("请求失败，请稍后再试");
                         dismissPD();
                     }
@@ -115,7 +121,7 @@ public class HomeActivity extends BaseActivity {
         private final LayoutInflater inflater;
 
         public MyAdapter() {
-            inflater = LayoutInflater.from(HomeActivity.this);
+            inflater = LayoutInflater.from(StudentGridActivity.this);
         }
 
         @Override
@@ -183,7 +189,7 @@ public class HomeActivity extends BaseActivity {
                 } else {
                     //点名结束，跳到上课
                     dialog.dismiss();
-                    startActivity(new Intent(HomeActivity.this, CourseListActivity.class));
+                    startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class));
                     finish();
                 }
             }
@@ -198,7 +204,7 @@ public class HomeActivity extends BaseActivity {
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
-            client.post(HomeActivity.this, url, null, new TextHttpResponseHandler() {
+            client.post(StudentGridActivity.this, url, null, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "dianming onSuccess = " + ret);
@@ -210,7 +216,7 @@ public class HomeActivity extends BaseActivity {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", "dianming onFailure = " + s);
-                    if (!check301(HomeActivity.this, s, "dianming")) {
+                    if (!check301(StudentGridActivity.this, s, "dianming")) {
                         toast("请求失败，请稍后再试");
                         dismissPD();
                     }

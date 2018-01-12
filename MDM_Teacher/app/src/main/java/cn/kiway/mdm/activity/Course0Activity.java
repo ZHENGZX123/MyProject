@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -51,6 +50,8 @@ import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
+import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
+import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDa;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE1;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
@@ -224,6 +225,18 @@ public class Course0Activity extends ScreenSharingActivity {
     //-------------------------tools2----------------------
     public void tongji(View view) {
         Log.d("test", "course.knowledgePoints = " + course.knowledgePoints);
+        //统计type=1的知识点的个数
+        int count = 0;
+        for (KnowledgePoint kp : course.knowledgePoints) {
+            if (kp.type == TYPE0) {
+                count++;
+            }
+        }
+        if (count == 0) {
+            toast("该课程暂无知识点");
+            return;
+        }
+
         //reset select
         for (KnowledgePoint kp : course.knowledgePoints) {
             kp.selected = false;
@@ -264,24 +277,28 @@ public class Course0Activity extends ScreenSharingActivity {
 
     public void dianmingda(View view) {
         //点名答，需要获取学生列表。
+        //1.先选题目
+        selectQuestion(0);
+        //2.再选学生
+        startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_DIANMINGDA));
     }
 
     public void qiangda(View view) {
         //抢答，给全班发送抢答命令。
-        qiangda_suijichouda_ceping(1);
+        selectQuestion(1);
     }
 
     public void suijichouda(View view) {
         //随机抽答，随机找几个发命令。
-        qiangda_suijichouda_ceping(2);
+        selectQuestion(2);
     }
 
     public void ceping(View view) {
         //测评，给全班发测评命令
-        qiangda_suijichouda_ceping(3);
+        selectQuestion(3);
     }
 
-    private void qiangda_suijichouda_ceping(int type) {
+    private void selectQuestion(int type) {
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_qiangda);
         dialog.show();
@@ -563,7 +580,8 @@ public class Course0Activity extends ScreenSharingActivity {
 
         @Override
         public int getCount() {
-            return KnowledgePoints.size();
+            //减去最后的END
+            return KnowledgePoints.size() - 1;
         }
 
         @Override
