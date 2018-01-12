@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +31,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tencent.smtt.sdk.TbsReaderView;
 
 import org.apache.http.Header;
@@ -42,6 +44,7 @@ import java.util.List;
 import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.entity.Course;
 import cn.kiway.mdm.entity.KnowledgePoint;
+import cn.kiway.mdm.entity.TeachingContentVo;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
@@ -138,8 +141,7 @@ public class Course0Activity extends ScreenSharingActivity {
 
     private void initRecord() {
         projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-
-        //bind放这里好像不对。。。回头看。
+        //bind放这里好像不对。。。
         Intent intent = new Intent(this, RecordService.class);
         bindService(intent, connection, BIND_AUTO_CREATE);
     }
@@ -374,10 +376,8 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder.type_2RL.setVisibility(View.GONE);
                 holder.ball.setVisibility(View.VISIBLE);
                 holder.line2.setVisibility(View.VISIBLE);
-
                 //add content0
-                addContent0(holder);
-
+                addContent0(holder, s.teachingContentVo);
             } else if (s.type == TYPE1) {
                 holder.type0RL.setVisibility(View.GONE);
                 holder.type1RL.setVisibility(View.VISIBLE);
@@ -421,16 +421,23 @@ public class Course0Activity extends ScreenSharingActivity {
             });
         }
 
-        private void addContent0(ViewHolder holder) {
+        private void addContent0(ViewHolder holder, TeachingContentVo teachingContentVo) {
             holder.type0RL.removeAllViews();
+            //teachingContentVo.content
             TextView tv = new TextView(Course0Activity.this);
             tv.setTextColor(Color.WHITE);
-            tv.setText("（一）创设情境，导入新课");
+            tv.setText(teachingContentVo.content);
             holder.type0RL.addView(tv);
-            TextView tv2 = new TextView(Course0Activity.this);
-            tv2.setTextColor(Color.WHITE);
-            tv2.setText("（二）合作交流，解读探究");
-            holder.type0RL.addView(tv2);
+            //teachingContentVo.img
+            if (TextUtils.isEmpty(teachingContentVo.img)) {
+                return;
+            }
+            String imgs[] = teachingContentVo.img.split(",");
+            for (int i = 0; i < imgs.length; i++) {
+                ImageView iv = new ImageView(Course0Activity.this);
+                ImageLoader.getInstance().loadImageSync(imgs[i], WXApplication.getLoaderOptions());
+                holder.type0RL.addView(iv);
+            }
         }
 
         public class ViewHolder {
