@@ -264,16 +264,22 @@ public class JsAndroidInterface {
     }
 
     @JavascriptInterface
-    public void prepareFile(String token , int type) {//选择文件-备课专用，同chooseFile，上传完成后拷贝文件到FilePath
+    public void prepareFile(String token, String type) {//选择文件-备课专用，同chooseFile，上传完成后拷贝文件到FilePath
         Log.d("test", "prepareFile is called");
         accessToken = token;
         activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
+        String[] filters;
+        if (type.equals("1")) {
+            filters = new String[]{".jpg", ".jpeg", ".png", ".JPG", ".JPEG", ".PNG"};
+        } else {
+            filters = new String[]{".doc", ".docx", ".txt", ".xls", ".xlsx", ".ppt", ".pptx", "pdf", ".DOC", ".DOCX", ".TXT", ".XLS", ".XLSX", ".PPT", ".PPTX", "PDF"};
+        }
         new LFilePicker()
                 .withActivity(activity)
                 .withTitle(activity.getString(R.string.filepath2))
                 .withRequestCode(requsetFile2)
                 .withMutilyMode(false)
-                .withFileFilter(new String[]{".jpg", ".jpeg", ".png", ".JPG", ".JPEG", ".PNG"})
+                .withFileFilter(filters)
                 .start();
     }
 
