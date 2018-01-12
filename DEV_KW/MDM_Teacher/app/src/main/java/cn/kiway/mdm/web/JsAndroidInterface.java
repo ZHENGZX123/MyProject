@@ -31,6 +31,7 @@ import cn.kiway.mdm.scoket.utils.WifiUtils;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Utils;
+import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static cn.kiway.mdm.scoket.scoket.tcp.netty.NettyServerBootstrap.staute;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
@@ -272,6 +273,23 @@ public class JsAndroidInterface {
                 .withTitle(activity.getString(R.string.filepath2))
                 .withRequestCode(requsetFile2)
                 .withMutilyMode(false)
+                .withFileFilter(new String[]{".jpg", ".jpeg", ".png", ".JPG", ".JPEG", ".PNG"})
                 .start();
+    }
+
+    @JavascriptInterface
+    public void showPhoto(String param1, String param2) {
+        try {
+            Log.d("test", "showPhoto param1 = " + param1);
+            Log.d("test", "showPhoto param2 = " + param2);
+            ViewPagerActivity.sDrawables = param1.replace("[", "").replace("]", "").replace("\"", "").split(",");
+            //ViewPagerActivity.sDrawables = new String[]{"https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=1897461257,834967576&fm=80&w=179&h=119&img.JPEG"};
+            //ViewPagerActivity.sDrawables = new String[]{"file:///mnt/sdcard/aaa2.jpg", "file:///mnt/sdcard/aaa.jpg"};本地要有file://
+            Intent intent = new Intent(this.activity, ViewPagerActivity.class);
+            intent.putExtra("position", Integer.parseInt(param2));
+            this.activity.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
