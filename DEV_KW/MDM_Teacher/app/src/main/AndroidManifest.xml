@@ -53,7 +53,7 @@
         <service android:name="cn.kiway.mdm.service.RecordService" />
 
         <activity
-            android:name="cn.kiway.mdm.activity.HomeActivity"
+            android:name="cn.kiway.mdm.activity.StudentGridActivity"
             android:screenOrientation="landscape"></activity>
 
         <activity
