@@ -27,7 +27,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:divider="#001100"
-            android:dividerHeight="0dp"></ListView>
+            android:dividerHeight="0dp"
+            android:scrollbars="none"></ListView>
 
         <View
             android:layout_width="match_parent"

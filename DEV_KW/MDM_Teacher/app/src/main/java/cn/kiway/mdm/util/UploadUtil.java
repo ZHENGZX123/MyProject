@@ -30,7 +30,7 @@ public class UploadUtil {
      * @return 返回响应的内容
      */
     public static String uploadFile(File file, String RequestURL, String filename) {
-        Log.d("test", "upload url = " + RequestURL);
+        Log.d("test", "upload url = " + RequestURL + " filesize = " + file.length());
         String result = "";
         String BOUNDARY = UUID.randomUUID().toString(); // 边界标识 随机生成
         String PREFIX = "--", LINE_END = "\r\n";
