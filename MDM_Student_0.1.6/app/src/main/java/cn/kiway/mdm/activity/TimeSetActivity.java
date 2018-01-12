@@ -289,7 +289,6 @@ public class TimeSetActivity extends BaseActivity implements View.OnClickListene
                         int StatusCode = o.optInt("StatusCode");
                         errorMsg = o.optString("errorMsg");
                         if (StatusCode == 200) {
-                            //finish();
                             ids = o.optString("data");
                             printData();
                             toast("请求成功");
@@ -344,7 +343,6 @@ public class TimeSetActivity extends BaseActivity implements View.OnClickListene
                         int StatusCode = o.optInt("StatusCode");
                         errorMsg = o.optString("errorMsg");
                         if (StatusCode == 200) {
-                            //finish();
                             ids = app.getRecord().optString("recordId");
                             printData();
                             toast("请求成功");
