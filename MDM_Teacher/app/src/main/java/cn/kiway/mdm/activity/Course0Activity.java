@@ -39,7 +39,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.entity.Course;
@@ -48,8 +47,8 @@ import cn.kiway.mdm.entity.TeachingContentVo;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
+import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static android.R.id.list;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE1;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
@@ -434,9 +433,22 @@ public class Course0Activity extends ScreenSharingActivity {
             }
             String imgs[] = teachingContentVo.img.split(",");
             for (int i = 0; i < imgs.length; i++) {
+                String imageUrl = imgs[i];
                 ImageView iv = new ImageView(Course0Activity.this);
-                ImageLoader.getInstance().loadImageSync(imgs[i], WXApplication.getLoaderOptions());
-                holder.type0RL.addView(iv);
+                iv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //放大显示
+                        ViewPagerActivity.sDrawables = new String[]{imageUrl};
+                        Intent intent = new Intent(Course0Activity.this, ViewPagerActivity.class);
+                        intent.putExtra("position", 0);
+                        startActivity(intent);
+                    }
+                });
+                ImageLoader.getInstance().displayImage(imgs[i], iv, WXApplication.getLoaderOptions());
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                lp.setMargins(10, 10, 10, 10);
+                holder.type0RL.addView(iv, lp);
             }
         }
 
