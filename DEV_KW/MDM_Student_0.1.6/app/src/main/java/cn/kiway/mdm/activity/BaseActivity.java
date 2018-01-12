@@ -1,12 +1,9 @@
 package cn.kiway.mdm.activity;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -27,8 +24,6 @@ import cn.kiway.mdm.KWApp;
 import cn.kiway.mdm.broadcast.SampleDeviceReceiver;
 import cn.kiway.mdm.dialog.NotifyShowDailog;
 import cn.kiway.mdm.dialog.ShowMessageDailog;
-import cn.kiway.mdm.hprose.screen.FxService;
-import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.NetworkUtil;
 import cn.kiway.mdm.utils.Utils;
 import cn.kiway.mdmsdk.MDMHelper;
@@ -258,28 +253,28 @@ public class BaseActivity extends Activity {
     }
 
 
-    public void startScreen() {
-        FxService.setCanSendImage(true);
-        startIntent();
-    }
-
-    public void stopScreen() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                FxService.setCanSendImage(false);
-                stopService(new Intent(getApplicationContext(), FxService.class));
-                Toast.makeText(BaseActivity.this, "停止共享屏幕了", Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void startIntent() {
-        Intent intent = new Intent(getApplicationContext(), FxService.class);
-        startService(intent);
-        Logger.log("start service Service1");
-    }
+//    public void startScreen() {
+//        FxService.setCanSendImage(true);
+//        startIntent();
+//    }
+//
+//    public void stopScreen() {
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                FxService.setCanSendImage(false);
+//                stopService(new Intent(getApplicationContext(), FxService.class));
+//                Toast.makeText(BaseActivity.this, "停止共享屏幕了", Toast.LENGTH_SHORT)
+//                        .show();
+//            }
+//        });
+//    }
+//
+//    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+//    private void startIntent() {
+//        Intent intent = new Intent(getApplicationContext(), FxService.class);
+//        startService(intent);
+//        Logger.log("start service Service1");
+//    }
 
 }

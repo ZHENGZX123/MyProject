@@ -11,8 +11,6 @@ import android.util.Log;
 import cn.kiway.aidl.ClientCallback;
 import cn.kiway.aidl.RemoteInterface;
 import cn.kiway.mdm.KWApp;
-import cn.kiway.mdm.activity.BaseActivity;
-import cn.kiway.mdm.hprose.screen.FxService;
 import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdmsdk.MDMHelper;
 
@@ -77,12 +75,12 @@ public class RemoteAidlService extends Service {
         @Override
         public void shareScreen(boolean i, String ip) throws RemoteException {
             Logger.log("LockScreen::::::::" + i);
-            if (i) {
-                FxService.setIp(ip);
-                ((BaseActivity) KWApp.instance.currentActivity).startScreen();
-            } else {
-                ((BaseActivity) KWApp.instance.currentActivity).stopScreen();
-            }
+//            if (i) {
+//                FxService.setIp(ip);
+//                ((BaseActivity) KWApp.instance.currentActivity).startScreen();
+//            } else {
+//                ((BaseActivity) KWApp.instance.currentActivity).stopScreen();
+//            }
         }
 
         @Override
