@@ -19,8 +19,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -65,7 +67,7 @@ public class Course0Activity extends ScreenSharingActivity {
     private FrameLayout x5FileLayout;
     private TbsReaderView readerView;
     private ListView lv;
-    private MyAdapter adapter;
+    private CourseAdapter adapter;
     private ArrayList<KnowledgePoint> KnowledgePoints = new ArrayList<>();
     private Course course;
 
@@ -87,7 +89,7 @@ public class Course0Activity extends ScreenSharingActivity {
         titleName.setText(course.name);
         x5FileLayout = (FrameLayout) findViewById(R.id.x5FileLayout);
         lv = (ListView) findViewById(R.id.KnowledgePointLV);
-        adapter = new MyAdapter();
+        adapter = new CourseAdapter();
         lv.setAdapter(adapter);
     }
 
@@ -103,17 +105,14 @@ public class Course0Activity extends ScreenSharingActivity {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "course onSuccess = " + ret);
-                    //解析得到TeachingContentVO、
                     dismissPD();
                     try {
                         JSONObject data = new JSONObject(ret).getJSONObject("data");
                         course = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<Course>() {
                         }.getType());
-                        //add attchment
-
-                        //add end
                         KnowledgePoints = course.knowledgePoints;
                         KnowledgePoint end = new KnowledgePoint();
+                        //add attchment
                         end.type = TYPE_END;
                         KnowledgePoints.add(end);
                         adapter.notifyDataSetChanged();
@@ -128,6 +127,7 @@ public class Course0Activity extends ScreenSharingActivity {
                     if (!check301(Course0Activity.this, s, "coursedetail")) {
                         toast("请求失败，请稍后再试");
                         dismissPD();
+                        finish();
                     }
                 }
             });
@@ -223,6 +223,12 @@ public class Course0Activity extends ScreenSharingActivity {
 
     //-------------------------tools2----------------------
     public void tongji(View view) {
+        Log.d("test", "course.knowledgePoints = " + course.knowledgePoints);
+        //reset select
+        for (KnowledgePoint kp : course.knowledgePoints) {
+            kp.selected = false;
+        }
+
         //知识点统计，给全班发送统计命令。
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_tongji);
@@ -230,12 +236,16 @@ public class Course0Activity extends ScreenSharingActivity {
         Button tongji = (Button) dialog.findViewById(R.id.tongji);
         Button cancel = (Button) dialog.findViewById(R.id.cancel);
         Button close = (Button) dialog.findViewById(R.id.close);
+
         ListView lv = (ListView) dialog.findViewById(R.id.lv);
+        TongjiAdapter tjAdapter = new TongjiAdapter();
+        lv.setAdapter(tjAdapter);
 
         tongji.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                //发送选中的知识点
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -330,11 +340,11 @@ public class Course0Activity extends ScreenSharingActivity {
 
     //------------------------内容列表相关-------------------------------------------------
 
-    private class MyAdapter extends BaseAdapter {
+    private class CourseAdapter extends BaseAdapter {
 
         private final LayoutInflater inflater;
 
-        public MyAdapter() {
+        public CourseAdapter() {
             inflater = LayoutInflater.from(Course0Activity.this);
         }
 
@@ -506,5 +516,64 @@ public class Course0Activity extends ScreenSharingActivity {
             toast("打开文件失败");
         }
         x5FileLayout.addView(readerView);
+    }
+
+    private class TongjiAdapter extends BaseAdapter {
+
+        private final LayoutInflater inflater;
+
+        public TongjiAdapter() {
+            inflater = LayoutInflater.from(Course0Activity.this);
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View rowView = convertView;
+            ViewHolder holder;
+            if (rowView == null) {
+                rowView = inflater.inflate(R.layout.item_tongji, null);
+                holder = new ViewHolder();
+
+                holder.content = (TextView) rowView.findViewById(R.id.content);
+                holder.select = (CheckBox) rowView.findViewById(R.id.select);
+
+                rowView.setTag(holder);
+            } else {
+                holder = (ViewHolder) rowView.getTag();
+            }
+
+            final KnowledgePoint s = KnowledgePoints.get(position);
+            holder.content.setText(s.content);
+            holder.select.setChecked(s.selected);
+            holder.select.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    s.selected = !s.selected;
+                    notifyDataSetChanged();
+                }
+            });
+
+            return rowView;
+        }
+
+        public class ViewHolder {
+            public TextView content;
+            public CheckBox select;
+        }
+
+        @Override
+        public int getCount() {
+            return KnowledgePoints.size();
+        }
+
+        @Override
+        public KnowledgePoint getItem(int arg0) {
+            return KnowledgePoints.get(arg0);
+        }
+
+        @Override
+        public long getItemId(int arg0) {
+            return arg0;
+        }
     }
 }
