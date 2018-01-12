@@ -166,23 +166,9 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         getAppCanUseData();
         //23.设置背景图片
         setBg();
-        //24.静音权限
-        getDoNotDisturb();
     }
 
-    private void getDoNotDisturb() {
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= 24
-                && !notificationManager.isNotificationPolicyAccessGranted()) {
-            Intent intent = new Intent(
-                    android.provider.Settings
-                            .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-            startActivity(intent);
-        }
-    }
-
-    void setBg() {//设置壁纸
+    private void setBg() {//设置壁纸
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         //获取壁纸图片
         Drawable wallpaperDrawable = wallpaperManager.getFastDrawable();
@@ -290,7 +276,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 break;
                 case MSG_CHECK_NEWVERSION: {
                     checkNewVersion();
-                    mHandler.sendEmptyMessageDelayed(MSG_CHECK_NEWVERSION, 60 * 60 * 1000);
+                    mHandler.sendEmptyMessageDelayed(MSG_CHECK_NEWVERSION, 10 * 60 * 1000);
                 }
                 break;
                 case MSG_CHECK_SHUTDOWN: {
@@ -413,10 +399,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void Call(View view) {
-//        Intent intent = new Intent();
-//        intent.setAction(Intent.ACTION_VIEW);
-//        intent.setData(Contacts.People.CONTENT_URI);
-//        startActivity(intent);
         startActivity(new Intent(this, CallActivity.class));
     }
 
@@ -426,14 +408,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     public void Browser(View view) {
         startActivity(new Intent(this, WebViewActivity.class));
-//        try {
-//            Intent intent = new Intent(Intent.ACTION_MAIN);//短信列表界面
-//            intent.addCategory(Intent.CATEGORY_DEFAULT);
-//            intent.setType("vnd.android-dir/mms-sms");
-//            startActivity(intent);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
     public void ChangePassWord(View view) {
@@ -471,7 +445,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         if (FileACache.loadListCache(MainActivity.this, ListFileName).size() > 0) {
             allListData.addAll(new ArrayList(FileACache.loadListCache(MainActivity.this, ListFileName)));
         } else {
-            allListData.addAll(new ArrayList(data1));//不知道为啥不用data1.size()-1
+            allListData.addAll(new ArrayList(data1));
         }
         Log.e("allListData", allListData.toString());
         return allListData;
@@ -524,7 +498,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     //设置页面数据
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public void initData(List<List<App>> data1) {
-        data1 = addMarketplace("开维应用市场", MARKETPLACE, 1);//判断有没有应用市场，没有的话添加到第二个
+        data1 = addMarketplace("应用市场", MARKETPLACE, 1);//判断有没有应用市场，没有的话添加到第二个
         data1 = addMarketplace("家长留言", PARENTMESSAGE, 2);
         data1 = addMarketplace("设置", KIWAYSETTING, 3);
         viewPagerList = new ArrayList<View>();

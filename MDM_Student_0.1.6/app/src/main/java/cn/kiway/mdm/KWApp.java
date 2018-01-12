@@ -85,6 +85,7 @@ public class KWApp extends Application {
                 String imei = Utils.getIMEI(getApplicationContext());
                 HttpUtil.installationPush(instance, token, imei);
             } else if (msg.what == MSG_LOCK) {
+                //0.锁屏
                 if (isAttendClass) {
                     if (msg.obj == null)
                         msg.obj = "";
@@ -106,11 +107,13 @@ public class KWApp extends Application {
                 //2.静音
                 mute();
             } else if (msg.what == MSG_LOCKONCLASS) {
+                //0.锁屏
                 MDMHelper.getAdapter().setBackButtonDisabled(true);
                 MDMHelper.getAdapter().setHomeButtonDisabled(true);
+                //1.静音
                 mute();
             } else if (msg.what == MSG_UNLOCK) {
-                //解除锁屏
+                //0.解除锁屏
                 MDMHelper.getAdapter().setBackButtonDisabled(false);
                 MDMHelper.getAdapter().setHomeButtonDisabled(false);
                 if (msg.obj == null)
@@ -137,7 +140,6 @@ public class KWApp extends Application {
             } else if (msg.what == MSG_LAUNCH_MDM) {
                 temporary_app = false;
                 if (isAttendClass) {
-
                     Intent in = getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
                     if (in != null) {
                         in.putExtra("shangke", "open");
@@ -147,7 +149,6 @@ public class KWApp extends Application {
                         in.putExtra("classId", getSharedPreferences("kiway", 0).getString("classId", ""));
                         in.putExtra("schoolId", getSharedPreferences("kiway", 0).getString("schoolId", ""));
                         in.putExtra("huaweiToken", getSharedPreferences("huawei", 0).getString("token", ""));
-                        //RemoteAidlService.attendClass(msg.obj.toString());
                         Utils.startPackage(KWApp.instance, ZHIHUIKETANGPG, in);
                     }
                 } else {

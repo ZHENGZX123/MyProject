@@ -59,7 +59,6 @@ dependencies {
     compile project(':classify')
     compile project(':zxing')
     compile project(':marketplace')
-    compile files('libs/hprose_for_java_7.jar')
     compile files('libs/BaiduLBS_Android.jar')
     compile project(':mdmsdk')
     compile project(':materiallockview')
