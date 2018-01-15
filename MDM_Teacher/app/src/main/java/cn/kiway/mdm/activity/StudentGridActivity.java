@@ -11,7 +11,9 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.GsonBuilder;
@@ -31,21 +33,25 @@ import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
 
+import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_0;
 import static cn.kiway.mdm.util.Utils.check301;
 
 //该页面做多个地方使用
-//首页：点名、上课
-//学生表格
+//首页:TYPE_DIANMING
+//学生表格:TYPE_DIANMINGDA
 public class StudentGridActivity extends BaseActivity {
 
     public static final int TYPE_DIANMING = 1;
     public static final int TYPE_DIANMINGDA = 2;
 
+    private ImageButton ok;
 
     private int type;
     private GridView gv;
     private MyAdapter adapter;
     private ArrayList<Student> students = new ArrayList<>();
+
+    private RelativeLayout toolsRL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +71,27 @@ public class StudentGridActivity extends BaseActivity {
         gv = (GridView) findViewById(R.id.studentGV);
         adapter = new MyAdapter();
         gv.setAdapter(adapter);
+
+        toolsRL = (RelativeLayout) findViewById(R.id.toolsRL);
+        ok = (ImageButton) findViewById(R.id.ok);
+        if (type == TYPE_DIANMINGDA) {
+            ok.setVisibility(View.VISIBLE);
+            toolsRL.setVisibility(View.GONE);
+        }
+    }
+
+    public void clickOK(View v) {
+        int count = 0;
+        for (Student s : students) {
+            if (s.selected) {
+                count++;
+            }
+        }
+        if (count == 0) {
+            toast("请选择至少一个学生");
+            return;
+        }
+        startActivity(new Intent(this, ResultActivity.class).putExtra("type", TYPE_QUESTION_0));
     }
 
     public void initData() {
@@ -177,6 +204,7 @@ public class StudentGridActivity extends BaseActivity {
 
     private Button dianming;
 
+    @Override
     public void dm(View view) {
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_dianming);

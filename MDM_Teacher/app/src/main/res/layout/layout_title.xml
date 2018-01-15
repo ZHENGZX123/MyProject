@@ -34,11 +34,6 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <Button
-        android:text="OK"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <ImageButton
         android:id="@+id/video"
         android:layout_width="35dp"
@@ -48,6 +43,17 @@
         android:layout_marginRight="10dp"
         android:background="@drawable/video"
         android:onClick="clickVideo"
+        android:visibility="gone" />
+
+    <ImageButton
+        android:id="@+id/ok"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/video"
+        android:onClick="clickOK"
         android:visibility="gone" />
 
 </RelativeLayout>
