@@ -359,7 +359,7 @@ public class StudentGridActivity extends BaseActivity {
                 totalcount_tongji--;
                 time_tongji.setText("倒计时 " + Utils.secToTime(totalcount_tongji));
                 if (totalcount_tongji > 0) {
-                    mHandler.sendEmptyMessageDelayed(TYPE_DIANMING, 1000);
+                    mHandler.sendEmptyMessageDelayed(TYPE_TONGJI, 1000);
                 } else {
                     toast("统计结束");
                     //这里可以弹出统计结果
