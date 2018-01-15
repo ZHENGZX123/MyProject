@@ -1,10 +1,12 @@
 package cn.kiway.mdm.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2017/12/28.
  */
 
-public class Student {
+public class Student implements Serializable {
 
     public String id;
     public String name;

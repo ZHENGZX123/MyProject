@@ -18,10 +18,10 @@ import java.util.ArrayList;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
 
-import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_0;
-import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_1;
-import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_2;
-import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_3;
+import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_DIANMINGDA;
+import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_QIANGDA;
+import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_SUIJICHOUDA;
+import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_CEPING;
 
 
 /**
@@ -32,12 +32,12 @@ import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_3;
 public class ResultActivity extends BaseActivity {
 
     private int type;
-    private RelativeLayout type12RL;
-    private RelativeLayout type3RL;
+    private RelativeLayout type123RL;
+    private RelativeLayout type4RL;
 
     private GridView gv;
     private MyAdapter adapter;
-    private ArrayList<Student> students = new ArrayList<>();
+    private ArrayList<Student> students;
 
     private boolean finished;
 
@@ -47,6 +47,7 @@ public class ResultActivity extends BaseActivity {
         setContentView(R.layout.activity_result);
 
         type = getIntent().getIntExtra("type", 1);
+        students = (ArrayList<Student>) getIntent().getSerializableExtra("students");
 
         initView();
         initData();
@@ -56,25 +57,25 @@ public class ResultActivity extends BaseActivity {
     public void initView() {
         super.initView();
 
-        type12RL = (RelativeLayout) findViewById(R.id.type12RL);
-        type3RL = (RelativeLayout) findViewById(R.id.type3RL);
+        type123RL = (RelativeLayout) findViewById(R.id.type123RL);
+        type4RL = (RelativeLayout) findViewById(R.id.type4RL);
 
-        if (type == TYPE_QUESTION_0) {
+        if (type == TYPE_QUESTION_DIANMINGDA) {
             titleName.setText("点名答结果");
-            type12RL.setVisibility(View.VISIBLE);
-            type3RL.setVisibility(View.GONE);
-        } else if (type == TYPE_QUESTION_1) {
+            type123RL.setVisibility(View.VISIBLE);
+            type4RL.setVisibility(View.GONE);
+        } else if (type == TYPE_QUESTION_QIANGDA) {
             titleName.setText("抢答结果");
-            type12RL.setVisibility(View.VISIBLE);
-            type3RL.setVisibility(View.GONE);
-        } else if (type == TYPE_QUESTION_2) {
+            type123RL.setVisibility(View.VISIBLE);
+            type4RL.setVisibility(View.GONE);
+        } else if (type == TYPE_QUESTION_SUIJICHOUDA) {
             titleName.setText("抽答结果");
-            type12RL.setVisibility(View.VISIBLE);
-            type3RL.setVisibility(View.GONE);
-        } else if (type == TYPE_QUESTION_3) {
+            type123RL.setVisibility(View.VISIBLE);
+            type4RL.setVisibility(View.GONE);
+        } else if (type == TYPE_QUESTION_CEPING) {
             titleName.setText("测评结果");
-            type12RL.setVisibility(View.GONE);
-            type3RL.setVisibility(View.VISIBLE);
+            type123RL.setVisibility(View.GONE);
+            type4RL.setVisibility(View.VISIBLE);
         }
 
         gv = (GridView) findViewById(R.id.studentGV);
@@ -83,11 +84,12 @@ public class ResultActivity extends BaseActivity {
     }
 
     private void initData() {
-        for (int i = 0; i < 10; i++) {
-            Student s = new Student();
-            s.name = "学生" + i;
-            students.add(s);
-        }
+//        假数据
+//        for (int i = 0; i < 10; i++) {
+//            Student s = new Student();
+//            s.name = "学生" + i;
+//            students.add(s);
+//        }
         adapter.notifyDataSetChanged();
     }
 
@@ -117,12 +119,7 @@ public class ResultActivity extends BaseActivity {
 
             final Student s = students.get(position);
             holder.name.setText(s.name);
-
-            if (s.status == 0) {
-                holder.icon.setImageResource(R.drawable.icon1);
-            } else {
-                holder.icon.setImageResource(R.drawable.icon2);
-            }
+            holder.icon.setImageResource(R.drawable.icon2);
             return rowView;
         }
 
