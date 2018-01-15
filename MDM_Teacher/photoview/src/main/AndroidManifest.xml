@@ -20,7 +20,9 @@
             </intent-filter>-->
         </activity>
         <activity android:name=".SimpleSampleActivity" />
-        <activity android:name=".ViewPagerActivity" />
+        <activity
+            android:name=".ViewPagerActivity"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>
