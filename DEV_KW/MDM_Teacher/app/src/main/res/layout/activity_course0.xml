@@ -52,187 +52,193 @@
         android:layout_height="match_parent"
         android:visibility="gone"></FrameLayout>
 
-    <ScrollView
-        android:id="@+id/tools1"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/titleRL">
+        android:layout_below="@+id/titleRL"
+        android:background="#6699ff">
 
-        <LinearLayout
-            android:layout_width="50dp"
+        <ScrollView
+            android:id="@+id/tools1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#6699ff"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_centerInParent="true">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+
                 android:gravity="center"
-                android:onClick="jieping"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:background="@drawable/u1742" />
-
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="截屏"
-                    android:textColor="#ffffff" />
-            </LinearLayout>
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:onClick="jieping"
+                    android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:onClick="paizhao"
-                android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@drawable/u1742" />
 
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:background="@drawable/u1744" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="截屏"
+                        android:textColor="#ffffff" />
+                </LinearLayout>
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="拍照"
-                    android:textColor="#ffffff" />
-            </LinearLayout>
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:onClick="paizhao"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@drawable/u1744" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="拍照"
+                        android:textColor="#ffffff" />
+                </LinearLayout>
 
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:onClick="huabi"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:background="@drawable/u1750" />
-
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="画笔"
-                    android:textColor="#ffffff" />
-            </LinearLayout>
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:onClick="huabi"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@drawable/u1750" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="画笔"
+                        android:textColor="#ffffff" />
+                </LinearLayout>
 
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:onClick="tuiping"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:background="@drawable/screen_control" />
-
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="推屏"
-                    android:textColor="#ffffff" />
-            </LinearLayout>
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:onClick="tuiping"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@drawable/screen_control" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="推屏"
+                        android:textColor="#ffffff" />
+                </LinearLayout>
 
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:onClick="chaping"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:background="@drawable/linkage" />
-
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="查屏"
-                    android:textColor="#ffffff" />
-            </LinearLayout>
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:onClick="chaping"
+                    android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:onClick="suoping"
-                android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@drawable/linkage" />
 
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:background="@drawable/sys_lock" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="查屏"
+                        android:textColor="#ffffff" />
+                </LinearLayout>
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="锁屏"
-                    android:textColor="#ffffff" />
-            </LinearLayout>
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:onClick="suoping"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@drawable/sys_lock" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="锁屏"
+                        android:textColor="#ffffff" />
+                </LinearLayout>
 
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:onClick="wenjian"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:background="@drawable/send_msg" />
-
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="文件"
-                    android:textColor="#ffffff" />
-            </LinearLayout>
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:onClick="wenjian"
+                    android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:onClick="shezhi"
-                android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@drawable/send_msg" />
 
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:background="@drawable/setting" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="文件"
+                        android:textColor="#ffffff" />
+                </LinearLayout>
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="设置"
-                    android:textColor="#ffffff" />
-            </LinearLayout>
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:onClick="shezhi"
+                    android:orientation="vertical">
 
-        </LinearLayout>
-    </ScrollView>
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@drawable/setting" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="设置"
+                        android:textColor="#ffffff" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
 
     <HorizontalScrollView
         android:id="@+id/tools2"

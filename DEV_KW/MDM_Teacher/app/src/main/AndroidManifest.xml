@@ -72,10 +72,10 @@
             android:name="cn.kiway.mdm.activity.ResultActivity"
             android:screenOrientation="landscape"></activity>
         <activity
-            android:name="cn.kiway.mdm.activity.Result2Activity"
+            android:name="cn.kiway.mdm.activity.ResultActivity2"
             android:screenOrientation="landscape"></activity>
         <activity
-            android:name="cn.kiway.mdm.activity.Result3Activity"
+            android:name="cn.kiway.mdm.activity.ResultActivity3"
             android:screenOrientation="landscape"></activity>
 
         <activity
