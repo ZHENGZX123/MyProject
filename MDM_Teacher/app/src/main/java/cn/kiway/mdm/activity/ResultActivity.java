@@ -1,5 +1,7 @@
 package cn.kiway.mdm.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -26,6 +28,7 @@ import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_3;
  * Created by Administrator on 2017/12/29.
  */
 
+//问答反馈
 public class ResultActivity extends BaseActivity {
 
     private int type;
@@ -35,6 +38,8 @@ public class ResultActivity extends BaseActivity {
     private GridView gv;
     private MyAdapter adapter;
     private ArrayList<Student> students = new ArrayList<>();
+
+    private boolean finished;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -140,5 +145,26 @@ public class ResultActivity extends BaseActivity {
         public long getItemId(int arg0) {
             return arg0;
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (!finished) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+            AlertDialog dialog = builder.setMessage("是否退出")
+                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            finish();
+                        }
+                    })
+                    .setPositiveButton(android.R.string.cancel, null).create();
+            dialog.show();
+
+            return;
+        }
+
+        super.onBackPressed();
     }
 }

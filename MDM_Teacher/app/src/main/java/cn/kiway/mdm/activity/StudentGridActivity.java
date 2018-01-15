@@ -11,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,14 +43,14 @@ public class StudentGridActivity extends BaseActivity {
     public static final int TYPE_DIANMING = 1;
     public static final int TYPE_DIANMINGDA = 2;
 
-    private ImageButton ok;
+    private Button ok;
+    private RelativeLayout toolsRL;
 
     private int type;
     private GridView gv;
     private MyAdapter adapter;
-    private ArrayList<Student> students = new ArrayList<>();
 
-    private RelativeLayout toolsRL;
+    private ArrayList<Student> students = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +72,7 @@ public class StudentGridActivity extends BaseActivity {
         gv.setAdapter(adapter);
 
         toolsRL = (RelativeLayout) findViewById(R.id.toolsRL);
-        ok = (ImageButton) findViewById(R.id.ok);
+        ok = (Button) findViewById(R.id.ok);
         if (type == TYPE_DIANMINGDA) {
             ok.setVisibility(View.VISIBLE);
             toolsRL.setVisibility(View.GONE);
@@ -139,7 +138,9 @@ public class StudentGridActivity extends BaseActivity {
                 if (type == TYPE_DIANMING) {
                     toast(s.name + (s.status == 0 ? "没到" : "到了"));
                 } else if (type == TYPE_DIANMINGDA) {
-                    //选中的打勾
+                    //选中的
+                    s.selected = !s.selected;
+                    adapter.notifyDataSetChanged();
                 }
             }
         });
@@ -172,11 +173,20 @@ public class StudentGridActivity extends BaseActivity {
             final Student s = students.get(position);
             holder.name.setText(s.name);
 
-            if (s.status == 0) {
-                holder.icon.setImageResource(R.drawable.icon1);
-            } else {
-                holder.icon.setImageResource(R.drawable.icon2);
+            if (type == TYPE_DIANMING) {
+                if (s.status == 0) {
+                    holder.icon.setImageResource(R.drawable.icon1);
+                } else {
+                    holder.icon.setImageResource(R.drawable.icon2);
+                }
+            } else if (type == TYPE_DIANMINGDA) {
+                if (s.selected) {
+                    holder.icon.setImageResource(R.drawable.icon2);
+                } else {
+                    holder.icon.setImageResource(R.drawable.icon1);
+                }
             }
+
             return rowView;
         }
 
