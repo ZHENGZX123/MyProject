@@ -45,15 +45,18 @@
         android:onClick="clickVideo"
         android:visibility="gone" />
 
-    <ImageButton
+    <Button
         android:id="@+id/ok"
-        android:layout_width="35dp"
+        android:layout_width="60dp"
         android:layout_height="35dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
-        android:background="@drawable/video"
+        android:background="@null"
         android:onClick="clickOK"
+        android:text="完成"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
         android:visibility="gone" />
 
 </RelativeLayout>
