@@ -180,6 +180,7 @@ public class StudentGridActivity extends BaseActivity {
 
             final Student s = students.get(position);
             holder.name.setText(s.name);
+            //TODO avatar
 
             if (type == TYPE_DIANMING) {
                 //到了是1，没到是0
@@ -242,6 +243,8 @@ public class StudentGridActivity extends BaseActivity {
     public void dm(View view) {
         dialog_dianming = new Dialog(this, R.style.popupDialog);
         dialog_dianming.setContentView(R.layout.dialog_dianming);
+        dialog_dianming.setCancelable(false);
+        dialog_dianming.setCanceledOnTouchOutside(false);
         dialog_dianming.show();
         dianmingBtn = (Button) dialog_dianming.findViewById(R.id.dianming);
         count_dianming = (TextView) dialog_dianming.findViewById(R.id.count);
@@ -314,6 +317,8 @@ public class StudentGridActivity extends BaseActivity {
     private void showTongjidialog() {
         dialog_tongji = new Dialog(this, R.style.popupDialog);
         dialog_tongji.setContentView(R.layout.dialog_tongji2);
+        dialog_tongji.setCancelable(false);
+        dialog_tongji.setCanceledOnTouchOutside(false);
         dialog_tongji.show();
         Button dianmingBtn = (Button) dialog_tongji.findViewById(R.id.dianming);
         count_tongji = (TextView) dialog_tongji.findViewById(R.id.count);

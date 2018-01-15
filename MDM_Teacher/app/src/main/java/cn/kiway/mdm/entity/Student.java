@@ -19,6 +19,7 @@ public class Student {
     public String lastLoginDate;
     public String createDate;
     public String imei;
+    public String avatar;
     public int status; //0没到 1到了
     public boolean selected;
 
