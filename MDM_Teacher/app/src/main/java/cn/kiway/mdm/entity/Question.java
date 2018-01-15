@@ -21,6 +21,8 @@ public class Question implements Serializable {
     public UserExaminationResultVo userExaminationResultVo;//
     public List<UserExaminationResultVo> userExaminationResultVos;//
 
+    public boolean selected;
+
     @Override
     public String toString() {
         return "Question{" +

@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/count"
             android:layout_centerHorizontal="true"
-            android:text="绿色代表已掌握，红色代表未掌握"
+            android:text="绿色代表已掌握/红色代表未掌握"
             android:textColor="#ffffff" />
 
         <TextView

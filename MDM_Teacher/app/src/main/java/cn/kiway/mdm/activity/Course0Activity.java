@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.entity.Course;
 import cn.kiway.mdm.entity.KnowledgePoint;
+import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.TeachingContentVo;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
@@ -308,6 +309,15 @@ public class Course0Activity extends ScreenSharingActivity {
 
     private void selectQuestion(int type) {
         Log.d("test", "course.questions = " + course.questions);
+        int count = course.questions.size();
+        if (count == 0) {
+            toast("该课程暂无题目");
+            return;
+        }
+        //reset select
+        for (Question q : course.questions) {
+            q.selected = false;
+        }
 
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_select_question);
@@ -319,9 +329,20 @@ public class Course0Activity extends ScreenSharingActivity {
         kaishidati.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int count = 0;
+                for (Question q : course.questions) {
+                    if (q.selected) {
+                        count++;
+                    }
+                }
+                if (count == 0) {
+                    toast("请选择一个问题");
+                    return;
+                }
+
                 dialog.dismiss();
-                if (type == 0) {
-                    //点名答
+                if (type == TYPE_DIANMINGDA) {
+                    //点名答要手动选人
                     startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_DIANMINGDA));
                 } else {
                     //抢答等
