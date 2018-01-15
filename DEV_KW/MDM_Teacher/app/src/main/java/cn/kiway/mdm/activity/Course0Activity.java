@@ -51,6 +51,7 @@ import cn.kiway.mdm.util.Utils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
+import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_TONGJI;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE1;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
@@ -230,25 +231,18 @@ public class Course0Activity extends ScreenSharingActivity {
     public void tongji(View view) {
         Log.d("test", "course.knowledgePoints = " + course.knowledgePoints);
         //统计type=1的知识点的个数
-        int count = 0;
-        for (KnowledgePoint kp : course.knowledgePoints) {
-            if (kp.type == TYPE0) {
-                count++;
-            }
-        }
+        int count = getKnowledgeCount();
         if (count == 0) {
             toast("该课程暂无知识点");
             return;
         }
-
         //reset select
         for (KnowledgePoint kp : course.knowledgePoints) {
             kp.selected = false;
         }
-
         //知识点统计，给全班发送统计命令。
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
-        dialog.setContentView(R.layout.dialog_tongji);
+        dialog.setContentView(R.layout.dialog_tongji1);
         dialog.show();
         Button tongji = (Button) dialog.findViewById(R.id.tongji);
         Button cancel = (Button) dialog.findViewById(R.id.cancel);
@@ -261,8 +255,19 @@ public class Course0Activity extends ScreenSharingActivity {
         tongji.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int count = 0;
+                for (KnowledgePoint kp : course.knowledgePoints) {
+                    if (kp.selected) {
+                        count++;
+                    }
+                }
+                if (count == 0) {
+                    toast("请选择一个知识点");
+                    return;
+                }
                 dialog.dismiss();
                 //发送选中的知识点
+                startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_TONGJI));
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -330,6 +335,16 @@ public class Course0Activity extends ScreenSharingActivity {
                 dialog.dismiss();
             }
         });
+    }
+
+    private int getKnowledgeCount() {
+        int count = 0;
+        for (KnowledgePoint kp : course.knowledgePoints) {
+            if (kp.type == TYPE0) {
+                count++;
+            }
+        }
+        return count;
     }
 
     //-------------------------------录屏相关-----------------------------
@@ -560,6 +575,70 @@ public class Course0Activity extends ScreenSharingActivity {
             ViewHolder holder;
             if (rowView == null) {
                 rowView = inflater.inflate(R.layout.item_tongji, null);
+                holder = new ViewHolder();
+
+                holder.content = (TextView) rowView.findViewById(R.id.content);
+                holder.select = (CheckBox) rowView.findViewById(R.id.select);
+
+                rowView.setTag(holder);
+            } else {
+                holder = (ViewHolder) rowView.getTag();
+            }
+
+            final KnowledgePoint s = KnowledgePoints.get(position);
+            holder.content.setText(s.content);
+            holder.select.setChecked(s.selected);
+            holder.select.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //这里是单选的...
+                    for (KnowledgePoint kp : KnowledgePoints) {
+                        kp.selected = false;
+                    }
+                    s.selected = true;
+                    notifyDataSetChanged();
+                }
+            });
+
+            return rowView;
+        }
+
+        public class ViewHolder {
+            public TextView content;
+            public CheckBox select;
+        }
+
+        @Override
+        public int getCount() {
+            //减去最后的END
+            return KnowledgePoints.size() - 1;
+        }
+
+        @Override
+        public KnowledgePoint getItem(int arg0) {
+            return KnowledgePoints.get(arg0);
+        }
+
+        @Override
+        public long getItemId(int arg0) {
+            return arg0;
+        }
+    }
+
+    private class QuestionAdapter extends BaseAdapter {
+
+        private final LayoutInflater inflater;
+
+        public QuestionAdapter() {
+            inflater = LayoutInflater.from(Course0Activity.this);
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View rowView = convertView;
+            ViewHolder holder;
+            if (rowView == null) {
+                rowView = inflater.inflate(R.layout.item_question, null);
                 holder = new ViewHolder();
 
                 holder.content = (TextView) rowView.findViewById(R.id.content);
