@@ -51,7 +51,6 @@ import cn.kiway.mdm.util.Utils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
-import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDa;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE1;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
@@ -71,6 +70,11 @@ public class Course0Activity extends ScreenSharingActivity {
     private CourseAdapter adapter;
     private ArrayList<KnowledgePoint> KnowledgePoints = new ArrayList<>();
     private Course course;
+
+    public static final int TYPE_QUESTION_0 = 0;
+    public static final int TYPE_QUESTION_1 = 1;
+    public static final int TYPE_QUESTION_2 = 2;
+    public static final int TYPE_QUESTION_3 = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -278,29 +282,27 @@ public class Course0Activity extends ScreenSharingActivity {
     public void dianmingda(View view) {
         //点名答，需要获取学生列表。
         //1.先选题目
-        selectQuestion(0);
         //2.再选学生
-        startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_DIANMINGDA));
+        selectQuestion(TYPE_QUESTION_0);
     }
 
     public void qiangda(View view) {
         //抢答，给全班发送抢答命令。
-        selectQuestion(1);
+        selectQuestion(TYPE_QUESTION_1);
     }
 
     public void suijichouda(View view) {
         //随机抽答，随机找几个发命令。
-        selectQuestion(2);
+        selectQuestion(TYPE_QUESTION_2);
     }
 
     public void ceping(View view) {
         //测评，给全班发测评命令
-        selectQuestion(3);
+        selectQuestion(TYPE_QUESTION_3);
     }
 
     private void selectQuestion(int type) {
         Log.d("test", "course.questions = " + course.questions);
-
 
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_select_question);
@@ -313,11 +315,13 @@ public class Course0Activity extends ScreenSharingActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                if (type == 0){
+                if (type == 0) {
                     //点名答
+                    startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_DIANMINGDA));
+                } else {
+                    //抢答等
+                    startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type));
                 }
-
-                //startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type));
             }
         });
         close.setOnClickListener(new View.OnClickListener() {

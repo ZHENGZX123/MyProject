@@ -16,6 +16,11 @@ import java.util.ArrayList;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
 
+import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_0;
+import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_1;
+import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_2;
+import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_3;
+
 
 /**
  * Created by Administrator on 2017/12/29.
@@ -49,15 +54,19 @@ public class ResultActivity extends BaseActivity {
         type12RL = (RelativeLayout) findViewById(R.id.type12RL);
         type3RL = (RelativeLayout) findViewById(R.id.type3RL);
 
-        if (type == 1) {
+        if (type == TYPE_QUESTION_0) {
+            titleName.setText("点名答结果");
+            type12RL.setVisibility(View.VISIBLE);
+            type3RL.setVisibility(View.GONE);
+        } else if (type == TYPE_QUESTION_1) {
             titleName.setText("抢答结果");
             type12RL.setVisibility(View.VISIBLE);
             type3RL.setVisibility(View.GONE);
-        } else if (type == 2) {
+        } else if (type == TYPE_QUESTION_2) {
             titleName.setText("抽答结果");
             type12RL.setVisibility(View.VISIBLE);
             type3RL.setVisibility(View.GONE);
-        } else if (type == 3) {
+        } else if (type == TYPE_QUESTION_3) {
             titleName.setText("测评结果");
             type12RL.setVisibility(View.GONE);
             type3RL.setVisibility(View.VISIBLE);
