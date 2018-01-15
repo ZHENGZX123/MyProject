@@ -22,7 +22,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -51,6 +53,7 @@ import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
+import static android.media.CamcorderProfile.get;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_TONGJI;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
@@ -70,7 +73,7 @@ public class Course0Activity extends ScreenSharingActivity {
     private TbsReaderView readerView;
     private ListView lv;
     private CourseAdapter adapter;
-    private ArrayList<KnowledgePoint> KnowledgePoints = new ArrayList<>();
+    private ArrayList<KnowledgePoint> knowledgePoints = new ArrayList<>();
     private Course course;
 
     public static final int TYPE_QUESTION_0 = 0;
@@ -117,11 +120,11 @@ public class Course0Activity extends ScreenSharingActivity {
                         JSONObject data = new JSONObject(ret).getJSONObject("data");
                         course = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<Course>() {
                         }.getType());
-                        KnowledgePoints = course.knowledgePoints;
+                        knowledgePoints = course.knowledgePoints;
                         KnowledgePoint end = new KnowledgePoint();
                         //add attchment
                         end.type = TYPE_END;
-                        KnowledgePoints.add(end);
+                        knowledgePoints.add(end);
                         adapter.notifyDataSetChanged();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -232,7 +235,7 @@ public class Course0Activity extends ScreenSharingActivity {
     public void tongji(View view) {
         Log.d("test", "course.knowledgePoints = " + course.knowledgePoints);
         //统计type=1的知识点的个数
-        int count = getKnowledgeCount();
+        int count = course.knowledgePoints.size();
         if (count == 0) {
             toast("该课程暂无知识点");
             return;
@@ -307,6 +310,8 @@ public class Course0Activity extends ScreenSharingActivity {
         selectQuestion(TYPE_QUESTION_3);
     }
 
+    private int questionTime = 120;
+
     private void selectQuestion(int type) {
         Log.d("test", "course.questions = " + course.questions);
         int count = course.questions.size();
@@ -324,7 +329,48 @@ public class Course0Activity extends ScreenSharingActivity {
         dialog.show();
         Button kaishidati = (Button) dialog.findViewById(R.id.kaishidati);
         Button close = (Button) dialog.findViewById(R.id.close);
+        CheckBox timeEnable = (CheckBox) dialog.findViewById(R.id.timeEnable);
+        ImageButton plus = (ImageButton) dialog.findViewById(R.id.plus);
+        TextView settime = (TextView) dialog.findViewById(R.id.settime);
+        ImageButton minus = (ImageButton) dialog.findViewById(R.id.minus);
+        timeEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    plus.setVisibility(View.VISIBLE);
+                    settime.setVisibility(View.VISIBLE);
+                    minus.setVisibility(View.VISIBLE);
+                } else {
+                    plus.setVisibility(View.GONE);
+                    plus.setVisibility(View.GONE);
+                    plus.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        plus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //最大上限未设置
+                questionTime += 60;
+                settime.setText(Utils.secToTime(questionTime));
+            }
+        });
+
+        minus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //最少2分钟
+                if (questionTime > 120) {
+                    questionTime -= 60;
+                    settime.setText(Utils.secToTime(questionTime));
+                }
+            }
+        });
+
         ListView lv = (ListView) dialog.findViewById(R.id.lv);
+        QuestionAdapter adapter = new QuestionAdapter();
+        lv.setAdapter(adapter);
 
         kaishidati.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -358,21 +404,10 @@ public class Course0Activity extends ScreenSharingActivity {
         });
     }
 
-    private int getKnowledgeCount() {
-        int count = 0;
-        for (KnowledgePoint kp : course.knowledgePoints) {
-            if (kp.type == TYPE0) {
-                count++;
-            }
-        }
-        return count;
-    }
-
     //-------------------------------录屏相关-----------------------------
     private MediaProjectionManager projectionManager;
     private MediaProjection mediaProjection;
     private RecordService recordService;
-
 
     public void startRecord() {
         Intent captureIntent = projectionManager.createScreenCaptureIntent();
@@ -440,7 +475,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder.clock.setVisibility(View.GONE);
             }
 
-            final KnowledgePoint s = KnowledgePoints.get(position);
+            final KnowledgePoint s = knowledgePoints.get(position);
             holder.title.setText(s.content);
 
             if (s.type == TYPE0) {
@@ -539,12 +574,12 @@ public class Course0Activity extends ScreenSharingActivity {
 
         @Override
         public int getCount() {
-            return KnowledgePoints.size();
+            return knowledgePoints.size();
         }
 
         @Override
         public KnowledgePoint getItem(int arg0) {
-            return KnowledgePoints.get(arg0);
+            return knowledgePoints.get(arg0);
         }
 
         @Override
@@ -606,14 +641,14 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder = (ViewHolder) rowView.getTag();
             }
 
-            final KnowledgePoint s = KnowledgePoints.get(position);
+            final KnowledgePoint s = course.knowledgePoints.get(position);
             holder.content.setText(s.content);
             holder.select.setChecked(s.selected);
             holder.select.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //这里是单选的...
-                    for (KnowledgePoint kp : KnowledgePoints) {
+                    for (KnowledgePoint kp : knowledgePoints) {
                         kp.selected = false;
                     }
                     s.selected = true;
@@ -631,13 +666,12 @@ public class Course0Activity extends ScreenSharingActivity {
 
         @Override
         public int getCount() {
-            //减去最后的END
-            return KnowledgePoints.size() - 1;
+            return course.knowledgePoints.size();
         }
 
         @Override
         public KnowledgePoint getItem(int arg0) {
-            return KnowledgePoints.get(arg0);
+            return course.knowledgePoints.get(arg0);
         }
 
         @Override
@@ -662,6 +696,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 rowView = inflater.inflate(R.layout.item_question, null);
                 holder = new ViewHolder();
 
+                holder.imgLL = (LinearLayout) rowView.findViewById(R.id.imgLL);
                 holder.content = (TextView) rowView.findViewById(R.id.content);
                 holder.select = (CheckBox) rowView.findViewById(R.id.select);
 
@@ -670,7 +705,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder = (ViewHolder) rowView.getTag();
             }
 
-            final KnowledgePoint s = KnowledgePoints.get(position);
+            final Question s = course.questions.get(position);
             holder.content.setText(s.content);
             holder.select.setChecked(s.selected);
             holder.select.setOnClickListener(new View.OnClickListener() {
@@ -681,23 +716,45 @@ public class Course0Activity extends ScreenSharingActivity {
                 }
             });
 
+            if (!TextUtils.isEmpty(s.img)) {
+                String imgs[] = s.img.split(",");
+                for (int i = 0; i < imgs.length; i++) {
+                    String imageUrl = imgs[i];
+                    ImageView iv = new ImageView(Course0Activity.this);
+                    iv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //放大显示
+                            ViewPagerActivity.sDrawables = new String[]{imageUrl};
+                            Intent intent = new Intent(Course0Activity.this, ViewPagerActivity.class);
+                            intent.putExtra("position", 0);
+                            startActivity(intent);
+                        }
+                    });
+                    ImageLoader.getInstance().displayImage(imgs[i], iv, WXApplication.getLoaderOptions());
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    lp.setMargins(10, 10, 10, 10);
+                    holder.imgLL.addView(iv, lp);
+                }
+            }
+
             return rowView;
         }
 
         public class ViewHolder {
             public TextView content;
             public CheckBox select;
+            public LinearLayout imgLL;
         }
 
         @Override
         public int getCount() {
-            //减去最后的END
-            return KnowledgePoints.size() - 1;
+            return course.questions.size();
         }
 
         @Override
-        public KnowledgePoint getItem(int arg0) {
-            return KnowledgePoints.get(arg0);
+        public Question getItem(int arg0) {
+            return course.questions.get(arg0);
         }
 
         @Override
