@@ -39,11 +39,13 @@ import static cn.kiway.mdm.util.Utils.check301;
 
 //该页面做多个地方使用
 //首页:TYPE_DIANMING
-//学生表格:TYPE_DIANMINGDA
+//点名答:TYPE_DIANMINGDA
+//统计:TYPE_TONGJI
 public class StudentGridActivity extends BaseActivity {
 
     public static final int TYPE_DIANMING = 1;
     public static final int TYPE_DIANMINGDA = 2;
+    public static final int TYPE_TONGJI = 3;
 
     private Button ok;
     private RelativeLayout toolsRL;
@@ -79,6 +81,8 @@ public class StudentGridActivity extends BaseActivity {
         if (type == TYPE_DIANMINGDA) {
             ok.setVisibility(View.VISIBLE);
             toolsRL.setVisibility(View.GONE);
+        } else if (type == TYPE_TONGJI) {
+            showTongjidialog();
         }
     }
 
@@ -178,16 +182,27 @@ public class StudentGridActivity extends BaseActivity {
             holder.name.setText(s.name);
 
             if (type == TYPE_DIANMING) {
+                //到了是1，没到是0
                 if (s.status == 0) {
                     holder.icon.setImageResource(R.drawable.icon1);
                 } else {
                     holder.icon.setImageResource(R.drawable.icon2);
                 }
             } else if (type == TYPE_DIANMINGDA) {
+                //选中是1，没选中是0
                 if (s.selected) {
                     holder.icon.setImageResource(R.drawable.icon2);
                 } else {
                     holder.icon.setImageResource(R.drawable.icon1);
+                }
+            } else if (type == TYPE_TONGJI) {
+                //明白是1，没明白是2，未回复是0
+                if (s.status == 0) {
+                    holder.icon.setImageResource(R.drawable.icon1);
+                } else if (s.status == 1) {
+                    holder.icon.setImageResource(R.drawable.icon2);
+                } else if (s.status == 2) {
+                    holder.icon.setImageResource(R.drawable.icon3);
                 }
             }
 
@@ -216,25 +231,27 @@ public class StudentGridActivity extends BaseActivity {
 
     }
 
-    private Dialog dialog;
-    private Button dianming;
-    private TextView count;
-    private TextView time;
+    //点名对话框
+    private Dialog dialog_dianming;
+    private Button dianmingBtn;
+    private TextView count_dianming;
+    private TextView time_dianming;
+    private int totalcount_dianming = 300;
 
     @Override
     public void dm(View view) {
-        dialog = new Dialog(this, R.style.popupDialog);
-        dialog.setContentView(R.layout.dialog_dianming);
-        dialog.show();
-        dianming = (Button) dialog.findViewById(R.id.dianming);
-        count = (TextView) dialog.findViewById(R.id.count);
-        count.setText(0 + "/" + students.size());
-        time = (TextView) dialog.findViewById(R.id.time);
+        dialog_dianming = new Dialog(this, R.style.popupDialog);
+        dialog_dianming.setContentView(R.layout.dialog_dianming);
+        dialog_dianming.show();
+        dianmingBtn = (Button) dialog_dianming.findViewById(R.id.dianming);
+        count_dianming = (TextView) dialog_dianming.findViewById(R.id.count);
+        count_dianming.setText(0 + "/" + students.size());
+        time_dianming = (TextView) dialog_dianming.findViewById(R.id.time);
 
-        dianming.setOnClickListener(new View.OnClickListener() {
+        dianmingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (dianming.getText().toString().equals("开始点名")) {
+                if (dianmingBtn.getText().toString().equals("开始点名")) {
                     //1.发送点名请求并实时刷新界面
                     doStartSign();
                 } else {
@@ -246,8 +263,8 @@ public class StudentGridActivity extends BaseActivity {
     }
 
     private void doEndSign() {
-        mHandler.removeMessages(0);
-        dialog.dismiss();
+        mHandler.removeMessages(TYPE_DIANMING);
+        dialog_dianming.dismiss();
         startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class));
         finish();
     }
@@ -263,18 +280,18 @@ public class StudentGridActivity extends BaseActivity {
             client.post(StudentGridActivity.this, url, null, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "dianming onSuccess = " + ret);
+                    Log.d("test", "dianmingBtn onSuccess = " + ret);
                     dismissPD();
-                    dianming.setBackgroundResource(R.drawable.dianmingbutton2);
-                    dianming.setText("结束点名");
+                    dianmingBtn.setBackgroundResource(R.drawable.dianmingbutton2);
+                    dianmingBtn.setText("结束点名");
                     //开始倒计时
-                    mHandler.sendEmptyMessageDelayed(0, 1000);
+                    mHandler.sendEmptyMessageDelayed(TYPE_DIANMING, 1000);
                 }
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "dianming onFailure = " + s);
-                    if (!check301(StudentGridActivity.this, s, "dianming")) {
+                    Log.d("test", "dianmingBtn onFailure = " + s);
+                    if (!check301(StudentGridActivity.this, s, "dianmingBtn")) {
                         toast("请求失败，请稍后再试");
                         dismissPD();
                     }
@@ -287,18 +304,62 @@ public class StudentGridActivity extends BaseActivity {
         }
     }
 
-    private int totalcount = 300;
+
+    //统计对话框
+    private Dialog dialog_tongji;
+    private TextView count_tongji;
+    private TextView time_tongji;
+    private int totalcount_tongji = 120;
+
+    private void showTongjidialog() {
+        dialog_tongji = new Dialog(this, R.style.popupDialog);
+        dialog_tongji.setContentView(R.layout.dialog_tongji2);
+        dialog_tongji.show();
+        Button dianmingBtn = (Button) dialog_tongji.findViewById(R.id.dianming);
+        count_tongji = (TextView) dialog_tongji.findViewById(R.id.count);
+        count_tongji.setText(0 + "/" + students.size());
+        time_tongji = (TextView) dialog_tongji.findViewById(R.id.time);
+
+        mHandler.sendEmptyMessageDelayed(TYPE_TONGJI, 1000);
+        dianmingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //结束统计
+                doEndTongji();
+            }
+        });
+    }
+
+    private void doEndTongji() {
+        mHandler.removeMessages(TYPE_TONGJI);
+        dialog_tongji.dismiss();
+        finish();
+    }
+
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            totalcount--;
-            time.setText("倒计时 " + Utils.secToTime(totalcount));
-            if (totalcount > 0) {
-                mHandler.sendEmptyMessageDelayed(0, 1000);
-            } else {
-                toast("点名结束");
-                //这里可以弹出点名结果
-                doEndSign();
+            int what = msg.what;
+            if (what == TYPE_DIANMING) {
+                totalcount_dianming--;
+                time_dianming.setText("倒计时 " + Utils.secToTime(totalcount_dianming));
+                if (totalcount_dianming > 0) {
+                    mHandler.sendEmptyMessageDelayed(TYPE_DIANMING, 1000);
+                } else {
+                    toast("点名结束");
+                    //这里可以弹出点名结果
+                    doEndSign();
+                }
+            } else if (what == TYPE_TONGJI) {
+                totalcount_tongji--;
+                time_tongji.setText("倒计时 " + Utils.secToTime(totalcount_tongji));
+                if (totalcount_tongji > 0) {
+                    mHandler.sendEmptyMessageDelayed(TYPE_DIANMING, 1000);
+                } else {
+                    toast("统计结束");
+                    //这里可以弹出统计结果
+                    doEndTongji();
+                }
             }
         }
     };
@@ -306,6 +367,9 @@ public class StudentGridActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mHandler.removeMessages(0);
+        mHandler.removeMessages(TYPE_DIANMING);
+        mHandler.removeMessages(TYPE_TONGJI);
     }
+
+
 }
