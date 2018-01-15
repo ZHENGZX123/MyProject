@@ -59,10 +59,10 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true">
+                android:layout_centerVertical="true"
+                android:gravity="center">
 
                 <CheckBox
                     android:id="@+id/timeEnable"
@@ -78,25 +78,26 @@
 
                 <ImageButton
                     android:id="@+id/plus"
-                    android:layout_marginLeft="20dp"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:background="@drawable/plus" />
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/plus"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/settime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="02:00"
-                    android:textColor="#000000" />
+                    android:textColor="#000000"
+                    android:visibility="gone" />
 
                 <ImageButton
                     android:id="@+id/minus"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:background="@drawable/minus" />
-
-
+                    android:background="@drawable/minus"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <Button
