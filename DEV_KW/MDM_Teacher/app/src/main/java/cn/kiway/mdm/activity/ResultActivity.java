@@ -147,12 +147,16 @@ public class ResultActivity extends BaseActivity {
         }
     }
 
-
     @Override
     public void onBackPressed() {
+        clickBack(null);
+    }
+
+    @Override
+    public void clickBack(View view) {
         if (!finished) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
-            AlertDialog dialog = builder.setMessage("是否退出")
+            AlertDialog dialog = builder.setMessage("是否退出？")
                     .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
@@ -161,10 +165,8 @@ public class ResultActivity extends BaseActivity {
                     })
                     .setPositiveButton(android.R.string.cancel, null).create();
             dialog.show();
-
             return;
         }
-
-        super.onBackPressed();
+        finish();
     }
 }

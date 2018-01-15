@@ -3,6 +3,8 @@ package cn.kiway.mdm.activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +54,7 @@ public class StudentGridActivity extends BaseActivity {
 
     private ArrayList<Student> students = new ArrayList<>();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +94,7 @@ public class StudentGridActivity extends BaseActivity {
             return;
         }
         startActivity(new Intent(this, ResultActivity.class).putExtra("type", TYPE_QUESTION_0));
+        finish();
     }
 
     public void initData() {
@@ -212,31 +216,43 @@ public class StudentGridActivity extends BaseActivity {
 
     }
 
+    private Dialog dialog;
     private Button dianming;
+    private TextView count;
+    private TextView time;
 
     @Override
     public void dm(View view) {
-        final Dialog dialog = new Dialog(this, R.style.popupDialog);
+        dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_dianming);
         dialog.show();
         dianming = (Button) dialog.findViewById(R.id.dianming);
+        count = (TextView) dialog.findViewById(R.id.count);
+        count.setText(0 + "/" + students.size());
+        time = (TextView) dialog.findViewById(R.id.time);
+
         dianming.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (dianming.getText().toString().equals("开始点名")) {
                     //1.发送点名请求并实时刷新界面
-                    doSign();
+                    doStartSign();
                 } else {
                     //点名结束，跳到上课
-                    dialog.dismiss();
-                    startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class));
-                    finish();
+                    doEndSign();
                 }
             }
         });
     }
 
-    public void doSign() {
+    private void doEndSign() {
+        mHandler.removeMessages(0);
+        dialog.dismiss();
+        startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class));
+        finish();
+    }
+
+    public void doStartSign() {
         try {
             //1.发“点名”推送命令
             showPD();
@@ -251,6 +267,8 @@ public class StudentGridActivity extends BaseActivity {
                     dismissPD();
                     dianming.setBackgroundResource(R.drawable.dianmingbutton2);
                     dianming.setText("结束点名");
+                    //开始倒计时
+                    mHandler.sendEmptyMessageDelayed(0, 1000);
                 }
 
                 @Override
@@ -269,4 +287,25 @@ public class StudentGridActivity extends BaseActivity {
         }
     }
 
+    private int totalcount = 300;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            totalcount--;
+            time.setText("倒计时 " + Utils.secToTime(totalcount));
+            if (totalcount > 0) {
+                mHandler.sendEmptyMessageDelayed(0, 1000);
+            } else {
+                toast("点名结束");
+                //这里可以弹出点名结果
+                doEndSign();
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler.removeMessages(0);
+    }
 }
