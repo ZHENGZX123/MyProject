@@ -299,8 +299,11 @@ public class Course0Activity extends ScreenSharingActivity {
     }
 
     private void selectQuestion(int type) {
+        Log.d("test", "course.questions = " + course.questions);
+
+
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
-        dialog.setContentView(R.layout.dialog_qiangda);
+        dialog.setContentView(R.layout.dialog_select_question);
         dialog.show();
         Button kaishidati = (Button) dialog.findViewById(R.id.kaishidati);
         Button close = (Button) dialog.findViewById(R.id.close);
@@ -310,7 +313,11 @@ public class Course0Activity extends ScreenSharingActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type));
+                if (type == 0){
+                    //点名答
+                }
+
+                //startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type));
             }
         });
         close.setOnClickListener(new View.OnClickListener() {

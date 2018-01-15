@@ -109,9 +109,11 @@ public class StudentGridActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Student s = students.get(position);
-
-                toast(s.name + (s.status == 0 ? "没到" : "到了"));
-
+                if (type == TYPE_DIANMING) {
+                    toast(s.name + (s.status == 0 ? "没到" : "到了"));
+                } else if (type == TYPE_DIANMINGDA) {
+                    //选中的打勾
+                }
             }
         });
     }

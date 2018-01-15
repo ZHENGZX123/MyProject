@@ -20,5 +20,6 @@ public class Student {
     public String createDate;
     public String imei;
     public int status; //0没到 1到了
+    public boolean selected;
 
 }
