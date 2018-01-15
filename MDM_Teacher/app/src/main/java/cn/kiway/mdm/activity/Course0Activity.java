@@ -400,10 +400,11 @@ public class Course0Activity extends ScreenSharingActivity {
                     ArrayList<Student> selectStudents = getRandomStudents();
                     startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", selectStudents));
                 } else if (type == TYPE_QUESTION_QIANGDA) {
-                    //TODO 抢答需要等学生抢答后再跳转
+                    //TODO 显示转转，抢答需要等学生抢答后再跳转
                     startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type));
                 } else {
-                    //测评不需要是全班的
+                    //测评是全班的
+                    startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", students));
                 }
             }
         });
