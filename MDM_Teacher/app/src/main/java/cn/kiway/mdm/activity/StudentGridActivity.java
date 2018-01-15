@@ -34,7 +34,8 @@ import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
 
-import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_0;
+import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_DIANMINGDA;
+import static cn.kiway.mdm.teacher.R.id.count;
 import static cn.kiway.mdm.util.Utils.check301;
 
 //该页面做多个地方使用
@@ -87,17 +88,17 @@ public class StudentGridActivity extends BaseActivity {
     }
 
     public void clickOK(View v) {
-        int count = 0;
+        ArrayList<Student> selectStudents = new ArrayList<>();
         for (Student s : students) {
             if (s.selected) {
-                count++;
+                selectStudents.add(s);
             }
         }
-        if (count == 0) {
+        if (selectStudents.size() == 0) {
             toast("请选择至少一个学生");
             return;
         }
-        startActivity(new Intent(this, ResultActivity.class).putExtra("type", TYPE_QUESTION_0));
+        startActivity(new Intent(this, ResultActivity.class).putExtra("type", TYPE_QUESTION_DIANMINGDA).putExtra("students", selectStudents));
         finish();
     }
 
@@ -247,7 +248,7 @@ public class StudentGridActivity extends BaseActivity {
         dialog_dianming.setCanceledOnTouchOutside(false);
         dialog_dianming.show();
         dianmingBtn = (Button) dialog_dianming.findViewById(R.id.dianming);
-        count_dianming = (TextView) dialog_dianming.findViewById(R.id.count);
+        count_dianming = (TextView) dialog_dianming.findViewById(count);
         count_dianming.setText(0 + "/" + students.size());
         time_dianming = (TextView) dialog_dianming.findViewById(R.id.time);
 
@@ -268,7 +269,7 @@ public class StudentGridActivity extends BaseActivity {
     private void doEndSign() {
         mHandler.removeMessages(TYPE_DIANMING);
         dialog_dianming.dismiss();
-        startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class));
+        startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class).putExtra("students", students));
         finish();
     }
 
@@ -321,7 +322,7 @@ public class StudentGridActivity extends BaseActivity {
         dialog_tongji.setCanceledOnTouchOutside(false);
         dialog_tongji.show();
         Button dianmingBtn = (Button) dialog_tongji.findViewById(R.id.dianming);
-        count_tongji = (TextView) dialog_tongji.findViewById(R.id.count);
+        count_tongji = (TextView) dialog_tongji.findViewById(count);
         count_tongji.setText(0 + "/" + students.size());
         time_tongji = (TextView) dialog_tongji.findViewById(R.id.time);
 

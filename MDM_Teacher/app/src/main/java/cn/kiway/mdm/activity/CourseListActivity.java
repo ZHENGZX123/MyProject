@@ -65,10 +65,10 @@ public class CourseListActivity extends BaseActivity {
                 Course c = courses.get(position);
                 if (c.type == 1) {
                     //未上课
-                    startActivity(new Intent(CourseListActivity.this, Course0Activity.class).putExtra("course", c));
+                    startActivity(new Intent(CourseListActivity.this, Course0Activity.class).putExtra("course", c).putExtra("students", getIntent().getSerializableExtra("students")));
                 } else if (c.type == 2) {
                     //已上课
-                    startActivity(new Intent(CourseListActivity.this, Course2Activity.class).putExtra("course", c));
+                    startActivity(new Intent(CourseListActivity.this, Course2Activity.class).putExtra("course", c).putExtra("students", getIntent().getSerializableExtra("students")));
                 }
             }
         });

@@ -42,11 +42,13 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Random;
 
 import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.entity.Course;
 import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.entity.Question;
+import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.entity.TeachingContentVo;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
@@ -75,11 +77,12 @@ public class Course0Activity extends ScreenSharingActivity {
     private CourseAdapter adapter;
     private ArrayList<KnowledgePoint> knowledgePoints = new ArrayList<>();
     private Course course;
+    private ArrayList<Student> students;
 
-    public static final int TYPE_QUESTION_0 = 0;
-    public static final int TYPE_QUESTION_1 = 1;
-    public static final int TYPE_QUESTION_2 = 2;
-    public static final int TYPE_QUESTION_3 = 3;
+    public static final int TYPE_QUESTION_DIANMINGDA = 1;
+    public static final int TYPE_QUESTION_QIANGDA = 2;
+    public static final int TYPE_QUESTION_SUIJICHOUDA = 3;
+    public static final int TYPE_QUESTION_CEPING = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +90,7 @@ public class Course0Activity extends ScreenSharingActivity {
         setContentView(R.layout.activity_course0);
 
         course = (Course) getIntent().getSerializableExtra("course");
+        students = (ArrayList<Student>) getIntent().getSerializableExtra("students");
 
         initView();
         initData();
@@ -292,22 +296,22 @@ public class Course0Activity extends ScreenSharingActivity {
         //点名答，需要获取学生列表。
         //1.先选题目
         //2.再选学生
-        selectQuestion(TYPE_QUESTION_0);
+        selectQuestion(TYPE_QUESTION_DIANMINGDA);
     }
 
     public void qiangda(View view) {
         //抢答，给全班发送抢答命令。
-        selectQuestion(TYPE_QUESTION_1);
+        selectQuestion(TYPE_QUESTION_QIANGDA);
     }
 
     public void suijichouda(View view) {
         //随机抽答，随机找几个发命令。
-        selectQuestion(TYPE_QUESTION_2);
+        selectQuestion(TYPE_QUESTION_SUIJICHOUDA);
     }
 
     public void ceping(View view) {
         //测评，给全班发测评命令
-        selectQuestion(TYPE_QUESTION_3);
+        selectQuestion(TYPE_QUESTION_CEPING);
     }
 
     private int questionTime = 120;
@@ -387,12 +391,19 @@ public class Course0Activity extends ScreenSharingActivity {
                 }
 
                 dialog.dismiss();
-                if (type == TYPE_DIANMINGDA) {
+                if (type == TYPE_QUESTION_DIANMINGDA) {
                     //点名答要手动选人
                     startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_DIANMINGDA));
-                } else {
-                    //抢答等
+                } else if (type == TYPE_QUESTION_SUIJICHOUDA) {
+                    //随机抽答需要传students
+                    //随机抽几个？
+                    ArrayList<Student> selectStudents = getRandomStudents();
+                    startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", selectStudents));
+                } else if (type == TYPE_QUESTION_QIANGDA) {
+                    //TODO 抢答需要等学生抢答后再跳转
                     startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type));
+                } else {
+                    //测评不需要是全班的
                 }
             }
         });
@@ -402,6 +413,21 @@ public class Course0Activity extends ScreenSharingActivity {
                 dialog.dismiss();
             }
         });
+    }
+
+    private ArrayList<Student> getRandomStudents() {
+        while (true) {
+            ArrayList selectStudents = new ArrayList<Student>();
+            for (Student s : students) {
+                int rand = new Random().nextInt();
+                if (rand % 2 == 0) {
+                    selectStudents.add(s);
+                }
+            }
+            if (selectStudents.size() != 0) {
+                return selectStudents;
+            }
+        }
     }
 
     //-------------------------------录屏相关-----------------------------
