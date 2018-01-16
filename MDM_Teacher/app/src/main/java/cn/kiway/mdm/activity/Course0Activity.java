@@ -548,6 +548,8 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder.endBtn = (Button) rowView.findViewById(R.id.endBtn);
                 holder.ball = (ImageView) rowView.findViewById(R.id.ball);
                 holder.line2 = (TextView) rowView.findViewById(R.id.line2);
+                holder.date1 = (TextView) rowView.findViewById(R.id.date1);
+                holder.date2 = (TextView) rowView.findViewById(R.id.date2);
 
                 rowView.setTag(holder);
             } else {
@@ -589,6 +591,14 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder.line2.setVisibility(View.GONE);
             }
 
+            //FIXME
+            if (position == knowledgePoints.size() - 1) {
+                holder.date1.setVisibility(View.GONE);
+                holder.date2.setVisibility(View.GONE);
+            } else {
+                holder.date1.setVisibility(View.VISIBLE);
+                holder.date2.setVisibility(View.VISIBLE);
+            }
 
             holder.endBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -674,6 +684,8 @@ public class Course0Activity extends ScreenSharingActivity {
             public Button endBtn;
             public TextView line2;
             public ImageView ball;
+            public TextView date1;
+            public TextView date2;
         }
 
         @Override
