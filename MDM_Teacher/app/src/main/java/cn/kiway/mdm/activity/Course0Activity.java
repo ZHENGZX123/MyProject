@@ -860,6 +860,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 }
             });
 
+            holder.imgLL.removeAllViews();
             if (!TextUtils.isEmpty(s.img)) {
                 String imgs[] = s.img.split(",");
                 for (int i = 0; i < imgs.length; i++) {

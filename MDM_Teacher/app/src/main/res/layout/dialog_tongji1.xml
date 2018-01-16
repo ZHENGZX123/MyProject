@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:layout_width="300dp"
+        android:layout_width="400dp"
         android:layout_height="250dp"
         android:layout_centerInParent="true"
         android:background="#ffffff">
@@ -25,12 +25,12 @@
 
             <Button
                 android:id="@+id/close"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
-                android:text="X" />
-
+                android:background="@drawable/close" />
 
         </RelativeLayout>
 
@@ -40,14 +40,14 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/line"
             android:layout_below="@+id/titleRL"
-            android:dividerHeight="0dp"></ListView>
+            android:divider="#00000000"></ListView>
 
         <TextView
             android:id="@+id/line"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_above="@+id/bottomRL"
-            android:background="#666666" />
+            android:background="#aaaaaa" />
 
         <LinearLayout
             android:id="@+id/bottomRL"
