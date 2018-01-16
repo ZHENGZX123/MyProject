@@ -29,7 +29,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.kiway.mdm.WXApplication;
+import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
@@ -98,14 +98,14 @@ public class StudentGridActivity extends BaseActivity {
             toast("请选择至少一个学生");
             return;
         }
-        startActivity(new Intent(this, ResultActivity.class).putExtra("type", TYPE_QUESTION_DIANMINGDA).putExtra("students", selectStudents));
+        startActivity(new Intent(this, ResultActivity1.class).putExtra("type", TYPE_QUESTION_DIANMINGDA).putExtra("students", selectStudents).putExtra("questionTime", getIntent().getIntExtra("questionTime", 0)));
         finish();
     }
 
     public void initData() {
         try {
             showPD();
-            String url = WXApplication.clientUrl + "/device/teacher/class/students";
+            String url = KWApplication.clientUrl + "/device/teacher/class/students";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -145,7 +145,7 @@ public class StudentGridActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Student s = students.get(position);
                 if (type == TYPE_DIANMING) {
-                    toast(s.name + (s.status == 0 ? "没到" : "到了"));
+                    toast(s.name + (s.come ? "到了" : "没到"));
                 } else if (type == TYPE_DIANMINGDA) {
                     //选中的
                     s.selected = !s.selected;
@@ -184,14 +184,12 @@ public class StudentGridActivity extends BaseActivity {
             //TODO avatar
 
             if (type == TYPE_DIANMING) {
-                //到了是1，没到是0
-                if (s.status == 0) {
-                    holder.icon.setImageResource(R.drawable.icon1);
-                } else {
+                if (s.come) {
                     holder.icon.setImageResource(R.drawable.icon2);
+                } else {
+                    holder.icon.setImageResource(R.drawable.icon1);
                 }
             } else if (type == TYPE_DIANMINGDA) {
-                //选中是1，没选中是0
                 if (s.selected) {
                     holder.icon.setImageResource(R.drawable.icon2);
                 } else {
@@ -199,11 +197,11 @@ public class StudentGridActivity extends BaseActivity {
                 }
             } else if (type == TYPE_TONGJI) {
                 //明白是1，没明白是2，未回复是0
-                if (s.status == 0) {
+                if (s.known == 0) {
                     holder.icon.setImageResource(R.drawable.icon1);
-                } else if (s.status == 1) {
+                } else if (s.known == 1) {
                     holder.icon.setImageResource(R.drawable.icon2);
-                } else if (s.status == 2) {
+                } else if (s.known == 2) {
                     holder.icon.setImageResource(R.drawable.icon3);
                 }
             }
@@ -244,8 +242,6 @@ public class StudentGridActivity extends BaseActivity {
     public void dm(View view) {
         dialog_dianming = new Dialog(this, R.style.popupDialog);
         dialog_dianming.setContentView(R.layout.dialog_dianming);
-        dialog_dianming.setCancelable(false);
-        dialog_dianming.setCanceledOnTouchOutside(false);
         dialog_dianming.show();
         dianmingBtn = (Button) dialog_dianming.findViewById(R.id.dianming);
         count_dianming = (TextView) dialog_dianming.findViewById(count);
@@ -277,7 +273,7 @@ public class StudentGridActivity extends BaseActivity {
         try {
             //1.发“点名”推送命令
             showPD();
-            String url = WXApplication.clientUrl + "/device/push/teacher/sign/order";
+            String url = KWApplication.clientUrl + "/device/push/teacher/sign/order";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -288,6 +284,9 @@ public class StudentGridActivity extends BaseActivity {
                     dismissPD();
                     dianmingBtn.setBackgroundResource(R.drawable.dianmingbutton2);
                     dianmingBtn.setText("结束点名");
+                    //开始点名、对话框不可关闭
+                    dialog_dianming.setCancelable(false);
+                    dialog_dianming.setCanceledOnTouchOutside(false);
                     //开始倒计时
                     mHandler.sendEmptyMessageDelayed(TYPE_DIANMING, 1000);
                 }
@@ -373,8 +372,7 @@ public class StudentGridActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mHandler.removeMessages(TYPE_DIANMING);
-        mHandler.removeMessages(TYPE_TONGJI);
+        mHandler.removeCallbacksAndMessages(null);
     }
 
 

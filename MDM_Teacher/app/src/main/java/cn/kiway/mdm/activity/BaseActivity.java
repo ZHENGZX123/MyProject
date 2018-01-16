@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import cn.kiway.mdm.WXApplication;
+import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.teacher.R;
 
 /**
@@ -76,7 +76,7 @@ public class BaseActivity extends Activity {
     protected void onStart() {
         super.onStart();
 
-        WXApplication.currentActivity = this;
+        KWApplication.currentActivity = this;
 
         boolean expandTool = getSharedPreferences("kiway", 0).getBoolean("expandTool", true);
         if (expandTool) {

@@ -18,7 +18,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 
-import cn.kiway.mdm.WXApplication;
+import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ViewPhotosActivity;
 import cn.kiway.mdm.scoket.ScreenActivity;
@@ -185,8 +185,8 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public String getHost() {
-        Log.d("test", "getHost is called return " + WXApplication.clientUrl);
-        return WXApplication.clientUrl;
+        Log.d("test", "getHost is called return " + KWApplication.clientUrl);
+        return KWApplication.clientUrl;
     }
 
     @JavascriptInterface

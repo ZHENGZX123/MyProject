@@ -15,7 +15,7 @@ import android.webkit.WebView;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import cn.kiway.mdm.WXApplication;
+import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.web.MyWebViewClient;
@@ -41,7 +41,7 @@ public class WhiteBoardActivity extends BaseActivity {
 
     private void load() {
         wv.clearCache(true);
-        String url = "file://" + WXApplication.ROOT + WXApplication.HTML2;
+        String url = "file://" + KWApplication.ROOT + KWApplication.HTML2;
         Log.d("test", "url = " + url);
         wv.loadUrl(url);
     }
