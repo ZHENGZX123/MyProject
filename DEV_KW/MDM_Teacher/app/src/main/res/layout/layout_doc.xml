@@ -15,7 +15,7 @@
         android:src="@drawable/word" />
 
     <TextView
-        android:id="@+id/doc"
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="2dp"

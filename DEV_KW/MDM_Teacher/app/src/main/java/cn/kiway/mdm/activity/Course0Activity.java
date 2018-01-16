@@ -42,9 +42,11 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import cn.kiway.mdm.KWApplication;
+import cn.kiway.mdm.entity.AttachInfoVo;
 import cn.kiway.mdm.entity.Course;
 import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.entity.Question;
@@ -52,17 +54,20 @@ import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.entity.TeachingContentVo;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Utils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static android.media.CamcorderProfile.get;
+import static android.R.id.list;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_TONGJI;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
-import static cn.kiway.mdm.entity.KnowledgePoint.TYPE1;
+import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_DOC;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
+import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
 import static cn.kiway.mdm.util.Utils.check301;
+import static io.netty.util.concurrent.FastThreadLocal.size;
 
 /**
  * Created by Administrator on 2017/12/28.
@@ -125,8 +130,14 @@ public class Course0Activity extends ScreenSharingActivity {
                         course = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<Course>() {
                         }.getType());
                         knowledgePoints = course.knowledgePoints;
-                        KnowledgePoint end = new KnowledgePoint();
                         //add attchment
+                        if (!TextUtils.isEmpty(course.attach)) {
+                            KnowledgePoint kp = new KnowledgePoint();
+                            kp.type = TYPE_DOC;
+                            knowledgePoints.add(kp);
+                        }
+                        //add end
+                        KnowledgePoint end = new KnowledgePoint();
                         end.type = TYPE_END;
                         knowledgePoints.add(end);
                         adapter.notifyDataSetChanged();
@@ -239,8 +250,7 @@ public class Course0Activity extends ScreenSharingActivity {
     public void tongji(View view) {
         Log.d("test", "course.knowledgePoints = " + course.knowledgePoints);
         //统计type=1的知识点的个数
-        int count = course.knowledgePoints.size();
-        if (count == 0) {
+        if (course.knowledgePoints == null || course.knowledgePoints.size() == 0) {
             toast("该课程暂无知识点");
             return;
         }
@@ -318,8 +328,7 @@ public class Course0Activity extends ScreenSharingActivity {
 
     private void selectQuestion(int type) {
         Log.d("test", "course.questions = " + course.questions);
-        int count = course.questions.size();
-        if (count == 0) {
+        if (course.questions == null || course.questions.size() == 0) {
             toast("该课程暂无题目");
             return;
         }
@@ -514,7 +523,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder.line2.setVisibility(View.VISIBLE);
                 //add content0
                 addContent0(holder, s.teachingContentVo);
-            } else if (s.type == TYPE1) {
+            } else if (s.type == TYPE_DOC) {
                 holder.type0RL.setVisibility(View.GONE);
                 holder.type1RL.setVisibility(View.VISIBLE);
                 holder.type_2RL.setVisibility(View.GONE);
@@ -547,14 +556,32 @@ public class Course0Activity extends ScreenSharingActivity {
 
         private void addContent1(ViewHolder holder) {
             holder.type1RL.removeAllViews();
-            LinearLayout layout_doc = (LinearLayout) inflater.inflate(R.layout.layout_doc, null);
-            holder.type1RL.addView(layout_doc, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            layout_doc.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openFileByX5("");
-                }
-            });
+
+            String attachInfo = course.attachInfo;
+            if (TextUtils.isEmpty(attachInfo)) {
+                return;
+            }
+            ArrayList<AttachInfoVo> infos = new GsonBuilder().create().fromJson(attachInfo, new TypeToken<List<AttachInfoVo>>() {
+            }.getType());
+            int count = infos.size();
+            if (count == 0) {
+                return;
+            }
+            for (int i = 0; i < count; i++) {
+                AttachInfoVo info = infos.get(i);
+                LinearLayout layout_doc = (LinearLayout) inflater.inflate(R.layout.layout_doc, null);
+                ImageView icon = (ImageView) layout_doc.findViewById(R.id.icon);
+                //TODO icon
+                TextView name = (TextView) layout_doc.findViewById(R.id.name);
+                name.setText(info.name);
+                holder.type1RL.addView(layout_doc, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                layout_doc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        downloadAndOpenFile(info.url, info.name);
+                    }
+                });
+            }
         }
 
         private void addContent0(ViewHolder holder, TeachingContentVo teachingContentVo) {
@@ -616,33 +643,61 @@ public class Course0Activity extends ScreenSharingActivity {
         }
     }
 
-    public void openFileByX5(String path) {
-        path = "/mnt/sdcard/test.docx";
+    public void downloadAndOpenFile(String url, String fileName) {
+        //1.下载文件
+        //2.打开播放
 
-        String finalPath = path;
-
-        x5FileLayout.setVisibility(View.VISIBLE);
-
-        readerView = new TbsReaderView(this, new TbsReaderView.ReaderCallback() {
+        final String folder = DOWNFILEPATH;
+        if (!new File(folder).exists()) {
+            new File(folder).mkdirs();
+        }
+        if (new File(folder + fileName).exists()) {
+            //直接打开
+            openFileByX5(folder + fileName);
+            return;
+        }
+        showPD();
+        new Thread() {
             @Override
-            public void onCallBackAction(Integer integer, Object o, Object o1) {
+            public void run() {
+                int ret = new HttpDownload().downFile(url, folder, fileName);//开始下载
+                dismissPD();
+                if (ret == -1) {//下载失败
+                    toast("下载文件失败，请稍后再试");
+                    return;
+                }
+                openFileByX5(folder + fileName);
+            }
+        }.start();
+    }
 
+    private void openFileByX5(String filePath) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                x5FileLayout.setVisibility(View.VISIBLE);
+                readerView = new TbsReaderView(Course0Activity.this, new TbsReaderView.ReaderCallback() {
+                    @Override
+                    public void onCallBackAction(Integer integer, Object o, Object o1) {
+
+                    }
+                });
+                //通过bundle把文件传给x5,打开的事情交由x5处理
+                Bundle bundle = new Bundle();
+                //传递文件路径
+                bundle.putString("filePath", filePath);
+                //加载插件保存的路径
+                bundle.putString("tempPath", Environment.getExternalStorageDirectory() + File.separator + "temp");
+                //加载文件前的初始化工作,加载支持不同格式的插件
+                boolean b = readerView.preOpen(Utils.getFileType(filePath), false);
+                if (b) {
+                    readerView.openFile(bundle);
+                } else {
+                    toast("打开文件失败");
+                }
+                x5FileLayout.addView(readerView);
             }
         });
-        //通过bundle把文件传给x5,打开的事情交由x5处理
-        Bundle bundle = new Bundle();
-        //传递文件路径
-        bundle.putString("filePath", finalPath);
-        //加载插件保存的路径
-        bundle.putString("tempPath", Environment.getExternalStorageDirectory() + File.separator + "temp");
-        //加载文件前的初始化工作,加载支持不同格式的插件
-        boolean b = readerView.preOpen(Utils.getFileType(finalPath), false);
-        if (b) {
-            readerView.openFile(bundle);
-        } else {
-            toast("打开文件失败");
-        }
-        x5FileLayout.addView(readerView);
     }
 
     private class TongjiAdapter extends BaseAdapter {
