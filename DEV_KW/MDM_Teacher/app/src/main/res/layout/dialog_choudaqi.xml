@@ -6,7 +6,8 @@
     <RelativeLayout
         android:layout_width="400dp"
         android:layout_height="250dp"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:background="#ffffff">
 
         <RelativeLayout
@@ -25,11 +26,12 @@
 
             <Button
                 android:id="@+id/close"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
-                android:text="X" />
+                android:background="@drawable/close" />
         </RelativeLayout>
 
         <TextView
@@ -44,11 +46,11 @@
             android:textSize="40sp" />
 
         <TextView
-            android:background="#666666"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_above="@+id/start"
-            android:layout_margin="10dp"></TextView>
+            android:layout_margin="10dp"
+            android:background="#666666"></TextView>
 
         <Button
             android:id="@+id/start"
@@ -56,9 +58,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/startbutton"
             android:padding="10dp"
-            android:layout_marginBottom="5dp"
             android:text="    开    始    "
             android:textColor="#ffffff" />
 
