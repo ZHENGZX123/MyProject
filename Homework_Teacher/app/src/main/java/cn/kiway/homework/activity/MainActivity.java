@@ -85,7 +85,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "1.0.7";
+    private static final String currentPackageVersion = "1.0.8";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -581,7 +581,7 @@ public class MainActivity extends BaseActivity {
             //0.检查网络
             if (!method.equalsIgnoreCase("GET") && !NetworkUtil.isNetworkAvailable(getApplicationContext())) {
                 toast("没有网络，请检查网络稍后再试");
-                httpRequestCallback(tagname, "");
+                //httpRequestCallback(tagname, "");
                 return;
             }
             if (time.equals("0")) {
@@ -632,6 +632,8 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
                                 MLog.d("test", "post onFailure = " + ret);
+                                MLog.d("test", "post onFailure = arg0" + arg0);
+                                MLog.d("test", "post onFailure = arg3" + arg3.toString());
                                 httpRequestCallback(tagname, ret);
                             }
                         });
@@ -738,7 +740,15 @@ public class MainActivity extends BaseActivity {
 
     private void httpRequestCallback(final String tagname, String result) {
         if (result == null) {
-            result = "";
+            JSONObject o = new JSONObject();
+            try {
+                o.put("data", "");
+                o.put("errorMsg", "请求失败，请检查网络稍后再试");
+                o.put("statusCode", 400);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            result = o.toString();
         }
         final String finalResult = result;
         runOnUiThread(new Runnable() {
