@@ -44,7 +44,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
-import cn.kiway.mdm.WXApplication;
+import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.entity.Course;
 import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.entity.Question;
@@ -111,7 +111,7 @@ public class Course0Activity extends ScreenSharingActivity {
         //1.知识点详情
         try {
             showPD();
-            String url = WXApplication.clientUrl + "/device/teacher/course/" + course.id;
+            String url = KWApplication.clientUrl + "/device/teacher/course/" + course.id;
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -393,18 +393,19 @@ public class Course0Activity extends ScreenSharingActivity {
                 dialog.dismiss();
                 if (type == TYPE_QUESTION_DIANMINGDA) {
                     //点名答要手动选人
-                    startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_DIANMINGDA));
+                    startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_DIANMINGDA).putExtra("questionTime", questionTime));
                 } else if (type == TYPE_QUESTION_SUIJICHOUDA) {
                     //随机抽答需要传students
-                    //随机抽几个？
                     ArrayList<Student> selectStudents = getRandomStudents();
-                    startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", selectStudents));
+                    startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", type).putExtra("students", selectStudents).putExtra("questionTime", questionTime));
                 } else if (type == TYPE_QUESTION_QIANGDA) {
-                    //TODO 显示转转，抢答需要等学生抢答后再跳转
-                    startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type));
+                    //TODO 显示转转，抢答需要等学生抢答后再跳转，这里先随便传1个
+                    ArrayList<Student> selectStudents = new ArrayList<>();
+                    selectStudents.add(students.get(0));
+                    startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", type).putExtra("students", selectStudents).putExtra("questionTime", questionTime));
                 } else {
                     //测评是全班的
-                    startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", students));
+                    startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", type).putExtra("students", students).putExtra("questionTime", questionTime));
                 }
             }
         });
@@ -581,7 +582,7 @@ public class Course0Activity extends ScreenSharingActivity {
                         startActivity(intent);
                     }
                 });
-                ImageLoader.getInstance().displayImage(imgs[i], iv, WXApplication.getLoaderOptions());
+                ImageLoader.getInstance().displayImage(imgs[i], iv, KWApplication.getLoaderOptions());
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 lp.setMargins(10, 10, 10, 10);
                 holder.type0RL.addView(iv, lp);
@@ -758,7 +759,7 @@ public class Course0Activity extends ScreenSharingActivity {
                             startActivity(intent);
                         }
                     });
-                    ImageLoader.getInstance().displayImage(imgs[i], iv, WXApplication.getLoaderOptions());
+                    ImageLoader.getInstance().displayImage(imgs[i], iv, KWApplication.getLoaderOptions());
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     lp.setMargins(10, 10, 10, 10);
                     holder.imgLL.addView(iv, lp);

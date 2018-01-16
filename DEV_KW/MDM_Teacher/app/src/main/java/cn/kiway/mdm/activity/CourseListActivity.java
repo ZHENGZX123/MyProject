@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import cn.kiway.mdm.WXApplication;
+import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.entity.Course;
 import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.teacher.R;
@@ -77,7 +77,7 @@ public class CourseListActivity extends BaseActivity {
     public void initData() {
         try {
             //TODO 分页
-            String url = WXApplication.clientUrl + "/device/teacher/course/attend?currentPage=1&pageSize=50";
+            String url = KWApplication.clientUrl + "/device/teacher/course/attend?currentPage=1&pageSize=50";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);

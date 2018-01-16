@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import cn.kiway.mdm.WXApplication;
+import cn.kiway.mdm.KWApplication;
 
 /**
  * Created by Android on 2016/4/20.
@@ -199,7 +199,7 @@ public class FileUtils {
 
     public static void copyRawToSdcard(Context c, int id, String name) {
         InputStream inStream = c.getResources().openRawResource(id);//R.raw.tab0
-        File file = new File(WXApplication.ROOT + name);
+        File file = new File(KWApplication.ROOT + name);
         FileOutputStream fileOutputStream = null;//存入SDCard
         try {
             fileOutputStream = new FileOutputStream(file);

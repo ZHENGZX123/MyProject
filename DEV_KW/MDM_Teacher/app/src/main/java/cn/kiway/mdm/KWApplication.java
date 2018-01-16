@@ -24,7 +24,7 @@ import cn.kiway.mdm.service.RecordService;
  * Created by Administrator on 2017/7/5.
  */
 
-public class WXApplication extends Application {
+public class KWApplication extends Application {
 
     public static String serverUrl = "http://192.168.8.161:8084";
     public static String clientUrl = "http://192.168.8.161:8085";

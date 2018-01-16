@@ -35,7 +35,6 @@
         </RelativeLayout>
 
         <ListView
-
             android:id="@+id/lv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -107,7 +106,10 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:text="开始答题" />
+                android:background="@drawable/endbutton"
+                android:padding="10dp"
+                android:text="    开始答题    "
+                android:textColor="#ffffff" />
         </RelativeLayout>
 
     </RelativeLayout>

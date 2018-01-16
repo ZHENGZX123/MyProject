@@ -28,7 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import cn.kiway.mdm.WXApplication;
+import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.Course0Activity;
 import cn.kiway.mdm.activity.CourseListActivity;
@@ -253,7 +253,7 @@ public class Utils {
         try {
             //1.发“上课”推送命令
             ((BaseActivity) c).showPD();
-            String url = WXApplication.clientUrl + "/device/push/teacher/attendClass?flag=1&ip=" + wifiIp + "&platform=Android";
+            String url = KWApplication.clientUrl + "/device/push/teacher/attendClass?flag=1&ip=" + wifiIp + "&platform=Android";
             Log.d("test", "shangke url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
@@ -296,7 +296,7 @@ public class Utils {
         try {
             ((BaseActivity) c).showPD();
             //1.发“下课”推送命令
-            String url = WXApplication.clientUrl + "/device/push/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
+            String url = KWApplication.clientUrl + "/device/push/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -330,7 +330,7 @@ public class Utils {
         try {
             ((BaseActivity) c).showPD();
             //1.发“下课”推送命令
-            String url = WXApplication.clientUrl + "/device/teacher/course/" + courseID + "/attend";
+            String url = KWApplication.clientUrl + "/device/teacher/course/" + courseID + "/attend";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -372,7 +372,7 @@ public class Utils {
             Log.d("test", "301 happen");
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            String url = WXApplication.clientUrl + "/device/teacher/login";
+            String url = KWApplication.clientUrl + "/device/teacher/login";
             Log.d("test", "relogin url = " + url);
             RequestParams param = new RequestParams();
             param.put("userName", c.getSharedPreferences("kiway", 0).getString("username", ""));
@@ -396,13 +396,13 @@ public class Utils {
                         } else if (type.equals("endclass")) {
                             endClass(c, courseID);
                         } else if (type.equals("students")) {
-                            ((StudentGridActivity) WXApplication.currentActivity).initData();
+                            ((StudentGridActivity) KWApplication.currentActivity).initData();
                         } else if (type.equals("dianming")) {
-                            ((StudentGridActivity) WXApplication.currentActivity).doStartSign();
+                            ((StudentGridActivity) KWApplication.currentActivity).doStartSign();
                         } else if (type.equals("courselist")) {
-                            ((CourseListActivity) WXApplication.currentActivity).initData();
+                            ((CourseListActivity) KWApplication.currentActivity).initData();
                         } else if (type.equals("coursedetail")) {
-                            ((Course0Activity) WXApplication.currentActivity).initData();
+                            ((Course0Activity) KWApplication.currentActivity).initData();
                         }
                     } catch (Exception e) {
                     }

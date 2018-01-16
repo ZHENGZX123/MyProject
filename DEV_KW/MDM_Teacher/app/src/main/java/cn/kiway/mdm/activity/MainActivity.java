@@ -40,7 +40,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import cn.kiway.mdm.WXApplication;
+import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.scoket.utils.Logger;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.FileUtils;
@@ -56,7 +56,7 @@ import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
 import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
 
-import static cn.kiway.mdm.WXApplication.clientUrl;
+import static cn.kiway.mdm.KWApplication.clientUrl;
 import static cn.kiway.mdm.util.ResultMessage.QRSCAN;
 import static cn.kiway.mdm.util.Utils.getCurrentVersion;
 import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
@@ -136,7 +136,7 @@ public class MainActivity extends BaseActivity {
 
     private void load() {
         wv.clearCache(true);
-        String url = "file://" + WXApplication.ROOT + WXApplication.HTML;
+        String url = "file://" + KWApplication.ROOT + KWApplication.HTML;
         Log.d("test", "url = " + url);
         wv.loadUrl(url);
     }
@@ -331,7 +331,7 @@ public class MainActivity extends BaseActivity {
                 try {
                     sleep(1500);
                     checkTimeout();
-                    HttpGet httpRequest = new HttpGet(WXApplication.clientUrl + "/static/download/version/zip_teacher.json");
+                    HttpGet httpRequest = new HttpGet(KWApplication.clientUrl + "/static/download/version/zip_teacher.json");
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
@@ -495,7 +495,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 Log.d("test", "updatePackage downloadUrl = " + downloadUrl);
-                final int ret = new HttpDownload().downFile(downloadUrl, WXApplication.ROOT, WXApplication.ZIP);
+                final int ret = new HttpDownload().downFile(downloadUrl, KWApplication.ROOT, KWApplication.ZIP);
                 Log.d("test", "下载新包 ret = " + ret);
                 runOnUiThread(new Runnable() {
                     @Override
@@ -505,17 +505,17 @@ public class MainActivity extends BaseActivity {
                             return;
                         }
                         Log.d("test", "删除旧包");
-                        if (new File(WXApplication.ROOT + "mdm_teacher").exists()) {
-                            FileUtils.delFolder(WXApplication.ROOT + "mdm_teacher");
+                        if (new File(KWApplication.ROOT + "mdm_teacher").exists()) {
+                            FileUtils.delFolder(KWApplication.ROOT + "mdm_teacher");
                         }
                         try {
                             Log.d("test", "解压新包");
-                            new ZipFile(WXApplication.ROOT + WXApplication.ZIP).extractAll(WXApplication.ROOT);
+                            new ZipFile(KWApplication.ROOT + KWApplication.ZIP).extractAll(KWApplication.ROOT);
                         } catch (ZipException e) {
                             e.printStackTrace();
                         }
                         //解压完毕，删掉zip文件
-                        new File(WXApplication.ROOT + WXApplication.ZIP).delete();
+                        new File(KWApplication.ROOT + KWApplication.ZIP).delete();
                         Log.d("test", "解压完毕");
                         getSharedPreferences("kiway", 0).edit().putString("version_package", outer_package).commit();
                         jump(true);
@@ -550,28 +550,28 @@ public class MainActivity extends BaseActivity {
         }
         if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", false).commit();
-            if (new File(WXApplication.ROOT).exists()) {
-                FileUtils.delFolder(WXApplication.ROOT);
+            if (new File(KWApplication.ROOT).exists()) {
+                FileUtils.delFolder(KWApplication.ROOT);
             }
-            if (!new File(WXApplication.ROOT).exists()) {
-                new File(WXApplication.ROOT).mkdirs();
+            if (!new File(KWApplication.ROOT).exists()) {
+                new File(KWApplication.ROOT).mkdirs();
             }
             //拷贝
-            FileUtils.copyRawToSdcard(this, R.raw.mdm_teacher, WXApplication.ZIP);
+            FileUtils.copyRawToSdcard(this, R.raw.mdm_teacher, KWApplication.ZIP);
             //解压
             try {
-                new ZipFile(WXApplication.ROOT + WXApplication.ZIP).extractAll(WXApplication.ROOT);
+                new ZipFile(KWApplication.ROOT + KWApplication.ZIP).extractAll(KWApplication.ROOT);
             } catch (ZipException e) {
                 e.printStackTrace();
             }
             //解压完毕，删掉zip文件
-            new File(WXApplication.ROOT + WXApplication.ZIP).delete();
+            new File(KWApplication.ROOT + KWApplication.ZIP).delete();
             getSharedPreferences("kiway", 0).edit().putString("version_package", currentPackageVersion).commit();
         }
     }
 
     private boolean checkFileComplete() {
-        if (!new File(WXApplication.ROOT + WXApplication.HTML).exists()) {
+        if (!new File(KWApplication.ROOT + KWApplication.HTML).exists()) {
             return false;
         }
         return true;

@@ -3,10 +3,13 @@ package cn.kiway.mdm.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -17,11 +20,12 @@ import java.util.ArrayList;
 
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.Utils;
 
+import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_CEPING;
 import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_DIANMINGDA;
 import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_QIANGDA;
 import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_SUIJICHOUDA;
-import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_CEPING;
 
 
 /**
@@ -29,15 +33,17 @@ import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_CEPING;
  */
 
 //问答反馈
-public class ResultActivity extends BaseActivity {
+public class ResultActivity1 extends BaseActivity {
 
     private int type;
     private RelativeLayout type123RL;
     private RelativeLayout type4RL;
+    private TextView time;
 
     private GridView gv;
     private MyAdapter adapter;
     private ArrayList<Student> students;
+    private int questionTime;
 
     private boolean finished;
 
@@ -48,6 +54,7 @@ public class ResultActivity extends BaseActivity {
 
         type = getIntent().getIntExtra("type", 1);
         students = (ArrayList<Student>) getIntent().getSerializableExtra("students");
+        questionTime = getIntent().getIntExtra("questionTime", 0);
 
         initView();
         initData();
@@ -59,6 +66,7 @@ public class ResultActivity extends BaseActivity {
 
         type123RL = (RelativeLayout) findViewById(R.id.type123RL);
         type4RL = (RelativeLayout) findViewById(R.id.type4RL);
+        time = (TextView) findViewById(R.id.time);
 
         if (type == TYPE_QUESTION_DIANMINGDA) {
             titleName.setText("点名答结果");
@@ -81,24 +89,51 @@ public class ResultActivity extends BaseActivity {
         gv = (GridView) findViewById(R.id.studentGV);
         adapter = new MyAdapter();
         gv.setAdapter(adapter);
+
+        gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Student s = students.get(position);
+                if (!s.submit) {
+                    toast("该学生未提交答案");
+                    return;
+                }
+//                startActivity(new Intent(this , ));
+            }
+        });
     }
 
     private void initData() {
-//        假数据
-//        for (int i = 0; i < 10; i++) {
-//            Student s = new Student();
-//            s.name = "学生" + i;
-//            students.add(s);
-//        }
-        adapter.notifyDataSetChanged();
+        if (questionTime == 0) {
+            mHandler.sendEmptyMessageDelayed(0, 1000);
+        } else {
+            mHandler.sendEmptyMessageDelayed(1, 1000);
+        }
     }
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 0) {
+                questionTime++;
+            } else if (msg.what == 1) {
+                if (questionTime > 0) {
+                    questionTime--;
+                } else {
+                    finished = true;
+                }
+            }
+            time.setText(Utils.secToTime(questionTime));
+            mHandler.sendEmptyMessageDelayed(msg.what, 1000);
+        }
+    };
 
     private class MyAdapter extends BaseAdapter {
 
         private final LayoutInflater inflater;
 
         public MyAdapter() {
-            inflater = LayoutInflater.from(ResultActivity.this);
+            inflater = LayoutInflater.from(ResultActivity1.this);
         }
 
         @Override
@@ -119,7 +154,13 @@ public class ResultActivity extends BaseActivity {
 
             final Student s = students.get(position);
             holder.name.setText(s.name);
-            holder.icon.setImageResource(R.drawable.icon2);
+
+            //绿色表示已答题提交，灰色表示还未作答的
+            if (s.submit) {
+                holder.icon.setImageResource(R.drawable.icon2);
+            } else {
+                holder.icon.setImageResource(R.drawable.icon1);
+            }
             return rowView;
         }
 
@@ -165,5 +206,11 @@ public class ResultActivity extends BaseActivity {
             return;
         }
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
     }
 }
