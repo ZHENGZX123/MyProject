@@ -275,12 +275,12 @@ public class LFilePickerActivity extends AppCompatActivity {
         mTvPath.setText(path);
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main_toolbar, menu);
         mMenu = menu;
         return true;
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
