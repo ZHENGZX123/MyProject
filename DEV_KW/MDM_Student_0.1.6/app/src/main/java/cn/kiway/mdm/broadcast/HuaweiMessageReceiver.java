@@ -58,7 +58,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
         context.getSharedPreferences("huawei", 0).edit().putString("token", token).commit();
 
         //注册一下
-        if (KWApp.instance != null) {
+        if (KWApp.instance != null && MainActivity.instance != null) {
             Message m = new Message();
             m.what = MSG_INSTALL;
             KWApp.instance.mHandler.sendMessage(m);

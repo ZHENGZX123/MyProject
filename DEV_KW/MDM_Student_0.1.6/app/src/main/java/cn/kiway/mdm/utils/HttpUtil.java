@@ -77,7 +77,7 @@ public class HttpUtil {
         });
     }
 
-    public static void uploadLocation(final MainActivity c, final double longitude, final double latitude) {
+    public static void uploadLocation(final MainActivity c, final double longitude, final double latitude, final String dateStr) {
         c.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -100,6 +100,8 @@ public class HttpUtil {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "locationTrack onSuccess = " + ret);
+                            c.getSharedPreferences("kiway", 0).edit().putFloat(dateStr + "_lastLongitude", (float) longitude).commit();
+                            c.getSharedPreferences("kiway", 0).edit().putFloat(dateStr + "_lastLatitude", (float) latitude).commit();
                         }
 
                         @Override
