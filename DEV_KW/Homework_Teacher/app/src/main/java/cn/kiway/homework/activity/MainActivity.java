@@ -744,7 +744,7 @@ public class MainActivity extends BaseActivity {
             try {
                 o.put("data", "");
                 o.put("errorMsg", "请求失败，请检查网络稍后再试");
-                o.put("statusCode", 400);
+                o.put("statusCode", 503);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
