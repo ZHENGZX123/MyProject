@@ -2,7 +2,6 @@ package cn.kiway.mdm.activity;
 
 import android.annotation.TargetApi;
 import android.app.AppOpsManager;
-import android.app.NotificationManager;
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -710,11 +709,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                             Log.d("test", "坐标距离小于100，不用上报");
                             return;
                         }
-                        getSharedPreferences("kiway", 0).edit().putFloat(dateStr + "_lastLongitude", (float) location
-                                .getLongitude()).commit();
-                        getSharedPreferences("kiway", 0).edit().putFloat(dateStr + "_lastLatitude", (float) location
-                                .getLatitude()).commit();
-                        HttpUtil.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude());
+                        HttpUtil.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude() , dateStr);
                     }
 
                     @Override
