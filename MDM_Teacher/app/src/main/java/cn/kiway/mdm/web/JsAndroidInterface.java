@@ -197,6 +197,9 @@ public class JsAndroidInterface {
             @Override
             public void run() {
                 final String folder = DOWNFILEPATH;//下载存放的文件夹
+                if (!new File(folder).exists()) {
+                    new File(folder).mkdirs();
+                }
                 if (new File(folder + fileName).exists()) {
                     Utils.openFile(activity, folder + fileName);
                     return;
