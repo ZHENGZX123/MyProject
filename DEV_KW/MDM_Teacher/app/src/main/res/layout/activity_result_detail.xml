@@ -40,14 +40,14 @@
                     android:textColor="#000000"
                     android:textSize="18sp" />
 
-                <View
+                <TextView
                     android:id="@+id/line"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_below="@+id/hint"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="#eeeeee" />
+                    android:background="#666666" />
 
                 <LinearLayout
                     android:layout_centerHorizontal="true"
@@ -80,13 +80,13 @@
                         android:textColor="#ffffff" />
                 </LinearLayout>
 
-                <View
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_above="@+id/ll_bottom"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="#eeeeee" />
+                    android:background="#666666" />
 
             </RelativeLayout>
 
