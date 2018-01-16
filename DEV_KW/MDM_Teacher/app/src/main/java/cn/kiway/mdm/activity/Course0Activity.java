@@ -131,7 +131,7 @@ public class Course0Activity extends ScreenSharingActivity {
                         JSONObject data = new JSONObject(ret).getJSONObject("data");
                         course = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<Course>() {
                         }.getType());
-                        knowledgePoints = course.knowledgePoints;
+                        knowledgePoints.addAll(course.knowledgePoints);
                         //add attchment
                         if (!TextUtils.isEmpty(course.attach)) {
                             KnowledgePoint kp = new KnowledgePoint();
@@ -447,28 +447,31 @@ public class Course0Activity extends ScreenSharingActivity {
                 new Thread() {
                     @Override
                     public void run() {
-                        int rand = 50 + new Random().nextInt(50);
+                        int rand = new Random().nextInt(100);
                         for (int i = 0; i < rand; i++) {
                             try {
                                 sleep(100);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            int finalI = i;
+                            Student s = students.get(i % students.size());
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    name.setText(students.get(finalI % students.size()).name);
+                                    name.setText(s.name);
                                 }
                             });
+                            if (i == rand - 1) {
+                                toast("随机到的学生是：" + s.name);
+                                ArrayList<Student> selectStudents = new ArrayList<>();//getRandomStudents();
+                                selectStudents.add(s);
+                                startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", TYPE_QUESTION_SUIJICHOUDA).putExtra("students", selectStudents).putExtra("questionTime", questionTime));
+                            }
                         }
                     }
                 }.start();
             }
         });
-
-//        ArrayList<Student> selectStudents = getRandomStudents();
-//        startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", TYPE_QUESTION_SUIJICHOUDA).putExtra("students", selectStudents).putExtra("questionTime", questionTime));
     }
 
     private ArrayList<Student> getRandomStudents() {
@@ -591,8 +594,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 @Override
                 public void onClick(View v) {
                     Utils.xiake(Course0Activity.this);
-                    //Utils.endClass(Course0Activity.this , course.id);
-                    finish();
+                    Utils.endClass(Course0Activity.this, course.id);
                 }
             });
 
@@ -618,12 +620,14 @@ public class Course0Activity extends ScreenSharingActivity {
                 ImageView icon = (ImageView) layout_doc.findViewById(R.id.icon);
                 //TODO icon
                 TextView name = (TextView) layout_doc.findViewById(R.id.name);
-                name.setText(info.name);
-                holder.type1RL.addView(layout_doc, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                name.setText(info.fileName);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                lp.setMargins(10, 10, 10, 10);
+                holder.type1RL.addView(layout_doc, lp);
                 layout_doc.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        downloadAndOpenFile(info.url, info.name);
+                        downloadAndOpenFile(info.fileUrl, info.fileName);
                     }
                 });
             }

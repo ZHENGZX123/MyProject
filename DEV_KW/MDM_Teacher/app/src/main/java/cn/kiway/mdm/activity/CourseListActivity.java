@@ -35,7 +35,6 @@ import cn.kiway.mdm.util.Utils;
 
 public class CourseListActivity extends BaseActivity {
 
-
     private ListView lv;
     private MyAdapter adapter;
     private ArrayList<Course> courses = new ArrayList<>();
@@ -46,7 +45,6 @@ public class CourseListActivity extends BaseActivity {
         setContentView(R.layout.activity_courselist);
 
         initView();
-        initData();
         iniListener();
     }
 
@@ -74,10 +72,17 @@ public class CourseListActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        initData();
+    }
+
     public void initData() {
+        showPD();
         try {
             //TODO 分页
-            String url = KWApplication.clientUrl + "/device/teacher/course/attend?currentPage=1&pageSize=50";
+            String url = KWApplication.clientUrl + "/device/teacher/course/attend?currentPage=1&pageSize=100";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -85,6 +90,7 @@ public class CourseListActivity extends BaseActivity {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
+                    dismissPD();
                     try {
                         JSONArray list = new JSONObject(ret).getJSONObject("data").getJSONArray("list");
                         courses = new GsonBuilder().create().fromJson(list.toString(), new TypeToken<List<Course>>() {
@@ -106,6 +112,7 @@ public class CourseListActivity extends BaseActivity {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
+                    dismissPD();
                     if (!Utils.check301(CourseListActivity.this, s, "courselist")) {
                         toast("请求失败，请稍后再试");
                     }

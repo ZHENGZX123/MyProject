@@ -294,7 +294,6 @@ public class Utils {
 
     public static void xiake(Activity c) {
         try {
-            ((BaseActivity) c).showPD();
             //1.发“下课”推送命令
             String url = KWApplication.clientUrl + "/device/push/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
             AsyncHttpClient client = new AsyncHttpClient();
@@ -304,7 +303,6 @@ public class Utils {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
-                    ((BaseActivity) c).dismissPD();
                 }
 
                 @Override
@@ -319,7 +317,6 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
             toast(c, "请求失败，请稍后再试");
-            ((BaseActivity) c).dismissPD();
         }
     }
 
@@ -339,6 +336,7 @@ public class Utils {
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "endClass onSuccess = " + ret);
                     ((BaseActivity) c).dismissPD();
+                    ((BaseActivity) c).finish();
                 }
 
                 @Override

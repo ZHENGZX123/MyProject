@@ -8,9 +8,7 @@ import java.io.Serializable;
 
 public class AttachInfoVo implements Serializable {
 
-    public String name;
-    public String size;
-    public String suffix;
-    public String url;
-
+    public String fileName;
+    public String fileUrl;
+    public String fileSize;
 }
