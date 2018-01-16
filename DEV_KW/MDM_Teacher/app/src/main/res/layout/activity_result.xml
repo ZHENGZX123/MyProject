@@ -50,7 +50,7 @@
                     android:layout_below="@+id/hint"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="#666666" />
+                    android:background="#aaaaaa" />
 
                 <TextView
                     android:id="@+id/time"
@@ -83,7 +83,7 @@
                     android:layout_above="@+id/stop"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="#666666" />
+                    android:background="#aaaaaa" />
 
             </RelativeLayout>
 

@@ -48,7 +48,7 @@
             android:layout_above="@+id/bottomRL"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:background="#666666" />
+            android:background="#aaaaaa" />
 
         <RelativeLayout
             android:id="@+id/bottomRL"
