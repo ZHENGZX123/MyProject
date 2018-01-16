@@ -178,7 +178,7 @@ public class CourseListActivity extends BaseActivity {
             holder.title1.setText(s.name);
             String subtitle = "";
             for (KnowledgePoint kp : s.knowledgePoints) {
-                subtitle += kp.content + "\n";
+                subtitle += "知识点" + (position + 1) + "：" + kp.content + "\n ";
             }
             holder.title2.setText(subtitle);
             return rowView;
