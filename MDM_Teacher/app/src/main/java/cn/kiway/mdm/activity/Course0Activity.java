@@ -58,12 +58,14 @@ import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Utils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
+import static android.R.attr.type;
 import static android.R.id.list;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_TONGJI;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_DOC;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
+import static cn.kiway.mdm.teacher.R.id.close;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
 import static cn.kiway.mdm.util.Utils.check301;
@@ -404,11 +406,10 @@ public class Course0Activity extends ScreenSharingActivity {
                     //点名答要手动选人
                     startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_DIANMINGDA).putExtra("questionTime", questionTime));
                 } else if (type == TYPE_QUESTION_SUIJICHOUDA) {
-                    //随机抽答需要传students
-                    ArrayList<Student> selectStudents = getRandomStudents();
-                    startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", type).putExtra("students", selectStudents).putExtra("questionTime", questionTime));
+                    //随机抽答，弹出抽取框
+                    showChoudaqiDialog();
                 } else if (type == TYPE_QUESTION_QIANGDA) {
-                    //TODO 显示转转，抢答需要等学生抢答后再跳转，这里先随便传1个
+                    //TODO 抢答1个学生
                     ArrayList<Student> selectStudents = new ArrayList<>();
                     selectStudents.add(students.get(0));
                     startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", type).putExtra("students", selectStudents).putExtra("questionTime", questionTime));
@@ -424,6 +425,50 @@ public class Course0Activity extends ScreenSharingActivity {
                 dialog.dismiss();
             }
         });
+    }
+
+    private void showChoudaqiDialog() {
+        final Dialog dialog = new Dialog(this, R.style.popupDialog);
+        dialog.setContentView(R.layout.dialog_choudaqi);
+        dialog.show();
+        TextView name = (TextView) dialog.findViewById(R.id.name);
+        name.setText(students.get(0).name);
+        Button close = (Button) dialog.findViewById(R.id.close);
+        Button start = (Button) dialog.findViewById(R.id.start);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        int rand = 50 + new Random().nextInt(50);
+                        for (int i = 0; i < rand; i++) {
+                            try {
+                                sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            int finalI = i;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    name.setText(students.get(finalI % students.size()).name);
+                                }
+                            });
+                        }
+                    }
+                }.start();
+            }
+        });
+
+//        ArrayList<Student> selectStudents = getRandomStudents();
+//        startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", TYPE_QUESTION_SUIJICHOUDA).putExtra("students", selectStudents).putExtra("questionTime", questionTime));
     }
 
     private ArrayList<Student> getRandomStudents() {
