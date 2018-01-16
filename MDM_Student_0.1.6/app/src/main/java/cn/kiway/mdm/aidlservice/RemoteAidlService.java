@@ -75,12 +75,6 @@ public class RemoteAidlService extends Service {
         @Override
         public void shareScreen(boolean i, String ip) throws RemoteException {
             Logger.log("LockScreen::::::::" + i);
-//            if (i) {
-//                FxService.setIp(ip);
-//                ((BaseActivity) KWApp.instance.currentActivity).startScreen();
-//            } else {
-//                ((BaseActivity) KWApp.instance.currentActivity).stopScreen();
-//            }
         }
 
         @Override
