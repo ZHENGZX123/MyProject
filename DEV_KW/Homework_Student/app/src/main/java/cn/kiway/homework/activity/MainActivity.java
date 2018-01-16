@@ -86,7 +86,7 @@ import static cn.kiway.homework.WXApplication.zhengshiUrl;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "1.0.7";
+    private static final String currentPackageVersion = "1.0.8";
 
     private X5WebView wv;
     private LinearLayout layout_welcome;
@@ -1046,7 +1046,15 @@ public class MainActivity extends BaseActivity {
 
     private void httpRequestCallback(final String tagname, String result) {
         if (result == null) {
-            result = "";
+            JSONObject o = new JSONObject();
+            try {
+                o.put("data", "");
+                o.put("errorMsg", "请求失败，请检查网络稍后再试");
+                o.put("statusCode", 400);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            result = o.toString();
         }
         final String finalResult = result;
         runOnUiThread(new Runnable() {
