@@ -12,9 +12,9 @@ public class Question implements Serializable {
     public String courseId;
     public String content;
     public String img;
-    public String options;//选择题。。
+    public String options;//选择题用到
     public String id;
-    public int type;//(1:选择 2:问答 3:填空 4:判断 5:主观题)
+    public int type;    // 1是单选题 2是多选题 3填空题  4判断题  5问答题
     public String operation;//
     public String createDate;
     public AnswerVo answerVo;
