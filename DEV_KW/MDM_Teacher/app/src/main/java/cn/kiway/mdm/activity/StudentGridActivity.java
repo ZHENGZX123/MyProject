@@ -1,6 +1,8 @@
 package cn.kiway.mdm.activity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,13 +45,21 @@ import static cn.kiway.mdm.util.Utils.check301;
 //首页:TYPE_DIANMING
 //点名答:TYPE_DIANMINGDA
 //统计:TYPE_TONGJI
+//分发文件:TYPE_WENJIAN
+//查屏:TYPE_CHAPING
+//锁屏:TYPE_SUOPING
 public class StudentGridActivity extends BaseActivity {
 
     public static final int TYPE_DIANMING = 1;
     public static final int TYPE_DIANMINGDA = 2;
     public static final int TYPE_TONGJI = 3;
+    public static final int TYPE_WENJIAN = 4;
+    public static final int TYPE_CHAPING = 5;
+    public static final int TYPE_SUOPING = 6;
 
     private Button ok;
+    private Button all;
+    private ImageButton lock;
     private RelativeLayout toolsRL;
 
     private int type;
@@ -79,12 +90,63 @@ public class StudentGridActivity extends BaseActivity {
 
         toolsRL = (RelativeLayout) findViewById(R.id.toolsRL);
         ok = (Button) findViewById(R.id.ok);
-        if (type == TYPE_DIANMINGDA) {
+        all = (Button) findViewById(R.id.all);
+        lock = (ImageButton) findViewById(R.id.lock);
+
+        if (type == TYPE_DIANMINGDA || type == TYPE_CHAPING) {
             ok.setVisibility(View.VISIBLE);
             toolsRL.setVisibility(View.GONE);
         } else if (type == TYPE_TONGJI) {
             showTongjidialog();
+        } else if (type == TYPE_WENJIAN) {
+            ok.setVisibility(View.VISIBLE);
+            all.setVisibility(View.VISIBLE);
+            toolsRL.setVisibility(View.GONE);
+        } else if (type == TYPE_SUOPING) {
+            lock.setVisibility(View.VISIBLE);
+            toolsRL.setVisibility(View.GONE);
         }
+    }
+
+    private boolean selectAll = false;
+
+    public void clickALL(View v) {
+        selectAll = !selectAll;
+        if (selectAll) {
+            all.setText("取消");
+        } else {
+            all.setText("全选");
+        }
+        for (Student s : students) {
+            s.selected = selectAll;
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    private boolean lockAll = false;
+
+    public void clickLock(View v) {
+        String message = "";
+        if (lockAll) {
+            message = "是否解锁全班学生的屏幕";
+        } else {
+            message = "是否锁定全班学生的屏幕";
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+        AlertDialog dialog = builder.setTitle("提示").setMessage(message)
+                .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        //发送命令
+                        //全锁或者全解锁
+                        lockAll = !lockAll;
+                        for (Student s : students) {
+                            s.locked = lockAll;
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                }).setPositiveButton(android.R.string.cancel, null).create();
+        dialog.show();
     }
 
     public void clickOK(View v) {
@@ -98,8 +160,14 @@ public class StudentGridActivity extends BaseActivity {
             toast("请选择至少一个学生");
             return;
         }
-        startActivity(new Intent(this, ResultActivity.class).putExtra("type", TYPE_QUESTION_DIANMINGDA).putExtra("students", selectStudents).putExtra("questionTime", getIntent().getIntExtra("questionTime", 0)).putExtra("questions", getIntent().getSerializableExtra("questions")));
-        finish();
+        if (type == TYPE_DIANMINGDA) {
+            //点名答
+            startActivity(new Intent(this, ResultActivity.class).putExtra("type", TYPE_QUESTION_DIANMINGDA).putExtra("students", selectStudents).putExtra("questionTime", getIntent().getIntExtra("questionTime", 0)).putExtra("questions", getIntent().getSerializableExtra("questions")));
+            finish();
+        } else if (type == TYPE_WENJIAN) {
+            //发送文件成功后finish
+            finish();
+        }
     }
 
     public void initData() {
@@ -146,10 +214,36 @@ public class StudentGridActivity extends BaseActivity {
                 Student s = students.get(position);
                 if (type == TYPE_DIANMING) {
                     toast(s.name + (s.come ? "到了" : "没到"));
-                } else if (type == TYPE_DIANMINGDA) {
+                } else if (type == TYPE_DIANMINGDA || type == TYPE_WENJIAN) {
                     //选中的
                     s.selected = !s.selected;
                     adapter.notifyDataSetChanged();
+                } else if (type == TYPE_CHAPING) {
+                    toast("查看" + s.name + "的屏幕");
+                    //跳页...
+                } else if (type == TYPE_SUOPING) {
+                    String message;
+                    if (s.locked) {
+                        message = "是否解锁" + s.name + "的屏幕";
+                    } else {
+                        message = "是否锁定" + s.name + "的屏幕";
+                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(StudentGridActivity.this, AlertDialog.THEME_HOLO_LIGHT);
+                    AlertDialog dialog = builder.setTitle("提示").setMessage(message)
+                            .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface arg0, int arg1) {
+                                    //1.发送命令
+                                    //2.刷新界面
+                                    s.locked = !s.locked;
+                                    adapter.notifyDataSetChanged();
+                                    //3.修改lockAll变量
+                                    for (Student s : students) {
+                                        lockAll = lockAll & s.locked;
+                                    }
+                                }
+                            }).setPositiveButton(android.R.string.cancel, null).create();
+                    dialog.show();
                 }
             }
         });
@@ -173,6 +267,7 @@ public class StudentGridActivity extends BaseActivity {
 
                 holder.name = (TextView) rowView.findViewById(R.id.name);
                 holder.icon = (ImageView) rowView.findViewById(R.id.icon);
+                holder.lock = (ImageView) rowView.findViewById(R.id.lock);
 
                 rowView.setTag(holder);
             } else {
@@ -189,7 +284,7 @@ public class StudentGridActivity extends BaseActivity {
                 } else {
                     holder.icon.setImageResource(R.drawable.icon1);
                 }
-            } else if (type == TYPE_DIANMINGDA) {
+            } else if (type == TYPE_DIANMINGDA || type == TYPE_WENJIAN) {
                 if (s.selected) {
                     holder.icon.setImageResource(R.drawable.icon2);
                 } else {
@@ -204,6 +299,12 @@ public class StudentGridActivity extends BaseActivity {
                 } else if (s.known == 2) {
                     holder.icon.setImageResource(R.drawable.icon3);
                 }
+            } else if (type == TYPE_SUOPING) {
+                if (s.locked) {
+                    holder.lock.setVisibility(View.VISIBLE);
+                } else {
+                    holder.lock.setVisibility(View.GONE);
+                }
             }
 
             return rowView;
@@ -212,6 +313,7 @@ public class StudentGridActivity extends BaseActivity {
         public class ViewHolder {
             public TextView name;
             public ImageView icon;
+            public ImageView lock;
         }
 
         @Override

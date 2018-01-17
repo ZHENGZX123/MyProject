@@ -22,9 +22,12 @@ public class Student implements Serializable {
     public String createDate;
     public String imei;
     public String avatar;
+    
     public boolean come; //0没到 1到了
     public int known;
     public boolean submit;
     public boolean selected;
+    public boolean locked;//锁定
+
 
 }

@@ -53,11 +53,15 @@ import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Utils;
 
+import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_CHAPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
+import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_SUOPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_TONGJI;
+import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_WENJIAN;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_DOC;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
+import static cn.kiway.mdm.teacher.R.id.count;
 import static cn.kiway.mdm.teacher.R.id.selectCount;
 import static cn.kiway.mdm.teacher.R.id.selectallRL;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
@@ -224,15 +228,19 @@ public class Course0Activity extends ScreenSharingActivity {
 
     public void chaping(View view) {
         //查看学生屏幕，需要获取学生列表。
-        startActivity(new Intent(this, MultiScreenActivity.class));
+        startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_CHAPING));
     }
 
     public void suoping(View view) {
         //锁定学生屏幕，需要获取学生列表。
+        startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_SUOPING));
     }
 
     public void wenjian(View view) {
-        //给学生发文件，需要获取学生列表。
+        //1.先选择一个文件
+        String selectFilePath = "/mnt/sdcard/test.jpg";
+        //2.再选择学生
+        startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_WENJIAN).putExtra("filePath", selectFilePath));
     }
 
     public void shezhi(View view) {
@@ -266,19 +274,19 @@ public class Course0Activity extends ScreenSharingActivity {
         tongji.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int count = 0;
+                ArrayList<KnowledgePoint> selectKPs = new ArrayList<>();
                 for (KnowledgePoint kp : course.knowledgePoints) {
                     if (kp.selected) {
-                        count++;
+                        selectKPs.add(kp);
                     }
                 }
-                if (count == 0) {
+                if (selectKPs.size() == 0) {
                     toast("请选择一个知识点");
                     return;
                 }
                 dialog.dismiss();
                 //发送选中的知识点
-                startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_TONGJI));
+                startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_TONGJI));//.putExtra("knowledges", selectKPs)
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {

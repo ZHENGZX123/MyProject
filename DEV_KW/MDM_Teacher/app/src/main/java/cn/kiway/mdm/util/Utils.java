@@ -207,7 +207,7 @@ public class Utils {
                 Bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
                 fos.flush();
                 fos.close();
-                Toast.makeText(c, "截屏文件已保存至SDCard下", Toast.LENGTH_LONG).show();
+                Toast.makeText(c, "截屏文件已保存至SD卡根目录", Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
