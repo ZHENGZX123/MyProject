@@ -371,50 +371,82 @@ public class Course0Activity extends ScreenSharingActivity {
             }
         });
 
-        ListView lv = (ListView) dialog.findViewById(R.id.lv);
-        QuestionAdapter adapter = new QuestionAdapter();
-        lv.setAdapter(adapter);
+        LinearLayout lv = (LinearLayout) dialog.findViewById(R.id.lv);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        for (Question s : course.questions) {
+            LinearLayout rowView = (LinearLayout) inflater.inflate(R.layout.item_question, null);
+            LinearLayout imgLL = (LinearLayout) rowView.findViewById(R.id.imgLL);
+            TextView content = (TextView) rowView.findViewById(R.id.content);
+            CheckBox select = (CheckBox) rowView.findViewById(R.id.select);
+            content.setText(s.content);
+            select.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    s.selected = isChecked;
+                }
+            });
+            if (!TextUtils.isEmpty(s.img)) {
+                String imgs[] = s.img.split(",");
+                for (int i = 0; i < imgs.length; i++) {
+                    String imageUrl = imgs[i];
+                    ImageView iv = new ImageView(Course0Activity.this);
+                    iv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showBigImage(Course0Activity.this, new String[]{imageUrl}, 0);
+                        }
+                    });
+                    ImageLoader.getInstance().displayImage(imgs[i], iv, KWApplication.getLoaderOptions
+                            ());
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams
+                            (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    lp.setMargins(10, 10, 10, 10);
+                    imgLL.addView(iv, lp);
+                }
+                lv.addView(rowView);
+            }
 
-        kaishidati.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ArrayList<Question> selectQuestions = new ArrayList<>();
+            kaishidati.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ArrayList<Question> selectQuestions = new ArrayList<>();
 
-                for (Question q : course.questions) {
-                    if (q.selected) {
-                        selectQuestions.add(q);
+                    for (Question q : course.questions) {
+                        if (q.selected) {
+                            selectQuestions.add(q);
+                        }
+                    }
+                    if (selectQuestions.size() == 0) {
+                        toast("请选择一个问题");
+                        return;
+                    }
+
+                    dialog.dismiss();
+                    if (type == TYPE_QUESTION_DIANMINGDA) {
+                        //点名答要手动选人
+                        startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_DIANMINGDA).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
+                    } else if (type == TYPE_QUESTION_SUIJICHOUDA) {
+                        //随机抽答，弹出抽取框
+                        showChoudaqiDialog(selectQuestions);
+                    } else if (type == TYPE_QUESTION_QIANGDA) {
+                        //TODO 抢答1个学生
+                        ArrayList<Student> selectStudents = new ArrayList<>();
+                        selectStudents.add(students.get(0));
+                        toast(students.get(0).name + "抢答成功");
+                        startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", selectStudents).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
+                    } else {
+                        //测评是全班的
+                        startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", students).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
                     }
                 }
-                if (selectQuestions.size() == 0) {
-                    toast("请选择一个问题");
-                    return;
+            });
+            close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
                 }
-
-                dialog.dismiss();
-                if (type == TYPE_QUESTION_DIANMINGDA) {
-                    //点名答要手动选人
-                    startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_DIANMINGDA).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
-                } else if (type == TYPE_QUESTION_SUIJICHOUDA) {
-                    //随机抽答，弹出抽取框
-                    showChoudaqiDialog(selectQuestions);
-                } else if (type == TYPE_QUESTION_QIANGDA) {
-                    //TODO 抢答1个学生
-                    ArrayList<Student> selectStudents = new ArrayList<>();
-                    selectStudents.add(students.get(0));
-                    toast(students.get(0).name + "抢答成功");
-                    startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", selectStudents).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
-                } else {
-                    //测评是全班的
-                    startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", students).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
-                }
-            }
-        });
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+            });
+        }
     }
 
     private void showChoudaqiDialog(ArrayList<Question> selectQuestions) {
@@ -796,83 +828,5 @@ public class Course0Activity extends ScreenSharingActivity {
         }
     }
 
-    private class QuestionAdapter extends BaseAdapter {
 
-        private final LayoutInflater inflater;
-
-        public QuestionAdapter() {
-            inflater = LayoutInflater.from(Course0Activity.this);
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            View rowView = convertView;
-            ViewHolder holder;
-            if (rowView == null) {
-                rowView = inflater.inflate(R.layout.item_question, null);
-                holder = new ViewHolder();
-
-                holder.imgLL = (LinearLayout) rowView.findViewById(R.id.imgLL);
-                holder.content = (TextView) rowView.findViewById(R.id.content);
-                holder.select = (CheckBox) rowView.findViewById(R.id.select);
-
-                rowView.setTag(holder);
-            } else {
-                holder = (ViewHolder) rowView.getTag();
-            }
-
-            final Question s = course.questions.get(position);
-            holder.content.setText(s.content);
-            holder.select.setChecked(s.selected);
-            holder.select.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    s.selected = !s.selected;
-                    notifyDataSetChanged();
-                }
-            });
-
-            holder.imgLL.removeAllViews();
-            if (!TextUtils.isEmpty(s.img)) {
-                String imgs[] = s.img.split(",");
-                for (int i = 0; i < imgs.length; i++) {
-                    String imageUrl = imgs[i];
-                    ImageView iv = new ImageView(Course0Activity.this);
-                    iv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            showBigImage(Course0Activity.this, new String[]{imageUrl}, 0);
-                        }
-                    });
-                    ImageLoader.getInstance().displayImage(imgs[i], iv, KWApplication.getLoaderOptions());
-                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    lp.setMargins(10, 10, 10, 10);
-                    holder.imgLL.addView(iv, lp);
-                }
-            }
-
-            return rowView;
-        }
-
-        public class ViewHolder {
-            public TextView content;
-            public CheckBox select;
-            public LinearLayout imgLL;
-        }
-
-        @Override
-        public int getCount() {
-            return course.questions.size();
-        }
-
-        @Override
-        public Question getItem(int arg0) {
-            return course.questions.get(arg0);
-        }
-
-        @Override
-        public long getItemId(int arg0) {
-            return arg0;
-        }
-    }
 }

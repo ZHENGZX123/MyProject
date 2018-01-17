@@ -34,13 +34,20 @@
                 android:background="@drawable/close" />
         </RelativeLayout>
 
-        <ListView
-            android:id="@+id/lv"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_above="@+id/line"
             android:layout_below="@+id/titleRL"
-            android:divider="#00000000"></ListView>
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/lv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="#00000000"
+                android:orientation="vertical"></LinearLayout>
+        </ScrollView>
 
         <TextView
             android:id="@+id/line"
