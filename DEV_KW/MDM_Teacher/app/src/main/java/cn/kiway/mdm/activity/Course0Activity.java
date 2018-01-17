@@ -1,20 +1,16 @@
 package cn.kiway.mdm.activity;
 
 import android.app.Dialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.IBinder;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,14 +51,12 @@ import cn.kiway.mdm.entity.TeachingContentVo;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Utils;
-import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_TONGJI;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_DOC;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
-import static cn.kiway.mdm.teacher.R.id.count;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
 import static cn.kiway.mdm.util.Utils.check301;
@@ -408,10 +402,10 @@ public class Course0Activity extends ScreenSharingActivity {
                     ArrayList<Student> selectStudents = new ArrayList<>();
                     selectStudents.add(students.get(0));
                     toast(students.get(0).name + "抢答成功");
-                    startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", type).putExtra("students", selectStudents).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
+                    startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", selectStudents).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
                 } else {
                     //测评是全班的
-                    startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", type).putExtra("students", students).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
+                    startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", students).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
                 }
             }
         });
@@ -462,7 +456,7 @@ public class Course0Activity extends ScreenSharingActivity {
                                         toast("随机到的学生是：" + s.name);
                                         ArrayList<Student> selectStudents = new ArrayList<>();//getRandomStudents();
                                         selectStudents.add(s);
-                                        startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", TYPE_QUESTION_SUIJICHOUDA).putExtra("students", selectStudents).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
+                                        startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", TYPE_QUESTION_SUIJICHOUDA).putExtra("students", selectStudents).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
                                     }
                                 }
                             });

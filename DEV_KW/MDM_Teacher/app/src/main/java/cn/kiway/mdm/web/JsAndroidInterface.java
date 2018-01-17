@@ -57,6 +57,13 @@ public class JsAndroidInterface {
     }
 
     @JavascriptInterface
+    public String getVersionCode() {
+        //return getCurrentVersion(MainActivity.this);
+        Log.d("test", "getVersionCode");
+        return this.activity.getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
+    }
+
+    @JavascriptInterface
     public void scoketOperate(String state, String className) { //1启动，0关闭
         this.className = className;
         if (state.equals("1")) {

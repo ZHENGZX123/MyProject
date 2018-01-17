@@ -34,8 +34,8 @@ import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_SUIJICHOUDA;
  * Created by Administrator on 2017/12/29.
  */
 
-//问答反馈
-public class ResultActivity1 extends BaseActivity {
+//问答反馈、测评反馈用这个页面
+public class ResultActivity extends BaseActivity {
 
     private int type;
     private RelativeLayout type123RL;
@@ -102,7 +102,7 @@ public class ResultActivity1 extends BaseActivity {
 //                    toast("该学生未提交答案");
 //                    return;
 //                }
-                startActivity(new Intent(ResultActivity1.this, ResultDetailActivity.class).putExtra("questions", questions));
+                startActivity(new Intent(ResultActivity.this, ResultDetailActivity.class).putExtra("questions", questions));
             }
         });
     }
@@ -137,7 +137,7 @@ public class ResultActivity1 extends BaseActivity {
         private final LayoutInflater inflater;
 
         public MyAdapter() {
-            inflater = LayoutInflater.from(ResultActivity1.this);
+            inflater = LayoutInflater.from(ResultActivity.this);
         }
 
         @Override

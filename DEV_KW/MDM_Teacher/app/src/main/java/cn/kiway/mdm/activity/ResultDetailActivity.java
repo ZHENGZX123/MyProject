@@ -61,6 +61,9 @@ public class ResultDetailActivity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
+
+        titleName.setText("答案详情");
+
         prev = (Button) findViewById(R.id.prev);
         next = (Button) findViewById(R.id.next);
         type = (TextView) findViewById(R.id.type);
