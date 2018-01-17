@@ -183,7 +183,6 @@ public class Course0Activity extends ScreenSharingActivity {
 
     @Override
     public void onBackPressed() {
-        boolean tuiping = getSharedPreferences("kiway", 0).getBoolean("tuiping", false);
         if (x5FileLayout.isShown()) {
             readerView.onStop();
             readerView = null;
@@ -645,6 +644,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder.type_2RL = (LinearLayout) rowView.findViewById(R.id.type_2RL);
                 holder.endBtn = (Button) rowView.findViewById(R.id.endBtn);
                 holder.ball = (ImageView) rowView.findViewById(R.id.ball);
+                holder.line = (TextView) rowView.findViewById(R.id.line);
                 holder.line2 = (TextView) rowView.findViewById(R.id.line2);
                 holder.date1 = (TextView) rowView.findViewById(R.id.date1);
                 holder.date2 = (TextView) rowView.findViewById(R.id.date2);
@@ -668,6 +668,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder.type1RL.setVisibility(View.GONE);
                 holder.type_2RL.setVisibility(View.GONE);
                 holder.ball.setVisibility(View.VISIBLE);
+                holder.line.setVisibility(View.VISIBLE);
                 holder.line2.setVisibility(View.VISIBLE);
                 //add content0
                 addContent0(holder, s.teachingContentVo);
@@ -676,6 +677,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder.type1RL.setVisibility(View.VISIBLE);
                 holder.type_2RL.setVisibility(View.GONE);
                 holder.ball.setVisibility(View.VISIBLE);
+                holder.line.setVisibility(View.VISIBLE);
                 holder.line2.setVisibility(View.VISIBLE);
 
                 //add content1
@@ -686,6 +688,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder.type1RL.setVisibility(View.GONE);
                 holder.type_2RL.setVisibility(View.VISIBLE);
                 holder.ball.setVisibility(View.GONE);
+                holder.line.setVisibility(View.GONE);
                 holder.line2.setVisibility(View.GONE);
             }
 
@@ -776,6 +779,7 @@ public class Course0Activity extends ScreenSharingActivity {
             public LinearLayout type1RL;
             public LinearLayout type_2RL;
             public Button endBtn;
+            public TextView line;
             public TextView line2;
             public ImageView ball;
             public TextView date1;

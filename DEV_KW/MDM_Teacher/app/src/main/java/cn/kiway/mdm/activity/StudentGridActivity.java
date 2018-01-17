@@ -93,7 +93,7 @@ public class StudentGridActivity extends BaseActivity {
         all = (Button) findViewById(R.id.all);
         lock = (ImageButton) findViewById(R.id.lock);
 
-        if (type == TYPE_DIANMINGDA || type == TYPE_CHAPING) {
+        if (type == TYPE_DIANMINGDA) {
             ok.setVisibility(View.VISIBLE);
             toolsRL.setVisibility(View.GONE);
         } else if (type == TYPE_TONGJI) {
@@ -104,6 +104,9 @@ public class StudentGridActivity extends BaseActivity {
             toolsRL.setVisibility(View.GONE);
         } else if (type == TYPE_SUOPING) {
             lock.setVisibility(View.VISIBLE);
+            toolsRL.setVisibility(View.GONE);
+        } else if (type == TYPE_CHAPING) {
+            ok.setVisibility(View.GONE);
             toolsRL.setVisibility(View.GONE);
         }
     }
