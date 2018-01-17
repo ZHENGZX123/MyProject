@@ -1,7 +1,9 @@
 package cn.kiway.mdm.activity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.projection.MediaProjection;
@@ -53,6 +55,7 @@ import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Utils;
 
+import static android.R.id.message;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_CHAPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_SUOPING;
@@ -61,9 +64,6 @@ import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_WENJIAN;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_DOC;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
-import static cn.kiway.mdm.teacher.R.id.count;
-import static cn.kiway.mdm.teacher.R.id.selectCount;
-import static cn.kiway.mdm.teacher.R.id.selectallRL;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
 import static cn.kiway.mdm.util.Utils.check301;
@@ -89,6 +89,8 @@ public class Course0Activity extends ScreenSharingActivity {
     public static final int TYPE_QUESTION_SUIJICHOUDA = 3;
     public static final int TYPE_QUESTION_CEPING = 4;
 
+    private ImageView tuipingIV;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +112,8 @@ public class Course0Activity extends ScreenSharingActivity {
         lv = (ListView) findViewById(R.id.KnowledgePointLV);
         adapter = new CourseAdapter();
         lv.setAdapter(adapter);
+
+        tuipingIV = (ImageView) findViewById(R.id.tuipingIV);
     }
 
     public void initData() {
@@ -179,14 +183,28 @@ public class Course0Activity extends ScreenSharingActivity {
 
     @Override
     public void onBackPressed() {
+        boolean tuiping = getSharedPreferences("kiway", 0).getBoolean("tuiping", false);
         if (x5FileLayout.isShown()) {
             readerView.onStop();
             readerView = null;
             x5FileLayout.removeAllViews();
             x5FileLayout.setVisibility(View.GONE);
-        } else {
-            super.onBackPressed();
+            return;
         }
+        if (tuiping) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+            AlertDialog dialog = builder.setTitle("提示").setMessage("退出将会关闭屏幕推送")
+                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            endTuiping();
+                            Course0Activity.super.onBackPressed();
+                        }
+                    }).setPositiveButton(android.R.string.cancel, null).create();
+            dialog.show();
+            return;
+        }
+        super.onBackPressed();
     }
 
     //-------------------------tools1----------------------
@@ -209,21 +227,39 @@ public class Course0Activity extends ScreenSharingActivity {
         startActivity(new Intent(this, WhiteBoardActivity.class));
     }
 
-    private boolean tuiping = false;
+    private boolean tuiping;
 
     public void tuiping(View view) {
         //先接入声网
+        setTuipingIV();
         if (tuiping) {
-            toast("结束推屏");
-            mRtcEngine.leaveChannel();
-            stopCapture();
+            endTuiping();
         } else {
-            toast("开始推屏");
-            initModules();
-            startCapture();
-            mRtcEngine.joinChannel(null, "kiway", "", 0);
+            startTuiping();
         }
         tuiping = !tuiping;
+        setTuipingIV();
+    }
+
+    private void startTuiping() {
+        toast("开始推屏");
+        initModules();
+        startCapture();
+        mRtcEngine.joinChannel(null, "kiway", "", 0);
+    }
+
+    private void endTuiping() {
+        toast("结束推屏");
+        mRtcEngine.leaveChannel();
+        stopCapture();
+    }
+
+    private void setTuipingIV() {
+        if (tuiping) {
+            tuipingIV.setBackgroundResource(R.drawable.screen_control2);
+        } else {
+            tuipingIV.setBackgroundResource(R.drawable.screen_control1);
+        }
     }
 
     public void chaping(View view) {
@@ -818,6 +854,7 @@ public class Course0Activity extends ScreenSharingActivity {
             }
         });
     }
+
 
     private class TongjiAdapter extends BaseAdapter {
 
