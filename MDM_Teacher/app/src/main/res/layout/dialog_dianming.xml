@@ -4,17 +4,19 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
 
         <Button
             android:id="@+id/dianming"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_centerInParent="true"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
             android:background="@drawable/dianmingbutton1"
             android:text="开始点名"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/count"
@@ -41,6 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/hint"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
             android:text="倒计时 05:00"
             android:textColor="#ffffff" />
 
