@@ -55,6 +55,7 @@ public class ResultDetailActivity extends BaseActivity {
         questions = (ArrayList<Question>) getIntent().getSerializableExtra("questions");
 
         initView();
+        refresh();
     }
 
     @Override
@@ -95,14 +96,15 @@ public class ResultDetailActivity extends BaseActivity {
     }
 
     private void refresh() {
+        prev.setVisibility(View.VISIBLE);
+        next.setVisibility(View.VISIBLE);
         if (current == 0) {
             prev.setVisibility(View.GONE);
-        } else if (current == questions.size() - 1) {
-            next.setVisibility(View.GONE);
-        } else {
-            prev.setVisibility(View.VISIBLE);
-            next.setVisibility(View.VISIBLE);
         }
+        if (current == questions.size() - 1) {
+            next.setVisibility(View.GONE);
+        }
+
         //问题区域
         Question q = questions.get(current);
         if (q.type == Question.TYPE_SINGLE) {
@@ -186,6 +188,22 @@ public class ResultDetailActivity extends BaseActivity {
         }
     }
 
+    public void right(View view) {
+        Question q = questions.get(current);
+        if (q.type != Question.TYPE_ESSAY) {
+            toast("只有问题答题需要老师批改");
+            return;
+        }
+    }
+
+    public void wrong(View view) {
+        Question q = questions.get(current);
+        if (q.type != Question.TYPE_ESSAY) {
+            toast("只有问题答题需要老师批改");
+            return;
+        }
+    }
+
     private class MyAdapter extends BaseAdapter {
 
         private final LayoutInflater inflater;
@@ -195,7 +213,7 @@ public class ResultDetailActivity extends BaseActivity {
         }
 
         @Override
-        public boolean areAllItemsEnabled() {
+        public boolean isEnabled(int position) {
             return false;
         }
 

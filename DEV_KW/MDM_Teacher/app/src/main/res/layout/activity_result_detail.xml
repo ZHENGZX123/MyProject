@@ -37,12 +37,15 @@
                 <TextView
                     android:id="@+id/content"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:textColor="#000000" />
 
                 <LinearLayout
                     android:id="@+id/imgLL"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
                     android:orientation="vertical" />
 
                 <Button
@@ -123,17 +126,23 @@
                         android:id="@+id/answerGV"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:numColumns="4" />
+                        android:layout_margin="20dp"
+                        android:numColumns="4"
+                        android:scrollbars="none" />
 
                     <TextView
                         android:id="@+id/answerTV"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dp"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
 
                     <ImageView
                         android:id="@+id/answerIV"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dp" />
 
                     <LinearLayout
                         android:id="@+id/ll_teacher_judge"
