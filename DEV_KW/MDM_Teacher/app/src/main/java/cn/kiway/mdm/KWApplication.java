@@ -13,6 +13,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.tencent.smtt.sdk.QbSdk;
 
@@ -35,6 +36,7 @@ public class KWApplication extends Application {
     public static String ZIP = "mdm_teacher.zip";
 
     public static Activity currentActivity;
+    public static RecordService recordService;
 
     @Override
     public void onCreate() {
@@ -106,8 +108,9 @@ public class KWApplication extends Application {
         // displayImageOptionsBuilder.showImageForEmptyUri(R.drawable.loading);
         displayImageOptionsBuilder.cacheInMemory(false);
         displayImageOptionsBuilder.cacheOnDisc(true);
-        // RoundedBitmapDisplayer displayer = new RoundedBitmapDisplayer(10);
-        // displayImageOptionsBuilder.displayer(displayer);
+//         RoundedBitmapDisplayer displayer = new RoundedBitmapDisplayer(10);
+//         displayImageOptionsBuilder.displayer(displayer);
+        displayImageOptionsBuilder.displayer(new SimpleBitmapDisplayer());
         DisplayImageOptions defaultDisplayImageOptions = displayImageOptionsBuilder
                 .build();
         return defaultDisplayImageOptions;

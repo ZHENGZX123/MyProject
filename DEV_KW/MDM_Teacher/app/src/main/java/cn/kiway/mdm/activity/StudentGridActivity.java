@@ -98,7 +98,7 @@ public class StudentGridActivity extends BaseActivity {
             toast("请选择至少一个学生");
             return;
         }
-        startActivity(new Intent(this, ResultActivity1.class).putExtra("type", TYPE_QUESTION_DIANMINGDA).putExtra("students", selectStudents).putExtra("questionTime", getIntent().getIntExtra("questionTime", 0)));
+        startActivity(new Intent(this, ResultActivity1.class).putExtra("type", TYPE_QUESTION_DIANMINGDA).putExtra("students", selectStudents).putExtra("questionTime", getIntent().getIntExtra("questionTime", 0)).putExtra("questions", getIntent().getSerializableExtra("questions")));
         finish();
     }
 
