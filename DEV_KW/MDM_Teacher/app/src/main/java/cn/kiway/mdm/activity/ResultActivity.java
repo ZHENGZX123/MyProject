@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,9 @@ public class ResultActivity extends BaseActivity {
     private int type;
     private LinearLayout unSubmitLL;
     private TextView time;
+    private TextView hint;
+    private TextView unSubmitCount;
+    private TextView unSubmitName;
 
     private GridView gv;
     private MyAdapter adapter;
@@ -69,19 +73,28 @@ public class ResultActivity extends BaseActivity {
 
         unSubmitLL = (LinearLayout) findViewById(R.id.unSubmitLL);
         time = (TextView) findViewById(R.id.time);
+        hint = (TextView) findViewById(R.id.hint);
+        unSubmitCount = (TextView) findViewById(R.id.unSubmitCount);
+        unSubmitCount.setText("剩余" + students.size() + "人未作答");
+        unSubmitName = (TextView) findViewById(R.id.unSubmitName);
+        unSubmitName.setMovementMethod(new ScrollingMovementMethod());
 
         if (type == TYPE_QUESTION_DIANMINGDA) {
-            titleName.setText("点名答结果");
-            //unSubmitLL.setVisibility(View.GONE);
+            titleName.setText("点名答");
+            unSubmitLL.setVisibility(View.GONE);
+            hint.setText("答题进行中......");
         } else if (type == TYPE_QUESTION_QIANGDA) {
-            titleName.setText("抢答结果");
-            //unSubmitLL.setVisibility(View.GONE);
+            titleName.setText("抢答");
+            unSubmitLL.setVisibility(View.GONE);
+            hint.setText("答题进行中......");
         } else if (type == TYPE_QUESTION_SUIJICHOUDA) {
-            titleName.setText("抽答结果");
-            //unSubmitLL.setVisibility(View.GONE);
+            titleName.setText("抽答");
+            unSubmitLL.setVisibility(View.GONE);
+            hint.setText("答题进行中......");
         } else if (type == TYPE_QUESTION_CEPING) {
-            titleName.setText("测评结果");
+            titleName.setText("测评");
             unSubmitLL.setVisibility(View.VISIBLE);
+            hint.setText("测评进行中......");
         }
 
         gv = (GridView) findViewById(R.id.studentGV);
@@ -96,7 +109,7 @@ public class ResultActivity extends BaseActivity {
 //                    toast("该学生未提交答案");
 //                    return;
 //                }
-                startActivity(new Intent(ResultActivity.this, ResultDetailActivity.class).putExtra("questions", questions));
+                startActivity(new Intent(ResultActivity.this, ResultDetailActivity.class).putExtra("questions", questions).putExtra("student", s));
             }
         });
     }

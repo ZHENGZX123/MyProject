@@ -76,7 +76,7 @@
             android:scrollbars="none">
 
             <LinearLayout
-                android:id="@+id/lv"
+                android:id="@+id/questionLL"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:divider="#00000000"

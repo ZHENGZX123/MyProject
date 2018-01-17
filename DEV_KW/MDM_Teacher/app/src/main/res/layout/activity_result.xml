@@ -67,9 +67,36 @@
 
                 <LinearLayout
                     android:id="@+id/unSubmitLL"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"></LinearLayout>
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/line2"
+                    android:layout_below="@+id/time"
+                    android:layout_marginTop="30dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/unSubmitCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="剩余5人未作答"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/unSubmitName"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/unsubmit"
+                        android:scrollbars="vertical"
+                        android:padding="5dp"
+                        android:text="小明、小红、小黄、小明、小红、小黄、小明、小红、小黄、小明、小红、小黄、小明、小红、小黄、小明、小红、小黄、小明、小红、小黄、小明、小红、小黄、小明、小红、小黄小明、小红、小黄、小明、小红、小黄、小明、小红、小黄、小明、小红、小黄、小明、小红、小黄、小明、小红、小黄、小明、小红、小黄、小明、小红、小黄、小明、小红、小黄、小明、小红、小黄、"
+                        android:textColor="#000000" />
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/stop"
@@ -85,6 +112,7 @@
                     android:textColor="#ffffff" />
 
                 <View
+                    android:id="@+id/line2"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_above="@+id/stop"

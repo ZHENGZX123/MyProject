@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.entity.AnswerVo;
 import cn.kiway.mdm.entity.Question;
+import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
-import cn.kiway.mdm.util.Utils;
 
 import static cn.kiway.mdm.util.Utils.showBigImage;
 
@@ -31,6 +31,7 @@ import static cn.kiway.mdm.util.Utils.showBigImage;
 
 public class ResultDetailActivity extends BaseActivity {
 
+    private Student student;
     private ArrayList<Question> questions;
     private Button prev;
     private Button next;
@@ -47,12 +48,12 @@ public class ResultDetailActivity extends BaseActivity {
     private MyAdapter adapter;
     private ArrayList<String> chooses = new ArrayList<>();
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result_detail);
 
+        student = (Student) getIntent().getSerializableExtra("student");
         questions = (ArrayList<Question>) getIntent().getSerializableExtra("questions");
 
         initView();
@@ -63,7 +64,7 @@ public class ResultDetailActivity extends BaseActivity {
     public void initView() {
         super.initView();
 
-        titleName.setText("答案详情");
+        titleName.setText(student.name + "的答题结果反馈");
 
         prev = (Button) findViewById(R.id.prev);
         next = (Button) findViewById(R.id.next);
