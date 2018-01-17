@@ -238,6 +238,7 @@ public class StudentGridActivity extends BaseActivity {
                                     s.locked = !s.locked;
                                     adapter.notifyDataSetChanged();
                                     //3.修改lockAll变量
+                                    lockAll = true;
                                     for (Student s : students) {
                                         lockAll = lockAll & s.locked;
                                     }
