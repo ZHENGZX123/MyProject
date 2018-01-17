@@ -81,6 +81,7 @@ public class CourseListActivity extends BaseActivity {
     }
 
     public void initData() {
+        //TODO后台不排序的话，分页没法做啊。
         showPD();
         try {
             String url = KWApplication.clientUrl + "/device/teacher/course/attend?currentPage=1&pageSize=100";
@@ -96,7 +97,7 @@ public class CourseListActivity extends BaseActivity {
                         JSONArray list = new JSONObject(ret).getJSONObject("data").getJSONArray("list");
                         courses = new GsonBuilder().create().fromJson(list.toString(), new TypeToken<List<Course>>() {
                         }.getType());
-                        //过滤一下“草稿”
+                        //过滤一下"草稿"
                         Iterator<Course> it = courses.iterator();
                         while (it.hasNext()) {
                             Course c = it.next();
@@ -188,7 +189,7 @@ public class CourseListActivity extends BaseActivity {
             int count = s.knowledgePoints.size();
             for (int i = 0; i < count; i++) {
                 KnowledgePoint kp = s.knowledgePoints.get(i);
-                subtitle += "知识点" + (i + 1) + "：" + kp.content + "\n ";
+                subtitle += "知识点" + (i + 1) + "：" + kp.content + "\n";
             }
             holder.title2.setText(subtitle);
             return rowView;

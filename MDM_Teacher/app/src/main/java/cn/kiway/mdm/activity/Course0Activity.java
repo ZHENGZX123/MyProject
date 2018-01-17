@@ -58,6 +58,8 @@ import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_TONGJI;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_DOC;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
+import static cn.kiway.mdm.teacher.R.id.selectCount;
+import static cn.kiway.mdm.teacher.R.id.selectallRL;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
 import static cn.kiway.mdm.util.Utils.check301;
@@ -316,6 +318,8 @@ public class Course0Activity extends ScreenSharingActivity {
     }
 
     private int questionTime = 120;
+    private TextView selectCount;
+    private LinearLayout questionLL;
 
     private void selectQuestion(int type) {
         Log.d("test", "course.questions = " + course.questions);
@@ -338,19 +342,20 @@ public class Course0Activity extends ScreenSharingActivity {
         TextView settime = (TextView) dialog.findViewById(R.id.settime);
         ImageButton minus = (ImageButton) dialog.findViewById(R.id.minus);
         RelativeLayout selectallRL = (RelativeLayout) dialog.findViewById(R.id.selectallRL);
+        selectCount = (TextView) dialog.findViewById(R.id.selectCount);
         CheckBox selectAll = (CheckBox) dialog.findViewById(R.id.selectAll);
+
+        setSelectCount();
 
         if (type == TYPE_QUESTION_CEPING) {
             selectallRL.setVisibility(View.VISIBLE);
         } else {
             selectallRL.setVisibility(View.GONE);
         }
-        selectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        selectAll.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    //TODO。。。
-                }
+            public void onClick(View v) {
+                setAllItemSelected(selectAll.isChecked());
             }
         });
 
@@ -389,7 +394,7 @@ public class Course0Activity extends ScreenSharingActivity {
             }
         });
 
-        LinearLayout lv = (LinearLayout) dialog.findViewById(R.id.lv);
+        questionLL = (LinearLayout) dialog.findViewById(R.id.questionLL);
         LayoutInflater inflater = LayoutInflater.from(this);
         for (Question s : course.questions) {
             LinearLayout rowView = (LinearLayout) inflater.inflate(R.layout.item_question, null);
@@ -401,6 +406,11 @@ public class Course0Activity extends ScreenSharingActivity {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     s.selected = isChecked;
+                    if (setSelectCount()) {
+                        selectAll.setChecked(true);
+                    } else {
+                        selectAll.setChecked(false);
+                    }
                 }
             });
             if (!TextUtils.isEmpty(s.img)) {
@@ -421,14 +431,13 @@ public class Course0Activity extends ScreenSharingActivity {
                     lp.setMargins(10, 10, 10, 10);
                     imgLL.addView(iv, lp);
                 }
-                lv.addView(rowView);
+                questionLL.addView(rowView);
             }
 
             kaishidati.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ArrayList<Question> selectQuestions = new ArrayList<>();
-
                     for (Question q : course.questions) {
                         if (q.selected) {
                             selectQuestions.add(q);
@@ -438,7 +447,6 @@ public class Course0Activity extends ScreenSharingActivity {
                         toast("请选择一个问题");
                         return;
                     }
-
                     dialog.dismiss();
                     if (type == TYPE_QUESTION_DIANMINGDA) {
                         //点名答要手动选人
@@ -465,6 +473,26 @@ public class Course0Activity extends ScreenSharingActivity {
                 }
             });
         }
+    }
+
+    private void setAllItemSelected(boolean isChecked) {
+        int childcount = questionLL.getChildCount();
+        for (int i = 0; i < childcount; i++) {
+            CheckBox select = (CheckBox) questionLL.getChildAt(i).findViewById(R.id.select);
+            select.setChecked(isChecked);
+        }
+        setSelectCount();
+    }
+
+    private boolean setSelectCount() {
+        int count = 0;
+        for (Question q : course.questions) {
+            if (q.selected) {
+                count++;
+            }
+        }
+        selectCount.setText("选题（" + count + "/" + course.questions.size() + "）");
+        return count == course.questions.size();
     }
 
     private void showChoudaqiDialog(ArrayList<Question> selectQuestions) {
