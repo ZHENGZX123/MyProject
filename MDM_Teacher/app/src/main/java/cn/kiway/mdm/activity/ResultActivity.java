@@ -212,7 +212,7 @@ public class ResultActivity extends BaseActivity {
     public void clickBack(View view) {
         if (!finished) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
-            AlertDialog dialog = builder.setMessage("是否退出？")
+            AlertDialog dialog = builder.setTitle("提示").setMessage("是否退出本次问答/测评？")
                     .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
