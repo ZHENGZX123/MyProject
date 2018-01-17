@@ -63,10 +63,10 @@ public class CourseListActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Course c = courses.get(position);
-                if (c.type == 1) {
+                if (c.attendCourse == 0) {
                     //未上课
                     startActivity(new Intent(CourseListActivity.this, Course0Activity.class).putExtra("course", c).putExtra("students", getIntent().getSerializableExtra("students")));
-                } else if (c.type == 2) {
+                } else if (c.attendCourse == 1) {
                     //已上课
                     startActivity(new Intent(CourseListActivity.this, Course2Activity.class).putExtra("course", c).putExtra("students", getIntent().getSerializableExtra("students")));
                 }
