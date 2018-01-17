@@ -14,7 +14,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -38,8 +38,7 @@ import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_SUIJICHOUDA;
 public class ResultActivity extends BaseActivity {
 
     private int type;
-    private RelativeLayout type123RL;
-    private RelativeLayout type4RL;
+    private LinearLayout unSubmitLL;
     private TextView time;
 
     private GridView gv;
@@ -68,26 +67,21 @@ public class ResultActivity extends BaseActivity {
     public void initView() {
         super.initView();
 
-        type123RL = (RelativeLayout) findViewById(R.id.type123RL);
-        type4RL = (RelativeLayout) findViewById(R.id.type4RL);
+        unSubmitLL = (LinearLayout) findViewById(R.id.unSubmitLL);
         time = (TextView) findViewById(R.id.time);
 
         if (type == TYPE_QUESTION_DIANMINGDA) {
             titleName.setText("点名答结果");
-            type123RL.setVisibility(View.VISIBLE);
-            type4RL.setVisibility(View.GONE);
+            //unSubmitLL.setVisibility(View.GONE);
         } else if (type == TYPE_QUESTION_QIANGDA) {
             titleName.setText("抢答结果");
-            type123RL.setVisibility(View.VISIBLE);
-            type4RL.setVisibility(View.GONE);
+            //unSubmitLL.setVisibility(View.GONE);
         } else if (type == TYPE_QUESTION_SUIJICHOUDA) {
             titleName.setText("抽答结果");
-            type123RL.setVisibility(View.VISIBLE);
-            type4RL.setVisibility(View.GONE);
+            //unSubmitLL.setVisibility(View.GONE);
         } else if (type == TYPE_QUESTION_CEPING) {
             titleName.setText("测评结果");
-            type123RL.setVisibility(View.GONE);
-            type4RL.setVisibility(View.VISIBLE);
+            unSubmitLL.setVisibility(View.VISIBLE);
         }
 
         gv = (GridView) findViewById(R.id.studentGV);

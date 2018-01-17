@@ -21,6 +21,7 @@ import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.entity.AnswerVo;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.Utils;
 
 import static cn.kiway.mdm.util.Utils.showBigImage;
 
@@ -188,6 +189,12 @@ public class ResultDetailActivity extends BaseActivity {
             answerGV.setVisibility(View.GONE);
             answerTV.setVisibility(View.GONE);
             answerIV.setVisibility(View.VISIBLE);
+            answerIV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Utils.showBigImage(ResultDetailActivity.this, null, 0);
+                }
+            });
         }
     }
 

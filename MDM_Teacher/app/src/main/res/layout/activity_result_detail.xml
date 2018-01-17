@@ -92,139 +92,128 @@
             android:layout_weight="2"
             android:background="#f2f2f2">
 
-            <RelativeLayout
-                android:id="@+id/type123RL"
+
+            <TextView
+                android:id="@+id/hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="答题卡"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/line"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="1dp"
+                android:layout_below="@+id/hint"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#aaaaaa" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/ll_bottom"
+                android:layout_below="@+id/line">
+
+                <!-- 单选题、判断题-->
+                <GridView
+                    android:id="@+id/answerGV"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="20dp"
+                    android:numColumns="4"
+                    android:scrollbars="none" />
 
                 <TextView
-                    android:id="@+id/hint"
+                    android:id="@+id/answerTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
-                    android:text="答题卡"
                     android:textColor="#000000"
                     android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/line"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_below="@+id/hint"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="#aaaaaa" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_above="@+id/ll_bottom"
-                    android:layout_below="@+id/line">
-
-                    <!-- 单选题、判断题-->
-                    <GridView
-                        android:id="@+id/answerGV"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="20dp"
-                        android:numColumns="4"
-                        android:scrollbars="none" />
-
-                    <TextView
-                        android:id="@+id/answerTV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="20dp"
-                        android:textColor="#000000"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:id="@+id/answerIV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="20dp" />
-
-                    <LinearLayout
-                        android:id="@+id/ll_teacher_judge"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:clickable="true"
-                            android:drawableTop="@drawable/right1"
-                            android:gravity="center_horizontal"
-                            android:onClick="right"
-                            android:padding="10dp"
-                            android:text="回答正确"
-                            android:textColor="#000000"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:clickable="true"
-                            android:drawableTop="@drawable/wrong1"
-                            android:gravity="center_horizontal"
-                            android:onClick="wrong"
-                            android:padding="10dp"
-                            android:text="回答错误"
-                            android:textColor="#000000"
-                            android:textSize="16sp" />
-                    </LinearLayout>
-                </RelativeLayout>
+                <ImageView
+                    android:id="@+id/answerIV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp" />
 
                 <LinearLayout
-                    android:id="@+id/ll_bottom"
+                    android:id="@+id/ll_teacher_judge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true">
 
-                    <Button
-                        android:id="@+id/prev"
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
-                        android:background="@drawable/quxiaobutton"
-                        android:onClick="prev"
+                        android:clickable="true"
+                        android:drawableTop="@drawable/right1"
+                        android:gravity="center_horizontal"
+                        android:onClick="right"
                         android:padding="10dp"
-                        android:text="    上一题    "
-                        android:textColor="#6699ff"
-                        android:visibility="gone" />
+                        android:text="回答正确"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
 
-                    <Button
-                        android:id="@+id/next"
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
-                        android:background="@drawable/quxiaobutton"
-                        android:onClick="next"
+                        android:clickable="true"
+                        android:drawableTop="@drawable/wrong1"
+                        android:gravity="center_horizontal"
+                        android:onClick="wrong"
                         android:padding="10dp"
-                        android:text="    下一题    "
-                        android:textColor="#6699ff" />
+                        android:text="回答错误"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
                 </LinearLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_above="@+id/ll_bottom"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="#aaaaaa" />
-
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/type4RL"
+            <LinearLayout
+                android:id="@+id/ll_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true">
+
+                <Button
+                    android:id="@+id/prev"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/quxiaobutton"
+                    android:onClick="prev"
+                    android:padding="10dp"
+                    android:text="    上一题    "
+                    android:textColor="#6699ff"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/quxiaobutton"
+                    android:onClick="next"
+                    android:padding="10dp"
+                    android:text="    下一题    "
+                    android:textColor="#6699ff" />
+            </LinearLayout>
+
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"></RelativeLayout>
+                android:layout_height="1dp"
+                android:layout_above="@+id/ll_bottom"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#aaaaaa" />
+
 
         </RelativeLayout>
     </LinearLayout>
