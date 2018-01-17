@@ -10,8 +10,8 @@
 
         <ImageView
             android:id="@+id/clock"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="50dp"
             android:src="@drawable/clock" />
 
@@ -20,7 +20,7 @@
             android:layout_width="2dp"
             android:layout_height="13dp"
             android:layout_below="@+id/clock"
-            android:layout_marginLeft="64dp"
+            android:layout_marginLeft="69dp"
             android:layout_marginTop="-3dp"
             android:background="#6699ff" />
 
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/contentRL"
             android:layout_alignTop="@+id/contentRL"
-            android:layout_marginLeft="64dp"
+            android:layout_marginLeft="69dp"
             android:background="#6699ff" />
 
         <ImageView
@@ -38,7 +38,7 @@
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:layout_below="@id/line0"
-            android:layout_marginLeft="60dp"
+            android:layout_marginLeft="65dp"
             android:layout_marginTop="12dp"
             android:src="@drawable/ball2" />
 

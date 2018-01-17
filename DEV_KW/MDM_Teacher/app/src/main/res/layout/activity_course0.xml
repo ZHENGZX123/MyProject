@@ -265,7 +265,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="20dp"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/u1568" />
 
@@ -273,7 +273,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginRight="20dp"
                     android:text="统计"
                     android:textColor="#ffffff" />
             </LinearLayout>
@@ -290,7 +290,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="20dp"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/u1568" />
 
@@ -298,7 +298,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginRight="20dp"
                     android:text="点名答"
                     android:textColor="#ffffff" />
             </LinearLayout>
@@ -316,7 +316,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="20dp"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/u1591" />
 
@@ -324,7 +324,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginRight="20dp"
                     android:text="抢答"
                     android:textColor="#ffffff" />
             </LinearLayout>
@@ -342,7 +342,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="20dp"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/u1591" />
 
@@ -350,7 +350,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginRight="20dp"
                     android:text="随机抽答"
                     android:textColor="#ffffff" />
             </LinearLayout>
@@ -368,7 +368,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="20dp"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/u1568" />
 
@@ -376,7 +376,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginRight="20dp"
                     android:text="测评"
                     android:textColor="#ffffff" />
             </LinearLayout>
