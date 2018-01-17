@@ -24,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.GsonBuilder;
@@ -336,6 +337,23 @@ public class Course0Activity extends ScreenSharingActivity {
         ImageButton plus = (ImageButton) dialog.findViewById(R.id.plus);
         TextView settime = (TextView) dialog.findViewById(R.id.settime);
         ImageButton minus = (ImageButton) dialog.findViewById(R.id.minus);
+        RelativeLayout selectallRL = (RelativeLayout) dialog.findViewById(R.id.selectallRL);
+        CheckBox selectAll = (CheckBox) dialog.findViewById(R.id.selectAll);
+
+        if (type == TYPE_QUESTION_CEPING) {
+            selectallRL.setVisibility(View.VISIBLE);
+        } else {
+            selectallRL.setVisibility(View.GONE);
+        }
+        selectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    //TODO。。。
+                }
+            }
+        });
+
         timeEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

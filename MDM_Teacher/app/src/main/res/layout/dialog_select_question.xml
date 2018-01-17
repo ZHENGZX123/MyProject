@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:layout_margin="100dp"
+        android:layout_margin="50dp"
         android:background="#ffffff">
 
         <RelativeLayout
@@ -34,11 +34,45 @@
                 android:background="@drawable/close" />
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/selectallRL"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/titleRL">
+
+            <TextView
+                android:id="@+id/selectCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:text="选题（0/5）"
+                android:textColor="#000000" />
+
+            <CheckBox
+                android:id="@+id/selectAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="30dp"
+                android:text="全选"
+                android:textColor="#333333" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="#aaaaaa" />
+        </RelativeLayout>
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/line"
-            android:layout_below="@+id/titleRL"
+            android:layout_below="@+id/selectallRL"
             android:scrollbars="none">
 
             <LinearLayout
@@ -75,13 +109,10 @@
                     android:id="@+id/timeEnable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
                     android:text="倒计时"
-                    android:textColor="#000000" />
+                    android:textColor="#333333" />
+
 
                 <ImageButton
                     android:id="@+id/plus"
