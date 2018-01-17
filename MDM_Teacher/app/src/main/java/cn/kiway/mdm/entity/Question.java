@@ -9,6 +9,12 @@ import java.util.List;
 
 public class Question implements Serializable {
 
+    public static final int TYPE_SINGLE = 1;
+    public static final int TYPE_MULTI = 2;
+    public static final int TYPE_EMPTY = 3;
+    public static final int TYPE_JUDGE = 4;
+    public static final int TYPE_ESSAY = 5;
+
     public String courseId;
     public String content;
     public String img;

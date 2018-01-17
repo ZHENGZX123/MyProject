@@ -2,6 +2,7 @@ package cn.kiway.mdm.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
@@ -43,6 +45,7 @@ public class ResultActivity1 extends BaseActivity {
     private GridView gv;
     private MyAdapter adapter;
     private ArrayList<Student> students;
+    private ArrayList<Question> questions;
     private int questionTime;
 
     private boolean finished;
@@ -54,6 +57,7 @@ public class ResultActivity1 extends BaseActivity {
 
         type = getIntent().getIntExtra("type", 1);
         students = (ArrayList<Student>) getIntent().getSerializableExtra("students");
+        questions = (ArrayList<Question>) getIntent().getSerializableExtra("questions");
         questionTime = getIntent().getIntExtra("questionTime", 0);
 
         initView();
@@ -94,11 +98,11 @@ public class ResultActivity1 extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Student s = students.get(position);
-                if (!s.submit) {
-                    toast("该学生未提交答案");
-                    return;
-                }
-//                startActivity(new Intent(this , ));
+//                if (!s.submit) {
+//                    toast("该学生未提交答案");
+//                    return;
+//                }
+                startActivity(new Intent(ResultActivity1.this, ResultDetailActivity.class).putExtra("questions", questions));
             }
         });
     }
@@ -183,6 +187,13 @@ public class ResultActivity1 extends BaseActivity {
         public long getItemId(int arg0) {
             return arg0;
         }
+    }
+
+    public void stop(View view) {
+        toast("停止答题");
+        finished = true;
+        questionTime = 0;
+        mHandler.removeCallbacksAndMessages(null);
     }
 
     @Override

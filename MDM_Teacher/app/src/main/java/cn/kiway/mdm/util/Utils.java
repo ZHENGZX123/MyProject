@@ -32,9 +32,10 @@ import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.Course0Activity;
 import cn.kiway.mdm.activity.CourseListActivity;
-import cn.kiway.mdm.activity.StudentGridActivity;
 import cn.kiway.mdm.activity.MainActivity;
+import cn.kiway.mdm.activity.StudentGridActivity;
 import cn.kiway.mdm.teacher.R;
+import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMING;
 
@@ -456,4 +457,10 @@ public class Utils {
         return retStr;
     }
 
+    public static void showBigImage(Context c, String[] images, int position) {
+        ViewPagerActivity.sDrawables = images;
+        Intent intent = new Intent(c, ViewPagerActivity.class);
+        intent.putExtra("position", position);
+        c.startActivity(intent);
+    }
 }

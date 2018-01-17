@@ -13,12 +13,75 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/titleRL">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#ffffff"
-            android:orientation="vertical"></LinearLayout>
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="30dp"
+                    android:text="选择题"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:id="@+id/imgLL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="15dp"
+                    android:background="@drawable/endbutton"
+                    android:onClick="showAnswer"
+                    android:padding="10dp"
+                    android:text="显示答案"
+                    android:textColor="#ffffff" />
+
+                <LinearLayout
+                    android:id="@+id/ll_answer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/content2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:text="答案："
+                        android:textColor="#000000"
+                        android:textSize="20sp" />
+
+                    <LinearLayout
+                        android:id="@+id/imgLL2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -49,35 +112,93 @@
                     android:layout_marginRight="10dp"
                     android:background="#aaaaaa" />
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/ll_bottom"
+                    android:layout_below="@+id/line">
+
+                    <!-- 单选题、判断题-->
+                    <GridView
+                        android:id="@+id/answerGV"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:numColumns="4" />
+
+                    <TextView
+                        android:id="@+id/answerTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/answerIV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_teacher_judge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:clickable="true"
+                            android:drawableTop="@drawable/right1"
+                            android:gravity="center_horizontal"
+                            android:onClick="right"
+                            android:padding="10dp"
+                            android:text="回答正确"
+                            android:textColor="#000000"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:clickable="true"
+                            android:drawableTop="@drawable/wrong1"
+                            android:gravity="center_horizontal"
+                            android:onClick="wrong"
+                            android:padding="10dp"
+                            android:text="回答错误"
+                            android:textColor="#000000"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </RelativeLayout>
+
                 <LinearLayout
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentBottom="true"
                     android:id="@+id/ll_bottom"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true">
 
                     <Button
+                        android:id="@+id/prev"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
                         android:layout_margin="10dp"
-                        android:background="@drawable/endbutton"
+                        android:background="@drawable/quxiaobutton"
+                        android:onClick="prev"
                         android:padding="10dp"
-                        android:text="结束答题"
-                        android:textColor="#ffffff" />
+                        android:text="    上一题    "
+                        android:textColor="#6699ff"
+                        android:visibility="gone" />
 
                     <Button
+                        android:id="@+id/next"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
                         android:layout_margin="10dp"
-                        android:background="@drawable/endbutton"
+                        android:background="@drawable/quxiaobutton"
+                        android:onClick="next"
                         android:padding="10dp"
-                        android:text="结束答题"
-                        android:textColor="#ffffff" />
+                        android:text="    下一题    "
+                        android:textColor="#6699ff" />
                 </LinearLayout>
 
                 <TextView

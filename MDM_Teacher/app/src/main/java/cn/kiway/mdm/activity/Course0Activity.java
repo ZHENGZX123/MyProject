@@ -52,24 +52,21 @@ import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.entity.TeachingContentVo;
-import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Utils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static android.R.attr.type;
-import static android.R.id.list;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_TONGJI;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_DOC;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
-import static cn.kiway.mdm.teacher.R.id.close;
+import static cn.kiway.mdm.teacher.R.id.count;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
 import static cn.kiway.mdm.util.Utils.check301;
-import static io.netty.util.concurrent.FastThreadLocal.size;
+import static cn.kiway.mdm.util.Utils.showBigImage;
 
 /**
  * Created by Administrator on 2017/12/28.
@@ -167,9 +164,6 @@ public class Course0Activity extends ScreenSharingActivity {
 
     private void initRecord() {
         projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-        //bind放这里好像不对。。。
-        Intent intent = new Intent(this, RecordService.class);
-        bindService(intent, connection, BIND_AUTO_CREATE);
     }
 
     @Override
@@ -177,8 +171,8 @@ public class Course0Activity extends ScreenSharingActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RECORD_REQUEST_CODE && resultCode == RESULT_OK) {
             mediaProjection = projectionManager.getMediaProjection(resultCode, data);
-            recordService.setMediaProject(mediaProjection);
-            recordService.startRecord();
+            KWApplication.recordService.setMediaProject(mediaProjection);
+            KWApplication.recordService.startRecord();
         }
     }
 
@@ -390,13 +384,14 @@ public class Course0Activity extends ScreenSharingActivity {
         kaishidati.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int count = 0;
+                ArrayList<Question> selectQuestions = new ArrayList<>();
+
                 for (Question q : course.questions) {
                     if (q.selected) {
-                        count++;
+                        selectQuestions.add(q);
                     }
                 }
-                if (count == 0) {
+                if (selectQuestions.size() == 0) {
                     toast("请选择一个问题");
                     return;
                 }
@@ -404,18 +399,19 @@ public class Course0Activity extends ScreenSharingActivity {
                 dialog.dismiss();
                 if (type == TYPE_QUESTION_DIANMINGDA) {
                     //点名答要手动选人
-                    startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_DIANMINGDA).putExtra("questionTime", questionTime));
+                    startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_DIANMINGDA).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
                 } else if (type == TYPE_QUESTION_SUIJICHOUDA) {
                     //随机抽答，弹出抽取框
-                    showChoudaqiDialog();
+                    showChoudaqiDialog(selectQuestions);
                 } else if (type == TYPE_QUESTION_QIANGDA) {
                     //TODO 抢答1个学生
                     ArrayList<Student> selectStudents = new ArrayList<>();
                     selectStudents.add(students.get(0));
-                    startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", type).putExtra("students", selectStudents).putExtra("questionTime", questionTime));
+                    toast(students.get(0).name + "抢答成功");
+                    startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", type).putExtra("students", selectStudents).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
                 } else {
                     //测评是全班的
-                    startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", type).putExtra("students", students).putExtra("questionTime", questionTime));
+                    startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", type).putExtra("students", students).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
                 }
             }
         });
@@ -427,7 +423,7 @@ public class Course0Activity extends ScreenSharingActivity {
         });
     }
 
-    private void showChoudaqiDialog() {
+    private void showChoudaqiDialog(ArrayList<Question> selectQuestions) {
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_choudaqi);
         dialog.show();
@@ -444,10 +440,11 @@ public class Course0Activity extends ScreenSharingActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                start.setEnabled(false);
                 new Thread() {
                     @Override
                     public void run() {
-                        int rand = new Random().nextInt(100);
+                        int rand = 25 + new Random().nextInt(25);
                         for (int i = 0; i < rand; i++) {
                             try {
                                 sleep(100);
@@ -455,18 +452,20 @@ public class Course0Activity extends ScreenSharingActivity {
                                 e.printStackTrace();
                             }
                             Student s = students.get(i % students.size());
+                            int finalI = i;
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     name.setText(s.name);
+                                    if (finalI == rand - 1) {
+                                        dialog.dismiss();
+                                        toast("随机到的学生是：" + s.name);
+                                        ArrayList<Student> selectStudents = new ArrayList<>();//getRandomStudents();
+                                        selectStudents.add(s);
+                                        startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", TYPE_QUESTION_SUIJICHOUDA).putExtra("students", selectStudents).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
+                                    }
                                 }
                             });
-                            if (i == rand - 1) {
-                                toast("随机到的学生是：" + s.name);
-                                ArrayList<Student> selectStudents = new ArrayList<>();//getRandomStudents();
-                                selectStudents.add(s);
-                                startActivity(new Intent(Course0Activity.this, ResultActivity1.class).putExtra("type", TYPE_QUESTION_SUIJICHOUDA).putExtra("students", selectStudents).putExtra("questionTime", questionTime));
-                            }
                         }
                     }
                 }.start();
@@ -492,7 +491,6 @@ public class Course0Activity extends ScreenSharingActivity {
     //-------------------------------录屏相关-----------------------------
     private MediaProjectionManager projectionManager;
     private MediaProjection mediaProjection;
-    private RecordService recordService;
 
     public void startRecord() {
         Intent captureIntent = projectionManager.createScreenCaptureIntent();
@@ -500,28 +498,12 @@ public class Course0Activity extends ScreenSharingActivity {
     }
 
     public void stopRecord() {
-        if (recordService.isRunning()) {
-            recordService.stopRecord();
+        if (KWApplication.recordService.isRunning()) {
+            KWApplication.recordService.stopRecord();
         }
         //上传视频文件。。。
         //上传课程记录。。。
     }
-
-    private ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            DisplayMetrics metrics = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            RecordService.RecordBinder binder = (RecordService.RecordBinder) service;
-            recordService = binder.getRecordService();
-            recordService.setConfig(metrics.widthPixels, metrics.heightPixels, metrics.densityDpi);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-        }
-    };
-
     //------------------------内容列表相关-------------------------------------------------
 
     private class CourseAdapter extends BaseAdapter {
@@ -661,11 +643,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 iv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //放大显示
-                        ViewPagerActivity.sDrawables = new String[]{imageUrl};
-                        Intent intent = new Intent(Course0Activity.this, ViewPagerActivity.class);
-                        intent.putExtra("position", 0);
-                        startActivity(intent);
+                        showBigImage(Course0Activity.this, new String[]{imageUrl}, 0);
                     }
                 });
                 ImageLoader.getInstance().displayImage(imgs[i], iv, KWApplication.getLoaderOptions());
@@ -869,11 +847,7 @@ public class Course0Activity extends ScreenSharingActivity {
                     iv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //放大显示
-                            ViewPagerActivity.sDrawables = new String[]{imageUrl};
-                            Intent intent = new Intent(Course0Activity.this, ViewPagerActivity.class);
-                            intent.putExtra("position", 0);
-                            startActivity(intent);
+                            showBigImage(Course0Activity.this, new String[]{imageUrl}, 0);
                         }
                     });
                     ImageLoader.getInstance().displayImage(imgs[i], iv, KWApplication.getLoaderOptions());

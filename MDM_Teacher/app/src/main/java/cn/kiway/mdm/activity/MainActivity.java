@@ -3,15 +3,19 @@ package cn.kiway.mdm.activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -42,6 +46,7 @@ import java.util.List;
 
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.scoket.utils.Logger;
+import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.FileUtils;
 import cn.kiway.mdm.util.HttpDownload;
@@ -98,7 +103,28 @@ public class MainActivity extends BaseActivity {
         load();
         checkNewVersion();
         initzbus();
+        initRecorder();
     }
+
+    private void initRecorder() {
+        Intent intent = new Intent(this, RecordService.class);
+        bindService(intent, connection, BIND_AUTO_CREATE);
+    }
+
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            RecordService.RecordBinder binder = (RecordService.RecordBinder) service;
+            KWApplication.recordService = binder.getRecordService();
+            KWApplication.recordService.setConfig(metrics.widthPixels, metrics.heightPixels, metrics.densityDpi);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+        }
+    };
 
     //初始化zbus
     private void initzbus() {
@@ -594,5 +620,9 @@ public class MainActivity extends BaseActivity {
         startActivity(new Intent(this, NoNetActivity.class));
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(connection);
+    }
 }
