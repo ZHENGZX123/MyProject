@@ -218,6 +218,16 @@ public class StudentGridActivity extends BaseActivity {
                     //选中的
                     s.selected = !s.selected;
                     adapter.notifyDataSetChanged();
+                    //3.修改lockAll变量
+                    selectAll = true;
+                    for (Student temp : students) {
+                        selectAll = selectAll & temp.selected;
+                    }
+                    if (selectAll) {
+                        all.setText("取消");
+                    } else {
+                        all.setText("全选");
+                    }
                 } else if (type == TYPE_CHAPING) {
                     toast("查看" + s.name + "的屏幕");
                     //跳页...
@@ -239,8 +249,8 @@ public class StudentGridActivity extends BaseActivity {
                                     adapter.notifyDataSetChanged();
                                     //3.修改lockAll变量
                                     lockAll = true;
-                                    for (Student s : students) {
-                                        lockAll = lockAll & s.locked;
+                                    for (Student temp : students) {
+                                        lockAll = lockAll & temp.locked;
                                     }
                                 }
                             }).setPositiveButton(android.R.string.cancel, null).create();
@@ -365,6 +375,14 @@ public class StudentGridActivity extends BaseActivity {
         });
     }
 
+    @Override
+    public void sk(View view) {
+        //FIXME 不点名直接上课，哇咔咔
+        startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class).putExtra("students", students));
+        finish();
+    }
+
+
     private void doEndSign() {
         mHandler.removeMessages(TYPE_DIANMING);
         dialog_dianming.dismiss();
@@ -477,6 +495,5 @@ public class StudentGridActivity extends BaseActivity {
         super.onDestroy();
         mHandler.removeCallbacksAndMessages(null);
     }
-
 
 }

@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
@@ -41,6 +42,7 @@ public class KWApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d("test", "APP onCreate");
         //xutils
         x.Ext.init(this);
         //x5
