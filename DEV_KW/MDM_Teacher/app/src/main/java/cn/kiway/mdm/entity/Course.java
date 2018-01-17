@@ -19,4 +19,6 @@ public class Course implements Serializable {
     public int attendCourse;//0未上课1已上课
     public ArrayList<KnowledgePoint> knowledgePoints;
     public ArrayList<Question> questions;
+
+
 }

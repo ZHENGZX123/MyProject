@@ -23,6 +23,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -81,7 +83,6 @@ public class CourseListActivity extends BaseActivity {
     public void initData() {
         showPD();
         try {
-            //TODO 分页
             String url = KWApplication.clientUrl + "/device/teacher/course/attend?currentPage=1&pageSize=100";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
@@ -103,6 +104,13 @@ public class CourseListActivity extends BaseActivity {
                                 it.remove();
                             }
                         }
+                        //排序
+                        Collections.sort(courses, new Comparator<Course>() {
+                            @Override
+                            public int compare(Course o1, Course o2) {
+                                return o1.attendCourse - o2.attendCourse;
+                            }
+                        });
                         adapter.notifyDataSetChanged();
                     } catch (Exception e) {
                         e.printStackTrace();
