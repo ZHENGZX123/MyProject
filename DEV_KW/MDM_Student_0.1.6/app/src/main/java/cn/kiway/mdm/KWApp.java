@@ -114,8 +114,10 @@ public class KWApp extends Application {
                 mute();
             } else if (msg.what == MSG_UNLOCK) {
                 //0.解除锁屏
-                MDMHelper.getAdapter().setBackButtonDisabled(false);
-                MDMHelper.getAdapter().setHomeButtonDisabled(false);
+                if (!isAttendClass) {
+                    MDMHelper.getAdapter().setBackButtonDisabled(false);
+                    MDMHelper.getAdapter().setHomeButtonDisabled(false);
+                }
                 if (msg.obj == null)
                     msg.obj = "";
                 RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());

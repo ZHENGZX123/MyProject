@@ -26,6 +26,7 @@ import cn.kiway.mdm.R;
 import cn.kiway.mdm.entity.App;
 import cn.kiway.mdm.entity.InStallAllApp;
 import cn.kiway.mdm.utils.FileACache;
+import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.MyDBHelper;
 import cn.kiway.mdm.utils.Utils;
 
@@ -215,7 +216,11 @@ public class AppListActivity3 extends BaseActivity {
         for (InStallAllApp a : apps) {//标识选中状态
             if (allListData.toString().contains(a.packages))
                 a.selected = true;
+            if (a.packages.equals("cn.kiway.session"))
+                apps.remove(a);
         }
+      //  apps = new ArrayList(new HashSet(apps));//去重
+        Logger.log("AppListActivity::::"+apps.toString());
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
