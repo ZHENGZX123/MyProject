@@ -77,7 +77,7 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
         if (app.packageName.equals(MARKETPLACE)) {
             itemViewHolder.iv.setImageResource(R.drawable.yysc);
         } else if (app.packageName.equals(PARENTMESSAGE)) {
-            itemViewHolder.iv.setImageResource(R.drawable.leavemessage);
+            itemViewHolder.iv.setImageResource(R.drawable.liuyan);
         } else if (app.packageName.equals(KIWAYSETTING)) {
             itemViewHolder.iv.setImageResource(R.drawable.setting);
         } else {
