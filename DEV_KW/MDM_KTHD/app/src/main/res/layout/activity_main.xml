@@ -68,6 +68,7 @@
         </LinearLayout>
 
         <ImageButton
+            android:onClick="onCourse"
             android:layout_width="118dp"
             android:layout_height="300dp"
             android:layout_marginLeft="50dp"

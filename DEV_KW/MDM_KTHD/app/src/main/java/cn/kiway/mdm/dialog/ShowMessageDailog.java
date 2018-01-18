@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 
-import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.ANSWERDIALOG;
@@ -20,7 +19,6 @@ import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.REPONSEDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.SIGNDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.UNSWERDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
-import static cn.kiway.mdm.zbus.ZbusHost.zbusTeacherTopic;
 
 
 /**
@@ -148,11 +146,11 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
             super.handleMessage(msg);
             switch (msg.what) {
                 case SIGNDIALOG://签到
-                    try {
-                        ZbusUtils.sendMsg(zbusTeacherTopic,"");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        ZbusUtils.sendMsg(zbusTeacherTopic,"");
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
                     break;
                 case REPONSEDIALOG://响应器回应听懂
                     break;

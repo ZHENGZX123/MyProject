@@ -15,8 +15,6 @@ import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
 import studentsession.kiway.cn.mdmaidl.KiwayApplication;
 
-import static cn.kiway.mdm.zbus.ZbusHost.zbusTeacherTopic;
-
 /**
  * Created by Administrator on 2017/12/4.
  */
@@ -97,13 +95,14 @@ public class App extends KiwayApplication {
                 JSONObject data = new JSONObject(msg).optJSONObject("data");
                 if (data.optString("command").equals("question")) {//回答问题的
                     ((BaseActivity) currentActivity).onQuestion(data);
-                    zbusTeacherTopic = data.optString("userId");
+
+                    //zbusTeacherTopic = data.optString("userId");
                 } else if (data.optString("command").equals("sign")) {//签到
                     ((BaseActivity) currentActivity).onSign();
-                    zbusTeacherTopic = data.optString("userId");
+                    //zbusTeacherTopic = data.optString("userId");
                 } else if (data.optString("command").equals("responsePush")) {//知识点统计
                     ((BaseActivity) currentActivity).onResponsePush();
-                    zbusTeacherTopic = data.optString("userId");
+                    //zbusTeacherTopic = data.optString("userId");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
