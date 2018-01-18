@@ -360,7 +360,7 @@ public class Course0Activity extends ScreenSharingActivity {
         selectQuestion(TYPE_QUESTION_CEPING);
     }
 
-    private int questionTime = 120;
+    private int questionTime;
     private TextView selectCount;
     private LinearLayout questionLL;
 
@@ -406,10 +406,12 @@ public class Course0Activity extends ScreenSharingActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    questionTime = 120;
                     plus.setVisibility(View.VISIBLE);
                     settime.setVisibility(View.VISIBLE);
                     minus.setVisibility(View.VISIBLE);
                 } else {
+                    questionTime = 0;
                     plus.setVisibility(View.GONE);
                     plus.setVisibility(View.GONE);
                     plus.setVisibility(View.GONE);

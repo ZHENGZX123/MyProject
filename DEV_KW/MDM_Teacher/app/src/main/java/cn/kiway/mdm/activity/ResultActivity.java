@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +19,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
+import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
@@ -132,6 +142,7 @@ public class ResultActivity extends BaseActivity {
                     questionTime--;
                 } else {
                     finished = true;
+                    doEndQuestion();
                 }
             }
             time.setText(Utils.secToTime(questionTime));
@@ -201,6 +212,55 @@ public class ResultActivity extends BaseActivity {
         finished = true;
         questionTime = 0;
         mHandler.removeCallbacksAndMessages(null);
+        doEndQuestion();
+    }
+
+    public void doEndQuestion() {
+        showPD();
+        try {
+            String url = KWApplication.clientUrl + "/device/teacher/course/student/result";
+            Log.d("test", "url = " + url);
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.setTimeout(10000);
+            JSONArray array = new JSONArray();
+            JSONObject o1 = new JSONObject();
+            o1.put("answerContent", "student imei");
+            o1.put("answerImg", "zbus countId");
+            o1.put("content", "");
+            o1.put("examinationId", "");
+            o1.put("id", "");
+            o1.put("imei", "");
+            o1.put("name", "");
+            o1.put("questionContent", "");
+            o1.put("questionImg", "");
+            o1.put("questionOptions", "");
+            o1.put("questionType", 0);
+            o1.put("status", 0);
+            o1.put("type", 0);
+            array.put(o1);
+            Log.d("test", "knowledge array = " + array.toString());
+            StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
+            client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", " onSuccess = " + ret);
+                    dismissPD();
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", " onFailure = " + s);
+                    dismissPD();
+                    if (!Utils.check301(ResultActivity.this, s, "questionResult")) {
+                        toast("请求失败，请稍后再试");
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            toast("请求失败，请稍后再试");
+        }
     }
 
     @Override
