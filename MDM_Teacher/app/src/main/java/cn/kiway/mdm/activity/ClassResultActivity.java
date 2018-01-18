@@ -8,7 +8,7 @@ import cn.kiway.mdm.teacher.R;
 /**
  * Created by Administrator on 2018/1/17.
  */
-
+//班级测评统计
 public class ClassResultActivity extends BaseActivity {
 
     @Override
