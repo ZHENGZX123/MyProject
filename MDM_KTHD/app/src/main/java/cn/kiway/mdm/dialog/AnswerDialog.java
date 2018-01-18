@@ -7,10 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
 import studentsession.kiway.cn.mdm_studentsession.R;
-
-import static cn.kiway.mdm.zbus.ZbusHost.zbusTeacherTopic;
 
 /**
  * Created by Administrator on 2018/1/3.
@@ -44,11 +41,11 @@ public class AnswerDialog extends BaseDialog {
         switch (v.getId()) {
             case R.id.answer_btn:
                 if (answerBtn.getText().toString().equals("抢答")) {//处于抢答状态
-                    try {
-                        ZbusUtils.sendMsg(zbusTeacherTopic, "抢答");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        ZbusUtils.sendMsg(zbusTeacherTopic, "抢答");
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
                 }
                 break;
         }

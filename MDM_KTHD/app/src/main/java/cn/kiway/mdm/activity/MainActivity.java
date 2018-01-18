@@ -52,6 +52,10 @@ public class MainActivity extends BaseActivity {
 //        startActivity(new Intent(this, AnswerQuestionsAcitivity.class));
     }
 
+    public void onCourse(View view) {
+        startActivity(new Intent(this, Course2Activity.class));
+    }
+
     public void onFile(View view) {//查看文件
         startActivity(new Intent(this, FileListActivity.class));
     }
