@@ -33,6 +33,7 @@ import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.Course0Activity;
 import cn.kiway.mdm.activity.CourseListActivity;
 import cn.kiway.mdm.activity.MainActivity;
+import cn.kiway.mdm.activity.ResultActivity;
 import cn.kiway.mdm.activity.StudentGridActivity;
 import cn.kiway.mdm.teacher.R;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
@@ -402,8 +403,10 @@ public class Utils {
                             ((CourseListActivity) KWApplication.currentActivity).initData();
                         } else if (type.equals("coursedetail")) {
                             ((Course0Activity) KWApplication.currentActivity).initData();
-                        } else if (type.equals("knowledgeCount")) {
+                        } else if (type.equals("knowledgeCountResult")) {
                             ((StudentGridActivity) KWApplication.currentActivity).doEndTongji();
+                        } else if (type.equals("questionResult")) {
+                            ((ResultActivity) KWApplication.currentActivity).doEndQuestion();
                         }
                     } catch (Exception e) {
                     }

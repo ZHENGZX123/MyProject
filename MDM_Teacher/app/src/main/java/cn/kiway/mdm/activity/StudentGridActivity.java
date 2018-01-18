@@ -470,14 +470,15 @@ public class StudentGridActivity extends BaseActivity {
         showPD();
         try {
             String url = KWApplication.clientUrl + "/device/teacher/course/student/knowledge/result";
+            Log.d("test", "url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
             JSONArray array = new JSONArray();
             JSONObject o1 = new JSONObject();
-            o1.put("imei", "test");
-            o1.put("countId", "test");
-            o1.put("status", 0);
+            o1.put("imei", "student imei");
+            o1.put("countId", "zbus countId");
+            o1.put("status", 0);//0没听懂 1听懂了
             array.put(o1);
             Log.d("test", "knowledge array = " + array.toString());
             StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
@@ -495,7 +496,7 @@ public class StudentGridActivity extends BaseActivity {
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
                     dismissPD();
-                    if (!Utils.check301(StudentGridActivity.this, s, "knowledgeCount")) {
+                    if (!Utils.check301(StudentGridActivity.this, s, "knowledgeCountResult")) {
                         toast("请求失败，请稍后再试");
                     }
                 }
