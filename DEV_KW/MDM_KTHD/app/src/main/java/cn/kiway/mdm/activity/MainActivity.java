@@ -24,10 +24,6 @@ import java.io.File;
 
 import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.NetworkUtil;
-import cn.kiway.mdm.utils.Utils;
-import cn.kiway.mdm.zbus.ZbusMessageHandler;
-import cn.kiway.web.kthd.zbus.ZbusConfiguration;
-import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
 import io.agora.openlive.model.ConstantApp;
 import io.agora.openlive.ui.LiveRoomActivity;
 import io.agora.rtc.Constants;
@@ -35,9 +31,6 @@ import studentsession.kiway.cn.mdm_studentsession.R;
 
 import static cn.kiway.mdm.utils.IContants.CHECK_VERSION_URL;
 import static cn.kiway.mdm.utils.Utils.getCurrentVersion;
-import static cn.kiway.mdm.zbus.ZbusHost.zbusHost;
-import static cn.kiway.mdm.zbus.ZbusHost.zbusPost;
-import static cn.kiway.mdm.zbus.ZbusHost.zbusTopic;
 
 public class MainActivity extends BaseActivity {
 
@@ -51,25 +44,12 @@ public class MainActivity extends BaseActivity {
         instantce = this;
         setContentView(R.layout.activity_main);
         getAppData();
-        initzbus();
-    }
-
-
-    //初始化zbus
-    private void initzbus() {
-        ZbusConfiguration.instance.setHost(zbusHost);
-        ZbusConfiguration.instance.setPort(zbusPost);
-        try {
-            ZbusUtils.consumeMsg(zbusTopic + Utils.getIMEI(this), new ZbusMessageHandler(this));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void onInfo(View view) {//个人信息
-        // startActivity(new Intent(this, UserInfoActivity.class));
-        // startPlayer();
-        startActivity(new Intent(this, AnswerQuestionsAcitivity.class));
+        startPlayer();
+//        startActivity(new Intent(this, UserInfoActivity.class));
+//        startActivity(new Intent(this, AnswerQuestionsAcitivity.class));
     }
 
     public void onFile(View view) {//查看文件
@@ -141,34 +121,9 @@ public class MainActivity extends BaseActivity {
                     Log.d("test", "新版本返回值" + ret);
                     String apkVersion = new JSONObject(ret).getString("apkCode");
                     String apkUrl = new JSONObject(ret).getString("apkUrl");
-
-                    String zipCode = new JSONObject(ret).getString("zipCode");
-                    String zipUrl = new JSONObject(ret).getString("zipUrl");
                     if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
-//                        showUpdateConfirmDialog(apkUrl);
                         downloadSilently(apkUrl, apkVersion);
                     }
-//                   else {****************************暂时没有zip包更新 所以不用
-//                        //如果APK没有最新版本，比较包的版本。如果内置包的版本号比较高，直接替换
-//                        boolean flag = false;
-//                        String currentPackage = getSharedPreferences("kiway", 0).getString("version_package",
-// "0.0.1");
-//                        if (currentPackage.compareTo(currentPackageVersion) < 0) {
-//                            Log.d("test", "内置包的版本大，替换新包");
-//                            getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
-//                            checkIsFirst();
-//                            flag = true;
-//                        }
-//                        //替换完内置包之后，比较内置包和外包，如果版本号还是小了，更新外包
-//                        currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
-//                        String outer_package = zipCode;
-//                        if (currentPackage.compareTo(outer_package) < 0) {//提示有新的包，下载新的包
-//                            Log.d("test", "下载新的H5包");
-//                            updatePackage(outer_package, zipUrl);
-//                        } else {
-//                            Log.d("test", "H5包是最新的");
-//                        }
-//                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -243,8 +198,6 @@ public class MainActivity extends BaseActivity {
     }
 
     ////////////////以上是版本更新
-    long time;
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (app.isAttenClass) {
