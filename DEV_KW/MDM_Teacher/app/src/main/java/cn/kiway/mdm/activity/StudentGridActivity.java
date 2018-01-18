@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -385,6 +386,10 @@ public class StudentGridActivity extends BaseActivity {
         finish();
     }
 
+    @Override
+    public void rk(View view) {
+        startActivity(new Intent(StudentGridActivity.this, ClassResultActivity.class));
+    }
 
     private void doEndSign() {
         mHandler.removeMessages(TYPE_DIANMING);
@@ -459,10 +464,41 @@ public class StudentGridActivity extends BaseActivity {
         });
     }
 
-    private void doEndTongji() {
+    public void doEndTongji() {
+        //1.上报统计结果
         mHandler.removeMessages(TYPE_TONGJI);
-        dialog_tongji.dismiss();
-        finish();
+        showPD();
+        try {
+            String url = KWApplication.clientUrl + "/knowledgeCount";
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.setTimeout(10000);
+            RequestParams param = new RequestParams();
+            param.put("userName", "");
+            param.put("password", "");
+            client.post(this, url, param, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", " onSuccess = " + ret);
+                    dismissPD();
+                    //2.关闭对话框并退出
+                    dialog_tongji.dismiss();
+                    finish();
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", " onFailure = " + s);
+                    dismissPD();
+                    if (!Utils.check301(StudentGridActivity.this, s, "knowledgeCount")) {
+                        toast("请求失败，请稍后再试");
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            toast("请求失败，请稍后再试");
+        }
     }
 
     private Handler mHandler = new Handler() {

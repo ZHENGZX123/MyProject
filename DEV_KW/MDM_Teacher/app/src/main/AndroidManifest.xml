@@ -36,7 +36,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="cn.kiway.mdm.scoket.ScreenActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="landscape" />
         <activity
             android:name="cn.kiway.mdm.activity.ViewPhotosActivity"
             android:screenOrientation="portrait" />
@@ -73,7 +73,13 @@
             android:screenOrientation="landscape"></activity>
         <activity
             android:name="cn.kiway.mdm.activity.ClassResultActivity"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
         <activity
             android:name="cn.kiway.mdm.activity.ResultDetailActivity"
             android:screenOrientation="landscape"></activity>

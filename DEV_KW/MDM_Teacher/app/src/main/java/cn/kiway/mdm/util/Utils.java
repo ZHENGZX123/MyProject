@@ -402,6 +402,8 @@ public class Utils {
                             ((CourseListActivity) KWApplication.currentActivity).initData();
                         } else if (type.equals("coursedetail")) {
                             ((Course0Activity) KWApplication.currentActivity).initData();
+                        } else if (type.equals("knowledgeCount")) {
+                            ((StudentGridActivity) KWApplication.currentActivity).doEndTongji();
                         }
                     } catch (Exception e) {
                     }

@@ -5,15 +5,19 @@
     android:layout_height="50dp"
     android:background="#6699ff">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <RelativeLayout
+        android:layout_width="60dp"
+        android:layout_height="50dp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
-        android:onClick="clickBack"
-        android:text="返回"
-        android:textColor="#ffffff"
-        android:textSize="16sp" />
+        android:onClick="clickBack">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/left" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/titleName"

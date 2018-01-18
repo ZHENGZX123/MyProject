@@ -10,9 +10,18 @@ import cn.kiway.mdm.teacher.R;
  */
 
 public class ClassResultActivity extends BaseActivity {
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class_result);
+        initView();
+    }
+
+    @Override
+    public void initView() {
+        super.initView();
+
+        titleName.setText("班级统计");
     }
 }
