@@ -45,7 +45,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import cn.kiway.mdm.KWApplication;
-import cn.kiway.mdm.scoket.utils.Logger;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.FileUtils;
@@ -69,8 +68,6 @@ import static cn.kiway.mdm.web.JsAndroidInterface.accessToken;
 import static cn.kiway.mdm.web.JsAndroidInterface.picPath;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile2;
-import static cn.kiway.mdm.web.JsAndroidInterface.setFilePath;
-import static cn.kiway.mdm.web.JsAndroidInterface.userAccount;
 import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
 import static cn.kiway.mdm.zbus.ZbusHost.zbusHost;
 import static cn.kiway.mdm.zbus.ZbusHost.zbusPost;
@@ -94,7 +91,6 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getAppData();
         instance = this;
         initView();
         Utils.checkNetWork(this, false);
@@ -136,22 +132,6 @@ public class MainActivity extends BaseActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-
-    private void getAppData() {
-        Intent intent = getIntent();
-        userAccount = "";
-        if (intent != null && intent.getFlags() == Intent.FLAG_ACTIVITY_NEW_TASK) {
-            String username = intent.getStringExtra("username");
-            String password = intent.getStringExtra("password");
-            if (password == null || username == null) {
-                userAccount = "";
-            } else {
-                userAccount = username + ":::" + password;
-            }
-        }
-        Logger.log("----------------------" + userAccount);
     }
 
     public void initView() {
@@ -222,13 +202,10 @@ public class MainActivity extends BaseActivity {
             time = t;
             toast("再按一次退出");
         } else {
-            //1.closeServer
-            jsInterface.closeServer();
-            //2.关闭录制
+            //该关闭的关闭
             finish();
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -249,14 +226,12 @@ public class MainActivity extends BaseActivity {
                 toast(R.string.choose_file);
                 return;
             }
-            setFilePath = filePath;
             uploadFile(filePath, false);
         } else if (requestCode == requsetFile2) {
             if (data == null)
                 return;
             List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
             String filePath = list.get(0);
-            setFilePath = filePath;
             //1.上传
             uploadFile(filePath, true);
 

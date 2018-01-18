@@ -1,13 +1,9 @@
 package cn.kiway.mdm.activity;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Base64;
 import android.util.Log;
-import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -17,7 +13,7 @@ import java.lang.reflect.Method;
 
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.teacher.R;
-import cn.kiway.mdm.util.Utils;
+import cn.kiway.mdm.web.JsAndroidInterface2;
 import cn.kiway.mdm.web.MyWebViewClient;
 
 
@@ -78,31 +74,6 @@ public class WhiteBoardActivity extends BaseActivity {
         wv.setWebChromeClient(new WebChromeClient());
         wv.addJavascriptInterface(new JsAndroidInterface2(), "wx");
     }
-
-    public class JsAndroidInterface2 {
-        public JsAndroidInterface2() {
-        }
-
-        @JavascriptInterface
-        public String setBackgroundImage() {
-            Log.d("test", "setBackgroundImage is called");
-            return "/mnt/sdcard/test.jpg";
-        }
-
-        @JavascriptInterface
-        public void saveBase64(String param) {
-            Log.d("test", "saveBase64 is called , param = " + param);
-            Bitmap bitmap = null;
-            try {
-                byte[] bitmapArray = Base64.decode(param.split(",")[1], Base64.DEFAULT);
-                bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
-                Utils.saveBitmap(bitmap, System.currentTimeMillis() + ".png");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 
     @Override
     public void initView() {

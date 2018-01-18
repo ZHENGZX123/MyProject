@@ -1,7 +1,6 @@
 package cn.kiway.mdm.web;
 
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
@@ -16,24 +15,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.activity.MainActivity;
-import cn.kiway.mdm.activity.ViewPhotosActivity;
-import cn.kiway.mdm.scoket.ScreenActivity;
-import cn.kiway.mdm.scoket.db.DbUtils;
-import cn.kiway.mdm.scoket.scoket.tcp.MessageHander.AccpectMessageHander;
-import cn.kiway.mdm.scoket.scoket.tcp.netty.HproseChannelMapStatic;
-import cn.kiway.mdm.scoket.scoket.udp.BroadCastUdp;
-import cn.kiway.mdm.scoket.utils.Logger;
-import cn.kiway.mdm.scoket.utils.WifiUtils;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Utils;
+import cn.kiway.mdm.util.WifiUtils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static cn.kiway.mdm.scoket.scoket.tcp.netty.NettyServerBootstrap.staute;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.FileUtils.EnFILEPATH;
 
@@ -45,7 +35,6 @@ public class JsAndroidInterface {
     public static String userAccount = "";
 
     private MainActivity activity;
-    private AccpectMessageHander accpectMessageHander;
     private String className;
     public static final int requsetFile = 45612;
     public static final int requsetFile2 = 45613;
@@ -53,7 +42,11 @@ public class JsAndroidInterface {
 
     public JsAndroidInterface(MainActivity activity, WebView webView) {
         this.activity = activity;
-        accpectMessageHander = new AccpectMessageHander(activity, webView);
+    }
+
+    @JavascriptInterface//获取wifi IP
+    public String getWifiIp() {
+        return WifiUtils.getIPAddress(activity);
     }
 
     @JavascriptInterface
@@ -64,73 +57,11 @@ public class JsAndroidInterface {
     }
 
     @JavascriptInterface
-    public void scoketOperate(String state, String className) { //1启动，0关闭
-        this.className = className;
-        if (state.equals("1")) {
-            closeServer();
-            startServer();
-            Logger.log("--------------Start----------");
-        } else if (state.equals("0")) {
-            closeServer();
-            Logger.log("--------------Stop-----------");
-        }
-    }
-
-    @JavascriptInterface
-    public void sendMessage(String msg, String userId) {//发送消息
-
-    }
-
-    @JavascriptInterface//获取服务器状态
-    public String getscoketStaute() {//主动获取服务器状态 1 开启，2关闭，3异常
-        return staute;
-    }
-
-    @JavascriptInterface
-    public String getUserAccount() {//获取用户名密码
-        Logger.log("----------------------" + userAccount);
-        return userAccount;
-    }
-
-    @JavascriptInterface
     public void setScreenOrientation(String orientation) {//设置横竖
         if (orientation.equals("0"))
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         else if (orientation.equals("1"))
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-    }
-
-    @JavascriptInterface//获取wifi IP
-    public String getWifiIp() {
-        return WifiUtils.getIPAddress(activity);
-    }
-
-    @JavascriptInterface
-    public void pushTheScreen() {//推屏  ios不用
-        if (!Utils.isAppInstalled(activity, "com.kiway.ikv3")) {
-            this.activity.toast(R.string.please_install_kiway_srceen);
-            return;
-        }
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        ComponentName cn = new ComponentName("com.kiway.ikv3", "com.clovsoft.ik.MainActivity");
-        intent.setComponent(cn);
-        activity.startActivity(intent);
-    }
-
-    @JavascriptInterface
-    public void multiControl(String userId) {//多屏互动
-        Logger.log("multiControl::::" + userId);
-        if (HproseChannelMapStatic.getChannel(userId) == null) {
-            this.activity.toast(R.string.student_no_inline);
-            return;
-        }
-        activity.startActivity(new Intent(activity, ScreenActivity.class).putExtra("clientId", userId));
-    }
-
-    @JavascriptInterface
-    public String sureReponse() {
-        return DbUtils.getResponse(activity);
     }
 
     public static int REQUEST_ORIGINAL = 2000;// 请求原图信号标识
@@ -160,31 +91,6 @@ public class JsAndroidInterface {
                 .start();
     }
 
-    public static String setFilePath = "";
-
-    @JavascriptInterface
-    public void sendFile(String userId, String filePath) {//发送文件
-
-    }
-
-    @JavascriptInterface
-    public boolean getStudentStatus(String userId) { //学生是否连上了 true false
-        if (HproseChannelMapStatic.getChannel(userId) == null)
-            return false;
-        return true;
-    }
-
-    @JavascriptInterface
-    public void ViewPicture(String picUrl, String position) {
-        String[] picSplit = picUrl.split(",");
-        ArrayList<String> picList = new ArrayList<String>();
-        for (String s : picSplit) {
-            picList.add(s);
-        }
-        activity.startActivity(new Intent(activity, ViewPhotosActivity.class).putStringArrayListExtra("urls",
-                picList).putExtra("position", Integer.parseInt(position)));
-    }
-
     @JavascriptInterface
     public String getPlatform() {
         return "Android";
@@ -198,8 +104,6 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public void openFile(final String downUrl, final String fileName) {
-        Logger.log("::::::" + downUrl);
-        Logger.log("::::::" + fileName);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -234,15 +138,6 @@ public class JsAndroidInterface {
                 });
             }
         }).start();
-    }
-
-    BroadCastUdp broadCastUdp;
-
-    public void startServer() {
-
-    }
-
-    public void closeServer() {
     }
 
     //---------------------------------2.0版本新增的接口--------------------------------------
