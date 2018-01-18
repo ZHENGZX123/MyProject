@@ -6,14 +6,13 @@
     <RelativeLayout
         android:layout_width="400dp"
         android:layout_height="250dp"
-        android:layout_centerInParent="true"
-        android:background="#ffffff">
+        android:layout_centerInParent="true">
 
         <RelativeLayout
             android:id="@+id/titleRL"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="#6699ff">
+            android:background="@drawable/dialogtitle">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -34,49 +33,54 @@
 
         </RelativeLayout>
 
-        <ListView
-            android:id="@+id/lv"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/line"
+            android:layout_height="match_parent"
             android:layout_below="@+id/titleRL"
-            android:divider="#00000000"></ListView>
+            android:background="#ffffff">
 
-        <TextView
-            android:id="@+id/line"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_above="@+id/bottomRL"
-            android:background="#aaaaaa" />
-
-        <LinearLayout
-            android:id="@+id/bottomRL"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_alignParentBottom="true"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/cancel"
-                android:layout_width="wrap_content"
+            <ListView
+                android:id="@+id/lv"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/quxiaobutton"
-                android:padding="5dp"
-                android:text="    取 消    " />
+                android:layout_above="@+id/line"
+                android:divider="#00000000"></ListView>
 
-            <Button
-                android:id="@+id/tongji"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:background="@drawable/tongjibutton"
-                android:padding="5dp"
-                android:text="    统 计    "
-                android:textColor="#ffffff" />
-        </LinearLayout>
+            <TextView
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_above="@+id/bottomRL"
+                android:background="#aaaaaa" />
 
+            <LinearLayout
+                android:id="@+id/bottomRL"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/quxiaobutton"
+                    android:padding="5dp"
+                    android:text="    取 消    " />
+
+                <Button
+                    android:id="@+id/tongji"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:background="@drawable/tongjibutton"
+                    android:padding="5dp"
+                    android:text="    统 计    "
+                    android:textColor="#ffffff" />
+            </LinearLayout>
+
+        </RelativeLayout>
     </RelativeLayout>
-
 
 </RelativeLayout>
