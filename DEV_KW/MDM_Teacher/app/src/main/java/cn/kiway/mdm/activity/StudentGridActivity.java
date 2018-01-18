@@ -23,10 +23,10 @@ import android.widget.TextView;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -469,14 +469,19 @@ public class StudentGridActivity extends BaseActivity {
         mHandler.removeMessages(TYPE_TONGJI);
         showPD();
         try {
-            String url = KWApplication.clientUrl + "/knowledgeCount";
+            String url = KWApplication.clientUrl + "/device/teacher/course/student/knowledge/result";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
-            RequestParams param = new RequestParams();
-            param.put("userName", "");
-            param.put("password", "");
-            client.post(this, url, param, new TextHttpResponseHandler() {
+            JSONArray array = new JSONArray();
+            JSONObject o1 = new JSONObject();
+            o1.put("imei", "test");
+            o1.put("countId", "test");
+            o1.put("status", 0);
+            array.put(o1);
+            Log.d("test", "knowledge array = " + array.toString());
+            StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
+            client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
