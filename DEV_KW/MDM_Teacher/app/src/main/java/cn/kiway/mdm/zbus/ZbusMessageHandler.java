@@ -2,7 +2,7 @@ package cn.kiway.mdm.zbus;
 
 import java.io.IOException;
 
-import cn.kiway.mdm.scoket.utils.Logger;
+import cn.kiway.mdm.util.Logger;
 import io.zbus.mq.Message;
 import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;

@@ -7,8 +7,6 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import cn.kiway.mdm.scoket.utils.Logger;
-
 /**
  * Created by Administrator on 2017/11/9.
  */
@@ -46,7 +44,6 @@ public class MyWebViewClient extends WebViewClient {
 
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView webView, WebResourceRequest webResourceRequest) {
-        Logger.log("webUrl::::" + webResourceRequest.getUrl());
         return super.shouldInterceptRequest(webView, webResourceRequest);
     }
 

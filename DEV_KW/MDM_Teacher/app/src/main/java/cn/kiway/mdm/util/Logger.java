@@ -1,4 +1,8 @@
-package cn.kiway.mdm.scoket.utils;
+package cn.kiway.mdm.util;
+
+/**
+ * Created by Administrator on 2018/1/18.
+ */
 
 import android.util.Log;
 

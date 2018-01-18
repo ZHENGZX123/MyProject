@@ -1,4 +1,4 @@
-package cn.kiway.mdm.scoket.utils;
+package cn.kiway.mdm.util;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
