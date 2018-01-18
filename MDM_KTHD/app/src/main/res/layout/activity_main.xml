@@ -5,27 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="#6699FF">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="开维互动学生端"
-            android:textColor="#ffffff" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:onClick="logout"
-            android:text="退出" />
-
-    </RelativeLayout>
+    <include layout="@layout/layout_title2"></include>
 
     <LinearLayout
         android:id="@+id/connect_c"
@@ -48,7 +28,7 @@
             <ImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/icon1" />
+                android:src="@drawable/icon" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -67,29 +47,101 @@
 
         </LinearLayout>
 
-        <ImageButton
-            android:onClick="onCourse"
+        <RelativeLayout
             android:layout_width="118dp"
             android:layout_height="300dp"
             android:layout_marginLeft="50dp"
             android:background="@drawable/mainbutton2"
-            android:text="已上课程" />
+            android:onClick="onCourse"
+            android:text="已上课程">
 
-        <ImageButton
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/icon1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="    已上\n课程"
+                android:textColor="#ffffff"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:layout_width="70dp"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/icon4" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="127dp"
             android:layout_height="294dp"
             android:layout_marginLeft="50dp"
             android:layout_marginTop="30dp"
             android:background="@drawable/mainbutton3"
             android:onClick="onFile"
-            android:text="我的文件" />
+            android:text="我的文件">
 
-        <ImageButton
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/icon2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="    我的\n文件"
+                android:textColor="#ffffff"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="70dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/icon5" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="118dp"
             android:layout_height="300dp"
             android:layout_marginLeft="50dp"
             android:background="@drawable/mainbutton4"
-            android:text="测评分析" />
+            android:text="测评分析">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/icon3" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="课堂\n    分析"
+                android:textColor="#ffffff"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="80dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/icon6" />
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -177,8 +229,8 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/snapshot" />
 
             <TextView
@@ -199,8 +251,8 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/ask" />
 
             <TextView

@@ -3,6 +3,9 @@ package cn.kiway.mdm.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -13,23 +16,31 @@ import cn.kiway.mdm.dialog.MyProgressDialog;
 import cn.kiway.mdm.dialog.NotifyShowDailog;
 import cn.kiway.mdm.dialog.SignDialog;
 import cn.kiway.mdm.dialog.SmokeAnswerDialog;
+import studentsession.kiway.cn.mdm_studentsession.R;
 
 /**
  * Created by Administrator on 2017/12/4.
  */
 
 public class BaseActivity extends Activity {
+
     public App app;
     AnswerDialog answerDialog;
     SmokeAnswerDialog smokeAnswerDialog;
     SignDialog signDialog;
     KnowledgeStatistics knowDialog;
 
+    public TextView titleName;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.instance.currentActivity = this;
         app = (App) getApplicationContext();
+    }
+
+    public void initView() {
+        titleName = (TextView) findViewById(R.id.titleName);
     }
 
     @Override
@@ -99,6 +110,32 @@ public class BaseActivity extends Activity {
             public void run() {
                 knowDialog = new KnowledgeStatistics(BaseActivity.this);
                 knowDialog.show();
+            }
+        });
+    }
+
+    public void clickBack(View view) {
+        finish();
+    }
+
+    public void toast(final String txt) {
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                Toast.makeText(BaseActivity.this, txt, Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+    }
+
+    public void toast(final int txt) {
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                Toast.makeText(BaseActivity.this, txt, Toast.LENGTH_SHORT)
+                        .show();
             }
         });
     }

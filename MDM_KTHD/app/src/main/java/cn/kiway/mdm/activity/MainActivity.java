@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +25,7 @@ import java.io.File;
 
 import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.NetworkUtil;
+import cn.kiway.mdm.utils.Utils;
 import io.agora.openlive.model.ConstantApp;
 import io.agora.openlive.ui.LiveRoomActivity;
 import io.agora.rtc.Constants;
@@ -43,7 +45,14 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         instantce = this;
         setContentView(R.layout.activity_main);
+        initView();
         getAppData();
+    }
+
+    @Override
+    public void initView() {
+        super.initView();
+        titleName.setText("开维互动学生端");
     }
 
     public void onInfo(View view) {//个人信息
@@ -219,11 +228,17 @@ public class MainActivity extends BaseActivity {
     }
 
     public void clickSnapshot(View view) {
-
+        //保存截图到本地
+        getWindow().getDecorView().setDrawingCacheEnabled(true);
+        Bitmap bitmap = getWindow().getDecorView().getDrawingCache();
+        Utils.saveBitmap(bitmap, System.currentTimeMillis() + ".png");
+        toast("截图保存在SD卡根目录");
     }
 
     public void clickAsk(View view) {
-
+        final Dialog dialog = new Dialog(this, R.style.popupDialog);
+        dialog.setContentView(R.layout.dialog_ask);
+        dialog.show();
     }
 
 

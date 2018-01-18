@@ -14,5 +14,13 @@ public class UserInfoActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userinfo);
+
+        initView();
+    }
+
+    @Override
+    public void initView() {
+        super.initView();
+        titleName.setText("用户信息");
     }
 }

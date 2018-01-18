@@ -60,7 +60,8 @@ public class AnswerQuestionsAcitivity extends BaseActivity implements RadioGroup
         load();
     }
 
-    void initView() {
+    @Override
+    public void initView() {
         choiceQuestion = (RadioGroup) findViewById(R.id.choiceQuestion);
         TofF = (RadioGroup) findViewById(R.id.TofF);
         wv = (WebView) findViewById(R.id.wv);
