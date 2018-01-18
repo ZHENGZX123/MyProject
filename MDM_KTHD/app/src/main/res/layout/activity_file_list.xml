@@ -1,32 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <include layout="@layout/layout_title2"></include>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/blue">
+        android:layout_height="40dp">
+
+        <Button
+            android:id="@+id/tab1"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:background="@null"
+            android:onClick="clickTab1"
+            android:text="课堂资料"
+            android:textColor="#6699ff" />
 
         <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="接收到的文件"
-            android:textColor="@color/white"
-            android:textSize="16sp"/>
+            android:layout_width="1dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:background="#aaaaaa" />
 
-        <ImageView
-            android:id="@+id/before"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:onClick="Before"
-            android:paddingLeft="10dp"
-            android:src="@drawable/ic_navigate_before"/>
-    </RelativeLayout>
+        <Button
+            android:id="@+id/tab2"
+            android:layout_width="180dp"
+            android:layout_height="40dp"
+            android:background="@null"
+            android:onClick="clickTab2"
+            android:text="我的截图资料" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/bottomRL"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="#aaaaaa" />
 
     <ListView
         android:id="@+id/list_view"

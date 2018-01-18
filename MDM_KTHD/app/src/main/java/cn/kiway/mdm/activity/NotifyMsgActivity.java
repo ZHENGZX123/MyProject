@@ -48,10 +48,6 @@ public class NotifyMsgActivity extends BaseActivity {
         });
     }
 
-    public void Before(View v) {
-        finish();
-    }
-
     public class NotifyMsgAdapter extends ArrayAdapter {
         NotifyHolder holder;
 

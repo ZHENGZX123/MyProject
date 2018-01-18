@@ -84,6 +84,9 @@ public class MainActivity extends BaseActivity {
     public void onUdp(View view) {
     }
 
+    public void fenxi(View view) {
+        startActivity(new Intent(this, FenxiActivity.class));
+    }
 
     private void getAppData() {//判断是手动打开还是推送打开
         Intent intent = getIntent();
@@ -232,7 +235,7 @@ public class MainActivity extends BaseActivity {
         getWindow().getDecorView().setDrawingCacheEnabled(true);
         Bitmap bitmap = getWindow().getDecorView().getDrawingCache();
         Utils.saveBitmap(bitmap, System.currentTimeMillis() + ".png");
-        toast("截图保存在SD卡根目录");
+        toast("请在我的文件里查看");
     }
 
     public void clickAsk(View view) {

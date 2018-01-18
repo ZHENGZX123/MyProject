@@ -1,6 +1,7 @@
 package cn.kiway.mdm.activity;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,14 +26,28 @@ import studentsession.kiway.cn.mdm_studentsession.R;
  */
 
 public class FileListActivity extends BaseActivity {
-    ListView listView;
-    JSONArray array = new JSONArray();
-    FileAdapter adapter;
+    private ListView listView;
+    private JSONArray array = new JSONArray();
+    private FileAdapter adapter;
+    private Button tab1;
+    private Button tab2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_list);
+
+        initView();
+    }
+
+    @Override
+    public void initView() {
+        super.initView();
+        titleName.setText("我的文件");
+
+        tab1 = (Button) findViewById(R.id.tab1);
+        tab2 = (Button) findViewById(R.id.tab2);
+
         listView = (ListView) findViewById(R.id.list_view);
         array = new MyDBHelper(this).getFile();
         adapter = new FileAdapter(this);
@@ -45,19 +61,16 @@ public class FileListActivity extends BaseActivity {
         });
     }
 
-    public void Before(View view) {
-        finish();
+    public void clickTab1(View view) {
+        tab1.setTextColor(Color.parseColor("#6699ff"));
+        tab2.setTextColor(Color.parseColor("#000000"));
     }
 
-    public void refreshUI() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                array = new MyDBHelper(FileListActivity.this).getNotifyMessage();
-                adapter.notifyDataSetChanged();
-            }
-        });
+    public void clickTab2(View view) {
+        tab1.setTextColor(Color.parseColor("#000000"));
+        tab2.setTextColor(Color.parseColor("#6699ff"));
     }
+
 
     public class FileAdapter extends ArrayAdapter {
         FileHolder holder;

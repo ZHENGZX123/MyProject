@@ -9,7 +9,6 @@
         android:layout_width="60dp"
         android:layout_height="50dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
         android:onClick="clickBack">
 
         <ImageView
