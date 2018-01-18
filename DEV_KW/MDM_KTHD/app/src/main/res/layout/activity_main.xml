@@ -117,6 +117,7 @@
             android:layout_height="300dp"
             android:layout_marginLeft="50dp"
             android:background="@drawable/mainbutton4"
+            android:onClick="fenxi"
             android:text="测评分析">
 
             <ImageView
