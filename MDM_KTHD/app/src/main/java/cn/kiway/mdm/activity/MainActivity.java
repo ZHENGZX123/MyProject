@@ -254,9 +254,9 @@ public class MainActivity extends BaseActivity {
         Bitmap bitmap = getWindow().getDecorView().getDrawingCache();
         String time = System.currentTimeMillis() + "";
         String fileName = time + ".png";
-        Utils.saveBitmap(bitmap, fileName, App.path);
+        Utils.saveBitmap(bitmap, fileName, App.PATH);
         toast("请在我的文件里查看");
-        new MyDBHelper(this).addFile(new FileModel(fileName, App.path + fileName, time, "snapshot"));
+        new MyDBHelper(this).addFile(new FileModel(fileName, App.PATH + fileName, time, "snapshot"));
     }
 
     private ArrayList<Question> questions = new ArrayList<>();
@@ -357,7 +357,7 @@ public class MainActivity extends BaseActivity {
     private void startRecord() {
         try {
             // 判断，若当前文件已存在，则删除
-            String path = "/mnt/sdcard/voice/";
+            String path = App.PATH + "voice/";
             if (!new File(path).exists()) {
                 new File(path).mkdirs();
             }
@@ -426,7 +426,6 @@ public class MainActivity extends BaseActivity {
                 holder.rl_voice = (RelativeLayout) rowView.findViewById(R.id.rl_voice);
                 holder.rl_txt = (RelativeLayout) rowView.findViewById(R.id.rl_txt);
                 holder.content = (TextView) rowView.findViewById(R.id.content);
-                holder.play = (ImageButton) rowView.findViewById(R.id.play);
                 holder.duration = (TextView) rowView.findViewById(R.id.duration);
 
                 rowView.setTag(holder);
@@ -443,7 +442,7 @@ public class MainActivity extends BaseActivity {
                 holder.rl_txt.setVisibility(View.GONE);
                 holder.rl_voice.setVisibility(View.VISIBLE);
                 holder.duration.setText(q.duration + "秒");
-                holder.play.setOnClickListener(new View.OnClickListener() {
+                holder.rl_voice.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         String filepath = q.filepath;
@@ -461,7 +460,6 @@ public class MainActivity extends BaseActivity {
             public RelativeLayout rl_voice;
             public RelativeLayout rl_txt;
             public TextView content;
-            public ImageButton play;
             public TextView duration;
         }
 
