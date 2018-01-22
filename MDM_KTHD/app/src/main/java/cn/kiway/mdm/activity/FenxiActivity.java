@@ -1,6 +1,7 @@
 package cn.kiway.mdm.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -37,8 +39,21 @@ public class FenxiActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fenxi);
+
         initView();
+        initListener();
         initData(1);
+    }
+
+    private void initListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                //知识点没有详情。
+                Fenxi fenxi = fenxis.get(position);
+                startActivity(new Intent(FenxiActivity.this, FenxiDetailActivity.class));
+            }
+        });
     }
 
     @Override
@@ -51,6 +66,7 @@ public class FenxiActivity extends BaseActivity {
         tab3 = (Button) findViewById(R.id.tab3);
         tab4 = (Button) findViewById(R.id.tab4);
 
+        listView = (ListView) findViewById(R.id.list_view);
         adapter = new FenxiAdapter(this);
         listView.setAdapter(adapter);
     }
@@ -120,12 +136,14 @@ public class FenxiActivity extends BaseActivity {
                 holder.content = (TextView) convertView.findViewById(R.id.content);
                 holder.type = (TextView) convertView.findViewById(R.id.type);
                 holder.time = (TextView) convertView.findViewById(R.id.time);
+                holder.detail = (TextView) convertView.findViewById(R.id.detail);
 
                 convertView.setTag(holder);
             } else {
                 holder = (FileHolder) convertView.getTag();
             }
 
+            //知识点没有详情
 
 
             return convertView;
@@ -140,6 +158,7 @@ public class FenxiActivity extends BaseActivity {
             public TextView content;
             public TextView type;
             public TextView time;
+            public TextView detail;
         }
     }
 
