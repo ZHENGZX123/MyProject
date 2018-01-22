@@ -11,9 +11,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import cn.kiway.mdm.db.MyDBHelper;
@@ -68,7 +70,14 @@ public class FileListActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 FileModel fm = files.get(i);
-                FileUtils.openFile(FileListActivity.this, fm.filepath);
+                String filepath = fm.filepath;
+                File f = new File(filepath);
+                if (!f.exists()) {
+                    toast("文件不存在");
+                } else {
+                    //TODO可以使用X5来完成
+                    FileUtils.openFile(FileListActivity.this, fm.filepath);
+                }
             }
         });
     }
@@ -115,14 +124,33 @@ public class FileListActivity extends BaseActivity {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_file, null);
                 holder.name = (TextView) convertView.findViewById(R.id.name);
                 holder.time = (TextView) convertView.findViewById(R.id.time);
+                holder.type = (ImageView) convertView.findViewById(R.id.type);
+                holder.sender = (TextView) convertView.findViewById(R.id.sender);
+                holder.size = (TextView) convertView.findViewById(R.id.size);
                 convertView.setTag(holder);
             } else {
                 holder = (FileHolder) convertView.getTag();
             }
             FileModel fm = files.get(position);
-
+            String filepath = fm.filepath;
+            File f = new File(filepath);
             holder.name.setText(fm.filename);
             holder.time.setText(Utils.getDateField(Long.parseLong(fm.time), 9));
+            if (!f.exists()) {
+                holder.size.setText("未知");
+            } else {
+                holder.size.setText(FileUtils.GetFileSize(f));
+            }
+            String suffix = fm.filename.toLowerCase();
+            if (suffix.endsWith("pdf")) {
+                holder.type.setBackgroundResource(R.drawable.pdf);
+            } else if (suffix.endsWith("doc") || suffix.endsWith("docx")) {
+                holder.type.setBackgroundResource(R.drawable.doc);
+            } else if (suffix.endsWith("ppt") || suffix.endsWith("pptx")) {
+                holder.type.setBackgroundResource(R.drawable.ppt);
+            } else {
+                holder.type.setBackgroundResource(R.drawable.png);
+            }
             return convertView;
         }
 
@@ -132,9 +160,9 @@ public class FileListActivity extends BaseActivity {
         }
 
         public class FileHolder {
-            TextView name, time;
+            TextView name, time, size, sender;
+            ImageView type;
         }
     }
-
 
 }
