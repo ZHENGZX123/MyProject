@@ -5,9 +5,6 @@ package cn.kiway.mdm.modle;
  */
 
 public class FileModel {
-    public String filename;
-    public String filepath;
-    public String time;
 
     @Override
     public String toString() {
@@ -15,6 +12,13 @@ public class FileModel {
                 "filename='" + filename + '\'' +
                 ", filepath='" + filepath + '\'' +
                 ", time='" + time + '\'' +
+                ", sender='" + sender + '\'' +
                 '}';
     }
+
+    public String filename;
+    public String filepath;
+    public String time;
+    public String sender;//空就是截图资料
+
 }

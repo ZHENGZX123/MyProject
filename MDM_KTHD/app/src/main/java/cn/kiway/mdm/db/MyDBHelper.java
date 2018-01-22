@@ -213,6 +213,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import cn.kiway.mdm.modle.FileModel;
 
 
@@ -222,7 +224,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_FILE = "FILE";
     private static final String CREATE_TABLE_FILE = " create table  IF NOT EXISTS "
             + TABLE_FILE
-            + "   (id integer primary key autoincrement,  filename  text,  filepath  text , time text)";
+            + "   (id integer primary key autoincrement,  filename  text,  filepath  text , time text , sender text)";
 
     private static final String TABLE_NOTIFY_MSG = "NOTIFY_MSG";
     private static final String CREATE_TABLE_NOTIFY_MSG = " create table  IF NOT EXISTS "
@@ -233,7 +235,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 12);
+        super(c, DB_NAME, null, 13);
     }
 
     @Override
@@ -251,11 +253,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_FILE);
         db.execSQL(CREATE_TABLE_NOTIFY_MSG);
     }
-
-
-
-
-
 
 
     //-----------------notifyMessage
@@ -303,7 +300,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
 
     //-----------------file
-
     public void addFile(FileModel a) {
         if (db == null)
             db = getWritableDatabase();
@@ -311,29 +307,27 @@ public class MyDBHelper extends SQLiteOpenHelper {
         values.put("filename", a.filename);
         values.put("filepath", a.filepath);
         values.put("time", a.time);
+        values.put("sender", a.sender);
         db.insert(TABLE_FILE, null, values);
         db.close();
     }
 
-    public JSONArray getFile() {
+    public ArrayList<FileModel> getFiles() {
         if (db == null)
             db = getWritableDatabase();
-        JSONArray array = new JSONArray();
+        ArrayList<FileModel> fms = new ArrayList<>();
         Cursor cur = db.query(TABLE_FILE, null, null, null, null, null, "time desc");
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            try {
-                JSONObject da = new JSONObject();
-                da.put("filename", cur.getString(1));
-                da.put("filepath", cur.getString(2));
-                da.put("time", cur.getString(3));
-                array.put(da);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            FileModel fm = new FileModel();
+            fm.filename = cur.getString(1);
+            fm.filepath = cur.getString(2);
+            fm.time = cur.getString(3);
+            fm.sender = cur.getString(4);
+            fms.add(fm);
         }
         cur.close();
         db.close();
-        return array;
+        return fms;
     }
 
     public void deleteFile() {
