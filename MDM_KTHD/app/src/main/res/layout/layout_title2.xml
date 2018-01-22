@@ -6,6 +6,7 @@
     android:background="#6699ff">
 
     <RelativeLayout
+        android:id="@+id/backRL"
         android:layout_width="60dp"
         android:layout_height="50dp"
         android:layout_centerVertical="true"

@@ -1,4 +1,4 @@
-package cn.kiway.mdm.modle;
+package cn.kiway.mdm.model;
 
 /**
  * Created by Administrator on 2018/1/22.
