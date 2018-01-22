@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="hwMdm">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/mdmsdk/libs/hwMdm.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
