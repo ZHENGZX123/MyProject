@@ -1,9 +1,7 @@
 package cn.kiway.mdm.activity;
 
 import android.app.Activity;
-import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
