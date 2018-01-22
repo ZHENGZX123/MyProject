@@ -1,0 +1,42 @@
+[
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student_0.3.0\\build\\intermediates\\res\\merged\\aosp\\debug\\drawable-v21\\abc_edit_text_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\c4d6f30c279e9772e11b91c5c615e2e5d2da5a69\\output\\res\\drawable-v21\\abc_edit_text_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student_0.3.0\\build\\intermediates\\res\\merged\\aosp\\debug\\drawable-v21\\abc_btn_colored_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\c4d6f30c279e9772e11b91c5c615e2e5d2da5a69\\output\\res\\drawable-v21\\abc_btn_colored_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student_0.3.0\\build\\intermediates\\res\\merged\\aosp\\debug\\drawable-v21\\abc_action_bar_item_background_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\c4d6f30c279e9772e11b91c5c615e2e5d2da5a69\\output\\res\\drawable-v21\\abc_action_bar_item_background_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student_0.3.0\\build\\intermediates\\res\\merged\\aosp\\debug\\drawable-v21\\mdtp_material_button_selected.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\63d658009aafff18e0f16abea7e7545931a1311b\\output\\res\\drawable-v21\\mdtp_material_button_selected.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\build\\intermediates\\res\\merged\\aosp\\debug\\drawable-v21\\abc_edit_text_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\c4d6f30c279e9772e11b91c5c615e2e5d2da5a69\\output\\res\\drawable-v21\\abc_edit_text_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student_0.3.0\\build\\intermediates\\res\\merged\\aosp\\debug\\drawable-v21\\mdtp_material_button_background.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\63d658009aafff18e0f16abea7e7545931a1311b\\output\\res\\drawable-v21\\mdtp_material_button_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\build\\intermediates\\res\\merged\\aosp\\debug\\drawable-v21\\abc_btn_colored_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\c4d6f30c279e9772e11b91c5c615e2e5d2da5a69\\output\\res\\drawable-v21\\abc_btn_colored_material.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\build\\intermediates\\res\\merged\\aosp\\debug\\drawable-v21\\abc_action_bar_item_background_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\c4d6f30c279e9772e11b91c5c615e2e5d2da5a69\\output\\res\\drawable-v21\\abc_action_bar_item_background_material.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\build\\intermediates\\res\\merged\\aosp\\debug\\drawable-v21\\mdtp_material_button_background.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\63d658009aafff18e0f16abea7e7545931a1311b\\output\\res\\drawable-v21\\mdtp_material_button_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\build\\intermediates\\res\\merged\\aosp\\debug\\drawable-v21\\mdtp_material_button_selected.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\63d658009aafff18e0f16abea7e7545931a1311b\\output\\res\\drawable-v21\\mdtp_material_button_selected.xml"
+    }
+]
