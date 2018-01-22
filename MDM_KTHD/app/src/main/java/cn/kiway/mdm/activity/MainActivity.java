@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import cn.kiway.mdm.App;
 import cn.kiway.mdm.db.MyDBHelper;
 import cn.kiway.mdm.model.FileModel;
-import cn.kiway.mdm.model.Question;
+import cn.kiway.mdm.model.StudentQuestion;
 import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.NetworkUtil;
 import cn.kiway.mdm.utils.Utils;
@@ -261,7 +261,7 @@ public class MainActivity extends BaseActivity {
         new MyDBHelper(this).addFile(new FileModel(fileName, App.PATH + fileName, time, "snapshot"));
     }
 
-    private ArrayList<Question> questions = new ArrayList<>();
+    private ArrayList<StudentQuestion> questions = new ArrayList<>();
     private QuestionAdapter questionAdapter;
 
     public void clickAsk(View view) {
@@ -300,7 +300,7 @@ public class MainActivity extends BaseActivity {
                     toast("内容不能为空");
                     return;
                 }
-                Question q = new Question();
+                StudentQuestion q = new StudentQuestion();
                 q.type = 1;
                 q.content = contentStr;
                 questions.add(q);
@@ -400,7 +400,7 @@ public class MainActivity extends BaseActivity {
         //1.上传录制文件
 
         //2.刷新界面
-        Question q = new Question();
+        StudentQuestion q = new StudentQuestion();
         q.type = 2;
         q.duration = duration;
         q.filepath = recordFile.getAbsolutePath();
@@ -435,7 +435,7 @@ public class MainActivity extends BaseActivity {
                 holder = (ViewHolder) rowView.getTag();
             }
 
-            final Question q = questions.get(position);
+            final StudentQuestion q = questions.get(position);
             if (q.type == 1) {
                 holder.rl_txt.setVisibility(View.VISIBLE);
                 holder.rl_voice.setVisibility(View.GONE);
@@ -471,7 +471,7 @@ public class MainActivity extends BaseActivity {
         }
 
         @Override
-        public Question getItem(int arg0) {
+        public StudentQuestion getItem(int arg0) {
             return questions.get(arg0);
         }
 
