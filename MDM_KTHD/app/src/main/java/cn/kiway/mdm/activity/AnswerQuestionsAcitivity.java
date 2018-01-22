@@ -31,6 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import cn.kiway.mdm.App;
 import cn.kiway.mdm.utils.MyWebViewClient;
 import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
@@ -157,7 +158,7 @@ public class AnswerQuestionsAcitivity extends BaseActivity implements RadioGroup
             try {
                 byte[] bitmapArray = Base64.decode(param.split(",")[1], Base64.DEFAULT);
                 bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
-                Utils.saveBitmap(bitmap, System.currentTimeMillis() + ".png");
+                Utils.saveBitmap(bitmap, System.currentTimeMillis() + ".png", App.path);
             } catch (Exception e) {
                 e.printStackTrace();
             }

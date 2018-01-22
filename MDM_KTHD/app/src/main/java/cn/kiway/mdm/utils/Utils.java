@@ -313,14 +313,17 @@ public class Utils {
         return versionName;
     }
 
-    public static boolean saveBitmap(Bitmap bm, String picName) {
-        File f = new File("/mnt/sdcard/", picName);
+    public static boolean saveBitmap(Bitmap bm, String picName, String savePath) {
+        if (!new File(savePath).exists()) {
+            new File(savePath).mkdirs();
+        }
+        File f = new File(savePath, picName);
         if (f.exists()) {
             f.delete();
         }
         try {
             FileOutputStream out = new FileOutputStream(f);
-            bm.compress(Bitmap.CompressFormat.PNG, 90, out);
+            bm.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
             out.close();
             return true;
@@ -331,7 +334,6 @@ public class Utils {
         }
         return false;
     }
-
 
 
 }
