@@ -39,15 +39,27 @@ public class FileListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_list);
 
+
+        //假数据
+//        new MyDBHelper(this).addFile(new FileModel("test1.pdf", "/mnt/sdcard/test1.pdf", "1516587513000", "李老师"));
+//        new MyDBHelper(this).addFile(new FileModel("test2.doc", "/mnt/sdcard/test2.doc", "1516587513000", "陈老师"));
+//        new MyDBHelper(this).addFile(new FileModel("test3.png", "/mnt/sdcard/test3.pdf", "1516587513000", "snapshot"));
+
         initView();
         initListener();
-        initData();
+        initData(1);
     }
 
-    private void initData() {
-        //假数据
+    private void initData(int tab) {
         files.clear();
-
+        ArrayList<FileModel> temp = new MyDBHelper(this).getFiles();
+        for (FileModel fm : temp) {
+            if (tab == 1 && !fm.sender.equals("snapshot")) {
+                files.add(fm);
+            } else if (tab == 2 && fm.sender.equals("snapshot")) {
+                files.add(fm);
+            }
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -70,7 +82,7 @@ public class FileListActivity extends BaseActivity {
         tab2 = (Button) findViewById(R.id.tab2);
 
         listView = (ListView) findViewById(R.id.list_view);
-        files = new MyDBHelper(this).getFiles();
+
         adapter = new FileAdapter(this);
         listView.setAdapter(adapter);
     }
@@ -78,11 +90,13 @@ public class FileListActivity extends BaseActivity {
     public void clickTab1(View view) {
         tab1.setTextColor(Color.parseColor("#6699ff"));
         tab2.setTextColor(Color.parseColor("#000000"));
+        initData(1);
     }
 
     public void clickTab2(View view) {
         tab1.setTextColor(Color.parseColor("#000000"));
         tab2.setTextColor(Color.parseColor("#6699ff"));
+        initData(2);
     }
 
 
