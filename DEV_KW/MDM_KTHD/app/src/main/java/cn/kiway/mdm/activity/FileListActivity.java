@@ -14,9 +14,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.json.JSONArray;
+import java.util.ArrayList;
 
 import cn.kiway.mdm.db.MyDBHelper;
+import cn.kiway.mdm.modle.FileModel;
 import cn.kiway.mdm.utils.FileUtils;
 import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
@@ -26,11 +27,12 @@ import studentsession.kiway.cn.mdm_studentsession.R;
  */
 
 public class FileListActivity extends BaseActivity {
+
     private ListView listView;
-    private JSONArray array = new JSONArray();
     private FileAdapter adapter;
     private Button tab1;
     private Button tab2;
+    private ArrayList<FileModel> files = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,25 @@ public class FileListActivity extends BaseActivity {
         setContentView(R.layout.activity_file_list);
 
         initView();
+        initListener();
+        initData();
+    }
+
+    private void initData() {
+        //假数据
+        files.clear();
+
+        adapter.notifyDataSetChanged();
+    }
+
+    private void initListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                FileModel fm = files.get(i);
+                FileUtils.openFile(FileListActivity.this, fm.filepath);
+            }
+        });
     }
 
     @Override
@@ -49,16 +70,9 @@ public class FileListActivity extends BaseActivity {
         tab2 = (Button) findViewById(R.id.tab2);
 
         listView = (ListView) findViewById(R.id.list_view);
-        array = new MyDBHelper(this).getFile();
+        files = new MyDBHelper(this).getFiles();
         adapter = new FileAdapter(this);
         listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                FileUtils.openFile(FileListActivity.this, array.optJSONObject(i).optString("filepath"));
-            }
-        });
     }
 
     public void clickTab1(View view) {
@@ -91,14 +105,16 @@ public class FileListActivity extends BaseActivity {
             } else {
                 holder = (FileHolder) convertView.getTag();
             }
-            holder.name.setText(array.optJSONObject(position).optString("filename"));
-            holder.time.setText(Utils.getDateField(Long.parseLong(array.optJSONObject(position).optString("time")), 9));
+            FileModel fm = files.get(position);
+
+            holder.name.setText(fm.filename);
+            holder.time.setText(Utils.getDateField(Long.parseLong(fm.time), 9));
             return convertView;
         }
 
         @Override
         public int getCount() {
-            return array.length();
+            return files.size();
         }
 
         public class FileHolder {
