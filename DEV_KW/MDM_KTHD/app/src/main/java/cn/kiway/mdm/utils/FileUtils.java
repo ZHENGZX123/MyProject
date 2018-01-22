@@ -160,7 +160,7 @@ public class FileUtils {
     }
 
     //删除指定文件夹下所有文件
-//param path 文件夹完整绝对路径
+//param PATH 文件夹完整绝对路径
     private static boolean delAllFile(String path) {
         boolean flag = false;
         File file = new File(path);

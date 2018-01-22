@@ -158,7 +158,7 @@ public class AnswerQuestionsAcitivity extends BaseActivity implements RadioGroup
             try {
                 byte[] bitmapArray = Base64.decode(param.split(",")[1], Base64.DEFAULT);
                 bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
-                Utils.saveBitmap(bitmap, System.currentTimeMillis() + ".png", App.path);
+                Utils.saveBitmap(bitmap, System.currentTimeMillis() + ".png", App.PATH);
             } catch (Exception e) {
                 e.printStackTrace();
             }
