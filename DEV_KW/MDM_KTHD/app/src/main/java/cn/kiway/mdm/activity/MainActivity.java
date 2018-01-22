@@ -5,13 +5,26 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -22,10 +35,12 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import cn.kiway.mdm.App;
 import cn.kiway.mdm.db.MyDBHelper;
 import cn.kiway.mdm.modle.FileModel;
+import cn.kiway.mdm.modle.Question;
 import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.NetworkUtil;
 import cn.kiway.mdm.utils.Utils;
@@ -244,10 +259,226 @@ public class MainActivity extends BaseActivity {
         new MyDBHelper(this).addFile(new FileModel(fileName, App.path + fileName, time, "snapshot"));
     }
 
+    private ArrayList<Question> questions = new ArrayList<>();
+    private QuestionAdapter questionAdapter;
+
     public void clickAsk(View view) {
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_ask);
         dialog.show();
+        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
+        Button close = (Button) dialog.findViewById(R.id.close);
+        ImageButton mic = (ImageButton) dialog.findViewById(R.id.mic);
+        ListView lv = (ListView) dialog.findViewById(R.id.lv);
+        final EditText content = (EditText) dialog.findViewById(R.id.content);
+        Button send = (Button) dialog.findViewById(R.id.send);
+
+        questionAdapter = new QuestionAdapter();
+        lv.setAdapter(questionAdapter);
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        mic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //录制声音
+                record();
+            }
+        });
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String contentStr = content.getText().toString();
+                if (TextUtils.isEmpty(contentStr)) {
+                    toast("内容不能为空");
+                    return;
+                }
+                Question q = new Question();
+                q.type = 1;
+                q.content = contentStr;
+                questions.add(q);
+                questionAdapter.notifyDataSetChanged();
+                content.setText("");
+            }
+        });
+    }
+
+    public void record() {
+
+        startRecord();
+        final Dialog dialog = new Dialog(MainActivity.this, R.style.popupDialog);
+        dialog.setContentView(R.layout.dialog_voice);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        final Button voice = (Button) dialog.findViewById(R.id.voice);
+        final TextView time = (TextView) dialog.findViewById(R.id.time);
+        voice.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                stopRecord();
+                dialog.dismiss();
+            }
+        });
+        new Thread() {
+            @Override
+            public void run() {
+                int duration = 0;
+                while (dialog.isShowing()) {
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    duration++;
+                    final int finalDuration = duration;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            time.setText(Utils.getTimeFormLong(finalDuration * 1000));
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
+    private MediaRecorder mediaRecorder;
+    private File recordFile;
+    private long start;
+
+    //录音
+    private void startRecord() {
+        try {
+            // 判断，若当前文件已存在，则删除
+            String path = "/mnt/sdcard/voice/";
+            if (!new File(path).exists()) {
+                new File(path).mkdirs();
+            }
+            recordFile = new File(path + System.currentTimeMillis() + ".mp3");
+            mediaRecorder = new MediaRecorder();
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mediaRecorder.setAudioChannels(2);
+            mediaRecorder.setAudioSamplingRate(44100);
+            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);//输出格式
+            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);//编码格式
+            mediaRecorder.setAudioEncodingBitRate(16);
+            mediaRecorder.setOutputFile(recordFile.getAbsolutePath());
+
+            // 准备好开始录音
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+            toast("录制声音失败，请检查SDcard");
+        }
+        start = System.currentTimeMillis();
+    }
+
+    private void stopRecord() {
+        if (recordFile == null) {
+            return;
+        }
+        if (mediaRecorder == null) {
+            return;
+        }
+        mediaRecorder.stop();
+
+        final int duration = (int) (System.currentTimeMillis() - start) / 1000;
+        if (duration < 1) {
+            toast("录制时间太短");
+            return;
+        }
+        //1.上传录制文件
+
+        //2.刷新界面
+        Question q = new Question();
+        q.type = 2;
+        q.duration = duration;
+        q.filepath = recordFile.getAbsolutePath();
+        questions.add(q);
+        questionAdapter.notifyDataSetChanged();
+    }
+
+
+    private class QuestionAdapter extends BaseAdapter {
+
+        private final LayoutInflater inflater;
+
+        public QuestionAdapter() {
+            inflater = LayoutInflater.from(MainActivity.this);
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View rowView = convertView;
+            ViewHolder holder;
+            if (rowView == null) {
+                rowView = inflater.inflate(R.layout.item_question, null);
+                holder = new ViewHolder();
+
+                holder.rl_voice = (RelativeLayout) rowView.findViewById(R.id.rl_voice);
+                holder.rl_txt = (RelativeLayout) rowView.findViewById(R.id.rl_txt);
+                holder.content = (TextView) rowView.findViewById(R.id.content);
+                holder.play = (ImageButton) rowView.findViewById(R.id.play);
+                holder.duration = (TextView) rowView.findViewById(R.id.duration);
+
+                rowView.setTag(holder);
+            } else {
+                holder = (ViewHolder) rowView.getTag();
+            }
+
+            final Question q = questions.get(position);
+            if (q.type == 1) {
+                holder.rl_txt.setVisibility(View.VISIBLE);
+                holder.rl_voice.setVisibility(View.GONE);
+                holder.content.setText(q.content);
+            } else if (q.type == 2) {
+                holder.rl_txt.setVisibility(View.GONE);
+                holder.rl_voice.setVisibility(View.VISIBLE);
+                holder.duration.setText(q.duration + "秒");
+                holder.play.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String filepath = q.filepath;
+                        Uri uri = Uri.fromFile(new File(filepath));
+                        MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, uri);
+                        mediaPlayer.start();
+                    }
+                });
+            }
+
+            return rowView;
+        }
+
+        public class ViewHolder {
+            public RelativeLayout rl_voice;
+            public RelativeLayout rl_txt;
+            public TextView content;
+            public ImageButton play;
+            public TextView duration;
+        }
+
+        @Override
+        public int getCount() {
+            return questions.size();
+        }
+
+        @Override
+        public Question getItem(int arg0) {
+            return questions.get(arg0);
+        }
+
+        @Override
+        public long getItemId(int arg0) {
+            return arg0;
+        }
     }
 
 

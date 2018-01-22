@@ -65,16 +65,19 @@
 
                 <ImageButton
                     android:id="@+id/mic"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/mic" />
 
                 <EditText
+                    android:id="@+id/content"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:layout_toLeftOf="@+id/send"
                     android:layout_toRightOf="@+id/mic"
                     android:background="@drawable/edittext"
