@@ -39,8 +39,8 @@ import java.util.ArrayList;
 
 import cn.kiway.mdm.App;
 import cn.kiway.mdm.db.MyDBHelper;
-import cn.kiway.mdm.modle.FileModel;
-import cn.kiway.mdm.modle.Question;
+import cn.kiway.mdm.model.FileModel;
+import cn.kiway.mdm.model.Question;
 import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.NetworkUtil;
 import cn.kiway.mdm.utils.Utils;
@@ -71,12 +71,14 @@ public class MainActivity extends BaseActivity {
     public void initView() {
         super.initView();
         titleName.setText("开维互动学生端");
+        backRL.setVisibility(View.GONE);
     }
 
-    public void onInfo(View view) {//个人信息
-//        startPlayer();
+    //个人信息
+    public void onInfo(View view) {
         startActivity(new Intent(this, UserInfoActivity.class));
-//        startActivity(new Intent(this, AnswerQuestionsAcitivity.class));
+        //startPlayer();
+        //startActivity(new Intent(this, AnswerQuestionsAcitivity.class));
     }
 
     public void onCourse(View view) {

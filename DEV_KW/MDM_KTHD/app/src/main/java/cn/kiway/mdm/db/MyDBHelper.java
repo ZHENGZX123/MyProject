@@ -215,7 +215,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import cn.kiway.mdm.modle.FileModel;
+import cn.kiway.mdm.model.FileModel;
 
 
 public class MyDBHelper extends SQLiteOpenHelper {

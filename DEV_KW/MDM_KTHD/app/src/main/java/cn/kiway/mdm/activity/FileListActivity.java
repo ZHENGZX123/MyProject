@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import cn.kiway.mdm.db.MyDBHelper;
-import cn.kiway.mdm.modle.FileModel;
+import cn.kiway.mdm.model.FileModel;
 import cn.kiway.mdm.utils.FileUtils;
 import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
@@ -32,17 +32,16 @@ public class FileListActivity extends BaseActivity {
 
     private ListView listView;
     private FileAdapter adapter;
+    private ArrayList<FileModel> files = new ArrayList<>();
     private Button tab1;
     private Button tab2;
-    private ArrayList<FileModel> files = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_list);
 
-
-        //假数据
+        //假数据==改成易敏的，是用接口来做的。
 //        new MyDBHelper(this).addFile(new FileModel("test1.pdf", "/mnt/sdcard/test1.pdf", "1516587513000", "李老师"));
 //        new MyDBHelper(this).addFile(new FileModel("test2.doc", "/mnt/sdcard/test2.doc", "1516587513000", "陈老师"));
 //        new MyDBHelper(this).addFile(new FileModel("test3.png", "/mnt/sdcard/test3.pdf", "1516587513000", "snapshot"));

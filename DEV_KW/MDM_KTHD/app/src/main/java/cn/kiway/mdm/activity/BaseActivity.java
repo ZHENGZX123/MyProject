@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,12 +26,12 @@ import studentsession.kiway.cn.mdm_studentsession.R;
 public class BaseActivity extends Activity {
 
     public App app;
-    AnswerDialog answerDialog;
-    SmokeAnswerDialog smokeAnswerDialog;
-    SignDialog signDialog;
-    KnowledgeStatistics knowDialog;
-
+    public AnswerDialog answerDialog;
+    public SmokeAnswerDialog smokeAnswerDialog;
+    public SignDialog signDialog;
+    public KnowledgeStatistics knowDialog;
     public TextView titleName;
+    public RelativeLayout backRL;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,6 +41,7 @@ public class BaseActivity extends Activity {
     }
 
     public void initView() {
+        backRL = (RelativeLayout) findViewById(R.id.backRL);
         titleName = (TextView) findViewById(R.id.titleName);
     }
 

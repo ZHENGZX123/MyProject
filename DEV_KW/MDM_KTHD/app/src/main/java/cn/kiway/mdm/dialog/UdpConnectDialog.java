@@ -23,7 +23,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import cn.kiway.mdm.activity.BaseActivity;
-import cn.kiway.mdm.modle.IpModel;
+import cn.kiway.mdm.model.IpModel;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
 /**
