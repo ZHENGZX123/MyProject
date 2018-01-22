@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student_0.3.0\\zxing\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-land\\encode.xml",
+        "source": "F:\\kiway_xm\\MDM_Student_0.3.0\\zxing\\build\\intermediates\\bundles\\debug\\res\\layout-land\\encode.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\zxing\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-land\\encode.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\zxing\\build\\intermediates\\bundles\\debug\\res\\layout-land\\encode.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\zxing\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-land\\share.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\zxing\\build\\intermediates\\bundles\\debug\\res\\layout-land\\share.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student_0.3.0\\zxing\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-land\\share.xml",
+        "source": "F:\\kiway_xm\\MDM_Student_0.3.0\\zxing\\build\\intermediates\\bundles\\debug\\res\\layout-land\\share.xml"
+    }
+]

@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student_0.3.0\\zxing\\build\\intermediates\\res\\merged\\androidTest\\debug\\menu\\encode.xml",
+        "source": "F:\\kiway_xm\\MDM_Student_0.3.0\\zxing\\build\\intermediates\\bundles\\debug\\res\\menu\\encode.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student_0.3.0\\zxing\\build\\intermediates\\res\\merged\\androidTest\\debug\\menu\\capture.xml",
+        "source": "F:\\kiway_xm\\MDM_Student_0.3.0\\zxing\\build\\intermediates\\bundles\\debug\\res\\menu\\capture.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\zxing\\build\\intermediates\\res\\merged\\androidTest\\debug\\menu\\history.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\zxing\\build\\intermediates\\bundles\\debug\\res\\menu\\history.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student_0.3.0\\zxing\\build\\intermediates\\res\\merged\\androidTest\\debug\\menu\\history.xml",
+        "source": "F:\\kiway_xm\\MDM_Student_0.3.0\\zxing\\build\\intermediates\\bundles\\debug\\res\\menu\\history.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\zxing\\build\\intermediates\\res\\merged\\androidTest\\debug\\menu\\encode.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\zxing\\build\\intermediates\\bundles\\debug\\res\\menu\\encode.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\zxing\\build\\intermediates\\res\\merged\\androidTest\\debug\\menu\\capture.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\zxing\\build\\intermediates\\bundles\\debug\\res\\menu\\capture.xml"
+    }
+]

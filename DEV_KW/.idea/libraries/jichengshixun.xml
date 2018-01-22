@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jichengshixun">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/mdmsdk/libs/jichengshixun.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

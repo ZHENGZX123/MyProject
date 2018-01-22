@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\build\\intermediates\\res\\merged\\androidTest\\aosp\\debug\\xml\\appwidget_no_config.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\tests\\res\\xml\\appwidget_no_config.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student_0.3.0\\build\\intermediates\\res\\merged\\androidTest\\aosp\\debug\\xml\\appwidget_with_config.xml",
+        "source": "F:\\kiway_xm\\MDM_Student_0.3.0\\tests\\res\\xml\\appwidget_with_config.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\build\\intermediates\\res\\merged\\androidTest\\aosp\\debug\\xml\\appwidget_with_config.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\tests\\res\\xml\\appwidget_with_config.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student_0.3.0\\build\\intermediates\\res\\merged\\androidTest\\aosp\\debug\\xml\\appwidget_no_config.xml",
+        "source": "F:\\kiway_xm\\MDM_Student_0.3.0\\tests\\res\\xml\\appwidget_no_config.xml"
+    }
+]

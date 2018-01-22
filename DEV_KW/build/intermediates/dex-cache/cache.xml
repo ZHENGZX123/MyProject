@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\.android\build-cache\b1923613f622dd3e37dcafa7ba55cd2ac4ad4804\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="78ea232052df889856dcb7b7b542707c89bb3bfb">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\10\classes_9e80f18f656e5bf299175d54b216c72c6466b1a6\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\.android\build-cache\218fe48a73106e9936953f313f00bbe0e77f6349\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="2e5b2b42080b217094197dd1a3e1fc6031bb5c8d">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\10\classes_1c87d6d013f48a5369d52f274cc4d4dbbf1ac82e\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\.android\build-cache\13ba1669b023e139c26205a072add3908e47a999\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="c70d3d4cb2d0b16c435c716fa169cb506929269b">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\10\classes_4cddfc5d644996b2b2616a7a33cb3b698c1cb5c2\classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="D:\MySoftl\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.4.0\support-annotations-23.4.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="ffbe55fdb2bb456b1485831706a9eac3300bb6b8">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\support-annotations-23.4.0_29de8f4462cb78ef1776fcda5580aa885398929b.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib\1.0.6\d19acb6ed49b9c48228c0e5dff8071fce23be4b8\kotlin-stdlib-1.0.6.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="d19acb6ed49b9c48228c0e5dff8071fce23be4b8">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\10\kotlin-stdlib-1.0.6_8b0f2b51a3a851c5e4de8ed8f4b765d8d690c3c0\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="D:\MySoftl\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.4.0\support-annotations-23.4.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="ffbe55fdb2bb456b1485831706a9eac3300bb6b8">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\10\support-annotations-23.4.0_29de8f4462cb78ef1776fcda5580aa885398929b\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\libs\android-async-http-1.4.5.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="77bf7cacf9cefe19dc105e5425d2eb1bb5285881">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\2\android-async-http-1.4.5_665e7d46df5562ef22ef1320a75c23f57e0f4b35\classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\zxing\build\intermediates\bundles\default\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="14750a01282750baff3bdb34796017cd581ff602">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\classes_4a592c9eae1e3e10cb36a3533f30c4740beb688f.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\materiallockview\build\intermediates\bundles\default\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="00ebd4d711923ccc86fb04215382908631736105">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\classes_a42adc77500e7a0dd6ece295e08ed2050e28584e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\.android\build-cache\f331a9ff7df3d2c8a633be32eb0ec293efaeda2e\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="67bd36ee9340ec7c254108936ad16b24bed160cc">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\classes_9745adba98800e96be861e14b541d61036823000.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\zxing\build\intermediates\bundles\default\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="14750a01282750baff3bdb34796017cd581ff602">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\4\classes_4a592c9eae1e3e10cb36a3533f30c4740beb688f\classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\.android\build-cache\c8bd813c1b84790b6e557c5b39b13b33d55ef8aa\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="de4db3785756bfb0915a9f59a9b3f2fea7407be4">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\classes_1b056e5c527a8def73421bd09af85b971407fc2f.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\mdmsdk\build\intermediates\bundles\default\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="b41506b460deffd5625aea5f90cabcc33f869f45">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\4\classes_a0c147d3f146a783ed184e31b29c161eff91f6bb\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\.android\build-cache\f331a9ff7df3d2c8a633be32eb0ec293efaeda2e\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="67bd36ee9340ec7c254108936ad16b24bed160cc">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\10\classes_9745adba98800e96be861e14b541d61036823000\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="F:\kiway_xm\MDM_Student_0.3.0\zxing\build\intermediates\bundles\default\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="14750a01282750baff3bdb34796017cd581ff602">
+        <dex dex="F:\kiway_xm\MDM_Student_0.3.0\build\intermediates\transforms\dex\aosp\debug\folders\1000\4\classes_ba8ee6b91d22be40ad16f5394cd58fd06e9b3e17\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\.android\build-cache\c8bd813c1b84790b6e557c5b39b13b33d55ef8aa\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="de4db3785756bfb0915a9f59a9b3f2fea7407be4">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\10\classes_1b056e5c527a8def73421bd09af85b971407fc2f\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\.gradle\caches\modules-2\files-2.1\com.google.protobuf.nano\protobuf-javanano\3.0.0-alpha-2\3cd9afea26d9c5d9542506ca0704da4bcceda940\protobuf-javanano-3.0.0-alpha-2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="3cd9afea26d9c5d9542506ca0704da4bcceda940">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\10\protobuf-javanano-3.0.0-alpha-2_92f2a49946189032bbf7c30068b1789ff81efb4f\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\materiallockview\build\intermediates\bundles\default\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="00ebd4d711923ccc86fb04215382908631736105">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\4\classes_a42adc77500e7a0dd6ece295e08ed2050e28584e\classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\mdmsdk\build\intermediates\bundles\default\libs\jichengshixun.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="533e851f9a105518cb94c17ef0467d2481191cc2">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\jichengshixun_a98fbf00a534c35e7444f44770c85943a8f39b61.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="F:\kiway_xm\MDM_Student_0.3.0\mdmsdk\build\intermediates\bundles\default\libs\jichengshixun.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="533e851f9a105518cb94c17ef0467d2481191cc2">
+        <dex dex="F:\kiway_xm\MDM_Student_0.3.0\build\intermediates\transforms\dex\aosp\debug\folders\1000\8\jichengshixun_0e6da4901ffc39e4c490f4c0d8c6406501dcde96\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="F:\kiway_xm\MDM_Student_0.3.0\libs\android-async-http-1.4.5.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="77bf7cacf9cefe19dc105e5425d2eb1bb5285881">
+        <dex dex="F:\kiway_xm\MDM_Student_0.3.0\build\intermediates\transforms\dex\aosp\debug\folders\1000\2\android-async-http-1.4.5_68577312763b78ad732bdbc299941c371d4c15e1\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\.android\build-cache\7b845b19082667b3e8d581865c1ecbc9bc1d22c9\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="c2c594cace5d83a3227b2b6e658ecbfd586d3ed9">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\10\classes_c8491de9b52720079d3d569233f2129bd9338dca\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\mdmsdk\build\intermediates\bundles\default\libs\jichengshixun.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="533e851f9a105518cb94c17ef0467d2481191cc2">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\8\jichengshixun_a98fbf00a534c35e7444f44770c85943a8f39b61\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\.gradle\caches\modules-2\files-2.1\com.nostra13.universalimageloader\universal-image-loader\1.9.5\442dbfb517b9ab5cb5c6da7ebf8cc28ec5bd0375\universal-image-loader-1.9.5.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="442dbfb517b9ab5cb5c6da7ebf8cc28ec5bd0375">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\10\universal-image-loader-1.9.5_397e682f81a90ee78c74b4633dae79a7450f65cd\classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\.android\build-cache\7b845b19082667b3e8d581865c1ecbc9bc1d22c9\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="c2c594cace5d83a3227b2b6e658ecbfd586d3ed9">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\classes_c8491de9b52720079d3d569233f2129bd9338dca.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-runtime\1.0.6\3562c66f648480d3bd4f76cff722488ced13445b\kotlin-runtime-1.0.6.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="3562c66f648480d3bd4f76cff722488ced13445b">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\10\kotlin-runtime-1.0.6_c183afc3f61e58d549323ebc49783fdd820f0f69\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\mdmsdk\build\intermediates\bundles\default\libs\hwMdm.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="cabaa7899fe8041adefd67aadaf565445dcbdb35">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\8\hwMdm_cd06d93f87b24720bd12394e63927fa38540e877\classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\.android\build-cache\6296706eac4324fc6946ecb516493ce5916c9f2c\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\classes_a97112b82145e9f56704d24f09cb6bbb376b4afe.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="F:\kiway_xm\MDM_Student_0.3.0\libs\gson-2.8.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="c4ba5371a29ac9b2ad6129b1d39ea38750043eff">
+        <dex dex="F:\kiway_xm\MDM_Student_0.3.0\build\intermediates\transforms\dex\aosp\debug\folders\1000\2\gson-2.8.0_105bd777bb6c94ad8981ee974e0687b550d5f377\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\.android\build-cache\63d658009aafff18e0f16abea7e7545931a1311b\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="824405f63810bfc46099d9951f0910c15a5b6f4f">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\10\classes_c390215649ce4a075268cafd5c4f412a53715264\classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\mdmsdk\build\intermediates\bundles\default\libs\hwMdm.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="cabaa7899fe8041adefd67aadaf565445dcbdb35">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\hwMdm_cd06d93f87b24720bd12394e63927fa38540e877.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\libs\HwPush_SDK_V2705.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="a0d2207d563e056a2094eace23b5724c0bd2e05e">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\HwPush_SDK_V2705_fa874bda7491c84f2a38a344abd472686086dc1b.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\mdmsdk\build\intermediates\bundles\default\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="b41506b460deffd5625aea5f90cabcc33f869f45">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\classes_a0c147d3f146a783ed184e31b29c161eff91f6bb.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\libs\HwPush_SDK_V2705.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="a0d2207d563e056a2094eace23b5724c0bd2e05e">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\2\HwPush_SDK_V2705_fa874bda7491c84f2a38a344abd472686086dc1b\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="F:\kiway_xm\MDM_Student_0.3.0\mdmsdk\build\intermediates\bundles\default\libs\hwMdm.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="cabaa7899fe8041adefd67aadaf565445dcbdb35">
+        <dex dex="F:\kiway_xm\MDM_Student_0.3.0\build\intermediates\transforms\dex\aosp\debug\folders\1000\8\hwMdm_59686e107dfb17b42a7dd72374193df35599b0dc\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\.android\build-cache\6296706eac4324fc6946ecb516493ce5916c9f2c\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\10\classes_a97112b82145e9f56704d24f09cb6bbb376b4afe\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="F:\kiway_xm\MDM_Student_0.3.0\libs\BaiduLBS_Android.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="128ce4ceb647425acea04b65ee259fe015a4f78a">
+        <dex dex="F:\kiway_xm\MDM_Student_0.3.0\build\intermediates\transforms\dex\aosp\debug\folders\1000\2\BaiduLBS_Android_7db74a8dc0c329688611233eaa6d9c6e34ce53ab\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="F:\kiway_xm\MDM_Student_0.3.0\mdmsdk\build\intermediates\bundles\default\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="b41506b460deffd5625aea5f90cabcc33f869f45">
+        <dex dex="F:\kiway_xm\MDM_Student_0.3.0\build\intermediates\transforms\dex\aosp\debug\folders\1000\4\classes_391c3ed17387b6a779a3eb2a996f016415edf520\classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\libs\BaiduLBS_Android.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="128ce4ceb647425acea04b65ee259fe015a4f78a">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\BaiduLBS_Android_5b72738f0a2d753cf044a1d6c726058f84446e9c.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\.android\build-cache\c4d6f30c279e9772e11b91c5c615e2e5d2da5a69\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\10\classes_7f9dc1cdeaafa887d01024bb5478d05720b688f6\classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\libs\android-async-http-1.4.5.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="77bf7cacf9cefe19dc105e5425d2eb1bb5285881">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\android-async-http-1.4.5_665e7d46df5562ef22ef1320a75c23f57e0f4b35.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\.android\build-cache\c4d6f30c279e9772e11b91c5c615e2e5d2da5a69\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\classes_7f9dc1cdeaafa887d01024bb5478d05720b688f6.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\.android\build-cache\5bfdcbc7a72eec83c6e0491124135c956cbb5931\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="51518e8e8f97c314a243d9def0ded91d385b6a1e">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\classes_7933ef056b947f779e3cb6fed423bb2911e39553.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\libs\gson-2.8.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="c4ba5371a29ac9b2ad6129b1d39ea38750043eff">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\gson-2.8.0_1bf62b0bff3c076cfdc37224737f7058d4755f55.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\.android\build-cache\5bfdcbc7a72eec83c6e0491124135c956cbb5931\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="51518e8e8f97c314a243d9def0ded91d385b6a1e">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\10\classes_7933ef056b947f779e3cb6fed423bb2911e39553\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="F:\kiway_xm\MDM_Student_0.3.0\materiallockview\build\intermediates\bundles\default\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="00ebd4d711923ccc86fb04215382908631736105">
+        <dex dex="F:\kiway_xm\MDM_Student_0.3.0\build\intermediates\transforms\dex\aosp\debug\folders\1000\4\classes_aca8e11ead85712c3471ea0dd3b24f8cc27a025f\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\libs\BaiduLBS_Android.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="128ce4ceb647425acea04b65ee259fe015a4f78a">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\2\BaiduLBS_Android_5b72738f0a2d753cf044a1d6c726058f84446e9c\classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Administrator\.android\build-cache\f331a9ff7df3d2c8a633be32eb0ec293efaeda2e\output\jars\libs\internal_impl-23.4.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="ea3c07504d2c8f4b13aa17c45c1b68ed9c1c3674">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\pre-dexed\aosp\debug\internal_impl-23.4.0_47589431293961b74705d983b19b7b7a00bc9f82.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="F:\kiway_xm\MDM_Student_0.3.0\libs\HwPush_SDK_V2705.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="a0d2207d563e056a2094eace23b5724c0bd2e05e">
+        <dex dex="F:\kiway_xm\MDM_Student_0.3.0\build\intermediates\transforms\dex\aosp\debug\folders\1000\2\HwPush_SDK_V2705_1bfd0fc8d795b53030a384469451e8fe79de5920\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\.android\build-cache\f331a9ff7df3d2c8a633be32eb0ec293efaeda2e\output\jars\libs\internal_impl-23.4.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="ea3c07504d2c8f4b13aa17c45c1b68ed9c1c3674">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\10\internal_impl-23.4.0_47589431293961b74705d983b19b7b7a00bc9f82\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Administrator\Desktop\Launcher3-o\libs\gson-2.8.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="c4ba5371a29ac9b2ad6129b1d39ea38750043eff">
+        <dex dex="C:\Users\Administrator\Desktop\Launcher3-o\build\intermediates\transforms\dex\aosp\debug\folders\1000\2\gson-2.8.0_1bf62b0bff3c076cfdc37224737f7058d4755f55\classes.dex" />
+    </item>
+
+</items>
