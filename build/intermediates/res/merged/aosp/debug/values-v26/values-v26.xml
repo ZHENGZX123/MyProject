@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="enable_install_shortcut_api">false</bool>
+    <bool name="notification_badging_enabled">true</bool>
+    <style name="AllAppsNavBarProtection">
+        <item name="android:alpha">0.6</item>
+        <item name="android:background">?android:attr/colorPrimary</item>
+    </style>
+</resources>

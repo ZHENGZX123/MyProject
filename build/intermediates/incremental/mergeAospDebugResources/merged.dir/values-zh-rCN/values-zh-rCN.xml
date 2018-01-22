@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+    <plurals name="hwpush_delete_tip">
+        <!--  The example of %d is 12-->
+        <item quantity="other">"是否删除所选通知？"</item>
+    </plurals>
+    <string msgid="7610119707847920412" name="abandoned_clean_this">"移除"</string>
+    <string msgid="3990027586878167529" name="abandoned_promise_explanation">"未安装此图标对应的应用。您可以移除此图标，也可以尝试搜索相应的应用并手动安装。"</string>
+    <string msgid="7096178467971716750" name="abandoned_promises_title">"未安装此应用"</string>
+    <string msgid="891119232568284442" name="abandoned_search">"搜索"</string>
+    <string msgid="4600421777120114993" name="abc_action_bar_home_description">"转到主屏幕"</string>
+    <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s：%2$s"</string>
+    <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s - %2$s：%3$s"</string>
+    <string msgid="1594238315039666878" name="abc_action_bar_up_description">"转到上一层级"</string>
+    <string msgid="3588849162933574182" name="abc_action_menu_overflow_description">"更多选项"</string>
+    <string msgid="4076576682505996667" name="abc_action_mode_done">"完成"</string>
+    <string msgid="7468859129482906941" name="abc_activity_chooser_view_see_all">"查看全部"</string>
+    <string msgid="2031811694353399454" name="abc_activitychooserview_choose_application">"选择应用"</string>
+    <string msgid="121134116657445385" name="abc_capital_off">"关闭"</string>
+    <string msgid="3405795526292276155" name="abc_capital_on">"开启"</string>
+    <string msgid="7723749260725869598" name="abc_search_hint">"搜索…"</string>
+    <string msgid="3691816814315814921" name="abc_searchview_description_clear">"清除查询"</string>
+    <string msgid="2550479030709304392" name="abc_searchview_description_query">"搜索查询"</string>
+    <string msgid="8264924765203268293" name="abc_searchview_description_search">"搜索"</string>
+    <string msgid="8928215447528550784" name="abc_searchview_description_submit">"提交查询"</string>
+    <string msgid="893419373245838918" name="abc_searchview_description_voice">"语音搜索"</string>
+    <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"分享方式"</string>
+    <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"通过%s分享"</string>
+    <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"收起"</string>
+    <string name="accept_btn">同意</string>
+    <string msgid="6257665857640347026" name="accessibility_action_overview">"概览"</string>
+    <string msgid="8902165848117513641" name="action_add_to_workspace">"添加到主屏幕"</string>
+    <string msgid="282377193880900022" name="action_decrease_height">"减小高度"</string>
+    <string msgid="1374549771083094654" name="action_decrease_width">"减小宽度"</string>
+    <string msgid="2864038805849372848" name="action_deep_shortcut">"快捷方式"</string>
+    <string msgid="5909461085055959187" name="action_dismiss_notification">"关闭"</string>
+    <string msgid="459390020612501122" name="action_increase_height">"增加高度"</string>
+    <string msgid="8773715375078513326" name="action_increase_width">"增加宽度"</string>
+    <string msgid="4339390619886385032" name="action_move">"移动项目"</string>
+    <string msgid="2170188780612570250" name="action_move_here">"将项目移至此处"</string>
+    <string msgid="8854216831569401665" name="action_move_screen_left">"将屏幕向左移动"</string>
+    <string msgid="329334910274311123" name="action_move_screen_right">"将屏幕向右移动"</string>
+    <string msgid="1603837886334246317" name="action_move_to_workspace">"移至主屏幕"</string>
+    <string msgid="1802976324781771067" name="action_resize">"调整大小"</string>
+    <string msgid="7456344436509528827" name="activity_not_available">"应用不可用"</string>
+    <string msgid="8071924732094499514" name="activity_not_found">"未安装该应用。"</string>
+    <string msgid="5899764264480397019" name="add_item_request_drag_hint">"触摸并按住即可手动放置"</string>
+    <string msgid="9040534766770853243" name="add_to_folder">"添加到“<ns1:g id="NAME">%1$s</ns1:g>”文件夹"</string>
+    <string msgid="4534929978967147231" name="add_to_folder_with_app">"添加到“<ns1:g id="NAME">%1$s</ns1:g>”所在文件夹"</string>
+    <string msgid="4793259502305558003" name="added_to_folder">"项目已添加到文件夹"</string>
+    <string msgid="8130441508702294465" name="all_apps_button_label">"应用列表"</string>
+    <string msgid="252062713717058851" name="all_apps_home_button_label">"主屏幕"</string>
+    <string msgid="7557140873644765180" name="all_apps_loading_message">"正在加载应用…"</string>
+    <string msgid="6332185285860416787" name="all_apps_no_search_results">"未找到与“<ns1:g id="QUERY">%1$s</ns1:g>”相符的应用"</string>
+    <string msgid="7084713969757597256" name="all_apps_search_bar_hint">"搜索应用"</string>
+    <string msgid="1366263386197059176" name="all_apps_search_market_message">"搜索更多应用"</string>
+    <string msgid="3212602545192996253" name="allow_rotation_blocked_desc">"当前的显示设置不允许旋转设备"</string>
+    <string msgid="8662546029078692509" name="allow_rotation_desc">"手机旋转时"</string>
+    <string msgid="7728578836261442095" name="allow_rotation_title">"允许旋转主屏幕"</string>
+    <string msgid="8336702962104482644" name="app_downloading_title">"正在下载<ns1:g id="NAME">%1$s</ns1:g>，已完成 <ns1:g id="PROGRESS">%2$s</ns1:g>"</string>
+    <string msgid="692894985365717661" name="app_info_drop_target_label">"应用信息"</string>
+    <string name="app_name">开维教育桌面</string>
+    <string name="app_picker_name">应用</string>
+    <string msgid="7053938513995617849" name="app_waiting_download_title">"<ns1:g id="NAME">%1$s</ns1:g>正在等待安装"</string>
+    <string msgid="7117251166066978730" name="auto_add_shortcuts_description">"适用于新应用"</string>
+    <string msgid="8222286205987725611" name="auto_add_shortcuts_label">"将图标添加到主屏幕"</string>
+    <string name="bookmark_picker_name">书签</string>
+    <string name="button_add_calendar">添加事件至日历</string>
+    <string name="button_add_contact">添加联系人</string>
+    <string name="button_book_search">打开图书搜索</string>
+    <string name="button_cancel">取消</string>
+    <string name="button_custom_product_search">自定义搜索</string>
+    <string name="button_dial">拨号</string>
+    <string name="button_email">发送email</string>
+    <string name="button_get_directions">获取地址</string>
+    <string name="button_mms">发送彩信</string>
+    <string name="button_ok">确定</string>
+    <string name="button_open_browser">打开浏览器</string>
+    <string name="button_product_search">打开产品搜索</string>
+    <string name="button_search_book_contents">搜索图书内容</string>
+    <string name="button_share_app">共享应用</string>
+    <string name="button_share_bookmark">分享书签</string>
+    <string name="button_share_by_email">通过email分享</string>
+    <string name="button_share_by_sms">通过短信分享</string>
+    <string name="button_share_clipboard">分享剪切板</string>
+    <string name="button_share_contact">分享联系人</string>
+    <string name="button_show_map">显示地图</string>
+    <string name="button_sms">发送短信</string>
+    <string name="button_web_search">网页搜索</string>
+    <string name="button_wifi">连接到网络</string>
+    <string name="cloudpush_app_name">"推送服务"</string>
+    <string name="contents_contact">联系人信息</string>
+    <string name="contents_email">Email地址</string>
+    <string name="contents_location">地理坐标</string>
+    <string name="contents_phone">电话号码</string>
+    <string name="contents_sms">短信地址</string>
+    <string name="contents_text">纯文本</string>
+    <string msgid="4050141361160214248" name="create_folder_with">"创建“<ns1:g id="NAME">%1$s</ns1:g>”文件夹"</string>
+    <string msgid="3747508247759093328" name="custom_actions">"自定义操作"</string>
+    <string msgid="7475544710230993317" name="default_scroll_format">"第%1$d页，共%2$d页"</string>
+    <string name="disable_warning">取消激活后将导致本软件的部分功能无法正常工作，您确定要取消激活么？</string>
+    <string msgid="6673129024321402780" name="disabled_app_label">"已停用<ns1:g id="APP_NAME">%1$s</ns1:g>"</string>
+    <string name="exit_btn">退出</string>
+    <string msgid="4100806530910930934" name="folder_closed">"文件夹已关闭"</string>
+    <string msgid="6409794597405184510" name="folder_created">"文件夹已创建"</string>
+    <string msgid="6617836969016293992" name="folder_hint_text">"未命名文件夹"</string>
+    <string msgid="7371454440695724752" name="folder_name"/>
+    <string msgid="6629239338071103179" name="folder_name_format">"文件夹：<ns1:g id="NAME">%1$s</ns1:g>"</string>
+    <string msgid="94695026776264709" name="folder_opened">"文件夹已打开，大小为<ns1:g id="WIDTH">%1$d</ns1:g>×<ns1:g id="HEIGHT">%2$d</ns1:g>"</string>
+    <string msgid="1794088362165669656" name="folder_renamed">"已将文件夹重命名为“<ns1:g id="NAME">%1$s</ns1:g>”"</string>
+    <string msgid="4625795376335528256" name="folder_tap_to_close">"点按可关闭文件夹"</string>
+    <string msgid="4017685068016979677" name="folder_tap_to_rename">"点按可保存新名称"</string>
+    <string msgid="6081085226050792095" name="gadget_error_text">"加载微件时出现问题"</string>
+    <string msgid="8274003207686040488" name="gadget_setup_text">"设置"</string>
+    <string name="history_clear_one_history_text">删除</string>
+    <string name="history_clear_text">删除历史</string>
+    <string name="history_email_title">条码扫描器历史</string>
+    <string name="history_empty">空的</string>
+    <string name="history_empty_detail">没有条码扫描已记录</string>
+    <string name="history_send">发送历史</string>
+    <string name="history_title">历史</string>
+    <string msgid="806512411299847073" name="home_screen">"主屏幕"</string>
+    <string msgid="7448809638125333693" name="hotseat_out_of_space">"收藏栏已满"</string>
+    <string name="hwpush_cancel">"取消"</string>
+    <string name="hwpush_collect">"收藏"</string>
+    <string name="hwpush_collect_tip">"点击收藏后，将在桌面自动生成一个“通知收藏”的图标，以后可从桌面直接点击查看。"</string>
+    <string name="hwpush_collect_tip_known">"知道了"</string>
+    <string name="hwpush_delete">"删除"</string>
+    <string name="hwpush_deltitle">"删除通知"</string>
+    <string name="hwpush_dialog_limit_message">"已收藏 1000 条通知信息，需要删除部分通知才能继续收藏，是否继续？"</string>
+    <string name="hwpush_dialog_limit_ok">"继续"</string>
+    <string name="hwpush_dialog_limit_title">"收藏已达上限"</string>
+    <string name="hwpush_forward">"前进"</string>
+    <string name="hwpush_goback">"后退"</string>
+    <string name="hwpush_loading_title">"正在加载，请稍候..."</string>
+    <string name="hwpush_msg_collect">"通知收藏"</string>
+    <string name="hwpush_msg_favorites">通知收藏</string>
+    <string name="hwpush_no_collection">"没有通知收藏"</string>
+    <string name="hwpush_refresh">"刷新"</string>
+    <string name="hwpush_request_provider_permission">存储消息</string>
+    <string name="hwpush_richmedia">"富媒体"</string>
+    <string name="hwpush_selectall">"全选"</string>
+    <string name="hwpush_unselectall">"取消全选"</string>
+    <string msgid="1574640601251590211" name="icon_badging_desc_off">"已针对所有应用关闭"</string>
+    <string msgid="6022379097717134764" name="icon_badging_desc_on">"已针对所有应用开启"</string>
+    <string msgid="4418239350706629417" name="icon_badging_title">"在图标上显示标记"</string>
+    <string msgid="1709762974822753030" name="icon_shape_system_default">"使用系统默认设置"</string>
+    <string msgid="4211073925752213539" name="item_added_to_workspace">"已将项目添加到主屏幕"</string>
+    <string msgid="4606538322571412879" name="item_moved">"已移动项目"</string>
+    <string msgid="851119963877842327" name="item_removed">"项目已移除"</string>
+    <string name="know">已阅读</string>
+    <string name="label_search">搜索</string>
+    <string name="load_fail">加载失败</string>
+    <string name="load_succeed">加载成功</string>
+    <string name="loading">正在加载...</string>
+    <string msgid="4289502106628154155" name="long_accessible_way_to_add">"点按两次并按住微件即可选择微件，您也可以使用自定义操作。"</string>
+    <string msgid="7699152356777458215" name="long_press_widget_to_add">"触摸并按住微件即可选择。"</string>
+    <string name="menu_encode_mecard">使用MECARD</string>
+    <string name="menu_encode_vcard">使用vCard</string>
+    <string name="menu_help">帮助</string>
+    <string name="menu_history">历史</string>
+    <string name="menu_settings">设置</string>
+    <string name="menu_share">分享</string>
+    <string msgid="2833711483015685619" name="move_to_empty_cell">"移至第 <ns1:g id="NUMBER_0">%1$s</ns1:g> 行第 <ns1:g id="NUMBER_1">%2$s</ns1:g> 列"</string>
+    <string msgid="6295412897075147808" name="move_to_hotseat_position">"移至收藏夹第 <ns1:g id="NUMBER">%1$s</ns1:g> 个位置"</string>
+    <string msgid="6750008980455459790" name="move_to_position">"移至第 <ns1:g id="NUMBER">%1$s</ns1:g> 个位置"</string>
+    <string name="msg_bulk_mode_scanned">批量扫描：找到条码，已保存</string>
+    <string name="msg_camera_framework_bug">抱歉，Android相机出现问题。您可能需要重启设备。</string>
+    <string name="msg_default_format">格式</string>
+    <string name="msg_default_meta">元数据</string>
+    <string name="msg_default_mms_subject">Hi</string>
+    <string name="msg_default_status">请将条码置于取景框内扫描。  </string>
+    <string name="msg_default_time">时间</string>
+    <string name="msg_default_type">类型</string>
+    <string msgid="6898038085516271325" name="msg_disabled_by_admin">"已被您的管理员停用"</string>
+    <string name="msg_encode_contents_failed">无法根据已有数据生成条码。   </string>
+    <string name="msg_error">错误</string>
+    <string name="msg_google_books">Google</string>
+    <string name="msg_google_product">Google</string>
+    <string name="msg_intent_failed">抱歉，无法打开所需软件。 条码内容可能无效。</string>
+    <string name="msg_invalid_value">值无效</string>
+    <string msgid="9208659281529857371" name="msg_no_phone_permission">"不允许使用“<ns1:g id="APP_NAME">%1$s</ns1:g>”拨打电话"</string>
+    <string name="msg_redirect">重定向</string>
+    <string name="msg_sbc_book_not_searchable">抱歉，无法找到此图书。</string>
+    <string name="msg_sbc_failed">抱歉，搜索时遇到错误。</string>
+    <string name="msg_sbc_no_page_returned">无页面返回</string>
+    <string name="msg_sbc_page">页面</string>
+    <string name="msg_sbc_results">结果</string>
+    <string name="msg_sbc_searching_book">搜索图书…</string>
+    <string name="msg_sbc_snippet_unavailable">摘录不可用</string>
+    <string name="msg_share_explanation">您可以通过在自己的手机上显示条码，并使用其它手机扫描此条码的方式进行分享</string>
+    <string name="msg_share_text">或键入一些文字</string>
+    <string name="msg_sure">你肯定吗？</string>
+    <string name="msg_unmount_usb">抱歉，SD卡不可访问。</string>
+    <string name="not_show_anymore">不再提示</string>
+    <string msgid="6002233469409822874" name="notification_dismissed">"已关闭通知"</string>
+    <string msgid="1404149926117359025" name="notifications_header">"通知"</string>
+    <string msgid="4691004494942118364" name="out_of_space">"此主屏幕上已没有空间。"</string>
+    <string msgid="7592128424511031410" name="package_state_unknown">"未知"</string>
+    <string msgid="923466509822011139" name="permdesc_install_shortcut">"允许应用自行添加快捷方式。"</string>
+    <string msgid="5833423719057558387" name="permdesc_read_settings">"允许应用读取主屏幕中的设置和快捷方式。"</string>
+    <string msgid="5440712911516509985" name="permdesc_write_settings">"允许应用更改主屏幕中的设置和快捷方式。"</string>
+    <string msgid="5632423390354674437" name="permlab_install_shortcut">"安装快捷方式"</string>
+    <string msgid="1941457408239617576" name="permlab_read_settings">"读取主屏幕设置和快捷方式"</string>
+    <string msgid="3574213698004620587" name="permlab_write_settings">"写入主屏幕设置和快捷方式"</string>
+    <string msgid="8064208734425456485" name="place_automatically">"自动添加"</string>
+    <string name="preferences_actions_title">找到条码时</string>
+    <string name="preferences_auto_focus_title">使用自动对焦</string>
+    <string name="preferences_auto_open_web_title">自动打开网页</string>
+    <string name="preferences_bulk_mode_summary">连续扫描并保存多个条形码</string>
+    <string name="preferences_bulk_mode_title">批量扫描模式</string>
+    <string name="preferences_copy_to_clipboard_title">复制到剪切板</string>
+    <string formatted="false" name="preferences_custom_product_search_summary">替换：％s=内容，％f=格式，％t=类型</string>
+    <string name="preferences_custom_product_search_title">自定义搜索网址</string>
+    <string name="preferences_decode_1D_industrial_title">1D工业</string>
+    <string name="preferences_decode_1D_product_title">1D产品</string>
+    <string name="preferences_decode_Aztec_title">阿兹台克人</string>
+    <string name="preferences_decode_Data_Matrix_title">扫描 DM码</string>
+    <string name="preferences_decode_PDF417_title">PDF417 (β)</string>
+    <string name="preferences_decode_QR_title">扫描 QR码</string>
+    <string name="preferences_device_bug_workarounds_title">设备问题解决办法</string>
+    <string name="preferences_disable_barcode_scene_mode_title">没有条形码的场景模式</string>
+    <string name="preferences_disable_continuous_focus_summary">只使用标准对焦模式</string>
+    <string name="preferences_disable_continuous_focus_title">没有持续关注</string>
+    <string name="preferences_disable_exposure_title">无曝光</string>
+    <string name="preferences_disable_metering_title">无计量</string>
+    <string name="preferences_front_light_auto">自动</string>
+    <string name="preferences_front_light_off">待用</string>
+    <string name="preferences_front_light_on">活跃</string>
+    <string name="preferences_front_light_summary">前灯可用时，打开前灯</string>
+    <string name="preferences_front_light_title">前灯</string>
+    <string name="preferences_general_title">一般设置</string>
+    <string name="preferences_history_summary">存储在历史的扫描</string>
+    <string name="preferences_history_title">加入历史</string>
+    <string name="preferences_invert_scan_summary">黑色背景上的白色条形码扫描。在某些设备上。</string>
+    <string name="preferences_invert_scan_title">反向扫描</string>
+    <string name="preferences_name">设置</string>
+    <string name="preferences_orientation_title">没有自动旋转</string>
+    <string name="preferences_play_beep_title">提示音</string>
+    <string name="preferences_remember_duplicates_summary">在历史记录中保存重复记录</string>
+    <string name="preferences_remember_duplicates_title">记住重复</string>
+    <string name="preferences_result_title">结果设置</string>
+    <string name="preferences_scanning_title">条码类型选择</string>
+    <string name="preferences_search_country">搜索国家</string>
+    <string name="preferences_supplemental_summary">尝试检索关于条码内容的更多信息</string>
+    <string name="preferences_supplemental_title">检索更多信息</string>
+    <string name="preferences_vibrate_title">振动</string>
+    <string name="pull_to_refresh">下拉刷新</string>
+    <string name="pullup_to_load">上拉加载更多</string>
+    <string name="read_statement">若您点击同意并开始使用本软件，代表您已阅读并接受<a href="http://www.huawei.mdm.com">《免责声明与软件许可协议》</a>。</string>
+    <string name="refresh_fail">刷新失败</string>
+    <string name="refresh_succeed">刷新成功</string>
+    <string name="refreshing">正在刷新...</string>
+    <string name="release_to_load">释放立即加载</string>
+    <string name="release_to_refresh">释放立即刷新</string>
+    <string msgid="7812859488053230776" name="remove_drop_target_label">"移除"</string>
+    <string name="result_address_book">找到联系人信息</string>
+    <string name="result_calendar">找到日历事件</string>
+    <string name="result_email_address">找到email地址</string>
+    <string name="result_geo">找到地理坐标</string>
+    <string name="result_isbn">找到图书</string>
+    <string name="result_product">找到产品</string>
+    <string name="result_sms">找到短信地址</string>
+    <string name="result_tel">找到电话号码</string>
+    <string name="result_text">找到纯文本</string>
+    <string name="result_uri">找到URL</string>
+    <string name="result_wifi">发现网络配置</string>
+    <string msgid="9160126848219158407" name="safemode_shortcut_error">"安全模式下不允许使用下载的此应用"</string>
+    <string msgid="4863470563535682004" name="safemode_widget_error">"安全模式下不允许使用微件"</string>
+    <string name="sbc_name">Google图书搜索</string>
+    <string msgid="266230079505650577" name="screen_moved">"屏幕已移动"</string>
+    <string msgid="8119458837558863227" name="settings_button_text">"设置"</string>
+    <string msgid="2536503539825726397" name="shortcut_not_available">"无法使用快捷方式"</string>
+    <string msgid="406159963824238648" name="shortcuts_menu_description">"<ns1:g id="APP_NAME">%2$s</ns1:g>有 <ns1:g id="NUMBER_OF_SHORTCUTS">%1$d</ns1:g> 个快捷方式"</string>
+    <string msgid="8985659504915468840" name="shortcuts_menu_with_notifications_description">"<ns1:g id="APP_NAME">%3$s</ns1:g>的 <ns1:g id="NUMBER_OF_SHORTCUTS">%1$d</ns1:g> 个快捷方式和 <ns1:g id="NUMBER_OF_NOTIFICATIONS">%2$d</ns1:g> 条通知"</string>
+    <string name="state_not_actived">该应用未激活</string>
+    <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="title_app_suggestions">应用推荐</string>
+    <string name="title_license">免责声明与软件许可协议</string>
+    <string name="title_permissions">权限使用声明</string>
+    <string msgid="4722034217958379417" name="uninstall_drop_target_label">"卸载"</string>
+    <string msgid="4172046090762920660" name="uninstall_system_app_text">"这是系统应用，无法卸载。"</string>
+    <string msgid="8404103075899945851" name="wallpaper_button_text">"壁纸"</string>
+    <string name="week_day_format">%1$s，%2$s 年</string>
+    <string msgid="3640149169885301790" name="widget_accessible_dims_format">"宽 %1$d，高 %2$d"</string>
+    <string msgid="2880537293434387943" name="widget_button_text">"微件"</string>
+    <string msgid="2370757736025621599" name="widget_dims_format">"%1$d × %2$d"</string>
+    <string msgid="9130327887929620" name="widget_resized">"微件尺寸已调整为：宽度 <ns1:g id="NUMBER_0">%1$s</ns1:g>，高度 <ns1:g id="NUMBER_1">%2$s</ns1:g>"</string>
+    <string msgid="2904559530954183366" name="widgets_bottom_sheet_title">"<ns1:g id="NAME">%1$s</ns1:g>微件"</string>
+    <string name="wifi_changing_network">请求连接到网络\u2026</string>
+    <string msgid="3753320833950115786" name="work_folder_name">"Work"</string>
+    <string msgid="257366611030256142" name="workspace_new_page">"主屏幕新页面"</string>
+    <string msgid="8458889198184077399" name="workspace_scroll_format">"主屏幕：第%1$d屏，共%2$d屏"</string>
+    <string name="zxing_app_name">条码扫描器</string>
+</resources>

@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student_0.3.0\\build\\intermediates\\res\\merged\\androidTest\\aosp\\debug\\layout\\test_layout_appwidget_view.xml",
+        "source": "F:\\kiway_xm\\MDM_Student_0.3.0\\tests\\res\\layout\\test_layout_appwidget_view.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student_0.3.0\\build\\intermediates\\res\\merged\\androidTest\\aosp\\debug\\layout\\test_layout_appwidget_red.xml",
+        "source": "F:\\kiway_xm\\MDM_Student_0.3.0\\tests\\res\\layout\\test_layout_appwidget_red.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\build\\intermediates\\res\\merged\\androidTest\\aosp\\debug\\layout\\test_layout_appwidget_red.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\tests\\res\\layout\\test_layout_appwidget_red.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\build\\intermediates\\res\\merged\\androidTest\\aosp\\debug\\layout\\test_layout_appwidget_view.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\tests\\res\\layout\\test_layout_appwidget_view.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\build\\intermediates\\res\\merged\\androidTest\\aosp\\debug\\layout\\test_layout_appwidget_blue.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\Launcher3-o\\tests\\res\\layout\\test_layout_appwidget_blue.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Student_0.3.0\\build\\intermediates\\res\\merged\\androidTest\\aosp\\debug\\layout\\test_layout_appwidget_blue.xml",
+        "source": "F:\\kiway_xm\\MDM_Student_0.3.0\\tests\\res\\layout\\test_layout_appwidget_blue.xml"
+    }
+]
