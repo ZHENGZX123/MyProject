@@ -26,6 +26,8 @@ public class App extends KiwayApplication {
     public boolean isAttenClass = false;
     public Activity currentActivity;
 
+    public static final String path = "/mnt/sdcard/kiway_mdm_kthd/";
+
     @Override
     public void onCreate() {
         super.onCreate();

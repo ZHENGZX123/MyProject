@@ -23,6 +23,9 @@ import org.xutils.x;
 
 import java.io.File;
 
+import cn.kiway.mdm.App;
+import cn.kiway.mdm.db.MyDBHelper;
+import cn.kiway.mdm.modle.FileModel;
 import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.NetworkUtil;
 import cn.kiway.mdm.utils.Utils;
@@ -234,8 +237,11 @@ public class MainActivity extends BaseActivity {
         //保存截图到本地
         getWindow().getDecorView().setDrawingCacheEnabled(true);
         Bitmap bitmap = getWindow().getDecorView().getDrawingCache();
-        Utils.saveBitmap(bitmap, System.currentTimeMillis() + ".png");
+        String time = System.currentTimeMillis() + "";
+        String fileName = time + ".png";
+        Utils.saveBitmap(bitmap, fileName, App.path);
         toast("请在我的文件里查看");
+        new MyDBHelper(this).addFile(new FileModel(fileName, App.path + fileName, time, "snapshot"));
     }
 
     public void clickAsk(View view) {
