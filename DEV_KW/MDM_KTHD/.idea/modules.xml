@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/AgoraPlayer/AgoraPlayer.iml" filepath="$PROJECT_DIR$/AgoraPlayer/AgoraPlayer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ImagePicker/ImagePicker.iml" filepath="$PROJECT_DIR$/ImagePicker/ImagePicker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MDM_KTHD.iml" filepath="$PROJECT_DIR$/MDM_KTHD.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libvideoprp/libvideoprp.iml" filepath="$PROJECT_DIR$/libvideoprp/libvideoprp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mdmaidl/mdmaidl.iml" filepath="$PROJECT_DIR$/mdmaidl/mdmaidl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/photoview/photoview.iml" filepath="$PROJECT_DIR$/photoview/photoview.iml" />
+    </modules>
+  </component>
+</project>

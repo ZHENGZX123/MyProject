@@ -1,0 +1,1 @@
+include ':app', ':mdmaidl', ':AgoraPlayer', ':libvideoprp', ':ImagePicker', ':photoview'

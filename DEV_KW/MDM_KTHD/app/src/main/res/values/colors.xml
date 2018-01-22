@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorBackline">#333333</color>
+    <color name="colorTipCircle">#303F9F</color>
+    <color name="white">#FFFFFF</color>
+    <color name="colorTipText">#FF4081</color>
+
+    <color name="grey">#909AAB</color>
+    <color name="blue">#006EBF</color>
+    <color name="_70blue">#70006EBF</color>
+    <color name="second_grey">#902C14</color>
+    <color name="bg_dialog">#00000000</color>
+    <color name="province_line_border">#333333</color>
+    <color name="press_color">#ddaaaaaa</color>
+    <color name="_e5e5e5">#e5e5e5</color>
+    <color name="_20ffffff">#20ffffff</color>
+    <color name="_90ffffff">#90ffffff</color>
+</resources>
