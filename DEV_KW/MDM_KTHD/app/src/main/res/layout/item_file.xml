@@ -52,18 +52,17 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/from"
+            android:id="@+id/sender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/size"
-
             android:layout_marginLeft="20dp"
             android:layout_toRightOf="@+id/time"
             android:text="来自 张老师"
             android:textColor="#333333"
             android:textSize="14sp" />
 
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

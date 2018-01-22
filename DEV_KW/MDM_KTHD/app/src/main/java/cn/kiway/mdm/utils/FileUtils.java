@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 
 
 /**
@@ -226,7 +227,7 @@ public class FileUtils {
     }
 
     public static void saveFile(String str) {
-        String filePath  = "/mnt/sdcard/kiway_mdm/imei.txt";
+        String filePath = "/mnt/sdcard/kiway_mdm/imei.txt";
         try {
             File file = new File(filePath);
             if (!file.exists()) {
@@ -280,6 +281,28 @@ public class FileUtils {
                     Toast.makeText(context, "手机没有安装相关的办公软件，请下载安装", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public static String GetFileSize(File file) {
+        String size = "";
+        if (file.exists() && file.isFile()) {
+            long fileS = file.length();
+            DecimalFormat df = new DecimalFormat("#.00");
+            if (fileS < 1024) {
+                size = df.format((double) fileS) + "BT";
+            } else if (fileS < 1048576) {
+                size = df.format((double) fileS / 1024) + "KB";
+            } else if (fileS < 1073741824) {
+                size = df.format((double) fileS / 1048576) + "MB";
+            } else {
+                size = df.format((double) fileS / 1073741824) + "GB";
+            }
+        } else if (file.exists() && file.isDirectory()) {
+            size = "";
+        } else {
+            size = "0BT";
+        }
+        return size;
     }
 }
 
