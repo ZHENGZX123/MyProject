@@ -25,7 +25,6 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 
 public class DeleteDropTarget extends ButtonDropTarget {
-
     public DeleteDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -86,7 +85,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         // Remove the item from launcher and the db, we can ignore the containerInfo in this call
         // because we already remove the drag view from the folder (if the drag originated from
         // a folder) in Folder.beginDrag()
-        launcher.removeItem(view, item, true /* deleteFromDb */);
+        launcher.removeItem(launcher,view, item, true /* deleteFromDb */);
         launcher.getWorkspace().stripEmptyScreens();
         launcher.getDragLayer().announceForAccessibility(launcher.getString(R.string.item_removed));
     }

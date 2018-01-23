@@ -1194,7 +1194,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                     }
 
                     // Remove the folder
-                    mLauncher.removeItem(mFolderIcon, mInfo, true /* deleteFromDb */);
+                    mLauncher.removeItem(mLauncher,mFolderIcon, mInfo, true /* deleteFromDb */);
                     if (mFolderIcon instanceof DropTarget) {
                         mDragController.removeDropTarget((DropTarget) mFolderIcon);
                     }

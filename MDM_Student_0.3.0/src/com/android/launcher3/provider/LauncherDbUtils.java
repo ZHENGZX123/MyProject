@@ -103,7 +103,7 @@ public class LauncherDbUtils {
 
     /**
      * Parses the cursor containing workspace screens table and returns the list of screen IDs
-     * 获取桌面数据
+     * zzx 获取桌面数据
      */
     public static ArrayList<Long> getScreenIdsFromCursor(Cursor sc) {
         ArrayList<Long> screenIds = new ArrayList<Long>();

@@ -284,14 +284,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
-    private void registerBroadcast() {
-        //注册广播
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(INSTALL_SUCCESS);
-        filter.addAction(REPLACE_SUCCESS);
-        filter.addAction(REMOVE_SUCCESS);
-        registerReceiver(mReceiver, filter);
-    }
+
 
     private void checkSettings() {
         mHandler.sendEmptyMessage(MSG_CHECK_SETTING);

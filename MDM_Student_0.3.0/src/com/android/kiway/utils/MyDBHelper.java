@@ -278,14 +278,21 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_INSTNALL_APP = " create table  IF NOT EXISTS "
             + TABLE_INSTNALL_APP
-            + "   (id integer primary key autoincrement,appName text, versionNum  text , icon text, ids text, packages " +
+            + "   (id integer primary key autoincrement,appName text, versionNum  text , icon text, ids text, " +
+            "packages " +
             "text, versionName text, category text, createDate text, record text, flag text)";
+
+    private static final String TABLE_LAUNCHER_APP = "TABLE_LAUNCHER_APP";
+
+    private static final String CREATE_TABLE_LAUNCHER_APP = " create table  IF NOT EXISTS "
+            + TABLE_LAUNCHER_APP
+            + "   (id integer primary key autoincrement,packageName text)";
 
 
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 14);
+        super(c, DB_NAME, null, 15);
     }
 
     @Override
@@ -316,6 +323,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_INSTNALL_APP);
         db.execSQL(CREATE_TABLE_INSTNALL_APP);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LAUNCHER_APP);
+        db.execSQL(CREATE_TABLE_LAUNCHER_APP);
     }
 
     @Override
@@ -330,6 +339,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_NOTIFY_MSG);
         db.execSQL(CREATE_TABLE_TIMESET);
         db.execSQL(CREATE_TABLE_INSTNALL_APP);
+        db.execSQL(CREATE_TABLE_LAUNCHER_APP);
     }
 
     //------------------------------------------Network----------------
@@ -961,4 +971,39 @@ public class MyDBHelper extends SQLiteOpenHelper {
         }
         db.close();
     }
+    //launcer app
+
+    //-------------------installApp
+    public void addLauncerApp(String packageName) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("packageName", packageName);
+        db.insert(TABLE_LAUNCHER_APP, null, values);
+        db.close();
+    }
+
+    public boolean checkAppInLauncher(String name) {
+        if (db == null)
+            db = getWritableDatabase();
+        boolean isInLuancher = false;
+        Cursor cur = db.query(TABLE_LAUNCHER_APP, null, null, null, null, null, null);
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            String packageName = cur.getString(1);
+            if (packageName.equals(name))
+                isInLuancher = true;
+        }
+        cur.close();
+        db.close();
+        return isInLuancher;
+    }
+
+    public void deleteAppInLauncher(String packageName) {
+        if (db == null)
+            db = getWritableDatabase();
+        db.delete(TABLE_LAUNCHER_APP, "packageName=?", new String[]{packageName});
+        db.close();
+    }
+
+
 }

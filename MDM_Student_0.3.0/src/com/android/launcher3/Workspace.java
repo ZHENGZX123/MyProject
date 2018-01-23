@@ -53,6 +53,7 @@ import android.view.animation.Interpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.kiway.utils.MyDBHelper;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.UninstallDropTarget.DropTargetSource;
@@ -1280,7 +1281,7 @@ public class Workspace extends PagedView
                     if (lahv.isReinflateRequired()) {
                         // Remove and rebind the current widget (which was inflated in the wrong
                         // orientation), but don't delete it from the database
-                        mLauncher.removeItem(lahv, info, false  /* deleteFromDb */);
+                        mLauncher.removeItem(mLauncher, lahv, info, false  /* deleteFromDb */);
                         mLauncher.bindAppWidget(info);
                     }
                 }
@@ -3425,6 +3426,9 @@ public class Workspace extends PagedView
             // Add the item to DB before adding to screen ensures that the container and other
             // values of the info is properly updated.
             //添加新的应用 zzx
+            boolean ischeckApp = false;
+            if (info.container == ItemInfo.NO_ID) //来自allapp 先在这里做判断，因为如果在下面在做判读，info.container的值会被修改
+                ischeckApp = true;
             mLauncher.getModelWriter().addOrMoveItemInDatabase(info, container, screenId,
                     mTargetCell[0], mTargetCell[1]);
             addInScreen(view, container, screenId, mTargetCell[0], mTargetCell[1],
@@ -3441,6 +3445,16 @@ public class Workspace extends PagedView
                 mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, view,
                         exitSpringLoadedRunnable, this);
                 resetTransitionTransform(cellLayout);
+            }
+            //todo zzx add 判断桌面是否已有快捷方式，有的话不添加
+            //zzx add here
+            if (ischeckApp) {//来自allapp
+                if (new MyDBHelper(mLauncher).checkAppInLauncher(info.getIntent().getComponent().getPackageName())) {
+                    mLauncher.removeItem(mLauncher, view, info, true /* deleteFromDb */);
+                    Toast.makeText(mLauncher, "已有桌面快捷方式，无需添加", Toast.LENGTH_SHORT).show();
+                } else {
+                    new MyDBHelper(mLauncher).addLauncerApp(info.getIntent().getComponent().getPackageName());
+                }
             }
         }
     }
@@ -4256,7 +4270,7 @@ public class Workspace extends PagedView
                 @Override
                 public boolean evaluate(ItemInfo info, View view) {
                     if (view instanceof PendingAppWidgetHostView && mInfos.contains(info)) {
-                        mLauncher.removeItem(view, info, false /* deleteFromDb */);
+                        mLauncher.removeItem(mLauncher, view, info, false /* deleteFromDb */);
                         mLauncher.bindAppWidget((LauncherAppWidgetInfo) info);
                     }
                     // process all the shortcuts
