@@ -59,6 +59,7 @@ import static com.android.kiway.utils.Utils.huaweiPush;
 import static com.android.kiway.zbus.ZbusHost.zbusHost;
 import static com.android.kiway.zbus.ZbusHost.zbusPost;
 import static com.android.kiway.zbus.ZbusHost.zbusTopic;
+import static com.android.kiway.zbus.ZbusHost.zbusUrl;
 
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener {
@@ -137,6 +138,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private void initZbus() {
         ZbusConfiguration.instance.setHost(zbusHost);
         ZbusConfiguration.instance.setPort(zbusPost);
+        ZbusConfiguration.instance.setProject(zbusUrl);
         try {
             ZbusUtils.consumeMsg(zbusTopic + Utils.getIMEI(this), new ZbusMessageHandler(this));
         } catch (Exception e) {

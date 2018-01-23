@@ -83,7 +83,9 @@ import android.widget.Toast;
 import com.android.kiway.activity.MainActivity;
 import com.android.kiway.activity.SettingActivity;
 import com.android.kiway.activity.SystemSetupActivity;
+import com.android.kiway.entity.AppCharge;
 import com.android.kiway.utils.MyDBHelper;
+import com.android.kiway.utils.Utils;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
@@ -137,6 +139,9 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -2256,7 +2261,8 @@ public class Launcher extends MainActivity
             mWorkspace.removeWorkspaceItem(v);
             //zzx add here
             for (int i = 0; i < folderInfo.contents.size(); i++) {
-                new MyDBHelper(context).deleteAppInLauncher(folderInfo.contents.get(i).getIntent().getComponent().getPackageName());
+                new MyDBHelper(context).deleteAppInLauncher(folderInfo.contents.get(i).getIntent().getComponent()
+                        .getPackageName());
             }
             if (deleteFromDb) {
                 getModelWriter().deleteFolderAndContentsFromDatabase(folderInfo);
@@ -2470,6 +2476,32 @@ public class Launcher extends MainActivity
 
     private void onClickPendingAppItem(final View v, final String packageName,
                                        boolean downloadStarted) {
+
+        int flag_app_open = getSharedPreferences("kiway", 0).getInt("flag_app_open", 1);
+        if (flag_app_open == 0) {
+            Toast.makeText(this, "所有的APP已被禁止使用", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // zzx 检查当前时间能不能用
+        if (!Utils.checkAPPTimeUse(new MyDBHelper(this).getTime(packageName), "HH:mm")) {
+            Toast.makeText(this, "该时间段内不可以使用", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        AppCharge app = new MyDBHelper(this).getAppChargesByPackage(packageName);
+        if (app != null) {
+            String timeRange = app.timeRange;// [{start end}{start end}]
+            Log.d("test", "timeRange = " + timeRange);
+            try {
+                JSONArray array = new JSONArray(timeRange);
+                boolean in = Utils.checkAPPTimeUse(array, "HH:mm:ss");
+                if (!in) {
+                    Toast.makeText(this, "该时间段内不可以使用", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
         //TODO 应用的点击事件 zzx
         if (packageName.contains("com.android.setting")) {
             startActivity(new Intent(this, SettingActivity.class));
@@ -2566,8 +2598,35 @@ public class Launcher extends MainActivity
     }
 
     private void startAppShortcutOrInfoActivity(View v) {
+        int flag_app_open = getSharedPreferences("kiway", 0).getInt("flag_app_open", 1);
+        if (flag_app_open == 0) {
+            Toast.makeText(this, "所有的APP已被禁止使用", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         ItemInfo item = (ItemInfo) v.getTag();
         Intent intent = item.getIntent();
+        // zzx 检查当前时间能不能用
+        if (!Utils.checkAPPTimeUse(new MyDBHelper(this).getTime(intent.getComponent().getPackageName()), "HH:mm")) {
+            Toast.makeText(this, "该时间段内不可以使用", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        AppCharge app = new MyDBHelper(this).getAppChargesByPackage(intent.getComponent().getPackageName());
+        if (app != null) {
+            String timeRange = app.timeRange;// [{start end}{start end}]
+            Log.d("test", "timeRange = " + timeRange);
+            try {
+                JSONArray array = new JSONArray(timeRange);
+                boolean in = Utils.checkAPPTimeUse(array, "HH:mm:ss");
+                if (!in) {
+                    Toast.makeText(this, "该时间段内不可以使用", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
         if (intent.getComponent().getPackageName().contains("com.android.setting")) {//zzx add 系统设置跳转自己的设置
             startActivity(new Intent(this, SystemSetupActivity.class));
             return;
@@ -2575,6 +2634,13 @@ public class Launcher extends MainActivity
         if (intent == null) {
             throw new IllegalArgumentException("Input must have a valid intent");
         }
+        //zzx add
+        intent.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name", ""));
+        intent.putExtra("className", getSharedPreferences("kiway", 0).getString("className", ""));
+        intent.putExtra("studentNumber", getSharedPreferences("kiway", 0).getString("studentNumber", ""));
+        intent.putExtra("classId", getSharedPreferences("kiway", 0).getString("classId", ""));
+        intent.putExtra("schoolId", getSharedPreferences("kiway", 0).getString("schoolId", ""));
+        intent.putExtra("huaweiToken", getSharedPreferences("huawei", 0).getString("token", ""));
         boolean success = startActivitySafely(v, intent, item);
         getUserEventDispatcher().logAppLaunch(v, intent); // TODO for discovered apps b/35802115
 

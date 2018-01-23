@@ -14,11 +14,9 @@ import com.android.kiway.utils.Logger;
 import cn.kiway.aidl.ClientCallback;
 import cn.kiway.aidl.RemoteInterface;
 import cn.kiway.mdmsdk.MDMHelper;
-import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
 
 import static com.android.kiway.KWApp.MSG_LOCKONCLASS;
 import static com.android.kiway.KWApp.MSG_UNLOCK;
-import static com.android.kiway.zbus.ZbusHost.zbusTeacherTopic;
 
 /**
  * 服务端，利用AIDL与客户端通信
@@ -97,14 +95,12 @@ public class RemoteAidlService extends Service {
         @Override
         public void callbackMessage(String msg) throws RemoteException {
             //课堂互动的相应消息
-            try {
-                ZbusUtils.sendMsg(zbusTeacherTopic, "抢答");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                ZbusUtils.sendMsg(zbusTeacherTopic, "抢答");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
         }
-
-
     };
 
     /**
