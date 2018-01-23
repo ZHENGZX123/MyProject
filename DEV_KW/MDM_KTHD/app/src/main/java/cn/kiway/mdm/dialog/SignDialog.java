@@ -2,9 +2,11 @@ package cn.kiway.mdm.dialog;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import cn.kiway.mdm.App;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
 /**
@@ -29,11 +31,11 @@ public class SignDialog extends BaseDialog {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.sing_btn:
-//                try {
-//                    ZbusUtils.sendMsg(zbusTeacherTopic,"签到");
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    App.instance.mRemoteInterface.callbackMessage("签到");
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }
