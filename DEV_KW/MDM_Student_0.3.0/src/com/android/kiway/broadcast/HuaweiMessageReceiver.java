@@ -40,6 +40,7 @@ import static com.android.kiway.KWApp.MSG_PORTRAIT;
 import static com.android.kiway.KWApp.MSG_PUSH_FILE;
 import static com.android.kiway.KWApp.MSG_REBOOT;
 import static com.android.kiway.KWApp.MSG_SHUTDOWN;
+import static com.android.kiway.KWApp.MSG_TOAST;
 import static com.android.kiway.KWApp.MSG_UNINSTALL;
 import static com.android.kiway.KWApp.MSG_UNLOCK;
 
@@ -77,10 +78,10 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             }
 
             //FIXME 测试用
-//            Message testMsg = new Message();
-//            testMsg.what = MSG_TOAST;
-//            testMsg.obj = receive;
-//            KWApp.instance.mHandler.sendMessage(testMsg);
+            Message testMsg = new Message();
+            testMsg.what = MSG_TOAST;
+            testMsg.obj = receive;
+            KWApp.instance.mHandler.sendMessage(testMsg);
 
             String dataStr = new JSONObject(receive).getString("data");
             JSONObject data = new JSONObject(dataStr);

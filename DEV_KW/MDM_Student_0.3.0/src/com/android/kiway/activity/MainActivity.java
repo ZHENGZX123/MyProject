@@ -130,6 +130,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         checkPassword();
         //22.获取app的使用时间
         getAppCanUseData();
+        //23.zbus
         initZbus();
     }
 
@@ -487,6 +488,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     @Override
                     public void onReceiveLocation(BDLocation location) {
                         Log.d("test", "onReceiveLocation ：" + location.getLongitude() + " , " + location.getLatitude());
+                        if (location.getLongitude() == 4.9E-324 || location.getLatitude() == 4.9E-324) {
+                            Log.d("test", "无效坐标");
+                            return;
+                        }
                         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                         String dateStr = df.format(new Date());
                         double lastLongitude = getSharedPreferences("kiway", 0).getFloat(dateStr + "_lastLongitude",
