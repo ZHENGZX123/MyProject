@@ -97,7 +97,6 @@ public class App extends KiwayApplication {
                 JSONObject data = new JSONObject(msg).optJSONObject("data");
                 if (data.optString("command").equals("question")) {//回答问题的
                     ((BaseActivity) currentActivity).onQuestion(data);
-
                     //zbusTeacherTopic = data.optString("userId");
                 } else if (data.optString("command").equals("sign")) {//签到
                     ((BaseActivity) currentActivity).onSign();
