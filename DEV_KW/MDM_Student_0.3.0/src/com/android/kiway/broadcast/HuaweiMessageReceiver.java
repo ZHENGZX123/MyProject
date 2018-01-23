@@ -287,15 +287,6 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                         }
                     }
                 }
-            } else if (command.equals("shangke")) {
-                m.what = MSG_ATTEND_CALSS;
-                m.obj = data;
-            } else if (command.equals("xiake")) {
-                m.what = MSG_GET_OUT_OF_CALASS;
-                m.obj = data;
-            } else if (command.equals("send_msg")) {
-                m.what = MSG_MESSAGE;
-                m.obj = data;
             } else if (command.equals("parent_charge_app")) {
                 String packageName = data.optJSONObject("content").optString("package");
                 String ids = data.optJSONObject("content").optString("id");
@@ -311,6 +302,20 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                     new MyDBHelper(context).deleteTime(timeSet.ids, packageName);
                     new MyDBHelper(context).addTime(timeSet);
                 }
+            }
+            //下面是和课堂互动相关的命令。。。。。
+            else if (command.equals("shangke")) {
+                m.what = MSG_ATTEND_CALSS;
+                m.obj = data;
+            } else if (command.equals("xiake")) {
+                m.what = MSG_GET_OUT_OF_CALASS;
+                m.obj = data;
+            } else if (command.equals("send_msg")) {
+                m.what = MSG_MESSAGE;
+                m.obj = data;
+            } else if (command.equals("question")) {
+                m.what = MSG_MESSAGE;
+                m.obj = data;
             } else if (command.equals("sign")) {
                 m.what = MSG_MESSAGE;
                 m.obj = data;
