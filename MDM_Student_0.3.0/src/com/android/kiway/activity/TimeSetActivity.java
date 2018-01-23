@@ -285,9 +285,9 @@ public class TimeSetActivity extends BaseActivity implements View.OnClickListene
                     String errorMsg = "";
                     try {
                         JSONObject o = new JSONObject(ret);
-                        int StatusCode = o.optInt("StatusCode");
+                        int statusCode = o.optInt("statusCode");
                         errorMsg = o.optString("errorMsg");
-                        if (StatusCode == 200) {
+                        if (statusCode == 200) {
                             ids = o.optString("data");
                             printData();
                             toast("请求成功");
@@ -339,9 +339,9 @@ public class TimeSetActivity extends BaseActivity implements View.OnClickListene
                     String errorMsg = "";
                     try {
                         JSONObject o = new JSONObject(ret);
-                        int StatusCode = o.optInt("StatusCode");
+                        int statusCode = o.optInt("statusCode");
                         errorMsg = o.optString("errorMsg");
-                        if (StatusCode == 200) {
+                        if (statusCode == 200) {
                             ids = app.getRecord().optString("recordId");
                             printData();
                             toast("请求成功");
@@ -387,9 +387,9 @@ public class TimeSetActivity extends BaseActivity implements View.OnClickListene
                     String errorMsg = "";
                     try {
                         JSONObject o = new JSONObject(ret);
-                        int StatusCode = o.optInt("StatusCode");
+                        int statusCode = o.optInt("statusCode");
                         errorMsg = o.optString("errorMsg");
-                        if (StatusCode == 200) {
+                        if (statusCode == 200) {
                             app.record = null;
                             new MyDBHelper(TimeSetActivity.this).deleteTime(app.getRecord().optString("recordId"), app
                                     .packages);
