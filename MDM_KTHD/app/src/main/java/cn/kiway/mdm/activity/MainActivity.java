@@ -261,8 +261,8 @@ public class MainActivity extends BaseActivity {
         new MyDBHelper(this).addFile(new FileModel(fileName, App.PATH + fileName, time, "snapshot"));
     }
 
-    private ArrayList<StudentQuestion> questions = new ArrayList<>();
-    private QuestionAdapter questionAdapter;
+    private ArrayList<StudentQuestion> studentQuestions = new ArrayList<>();
+    private StudentQuestionAdapter questionAdapter;
 
     public void clickAsk(View view) {
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
@@ -276,7 +276,7 @@ public class MainActivity extends BaseActivity {
         final EditText content = (EditText) dialog.findViewById(R.id.content);
         Button send = (Button) dialog.findViewById(R.id.send);
 
-        questionAdapter = new QuestionAdapter();
+        questionAdapter = new StudentQuestionAdapter();
         lv.setAdapter(questionAdapter);
 
         close.setOnClickListener(new View.OnClickListener() {
@@ -303,7 +303,7 @@ public class MainActivity extends BaseActivity {
                 StudentQuestion q = new StudentQuestion();
                 q.type = 1;
                 q.content = contentStr;
-                questions.add(q);
+                studentQuestions.add(q);
                 questionAdapter.notifyDataSetChanged();
                 content.setText("");
             }
@@ -404,16 +404,16 @@ public class MainActivity extends BaseActivity {
         q.type = 2;
         q.duration = duration;
         q.filepath = recordFile.getAbsolutePath();
-        questions.add(q);
+        studentQuestions.add(q);
         questionAdapter.notifyDataSetChanged();
     }
 
 
-    private class QuestionAdapter extends BaseAdapter {
+    private class StudentQuestionAdapter extends BaseAdapter {
 
         private final LayoutInflater inflater;
 
-        public QuestionAdapter() {
+        public StudentQuestionAdapter() {
             inflater = LayoutInflater.from(MainActivity.this);
         }
 
@@ -422,7 +422,7 @@ public class MainActivity extends BaseActivity {
             View rowView = convertView;
             ViewHolder holder;
             if (rowView == null) {
-                rowView = inflater.inflate(R.layout.item_question, null);
+                rowView = inflater.inflate(R.layout.item_student_question, null);
                 holder = new ViewHolder();
 
                 holder.rl_voice = (RelativeLayout) rowView.findViewById(R.id.rl_voice);
@@ -435,7 +435,7 @@ public class MainActivity extends BaseActivity {
                 holder = (ViewHolder) rowView.getTag();
             }
 
-            final StudentQuestion q = questions.get(position);
+            final StudentQuestion q = studentQuestions.get(position);
             if (q.type == 1) {
                 holder.rl_txt.setVisibility(View.VISIBLE);
                 holder.rl_voice.setVisibility(View.GONE);
@@ -467,12 +467,12 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return questions.size();
+            return studentQuestions.size();
         }
 
         @Override
         public StudentQuestion getItem(int arg0) {
-            return questions.get(arg0);
+            return studentQuestions.get(arg0);
         }
 
         @Override
