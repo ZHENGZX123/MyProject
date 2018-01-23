@@ -843,6 +843,7 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
+        //zzx 加载桌面快捷数据
         private void loadWorkspace() {
             if (LauncherAppState.PROFILE_STARTUP) {
                 Trace.beginSection("Loading Workspace");
@@ -1554,7 +1555,7 @@ public class LauncherModel extends BroadcastReceiver
                 workspaceItems.addAll(sBgDataModel.workspaceItems);
                 appWidgets.addAll(sBgDataModel.appWidgets);
                 orderedScreenIds.addAll(sBgDataModel.workspaceScreens);
-               // workspaceItems.clear();
+                // workspaceItems.clear();
             }
 
             final int currentScreen;
@@ -1762,7 +1763,7 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
-        private void loadAllApps() {//加载所有的app
+        private void loadAllApps() {// zzx 加载所有的app
             final long loadTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
             final Callbacks oldCallbacks = mCallbacks.get();

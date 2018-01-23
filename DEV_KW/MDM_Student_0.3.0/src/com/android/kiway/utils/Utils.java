@@ -577,14 +577,14 @@ public class Utils {
                     }
                 }
                 if (installed) {
-                    if (!m.allListData.toString().contains(ac.packages)) {
-                        Log.d("test", "发广播");
-                        Intent intent = new Intent();
-                        intent.putExtra(PACKAGENAME, ac.packages);
-                        intent.putExtra("boolean", true);
-                        intent.setAction(INSTALL_SUCCESS);
-                        m.sendOrderedBroadcast(intent, null);
-                    }
+//                    if (!m.allListData.toString().contains(ac.packages)) {
+//                        Log.d("test", "发广播");
+//                        Intent intent = new Intent();
+//                        intent.putExtra(PACKAGENAME, ac.packages);
+//                        intent.putExtra("boolean", true);
+//                        intent.setAction(INSTALL_SUCCESS);
+//                        m.sendOrderedBroadcast(intent, null);
+//                    }
                     Log.d("test", ac.name + "_" + ac.packages + "已安装");
                 } else {
                     Log.d("test", ac.name + "_" + ac.packages + "未安装");

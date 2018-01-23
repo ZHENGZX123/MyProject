@@ -83,6 +83,7 @@ import android.widget.Toast;
 import com.android.kiway.activity.MainActivity;
 import com.android.kiway.activity.SettingActivity;
 import com.android.kiway.activity.SystemSetupActivity;
+import com.android.kiway.utils.MyDBHelper;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
@@ -2231,7 +2232,7 @@ public class Launcher extends MainActivity
      * @param itemInfo     the {@link ItemInfo} for this view.
      * @param deleteFromDb whether or not to delete this item from the db.
      */
-    public boolean removeItem(View v, final ItemInfo itemInfo, boolean deleteFromDb) {
+    public boolean removeItem(Context context, View v, final ItemInfo itemInfo, boolean deleteFromDb) {
         if (itemInfo instanceof ShortcutInfo) {
             // Remove the shortcut from the folder before removing it from launcher
             View folderIcon = mWorkspace.getHomescreenIconByItemId(itemInfo.container);
@@ -2240,6 +2241,8 @@ public class Launcher extends MainActivity
             } else {
                 mWorkspace.removeWorkspaceItem(v);
             }
+            //zzx add here
+            new MyDBHelper(context).deleteAppInLauncher(itemInfo.getIntent().getComponent().getPackageName());
             if (deleteFromDb) {
                 getModelWriter().deleteItemFromDatabase(itemInfo);
             }
@@ -2249,6 +2252,10 @@ public class Launcher extends MainActivity
                 ((FolderIcon) v).removeListeners();
             }
             mWorkspace.removeWorkspaceItem(v);
+            //zzx add here
+            for (int i = 0; i < folderInfo.contents.size(); i++) {
+                new MyDBHelper(context).deleteAppInLauncher(folderInfo.contents.get(i).getIntent().getComponent().getPackageName());
+            }
             if (deleteFromDb) {
                 getModelWriter().deleteFolderAndContentsFromDatabase(folderInfo);
             }
