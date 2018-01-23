@@ -459,7 +459,7 @@ public class HttpUtil {
             param.put("deviceId", imei);
             param.put("userId", token);
             param.put("module", "student");
-            Log.d("test", "param = " + param.toString());
+            Log.d("test", "installationPush param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
             String url = clientUrl + "push/installation";
             Log.d("test", "installationPush = " + url);
