@@ -2657,7 +2657,8 @@ public class Workspace extends PagedView
                         } else if (ProviderConfig.IS_DOGFOOD_BUILD) {
                             throw new NullPointerException("mDragInfo.cell has null parent");
                         }
-                        addInScreen(cell, container, screenId, mTargetCell[0], mTargetCell[1],
+                        //
+                         addInScreen(cell, container, screenId, mTargetCell[0], mTargetCell[1],
                                 info.spanX, info.spanY);
                     }
 
