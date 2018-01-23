@@ -989,11 +989,12 @@ public class MyDBHelper extends SQLiteOpenHelper {
     public void addLauncerApp(String packageName) {
         if (db == null)
             db = getWritableDatabase();
-        if (checkAppInLauncher(packageName))
-            return;
         ContentValues values = new ContentValues();
         values.put("packageName", packageName);
-        db.insert(TABLE_LAUNCHER_APP, null, values);
+        String[] args = {packageName};
+        int ret = db.update(TABLE_LAUNCHER_APP, values, "packageName=?", args);
+        if (ret == 0)
+            db.insert(TABLE_LAUNCHER_APP, null, values);
         db.close();
     }
 
@@ -1024,11 +1025,12 @@ public class MyDBHelper extends SQLiteOpenHelper {
     public void addCustonApp(String packageName) {
         if (db == null)
             db = getWritableDatabase();
-        if (checkAppInCustom(packageName))
-            return;
         ContentValues values = new ContentValues();
         values.put("packageName", packageName);
-        db.insert(TABLE_CUSTOM_APP, null, values);
+        String[] args = {packageName};
+        int ret = db.update(TABLE_CUSTOM_APP, values, "packageName=?", args);
+        if (ret == 0)
+            db.insert(TABLE_CUSTOM_APP, null, values);
         db.close();
     }
 

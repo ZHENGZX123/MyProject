@@ -3453,8 +3453,6 @@ public class Workspace extends PagedView
                 if (new MyDBHelper(mLauncher).checkAppInLauncher(info.getIntent().getComponent().getPackageName())) {
                     mLauncher.removeItem(mLauncher, view, info, true /* deleteFromDb */);
                     Toast.makeText(mLauncher, "已有桌面快捷方式，无需添加", Toast.LENGTH_SHORT).show();
-                } else {
-                    new MyDBHelper(mLauncher).addLauncerApp(info.getIntent().getComponent().getPackageName());
                 }
             }
         }

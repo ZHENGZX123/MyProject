@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.MutableInt;
 
+import com.android.kiway.utils.MyDBHelper;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.ItemInfo;
@@ -280,9 +281,14 @@ public class BgDataModel {
     public synchronized void addItem(Context context, ItemInfo item, boolean newItem) {
         itemsIdMap.put(item.id, item);
         switch (item.itemType) {
-            case LauncherSettings.Favorites.ITEM_TYPE_FOLDER://文件格式
+            case LauncherSettings.Favorites.ITEM_TYPE_FOLDER://文件夹格式
                 folders.put(item.id, (FolderInfo) item);
                 workspaceItems.add(item);
+                //zzx add 桌面数据
+                for (int i = 0; i < ((FolderInfo) item).contents.size(); i++) {
+                    new MyDBHelper(context).addLauncerApp(((FolderInfo) item).contents.get(i).getIntent()
+                            .getComponent().getPackageName());
+                }
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
                 // Increment the count for the given shortcut
@@ -305,7 +311,10 @@ public class BgDataModel {
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                 if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
                         item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                        workspaceItems.add(item);
+                    workspaceItems.add(item);
+                    //zzx add 桌面数据
+                    new MyDBHelper(context).addLauncerApp(item.getIntent()
+                            .getComponent().getPackageName());
                 } else {
                     if (newItem) {
                         if (!folders.containsKey(item.container)) {
