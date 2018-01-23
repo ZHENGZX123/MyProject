@@ -55,17 +55,6 @@
             android:focusable="true"
             android:paddingEnd="@dimen/container_fastscroll_thumb_max_width"
             android:paddingStart="@dimen/container_fastscroll_thumb_max_width"/>
-
-        <TextView
-            android:id="@+id/settings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/apps_list_view"
-            android:gravity="center"
-            android:onClick="ChangePassWord"
-            android:padding="10dp"
-            android:text="家长设置"
-            android:textColor="#ffffff"/>
         <!-- Fast scroller popup -->
         <TextView
             android:id="@+id/fast_scroller_popup"
@@ -92,6 +81,7 @@
                 android:focusableInTouchMode="true"
                 android:gravity="center"
                 android:hint="@string/all_apps_search_bar_hint"
+
                 android:imeOptions="actionSearch|flagNoExtractUi"
                 android:inputType="text|textNoSuggestions|textCapWords"
                 android:maxLines="1"

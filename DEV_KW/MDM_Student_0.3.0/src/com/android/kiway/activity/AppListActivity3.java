@@ -58,15 +58,17 @@ public class AppListActivity3 extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 InStallAllApp a = apps.get(position);
                 a.selected = !a.selected;
-                Intent intent = new Intent();
-                intent.putExtra(PACKAGENAME, a.packages);
-                intent.putExtra("boolean", true);
+               // Intent intent = new Intent();
+               // intent.putExtra(PACKAGENAME, a.packages);
+                //intent.putExtra("boolean", true);
                 if (a.selected) {
-                    intent.setAction(INSTALL_SUCCESS);
+                    new MyDBHelper(AppListActivity3.this).addCustonApp(a.packages);
+                 //   intent.setAction(INSTALL_SUCCESS);
                 } else {
-                    intent.setAction(REMOVE_SUCCESS);
+                    new MyDBHelper(AppListActivity3.this).deleteAppInCuston(a.packages);
+                   // intent.setAction(REMOVE_SUCCESS);
                 }
-                sendOrderedBroadcast(intent, null);
+               // sendOrderedBroadcast(intent, null);
                 adapter.notifyDataSetChanged();
             }
         });
