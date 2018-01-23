@@ -869,6 +869,8 @@ public class Launcher extends MainActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onActivityResult(requestCode, resultCode, data);
         }
+        //zhengkang add
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**
@@ -2337,6 +2339,8 @@ public class Launcher extends MainActivity
 
             // Back button is a no-op here, but give at least some feedback for the button press
             mWorkspace.showOutlinesTemporarily();
+
+            //zhengkang add
             super.onBackPressed();
         }
     }

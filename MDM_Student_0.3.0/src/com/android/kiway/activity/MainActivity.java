@@ -1,14 +1,10 @@
 package com.android.kiway.activity;
 
-import android.annotation.TargetApi;
 import android.app.AppOpsManager;
-import android.app.WallpaperManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -25,22 +21,17 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.kiway.KWApp;
 import com.android.kiway.dialog.CheckPassword;
 import com.android.kiway.dialog.ShowMessageDailog;
-import com.android.kiway.entity.App;
 import com.android.kiway.entity.TimeSet;
-import com.android.kiway.utils.AppListUtils;
-import com.android.kiway.utils.AppReceiverIn;
 import com.android.kiway.utils.DESUtil;
-import com.android.kiway.utils.FileACache;
 import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.MyDBHelper;
 import com.android.kiway.utils.Utils;
-import com.android.launcher3.R;
+import com.android.kiway.zbus.ZbusMessageHandler;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -54,24 +45,20 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import cn.kiway.mdmsdk.MDMHelper;
+import cn.kiway.web.kthd.zbus.ZbusConfiguration;
+import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
 
 import static com.android.kiway.KWApp.clientUrl;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
-import static com.android.kiway.utils.AppListUtils.isAppInstalled;
-import static com.android.kiway.utils.AppReceiverIn.INSTALL_SUCCESS;
-import static com.android.kiway.utils.AppReceiverIn.PACKAGENAME;
-import static com.android.kiway.utils.AppReceiverIn.REMOVE_SUCCESS;
-import static com.android.kiway.utils.AppReceiverIn.REPLACE_SUCCESS;
-import static com.android.kiway.utils.Constant.ZHIHUIKETANGPG;
-import static com.android.kiway.utils.FileACache.ListFileName;
 import static com.android.kiway.utils.HttpUtil.APPID;
 import static com.android.kiway.utils.HttpUtil.APPKEY;
 import static com.android.kiway.utils.Utils.huaweiPush;
+import static com.android.kiway.zbus.ZbusHost.zbusHost;
+import static com.android.kiway.zbus.ZbusHost.zbusPost;
+import static com.android.kiway.zbus.ZbusHost.zbusTopic;
 
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener {
@@ -98,7 +85,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private static final int MSG_CHECK_SHUTDOWN = 6;
 
     //private Button button5;
-   // private Button button4;
+    // private Button button4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +130,17 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         checkPassword();
         //22.获取app的使用时间
         getAppCanUseData();
+        initZbus();
+    }
+
+    private void initZbus() {
+        ZbusConfiguration.instance.setHost(zbusHost);
+        ZbusConfiguration.instance.setPort(zbusPost);
+        try {
+            ZbusUtils.consumeMsg(zbusTopic + Utils.getIMEI(this), new ZbusMessageHandler(this));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -185,13 +183,13 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         // 获取是否支持电话
         boolean telephony = pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
         if (telephony) {
-           // button5.setVisibility(View.VISIBLE);
-           // button4.setVisibility(View.VISIBLE);
+            // button5.setVisibility(View.VISIBLE);
+            // button4.setVisibility(View.VISIBLE);
             //15.设置默认短信app
             setDefaultSMSApp();
         } else {
             //button5.setVisibility(View.GONE);
-           // button4.setVisibility(View.GONE);
+            // button4.setVisibility(View.GONE);
         }
     }
 
@@ -283,7 +281,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         myPhoneStateListener = new MyPhoneStateListener();
         telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
-
 
 
     private void checkSettings() {
@@ -400,8 +397,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -446,7 +441,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             mLocationClient.stop();
         }
     }
-
 
 
     @Override
@@ -504,7 +498,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                             Log.d("test", "坐标距离小于100，不用上报");
                             return;
                         }
-                        HttpUtil.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude() , dateStr);
+                        HttpUtil.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude(), dateStr);
                     }
 
                     @Override

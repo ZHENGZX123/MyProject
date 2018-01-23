@@ -14,17 +14,21 @@ import com.android.kiway.utils.Logger;
 import cn.kiway.aidl.ClientCallback;
 import cn.kiway.aidl.RemoteInterface;
 import cn.kiway.mdmsdk.MDMHelper;
+import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
 
 import static com.android.kiway.KWApp.MSG_LOCKONCLASS;
 import static com.android.kiway.KWApp.MSG_UNLOCK;
+import static com.android.kiway.zbus.ZbusHost.zbusTeacherTopic;
 
 /**
  * 服务端，利用AIDL与客户端通信
  */
 public class RemoteAidlService extends Service {
+
     private static final String TAG = "AidlTest";
-    //    一个服务端可以对应多个客户端，即包含多个ClientCallback对象，
-//    使用RemoteCallbackList可以在客户端意外断开连接时移除ClientCallback，防止DeadObjectException
+
+    //一个服务端可以对应多个客户端，即包含多个ClientCallback对象，
+    //使用RemoteCallbackList可以在客户端意外断开连接时移除ClientCallback，防止DeadObjectException
     private static ClientCallback clientCallback;
 
     @Nullable
@@ -36,7 +40,7 @@ public class RemoteAidlService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        服务结束是注意移除所有数据
+        //服务结束是注意移除所有数据
         clientCallback = null;
     }
 
@@ -50,14 +54,14 @@ public class RemoteAidlService extends Service {
 
         @Override
         public void registClientCallback(ClientCallback callback) throws RemoteException {
-//            向服务端注册回调
+            //向服务端注册回调
             clientCallback = callback;
             Log.d(TAG, "Service registClientCallback()");
         }
 
         @Override
         public void unRegistClientCallback(ClientCallback callback) throws RemoteException {
-//            服务端取消注册回调
+            //服务端取消注册回调
             clientCallback = null;
             Log.d(TAG, "Service unRegistClientCallback()");
         }
@@ -89,6 +93,18 @@ public class RemoteAidlService extends Service {
             Logger.log("init::::::::" + key);
             return false;
         }
+
+        @Override
+        public void callbackMessage(String msg) throws RemoteException {
+            //课堂互动的相应消息
+            try {
+                ZbusUtils.sendMsg(zbusTeacherTopic, "抢答");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
     };
 
     /**
@@ -111,8 +127,8 @@ public class RemoteAidlService extends Service {
         if (clientCallback == null)
             return;
         try {
-            clientCallback.accpterMessage(msg, context.getSharedPreferences("kiway", 0).getString("x-auth-token",
-                    ""));
+            String token = context.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+            clientCallback.accpterMessage(msg, token);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

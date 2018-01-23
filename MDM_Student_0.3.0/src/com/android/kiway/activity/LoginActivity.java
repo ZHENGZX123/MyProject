@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import static com.android.kiway.KWApp.clientUrl;
 import static com.android.kiway.utils.Utils.huaweiPush;
+
 /**
  * Created by Administrator on 2017/10/17.
  */
@@ -131,7 +132,6 @@ public class LoginActivity extends BaseActivity {
                         int statusCode = o.optInt("statusCode");
                         errorMsg = o.optString("errorMsg");
                         String token = o.getJSONObject("data").getString("token");
-                        //TODO 返回pwd，密钥不一样怎么办
                         Log.d("test", "login get token = " + token);
                         if (statusCode == 200) {
                             toast("登录成功");
