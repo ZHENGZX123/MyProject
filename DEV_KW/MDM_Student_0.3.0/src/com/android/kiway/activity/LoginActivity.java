@@ -105,7 +105,7 @@ public class LoginActivity extends BaseActivity {
             showPD();
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            String url = clientUrl + "device/login";
+            String url = clientUrl + "device/student/login";
             Log.d("test", "url = " + url);
             RequestParams param = new RequestParams();
             param.put("classId", mClass.id);
@@ -128,12 +128,12 @@ public class LoginActivity extends BaseActivity {
                     String errorMsg = "";
                     try {
                         JSONObject o = new JSONObject(ret);
-                        int StatusCode = o.optInt("StatusCode");
+                        int statusCode = o.optInt("statusCode");
                         errorMsg = o.optString("errorMsg");
                         String token = o.getJSONObject("data").getString("token");
                         //TODO 返回pwd，密钥不一样怎么办
                         Log.d("test", "login get token = " + token);
-                        if (StatusCode == 200) {
+                        if (statusCode == 200) {
                             toast("登录成功");
                             HttpUtil.deviceRuntime(LoginActivity.this, "1", true);
                             getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
