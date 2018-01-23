@@ -578,6 +578,8 @@ public class DragLayer extends InsettableFrameLayout {
 
     public void animateViewIntoPosition(DragView dragView, final View child, int duration,
             final Runnable onFinishAnimationRunnable, View anchorView) {
+        if (child==null)
+            return;
         ShortcutAndWidgetContainer parentChildren = (ShortcutAndWidgetContainer) child.getParent();
         CellLayout.LayoutParams lp =  (CellLayout.LayoutParams) child.getLayoutParams();
         parentChildren.measureChild(child);

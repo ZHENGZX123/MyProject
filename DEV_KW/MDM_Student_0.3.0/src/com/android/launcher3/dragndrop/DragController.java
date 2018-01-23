@@ -479,7 +479,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         mDragObject.y = dummyCoordinates[1];
         checkTouchMove(dropTarget);
     }
-
+    //滑动监听 桌面
     private void checkTouchMove(DropTarget dropTarget) {
         if (dropTarget != null) {
             if (mLastDropTarget != dropTarget) {

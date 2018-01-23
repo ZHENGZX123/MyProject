@@ -51,11 +51,13 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
      */
     public AddWorkspaceItemsTask(Provider<List<ItemInfo>> appsProvider) {
         mAppsProvider = appsProvider;
+
     }
 
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
         List<ItemInfo> workspaceApps = mAppsProvider.get();
+        workspaceApps.clear();
         if (workspaceApps.isEmpty()) {
             return;
         }

@@ -77,6 +77,7 @@ public class ModelWriter {
     /**
      * Adds an item to the DB if it was not created previously, or move it to a new
      * <container, screen, cellX, cellY>
+     *     添加到数据库
      */
     public void addOrMoveItemInDatabase(ItemInfo item,
             long container, long screenId, int cellX, int cellY) {
