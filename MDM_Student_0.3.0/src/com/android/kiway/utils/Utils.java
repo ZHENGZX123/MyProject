@@ -34,6 +34,18 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.android.kiway.KWApp;
+import com.android.kiway.activity.AppListActivity3;
+import com.android.kiway.activity.ComposeSmsActivity;
+import com.android.kiway.activity.MainActivity;
+import com.android.kiway.activity.ScreenMDMActivity;
+import com.android.kiway.activity.SendSMSActivity;
+import com.android.kiway.dialog.ShowMessageDailog;
+import com.android.kiway.entity.App;
+import com.android.kiway.entity.AppCharge;
+import com.android.kiway.entity.Call;
+import com.android.kiway.entity.Network;
+import com.android.kiway.entity.Wifi;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
@@ -68,17 +80,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import com.android.kiway.KWApp;
-import com.android.kiway.activity.ComposeSmsActivity;
-import com.android.kiway.activity.MainActivity;
-import com.android.kiway.activity.ScreenMDMActivity;
-import com.android.kiway.activity.SendSMSActivity;
-import com.android.kiway.dialog.ShowMessageDailog;
-import com.android.kiway.entity.App;
-import com.android.kiway.entity.AppCharge;
-import com.android.kiway.entity.Call;
-import com.android.kiway.entity.Network;
-import com.android.kiway.entity.Wifi;
 import cn.kiway.mdmsdk.MDMHelper;
 
 import static android.content.Context.WIFI_SERVICE;
@@ -86,8 +87,6 @@ import static com.android.kiway.KWApp.MSG_LAUNCH_APP;
 import static com.android.kiway.KWApp.MSG_LAUNCH_MDM;
 import static com.android.kiway.KWApp.MSG_LOCK;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.PARENT_BIND;
-import static com.android.kiway.utils.AppReceiverIn.INSTALL_SUCCESS;
-import static com.android.kiway.utils.AppReceiverIn.PACKAGENAME;
 import static java.lang.System.currentTimeMillis;
 
 /**
@@ -584,7 +583,8 @@ public class Utils {
 //                        intent.putExtra("boolean", true);
 //                        intent.setAction(INSTALL_SUCCESS);
 //                        m.sendOrderedBroadcast(intent, null);
-//                    }
+//                    }c
+                    new MyDBHelper(m).addCustonApp(ac.packages);
                     Log.d("test", ac.name + "_" + ac.packages + "已安装");
                 } else {
                     Log.d("test", ac.name + "_" + ac.packages + "未安装");

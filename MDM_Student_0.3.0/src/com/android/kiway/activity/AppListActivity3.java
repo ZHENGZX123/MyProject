@@ -219,7 +219,7 @@ public class AppListActivity3 extends BaseActivity {
         int pos = 0;
         for (int i = 0; i < apps.size(); i++) {
             InStallAllApp a = apps.get(i);
-            if (allListData.toString().contains(a.packages))
+            if (new MyDBHelper(this).checkAppInCustom(a.packages))
                 a.selected = true;
             if (a.packages.equals("cn.kiway.session")) {
                 pos = i;

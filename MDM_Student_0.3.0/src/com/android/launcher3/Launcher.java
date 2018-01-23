@@ -2341,6 +2341,7 @@ public class Launcher extends MainActivity
             mWorkspace.showOutlinesTemporarily();
 
             //zhengkang add
+
             super.onBackPressed();
         }
     }
@@ -2500,6 +2501,7 @@ public class Launcher extends MainActivity
 
     private void startMarketIntentForPackage(View v, String packageName) {
         ItemInfo item = (ItemInfo) v.getTag();
+
         Intent intent = PackageManagerHelper.getMarketIntent(packageName);
         boolean success = startActivitySafely(v, intent, item);
         if (success && v instanceof BubbleTextView) {

@@ -989,6 +989,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
     public void addLauncerApp(String packageName) {
         if (db == null)
             db = getWritableDatabase();
+        if (checkAppInLauncher(packageName))
+            return;
         ContentValues values = new ContentValues();
         values.put("packageName", packageName);
         db.insert(TABLE_LAUNCHER_APP, null, values);
@@ -1022,6 +1024,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
     public void addCustonApp(String packageName) {
         if (db == null)
             db = getWritableDatabase();
+        if (checkAppInCustom(packageName))
+            return;
         ContentValues values = new ContentValues();
         values.put("packageName", packageName);
         db.insert(TABLE_CUSTOM_APP, null, values);
