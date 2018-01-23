@@ -1112,6 +1112,7 @@ public class Workspace extends PagedView
     /**
      * Adds the specified child in the specified screen. The position and dimension of
      * the child are defined by x, y, spanX and spanY.
+     * 添加桌面图标
      *
      * @param child    The child to add in one of the workspace's screens.
      * @param screenId The screen in which to add the child.
@@ -2456,6 +2457,7 @@ public class Workspace extends PagedView
         return false;
     }
 
+    //创建桌面文件夹
     boolean createUserFolderIfNecessary(View newView, long container, CellLayout target,
                                         int[] targetCell, float distance, boolean external, DragView dragView,
                                         Runnable postAnimationRunnable) {
@@ -2541,6 +2543,7 @@ public class Workspace extends PagedView
     public void prepareAccessibilityDrop() {
     }
 
+    //zzx  添加桌面应用
     public void onDrop(final DragObject d) {
         mDragViewVisualCenter = d.getVisualCenter(mDragViewVisualCenter);
         CellLayout dropTargetLayout = mDropToLayout;
@@ -2558,7 +2561,7 @@ public class Workspace extends PagedView
 
         int snapScreen = -1;
         boolean resizeOnDrop = false;
-        if (d.dragSource != this) {
+        if (d.dragSource != this) {//新添加的应用
             final int[] touchXY = new int[]{(int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1]};
             onDropExternal(touchXY, dropTargetLayout, d);
@@ -2978,6 +2981,7 @@ public class Workspace extends PagedView
                 d.dragInfo instanceof PendingAddWidgetInfo);
     }
 
+    //桌面变化监听  不包括从所有app列表添加到桌面的事件
     public void onDragOver(DragObject d) {
         // Skip drag over events while we are dragging over side pages
         if (!transitionStateShouldAllowDrop()) return;
@@ -3420,11 +3424,12 @@ public class Workspace extends PagedView
             }
             // Add the item to DB before adding to screen ensures that the container and other
             // values of the info is properly updated.
+            //添加新的应用 zzx
             mLauncher.getModelWriter().addOrMoveItemInDatabase(info, container, screenId,
                     mTargetCell[0], mTargetCell[1]);
-
             addInScreen(view, container, screenId, mTargetCell[0], mTargetCell[1],
                     info.spanX, info.spanY);
+
             cellLayout.onDropChild(view);
             cellLayout.getShortcutsAndWidgets().measureChild(view);
 
