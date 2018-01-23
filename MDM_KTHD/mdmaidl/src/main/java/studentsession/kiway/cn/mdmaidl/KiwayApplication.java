@@ -17,7 +17,7 @@ import static android.content.ContentValues.TAG;
  * Created by Administrator on 2017/12/6.
  */
 
-public class KiwayApplication extends Application{
+public class KiwayApplication extends Application {
 
     //    服务端的RemoteInterface对象，绑定服务时创建
     public RemoteInterface mRemoteInterface = null;
@@ -27,14 +27,14 @@ public class KiwayApplication extends Application{
         public void onServiceConnected(ComponentName name, IBinder service) {
             // 绑定服务后从服务端获取RemoteInterface对象
             mRemoteInterface = RemoteInterface.Stub.asInterface(service);
-            if (clientCallback!=null)
-            registCallback();
+            if (clientCallback != null)
+                registCallback();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            if (clientCallback!=null)
-            unRegistCallback();
+            if (clientCallback != null)
+                unRegistCallback();
             //与服务端意外断开时自动重连
             disConnectService();
             connectService();
@@ -48,7 +48,7 @@ public class KiwayApplication extends Application{
     }
 
     private void connectService() {
-        clientCallback=null;
+        clientCallback = null;
         Intent intent = new Intent();
         intent.setAction("cn.kiway.mdm.aidlservice.RemoteAidlService");
         // Android 5.0以上需要设置包名
@@ -58,7 +58,7 @@ public class KiwayApplication extends Application{
 
     public void connectService(ClientCallback clientCallback) {
         Intent intent = new Intent();
-        this.clientCallback=clientCallback;
+        this.clientCallback = clientCallback;
         intent.setAction("cn.kiway.mdm.aidlservice.RemoteAidlService");
         // Android 5.0以上需要设置包名
         intent.setPackage("cn.kiway.mdm");
@@ -87,7 +87,7 @@ public class KiwayApplication extends Application{
     private void unRegistCallback() {
         Log.d(TAG, "Client unRegistCallback()");
         try {
-                mRemoteInterface.registClientCallback(clientCallback);
+            mRemoteInterface.registClientCallback(clientCallback);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
