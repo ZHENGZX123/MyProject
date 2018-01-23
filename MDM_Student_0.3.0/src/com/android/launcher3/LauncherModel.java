@@ -40,6 +40,8 @@ import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.MutableInt;
 
+import com.android.kiway.utils.AppListUtils;
+import com.android.kiway.utils.MyDBHelper;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
@@ -1797,9 +1799,9 @@ public class LauncherModel extends BroadcastReceiver
                     LauncherActivityInfo app = apps.get(i);
                     // This builds the icon bitmaps.
                     //// TODO: 2018/1/18   过滤所需的apk
-                    //  if (AppListUtils.getAppListData().toString().contains(app.getApplicationInfo().packageName))
-                    mBgAllAppsList.add(new AppInfo(app, user, quietMode), app);
-
+                    if (AppListUtils.getAppListData().toString().contains(app.getApplicationInfo().packageName) ||
+                            new MyDBHelper(mContext).checkAppInCustom(app.getApplicationInfo().packageName))
+                        mBgAllAppsList.add(new AppInfo(app, user, quietMode), app);
                 }
                 final ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(mContext, user);
                 if (heuristic != null) {

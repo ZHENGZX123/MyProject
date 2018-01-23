@@ -289,10 +289,17 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + "   (id integer primary key autoincrement,packageName text)";
 
 
+    private static final String TABLE_CUSTOM_APP = "TABLE_CUSTOM_APP";
+
+    private static final String CREATE_TABLE_CUSTOM_APP = " create table  IF NOT EXISTS "
+            + TABLE_CUSTOM_APP
+            + "   (id integer primary key autoincrement,packageName text)";
+
+
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 15);
+        super(c, DB_NAME, null, 16);
     }
 
     @Override
@@ -323,8 +330,12 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_INSTNALL_APP);
         db.execSQL(CREATE_TABLE_INSTNALL_APP);
+
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LAUNCHER_APP);
         db.execSQL(CREATE_TABLE_LAUNCHER_APP);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CUSTOM_APP);
+        db.execSQL(CREATE_TABLE_CUSTOM_APP);
     }
 
     @Override
@@ -340,6 +351,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_TIMESET);
         db.execSQL(CREATE_TABLE_INSTNALL_APP);
         db.execSQL(CREATE_TABLE_LAUNCHER_APP);
+        db.execSQL(CREATE_TABLE_CUSTOM_APP);
     }
 
     //------------------------------------------Network----------------
@@ -1005,5 +1017,36 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    //TABLE_CUSTOM_APP custom app
+    //-------------------installApp
+    public void addCustonApp(String packageName) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("packageName", packageName);
+        db.insert(TABLE_CUSTOM_APP, null, values);
+        db.close();
+    }
 
+    public boolean checkAppInCustom(String name) {
+        if (db == null)
+            db = getWritableDatabase();
+        boolean isInLuancher = false;
+        Cursor cur = db.query(TABLE_CUSTOM_APP, null, null, null, null, null, null);
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            String packageName = cur.getString(1);
+            if (packageName.equals(name))
+                isInLuancher = true;
+        }
+        cur.close();
+        db.close();
+        return isInLuancher;
+    }
+
+    public void deleteAppInCuston(String packageName) {
+        if (db == null)
+            db = getWritableDatabase();
+        db.delete(TABLE_CUSTOM_APP, "packageName=?", new String[]{packageName});
+        db.close();
+    }
 }
