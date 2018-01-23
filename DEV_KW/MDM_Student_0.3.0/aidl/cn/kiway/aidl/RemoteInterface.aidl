@@ -9,15 +9,16 @@ import cn.kiway.aidl.ClientCallback;
 interface RemoteInterface {
     //初始化
     boolean init(String key);
-    //    向服务端注册监听
+    //向服务端注册监听
     void registClientCallback(ClientCallback callback);
-    //    取消注册
+    //取消注册
     void unRegistClientCallback(ClientCallback callback);
     //锁屏解屏
     void lockScreen(boolean b);
     //屏幕共享
     void shareScreen(boolean b,String ip);
-      //禁用Home键
+    //禁用Home键
     void setHomeButtonDisabled(boolean disabled);
-
+    //学生回调的消息，json格式
+    void callbackMessage(String msg);
 }
