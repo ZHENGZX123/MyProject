@@ -50,12 +50,12 @@ import cn.kiway.mdm.entity.Course;
 import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
+import cn.kiway.mdm.entity.StudentQuestion;
 import cn.kiway.mdm.entity.TeachingContentVo;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Utils;
 
-import static android.R.id.message;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_CHAPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_SUOPING;
@@ -278,8 +278,30 @@ public class Course0Activity extends ScreenSharingActivity {
         startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_WENJIAN).putExtra("filePath", selectFilePath));
     }
 
+
     public void shezhi(View view) {
-        //设置？？？不知道是什么。测试用
+        //设置？？？不知道是什么。
+        final Dialog dialog = new Dialog(this, R.style.popupDialog);
+        dialog.setContentView(R.layout.dialog_ask);
+        dialog.show();
+
+        Button close = (Button) dialog.findViewById(R.id.close);
+        ListView lv = (ListView) dialog.findViewById(R.id.lv);
+        sqAdapter = new StudentQuestionAdapter();
+        lv.setAdapter(sqAdapter);
+
+        //假数据
+        studentQuestions.add(new StudentQuestion(1, "老师好", 0, "", "1516669301000", "小明", ""));
+        studentQuestions.add(new StudentQuestion(2, "", 5, "http://", "1516669301000", "小红", ""));
+        studentQuestions.add(new StudentQuestion(1, "这里没有听懂", 0, "", "1516669301000", "小王", ""));
+        sqAdapter.notifyDataSetChanged();
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     //-------------------------tools2----------------------
@@ -926,4 +948,73 @@ public class Course0Activity extends ScreenSharingActivity {
     }
 
 
+    private ArrayList<StudentQuestion> studentQuestions = new ArrayList<>();
+    private StudentQuestionAdapter sqAdapter;
+
+    private class StudentQuestionAdapter extends BaseAdapter {
+
+        private final LayoutInflater inflater;
+
+        public StudentQuestionAdapter() {
+            inflater = LayoutInflater.from(Course0Activity.this);
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View rowView = convertView;
+            ViewHolder holder;
+            if (rowView == null) {
+                rowView = inflater.inflate(R.layout.item_student_question, null);
+                holder = new ViewHolder();
+                holder.content = (TextView) rowView.findViewById(R.id.content);
+                holder.duration = (TextView) rowView.findViewById(R.id.duration);
+                holder.name = (TextView) rowView.findViewById(R.id.name);
+                holder.play = (ImageView) rowView.findViewById(R.id.play);
+                holder.avatar = (ImageView) rowView.findViewById(R.id.avatar);
+                rowView.setTag(holder);
+            } else {
+                holder = (ViewHolder) rowView.getTag();
+            }
+
+            final StudentQuestion q = studentQuestions.get(position);
+            holder.name.setText(q.studentName);
+            ImageLoader.getInstance().displayImage(q.studentAvatar, holder.avatar, KWApplication.getLoaderOptions());
+            if (q.type == 1) {
+                holder.content.setVisibility(View.VISIBLE);
+                holder.play.setVisibility(View.GONE);
+                holder.duration.setVisibility(View.GONE);
+                holder.content.setText(q.content);
+            } else if (q.type == 2) {
+                holder.content.setVisibility(View.GONE);
+                holder.play.setVisibility(View.VISIBLE);
+                holder.duration.setVisibility(View.VISIBLE);
+                holder.duration.setText(q.duration + "秒");
+            }
+
+            return rowView;
+        }
+
+        public class ViewHolder {
+            public TextView content;
+            public TextView duration;
+            public TextView name;
+            public ImageView play;
+            public ImageView avatar;
+        }
+
+        @Override
+        public int getCount() {
+            return studentQuestions.size();
+        }
+
+        @Override
+        public StudentQuestion getItem(int arg0) {
+            return studentQuestions.get(arg0);
+        }
+
+        @Override
+        public long getItemId(int arg0) {
+            return arg0;
+        }
+    }
 }
