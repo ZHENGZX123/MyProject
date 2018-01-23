@@ -2330,6 +2330,7 @@ public class Launcher extends MainActivity
 
             // Back button is a no-op here, but give at least some feedback for the button press
             mWorkspace.showOutlinesTemporarily();
+            super.onBackPressed();
         }
     }
 

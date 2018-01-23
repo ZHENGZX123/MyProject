@@ -78,11 +78,11 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     private CheckPassword dialog;
     public List<List<App>> allListData = new ArrayList<>();
-   // private ViewPager viewPager;
-  //  private LinearLayout group;//圆点指示器
-  //  private ImageView[] ivPoints;//小圆点图片的集合
+    // private ViewPager viewPager;
+    //  private LinearLayout group;//圆点指示器
+    //  private ImageView[] ivPoints;//小圆点图片的集合
     //private int totalPage; //总的页数
-   // private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
+    // private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
 
     public static MainActivity instance;
     private TelephonyManager telephonyManager;
@@ -104,7 +104,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private static final int MSG_CHECK_SHUTDOWN = 6;
 
     //private Button button5;
-   // private Button button4;
+    // private Button button4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,13 +203,13 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         // 获取是否支持电话
         boolean telephony = pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
         if (telephony) {
-           // button5.setVisibility(View.VISIBLE);
-           // button4.setVisibility(View.VISIBLE);
+            // button5.setVisibility(View.VISIBLE);
+            // button4.setVisibility(View.VISIBLE);
             //15.设置默认短信app
             setDefaultSMSApp();
         } else {
             //button5.setVisibility(View.GONE);
-           // button4.setVisibility(View.GONE);
+            // button4.setVisibility(View.GONE);
         }
     }
 
@@ -365,11 +365,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     private void initView() {
         dialog = new CheckPassword(this, this);
-
-        //viewPager = (ViewPager) findViewById(R.id.viewPager);
-      //  group = (LinearLayout) findViewById(R.id.points);
-      //  button5 = (Button) findViewById(button5);
-      //  button4 = (Button) findViewById(button4);
     }
 
     private void uploadStatus() {
@@ -699,7 +694,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                             Log.d("test", "坐标距离小于100，不用上报");
                             return;
                         }
-                        HttpUtil.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude() , dateStr);
+                        HttpUtil.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude(), dateStr);
                     }
 
                     @Override
