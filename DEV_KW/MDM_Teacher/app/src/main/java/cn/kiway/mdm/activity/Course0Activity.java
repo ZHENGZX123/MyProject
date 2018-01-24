@@ -730,7 +730,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 @Override
                 public void onClick(View v) {
                     //Utils.xiake(Course0Activity.this);
-                    ZbusHost.xiake(getApplicationContext());
+                    ZbusHost.xiake(Course0Activity.this, null);
                     Utils.endClass(Course0Activity.this, course.id);
                 }
             });

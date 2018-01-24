@@ -127,12 +127,12 @@ public class MainActivity extends BaseActivity {
         new Thread() {
             @Override
             public void run() {
-                ZbusConfiguration.instance.setHost(zbusHost);
-                ZbusConfiguration.instance.setPort(zbusPost);
-                ZbusConfiguration.instance.setProject(clientUrl);
-                String topic = "kiwayMDM_teacher_" + Utils.getIMEI(getApplicationContext());
-                Log.d("test", "老师订阅主题 = " + topic);
                 try {
+                    ZbusConfiguration.instance.setHost(zbusHost);
+                    ZbusConfiguration.instance.setPort(zbusPost);
+                    ZbusConfiguration.instance.setProject(clientUrl);
+                    String topic = "kiwayMDM_teacher_" + Utils.getIMEI(getApplicationContext());
+                    Log.d("test", "老师订阅主题 = " + topic);
                     ZbusUtils.consumeMsg(topic, new ZbusMessageHandler());
                 } catch (Exception e) {
                     e.printStackTrace();
