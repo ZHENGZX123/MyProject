@@ -59,6 +59,7 @@ import static com.android.kiway.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJL
 import static com.android.kiway.utils.HttpUtil.APPID;
 import static com.android.kiway.utils.HttpUtil.APPKEY;
 import static com.android.kiway.utils.Utils.huaweiPush;
+import static com.android.kiway.zbus.ZbusHost.teacherTopic;
 import static com.android.kiway.zbus.ZbusHost.zbusHost;
 import static com.android.kiway.zbus.ZbusHost.zbusPost;
 
@@ -136,25 +137,29 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void initZbus() {
-        ZbusConfiguration.instance.setHost(zbusHost);
-        ZbusConfiguration.instance.setPort(zbusPost);
-        ZbusConfiguration.instance.setProject(clientUrl);
-        String topic = "kiwayMDM_student_" + Utils.getIMEI(this);
-        Log.d("test", "学生订阅主题 = " + topic);
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    ZbusConfiguration.instance.setHost(zbusHost);
+                    ZbusConfiguration.instance.setPort(zbusPost);
+                    ZbusConfiguration.instance.setProject(clientUrl);
+                    String topic = "kiwayMDM_student_" + Utils.getIMEI(getApplicationContext());
+                    Log.d("test", "学生订阅主题 = " + topic);
+                    ZbusUtils.consumeMsg(topic, new MessageHandler() {
 
-        try {
-            ZbusUtils.consumeMsg(topic, new MessageHandler() {
-
-                @Override
-                public void handle(io.zbus.mq.Message message, MqClient mqClient) throws IOException {
-                    String msg = message.getBodyString();
-                    Log.d("test", "zbus receive message = " + msg);
-                    CommandUtil.handleCommand(getApplicationContext(), msg);
+                        @Override
+                        public void handle(io.zbus.mq.Message message, MqClient mqClient) throws IOException {
+                            String msg = message.getBodyString();
+                            Log.d("test", "zbus receive message = " + msg);
+                            CommandUtil.handleCommand(getApplicationContext(), msg);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            }
+        }.start();
     }
 
 
