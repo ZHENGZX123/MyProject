@@ -304,7 +304,7 @@ public class CommandUtil {
             } else if (command.equals("sign")) {
                 m.what = MSG_MESSAGE;
                 m.obj = data;
-            } else if (command.equals("responsePush")) {
+            } else if (command.equals("tongji")) {
                 m.what = MSG_MESSAGE;
                 m.obj = data;
             }
