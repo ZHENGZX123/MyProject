@@ -20,6 +20,9 @@ import com.tencent.smtt.sdk.QbSdk;
 
 import org.xutils.x;
 
+import java.util.ArrayList;
+
+import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.service.RecordService;
 
 /**
@@ -38,6 +41,8 @@ public class KWApplication extends Application {
 
     public static Activity currentActivity;
     public static RecordService recordService;
+
+    public static ArrayList<Student> students = new ArrayList<>();
 
     @Override
     public void onCreate() {

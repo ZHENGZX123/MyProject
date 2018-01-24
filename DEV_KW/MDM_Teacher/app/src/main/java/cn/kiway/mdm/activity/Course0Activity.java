@@ -55,6 +55,7 @@ import cn.kiway.mdm.entity.TeachingContentVo;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Utils;
+import cn.kiway.mdm.zbus.ZbusHost;
 
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_CHAPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
@@ -728,7 +729,8 @@ public class Course0Activity extends ScreenSharingActivity {
             holder.endBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Utils.xiake(Course0Activity.this);
+                    //Utils.xiake(Course0Activity.this);
+                    ZbusHost.xiake(getApplicationContext());
                     Utils.endClass(Course0Activity.this, course.id);
                 }
             });
