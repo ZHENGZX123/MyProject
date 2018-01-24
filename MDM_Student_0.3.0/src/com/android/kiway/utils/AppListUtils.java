@@ -4,12 +4,8 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
-import com.android.kiway.entity.App;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.R.attr.data;
 
 /**
  * Created by Administrator on 2017/10/13.
@@ -34,6 +30,7 @@ public class AppListUtils {
         preinstallAPP.add("com.zhtiantian.ChallengerTX");
         preinstallAPP.add("com.kamitu.drawsth.standalone.free.android");
         preinstallAPP.add("com.android.settings");
+        preinstallAPP.add("cn.kiway.marketplace");
     }
 
     public static String getAppListData() {

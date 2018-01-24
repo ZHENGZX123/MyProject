@@ -40,6 +40,13 @@
       <sourceFolder url="file://$MODULE_DIR$/src/aospDebug/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/aospDebug/rs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/aospDebug/shaders" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testAospDebug/res" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testAospDebug/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testAospDebug/assets" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testAospDebug/aidl" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testAospDebug/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testAospDebug/rs" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testAospDebug/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/proto/aospDebugAndroidTest/javanano" isTestSource="true" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/r/androidTest/aosp/debug" isTestSource="true" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/aidl/androidTest/aosp/debug" isTestSource="true" generated="true" />
@@ -48,13 +55,6 @@
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/apt/androidTest/aosp/debug" isTestSource="true" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/res/rs/androidTest/aosp/debug" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/res/resValues/androidTest/aosp/debug" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testAospDebug/res" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testAospDebug/resources" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testAospDebug/assets" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testAospDebug/aidl" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testAospDebug/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testAospDebug/rs" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testAospDebug/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/aosp/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/aosp/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/aosp/assets" type="java-resource" />
@@ -133,6 +133,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="palette-v7-23.4.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.4.0" level="project" />
+    <orderEntry type="library" exported="" name="kthdZbus-0.0.1" level="project" />
+    <orderEntry type="library" exported="" name="zbus-0.11.3" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="dexmaker-1.2" level="project" />
     <orderEntry type="library" exported="" name="gson-2.8.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="dexmaker-mockito-1.2" level="project" />
@@ -146,7 +148,9 @@
     <orderEntry type="library" exported="" name="BaiduLBS_Android" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="objenesis-2.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.4.0" level="project" />
+    <orderEntry type="library" exported="" name="netty-all-4.0.51.Final" level="project" />
     <orderEntry type="library" exported="" name="kotlin-stdlib-1.0.6" level="project" />
+    <orderEntry type="library" exported="" name="fastjson-1.2.24" level="project" />
     <orderEntry type="library" exported="" name="HwPush_SDK_V2705" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.5" level="project" />
     <orderEntry type="library" exported="" name="protobuf-javanano-3.0.0-alpha-2" level="project" />

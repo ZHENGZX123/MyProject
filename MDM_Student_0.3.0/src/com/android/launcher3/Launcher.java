@@ -2340,18 +2340,20 @@ public class Launcher extends MainActivity
             ued.logActionCommand(Action.Command.BACK, ContainerType.OVERVIEW);
             showWorkspace(true);
         } else {
-            // TODO: Log this case.
-            mWorkspace.exitWidgetResizeMode();
-
-            // Back button is a no-op here, but give at least some feedback for the button press
-            mWorkspace.showOutlinesTemporarily();
-
             //zhengkang add
             if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
                 return;
             }
-            super.onBackPressed();
+            // TODO: Log this case.
+            mWorkspace.exitWidgetResizeMode();
+            // Back button is a no-op here, but give at least some feedback for the button press
+            mWorkspace.showOutlinesTemporarily();
+            //zzx add here  解决点击返回键回来后桌面长按事件失效的问题
+            finish();
             android.os.Process.killProcess(android.os.Process.myPid());
+
+
+            super.onBackPressed();
         }
     }
 
