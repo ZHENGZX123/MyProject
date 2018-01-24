@@ -398,7 +398,7 @@ public class Utils {
                             endClass(c, courseID);
                         } else if (type.equals("students")) {
                             ((StudentGridActivity) KWApplication.currentActivity).initData();
-                        } else if (type.equals("dianming")) {
+                        } else if (type.equals("sign")) {
                             ((StudentGridActivity) KWApplication.currentActivity).doStartSign();
                         } else if (type.equals("courselist")) {
                             ((CourseListActivity) KWApplication.currentActivity).initData();
