@@ -87,7 +87,6 @@ public class KWApp extends Application {
                 startService(intent);
                 MDMHelper.getAdapter().setBackButtonDisabled(true);
                 MDMHelper.getAdapter().setHomeButtonDisabled(true);
-
 //                //0.锁屏
 //                if (isAttendClass) {
 //                    if (msg.obj == null)
@@ -116,7 +115,7 @@ public class KWApp extends Application {
                 //1.静音
                 mute();
             } else if (msg.what == MSG_UNLOCK) {
-//zzx add
+                //zzx add
                 Intent intent = new Intent(KWApp.this, LockSreenService.class);
                 stopService(intent);
                 MDMHelper.getAdapter().setBackButtonDisabled(false);
