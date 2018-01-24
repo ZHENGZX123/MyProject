@@ -1,5 +1,6 @@
 package cn.kiway.mdm.zbus;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -19,49 +20,54 @@ public class ZbusHost {
     public static String zbusPost = "15555";
 
 
-    public static void shangke(Context c) {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    for (Student s : KWApplication.students) {
-                        PushRecordVo vo = new PushRecordVo();
-                        vo.setTitle("上课");
-                        vo.setUserType(1);//发送方：1老师 2学生 3家长 4管理员
-                        vo.setSenderId(c.getSharedPreferences("kiway", 0).getString("userId", ""));
-                        vo.setMessage(new JSONObject().put("data", new JSONObject().put("command", "shangke").put("ip", "").put("platform", "android")).toString());
-                        String studentTopic = "kiwayMDM_student_" + s.imei;
-                        Log.d("test", "发送给学生 = " + studentTopic);
-                        ZbusUtils.sendMsg(studentTopic, vo);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+    public static void shangke(Activity c, OnListener onListener) {
+        try {
+            for (Student s : KWApplication.students) {
+                String title = "上课";
+                String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
+                String msg = new JSONObject().put("data", new JSONObject().put("command", "shangke").put("ip", "").put("platform", "android")).toString();
+                String studentTopic = "kiwayMDM_student_" + s.imei;
+                doSendMsg(title, userId, msg, studentTopic);
+                if (onListener != null) {
+                    onListener.onSuccess();
                 }
             }
-        }.start();
-
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (onListener != null) {
+                onListener.onFailure();
+            }
+        }
     }
 
-    public static void xiake(Context c) {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    for (Student s : KWApplication.students) {
-                        PushRecordVo vo = new PushRecordVo();
-                        vo.setTitle("下课");
-                        vo.setUserType(1);//发送方：1老师 2学生 3家长 4管理员
-                        vo.setSenderId(c.getSharedPreferences("kiway", 0).getString("userId", ""));
-                        vo.setMessage(new JSONObject().put("data", new JSONObject().put("command", "xiake").put("ip", "").put("platform", "android")).toString());
-                        String studentTopic = "kiwayMDM_student_" + s.imei;
-                        Log.d("test", "发送给学生 = " + studentTopic);
-                        ZbusUtils.sendMsg(studentTopic, vo);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+    public static void xiake(Context c, OnListener onListener) {
+        try {
+            for (Student s : KWApplication.students) {
+                String title = "下课";
+                String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
+                String msg = new JSONObject().put("data", new JSONObject().put("command", "xiake").put("ip", "").put("platform", "android")).toString();
+                String studentTopic = "kiwayMDM_student_" + s.imei;
+                doSendMsg(title, userId, msg, studentTopic);
+                if (onListener != null) {
+                    onListener.onSuccess();
                 }
             }
-        }.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (onListener != null) {
+                onListener.onFailure();
+            }
+        }
+    }
 
+    private static void doSendMsg(String title, String userId, String msg, String studentTopic) throws
+            Exception {
+        PushRecordVo vo = new PushRecordVo();
+        vo.setTitle(title);
+        vo.setUserType(1);//发送方：1老师 2学生 3家长 4管理员
+        vo.setSenderId(userId);
+        vo.setMessage(msg);
+        Log.d("test", "发送给学生 = " + studentTopic);
+        ZbusUtils.sendMsg(studentTopic, vo);
     }
 }

@@ -37,9 +37,8 @@ import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
+import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
-import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
-import cn.kiway.web.kthd.zbus.vo.PushRecordVo;
 
 import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_DIANMINGDA;
 import static cn.kiway.mdm.teacher.R.id.count;
@@ -197,7 +196,7 @@ public class StudentGridActivity extends BaseActivity {
                         adapter.notifyDataSetChanged();
                         //2.发送上课命令
                         KWApplication.students = students;
-                        ZbusHost.shangke(StudentGridActivity.this);
+                        sendShangkeCommand();
                     } catch (Exception e) {
                     }
                 }
@@ -216,6 +215,21 @@ public class StudentGridActivity extends BaseActivity {
             toast("请求失败，请稍后再试");
             dismissPD();
         }
+    }
+
+    private void sendShangkeCommand() {
+        ZbusHost.shangke(StudentGridActivity.this, new OnListener() {
+
+            @Override
+            public void onSuccess() {
+                //toast("发送上课命令成功");
+            }
+
+            @Override
+            public void onFailure() {
+                toast("发送上课命令失败");
+            }
+        });
     }
 
 
@@ -407,6 +421,8 @@ public class StudentGridActivity extends BaseActivity {
     }
 
     public void doStartSign() {
+
+
         try {
             //1.发“点名”推送命令
             showPD();
