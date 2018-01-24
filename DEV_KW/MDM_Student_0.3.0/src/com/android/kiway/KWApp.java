@@ -12,8 +12,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.kiway.activity.BaseActivity;
-import com.android.kiway.activity.ScreenMDMActivity;
 import com.android.kiway.aidlservice.RemoteAidlService;
+import com.android.kiway.windows.LockSreenService;
 import com.android.kiway.utils.HttpDownload;
 import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.Utils;
@@ -82,21 +82,27 @@ public class KWApp extends Application {
                 String imei = Utils.getIMEI(getApplicationContext());
                 HttpUtil.installationPush(instance, token, imei);
             } else if (msg.what == MSG_LOCK) {
-                //0.锁屏
-                if (isAttendClass) {
-                    if (msg.obj == null)
-                        msg.obj = "";
-                    RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
-                } else {
-                    if (currentActivity != null && currentActivity instanceof ScreenMDMActivity) {
-                        return;
-                    }
-                    MDMHelper.getAdapter().setBackButtonDisabled(true);
-                    MDMHelper.getAdapter().setHomeButtonDisabled(true);
-                    //强制锁屏
-                    startActivity(new Intent(getApplicationContext(), ScreenMDMActivity.class).addFlags(Intent
-                            .FLAG_ACTIVITY_NEW_TASK));
-                }
+                //zzx add
+                Intent intent = new Intent(KWApp.this, LockSreenService.class);
+                startService(intent);
+                MDMHelper.getAdapter().setBackButtonDisabled(true);
+                MDMHelper.getAdapter().setHomeButtonDisabled(true);
+
+//                //0.锁屏
+//                if (isAttendClass) {
+//                    if (msg.obj == null)
+//                        msg.obj = "";
+//                    RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
+//                } else {
+//                    if (currentActivity != null && currentActivity instanceof ScreenMDMActivity) {
+//                        return;
+//                    }
+//                    MDMHelper.getAdapter().setBackButtonDisabled(true);
+//                    MDMHelper.getAdapter().setHomeButtonDisabled(true);
+//                    //强制锁屏
+//                    startActivity(new Intent(getApplicationContext(), ScreenMDMActivity.class).addFlags(Intent
+//                            .FLAG_ACTIVITY_NEW_TASK));
+//                }
                 //1.熄灭屏幕
                 //DevicePolicyManager mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context
                 // .DEVICE_POLICY_SERVICE);
@@ -110,17 +116,22 @@ public class KWApp extends Application {
                 //1.静音
                 mute();
             } else if (msg.what == MSG_UNLOCK) {
-                //0.解除锁屏
-                if (!isAttendClass) {
-                    MDMHelper.getAdapter().setBackButtonDisabled(false);
-                    MDMHelper.getAdapter().setHomeButtonDisabled(false);
-                }
-                if (msg.obj == null)
-                    msg.obj = "";
-                RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
-                if (currentActivity != null && currentActivity instanceof ScreenMDMActivity) {
-                    currentActivity.finish();
-                }
+//zzx add
+                Intent intent = new Intent(KWApp.this, LockSreenService.class);
+                stopService(intent);
+                MDMHelper.getAdapter().setBackButtonDisabled(false);
+                MDMHelper.getAdapter().setHomeButtonDisabled(false);
+//                //0.解除锁屏
+//                if (!isAttendClass) {
+//                    MDMHelper.getAdapter().setBackButtonDisabled(false);
+//                    MDMHelper.getAdapter().setHomeButtonDisabled(false);
+//                }
+//                if (msg.obj == null)
+//                    msg.obj = "";
+//                RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
+//                if (currentActivity != null && currentActivity instanceof ScreenMDMActivity) {
+//                    currentActivity.finish();
+//                }
                 //1.点亮屏幕
                 //PowerManager mPowerManager = ((PowerManager) getSystemService(POWER_SERVICE));
                 //PowerManager.WakeLock mScreenLock = mPowerManager.newWakeLock(

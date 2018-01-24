@@ -62,6 +62,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     public void custom(View view) {
+
         startActivity(new Intent(this, AppListActivity3.class));
     }
 

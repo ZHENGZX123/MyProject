@@ -23,7 +23,6 @@ public class ZbusMessageHandler implements MessageHandler {
     @Override
     public void handle(Message message, MqClient mqClient) throws IOException {
 
-
         Log.d("test", "message = " + message.getBodyString());
     }
 }
