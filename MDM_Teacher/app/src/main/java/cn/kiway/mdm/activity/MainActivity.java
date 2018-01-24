@@ -75,7 +75,7 @@ import static cn.kiway.mdm.zbus.ZbusHost.zbusPost;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.3.1";
+    private static final String currentPackageVersion = "0.3.2";
     private static final String zburPath = "file:///android_asset";
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -124,14 +124,21 @@ public class MainActivity extends BaseActivity {
 
     //初始化zbus
     private void initzbus() {
-        ZbusConfiguration.instance.setHost(zbusHost);
-        ZbusConfiguration.instance.setPort(zbusPost);
-        try {
-            //// TODO: 2018/1/2
-            ZbusUtils.consumeMsg("userId", new ZbusMessageHandler());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                ZbusConfiguration.instance.setHost(zbusHost);
+                ZbusConfiguration.instance.setPort(zbusPost);
+                ZbusConfiguration.instance.setProject(clientUrl);
+                String topic = "kiwayMDM_teacher_" + Utils.getIMEI(getApplicationContext());
+                Log.d("test", "老师订阅主题 = " + topic);
+                try {
+                    ZbusUtils.consumeMsg(topic, new ZbusMessageHandler());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     public void initView() {

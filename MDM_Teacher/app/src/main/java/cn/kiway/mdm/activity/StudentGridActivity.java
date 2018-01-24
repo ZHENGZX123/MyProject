@@ -37,6 +37,9 @@ import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
+import cn.kiway.mdm.zbus.ZbusHost;
+import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
+import cn.kiway.web.kthd.zbus.vo.PushRecordVo;
 
 import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_DIANMINGDA;
 import static cn.kiway.mdm.teacher.R.id.count;
@@ -190,7 +193,11 @@ public class StudentGridActivity extends BaseActivity {
                         JSONArray data = new JSONObject(ret).optJSONArray("data");
                         students = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Student>>() {
                         }.getType());
+                        //1.刷新界面
                         adapter.notifyDataSetChanged();
+                        //2.发送上课命令
+                        KWApplication.students = students;
+                        ZbusHost.shangke(StudentGridActivity.this);
                     } catch (Exception e) {
                     }
                 }
@@ -210,6 +217,7 @@ public class StudentGridActivity extends BaseActivity {
             dismissPD();
         }
     }
+
 
     private void initListener() {
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
