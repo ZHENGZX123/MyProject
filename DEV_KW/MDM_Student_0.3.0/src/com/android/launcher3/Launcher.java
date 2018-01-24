@@ -2347,8 +2347,11 @@ public class Launcher extends MainActivity
             mWorkspace.showOutlinesTemporarily();
 
             //zhengkang add
-
+            if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+                return;
+            }
             super.onBackPressed();
+            android.os.Process.killProcess(android.os.Process.myPid());
         }
     }
 
