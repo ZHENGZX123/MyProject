@@ -18,6 +18,7 @@ import cn.kiway.web.kthd.zbus.vo.PushRecordVo;
 public class ZbusHost {
     public static String zbusHost = "192.168.8.161";
     public static String zbusPost = "15555";
+    public static String topic = "";
 
 
     public static void shangke(Activity c, OnListener onListener) {
@@ -25,7 +26,7 @@ public class ZbusHost {
             for (Student s : KWApplication.students) {
                 String title = "上课";
                 String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-                String msg = new JSONObject().put("data", new JSONObject().put("command", "shangke").put("ip", "").put("platform", "android")).toString();
+                String msg = new JSONObject().put("data", new JSONObject().put("command", "shangke").put("ip", "").put("platform", "android").put("topic", topic)).toString();
                 String studentTopic = "kiwayMDM_student_" + s.imei;
                 doSendMsg(title, userId, msg, studentTopic);
                 if (onListener != null) {
@@ -45,7 +46,27 @@ public class ZbusHost {
             for (Student s : KWApplication.students) {
                 String title = "下课";
                 String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-                String msg = new JSONObject().put("data", new JSONObject().put("command", "xiake").put("ip", "").put("platform", "android")).toString();
+                String msg = new JSONObject().put("data", new JSONObject().put("command", "xiake").put("ip", "").put("platform", "android").put("topic", topic)).toString();
+                String studentTopic = "kiwayMDM_student_" + s.imei;
+                doSendMsg(title, userId, msg, studentTopic);
+                if (onListener != null) {
+                    onListener.onSuccess();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (onListener != null) {
+                onListener.onFailure();
+            }
+        }
+    }
+
+    public static void sign(Activity c, OnListener onListener) {
+        try {
+            for (Student s : KWApplication.students) {
+                String title = "点名";
+                String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
+                String msg = new JSONObject().put("data", new JSONObject().put("command", "sign").put("topic", topic)).toString();
                 String studentTopic = "kiwayMDM_student_" + s.imei;
                 doSendMsg(title, userId, msg, studentTopic);
                 if (onListener != null) {

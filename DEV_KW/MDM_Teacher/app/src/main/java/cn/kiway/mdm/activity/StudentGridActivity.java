@@ -286,6 +286,20 @@ public class StudentGridActivity extends BaseActivity {
         });
     }
 
+    public void signStudent(String student) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (Student s : students) {
+                    if (s.imei.equals(student)) {
+                        s.come = true;
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
     private class MyAdapter extends BaseAdapter {
 
         private final LayoutInflater inflater;
@@ -421,43 +435,66 @@ public class StudentGridActivity extends BaseActivity {
     }
 
     public void doStartSign() {
+        showPD();
+        ZbusHost.sign(this, new OnListener() {
+            @Override
+            public void onSuccess() {
+                Log.d("test", "dianmingBtn onSuccess = ");
+                dismissPD();
+                dianmingBtn.setBackgroundResource(R.drawable.dianmingbutton2);
+                dianmingBtn.setText("结束点名");
+                //开始点名、对话框不可关闭
+                dialog_dianming.setCancelable(false);
+                dialog_dianming.setCanceledOnTouchOutside(false);
+                //开始倒计时
+                mHandler.sendEmptyMessageDelayed(TYPE_DIANMING, 1000);
+            }
 
-
-        try {
-            //1.发“点名”推送命令
-            showPD();
-            String url = KWApplication.clientUrl + "/device/push/teacher/sign/order";
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
-            client.setTimeout(10000);
-            client.post(StudentGridActivity.this, url, null, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "dianmingBtn onSuccess = " + ret);
+            @Override
+            public void onFailure() {
+                Log.d("test", "dianmingBtn onFailure");
+                if (!check301(StudentGridActivity.this, "", "dianmingBtn")) {
+                    toast("请求失败，请稍后再试");
                     dismissPD();
-                    dianmingBtn.setBackgroundResource(R.drawable.dianmingbutton2);
-                    dianmingBtn.setText("结束点名");
-                    //开始点名、对话框不可关闭
-                    dialog_dianming.setCancelable(false);
-                    dialog_dianming.setCanceledOnTouchOutside(false);
-                    //开始倒计时
-                    mHandler.sendEmptyMessageDelayed(TYPE_DIANMING, 1000);
                 }
+            }
+        });
 
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "dianmingBtn onFailure = " + s);
-                    if (!check301(StudentGridActivity.this, s, "dianmingBtn")) {
-                        toast("请求失败，请稍后再试");
-                        dismissPD();
-                    }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            toast("请求失败，请稍后再试");
-            dismissPD();
-        }
+//        try {
+//            //1.发“点名”推送命令
+//            showPD();
+//            String url = KWApplication.clientUrl + "/device/push/teacher/sign/order";
+//            AsyncHttpClient client = new AsyncHttpClient();
+//            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
+//            client.setTimeout(10000);
+//            client.post(StudentGridActivity.this, url, null, new TextHttpResponseHandler() {
+//                @Override
+//                public void onSuccess(int code, Header[] headers, String ret) {
+//                    Log.d("test", "dianmingBtn onSuccess = " + ret);
+//                    dismissPD();
+//                    dianmingBtn.setBackgroundResource(R.drawable.dianmingbutton2);
+//                    dianmingBtn.setText("结束点名");
+//                    //开始点名、对话框不可关闭
+//                    dialog_dianming.setCancelable(false);
+//                    dialog_dianming.setCanceledOnTouchOutside(false);
+//                    //开始倒计时
+//                    mHandler.sendEmptyMessageDelayed(TYPE_DIANMING, 1000);
+//                }
+//
+//                @Override
+//                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+//                    Log.d("test", "dianmingBtn onFailure = " + s);
+//                    if (!check301(StudentGridActivity.this, s, "dianmingBtn")) {
+//                        toast("请求失败，请稍后再试");
+//                        dismissPD();
+//                    }
+//                }
+//            });
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            toast("请求失败，请稍后再试");
+//            dismissPD();
+//        }
     }
 
 
