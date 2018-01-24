@@ -7,6 +7,7 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import cn.kiway.mdm.KWApplication;
+import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
 import cn.kiway.web.kthd.zbus.vo.PushRecordVo;
@@ -20,6 +21,25 @@ public class ZbusHost {
     public static String zbusPost = "15555";
     public static String topic = "";
 
+    public static void tongji(Activity c, KnowledgePoint kp, OnListener onListener) {
+        try {
+            for (Student s : KWApplication.students) {
+                String title = "知识点统计";
+                String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
+                String msg = new JSONObject().put("data", new JSONObject().put("command", "tongji").put("topic", topic).put("knowledge", kp.content)).toString();
+                String studentTopic = "kiwayMDM_student_" + s.imei;
+                doSendMsg(title, userId, msg, studentTopic);
+            }
+            if (onListener != null) {
+                onListener.onSuccess();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (onListener != null) {
+                onListener.onFailure();
+            }
+        }
+    }
 
     public static void shangke(Activity c, OnListener onListener) {
         try {
@@ -29,9 +49,9 @@ public class ZbusHost {
                 String msg = new JSONObject().put("data", new JSONObject().put("command", "shangke").put("ip", "").put("platform", "android").put("topic", topic)).toString();
                 String studentTopic = "kiwayMDM_student_" + s.imei;
                 doSendMsg(title, userId, msg, studentTopic);
-                if (onListener != null) {
-                    onListener.onSuccess();
-                }
+            }
+            if (onListener != null) {
+                onListener.onSuccess();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,9 +69,9 @@ public class ZbusHost {
                 String msg = new JSONObject().put("data", new JSONObject().put("command", "xiake").put("ip", "").put("platform", "android").put("topic", topic)).toString();
                 String studentTopic = "kiwayMDM_student_" + s.imei;
                 doSendMsg(title, userId, msg, studentTopic);
-                if (onListener != null) {
-                    onListener.onSuccess();
-                }
+            }
+            if (onListener != null) {
+                onListener.onSuccess();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,9 +89,9 @@ public class ZbusHost {
                 String msg = new JSONObject().put("data", new JSONObject().put("command", "sign").put("topic", topic)).toString();
                 String studentTopic = "kiwayMDM_student_" + s.imei;
                 doSendMsg(title, userId, msg, studentTopic);
-                if (onListener != null) {
-                    onListener.onSuccess();
-                }
+            }
+            if (onListener != null) {
+                onListener.onSuccess();
             }
         } catch (Exception e) {
             e.printStackTrace();

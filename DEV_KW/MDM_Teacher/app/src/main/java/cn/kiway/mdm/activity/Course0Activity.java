@@ -55,6 +55,7 @@ import cn.kiway.mdm.entity.TeachingContentVo;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Utils;
+import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
 
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_CHAPING;
@@ -343,10 +344,23 @@ public class Course0Activity extends ScreenSharingActivity {
                     return;
                 }
                 dialog.dismiss();
-                //发送选中的知识点
-                startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_TONGJI));//.putExtra("knowledges", selectKPs)
+                //发送命令
+                ZbusHost.tongji(Course0Activity.this, selectKPs.get(0), new OnListener() {
+
+                    @Override
+                    public void onSuccess() {
+                        //toast("发送统计命令成功");
+                        startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_TONGJI));
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        toast("发送统计命令失败");
+                    }
+                });
             }
         });
+
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
