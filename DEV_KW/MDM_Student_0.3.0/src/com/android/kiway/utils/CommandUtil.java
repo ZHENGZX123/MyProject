@@ -13,6 +13,7 @@ import com.android.kiway.entity.Call;
 import com.android.kiway.entity.Network;
 import com.android.kiway.entity.TimeSet;
 import com.android.kiway.entity.Wifi;
+import com.android.kiway.zbus.ZbusHost;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
@@ -67,6 +68,8 @@ public class CommandUtil {
             String dataStr = new JSONObject(receive).getString("data");
             JSONObject data = new JSONObject(dataStr);
             String command = data.optString("command");
+            ZbusHost.teacherTopic = data.optString("topic");
+
             Message m = new Message();
 
             if (command.equals("allowAppFunction")) {
