@@ -14,6 +14,7 @@ import studentsession.kiway.cn.mdm_studentsession.R;
  */
 
 public class SignDialog extends BaseDialog {
+
     public SignDialog(@NonNull Context context) {
         super(context);
     }
@@ -32,10 +33,11 @@ public class SignDialog extends BaseDialog {
         switch (v.getId()) {
             case R.id.sing_btn:
                 try {
-                    App.instance.mRemoteInterface.callbackMessage("签到");
+                    App.instance.mRemoteInterface.callbackMessage("sign");
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
+                this.dismiss();
                 break;
         }
     }

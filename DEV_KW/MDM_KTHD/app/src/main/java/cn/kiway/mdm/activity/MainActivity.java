@@ -62,6 +62,7 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         instantce = this;
+        App.instance.connectService(App.instance.mClientCallback);
         setContentView(R.layout.activity_main);
         initView();
         getAppData();
@@ -73,6 +74,13 @@ public class MainActivity extends BaseActivity {
         titleName.setText("开维互动学生端");
         backRL.setVisibility(View.GONE);
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        App.instance.connectService(App.instance.mClientCallback);
+    }
+
 
     //个人信息
     public void onInfo(View view) {
@@ -114,6 +122,8 @@ public class MainActivity extends BaseActivity {
             String shangke = intent.getStringExtra("shangke");
             Logger.log("shangke::::::" + shangke);
             if (shangke != null && !shangke.equals("")) {
+
+
             } else {
                 checkNewVersion();
             }
