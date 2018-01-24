@@ -44,6 +44,6 @@ public class ZbusMessageHandler implements MessageHandler {
             return;
         }
 
-        ((StudentGridActivity) KWApplication.currentActivity).signStudent(student);
+        ((StudentGridActivity) KWApplication.currentActivity).signOneStudent(student);
     }
 }

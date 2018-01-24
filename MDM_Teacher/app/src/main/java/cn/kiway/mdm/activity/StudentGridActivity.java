@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +54,7 @@ import static cn.kiway.mdm.util.Utils.check301;
 //锁屏:TYPE_SUOPING
 public class StudentGridActivity extends BaseActivity {
 
+    public static final int TYPE_SHANGKE = 0;
     public static final int TYPE_DIANMING = 1;
     public static final int TYPE_DIANMINGDA = 2;
     public static final int TYPE_TONGJI = 3;
@@ -196,7 +198,10 @@ public class StudentGridActivity extends BaseActivity {
                         adapter.notifyDataSetChanged();
                         //2.发送上课命令
                         KWApplication.students = students;
-                        sendShangkeCommand();
+
+                        if (type == TYPE_SHANGKE) {
+                            sendShangkeCommand();
+                        }
                     } catch (Exception e) {
                     }
                 }
@@ -286,16 +291,27 @@ public class StudentGridActivity extends BaseActivity {
         });
     }
 
-    public void signStudent(String student) {
+    public void signOneStudent(String student) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 for (Student s : students) {
+                    if (TextUtils.isEmpty(s.imei)) {
+                        continue;
+                    }
                     if (s.imei.equals(student)) {
                         s.come = true;
                     }
                 }
                 adapter.notifyDataSetChanged();
+
+                int count = 0;
+                for (Student s : students) {
+                    if (s.come) {
+                        count++;
+                    }
+                }
+                count_dianming.setText(count + "/" + students.size());
             }
         });
     }
@@ -439,7 +455,7 @@ public class StudentGridActivity extends BaseActivity {
         ZbusHost.sign(this, new OnListener() {
             @Override
             public void onSuccess() {
-                Log.d("test", "dianmingBtn onSuccess = ");
+                Log.d("test", "dianmingBtn onSuccess");
                 dismissPD();
                 dianmingBtn.setBackgroundResource(R.drawable.dianmingbutton2);
                 dianmingBtn.setText("结束点名");
@@ -459,7 +475,6 @@ public class StudentGridActivity extends BaseActivity {
                 }
             }
         });
-
 //        try {
 //            //1.发“点名”推送命令
 //            showPD();

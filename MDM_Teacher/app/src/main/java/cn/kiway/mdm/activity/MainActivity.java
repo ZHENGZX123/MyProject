@@ -54,7 +54,9 @@ import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.web.JsAndroidInterface;
 import cn.kiway.mdm.web.MyWebViewClient;
+import cn.kiway.mdm.zbus.ZbusMessageHandler;
 import cn.kiway.web.kthd.zbus.ZbusConfiguration;
+import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
 import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
 
@@ -97,7 +99,7 @@ public class MainActivity extends BaseActivity {
         initData();
         load();
         checkNewVersion();
-        initzbus();
+        initZbus();
         initRecorder();
     }
 
@@ -122,7 +124,7 @@ public class MainActivity extends BaseActivity {
     };
 
     //初始化zbus
-    private void initzbus() {
+    private void initZbus() {
         new Thread() {
             @Override
             public void run() {
@@ -132,6 +134,7 @@ public class MainActivity extends BaseActivity {
                     ZbusConfiguration.instance.setProject(clientUrl);
                     topic = "kiwayMDM_teacher_" + Utils.getIMEI(getApplicationContext());
                     Log.d("test", "老师订阅主题 = " + topic);
+                    ZbusUtils.consumeMsg(topic, new ZbusMessageHandler());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
