@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.apache.http.Header;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -23,6 +30,8 @@ import cn.kiway.mdm.model.FileModel;
 import cn.kiway.mdm.utils.FileUtils;
 import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
+
+import static cn.kiway.mdm.App.clientUrl;
 
 /**
  * Created by Administrator on 2017/11/16.
@@ -42,13 +51,39 @@ public class FileListActivity extends BaseActivity {
         setContentView(R.layout.activity_file_list);
 
         //假数据==改成易敏的，是用接口来做的。
-//        new MyDBHelper(this).addFile(new FileModel("test1.pdf", "/mnt/sdcard/test1.pdf", "1516587513000", "李老师"));
-//        new MyDBHelper(this).addFile(new FileModel("test2.doc", "/mnt/sdcard/test2.doc", "1516587513000", "陈老师"));
-//        new MyDBHelper(this).addFile(new FileModel("test3.png", "/mnt/sdcard/test3.pdf", "1516587513000", "snapshot"));
-
+        //new MyDBHelper(this).addFile(new FileModel("test1.pdf", "/mnt/sdcard/test1.pdf", "1516587513000", "李老师"));
+        //new MyDBHelper(this).addFile(new FileModel("test2.doc", "/mnt/sdcard/test2.doc", "1516587513000", "陈老师"));
+        //new MyDBHelper(this).addFile(new FileModel("test3.png", "/mnt/sdcard/test3.pdf", "1516587513000", "snapshot"));
+        getDataFromServer();
         initView();
         initListener();
         initData(1);
+    }
+
+    private void getDataFromServer() {
+        try {
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+            client.setTimeout(10000);
+            RequestParams param = new RequestParams();
+            Log.d("test", "param = " + param.toString());
+            String url = clientUrl + "/device/student/myScreenshotFile?type=1";
+            Log.d("test", "myScreenshotFile url = " + url);
+            client.get(this, url, param, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "calls onSuccess = " + ret);
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "calls onFailure = " + s);
+                    //check301(FileListActivity.this, s);
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
+        }
     }
 
     private void initData(int tab) {

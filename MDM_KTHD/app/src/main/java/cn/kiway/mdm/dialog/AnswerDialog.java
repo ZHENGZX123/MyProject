@@ -42,13 +42,12 @@ public class AnswerDialog extends BaseDialog {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.answer_btn:
-                if (answerBtn.getText().toString().equals("抢答")) {//处于抢答状态
-                    try {
-                        App.instance.mRemoteInterface.callbackMessage("抢答");
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    App.instance.mRemoteInterface.callbackMessage("qiangda");
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
+                this.dismiss();
                 break;
         }
     }
