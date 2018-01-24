@@ -24,8 +24,6 @@ import com.lzy.imagepicker.ui.ImagePreviewActivity;
 import com.lzy.imagepicker.view.CropImageView;
 import com.nanchen.compresshelper.CompressHelper;
 
-import org.json.JSONObject;
-
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -41,8 +39,7 @@ import studentsession.kiway.cn.mdm_studentsession.R;
  */
 
 public class AnswerQuestionsAcitivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
-    JSONObject data = new JSONObject();
-    RadioGroup choiceQuestion, TofF;
+    private RadioGroup choiceQuestion, TofF;
 
     private WebView wv;
     private static final int SELECT_PHOTO = 8888;
@@ -51,11 +48,6 @@ public class AnswerQuestionsAcitivity extends BaseActivity implements RadioGroup
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
-//        try {
-//            data = new JSONObject(getIntent().getStringExtra("data"));
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
         initView();
         initData();
         load();
@@ -71,7 +63,6 @@ public class AnswerQuestionsAcitivity extends BaseActivity implements RadioGroup
     }
 
     void initData() {
-        // int qusetionType = data.optJSONObject("content").optInt("type");
         int qusetionType = 5;
         switch (qusetionType) {
             case 1://选择

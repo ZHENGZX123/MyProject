@@ -100,12 +100,14 @@ public class App extends KiwayApplication {
             getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
             try {
                 JSONObject data = new JSONObject(msg);
-                if (data.optString("command").equals("question")) {//回答问题的
+                String command = data.optString("command");
+                if (command.equals("question")) {//回答问题的
                     ((BaseActivity) currentActivity).onQuestion(data);
-                } else if (data.optString("command").equals("sign")) {//签到
+                } else if (command.equals("sign")) {//签到
                     ((BaseActivity) currentActivity).onSign();
-                } else if (data.optString("command").equals("responsePush")) {//知识点统计
-                    ((BaseActivity) currentActivity).onResponsePush();
+                } else if (command.equals("tongji")) {//知识点统计
+                    String knowledge = data.optString("knowledge");
+                    ((BaseActivity) currentActivity).onTongji(knowledge);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

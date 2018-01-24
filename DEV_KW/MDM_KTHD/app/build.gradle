@@ -63,4 +63,5 @@ dependencies {
     compile 'com.android.support:multidex:1.0.0'
     compile project(':ImagePicker')
     compile files('libs/image_compress.jar')
+    compile files('libs/gson-2.8.0.jar')
 }
