@@ -1,22 +1,29 @@
 package cn.kiway.mdm.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import cn.kiway.mdm.App;
 import cn.kiway.mdm.dialog.AnswerDialog;
-import cn.kiway.mdm.dialog.KnowledgeStatistics;
+import cn.kiway.mdm.dialog.KnowledgeDialog;
 import cn.kiway.mdm.dialog.MyProgressDialog;
-import cn.kiway.mdm.dialog.NotifyShowDailog;
+import cn.kiway.mdm.dialog.NotifyShowDialog;
 import cn.kiway.mdm.dialog.SignDialog;
 import cn.kiway.mdm.dialog.SmokeAnswerDialog;
+import cn.kiway.mdm.model.Question;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
 /**
@@ -29,7 +36,7 @@ public class BaseActivity extends Activity {
     public AnswerDialog answerDialog;
     public SmokeAnswerDialog smokeAnswerDialog;
     public SignDialog signDialog;
-    public KnowledgeStatistics knowDialog;
+    public KnowledgeDialog knowDialog;
     public TextView titleName;
     public RelativeLayout backRL;
 
@@ -55,7 +62,7 @@ public class BaseActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                NotifyShowDailog notifyShowDailog = new NotifyShowDailog(BaseActivity.this, title, message, name);
+                NotifyShowDialog notifyShowDailog = new NotifyShowDialog(BaseActivity.this, title, message, name);
                 notifyShowDailog.show();
             }
         });
@@ -81,16 +88,19 @@ public class BaseActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (data.optString("command").equals("question")) {
-                    if (data.optJSONObject("content").optInt("questionType") == 1) {//点名答
-                    } else if (data.optJSONObject("content").optInt("questionType") == 2) {//抢答
-                        answerDialog = new AnswerDialog(BaseActivity.this);
-                        answerDialog.show();
-                    } else if (data.optJSONObject("content").optInt("questionType") == 3) {//随机抽签
-                        smokeAnswerDialog = new SmokeAnswerDialog(BaseActivity.this);
-                        smokeAnswerDialog.show();
-                    } else if (data.optJSONObject("content").optInt("questionType") == 4) {//测评
-                    }
+                int questionType = data.optInt("questionType");
+                JSONArray questionArray = data.optJSONArray("questions");
+                ArrayAdapter<Question> questions = new GsonBuilder().create().fromJson(questionArray.toString(), new TypeToken<Question>() {
+                }.getType());
+                if (questionType == 1) {//点名答
+                    startActivity(new Intent(BaseActivity.this, AnswerQuestionsAcitivity.class));
+                } else if (questionType == 2) {//抢答
+                    answerDialog = new AnswerDialog(BaseActivity.this);
+                    answerDialog.show();
+                } else if (questionType == 3) {//随机抽签
+                    smokeAnswerDialog = new SmokeAnswerDialog(BaseActivity.this);
+                    smokeAnswerDialog.show();
+                } else if (questionType == 4) {//测评
                 }
             }
         });
@@ -106,11 +116,11 @@ public class BaseActivity extends Activity {
         });
     }
 
-    public void onResponsePush() {//知识点反馈
+    public void onTongji(final String knowledge) {//知识点反馈
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                knowDialog = new KnowledgeStatistics(BaseActivity.this);
+                knowDialog = new KnowledgeDialog(BaseActivity.this, knowledge);
                 knowDialog.show();
             }
         });

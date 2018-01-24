@@ -93,6 +93,7 @@
     <orderEntry type="jdk" jdkName="Android API 25 Platform (1)" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" scope="TEST" name="multidex-instrumentation-1.0.1" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.8.0" level="project" />
     <orderEntry type="library" exported="" name="kotlin-stdlib-1.0.6" level="project" />
     <orderEntry type="library" exported="" name="hutool-all-3.2.3" level="project" />
     <orderEntry type="library" exported="" name="design-25.3.0" level="project" />
