@@ -1,215 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg">
-
-    <include layout="@layout/layout_title2"></include>
-
-    <LinearLayout
-        android:id="@+id/connect_c"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="172dp"
-            android:layout_height="297dp"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/mainbutton1"
-            android:gravity="center"
-            android:onClick="onInfo"
-            android:orientation="vertical"
-            android:text="个人信息">
-
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/icon" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="三年2班"
-                android:textColor="#ffffff" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="周杰伦"
-                android:textColor="#ffffff"
-                android:textSize="18sp" />
-
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="118dp"
-            android:layout_height="300dp"
-            android:layout_marginLeft="50dp"
-            android:background="@drawable/mainbutton2"
-            android:onClick="onCourse"
-            android:text="已上课程">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="50dp"
-                android:background="@drawable/icon1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="    已上\n课程"
-                android:textColor="#ffffff"
-                android:textSize="20sp" />
-
-            <ImageView
-                android:layout_width="70dp"
-                android:layout_height="60dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/icon4" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="127dp"
-            android:layout_height="294dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/mainbutton3"
-            android:onClick="onFile"
-            android:text="我的文件">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="50dp"
-                android:background="@drawable/icon2" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="    我的\n文件"
-                android:textColor="#ffffff"
-                android:textSize="20sp" />
-
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="70dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/icon5" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="118dp"
-            android:layout_height="300dp"
-            android:layout_marginLeft="50dp"
-            android:background="@drawable/mainbutton4"
-            android:onClick="fenxi"
-            android:text="测评分析">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="50dp"
-                android:background="@drawable/icon3" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="课堂\n    分析"
-                android:textColor="#ffffff"
-                android:textSize="20sp" />
-
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="80dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/icon6" />
-        </RelativeLayout>
-
-    </LinearLayout>
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg">
 
     <RelativeLayout
-        android:id="@+id/connect"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/conbg"
-        android:visibility="gone">
+        android:layout_height="40dp"
+        android:background="#6699FF">
 
         <TextView
-            android:id="@+id/text"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:background="@drawable/connect_val"
-            android:gravity="center"
-            android:onClick="onUdp"
-            android:padding="10dp"
-            android:text="上课连接不上？"
-            android:textColor="#ffffff" />
+            android:text="开维互动学生端"
+            android:textColor="#ffffff"/>
 
-        <TextView
-            android:layout_width="150dp"
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/text"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/connect_val"
-            android:gravity="center"
-            android:onClick="onDis"
-            android:padding="10dp"
-            android:text="不连接上课"
-            android:textColor="#ffffff" />
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/ic_account_balance"
+            android:onClick="logout"
+           />
+
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/connect_c"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:background="@color/_90ffffff"
-        android:orientation="vertical"
-        android:padding="30dp"
-        android:visibility="gone">
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="120dp">
 
-        <ProgressBar
-            style="@style/progressbar"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:indeterminateDuration="1000"
-            android:max="100"
-            android:maxHeight="5dp"
-            android:progressDrawable="@drawable/progress" />
-
-        <TextView
-            android:id="@+id/progressText"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:text="连接中，请稍后"
-            android:textColor="@color/blue" />
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:background="@drawable/mainbutton4"
+                android:gravity="center"
+                android:onClick="onKT"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/analyze"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text=" 课堂分析"
+                    android:textColor="#ffffff"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="18sp"/>
+
+            </LinearLayout>
+            <View
+                android:layout_width="1px"
+                android:layout_height="10dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="5"
+                android:background="@drawable/mainbutton1"
+                android:gravity="center"
+                android:onClick="onInfo"
+                android:orientation="vertical"
+                android:text="个人信息">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/icon1"/>
+
+                <TextView
+                    android:id="@+id/className"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="三年2班"
+                    android:textColor="#ffffff"/>
+
+                <TextView
+                    android:id="@+id/studentName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="周杰伦"
+                    android:textColor="#ffffff"
+                    android:textSize="18sp"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/mainbutton2"
+                android:gravity="center"
+                android:onClick="onMsg"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/u843"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text=" 已收信息"
+                    android:textColor="#ffffff"
+                    android:textSize="18sp"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="10dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/mainbutton3"
+                android:gravity="center"
+                android:onClick="onFile"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/u4106"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text=" 我的文件"
+                    android:textColor="#ffffff"
+                    android:textSize="18sp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -229,16 +189,16 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/snapshot" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/snapshot"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="截图"
-                android:textColor="#6699ff" />
+                android:textColor="#6699ff"/>
         </LinearLayout>
 
         <LinearLayout
@@ -251,16 +211,16 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ask" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ask"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="提问器"
-                android:textColor="#6699ff" />
+                android:textColor="#6699ff"/>
         </LinearLayout>
     </LinearLayout>
 

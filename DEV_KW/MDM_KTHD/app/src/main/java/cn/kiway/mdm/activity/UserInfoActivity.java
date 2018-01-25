@@ -2,7 +2,10 @@ package cn.kiway.mdm.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.TextView;
 
+import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
 /**
@@ -10,17 +13,23 @@ import studentsession.kiway.cn.mdm_studentsession.R;
  */
 
 public class UserInfoActivity extends BaseActivity {
+    TextView account, userName,versionCode;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userinfo);
-
-        initView();
+        initView1();
+    }
+    void initView1() {
+        account = (TextView) findViewById(R.id.account);
+        userName = (TextView) findViewById(R.id.userName);
+        versionCode= (TextView) findViewById(R.id.versionCode);
+        account.setText("学号：" + getSharedPreferences("kiwaykthd", 0).getString("studentNumber", ""));
+        userName.setText("姓名:" + getSharedPreferences("kiwaykthd", 0).getString("studentName", ""));
+        versionCode.setText(Utils.getCurrentVersion(this));
     }
 
-    @Override
-    public void initView() {
-        super.initView();
-        titleName.setText("用户信息");
+    public void Before(View view) {
+        finish();
     }
 }
