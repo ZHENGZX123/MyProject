@@ -36,7 +36,6 @@ public class KnowledgeDialog extends BaseDialog {
         ((TextView) findViewById(R.id.knowledge_txt)).setText("知识点\n    " + title);
     }
 
-
     @Override
     public void onClick(View v) {
         super.onClick(v);

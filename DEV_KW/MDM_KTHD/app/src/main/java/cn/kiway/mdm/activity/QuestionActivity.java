@@ -77,6 +77,7 @@ public class QuestionActivity extends BaseActivity {
     private WebView answerWV;
     private MyAdapter adapter;
     private ArrayList<Choice> choices = new ArrayList<>();
+    private Button submitBtn;
 
     private boolean submited;
     private boolean finished;
@@ -101,16 +102,7 @@ public class QuestionActivity extends BaseActivity {
     public void initView() {
         super.initView();
 
-        if (questionType == TYPE_QUESTION_DIANMINGDA) {
-            titleName.setText("点名答");
-        } else if (questionType == TYPE_QUESTION_QIANGDA) {
-            titleName.setText("抢答");
-        } else if (questionType == TYPE_QUESTION_SUIJICHOUDA) {
-            titleName.setText("抽答");
-        } else if (questionType == TYPE_QUESTION_CEPING) {
-            titleName.setText("测评");
-        }
-
+        submitBtn = (Button) findViewById(R.id.submit);
         time = (TextView) findViewById(R.id.time);
         prev = (Button) findViewById(R.id.prev);
         next = (Button) findViewById(R.id.next);
@@ -127,6 +119,19 @@ public class QuestionActivity extends BaseActivity {
         answerWV = (WebView) findViewById(R.id.answerWV);
         adapter = new MyAdapter();
         answerGV.setAdapter(adapter);
+
+
+        if (questionType == TYPE_QUESTION_DIANMINGDA) {
+            titleName.setText("点名答");
+        } else if (questionType == TYPE_QUESTION_QIANGDA) {
+            titleName.setText("抢答");
+        } else if (questionType == TYPE_QUESTION_SUIJICHOUDA) {
+            titleName.setText("抽答");
+        } else if (questionType == TYPE_QUESTION_CEPING) {
+            titleName.setText("测评");
+            ok.setVisibility(View.VISIBLE);
+            submitBtn.setVisibility(View.GONE);
+        }
     }
 
 
@@ -407,6 +412,7 @@ public class QuestionActivity extends BaseActivity {
             toast("你已经提交过了，请不要重复提交");
             return;
         }
+        //整理答案
         String answer = "answer_xxxx";
         boolean ret = Utils.sendToServer(answer);
         if (ret) {

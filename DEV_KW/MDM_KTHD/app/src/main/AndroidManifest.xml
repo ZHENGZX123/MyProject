@@ -46,10 +46,11 @@
         <activity
             android:name="cn.kiway.mdm.activity.ScreenActivity"
             android:screenOrientation="portrait" />
+
+        <!-- 这个页面暂时不用singleTask-->
         <activity
             android:name="cn.kiway.mdm.activity.QuestionActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:launchMode="singleTask"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <activity

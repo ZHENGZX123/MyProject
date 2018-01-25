@@ -172,7 +172,8 @@
                     android:layout_height="match_parent"
                     android:layout_margin="20dp"
                     android:numColumns="4"
-                    android:scrollbars="none" />
+                    android:scrollbars="none"
+                    android:verticalSpacing="20dp" />
 
                 <EditText
                     android:id="@+id/answerET"
