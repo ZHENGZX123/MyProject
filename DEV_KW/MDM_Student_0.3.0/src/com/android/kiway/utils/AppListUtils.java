@@ -23,14 +23,10 @@ public class AppListUtils {
         preinstallAPP.add("com.netease.vopen");
         preinstallAPP.add("com.zhtiantian.ChallengerTX");
         preinstallAPP.add("com.kamitu.drawsth.standalone.free.android");
-        preinstallAPP.add("cn.kiway.homework.student");
-        preinstallAPP.add("com.kk.poem");
-        preinstallAPP.add("com.liulishuo.engzo");
-        preinstallAPP.add("com.netease.vopen");
-        preinstallAPP.add("com.zhtiantian.ChallengerTX");
-        preinstallAPP.add("com.kamitu.drawsth.standalone.free.android");
         preinstallAPP.add("com.android.settings");
         preinstallAPP.add("cn.kiway.marketplace");
+        preinstallAPP.add("com.android.browser");
+        preinstallAPP.add("com.android.camera2");
     }
 
     public static String getAppListData() {

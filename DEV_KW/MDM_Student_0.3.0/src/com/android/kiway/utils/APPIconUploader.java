@@ -55,7 +55,7 @@ public class APPIconUploader {
         }
         //3.上传到服务器
         String token = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-        String result = UploadUtil.uploadFile(localPath, KWApp.serverUrl + "common/file?x-auth-token=" + token, packageName);
+        String result = UploadUtil.uploadFile(localPath, KWApp.clientUrl + "common/file?x-auth-token=" + token, packageName);
         //4.成功的话保存路径到icon
         try {
             String url = new JSONObject(result).getJSONObject("data").getString("url");

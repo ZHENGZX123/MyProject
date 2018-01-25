@@ -83,7 +83,9 @@ import android.widget.Toast;
 import com.android.kiway.activity.MainActivity;
 import com.android.kiway.activity.SettingActivity;
 import com.android.kiway.activity.SystemSetupActivity;
+import com.android.kiway.activity.WebViewActivity;
 import com.android.kiway.entity.AppCharge;
+import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.MyDBHelper;
 import com.android.kiway.utils.Utils;
 import com.android.launcher3.DropTarget.DragObject;
@@ -2507,10 +2509,24 @@ public class Launcher extends MainActivity
                 e.printStackTrace();
             }
         }
+        Log.e(TAG, packageName);
+
         //TODO 应用的点击事件 zzx
         if (packageName.contains("com.android.setting")) {
             startActivity(new Intent(this, SettingActivity.class));
             return;
+        }
+        if (packageName.contains("com.android.browser")) {
+            startActivity(new Intent(this, WebViewActivity.class));
+            return;
+        }
+        if (packageName.contains("com.android.camera2")) {
+            HttpUtil.childOperation(this, "useApp", "使用了相机APP");
+            int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
+            if (flag_camera == 0) {
+                toast("相机功能当前不能使用");
+                return;
+            }
         }
         if (downloadStarted) {
             // If the download has started, simply direct to the market app.
@@ -2631,11 +2647,24 @@ public class Launcher extends MainActivity
                 e.printStackTrace();
             }
         }
-
+        Log.e(TAG, intent.getComponent().getPackageName());
         if (intent.getComponent().getPackageName().contains("com.android.setting")) {//zzx add 系统设置跳转自己的设置
             startActivity(new Intent(this, SystemSetupActivity.class));
             return;
         }
+        if (intent.getComponent().getPackageName().contains("com.android.browser")) {//浏览器
+            startActivity(new Intent(this, WebViewActivity.class));
+            return;
+        }
+        if (intent.getComponent().getPackageName().contains("com.android.camera2")) {
+            HttpUtil.childOperation(this, "useApp", "使用了相机APP");
+            int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
+            if (flag_camera == 0) {
+                toast("相机功能当前不能使用");
+                return;
+            }
+        }
+
         if (intent == null) {
             throw new IllegalArgumentException("Input must have a valid intent");
         }
