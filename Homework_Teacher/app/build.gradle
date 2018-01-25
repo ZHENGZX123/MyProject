@@ -16,8 +16,8 @@ android {
         applicationId "cn.kiway.homework.teacher"
         minSdkVersion 18
         targetSdkVersion 20
-        versionCode 6
-        versionName "1.0.6"
+        versionCode 7
+        versionName "1.0.7"
         ndk { abiFilters "armeabi", "armeabi-v7a", "x86", "mips" }
     }
     buildTypes {

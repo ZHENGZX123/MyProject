@@ -85,7 +85,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "1.0.8";
+    private static final String currentPackageVersion = "1.1.1";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
@@ -579,11 +579,11 @@ public class MainActivity extends BaseActivity {
             CountlyUtil.getInstance().addEvent(event);
 
             //0.检查网络
-            if (!method.equalsIgnoreCase("GET") && !NetworkUtil.isNetworkAvailable(getApplicationContext())) {
-                toast("没有网络，请检查网络稍后再试");
-                //httpRequestCallback(tagname, "");
-                return;
-            }
+//            if (!method.equalsIgnoreCase("GET") && !NetworkUtil.isNetworkAvailable(getApplicationContext())) {
+//                toast("没有网络，请检查网络稍后再试");
+//                httpRequestCallback(tagname, "");
+//                return;
+//            }
             if (time.equals("0")) {
                 //1.重新获取
                 doHttpRequest(url, param, method, tagname, time, related);
@@ -708,13 +708,31 @@ public class MainActivity extends BaseActivity {
         //1.使用正则
         String split[] = url.split("\\?");
         if (split.length > 1) {
-            url = split[0] + "?" + URLEncoder.encode(split[1]);
+            String queryString = split[1];
+            StringBuilder sb = new StringBuilder();
+            for (String param : queryString.split("&")) {
+                String[] paramSplit = param.split("=");
+                String key = paramSplit[0];
+                String value = "";
+                if(paramSplit.length > 1){
+                    value = paramSplit[1];
+                }
+                sb.append(key).append("=");
+                if(paramSplit.length >1) {
+                    sb.append(URLEncoder.encode(value));
+                }
+                sb.append("&");
+            }
+            //sb.deleteCharAt(sb.length() -1);
+            queryString = sb.toString();
+            url = split[0] + "?" + queryString;
         }
         return url;
     }
 
     public void clickSetToken(View view) {
-        getSharedPreferences("kiway", 0).edit().putString("accessToken", "123456").commit();
+        //getSharedPreferences("kiway", 0).edit().putString("accessToken", "123456").commit();
+        new MyDBHelper(this).deleteAllHttpCache();
     }
 
     private void saveDB(String url, String param, String method, String ret, String tagname) {
