@@ -1,197 +1,243 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/content"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="9"
-        android:padding="10dp"
-        android:text="选择题
-在下列选项中，具有相反意义的量是（）
-A、向东走3千米与向北走3千米
-B、收入100与支出50无
-C、气温上升3℃与上升7℃
-D、5个老人与5个小孩子"
-        android:textColor="#333333"
-        android:textSize="16sp" />
+    <include
+        android:id="@+id/titleRL"
+        layout="@layout/layout_title2"></include>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="4"
-        android:background="#f7f7f7"
+        android:layout_below="@+id/titleRL">
 
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:padding="10dp"
-            android:text="答题卡"
-            android:textColor="#333333"
-            android:textSize="18sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="#e5e5e5" />
-
-        <RadioGroup
-            android:id="@+id/choiceQuestion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <RadioButton
-                android:id="@+id/choiceQuestion1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/radiobutton_select"
-                android:button="@null"
-                android:checked="true"
-                android:gravity="center"
-                android:text="A"
-                android:textColor="#ffffff" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <RadioButton
-                android:id="@+id/choiceQuestion2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/radiobutton_select"
-                android:button="@null"
-                android:gravity="center"
-                android:text="B"
-                android:textColor="#ffffff" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <RadioButton
-                android:id="@+id/choiceQuestion3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/radiobutton_select"
-                android:button="@null"
-                android:gravity="center"
-                android:text="C"
-                android:textColor="#ffffff" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <RadioButton
-                android:id="@+id/choiceQuestion4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/radiobutton_select"
-                android:button="@null"
-                android:gravity="center"
-                android:text="D"
-                android:textColor="#ffffff" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-        </RadioGroup>
-
-        <RadioGroup
-            android:id="@+id/TofF"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <RadioButton
-                android:id="@+id/TofF1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/radiobutton_select"
-                android:button="@null"
-                android:checked="true"
-                android:gravity="center"
-                android:text="对"
-                android:textColor="#ffffff" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <RadioButton
-                android:id="@+id/TofF2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/radiobutton_select"
-                android:button="@null"
-                android:gravity="center"
-                android:text="错"
-                android:textColor="#ffffff" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-        </RadioGroup>
-
-        <EditText
-            android:id="@+id/blankAnswers"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:background="@drawable/white_val"
-            android:hint="请输入答案"
-            android:padding="10dp"
-            android:textColor="#333333"
-            android:textColorHint="#666666"
-            android:textSize="14sp"
-            android:visibility="gone" />
-
-        <WebView
-            android:id="@+id/wv"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"></WebView>
+            android:layout_weight="1">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ffffff"
+                android:scrollbars="none">
 
-        <Button
-            android:id="@+id/ok"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="30dp"
+                        android:text="选择题"
+                        android:textColor="#000000"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:textColor="#000000" />
+
+                    <LinearLayout
+                        android:id="@+id/imgLL"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:orientation="vertical" />
+
+                    <Button
+                        android:id="@+id/showAnswerBtn"
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_margin="15dp"
+                        android:background="@drawable/endbutton"
+                        android:onClick="showAnswer"
+                        android:padding="10dp"
+                        android:text="显示答案"
+                        android:textColor="#ffffff" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_answer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/content2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="30dp"
+                            android:text="答案："
+                            android:textColor="#000000"
+                            android:textSize="20sp" />
+
+                        <LinearLayout
+                            android:id="@+id/imgLL2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </ScrollView>
+
+            <LinearLayout
+                android:id="@+id/ll_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_margin="10dp">
+
+                <Button
+                    android:id="@+id/prev"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/quxiaobutton"
+                    android:onClick="prev"
+                    android:padding="10dp"
+                    android:text="    上一题    "
+                    android:textColor="#6699ff"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/quxiaobutton"
+                    android:onClick="next"
+                    android:padding="10dp"
+                    android:text="    下一题    "
+                    android:textColor="#6699ff" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="20dp"
+                android:text="时间" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_margin="15dp"
-            android:background="@color/blue"
-            android:padding="10dp"
-            android:text="提交"
-            android:textColor="#ffffff" />
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:background="#f2f2f2">
+
+
+            <TextView
+                android:id="@+id/hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="答题卡"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/hint"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#aaaaaa" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/submit"
+                android:layout_below="@+id/line">
+
+                <!-- 单选题、判断题-->
+                <GridView
+                    android:id="@+id/answerGV"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="20dp"
+                    android:numColumns="4"
+                    android:scrollbars="none" />
+
+                <EditText
+                    android:id="@+id/answerET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:background="@drawable/white_val"
+                    android:hint="请输入答案"
+                    android:padding="10dp"
+                    android:textColor="#333333"
+                    android:textColorHint="#666666"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+
+                <WebView
+                    android:id="@+id/answerWV"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"></WebView>
+
+
+                <LinearLayout
+                    android:id="@+id/ll_teacher_judge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:clickable="true"
+                        android:drawableTop="@drawable/right1"
+                        android:gravity="center_horizontal"
+                        android:onClick="right"
+                        android:padding="10dp"
+                        android:text="回答正确"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:clickable="true"
+                        android:drawableTop="@drawable/wrong1"
+                        android:gravity="center_horizontal"
+                        android:onClick="wrong"
+                        android:padding="10dp"
+                        android:text="回答错误"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="提交" />
+        </RelativeLayout>
     </LinearLayout>
-</LinearLayout>
+
+</RelativeLayout>
