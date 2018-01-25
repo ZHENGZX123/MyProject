@@ -30,7 +30,7 @@ public class NotifyMsgActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_list);
-        ((TextView) findViewById(R.id.title)).setText("消息列表");
+        ((TextView) findViewById(R.id.titleName)).setText("消息列表");
         array = new MyDBHelper(this).getNotifyMessage();
         listView = (ListView) findViewById(R.id.list_view);
         listView.setDividerHeight(0);
