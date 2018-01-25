@@ -54,7 +54,6 @@
 
                     <Button
                         android:id="@+id/showAnswerBtn"
-                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
@@ -64,7 +63,8 @@
                         android:onClick="showAnswer"
                         android:padding="10dp"
                         android:text="显示答案"
-                        android:textColor="#ffffff" />
+                        android:textColor="#ffffff"
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:id="@+id/ll_answer"
@@ -125,11 +125,13 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="20dp"
-                android:text="时间" />
+                android:text="时间"
+                android:textColor="#ff0000" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -160,7 +162,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/submit"
+                android:layout_above="@+id/line2"
                 android:layout_below="@+id/line">
 
                 <!-- 单选题、判断题-->
@@ -230,13 +232,31 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/line2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_above="@+id/submit"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#aaaaaa" />
+
             <Button
                 android:id="@+id/submit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:text="提交" />
+                android:layout_margin="10dp"
+                android:background="@drawable/endbutton"
+                android:onClick="clickSubmit"
+                android:paddingBottom="5dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="5dp"
+                android:text="      提  交      "
+                android:textColor="#ffffff"
+                android:textSize="18sp" />
         </RelativeLayout>
     </LinearLayout>
 

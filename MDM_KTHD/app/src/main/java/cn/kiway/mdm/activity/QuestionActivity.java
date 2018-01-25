@@ -1,8 +1,12 @@
 package cn.kiway.mdm.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -33,6 +37,7 @@ import java.util.ArrayList;
 
 import cn.kiway.mdm.App;
 import cn.kiway.mdm.model.AnswerVo;
+import cn.kiway.mdm.model.Choice;
 import cn.kiway.mdm.model.Question;
 import cn.kiway.mdm.utils.JsAndroidInterface2;
 import cn.kiway.mdm.utils.MyWebViewClient;
@@ -57,6 +62,7 @@ public class QuestionActivity extends BaseActivity {
 
     private int current = 0;
 
+    private TextView time;
     private Button prev;
     private Button next;
     private TextView type;
@@ -70,7 +76,10 @@ public class QuestionActivity extends BaseActivity {
     private EditText answerET;
     private WebView answerWV;
     private MyAdapter adapter;
-    private ArrayList<String> chooses = new ArrayList<>();
+    private ArrayList<Choice> choices = new ArrayList<>();
+
+    private boolean submited;
+    private boolean finished;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +92,7 @@ public class QuestionActivity extends BaseActivity {
 
         initView();
         initData();
+        initListener();
         refresh();
         load();
     }
@@ -101,6 +111,7 @@ public class QuestionActivity extends BaseActivity {
             titleName.setText("测评");
         }
 
+        time = (TextView) findViewById(R.id.time);
         prev = (Button) findViewById(R.id.prev);
         next = (Button) findViewById(R.id.next);
         type = (TextView) findViewById(R.id.type);
@@ -120,6 +131,12 @@ public class QuestionActivity extends BaseActivity {
 
 
     private void initData() {
+        if (questionTime == 0) {
+            mHandler.sendEmptyMessageDelayed(0, 1000);
+        } else {
+            mHandler.sendEmptyMessageDelayed(1, 1000);
+        }
+
         //跨域问题
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             answerWV.getSettings().setAllowUniversalAccessFromFileURLs(true);
@@ -151,6 +168,11 @@ public class QuestionActivity extends BaseActivity {
         answerWV.setWebChromeClient(new WebChromeClient());
         answerWV.addJavascriptInterface(new JsAndroidInterface2(this), "wx");
     }
+
+
+    private void initListener() {
+    }
+
 
     public void prev(View view) {
         current--;
@@ -230,11 +252,11 @@ public class QuestionActivity extends BaseActivity {
             answerGV.setVisibility(View.VISIBLE);
             answerET.setVisibility(View.GONE);
             answerWV.setVisibility(View.GONE);
-            chooses.clear();
-            chooses.add("A");
-            chooses.add("B");
-            chooses.add("C");
-            chooses.add("D");
+            choices.clear();
+            String choose[] = q.options.replace("\"", "").replace("[", "").replace("]", "").split(",");
+            for (String temp : choose) {
+                choices.add(new Choice(temp, false));
+            }
             adapter.notifyDataSetChanged();
         } else if (q.type == Question.TYPE_EMPTY) {
             answerGV.setVisibility(View.GONE);
@@ -244,9 +266,9 @@ public class QuestionActivity extends BaseActivity {
             answerGV.setVisibility(View.VISIBLE);
             answerET.setVisibility(View.GONE);
             answerWV.setVisibility(View.GONE);
-            chooses.clear();
-            chooses.add("对");
-            chooses.add("错");
+            choices.clear();
+            choices.add(new Choice("对", false));
+            choices.add(new Choice("错", false));
             adapter.notifyDataSetChanged();
         } else if (q.type == Question.TYPE_ESSAY) {
             answerGV.setVisibility(View.GONE);
@@ -261,6 +283,24 @@ public class QuestionActivity extends BaseActivity {
         Log.d("test", "url = " + url);
         answerWV.loadUrl(url);
     }
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 0) {
+                questionTime++;
+            } else if (msg.what == 1) {
+                if (questionTime > 0) {
+                    questionTime--;
+                } else {
+                    //时间到
+                    submited = true;
+                }
+            }
+            time.setText("时间：" + Utils.secToTime(questionTime));
+            mHandler.sendEmptyMessageDelayed(msg.what, 1000);
+        }
+    };
 
     private class MyAdapter extends BaseAdapter {
 
@@ -289,9 +329,32 @@ public class QuestionActivity extends BaseActivity {
             } else {
                 holder = (ViewHolder) roanswerWView.getTag();
             }
+            Choice c = choices.get(position);
+            holder.choose.setText(c.content);
+            if (c.selected) {
+                holder.choose.setBackgroundResource(R.drawable.green);
+            } else {
+                holder.choose.setBackgroundResource(R.drawable.gray);
+            }
 
-            String s = chooses.get(position);
-            holder.choose.setText(s);
+            holder.choose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Question q = questions.get(current);
+                    if (q.type == Question.TYPE_SINGLE || q.type == Question.TYPE_JUDGE) {
+                        for (Choice c : choices) {
+                            c.selected = false;
+                        }
+                        Choice c = choices.get(position);
+                        c.selected = true;
+                        adapter.notifyDataSetChanged();
+                    } else if (q.type == Question.TYPE_MULTI) {
+                        Choice c = choices.get(position);
+                        c.selected = !c.selected;
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            });
 
             return roanswerWView;
         }
@@ -302,12 +365,12 @@ public class QuestionActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return chooses.size();
+            return choices.size();
         }
 
         @Override
-        public String getItem(int arg0) {
-            return chooses.get(arg0);
+        public Choice getItem(int arg0) {
+            return choices.get(arg0);
         }
 
         @Override
@@ -337,5 +400,49 @@ public class QuestionActivity extends BaseActivity {
 
             answerWV.loadUrl("javascript:selectPhotoCallback('file://" + path + "')");
         }
+    }
+
+    public void clickSubmit(View view) {
+        if (submited) {
+            toast("你已经提交过了，请不要重复提交");
+            return;
+        }
+        String answer = "answer_xxxx";
+        boolean ret = Utils.sendToServer(answer);
+        if (ret) {
+            submited = true;
+            mHandler.removeCallbacksAndMessages(null);
+        } else {
+            toast("提交失败");
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        clickBack(null);
+    }
+
+    @Override
+    public void clickBack(View view) {
+        if (!finished) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+            AlertDialog dialog = builder.setTitle("提示").setMessage("是否退出本次问答/测评？")
+                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            finish();
+                        }
+                    })
+                    .setPositiveButton(android.R.string.cancel, null).create();
+            dialog.show();
+            return;
+        }
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
     }
 }
