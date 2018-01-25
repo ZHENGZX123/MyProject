@@ -93,14 +93,7 @@ public class BaseActivity extends Activity {
                 List<Question> questions = new GsonBuilder().create().fromJson(questionStr, new TypeToken<List<Question>>() {
                 }.getType());
                 Log.d("test", "questions = " + questions);
-                if (questionType == 1) {//点名答
-                    startActivity(new Intent(BaseActivity.this, AnswerQuestionsAcitivity.class));
-                } else if (questionType == 2) {//抢答
-
-                } else if (questionType == 3) {//随机抽签
-
-                } else if (questionType == 4) {//测评
-                }
+                startActivity(new Intent(BaseActivity.this, AnswerQuestionsAcitivity.class));
             }
         });
     }
