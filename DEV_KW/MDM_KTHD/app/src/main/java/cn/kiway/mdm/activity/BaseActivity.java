@@ -15,6 +15,7 @@ import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.mdm.App;
@@ -88,12 +89,13 @@ public class BaseActivity extends Activity {
             @Override
             public void run() {
                 int questionType = data.optInt("questionType");
+                int questionTime = data.optInt("questionTime");
                 String questionStr = data.optString("questions");
                 Log.d("test", "questionStr = " + questionStr);
-                List<Question> questions = new GsonBuilder().create().fromJson(questionStr, new TypeToken<List<Question>>() {
+                ArrayList<Question> questions = new GsonBuilder().create().fromJson(questionStr, new TypeToken<List<Question>>() {
                 }.getType());
                 Log.d("test", "questions = " + questions);
-                startActivity(new Intent(BaseActivity.this, AnswerQuestionsAcitivity.class));
+                startActivity(new Intent(BaseActivity.this, QuestionActivity.class).putExtra("questions", questions).putExtra("questionTime", questionTime).putExtra("questionType", questionType));
             }
         });
     }

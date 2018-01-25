@@ -31,6 +31,8 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Locale;
 
+import uk.co.senab.photoview.sample.ViewPagerActivity;
+
 /**
  * Created by Administrator on 2017/6/8.
  */
@@ -344,6 +346,13 @@ public class Utils {
         String f = secondnd >= 10 ? String.valueOf(secondnd) : "0" + String.valueOf(secondnd);
         String m = million >= 10 ? String.valueOf(million) : "0" + String.valueOf(million);
         return f + ":" + m;
+    }
+
+    public static void showBigImage(Context c, String[] images, int position) {
+        ViewPagerActivity.sDrawables = images;
+        Intent intent = new Intent(c, ViewPagerActivity.class);
+        intent.putExtra("position", position);
+        c.startActivity(intent);
     }
 
 
