@@ -20,7 +20,7 @@ public class ZbusHost {
     public static String teacherTopic = "";
 
 
-    public static void doSendMsg(Context c, String cmd) {
+    public static boolean doSendMsg(Context c, String cmd) {
         try {
             JSONObject obj = new JSONObject();
             obj.put("studentIMEI", Utils.getIMEI(c));
@@ -32,8 +32,12 @@ public class ZbusHost {
             vo.setMessage(obj.toString());
             Log.d("test", "发送给老师 = " + teacherTopic);
             ZbusUtils.sendMsg(teacherTopic, vo);
+
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return false;
     }
 }
