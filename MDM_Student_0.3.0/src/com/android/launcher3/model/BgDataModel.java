@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.MutableInt;
 
+import com.android.kiway.utils.Logger;
 import com.android.kiway.utils.MyDBHelper;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.InstallShortcutReceiver;
@@ -311,6 +312,8 @@ public class BgDataModel {
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                 if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
                         item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                    Logger.log(TAG+item.getIntent()
+                            .getComponent().getPackageName());
                     workspaceItems.add(item);
                     //zzx add 桌面数据
                     new MyDBHelper(context).addLauncerApp(item.getIntent()
