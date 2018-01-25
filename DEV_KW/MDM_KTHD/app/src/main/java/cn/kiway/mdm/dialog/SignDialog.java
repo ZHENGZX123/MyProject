@@ -2,11 +2,10 @@ package cn.kiway.mdm.dialog;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import cn.kiway.mdm.App;
+import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
 /**
@@ -32,11 +31,7 @@ public class SignDialog extends BaseDialog {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.sing_btn:
-                try {
-                    App.instance.mRemoteInterface.callbackMessage("sign");
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                Utils.sendToServer("sign");
                 this.dismiss();
                 break;
         }

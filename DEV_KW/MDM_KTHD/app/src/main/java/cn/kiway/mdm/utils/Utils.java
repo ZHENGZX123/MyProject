@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.RemoteException;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -31,6 +32,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Locale;
 
+import cn.kiway.mdm.App;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 /**
@@ -355,5 +357,45 @@ public class Utils {
         c.startActivity(intent);
     }
 
+    public static String secToTime(int time) {
+        String timeStr = null;
+        int hour = 0;
+        int minute = 0;
+        int second = 0;
+        if (time <= 0)
+            return "00:00";
+        else {
+            minute = time / 60;
+            if (minute < 60) {
+                second = time % 60;
+                timeStr = unitFormat(minute) + ":" + unitFormat(second);
+            } else {
+                hour = minute / 60;
+                if (hour > 99)
+                    return "99:59:59";
+                minute = minute % 60;
+                second = time - hour * 3600 - minute * 60;
+                timeStr = unitFormat(hour) + ":" + unitFormat(minute) + ":" + unitFormat(second);
+            }
+        }
+        return timeStr;
+    }
 
+    private static String unitFormat(int i) {
+        String retStr = null;
+        if (i >= 0 && i < 10)
+            retStr = "0" + Integer.toString(i);
+        else
+            retStr = "" + i;
+        return retStr;
+    }
+
+    public static boolean sendToServer(String msg) {
+        try {
+            return App.instance.mRemoteInterface.callbackMessage(msg);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

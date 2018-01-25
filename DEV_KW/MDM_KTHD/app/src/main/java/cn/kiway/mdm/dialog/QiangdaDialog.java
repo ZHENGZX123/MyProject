@@ -1,13 +1,12 @@
 package cn.kiway.mdm.dialog;
 
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import cn.kiway.mdm.App;
 import cn.kiway.mdm.activity.BaseActivity;
+import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
 /**
@@ -40,11 +39,7 @@ public class QiangdaDialog extends BaseDialog {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.answer_btn:
-                try {
-                    App.instance.mRemoteInterface.callbackMessage("qiangda");
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                Utils.sendToServer("qiangda");
                 break;
         }
     }
