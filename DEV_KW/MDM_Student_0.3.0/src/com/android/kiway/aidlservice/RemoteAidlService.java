@@ -94,9 +94,9 @@ public class RemoteAidlService extends Service {
         }
 
         @Override
-        public void callbackMessage(String msg) throws RemoteException {
+        public boolean callbackMessage(String msg) throws RemoteException {
             //课堂互动的相应消息
-            ZbusHost.doSendMsg(RemoteAidlService.this, msg);
+            return ZbusHost.doSendMsg(RemoteAidlService.this, msg);
         }
     };
 
