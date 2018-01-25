@@ -301,7 +301,7 @@ public class CommandUtil {
                     || command.equals("sign")
                     || command.equals("tongji")
                     || command.equals("qiangda")
-                    || command.equals("online")
+                    || command.endsWith("qiangdaResult")
                     ) {
                 m.what = MSG_MESSAGE;
                 m.obj = data;
