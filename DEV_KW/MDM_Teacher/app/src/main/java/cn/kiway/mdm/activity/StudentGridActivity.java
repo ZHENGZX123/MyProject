@@ -342,7 +342,6 @@ public class StudentGridActivity extends BaseActivity {
             final Student s = students.get(position);
             holder.name.setText(s.name);
             //TODO avatar
-
             if (type == TYPE_DIANMING) {
                 if (s.online) {
                     if (s.come) {
