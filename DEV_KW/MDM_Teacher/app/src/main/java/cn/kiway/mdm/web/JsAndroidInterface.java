@@ -25,7 +25,7 @@ import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.util.WifiUtils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_SHANGKE;
+import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMING;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.FileUtils.EnFILEPATH;
 
@@ -167,7 +167,7 @@ public class JsAndroidInterface {
             activity.getSharedPreferences("kiway", 0).edit().putString("teacherName", teacherName).commit();
             activity.getSharedPreferences("kiway", 0).edit().putString("teacherAvatar", teacherAvatar).commit();
 
-            this.activity.startActivity(new Intent(this.activity, StudentGridActivity.class).putExtra("type", TYPE_SHANGKE));
+            this.activity.startActivity(new Intent(this.activity, StudentGridActivity.class).putExtra("type", TYPE_DIANMING));
             //Utils.shangke(this.activity, wifiIp);
         } catch (JSONException e) {
             e.printStackTrace();

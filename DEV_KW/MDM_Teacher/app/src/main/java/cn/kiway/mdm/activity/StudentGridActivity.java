@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.mdm.KWApplication;
+import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
@@ -54,7 +54,6 @@ import static cn.kiway.mdm.util.Utils.check301;
 //锁屏:TYPE_SUOPING
 public class StudentGridActivity extends BaseActivity {
 
-    public static final int TYPE_SHANGKE = 0;
     public static final int TYPE_DIANMING = 1;
     public static final int TYPE_DIANMINGDA = 2;
     public static final int TYPE_TONGJI = 3;
@@ -99,10 +98,10 @@ public class StudentGridActivity extends BaseActivity {
         lock = (ImageButton) findViewById(R.id.lock);
 
         if (type == TYPE_DIANMINGDA) {
-            ok.setVisibility(View.VISIBLE);
+            ok.setVisibility(View.GONE);
             toolsRL.setVisibility(View.GONE);
         } else if (type == TYPE_TONGJI) {
-            showTongjidialog();
+            //显示对话框移到获取学生列表成功
         } else if (type == TYPE_WENJIAN) {
             ok.setVisibility(View.VISIBLE);
             all.setVisibility(View.VISIBLE);
@@ -168,11 +167,7 @@ public class StudentGridActivity extends BaseActivity {
             toast("请选择至少一个学生");
             return;
         }
-        if (type == TYPE_DIANMINGDA) {
-            //点名答
-            startActivity(new Intent(this, ResultActivity.class).putExtra("type", TYPE_QUESTION_DIANMINGDA).putExtra("students", selectStudents).putExtra("questionTime", getIntent().getIntExtra("questionTime", 0)).putExtra("questions", getIntent().getSerializableExtra("questions")));
-            finish();
-        } else if (type == TYPE_WENJIAN) {
+        if (type == TYPE_WENJIAN) {
             //发送文件成功后finish
             finish();
         }
@@ -198,9 +193,10 @@ public class StudentGridActivity extends BaseActivity {
                         adapter.notifyDataSetChanged();
                         //2.发送上课命令
                         KWApplication.students = students;
-
-                        if (type == TYPE_SHANGKE) {
+                        if (type == TYPE_DIANMING) {
                             sendShangkeCommand();
+                        } else if (type == TYPE_TONGJI) {
+                            showTongjidialog();
                         }
                     } catch (Exception e) {
                     }
@@ -237,6 +233,31 @@ public class StudentGridActivity extends BaseActivity {
         });
     }
 
+    private void sendDianmingdaCommand(Student s) {
+        showPD();
+        ArrayList<Question> questions = (ArrayList<Question>) getIntent().getSerializableExtra("questions");
+        Question q = questions.get(0);
+        ZbusHost.question(StudentGridActivity.this, s, q, 1, new OnListener() {
+
+            @Override
+            public void onSuccess() {
+                dismissPD();
+                //toast("发送上课命令成功");
+                //点名答
+                ArrayList<Student> selectStudents = new ArrayList<>();
+                selectStudents.add(s);
+                startActivity(new Intent(StudentGridActivity.this, ResultActivity.class).putExtra("type", TYPE_QUESTION_DIANMINGDA).putExtra("students", selectStudents).putExtra("questionTime", getIntent().getIntExtra("questionTime", 0)).putExtra("questions", getIntent().getSerializableExtra("questions")));
+                finish();
+            }
+
+            @Override
+            public void onFailure() {
+                dismissPD();
+                toast("发送点名答命令失败");
+            }
+        });
+    }
+
 
     private void initListener() {
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -245,7 +266,9 @@ public class StudentGridActivity extends BaseActivity {
                 Student s = students.get(position);
                 if (type == TYPE_DIANMING) {
                     toast(s.name + (s.come ? "到了" : "没到"));
-                } else if (type == TYPE_DIANMINGDA || type == TYPE_WENJIAN) {
+                } else if (type == TYPE_DIANMINGDA) {
+                    sendDianmingdaCommand(s);
+                } else if (type == TYPE_WENJIAN) {
                     //选中的
                     s.selected = !s.selected;
                     adapter.notifyDataSetChanged();
@@ -291,31 +314,6 @@ public class StudentGridActivity extends BaseActivity {
         });
     }
 
-    public void signOneStudent(String student) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                for (Student s : students) {
-                    if (TextUtils.isEmpty(s.imei)) {
-                        continue;
-                    }
-                    if (s.imei.equals(student)) {
-                        s.come = true;
-                    }
-                }
-                adapter.notifyDataSetChanged();
-
-                int count = 0;
-                for (Student s : students) {
-                    if (s.come) {
-                        count++;
-                    }
-                }
-                count_dianming.setText(count + "/" + students.size());
-            }
-        });
-    }
-
     private class MyAdapter extends BaseAdapter {
 
         private final LayoutInflater inflater;
@@ -346,8 +344,12 @@ public class StudentGridActivity extends BaseActivity {
             //TODO avatar
 
             if (type == TYPE_DIANMING) {
-                if (s.come) {
-                    holder.icon.setImageResource(R.drawable.icon2);
+                if (s.online) {
+                    if (s.come) {
+                        holder.icon.setImageResource(R.drawable.ic_launcher);
+                    } else {
+                        holder.icon.setImageResource(R.drawable.icon2);
+                    }
                 } else {
                     holder.icon.setImageResource(R.drawable.icon1);
                 }
@@ -604,7 +606,6 @@ public class StudentGridActivity extends BaseActivity {
                     mHandler.sendEmptyMessageDelayed(TYPE_TONGJI, 1000);
                 } else {
                     toast("统计结束");
-                    //这里可以弹出统计结果
                     doEndTongji();
                 }
             }
@@ -617,4 +618,64 @@ public class StudentGridActivity extends BaseActivity {
         mHandler.removeCallbacksAndMessages(null);
     }
 
+    //TODO 回头做这个
+    public void onelineOneStudent(String studentIMEI) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (Student s : students) {
+                    if (s.imei.equals(studentIMEI)) {
+                        s.online = true;
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+
+    public void signOneStudent(String studentIMEI) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (Student s : students) {
+                    if (s.imei.equals(studentIMEI)) {
+                        s.come = true;
+                    }
+                }
+                adapter.notifyDataSetChanged();
+
+                int count = 0;
+                for (Student s : students) {
+                    if (s.come) {
+                        count++;
+                    }
+                }
+                count_dianming.setText(count + "/" + students.size());
+            }
+        });
+    }
+
+
+    public void knowOneStudent(String student, int known) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (Student s : students) {
+                    if (s.imei.equals(student)) {
+                        s.known = known;
+                    }
+                }
+                adapter.notifyDataSetChanged();
+
+                int count = 0;
+                for (Student s : students) {
+                    if (s.known == 1) {
+                        count++;
+                    }
+                }
+                count_tongji.setText(count + "/" + students.size());
+            }
+        });
+    }
 }

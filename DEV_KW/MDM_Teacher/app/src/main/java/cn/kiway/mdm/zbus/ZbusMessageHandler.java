@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import cn.kiway.mdm.KWApplication;
+import cn.kiway.mdm.activity.Course0Activity;
 import cn.kiway.mdm.activity.StudentGridActivity;
 import io.zbus.mq.Message;
 import io.zbus.mq.MessageHandler;
@@ -27,10 +28,18 @@ public class ZbusMessageHandler implements MessageHandler {
         try {
             JSONObject o = new JSONObject(msg);
             String command = o.optString("command");
-            String student = o.optString("student");
+            String studentIMEI = o.optString("studentIMEI");
 
-            if (command.equals("sign")) {
-                sign(student);
+            if (command.equals("shangke")) {
+                shangke(studentIMEI);
+            } else if (command.equals("sign")) {
+                sign(studentIMEI);
+            } else if (command.equals("tongji_know")) {
+                tongji(studentIMEI, 1);
+            } else if (command.equals("tongji_unknow")) {
+                tongji(studentIMEI, 2);
+            } else if (command.equals("qiangda")) {
+                qiangda(studentIMEI);
             }
 
         } catch (JSONException e) {
@@ -38,12 +47,38 @@ public class ZbusMessageHandler implements MessageHandler {
         }
     }
 
-    private void sign(String student) {
+    private void shangke(String studentIMEI) {
         if (!(KWApplication.currentActivity instanceof StudentGridActivity)) {
             Log.d("test", "不是当前页面，信息可能已过期");
             return;
         }
 
-        ((StudentGridActivity) KWApplication.currentActivity).signOneStudent(student);
+        ((StudentGridActivity) KWApplication.currentActivity).onelineOneStudent(studentIMEI);
+    }
+
+    private void qiangda(String studentIMEI) {
+        if (!(KWApplication.currentActivity instanceof Course0Activity)) {
+            Log.d("test", "不是当前页面，信息可能已过期");
+            return;
+        }
+
+        ((Course0Activity) KWApplication.currentActivity).qiangdaOneStudent(studentIMEI);
+    }
+
+    private void tongji(String studentIMEI, int known) {
+        if (!(KWApplication.currentActivity instanceof StudentGridActivity)) {
+            Log.d("test", "不是当前页面，信息可能已过期");
+            return;
+        }
+        ((StudentGridActivity) KWApplication.currentActivity).knowOneStudent(studentIMEI, known);
+    }
+
+    private void sign(String studentIMEI) {
+        if (!(KWApplication.currentActivity instanceof StudentGridActivity)) {
+            Log.d("test", "不是当前页面，信息可能已过期");
+            return;
+        }
+
+        ((StudentGridActivity) KWApplication.currentActivity).signOneStudent(studentIMEI);
     }
 }
