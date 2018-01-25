@@ -30,11 +30,8 @@ public class AnswerDialog extends BaseDialog {
         setContentView(R.layout.dialog_answer);
         answerTxt = (TextView) findViewById(R.id.answer_staute);
         answerBtn = (Button) findViewById(R.id.answer_btn);
+        answerBtn.setOnClickListener(this);
         fullWindowCenter();
-    }
-
-    //抢答后状态
-    public void answerResult() {
     }
 
     @Override

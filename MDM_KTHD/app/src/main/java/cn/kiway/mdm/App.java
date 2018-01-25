@@ -7,7 +7,6 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.x;
 
@@ -108,8 +107,10 @@ public class App extends KiwayApplication {
                 } else if (command.equals("tongji")) {//知识点统计
                     String knowledge = data.optString("knowledge");
                     ((BaseActivity) currentActivity).onTongji(knowledge);
+                } else if (command.equals("qiangda")) {
+                    ((BaseActivity) currentActivity).onQiangda();
                 }
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

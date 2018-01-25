@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,8 +13,9 @@ import android.widget.Toast;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.List;
 
 import cn.kiway.mdm.App;
 import cn.kiway.mdm.dialog.AnswerDialog;
@@ -22,7 +23,6 @@ import cn.kiway.mdm.dialog.KnowledgeDialog;
 import cn.kiway.mdm.dialog.MyProgressDialog;
 import cn.kiway.mdm.dialog.NotifyShowDialog;
 import cn.kiway.mdm.dialog.SignDialog;
-import cn.kiway.mdm.dialog.SmokeAnswerDialog;
 import cn.kiway.mdm.model.Question;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
@@ -34,7 +34,6 @@ public class BaseActivity extends Activity {
 
     public App app;
     public AnswerDialog answerDialog;
-    public SmokeAnswerDialog smokeAnswerDialog;
     public SignDialog signDialog;
     public KnowledgeDialog knowDialog;
     public TextView titleName;
@@ -89,19 +88,29 @@ public class BaseActivity extends Activity {
             @Override
             public void run() {
                 int questionType = data.optInt("questionType");
-                JSONArray questionArray = data.optJSONArray("questions");
-                ArrayAdapter<Question> questions = new GsonBuilder().create().fromJson(questionArray.toString(), new TypeToken<Question>() {
+                String questionStr = data.optString("questions");
+                Log.d("test", "questionStr = " + questionStr);
+                List<Question> questions = new GsonBuilder().create().fromJson(questionStr, new TypeToken<List<Question>>() {
                 }.getType());
+                Log.d("test", "questions = " + questions);
                 if (questionType == 1) {//点名答
                     startActivity(new Intent(BaseActivity.this, AnswerQuestionsAcitivity.class));
                 } else if (questionType == 2) {//抢答
-                    answerDialog = new AnswerDialog(BaseActivity.this);
-                    answerDialog.show();
+
                 } else if (questionType == 3) {//随机抽签
-                    smokeAnswerDialog = new SmokeAnswerDialog(BaseActivity.this);
-                    smokeAnswerDialog.show();
+
                 } else if (questionType == 4) {//测评
                 }
+            }
+        });
+    }
+
+    public void onQiangda() {//签到
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                answerDialog = new AnswerDialog(BaseActivity.this);
+                answerDialog.show();
             }
         });
     }
