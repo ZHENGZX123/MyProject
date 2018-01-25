@@ -292,19 +292,17 @@ public class CommandUtil {
             else if (command.equals("shangke")) {
                 m.what = MSG_ATTEND_CALSS;
                 m.obj = data;
+                ZbusHost.doSendMsg(context, "shangke");
             } else if (command.equals("xiake")) {
                 m.what = MSG_GET_OUT_OF_CALASS;
                 m.obj = data;
-            } else if (command.equals("send_msg")) {
-                m.what = MSG_MESSAGE;
-                m.obj = data;
-            } else if (command.equals("question")) {
-                m.what = MSG_MESSAGE;
-                m.obj = data;
-            } else if (command.equals("sign")) {
-                m.what = MSG_MESSAGE;
-                m.obj = data;
-            } else if (command.equals("tongji")) {
+            } else if (command.equals("send_msg")
+                    || command.equals("question")
+                    || command.equals("sign")
+                    || command.equals("tongji")
+                    || command.equals("qiangda")
+                    || command.equals("online")
+                    ) {
                 m.what = MSG_MESSAGE;
                 m.obj = data;
             }
