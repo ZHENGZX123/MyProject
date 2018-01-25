@@ -2520,6 +2520,7 @@ public class Launcher extends MainActivity
             startActivity(new Intent(this, WebViewActivity.class));
             return;
         }
+
         if (packageName.contains("com.android.camera2")) {
             HttpUtil.childOperation(this, "useApp", "使用了相机APP");
             int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
@@ -2556,6 +2557,8 @@ public class Launcher extends MainActivity
         ItemInfo item = (ItemInfo) v.getTag();
 
         Intent intent = PackageManagerHelper.getMarketIntent(packageName);
+        if (packageName.equals("cn.kiway.session"))//zzx add
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//重启APP
         boolean success = startActivitySafely(v, intent, item);
         if (success && v instanceof BubbleTextView) {
             mWaitingForResume = (BubbleTextView) v;
@@ -2669,6 +2672,8 @@ public class Launcher extends MainActivity
             throw new IllegalArgumentException("Input must have a valid intent");
         }
         //zzx add
+        if (intent.getComponent().getPackageName().equals("cn.kiway.session"))
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//重启APP
         intent.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name", ""));
         intent.putExtra("className", getSharedPreferences("kiway", 0).getString("className", ""));
         intent.putExtra("studentNumber", getSharedPreferences("kiway", 0).getString("studentNumber", ""));
