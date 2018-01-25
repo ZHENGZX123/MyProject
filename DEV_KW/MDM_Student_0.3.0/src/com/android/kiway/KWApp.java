@@ -205,7 +205,9 @@ public class KWApp extends Application {
                         return;
                     }
                     isAttendClass = true;
-                    Intent in = getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
+
+                    Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
+                    in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//重启APP
                     if (in != null) {
                         in.putExtra("shangke", msg.obj.toString());
                         in.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name", ""));
@@ -215,7 +217,7 @@ public class KWApp extends Application {
                         in.putExtra("schoolId", getSharedPreferences("kiway", 0).getString("schoolId", ""));
                         in.putExtra("huaweiToken", getSharedPreferences("huawei", 0).getString("token", ""));
                         RemoteAidlService.attendClass(msg.obj.toString());
-                        Utils.startPackage(KWApp.instance, ZHIHUIKETANGPG, in);
+                        startActivity(in);
                     }
                 }
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
