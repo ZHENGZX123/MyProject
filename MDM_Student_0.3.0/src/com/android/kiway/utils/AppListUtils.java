@@ -27,6 +27,7 @@ public class AppListUtils {
         preinstallAPP.add("cn.kiway.marketplace");
         preinstallAPP.add("com.android.browser");
         preinstallAPP.add("com.android.camera2");
+        preinstallAPP.add("cn.kiway.session");
     }
 
     public static String getAppListData() {
