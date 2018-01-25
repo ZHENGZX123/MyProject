@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ public class BaseActivity extends Activity {
     public KnowledgeDialog knowDialog;
     public TextView titleName;
     public RelativeLayout backRL;
+    public Button ok;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +52,7 @@ public class BaseActivity extends Activity {
     public void initView() {
         backRL = (RelativeLayout) findViewById(R.id.backRL);
         titleName = (TextView) findViewById(R.id.titleName);
+        ok = (Button) findViewById(R.id.ok);
     }
 
     @Override
