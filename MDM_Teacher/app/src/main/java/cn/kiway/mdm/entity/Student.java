@@ -22,7 +22,8 @@ public class Student implements Serializable {
     public String createDate;
     public String imei;
     public String avatar;
-    
+
+    public boolean online;//0没在线 1在线了
     public boolean come; //0没到 1到了
     public int known;
     public boolean submit;

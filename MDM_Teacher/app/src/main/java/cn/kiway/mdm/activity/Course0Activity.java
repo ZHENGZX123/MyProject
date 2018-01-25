@@ -58,6 +58,7 @@ import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
 
+import static cn.kiway.mdm.KWApplication.students;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_CHAPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_SUOPING;
@@ -80,18 +81,19 @@ public class Course0Activity extends ScreenSharingActivity {
 
     private FrameLayout x5FileLayout;
     private TbsReaderView readerView;
+    private ImageView tuipingIV;
     private ListView lv;
     private CourseAdapter adapter;
     private ArrayList<KnowledgePoint> knowledgePoints = new ArrayList<>();
-    private Course course;
-    private ArrayList<Student> students;
 
+    private Course course;
     public static final int TYPE_QUESTION_DIANMINGDA = 1;
     public static final int TYPE_QUESTION_QIANGDA = 2;
     public static final int TYPE_QUESTION_SUIJICHOUDA = 3;
     public static final int TYPE_QUESTION_CEPING = 4;
 
-    private ImageView tuipingIV;
+    //选择的题目
+    private ArrayList<Question> selectQuestions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +101,6 @@ public class Course0Activity extends ScreenSharingActivity {
         setContentView(R.layout.activity_course0);
 
         course = (Course) getIntent().getSerializableExtra("course");
-        students = (ArrayList<Student>) getIntent().getSerializableExtra("students");
 
         initView();
         initData();
@@ -513,13 +514,13 @@ public class Course0Activity extends ScreenSharingActivity {
                     lp.setMargins(10, 10, 10, 10);
                     imgLL.addView(iv, lp);
                 }
-                questionLL.addView(rowView);
             }
+            questionLL.addView(rowView);
 
             kaishidati.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ArrayList<Question> selectQuestions = new ArrayList<>();
+                    selectQuestions = new ArrayList<>();
                     for (Question q : course.questions) {
                         if (q.selected) {
                             selectQuestions.add(q);
@@ -535,13 +536,21 @@ public class Course0Activity extends ScreenSharingActivity {
                         startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_DIANMINGDA).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
                     } else if (type == TYPE_QUESTION_SUIJICHOUDA) {
                         //随机抽答，弹出抽取框
-                        showChoudaqiDialog(selectQuestions);
+                        showChoudaqiDialog();
                     } else if (type == TYPE_QUESTION_QIANGDA) {
-                        //TODO 抢答1个学生
-                        ArrayList<Student> selectStudents = new ArrayList<>();
-                        selectStudents.add(students.get(0));
-                        toast(students.get(0).name + "抢答成功");
-                        startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", selectStudents).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
+                        qiangdaStudentFlag = "";
+                        ZbusHost.qiangda(Course0Activity.this, new OnListener() {
+
+                            @Override
+                            public void onSuccess() {
+                                toast("发送抢答命令成功");
+                            }
+
+                            @Override
+                            public void onFailure() {
+                                toast("发送抢答命令失败");
+                            }
+                        });
                     } else {
                         //测评是全班的
                         startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", students).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
@@ -555,6 +564,59 @@ public class Course0Activity extends ScreenSharingActivity {
                 }
             });
         }
+    }
+
+    private String qiangdaStudentFlag;
+
+    public void qiangdaOneStudent(String student) {
+        Student s = getStudentByIMEI(student);
+        if (s == null) {
+            Log.d("test", "神秘学生，不可能");
+            return;
+        }
+        if (!TextUtils.isEmpty(qiangdaStudentFlag)) {
+            Log.d("test", "已经有其他人抢到了，点了也没有用");
+            //给他们发送抢答失败消息
+            ZbusHost.qiangdaResult(this, s, 0, null);
+            return;
+        }
+        Question q = selectQuestions.get(0);
+        qiangdaStudentFlag = student;
+        //给他发送抢答成功
+        ZbusHost.qiangdaResult(this, s, 1, new OnListener() {
+            @Override
+            public void onSuccess() {
+                toast("发送抢答命令成功");
+                //过2秒发题目
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        sendQiangdaCommand(s, q);
+                    }
+                }.start();
+            }
+
+            @Override
+            public void onFailure() {
+                toast("发送抢答命令失败");
+            }
+        });
+
+
+    }
+
+    private Student getStudentByIMEI(String imei) {
+        for (Student s : students) {
+            if (s.imei.equals(imei)) {
+                return s;
+            }
+        }
+        return null;
     }
 
     private void setAllItemSelected(boolean isChecked) {
@@ -577,7 +639,7 @@ public class Course0Activity extends ScreenSharingActivity {
         return count == course.questions.size();
     }
 
-    private void showChoudaqiDialog(ArrayList<Question> selectQuestions) {
+    private void showChoudaqiDialog() {
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_choudaqi);
         dialog.show();
@@ -614,9 +676,8 @@ public class Course0Activity extends ScreenSharingActivity {
                                     if (finalI == rand - 1) {
                                         dialog.dismiss();
                                         toast("随机到的学生是：" + s.name);
-                                        ArrayList<Student> selectStudents = new ArrayList<>();//getRandomStudents();
-                                        selectStudents.add(s);
-                                        startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", TYPE_QUESTION_SUIJICHOUDA).putExtra("students", selectStudents).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
+                                        Question q = selectQuestions.get(0);
+                                        sendChoudaCommand(s, q);
                                     }
                                 }
                             });
@@ -627,19 +688,50 @@ public class Course0Activity extends ScreenSharingActivity {
         });
     }
 
-    private ArrayList<Student> getRandomStudents() {
-        while (true) {
-            ArrayList selectStudents = new ArrayList<Student>();
-            for (Student s : students) {
-                int rand = new Random().nextInt();
-                if (rand % 2 == 0) {
-                    selectStudents.add(s);
-                }
+    private void sendQiangdaCommand(Student s, Question q) {
+        showPD();
+        ZbusHost.question(this, s, q, 3, new OnListener() {
+
+            @Override
+            public void onSuccess() {
+                dismissPD();
+                //toast("发送抢答命令成功");
+                ArrayList<Student> selectStudents = new ArrayList<>();
+                selectStudents.add(s);
+                toast(s.name + "抢答成功");
+                startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", TYPE_QUESTION_QIANGDA).putExtra("students", selectStudents).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
             }
-            if (selectStudents.size() != 0) {
-                return selectStudents;
+
+            @Override
+            public void onFailure() {
+                dismissPD();
+                toast("发送抢答命令失败");
             }
-        }
+        });
+    }
+
+
+    private void sendChoudaCommand(Student s, Question q) {
+        showPD();
+        ZbusHost.question(this, s, q, 2, new OnListener() {
+
+            @Override
+            public void onSuccess() {
+                dismissPD();
+                //toast("发送上课命令成功");
+                //点名答
+                ArrayList<Student> selectStudents = new ArrayList<>();
+                selectStudents.add(s);
+                startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", TYPE_QUESTION_DIANMINGDA).putExtra("students", selectStudents).putExtra("questionTime", getIntent().getIntExtra("questionTime", 0)).putExtra("questions", getIntent().getSerializableExtra("questions")));
+                finish();
+            }
+
+            @Override
+            public void onFailure() {
+                dismissPD();
+                toast("发送抽答命令失败");
+            }
+        });
     }
 
     //-------------------------------录屏相关-----------------------------
@@ -658,6 +750,7 @@ public class Course0Activity extends ScreenSharingActivity {
         //上传视频文件。。。
         //上传课程记录。。。
     }
+
     //------------------------内容列表相关-------------------------------------------------
 
     private class CourseAdapter extends BaseAdapter {
