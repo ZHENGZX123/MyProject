@@ -292,6 +292,7 @@ public class CommandUtil {
             else if (command.equals("shangke")) {
                 m.what = MSG_ATTEND_CALSS;
                 m.obj = data;
+                //返回shagnke给教师端，当作online
                 ZbusHost.doSendMsg(context, "shangke");
             } else if (command.equals("xiake")) {
                 m.what = MSG_GET_OUT_OF_CALASS;
