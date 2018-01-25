@@ -18,7 +18,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import cn.kiway.mdm.App;
-import cn.kiway.mdm.dialog.AnswerDialog;
+import cn.kiway.mdm.dialog.QiangdaDialog;
 import cn.kiway.mdm.dialog.KnowledgeDialog;
 import cn.kiway.mdm.dialog.MyProgressDialog;
 import cn.kiway.mdm.dialog.NotifyShowDialog;
@@ -33,7 +33,7 @@ import studentsession.kiway.cn.mdm_studentsession.R;
 public class BaseActivity extends Activity {
 
     public App app;
-    public AnswerDialog answerDialog;
+    public QiangdaDialog qiangdaDialog;
     public SignDialog signDialog;
     public KnowledgeDialog knowDialog;
     public TextView titleName;
@@ -105,12 +105,29 @@ public class BaseActivity extends Activity {
         });
     }
 
-    public void onQiangda() {//签到
+    public void onQiangda() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                answerDialog = new AnswerDialog(BaseActivity.this);
-                answerDialog.show();
+                qiangdaDialog = new QiangdaDialog(BaseActivity.this);
+                qiangdaDialog.show();
+            }
+        });
+    }
+
+    public void onQiangdaResult(final int result, final String qiangdaStudentName) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (qiangdaDialog == null) {
+                    return;
+                }
+                qiangdaDialog.show();
+                if (result == 1) {
+                    qiangdaDialog.setQiangdaResult("恭喜你抢到了答题权");
+                } else {
+                    qiangdaDialog.setQiangdaResult(qiangdaStudentName + "抢到了答题权");
+                }
             }
         });
     }

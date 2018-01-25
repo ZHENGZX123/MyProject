@@ -123,7 +123,6 @@ public class MainActivity extends BaseActivity {
             Logger.log("shangke::::::" + shangke);
             if (shangke != null && !shangke.equals("")) {
 
-
             } else {
                 checkNewVersion();
             }
