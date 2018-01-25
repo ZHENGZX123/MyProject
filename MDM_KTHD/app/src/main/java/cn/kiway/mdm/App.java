@@ -109,6 +109,10 @@ public class App extends KiwayApplication {
                     ((BaseActivity) currentActivity).onTongji(knowledge);
                 } else if (command.equals("qiangda")) {
                     ((BaseActivity) currentActivity).onQiangda();
+                } else if (command.equals("qiangdaResult")) {
+                    int result = data.optInt("result");
+                    String qiangdaStudentName = data.optString("qiangdaStudentName");
+                    ((BaseActivity) currentActivity).onQiangdaResult(result, qiangdaStudentName);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
