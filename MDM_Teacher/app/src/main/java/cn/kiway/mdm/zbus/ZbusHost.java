@@ -47,11 +47,11 @@ public class ZbusHost {
         }
     }
 
-    public static void qiangdaResult(Activity c, Student s, int result, OnListener onListener) {
+    public static void qiangdaResult(Activity c, Student s, int result, String qiangdaStudentName, OnListener onListener) {
         try {
             String title = "抢答结果";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "qiangdaResult").put("topic", topic).put("result", result)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "qiangdaResult").put("topic", topic).put("result", result).put("qiangdaStudentName", qiangdaStudentName)).toString();
             String studentTopic = "kiwayMDM_student_" + s.imei;
             doSendMsg(title, userId, msg, studentTopic);
             if (onListener != null) {
@@ -114,7 +114,7 @@ public class ZbusHost {
     }
 
     //测评专用
-    public static void questions(Activity c, Question questions, OnListener onListener) {
+    public static void questions(Activity c, ArrayList<Question> questions, OnListener onListener) {
         try {
             String title = "测评";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");

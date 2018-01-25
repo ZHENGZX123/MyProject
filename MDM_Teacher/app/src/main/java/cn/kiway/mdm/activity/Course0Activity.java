@@ -538,7 +538,7 @@ public class Course0Activity extends ScreenSharingActivity {
                         //随机抽答，弹出抽取框
                         showChoudaqiDialog();
                     } else if (type == TYPE_QUESTION_QIANGDA) {
-                        qiangdaStudentFlag = "";
+                        qiangdaStudentIMEI = "";
                         ZbusHost.qiangda(Course0Activity.this, new OnListener() {
 
                             @Override
@@ -552,8 +552,18 @@ public class Course0Activity extends ScreenSharingActivity {
                             }
                         });
                     } else {
-                        //测评是全班的
-                        startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", students).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
+                        //测评是全班的，发送测评命令
+                        ZbusHost.questions(Course0Activity.this, selectQuestions, new OnListener() {
+                            @Override
+                            public void onSuccess() {
+                                startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", students).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
+                            }
+
+                            @Override
+                            public void onFailure() {
+                                toast("发送测评命令失败");
+                            }
+                        });
                     }
                 }
             });
@@ -566,24 +576,25 @@ public class Course0Activity extends ScreenSharingActivity {
         }
     }
 
-    private String qiangdaStudentFlag;
+    private String qiangdaStudentIMEI;
 
-    public void qiangdaOneStudent(String student) {
-        Student s = getStudentByIMEI(student);
+    public void qiangdaOneStudent(String studentIMEI) {
+        Student s = getStudentByIMEI(studentIMEI);
         if (s == null) {
             Log.d("test", "神秘学生，不可能");
             return;
         }
-        if (!TextUtils.isEmpty(qiangdaStudentFlag)) {
+        if (!TextUtils.isEmpty(qiangdaStudentIMEI)) {
             Log.d("test", "已经有其他人抢到了，点了也没有用");
             //给他们发送抢答失败消息
-            ZbusHost.qiangdaResult(this, s, 0, null);
+            String qiangdaStudentName = getStudentByIMEI(qiangdaStudentIMEI).name;
+            ZbusHost.qiangdaResult(this, s, 0, qiangdaStudentName, null);
             return;
         }
         Question q = selectQuestions.get(0);
-        qiangdaStudentFlag = student;
+        qiangdaStudentIMEI = studentIMEI;
         //给他发送抢答成功
-        ZbusHost.qiangdaResult(this, s, 1, new OnListener() {
+        ZbusHost.qiangdaResult(this, s, 1, qiangdaStudentIMEI, new OnListener() {
             @Override
             public void onSuccess() {
                 toast("发送抢答命令成功");
@@ -723,7 +734,6 @@ public class Course0Activity extends ScreenSharingActivity {
                 ArrayList<Student> selectStudents = new ArrayList<>();
                 selectStudents.add(s);
                 startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", TYPE_QUESTION_DIANMINGDA).putExtra("students", selectStudents).putExtra("questionTime", getIntent().getIntExtra("questionTime", 0)).putExtra("questions", getIntent().getSerializableExtra("questions")));
-                finish();
             }
 
             @Override
