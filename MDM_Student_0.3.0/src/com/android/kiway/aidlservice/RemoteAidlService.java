@@ -10,19 +10,14 @@ import android.util.Log;
 
 import com.android.kiway.KWApp;
 import com.android.kiway.utils.Logger;
-import com.android.kiway.utils.Utils;
-
-import org.json.JSONObject;
+import com.android.kiway.zbus.ZbusHost;
 
 import cn.kiway.aidl.ClientCallback;
 import cn.kiway.aidl.RemoteInterface;
 import cn.kiway.mdmsdk.MDMHelper;
-import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
-import cn.kiway.web.kthd.zbus.vo.PushRecordVo;
 
 import static com.android.kiway.KWApp.MSG_LOCKONCLASS;
 import static com.android.kiway.KWApp.MSG_UNLOCK;
-import static com.android.kiway.zbus.ZbusHost.teacherTopic;
 
 /**
  * 服务端，利用AIDL与客户端通信
@@ -101,21 +96,7 @@ public class RemoteAidlService extends Service {
         @Override
         public void callbackMessage(String msg) throws RemoteException {
             //课堂互动的相应消息
-            try {
-                JSONObject obj = new JSONObject();
-                obj.put("student", Utils.getIMEI(RemoteAidlService.this));
-                obj.put("command", msg);
-
-                PushRecordVo vo = new PushRecordVo();
-                vo.setTitle("课堂互动");
-                vo.setUserType(2);//发送方：1老师 2学生 3家长 4管理员
-                vo.setSenderId(Utils.getIMEI(RemoteAidlService.this));
-                vo.setMessage(obj.toString());
-                Log.d("test", "发送给老师 = " + teacherTopic);
-                ZbusUtils.sendMsg(teacherTopic, vo);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ZbusHost.doSendMsg(RemoteAidlService.this, msg);
         }
     };
 
