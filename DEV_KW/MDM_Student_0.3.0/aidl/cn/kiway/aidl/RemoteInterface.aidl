@@ -20,5 +20,5 @@ interface RemoteInterface {
     //禁用Home键
     void setHomeButtonDisabled(boolean disabled);
     //学生回调的消息，json格式
-    void callbackMessage(String msg);
+    boolean callbackMessage(String msg);
 }
