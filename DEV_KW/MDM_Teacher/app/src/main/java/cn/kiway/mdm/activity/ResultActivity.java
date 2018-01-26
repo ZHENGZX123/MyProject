@@ -322,7 +322,7 @@ public class ResultActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 8888) {
+        if (requestCode == 8888 && resultCode == 8888) {
             String studentIMEI = data.getStringExtra("studentIMEI");
             boolean collected = data.getBooleanExtra("collected", false);
             String collection = data.getStringExtra("collection");
