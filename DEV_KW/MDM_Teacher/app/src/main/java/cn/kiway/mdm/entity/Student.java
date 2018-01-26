@@ -29,5 +29,6 @@ public class Student implements Serializable {
     public boolean submit;
     public boolean selected;
     public boolean locked;//锁定
-
+    public boolean collected;//已经批改
+    public String collection;
 }
