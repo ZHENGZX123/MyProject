@@ -20,8 +20,10 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lzy.imagepicker.ImagePicker;
@@ -45,6 +47,7 @@ import cn.kiway.mdm.model.Choice;
 import cn.kiway.mdm.model.Question;
 import cn.kiway.mdm.utils.JsAndroidInterface2;
 import cn.kiway.mdm.utils.MyWebViewClient;
+import cn.kiway.mdm.utils.UploadUtil;
 import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
@@ -78,12 +81,18 @@ public class QuestionActivity extends BaseActivity {
     private LinearLayout ll_answer;
     private GridView answerGV;
     private EditText answerET;
-    private WebView answerWV;
+    private RelativeLayout wvContainer;
     private MyAdapter adapter;
     private ArrayList<Choice> choices = new ArrayList<>();
 
-    private boolean submited;
-    private boolean finished;
+    private boolean submited;//是否提交
+    private boolean collected;//是否批改
+
+    private WebView currentWV;
+
+    private ImageButton right;
+    private ImageButton wrong;
+    private LinearLayout ll_teacher_judge;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,7 +107,6 @@ public class QuestionActivity extends BaseActivity {
         initData();
         initListener();
         refresh();
-        load();
     }
 
     @Override
@@ -114,10 +122,13 @@ public class QuestionActivity extends BaseActivity {
         imgLL2 = (LinearLayout) findViewById(R.id.imgLL2);
         showAnswerBtn = (Button) findViewById(R.id.showAnswerBtn);
         ll_answer = (LinearLayout) findViewById(R.id.ll_answer);
+        right = (ImageButton) findViewById(R.id.right);
+        wrong = (ImageButton) findViewById(R.id.wrong);
+        ll_teacher_judge = (LinearLayout) findViewById(R.id.ll_teacher_judge);
 
         answerGV = (GridView) findViewById(R.id.answerGV);
         answerET = (EditText) findViewById(R.id.answerET);
-        answerWV = (WebView) findViewById(R.id.answerWV);
+        wvContainer = (RelativeLayout) findViewById(R.id.wvContainer);
         adapter = new MyAdapter();
         answerGV.setAdapter(adapter);
 
@@ -143,15 +154,37 @@ public class QuestionActivity extends BaseActivity {
             mHandler.sendEmptyMessageDelayed(1, 1000);
         }
 
+        //动态添加webview
+        int count = 0;
+        for (Question q : questions) {
+            if (q.type == Question.TYPE_ESSAY) {
+                q.wbIndex = count;
+                count++;
+            }
+        }
+        if (count == 0) {
+            return;
+        }
+        for (int i = 0; i < count; i++) {
+            WebView wv = new WebView(this);
+            setWebview(wv);
+            wvContainer.addView(wv, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+            String url = "file:///android_asset/whiteboard/index.html";
+            Log.d("test", "url = " + url);
+            wv.loadUrl(url);
+        }
+    }
+
+    private void setWebview(WebView wv) {
         //跨域问题
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            answerWV.getSettings().setAllowUniversalAccessFromFileURLs(true);
+            wv.getSettings().setAllowUniversalAccessFromFileURLs(true);
         } else {
             try {
-                Class<?> clazz = answerWV.getSettings().getClass();
+                Class<?> clazz = wv.getSettings().getClass();
                 Method method = clazz.getMethod("setAllowUniversalAccessFromFileURLs", boolean.class);
                 if (method != null) {
-                    method.invoke(answerWV.getSettings(), true);
+                    method.invoke(wv.getSettings(), true);
                 }
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
@@ -161,7 +194,7 @@ public class QuestionActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
-        WebSettings settings = answerWV.getSettings();
+        WebSettings settings = wv.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setAppCacheEnabled(true);
         settings.setUseWideViewPort(true);
@@ -169,10 +202,10 @@ public class QuestionActivity extends BaseActivity {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
-        answerWV.setWebViewClient(new MyWebViewClient());
-        answerWV.setVerticalScrollBarEnabled(false);
-        answerWV.setWebChromeClient(new WebChromeClient());
-        answerWV.addJavascriptInterface(new JsAndroidInterface2(this), "wx");
+        wv.setWebViewClient(new MyWebViewClient());
+        wv.setVerticalScrollBarEnabled(false);
+        wv.setWebChromeClient(new WebChromeClient());
+        wv.addJavascriptInterface(new JsAndroidInterface2(this), "wx");
     }
 
 
@@ -256,15 +289,28 @@ public class QuestionActivity extends BaseActivity {
             }
         }
 
+        //reset
+        if (collected) {
+            ll_teacher_judge.setVisibility(View.VISIBLE);
+            if (q.teacherJudge == 1) {
+                right.setBackgroundResource(R.drawable.right1);
+                wrong.setBackgroundResource(R.drawable.wrong2);
+            } else if (q.teacherJudge == 2) {
+                right.setBackgroundResource(R.drawable.right2);
+                wrong.setBackgroundResource(R.drawable.wrong1);
+            }
+        } else {
+            ll_teacher_judge.setVisibility(View.GONE);
+        }
+
         String studentAnswer = q.studentAnswer;
         //学生提交答案区域
         if (q.type == Question.TYPE_SINGLE || q.type == Question.TYPE_MULTI) {
             answerGV.setVisibility(View.VISIBLE);
             answerET.setVisibility(View.INVISIBLE);
-            answerWV.setVisibility(View.INVISIBLE);
+            wvContainer.setVisibility(View.INVISIBLE);
             choices.clear();
             String choose[] = q.options.replace("\"", "").replace("[", "").replace("]", "").split(",");
-
             for (String temp : choose) {
                 if (studentAnswer.contains(temp)) {
                     choices.add(new Choice(temp, true));
@@ -276,12 +322,12 @@ public class QuestionActivity extends BaseActivity {
         } else if (q.type == Question.TYPE_EMPTY) {
             answerGV.setVisibility(View.INVISIBLE);
             answerET.setVisibility(View.VISIBLE);
-            answerWV.setVisibility(View.INVISIBLE);
+            wvContainer.setVisibility(View.INVISIBLE);
             answerET.setText(studentAnswer);
         } else if (q.type == Question.TYPE_JUDGE) {
             answerGV.setVisibility(View.VISIBLE);
             answerET.setVisibility(View.INVISIBLE);
-            answerWV.setVisibility(View.INVISIBLE);
+            wvContainer.setVisibility(View.INVISIBLE);
             choices.clear();
             if (studentAnswer.contains("对")) {
                 choices.add(new Choice("对", true));
@@ -297,16 +343,15 @@ public class QuestionActivity extends BaseActivity {
         } else if (q.type == Question.TYPE_ESSAY) {
             answerGV.setVisibility(View.INVISIBLE);
             answerET.setVisibility(View.INVISIBLE);
-            answerWV.setVisibility(View.VISIBLE);
-            //怎么保存。。。
-        }
-    }
+            wvContainer.setVisibility(View.VISIBLE);
 
-    private void load() {
-        answerWV.clearCache(true);
-        String url = "file:///android_asset/whiteboard/index.html";
-        Log.d("test", "url = " + url);
-        answerWV.loadUrl(url);
+            int count = wvContainer.getChildCount();
+            for (int i = 0; i < count; i++) {
+                wvContainer.getChildAt(i).setVisibility(View.INVISIBLE);
+            }
+            currentWV = (WebView) wvContainer.getChildAt(q.wbIndex);
+            currentWV.setVisibility(View.VISIBLE);
+        }
     }
 
     private Handler mHandler = new Handler() {
@@ -422,36 +467,89 @@ public class QuestionActivity extends BaseActivity {
                 Log.d("test", "压缩后大小" + images.get(0).size);
             }
             String path = images.get(0).path;
-
-            answerWV.loadUrl("javascript:selectPhotoCallback('file://" + path + "')");
+            currentWV.loadUrl("javascript:selectPhotoCallback('file://" + path + "')");
         }
     }
 
     public void clickSubmit(View view) throws JSONException {
-        saveStudentAnswer();
         if (submited) {
             toast("你已经提交过了，请不要重复提交");
             return;
         }
-        JSONArray answerArray = new JSONArray();
-        for (Question q : questions) {
-            JSONObject answerObj = new JSONObject();
-            answerObj.put("qid", q.id);
-            answerObj.put("qtype", q.type);
-            String qanswer = q.studentAnswer;
-            answerObj.put("qanswer", qanswer);
-            answerArray.put(answerObj);
-        }
-        Log.d("test", "打印学生答题情况:" + answerArray.toString());
-        //整理答案
-        String answer = "answer_" + answerArray.toString();
-        boolean ret = Utils.sendToServer(answer);
-        if (ret) {
-            submited = true;
-            mHandler.removeCallbacksAndMessages(null);
-        } else {
-            toast("提交失败");
-        }
+
+        //确定要提交alert?
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("提示");
+        builder.setMessage("确定要提交答题结果吗？");
+        builder.setNegativeButton("取消", null);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //1.save答案
+                saveStudentAnswer();
+
+                //2.如果有问答题，先上传图片
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            showPD();
+                            for (Question q : questions) {
+                                if (q.type == Question.TYPE_ESSAY) {
+                                    //WebView wv = (WebView) wvContainer.getChildAt(q.wbIndex);
+                                    //String filepath = wv.getAnswerImage();
+                                    String filepath = "/mnt/sdcard/test.jpg";
+                                    String token = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                                    String result = UploadUtil.uploadFile(filepath, App.clientUrl + "common/file?x-auth-token=" + token, "answer");
+                                    String url = new JSONObject(result).getJSONObject("data").getString("url");
+                                    q.studentAnswer = url;
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            toast("上传答案图片失败，请稍后再试");
+                            hidePD();
+                            return;
+                        }
+                        doSubmitAnswer();
+                    }
+                }.start();
+            }
+        });
+        builder.show();
+    }
+
+    private void doSubmitAnswer() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONArray answerArray = new JSONArray();
+                    for (Question q : questions) {
+                        JSONObject answerObj = new JSONObject();
+                        answerObj.put("qid", q.id);
+                        answerObj.put("qtype", q.type);
+                        answerObj.put("qanswer", q.studentAnswer);
+                        answerArray.put(answerObj);
+                    }
+                    Log.d("test", "打印学生答题情况:" + answerArray.toString());
+                    //整理答案
+                    String answer = "answer_" + answerArray.toString();
+                    boolean ret = Utils.sendToServer(answer);
+                    if (ret) {
+                        toast("提交答案成功，等待老师批改");
+                        submited = true;
+                        mHandler.removeCallbacksAndMessages(null);
+                        ok.setVisibility(View.GONE);
+                    } else {
+                        toast("提交答案失败");
+                    }
+                    hidePD();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     //保存学生答题的答案，上下切换的时候显示用。。。
@@ -497,27 +595,49 @@ public class QuestionActivity extends BaseActivity {
 
     @Override
     public void clickBack(View view) {
-        if (!finished) {
-            String message = "";
-            if (submited) {
-                message = "老师还没有批改，是否退出本次问答/测评？";
-            } else {
-                message = "你尚未提交答案，是否退出本次问答/测评？";
-            }
-            AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
-            AlertDialog dialog = builder.setTitle("提示").setMessage(message)
-                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            finish();
-                        }
-                    })
-                    .setPositiveButton(android.R.string.cancel, null).create();
-            dialog.show();
+        if (!submited) {
+            toast("你尚未提交答案，不能退出本次问答/测评");
+            return;
+        }
+        if (!collected) {
+            toast("老师还没有批改，不能退出本次问答/测评");
             return;
         }
         finish();
     }
+
+    public void setCollection(final String collection) {
+        collected = true;
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                toast("老师已经批改了，请查看结果吧");
+                try {
+                    JSONArray array = new JSONArray(collection);
+                    int count = array.length();
+                    for (int i = 0; i < count; i++) {
+                        JSONObject o = array.getJSONObject(i);
+                        String qid = o.getString("qid");
+                        int qcollection = o.getInt("qcollection");
+                        //首先要保持顺序正确
+                        Question q = questions.get(i);
+                        if (q.id.equals(qid)) {
+                            q.teacherJudge = qcollection;
+                        }
+                    }
+
+                    refresh();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("test", "老师批改的和本次问题对应不上。。。有问题");
+                }
+            }
+        });
+
+
+    }
+
 
     @Override
     protected void onDestroy() {

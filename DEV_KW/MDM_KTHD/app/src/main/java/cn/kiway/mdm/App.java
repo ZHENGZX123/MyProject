@@ -24,6 +24,7 @@ import org.xutils.x;
 
 import cn.kiway.aidl.ClientCallback;
 import cn.kiway.mdm.activity.BaseActivity;
+import cn.kiway.mdm.activity.QuestionActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
 import studentsession.kiway.cn.mdmaidl.KiwayApplication;
 
@@ -189,6 +190,13 @@ public class App extends KiwayApplication {
                     ((BaseActivity) currentActivity).toast("接收到文件");
                     //1.显示文件
                     //2.上传到易敏的接口
+                } else if (command.equals("collection")) {
+                    if (!(currentActivity instanceof QuestionActivity)) {
+                        Log.d("test", "学生把答题页面关闭了，不应该。。。");
+                        return;
+                    }
+                    String collection = data.optString("collection");
+                    ((QuestionActivity)currentActivity).setCollection(collection);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

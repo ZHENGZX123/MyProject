@@ -1,6 +1,7 @@
 package cn.kiway.mdm.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,10 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.mdm.App;
-import cn.kiway.mdm.dialog.QiangdaDialog;
 import cn.kiway.mdm.dialog.KnowledgeDialog;
 import cn.kiway.mdm.dialog.MyProgressDialog;
 import cn.kiway.mdm.dialog.NotifyShowDialog;
+import cn.kiway.mdm.dialog.QiangdaDialog;
 import cn.kiway.mdm.dialog.SignDialog;
 import cn.kiway.mdm.model.Question;
 import studentsession.kiway.cn.mdm_studentsession.R;
@@ -41,18 +42,40 @@ public class BaseActivity extends Activity {
     public TextView titleName;
     public RelativeLayout backRL;
     public Button ok;
+    public ProgressDialog pd;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.instance.currentActivity = this;
         app = (App) getApplicationContext();
+
+        pd = new ProgressDialog(this);
+        pd.setMessage("网络请求中");
     }
 
     public void initView() {
         backRL = (RelativeLayout) findViewById(R.id.backRL);
         titleName = (TextView) findViewById(R.id.titleName);
         ok = (Button) findViewById(R.id.ok);
+    }
+
+    public void showPD() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pd.show();
+            }
+        });
+    }
+
+    public void hidePD() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pd.dismiss();
+            }
+        });
     }
 
     @Override
