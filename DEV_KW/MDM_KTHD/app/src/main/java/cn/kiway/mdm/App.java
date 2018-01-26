@@ -185,6 +185,10 @@ public class App extends KiwayApplication {
                     int result = data.optInt("result");
                     String qiangdaStudentName = data.optString("qiangdaStudentName");
                     ((BaseActivity) currentActivity).onQiangdaResult(result, qiangdaStudentName);
+                } else if (command.equals("wenjian")) {
+                    ((BaseActivity) currentActivity).toast("接收到文件");
+                    //1.显示文件
+                    //2.上传到易敏的接口
                 }
             } catch (Exception e) {
                 e.printStackTrace();
