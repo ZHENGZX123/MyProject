@@ -76,8 +76,7 @@ import static cn.kiway.mdm.zbus.ZbusHost.zbusPost;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.3.2";
-    private static final String zburPath = "file:///android_asset";
+    private static final String currentPackageVersion = "0.3.3";
     private boolean isSuccess = false;
     private boolean isJump = false;
     private Dialog dialog_download;
@@ -185,7 +184,7 @@ public class MainActivity extends BaseActivity {
         wv.setWebViewClient(new MyWebViewClient());
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new WebChromeClient());
-        jsInterface = new JsAndroidInterface(this, wv);
+        jsInterface = new JsAndroidInterface(this);
         wv.addJavascriptInterface(jsInterface, "scoket");
     }
 

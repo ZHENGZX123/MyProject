@@ -7,6 +7,7 @@ import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,7 +15,6 @@ import java.lang.reflect.Method;
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.web.JsAndroidInterface2;
-import cn.kiway.mdm.web.MyWebViewClient;
 
 
 /**
@@ -36,10 +36,10 @@ public class WhiteBoardActivity extends BaseActivity {
     }
 
     private void load() {
-        wv.clearCache(true);
         String url = "file://" + KWApplication.ROOT + KWApplication.HTML2;
         Log.d("test", "url = " + url);
-        wv.loadUrl(url);
+//        wv.loadUrl(url);
+        wv.loadUrl("file:///mnt/sdcard/whiteboard_teacher/index.html");
     }
 
     private void initData() {
@@ -61,15 +61,24 @@ public class WhiteBoardActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
+        wv.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView webView, String url) {
+                if (url.startsWith("http://") || url.startsWith("https://")) {
+                    webView.loadUrl(url);
+                    return true;
+                }
+                return false;
+            }
+        });
         WebSettings settings = wv.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setAppCacheEnabled(true);
         settings.setUseWideViewPort(true);
-        //settings.setDomStorageEnabled(true); 画板不能用这个属性
+        settings.setDomStorageEnabled(false); //画板不能用这个属性
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
-        wv.setWebViewClient(new MyWebViewClient());
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new WebChromeClient());
         wv.addJavascriptInterface(new JsAndroidInterface2(), "wx");

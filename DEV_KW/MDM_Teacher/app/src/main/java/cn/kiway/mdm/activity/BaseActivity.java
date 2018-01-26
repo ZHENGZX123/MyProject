@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ public class BaseActivity extends Activity {
     public ImageButton rk;
 
     public ProgressDialog pd;
+    private RelativeLayout retryRL;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +54,8 @@ public class BaseActivity extends Activity {
         wdq = (ImageButton) findViewById(R.id.wdq);
         cp = (ImageButton) findViewById(R.id.cp);
         rk = (ImageButton) findViewById(R.id.rk);
+
+        retryRL = (RelativeLayout) findViewById(R.id.retryRL);
     }
 
     public void showPD() {
@@ -63,7 +67,7 @@ public class BaseActivity extends Activity {
         });
     }
 
-    public void dismissPD() {
+    public void hidePD() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -168,4 +172,15 @@ public class BaseActivity extends Activity {
         finish();
     }
 
+    public void clickRetry(View view) {
+
+    }
+
+    public void showRetry() {
+        retryRL.setVisibility(View.VISIBLE);
+    }
+
+    public void hideRetry() {
+        retryRL.setVisibility(View.GONE);
+    }
 }

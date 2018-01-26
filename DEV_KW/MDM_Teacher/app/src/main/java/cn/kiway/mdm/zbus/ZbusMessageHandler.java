@@ -9,6 +9,8 @@ import java.io.IOException;
 
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.activity.Course0Activity;
+import cn.kiway.mdm.activity.ResultActivity;
+import cn.kiway.mdm.activity.ResultDetailActivity;
 import cn.kiway.mdm.activity.StudentGridActivity;
 import io.zbus.mq.Message;
 import io.zbus.mq.MessageHandler;
@@ -40,11 +42,22 @@ public class ZbusMessageHandler implements MessageHandler {
                 tongji(studentIMEI, 2);
             } else if (command.equals("qiangda")) {
                 qiangda(studentIMEI);
+            } else if (command.startsWith("answer")) {
+                answer(studentIMEI, command.split("_")[1]);
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void answer(String studentIMEI, String answer) {
+        if (!(KWApplication.currentActivity instanceof ResultActivity || KWApplication.currentActivity instanceof ResultDetailActivity)) {
+            Log.d("test", "不是当前页面，信息可能已过期");
+            return;
+        }
+
+        ((ResultActivity) KWApplication.currentActivity).getOneAnswer(studentIMEI , answer);
     }
 
     private void shangke(String studentIMEI) {

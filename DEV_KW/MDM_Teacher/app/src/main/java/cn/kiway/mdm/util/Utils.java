@@ -266,7 +266,7 @@ public class Utils {
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "shangke onSuccess = " + ret);
                     try {
-                        ((BaseActivity) c).dismissPD();
+                        ((BaseActivity) c).hidePD();
                         int statusCode = new JSONObject(ret).optInt("statusCode");
                         if (statusCode == 200) {
                             c.startActivity(new Intent(c, StudentGridActivity.class).putExtra("type", TYPE_DIANMING));
@@ -283,7 +283,7 @@ public class Utils {
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", "shangke onFailure = " + s);
                     if (!check301(c, s, "shangke")) {
-                        ((BaseActivity) c).dismissPD();
+                        ((BaseActivity) c).hidePD();
                         toast(c, "请求失败，请稍后再试");
                     }
                 }
@@ -291,7 +291,7 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
             toast(c, "请求失败，请稍后再试");
-            ((BaseActivity) c).dismissPD();
+            ((BaseActivity) c).hidePD();
         }
     }
 
@@ -313,7 +313,7 @@ public class Utils {
                     Log.d("test", " onFailure = " + s);
                     if (!check301(c, s, "xiake")) {
                         toast(c, "请求失败，请稍后再试");
-                        ((BaseActivity) c).dismissPD();
+                        ((BaseActivity) c).hidePD();
                     }
                 }
             });
@@ -338,7 +338,7 @@ public class Utils {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "endClass onSuccess = " + ret);
-                    ((BaseActivity) c).dismissPD();
+                    ((BaseActivity) c).hidePD();
                     ((BaseActivity) c).finish();
                 }
 
@@ -347,14 +347,14 @@ public class Utils {
                     Log.d("test", "endClass onFailure = " + s);
                     if (!check301(c, s, "endclass")) {
                         toast(c, "请求失败，请稍后再试");
-                        ((BaseActivity) c).dismissPD();
+                        ((BaseActivity) c).hidePD();
                     }
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
             toast(c, "请求失败，请稍后再试");
-            ((BaseActivity) c).dismissPD();
+            ((BaseActivity) c).hidePD();
         }
     }
 

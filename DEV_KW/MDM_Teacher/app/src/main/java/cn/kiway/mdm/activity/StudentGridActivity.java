@@ -30,6 +30,7 @@ import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,10 +38,12 @@ import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
 
+import static cn.kiway.mdm.KWApplication.clientUrl;
 import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_DIANMINGDA;
 import static cn.kiway.mdm.teacher.R.id.count;
 import static cn.kiway.mdm.util.Utils.check301;
@@ -168,15 +171,55 @@ public class StudentGridActivity extends BaseActivity {
             return;
         }
         if (type == TYPE_WENJIAN) {
-            //发送文件成功后finish
-            finish();
+            //1.上传文件
+            showPD();
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        File file = new File(getIntent().getStringExtra("filePath"));
+                        String accessToken = getSharedPreferences("kiway", 0).getString("accessToken", "");
+                        final String ret = UploadUtil.uploadFile(file, clientUrl + "/common/file?x-auth-token=" + accessToken, file.getName());
+                        Log.d("test", "upload ret = " + ret);
+                        //2.发送文件url给学生
+
+                        JSONObject obj = new JSONObject(ret);
+                        String url = obj.optJSONObject("data").optString("url");
+                        ZbusHost.wenjian(StudentGridActivity.this, selectStudents, url, new OnListener() {
+                            @Override
+                            public void onSuccess() {
+                                hidePD();
+                                toast("发送文件成功");
+                                finish();
+                            }
+
+                            @Override
+                            public void onFailure() {
+                                hidePD();
+                                toast("发送文件失败");
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        hidePD();
+                        toast("上传失败，请重试");
+                    }
+                }
+            }.start();
         }
+    }
+
+    @Override
+    public void clickRetry(View view) {
+        super.clickRetry(view);
+        initData();
     }
 
     public void initData() {
         try {
             showPD();
-            String url = KWApplication.clientUrl + "/device/teacher/class/students";
+            hideRetry();
+            String url = clientUrl + "/device/teacher/class/students";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -184,7 +227,8 @@ public class StudentGridActivity extends BaseActivity {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
-                    dismissPD();
+                    hideRetry();
+                    hidePD();
                     try {
                         JSONArray data = new JSONObject(ret).optJSONArray("data");
                         students = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Student>>() {
@@ -199,6 +243,9 @@ public class StudentGridActivity extends BaseActivity {
                             showTongjidialog();
                         }
                     } catch (Exception e) {
+                        toast("请求失败，请稍后再试");
+                        hidePD();
+                        showRetry();
                     }
                 }
 
@@ -207,14 +254,15 @@ public class StudentGridActivity extends BaseActivity {
                     Log.d("test", " onFailure = " + s);
                     if (!Utils.check301(StudentGridActivity.this, s, "students")) {
                         toast("请求失败，请稍后再试");
-                        dismissPD();
+                        hidePD();
+                        showRetry();
                     }
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
             toast("请求失败，请稍后再试");
-            dismissPD();
+            hidePD();
         }
     }
 
@@ -237,11 +285,11 @@ public class StudentGridActivity extends BaseActivity {
         showPD();
         ArrayList<Question> questions = (ArrayList<Question>) getIntent().getSerializableExtra("questions");
         Question q = questions.get(0);
-        ZbusHost.question(StudentGridActivity.this, s, q, 1, new OnListener() {
+        ZbusHost.question(StudentGridActivity.this, s, q, 1, getIntent().getIntExtra("questionTime", 0), new OnListener() {
 
             @Override
             public void onSuccess() {
-                dismissPD();
+                hidePD();
                 //toast("发送上课命令成功");
                 //点名答
                 ArrayList<Student> selectStudents = new ArrayList<>();
@@ -252,7 +300,7 @@ public class StudentGridActivity extends BaseActivity {
 
             @Override
             public void onFailure() {
-                dismissPD();
+                hidePD();
                 toast("发送点名答命令失败");
             }
         });
@@ -265,7 +313,7 @@ public class StudentGridActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Student s = students.get(position);
                 if (type == TYPE_DIANMING) {
-                    toast(s.name + (s.come ? "到了" : "没到"));
+                    //toast(s.name + (s.come ? "到了" : "没到"));
                 } else if (type == TYPE_DIANMINGDA) {
                     sendDianmingdaCommand(s);
                 } else if (type == TYPE_WENJIAN) {
@@ -457,7 +505,7 @@ public class StudentGridActivity extends BaseActivity {
             @Override
             public void onSuccess() {
                 Log.d("test", "dianmingBtn onSuccess");
-                dismissPD();
+                hidePD();
                 dianmingBtn.setBackgroundResource(R.drawable.dianmingbutton2);
                 dianmingBtn.setText("结束点名");
                 //开始点名、对话框不可关闭
@@ -472,47 +520,11 @@ public class StudentGridActivity extends BaseActivity {
                 Log.d("test", "dianmingBtn onFailure");
                 if (!check301(StudentGridActivity.this, "", "dianmingBtn")) {
                     toast("请求失败，请稍后再试");
-                    dismissPD();
+                    hidePD();
                 }
             }
         });
-//        try {
-//            //1.发“点名”推送命令
-//            showPD();
-//            String url = KWApplication.clientUrl + "/device/push/teacher/sign/order";
-//            AsyncHttpClient client = new AsyncHttpClient();
-//            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
-//            client.setTimeout(10000);
-//            client.post(StudentGridActivity.this, url, null, new TextHttpResponseHandler() {
-//                @Override
-//                public void onSuccess(int code, Header[] headers, String ret) {
-//                    Log.d("test", "dianmingBtn onSuccess = " + ret);
-//                    dismissPD();
-//                    dianmingBtn.setBackgroundResource(R.drawable.dianmingbutton2);
-//                    dianmingBtn.setText("结束点名");
-//                    //开始点名、对话框不可关闭
-//                    dialog_dianming.setCancelable(false);
-//                    dialog_dianming.setCanceledOnTouchOutside(false);
-//                    //开始倒计时
-//                    mHandler.sendEmptyMessageDelayed(TYPE_DIANMING, 1000);
-//                }
-//
-//                @Override
-//                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-//                    Log.d("test", "dianmingBtn onFailure = " + s);
-//                    if (!check301(StudentGridActivity.this, s, "dianmingBtn")) {
-//                        toast("请求失败，请稍后再试");
-//                        dismissPD();
-//                    }
-//                }
-//            });
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            toast("请求失败，请稍后再试");
-//            dismissPD();
-//        }
     }
-
 
     //统计对话框
     private Dialog dialog_tongji;
@@ -546,7 +558,7 @@ public class StudentGridActivity extends BaseActivity {
         mHandler.removeMessages(TYPE_TONGJI);
         showPD();
         try {
-            String url = KWApplication.clientUrl + "/device/teacher/course/student/knowledge/result";
+            String url = clientUrl + "/device/teacher/course/student/knowledge/result";
             Log.d("test", "url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
@@ -563,7 +575,7 @@ public class StudentGridActivity extends BaseActivity {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
-                    dismissPD();
+                    hidePD();
                     //2.关闭对话框并退出
                     dialog_tongji.dismiss();
                     finish();
@@ -572,7 +584,7 @@ public class StudentGridActivity extends BaseActivity {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
-                    dismissPD();
+                    hidePD();
                     if (!Utils.check301(StudentGridActivity.this, s, "knowledgeCountResult")) {
                         toast("请求失败，请稍后再试");
                     }

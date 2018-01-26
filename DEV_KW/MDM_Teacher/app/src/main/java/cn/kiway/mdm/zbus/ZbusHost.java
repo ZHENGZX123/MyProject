@@ -85,7 +85,7 @@ public class ZbusHost {
         }
     }
 
-    public static void question(Activity c, Student s, Question q, int questionType, OnListener onListener) {
+    public static void question(Activity c, Student s, Question q, int questionType, int questionTime, OnListener onListener) {
         try {
             String title = null;
             if (questionType == 1) {
@@ -99,7 +99,7 @@ public class ZbusHost {
             ArrayList<Question> questions = new ArrayList<>();
             questions.add(q);
             String questionStr = new Gson().toJson(questions);
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("topic", topic).put("questions", questionStr).put("questionType", questionType)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("topic", topic).put("questions", questionStr).put("questionType", questionType).put("questionTime", questionTime)).toString();
             String studentTopic = "kiwayMDM_student_" + s.imei;
             doSendMsg(title, userId, msg, studentTopic);
             if (onListener != null) {
@@ -114,16 +114,34 @@ public class ZbusHost {
     }
 
     //测评专用
-    public static void questions(Activity c, ArrayList<Question> questions, OnListener onListener) {
+    public static void questions(Activity c, ArrayList<Question> questions, int questionTime, OnListener onListener) {
         try {
             String title = "测评";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
             String questionStr = new Gson().toJson(questions);
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("topic", topic).put("questions", questionStr).put("questionType", 4)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("topic", topic).put("questions", questionStr).put("questionType", 4).put("questionTime", questionTime)).toString();
             for (Student s : students) {
                 String studentTopic = "kiwayMDM_student_" + s.imei;
                 doSendMsg(title, userId, msg, studentTopic);
             }
+            if (onListener != null) {
+                onListener.onSuccess();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (onListener != null) {
+                onListener.onFailure();
+            }
+        }
+    }
+
+
+    public static void collection(Activity c, Student s, String collection, OnListener onListener) {
+        try {
+            String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "collection").put("topic", topic).put("collection", collection)).toString();
+            String studentTopic = "kiwayMDM_student_" + s.imei;
+            doSendMsg("批改结果", userId, msg, studentTopic);
             if (onListener != null) {
                 onListener.onSuccess();
             }
@@ -204,5 +222,26 @@ public class ZbusHost {
         vo.setSenderId(userId);
         vo.setMessage(msg);
         ZbusUtils.sendMsg(studentTopic, vo);
+    }
+
+
+    public static void wenjian(Activity c, ArrayList<Student> students, String url, OnListener onListener) {
+        try {
+            String title = "文件";
+            String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "wenjian").put("topic", topic).put("url", url)).toString();
+            for (Student s : students) {
+                String studentTopic = "kiwayMDM_student_" + s.imei;
+                doSendMsg(title, userId, msg, studentTopic);
+            }
+            if (onListener != null) {
+                onListener.onSuccess();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (onListener != null) {
+                onListener.onFailure();
+            }
+        }
     }
 }

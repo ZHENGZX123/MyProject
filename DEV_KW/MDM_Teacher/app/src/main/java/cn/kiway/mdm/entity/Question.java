@@ -28,6 +28,8 @@ public class Question implements Serializable {
     public List<UserExaminationResultVo> userExaminationResultVos;//
 
     public boolean selected;
+    public String studentAnswer;
+    public int teacherJudge; // 未批改0  错误1  正确2
 
     @Override
     public String toString() {

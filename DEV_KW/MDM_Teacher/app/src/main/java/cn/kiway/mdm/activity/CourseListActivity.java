@@ -92,7 +92,7 @@ public class CourseListActivity extends BaseActivity {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
-                    dismissPD();
+                    hidePD();
                     try {
                         JSONArray list = new JSONObject(ret).getJSONObject("data").getJSONArray("list");
                         courses = new GsonBuilder().create().fromJson(list.toString(), new TypeToken<List<Course>>() {
@@ -121,7 +121,7 @@ public class CourseListActivity extends BaseActivity {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
-                    dismissPD();
+                    hidePD();
                     if (!Utils.check301(CourseListActivity.this, s, "courselist")) {
                         toast("请求失败，请稍后再试");
                     }
