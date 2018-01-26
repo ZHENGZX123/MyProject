@@ -205,26 +205,14 @@ public class ResultDetailActivity extends BaseActivity {
             }
             adapter.notifyDataSetChanged();
             //自动批改
-            if (q.type == Question.TYPE_SINGLE) {
-                if (q.answerVo.content.contains(studentAnswer)) {
-                    right.setBackgroundResource(R.drawable.right2);
-                    wrong.setBackgroundResource(R.drawable.wrong1);
-                    q.teacherJudge = 2;
-                } else {
-                    right.setBackgroundResource(R.drawable.right1);
-                    wrong.setBackgroundResource(R.drawable.wrong2);
-                    q.teacherJudge = 1;
-                }
-            } else if (q.type == Question.TYPE_MULTI) {
-                if (q.answerVo.content.replace("[", "").replace("]", "").replace("\"", "").replace(",", "").equals(studentAnswer)) {
-                    right.setBackgroundResource(R.drawable.right2);
-                    wrong.setBackgroundResource(R.drawable.wrong1);
-                    q.teacherJudge = 2;
-                } else {
-                    right.setBackgroundResource(R.drawable.right1);
-                    wrong.setBackgroundResource(R.drawable.wrong2);
-                    q.teacherJudge = 1;
-                }
+            if (q.answerVo.content.replace("[", "").replace("]", "").replace("\"", "").replace(",", "").equals(studentAnswer)) {
+                right.setBackgroundResource(R.drawable.right2);
+                wrong.setBackgroundResource(R.drawable.wrong1);
+                q.teacherJudge = 2;
+            } else {
+                right.setBackgroundResource(R.drawable.right1);
+                wrong.setBackgroundResource(R.drawable.wrong2);
+                q.teacherJudge = 1;
             }
         } else if (q.type == Question.TYPE_EMPTY) {
             answerGV.setVisibility(View.GONE);
@@ -249,7 +237,7 @@ public class ResultDetailActivity extends BaseActivity {
             }
             adapter.notifyDataSetChanged();
             //自动批改
-            if (q.answerVo.content.contains(studentAnswer)) {
+            if (q.answerVo.content.replace("[", "").replace("]", "").replace("\"", "").replace(",", "").equals(studentAnswer)) {
                 right.setBackgroundResource(R.drawable.right2);
                 wrong.setBackgroundResource(R.drawable.wrong1);
                 q.teacherJudge = 2;
