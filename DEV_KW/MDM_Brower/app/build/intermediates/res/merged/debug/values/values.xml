@@ -1,0 +1,893 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="holder_menu">
+        <item>Foreground</item>
+        <item>Copy link</item>
+        <item>Share</item>
+    </string-array>
+    <string-array name="license_authors">
+        <item>@string/license_author_android_sliding_up_panel</item>
+        <item>@string/license_author_android_swipe_to_dismiss</item>
+        <item>@string/license_author_android_ago</item>
+        <item>@string/license_author_dynamic_grid</item>
+        <item>@string/license_author_lightning</item>
+        <item>@string/license_author_ninja</item>
+        <item>@string/license_author_typo_css</item>
+    </string-array>
+    <string-array name="license_contents">
+        <item>@string/license_content_android_sliding_up_panel</item>
+        <item>@string/license_content_android_swipe_to_dismiss</item>
+        <item>@string/license_content_android_ago</item>
+        <item>@string/license_content_dynamic_grid</item>
+        <item>@string/license_content_lightning</item>
+        <item>@string/license_content_ninja</item>
+        <item>@string/license_content_typo_css</item>
+    </string-array>
+    <string-array name="license_titles">
+        <item>@string/license_title_android_sliding_up_panel</item>
+        <item>@string/license_title_android_swipe_to_dismiss</item>
+        <item>@string/license_title_android_ago</item>
+        <item>@string/license_title_dynamic_grid</item>
+        <item>@string/license_title_lightning</item>
+        <item>@string/license_title_ninja</item>
+        <item>@string/license_title_typo_css</item>
+    </string-array>
+    <string-array name="license_urls">
+        <item>@string/license_url_android_sliding_up_panel</item>
+        <item>@string/license_url_android_swipe_to_dismiss</item>
+        <item>@string/license_url_android_ago</item>
+        <item>@string/license_url_dynamic_grid</item>
+        <item>@string/license_url_lightning</item>
+        <item>@string/license_url_ninja</item>
+        <item>@string/license_url_typo_css</item>
+    </string-array>
+    <string-array name="list_menu">
+        <item>New tab</item>
+        <item>Copy link</item>
+        <item>Share</item>
+        <item>Edit</item>
+        <item>Delete</item>
+    </string-array>
+    <string-array name="main_overflow">
+        <item>Go to top</item>
+        <item>Add to home</item>
+        <item>Find in page</item>
+        <item>Screenshot</item>
+        <item>Readability</item>
+        <item>Share</item>
+        <item>Relayout</item>
+        <item>Quit</item>
+    </string-array>
+    <string-array name="setting_entries_notification_priority">
+        <item>@string/setting_summary_notification_priority_default</item>
+        <item>@string/setting_summary_notification_priority_high</item>
+        <item>@string/setting_summary_notification_priority_low</item>
+    </string-array>
+    <string-array name="setting_entries_rendering">
+        <item>@string/setting_summary_rendering_default</item>
+        <item>@string/setting_summary_rendering_grayscale</item>
+        <item>@string/setting_summary_rendering_inverted</item>
+        <item>@string/setting_summary_rendering_inverted_grayscale</item>
+    </string-array>
+    <string-array name="setting_entries_search_engine">
+        <item>@string/setting_summary_search_engine_google</item>
+        <item>@string/setting_summary_search_engine_duckduckgo</item>
+        <item>@string/setting_summary_search_engine_startpage</item>
+        <item>@string/setting_summary_search_engine_bing</item>
+        <item>@string/setting_summary_search_engine_baidu</item>
+    </string-array>
+    <string-array name="setting_entries_tab_position">
+        <item>@string/setting_summary_omnibox_position_top</item>
+        <item>@string/setting_summary_omnibox_position_bottom</item>
+    </string-array>
+    <string-array name="setting_entries_user_agent">
+        <item>@string/setting_summary_user_agent_default</item>
+        <item>@string/setting_summary_user_agent_desktop</item>
+    </string-array>
+    <string-array name="setting_entries_volume_control">
+        <item>@string/setting_summary_vc_switch_tabs</item>
+        <item>@string/setting_summary_vc_scroll_webpage</item>
+        <item>@string/setting_summary_vc_system_default</item>
+    </string-array>
+    <string-array name="setting_values_notification_priority">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="setting_values_rendering">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string-array name="setting_values_search_engine">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+    <string-array name="setting_values_tab_position">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    <string-array name="setting_values_user_agent">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    <string-array name="setting_values_volume_control">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <color name="background_dark">@color/gray_900</color>
+    <color name="background_light">@color/gray_100</color>
+    <color name="black">#000000</color>
+    <color name="blue_100">#BBDEFB</color>
+    <color name="blue_200">#90CAF9</color>
+    <color name="blue_300">#64B5F6</color>
+    <color name="blue_400">#42A5F5</color>
+    <color name="blue_500">#2196F3</color>
+    <color name="blue_600">#1E88E5</color>
+    <color name="blue_700">#1976D2</color>
+    <color name="blue_800">#1565C0</color>
+    <color name="blue_900">#0D47A1</color>
+    <color name="dividers">#DADADA</color>
+    <color name="gray_100">#F5F5F5</color>
+    <color name="gray_200">#EEEEEE</color>
+    <color name="gray_300">#E0E0E0</color>
+    <color name="gray_400">#BDBDBD</color>
+    <color name="gray_500">#9E9E9E</color>
+    <color name="gray_600">#757575</color>
+    <color name="gray_700">#616161</color>
+    <color name="gray_800">#424242</color>
+    <color name="gray_900">#212121</color>
+    <color name="hint">#B8B8B8</color>
+    <color name="light">#F3F3F3</color>
+    <color name="shadow_dark">#CC212121</color>
+    <color name="shadow_light">#44212121</color>
+    <color name="text">#212121</color>
+    <color name="text_secondary">#727272</color>
+    <color name="transparent">@android:color/transparent</color>
+    <color name="white">#FFFFFF</color>
+    <declare-styleable name="RelativeTimeTextView"><attr format="string" name="relativeTimePrefix"/><attr format="string" name="relativeTimeSuffix"/><attr format="string" name="referenceTime"/></declare-styleable>
+    <dimen name="dgv_overlap_if_switch_straight_line">16dp</dimen>
+    <dimen name="divider_height_0dp">0dp</dimen>
+    <dimen name="divider_height_1dp">1dp</dimen>
+    <dimen name="elevation_0dp">0dp</dimen>
+    <dimen name="elevation_1dp">1dp</dimen>
+    <dimen name="elevation_2dp">2dp</dimen>
+    <dimen name="layout_height_108dp">108dp</dimen>
+    <dimen name="layout_height_117dp">117dp</dimen>
+    <dimen name="layout_height_12dp">12dp</dimen>
+    <dimen name="layout_height_141dp">141dp</dimen>
+    <dimen name="layout_height_1dp">1dp</dimen>
+    <dimen name="layout_height_25dp">25dp</dimen>
+    <dimen name="layout_height_2dp">2dp</dimen>
+    <dimen name="layout_height_320dp">320dp</dimen>
+    <dimen name="layout_height_32dp">32dp</dimen>
+    <dimen name="layout_height_36dp">36dp</dimen>
+    <dimen name="layout_height_48dp">48dp</dimen>
+    <dimen name="layout_height_6dp">6dp</dimen>
+    <dimen name="layout_margin_12dp">12dp</dimen>
+    <dimen name="layout_margin_14dp">14dp</dimen>
+    <dimen name="layout_margin_16dp">16dp</dimen>
+    <dimen name="layout_margin_20dp">20dp</dimen>
+    <dimen name="layout_margin_2dp">2dp</dimen>
+    <dimen name="layout_margin_48dp">48dp</dimen>
+    <dimen name="layout_margin_4dp">4dp</dimen>
+    <dimen name="layout_margin_8dp">8dp</dimen>
+    <dimen name="layout_width_144dp">144dp</dimen>
+    <dimen name="layout_width_156dp">156dp</dimen>
+    <dimen name="layout_width_225dp">210dp</dimen>
+    <dimen name="padding_16dp">16dp</dimen>
+    <dimen name="padding_4dp">4dp</dimen>
+    <dimen name="padding_8dp">8dp</dimen>
+    <dimen name="radius_1dp">1dp</dimen>
+    <dimen name="radius_2dp">2dp</dimen>
+    <dimen name="text_size_12sp">12sp</dimen>
+    <dimen name="text_size_14sp">14sp</dimen>
+    <dimen name="text_size_16sp">16sp</dimen>
+    <dimen name="text_size_18sp">18sp</dimen>
+    <item name="dgv_wobble_tag" type="id"/>
+    <integer name="seek_bar_max">255</integer>
+    <integer name="seek_bar_min">0</integer>
+    <string name="album_title_bookmarks">
+        书签
+    </string>
+    <string name="album_title_history">
+        历史
+    </string>
+    <string name="album_title_home">
+        首页
+    </string>
+    <string name="album_untitled">
+        无标题
+    </string>
+    <string name="android_ago_just_now">
+        刚刚
+    </string>
+    <string name="app_name">
+        Ninja
+    </string>
+    <string name="app_scheme_http">
+        http
+    </string>
+    <string name="app_scheme_https">
+        https
+    </string>
+    <string name="app_version">
+        0.0.1
+    </string>
+    <string name="bookmarks_filename">
+        Ninja书签
+    </string>
+    <string name="clear_label">
+        清空
+    </string>
+    <string name="clear_menu_done_all">
+        完成
+    </string>
+    <string name="clear_title_bookmarks">
+        清空书签
+    </string>
+    <string name="clear_title_cache">
+        清空缓存
+    </string>
+    <string name="clear_title_cookie">
+        清空Cookie
+    </string>
+    <string name="clear_title_form_data">
+        清空表单数据
+    </string>
+    <string name="clear_title_history">
+        清空历史
+    </string>
+    <string name="clear_title_passwords">
+        清空密码
+    </string>
+    <string name="clear_title_quit">
+        退出时清空选择项
+    </string>
+    <string name="dialog_button_custom">
+        自定义
+    </string>
+    <string name="dialog_button_negative">
+        取消
+    </string>
+    <string name="dialog_button_positive">
+        确认
+    </string>
+    <string name="dialog_content_donation">
+        捐赠所得将会被用于：\n
+        - 提升开发环境配置。\n
+        - 提升开发者积极性。\n\n
+        所有的捐赠都会被认为：\n
+        - 无偿的，这意味着捐赠者不能命令或强迫开发者做捐赠者想做的任何事。\n
+        - 归开发者所有。\n
+        - 捐赠者同意上述所有观点。\n\n
+        支付宝：\n
+        matthewlee0725@gmail.com
+    </string>
+    <string name="dialog_content_resubmission">
+        你想要重新提交你的数据吗？
+    </string>
+    <string name="dialog_content_ssl_error">
+        当前站点的证书是不可信任的，需要继续浏览吗？
+    </string>
+    <string name="dialog_content_upload">
+        由于某些原因我们无法在Android 4.X中上传文件，但这项功能在Android 5.X中可以正常工作。这是多么遗憾的一件事啊！
+    </string>
+    <string name="dialog_se_hint">
+        https://www.google.com/search?q=
+    </string>
+    <string name="dialog_sign_in_password">
+        密码
+    </string>
+    <string name="dialog_sign_in_username">
+        用户名
+    </string>
+    <string name="dialog_title_download">
+        下载
+    </string>
+    <string name="dialog_title_hint">
+        输入标题
+    </string>
+    <string name="dialog_title_resubmission">
+        重新提交
+    </string>
+    <string name="dialog_title_sign_in">
+        登入
+    </string>
+    <string name="dialog_title_warning">
+        警告
+    </string>
+    <string name="dialog_ua_hint">
+        Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36
+    </string>
+    <string name="license_author_android_ago">
+        Kiran Rao
+    </string>
+    <string name="license_author_android_sliding_up_panel">
+        Umano: News Read To You
+    </string>
+    <string name="license_author_android_swipe_to_dismiss">
+        Roman Nurik
+    </string>
+    <string name="license_author_dynamic_grid">
+        askerov
+    </string>
+    <string name="license_author_lightning">
+        Anthony Restaino
+    </string>
+    <string name="license_author_ninja">
+        Matthew Lee
+    </string>
+    <string name="license_author_typo_css">
+        小鱼
+    </string>
+    <string name="license_content_android_ago">
+        Apache License Version 2.0
+    </string>
+    <string name="license_content_android_sliding_up_panel">
+        Apache License Version 2.0
+    </string>
+    <string name="license_content_android_swipe_to_dismiss">
+        Apache License Version 2.0
+    </string>
+    <string name="license_content_dynamic_grid">
+        Apache License Version 2.0
+    </string>
+    <string name="license_content_lightning">
+        Mozilla Public License Version 2.0
+    </string>
+    <string name="license_content_ninja">
+        Apache License Version 2.0
+    </string>
+    <string name="license_content_typo_css">
+        The MIT License (MIT)
+    </string>
+    <string name="license_title_android_ago">
+        android-ago
+    </string>
+    <string name="license_title_android_sliding_up_panel">
+        Android Sliding Up Panel
+    </string>
+    <string name="license_title_android_swipe_to_dismiss">
+        Android Swipe-to-Dismiss Sample Code
+    </string>
+    <string name="license_title_dynamic_grid">
+        DynamicGrid
+    </string>
+    <string name="license_title_lightning">
+        Lightning Browser
+    </string>
+    <string name="license_title_ninja">
+        Ninja
+    </string>
+    <string name="license_title_typo_css">
+        typo.css
+    </string>
+    <string name="license_url_android_ago">
+        http://git.io/vUrum
+    </string>
+    <string name="license_url_android_sliding_up_panel">
+        http://git.io/vUruG
+    </string>
+    <string name="license_url_android_swipe_to_dismiss">
+        http://git.io/vUruO
+    </string>
+    <string name="license_url_dynamic_grid">
+        http://git.io/vTHZH
+    </string>
+    <string name="license_url_lightning">
+        http://git.io/vUruk
+    </string>
+    <string name="license_url_ninja">
+        http://git.io/vUrEh
+    </string>
+    <string name="license_url_typo_css">
+        http://git.io/vIyHD
+    </string>
+    <string name="list_empty">
+        当前列表为空
+    </string>
+    <string name="main_about_blank">
+        about:blank
+    </string>
+    <string name="main_menu_copy_link">
+        拷贝链接
+    </string>
+    <string name="main_menu_new_tab">
+        新建标签
+    </string>
+    <string name="main_menu_save">
+        保存
+    </string>
+    <string name="main_omnibox_input_hint">
+        搜索或输入网址
+    </string>
+    <string name="main_relayout_ok">
+        确定
+    </string>
+    <string name="notification_content_holder">
+        点击前往浏览网页
+    </string>
+    <string name="readability_empty">
+        阅读模式加载失败，原因可能是网络连接问题，Readability令牌错误或者链接错误
+    </string>
+    <string name="readability_label">
+        阅读模式
+    </string>
+    <string name="readability_menu_background">
+        背景
+    </string>
+    <string name="readability_menu_share">
+        分享
+    </string>
+    <string name="search_hint">
+        搜索
+    </string>
+    <string name="setting_label">
+        设置
+    </string>
+    <string name="setting_summary_adblock">
+        允许运行AdBlock
+    </string>
+    <string name="setting_summary_cookie">
+        允许浏览器接收Cookie
+    </string>
+    <string name="setting_summary_images">
+        允许网页加载图片
+    </string>
+    <string name="setting_summary_javascript">
+        允许浏览器运行JavaScript
+    </string>
+    <string name="setting_summary_location">
+        允许网页获取地理位置
+    </string>
+    <string name="setting_summary_multiple_windows">
+        允许网页自动新建标签页
+    </string>
+    <string name="setting_summary_notification_priority_default">
+        默认
+    </string>
+    <string name="setting_summary_notification_priority_high">
+        高
+    </string>
+    <string name="setting_summary_notification_priority_low">
+        低
+    </string>
+    <string name="setting_summary_omnibox_control">
+        允许左右滑动地址栏切换标签页
+    </string>
+    <string name="setting_summary_omnibox_position_bottom">
+        底部
+    </string>
+    <string name="setting_summary_omnibox_position_top">
+        顶部
+    </string>
+    <string name="setting_summary_passwords">
+        保存密码
+    </string>
+    <string name="setting_summary_readability">
+        允许使用阅读模式
+    </string>
+    <string name="setting_summary_rendering_default">
+        默认
+    </string>
+    <string name="setting_summary_rendering_grayscale">
+        灰度
+    </string>
+    <string name="setting_summary_rendering_inverted">
+        反转
+    </string>
+    <string name="setting_summary_rendering_inverted_grayscale">
+        反转灰度
+    </string>
+    <string name="setting_summary_scroll_bar">
+        允许在网页中显示滚动条
+    </string>
+    <string name="setting_summary_search_engine_baidu">
+        Baidu
+    </string>
+    <string name="setting_summary_search_engine_bing">
+        Bing
+    </string>
+    <string name="setting_summary_search_engine_custom">
+        自定义
+    </string>
+    <string name="setting_summary_search_engine_duckduckgo">
+        DuckDuckGo
+    </string>
+    <string name="setting_summary_search_engine_google">
+        Google
+    </string>
+    <string name="setting_summary_search_engine_startpage">
+        Startpage
+    </string>
+    <string name="setting_summary_text_reflow">
+        允许浏览器对网页文本进行调整
+    </string>
+    <string name="setting_summary_token">
+        设置Readability令牌
+    </string>
+    <string name="setting_summary_user_agent_custom">
+        自定义
+    </string>
+    <string name="setting_summary_user_agent_default">
+        默认
+    </string>
+    <string name="setting_summary_user_agent_desktop">
+        桌面
+    </string>
+    <string name="setting_summary_vc_scroll_webpage">
+        滚动网页
+    </string>
+    <string name="setting_summary_vc_switch_tabs">
+        切换标签页
+    </string>
+    <string name="setting_summary_vc_system_default">
+        系统默认
+    </string>
+    <string name="setting_summary_whitelist">
+        允许某些站点显示广告
+    </string>
+    <string name="setting_title_adblock">
+        AdBlock
+    </string>
+    <string name="setting_title_browser">
+        浏览
+    </string>
+    <string name="setting_title_clear_control">
+        清空数据
+    </string>
+    <string name="setting_title_cookie">
+        Cookie
+    </string>
+    <string name="setting_title_data">
+        数据
+    </string>
+    <string name="setting_title_donation">
+        捐赠
+    </string>
+    <string name="setting_title_export_bookmarks">
+        导出书签
+    </string>
+    <string name="setting_title_export_whilelist">
+        导出白名单
+    </string>
+    <string name="setting_title_images">
+        图片
+    </string>
+    <string name="setting_title_import_bookmarks">
+        导入书签
+    </string>
+    <string name="setting_title_import_whilelist">
+        导入白名单
+    </string>
+    <string name="setting_title_javascript">
+        JavaScript
+    </string>
+    <string name="setting_title_license">
+        协议
+    </string>
+    <string name="setting_title_location">
+        地理位置
+    </string>
+    <string name="setting_title_multiple_windows">
+        多标签页
+    </string>
+    <string name="setting_title_notification_priority">
+        通知栏优先级
+    </string>
+    <string name="setting_title_omnibox_control">
+        地址栏控制
+    </string>
+    <string name="setting_title_omnibox_position">
+        地址栏位置
+    </string>
+    <string name="setting_title_others">
+        其他
+    </string>
+    <string name="setting_title_passwords">
+        密码
+    </string>
+    <string name="setting_title_readability">
+        阅读模式
+    </string>
+    <string name="setting_title_rendering">
+        渲染模式
+    </string>
+    <string name="setting_title_scroll_bar">
+        滚动条
+    </string>
+    <string name="setting_title_search_engine">
+        搜索引擎
+    </string>
+    <string name="setting_title_text_reflow">
+        文本重排
+    </string>
+    <string name="setting_title_token">
+        令牌
+    </string>
+    <string name="setting_title_user_agent">
+        浏览器标识
+    </string>
+    <string name="setting_title_version">
+        版本号
+    </string>
+    <string name="setting_title_volume_control">
+        音量键控制
+    </string>
+    <string name="setting_title_whitelist">
+        白名单
+    </string>
+    <string name="sp_ad_block">
+        SP_AD_BLOCK_9
+    </string>
+    <string name="sp_anchor">
+        SP_ANCHOR_9
+    </string>
+    <string name="sp_clear_bookmarks">
+        SP_CLEAR_BOOKMARKS_9
+    </string>
+    <string name="sp_clear_cache">
+        SP_CLEAR_CACHE_9
+    </string>
+    <string name="sp_clear_cookie">
+        SP_CLEAR_COOKIE_9
+    </string>
+    <string name="sp_clear_form_data">
+        SP_CLEAR_FORM_DATA_9
+    </string>
+    <string name="sp_clear_history">
+        SP_CLEAR_HISTORY_9
+    </string>
+    <string name="sp_clear_passwords">
+        SP_CLEAR_PASSWORDS_9
+    </string>
+    <string name="sp_clear_quit">
+        SP_CLEAR_QUIT_9
+    </string>
+    <string name="sp_cookies">
+        SP_COOKIES_9
+    </string>
+    <string name="sp_first">
+        SP_FIRST_26
+    </string>
+    <string name="sp_images">
+        SP_IMAGES_9
+    </string>
+    <string name="sp_javascript">
+        SP_JAVASCRIPT_9
+    </string>
+    <string name="sp_location">
+        SP_LOCATION_9
+    </string>
+    <string name="sp_multiple_windows">
+        SP_MULTIPLE_WINDOWS_9
+    </string>
+    <string name="sp_notification_priority">
+        SP_NOTIFICATION_PRIORITY_9
+    </string>
+    <string name="sp_omnibox_control">
+        SP_OMNIBOX_CONTROL_9
+    </string>
+    <string name="sp_passwords">
+        SP_PASSWORDS_9
+    </string>
+    <string name="sp_readability">
+        SP_READABILITY_9
+    </string>
+    <string name="sp_readability_background">
+        SP_READABILITY_BACKGROUND_9
+    </string>
+    <string name="sp_readability_token">
+        SP_READABILITY_TOKEN_9
+    </string>
+    <string name="sp_rendering">
+        SP_RENDERING_9
+    </string>
+    <string name="sp_scroll_bar">
+        SP_SCROLL_BAR_9
+    </string>
+    <string name="sp_search_engine">
+        SP_SEARCH_ENGINE_9
+    </string>
+    <string name="sp_search_engine_custom">
+        SP_SEARCH_ENGINE_CUSTOM_9
+    </string>
+    <string name="sp_text_reflow">
+        SP_TEXT_REFLOW_9
+    </string>
+    <string name="sp_user_agent">
+        SP_USER_AGENT_9
+    </string>
+    <string name="sp_user_agent_custom">
+        SP_USER_AGENT_CUSTOM_9
+    </string>
+    <string name="sp_volume">
+        SP_VOLUME_9
+    </string>
+    <string name="toast_add_bookmark_failed">
+        无法将此页面添加到书签
+    </string>
+    <string name="toast_add_bookmark_successful">
+        添加书签成功
+    </string>
+    <string name="toast_add_to_home_failed">
+        添加拨号失败
+    </string>
+    <string name="toast_add_to_home_successful">
+        添加拨号成功
+    </string>
+    <string name="toast_add_token_successful">
+        添加Readability令牌成功
+    </string>
+    <string name="toast_add_whitelist_successful">
+        添加域名成功
+    </string>
+    <string name="toast_already_at_the_front">
+        已经是最前面了
+    </string>
+    <string name="toast_already_exist_in_home">
+        首页中已存在该网址
+    </string>
+    <string name="toast_clear_failed">
+        清空失败
+    </string>
+    <string name="toast_clear_successful">
+        清空成功
+    </string>
+    <string name="toast_copy_successful">
+        拷贝成功
+    </string>
+    <string name="toast_delete_bookmark_successful">
+        删除书签成功
+    </string>
+    <string name="toast_delete_successful">
+        删除成功
+    </string>
+    <string name="toast_domain_already_exists">
+        域名已经存在了
+    </string>
+    <string name="toast_double_taps_quit">
+        再点击一下退出
+    </string>
+    <string name="toast_emoji">
+        (๑•̀ㅂ•́)و✧
+    </string>
+    <string name="toast_export_bookmarks_failed">
+        导出书签失败
+    </string>
+    <string name="toast_export_bookmarks_successful">
+        导出的书签文件位于：
+    </string>
+    <string name="toast_export_whitelist_failed">
+        导出白名单失败
+    </string>
+    <string name="toast_export_whitelist_successful">
+        导出的白名单文件位于：
+    </string>
+    <string name="toast_import_bookmarks_failed">
+        导入书签失败
+    </string>
+    <string name="toast_import_bookmarks_successful">
+        导入的书签数量：
+    </string>
+    <string name="toast_import_whitelist_failed">
+        导入白名单失败
+    </string>
+    <string name="toast_import_whitelist_successful">
+        导入的域名数量：
+    </string>
+    <string name="toast_input_empty">
+        你还没有输入任何东西
+    </string>
+    <string name="toast_invalid_domain">
+        无效的域名
+    </string>
+    <string name="toast_load_error">
+        无法加载此网址
+    </string>
+    <string name="toast_load_in_background">
+        正在后台加载
+    </string>
+    <string name="toast_need_restart">
+        重启浏览器生效
+    </string>
+    <string name="toast_new_tab_successful">
+        新建标签成功
+    </string>
+    <string name="toast_open_file_manager_failed">
+        打开文件管理器失败
+    </string>
+    <string name="toast_refresh_failed">
+        无法刷新此页面
+    </string>
+    <string name="toast_relayout_successful">
+        排版成功
+    </string>
+    <string name="toast_screenshot_failed">
+        截图失败
+    </string>
+    <string name="toast_screenshot_successful">
+        保存的截图位于：
+    </string>
+    <string name="toast_share_failed">
+        无法分享此页面
+    </string>
+    <string name="toast_start_download">
+        开始下载
+    </string>
+    <string name="toast_token_empty">
+        请设置Readability令牌
+    </string>
+    <string name="toast_wait_a_minute">
+        稍等片刻
+    </string>
+    <string name="token_add">
+        添加
+    </string>
+    <string name="token_desc">
+        前往https://www.readability.com/developers/api获取你自己的Readability令牌
+    </string>
+    <string name="token_edit_hint">
+        Readability令牌
+    </string>
+    <string name="token_label">
+        令牌
+    </string>
+    <string name="whilelist_filename">
+        Ninja白名单
+    </string>
+    <string name="whitelist_add">
+        添加
+    </string>
+    <string name="whitelist_edit_hint">
+        域名
+    </string>
+    <string name="whitelist_label">
+        白名单
+    </string>
+    <string name="whitelist_menu_clear">
+        清空
+    </string>
+    <style name="BrowserActivityTheme" parent="android:Theme.Holo.Light.NoActionBar">
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textColorHighlight">@color/blue_200</item>
+        <item name="android:windowBackground">@color/background_dark</item>
+        <item name="android:drawSelectorOnTop">true</item>
+    </style>
+    <style name="ClearActivityTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textColorHighlight">@color/blue_200</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:drawSelectorOnTop">true</item>
+    </style>
+    <style name="ReadabilityActivityTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHighlight">@color/blue_200</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:drawSelectorOnTop">true</item>
+    </style>
+    <style name="SettingActivityTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textColorHighlight">@color/blue_200</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:drawSelectorOnTop">true</item>
+    </style>
+    <style name="TokenActivityTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textColorHighlight">@color/blue_200</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:drawSelectorOnTop">true</item>
+    </style>
+    <style name="WhitelistActivityTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textColorHighlight">@color/blue_200</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:drawSelectorOnTop">true</item>
+    </style>
+</resources>
