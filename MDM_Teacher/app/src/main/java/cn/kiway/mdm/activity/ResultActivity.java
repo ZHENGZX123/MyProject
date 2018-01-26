@@ -119,7 +119,7 @@ public class ResultActivity extends BaseActivity {
                     toast("该学生未提交答案");
                     return;
                 }
-                startActivity(new Intent(ResultActivity.this, ResultDetailActivity.class).putExtra("questions", questions).putExtra("student", s));
+                startActivityForResult(new Intent(ResultActivity.this, ResultDetailActivity.class).putExtra("questions", questions).putExtra("student", s), 8888);
             }
         });
     }
@@ -166,9 +166,7 @@ public class ResultActivity extends BaseActivity {
                                 String qanswer = o.getString("qanswer");
                                 Question q = questions.get(i);
                                 //首先要保持顺序正确
-                                if (q.id.equals(qid)) {
-                                    q.studentAnswer = qanswer;
-                                }
+                                q.studentAnswer = qanswer;
                             }
                         } catch (Exception e) {
                             Log.d("test", "学生提交的和本次问题对应不上。。。有问题");
@@ -318,6 +316,35 @@ public class ResultActivity extends BaseActivity {
             return;
         }
         finish();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 8888) {
+            String studentIMEI = data.getStringExtra("studentIMEI");
+            boolean collected = data.getBooleanExtra("collected", false);
+            String collection = data.getStringExtra("collection");
+
+            Student s = getStudentByIMEI(studentIMEI);
+            if (s == null) {
+                Log.d("test", "见鬼了哦");
+                return;
+            }
+            s.collected = collected;
+            s.collection = collection;
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private Student getStudentByIMEI(String imei) {
+        for (Student s : students) {
+            if (s.imei.equals(imei)) {
+                return s;
+            }
+        }
+        return null;
     }
 
     @Override

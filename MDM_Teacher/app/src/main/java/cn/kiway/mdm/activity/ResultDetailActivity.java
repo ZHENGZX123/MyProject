@@ -1,5 +1,6 @@
 package cn.kiway.mdm.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -57,6 +58,7 @@ public class ResultDetailActivity extends BaseActivity {
     private ArrayList<Choice> choices = new ArrayList<>();
     private ImageButton right;
     private ImageButton wrong;
+    private Button ok;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,6 +94,12 @@ public class ResultDetailActivity extends BaseActivity {
         answerIV = (ImageView) findViewById(R.id.answerIV);
         adapter = new MyAdapter();
         answerGV.setAdapter(adapter);
+
+        if (!student.collected) {
+            ok = (Button) findViewById(R.id.ok);
+            ok.setText("批改");
+            ok.setVisibility(View.VISIBLE);
+        }
     }
 
     public void prev(View view) {
@@ -263,9 +271,31 @@ public class ResultDetailActivity extends BaseActivity {
             });
             //老师来批改
         }
+
+        //如果已经批改过了一次，直接赋值就好了。。。
+        if (student.collected) {
+            //利用collection给right和wrong赋值
+            try {
+                JSONArray array = new JSONArray(student.collection);
+                JSONObject o = array.getJSONObject(current);
+                int teacherJudge = o.getInt("qcollection");
+                if (teacherJudge == 2) {
+                    right.setBackgroundResource(R.drawable.right2);
+                    wrong.setBackgroundResource(R.drawable.wrong1);
+                } else if (teacherJudge == 1) {
+                    right.setBackgroundResource(R.drawable.right1);
+                    wrong.setBackgroundResource(R.drawable.wrong2);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void right(View view) {
+        if (student.collected) {
+            return;
+        }
         Question q = questions.get(current);
         if (q.type != Question.TYPE_ESSAY && q.type != Question.TYPE_EMPTY) {
             toast("只有填空题、问答题才需要老师批改");
@@ -277,6 +307,9 @@ public class ResultDetailActivity extends BaseActivity {
     }
 
     public void wrong(View view) {
+        if (student.collected) {
+            return;
+        }
         Question q = questions.get(current);
         if (q.type != Question.TYPE_ESSAY && q.type != Question.TYPE_EMPTY) {
             toast("只有填空题、问答题才需要老师批改");
@@ -294,13 +327,25 @@ public class ResultDetailActivity extends BaseActivity {
 
     @Override
     public void clickBack(View view) {
+        if (student.collected) {
+            finish();
+            return;
+        }
         for (Question q : questions) {
             if (q.teacherJudge == 0) {
                 toast("该学生的答案有些未批改，请先批改");
                 return;
             }
         }
+    }
 
+    public void clickOK(View view) {
+        for (Question q : questions) {
+            if (q.teacherJudge == 0) {
+                toast("该学生的答案有些未批改，请先批改");
+                return;
+            }
+        }
         try {
             JSONArray array = new JSONArray();
             for (Question q : questions) {
@@ -315,6 +360,11 @@ public class ResultDetailActivity extends BaseActivity {
                 @Override
                 public void onSuccess() {
                     toast("发送批改结果成功");
+                    Intent in = new Intent();
+                    in.putExtra("collected", true);
+                    in.putExtra("studentIMEI", student.imei);
+                    in.putExtra("collection", array.toString());
+                    setResult(8888, in);
                     finish();
                 }
 
