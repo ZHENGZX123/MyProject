@@ -63,10 +63,4 @@ public class JsAndroidInterface2 {
         this.activity.startActivityForResult(intent, SELECT_PHOTO);
     }
 
-    @JavascriptInterface
-    public void submitBase64(String param) {
-        Log.d("test", "submitBase64 param = " + param);
-        //1.保存图片到本地
-        //2.提交给服务器
-    }
 }
