@@ -162,10 +162,9 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/line2"
                 android:layout_below="@+id/line">
 
-                <!-- 单选题、判断题-->
+                <!-- 单选题、多选、判断题-->
                 <GridView
                     android:id="@+id/answerGV"
                     android:layout_width="match_parent"
@@ -173,7 +172,8 @@
                     android:layout_margin="20dp"
                     android:numColumns="4"
                     android:scrollbars="none"
-                    android:verticalSpacing="20dp" />
+                    android:verticalSpacing="20dp"
+                    android:visibility="invisible" />
 
                 <EditText
                     android:id="@+id/answerET"
@@ -186,13 +186,13 @@
                     android:textColor="#333333"
                     android:textColorHint="#666666"
                     android:textSize="14sp"
-                    android:visibility="gone" />
+                    android:visibility="invisible" />
 
                 <WebView
                     android:id="@+id/answerWV"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone"></WebView>
+                    android:visibility="invisible"></WebView>
 
 
                 <LinearLayout
@@ -229,35 +229,7 @@
                         android:textColor="#000000"
                         android:textSize="16sp" />
                 </LinearLayout>
-
-
             </RelativeLayout>
-
-            <TextView
-                android:id="@+id/line2"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_above="@+id/submit"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="#aaaaaa" />
-
-            <Button
-                android:id="@+id/submit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="10dp"
-                android:background="@drawable/endbutton"
-                android:onClick="clickSubmit"
-                android:paddingBottom="5dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:paddingTop="5dp"
-                android:text="      提  交      "
-                android:textColor="#ffffff"
-                android:textSize="18sp" />
         </RelativeLayout>
     </LinearLayout>
 

@@ -1,7 +1,6 @@
 package cn.kiway.mdm.model;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by Administrator on 2018/1/3.
@@ -24,6 +23,8 @@ public class Question implements Serializable {
     public String operation;//
     public String createDate;
     public AnswerVo answerVo;
+
+    public String studentAnswer = "";//学生做题的答案
 
     @Override
     public String toString() {

@@ -30,6 +30,10 @@ import com.lzy.imagepicker.ui.ImagePreviewActivity;
 import com.nanchen.compresshelper.CompressHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -77,7 +81,6 @@ public class QuestionActivity extends BaseActivity {
     private WebView answerWV;
     private MyAdapter adapter;
     private ArrayList<Choice> choices = new ArrayList<>();
-    private Button submitBtn;
 
     private boolean submited;
     private boolean finished;
@@ -101,8 +104,6 @@ public class QuestionActivity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
-
-        submitBtn = (Button) findViewById(R.id.submit);
         time = (TextView) findViewById(R.id.time);
         prev = (Button) findViewById(R.id.prev);
         next = (Button) findViewById(R.id.next);
@@ -120,6 +121,8 @@ public class QuestionActivity extends BaseActivity {
         adapter = new MyAdapter();
         answerGV.setAdapter(adapter);
 
+        //右上角提交按钮
+        ok.setVisibility(View.VISIBLE);
 
         if (questionType == TYPE_QUESTION_DIANMINGDA) {
             titleName.setText("点名答");
@@ -129,8 +132,6 @@ public class QuestionActivity extends BaseActivity {
             titleName.setText("抽答");
         } else if (questionType == TYPE_QUESTION_CEPING) {
             titleName.setText("测评");
-            ok.setVisibility(View.VISIBLE);
-            submitBtn.setVisibility(View.GONE);
         }
     }
 
@@ -180,11 +181,13 @@ public class QuestionActivity extends BaseActivity {
 
 
     public void prev(View view) {
+        saveStudentAnswer();
         current--;
         refresh();
     }
 
     public void next(View view) {
+        saveStudentAnswer();
         current++;
         refresh();
     }
@@ -252,33 +255,50 @@ public class QuestionActivity extends BaseActivity {
                 imgLL2.addView(iv, lp);
             }
         }
+
+        String studentAnswer = q.studentAnswer;
         //学生提交答案区域
         if (q.type == Question.TYPE_SINGLE || q.type == Question.TYPE_MULTI) {
             answerGV.setVisibility(View.VISIBLE);
-            answerET.setVisibility(View.GONE);
-            answerWV.setVisibility(View.GONE);
+            answerET.setVisibility(View.INVISIBLE);
+            answerWV.setVisibility(View.INVISIBLE);
             choices.clear();
             String choose[] = q.options.replace("\"", "").replace("[", "").replace("]", "").split(",");
+
             for (String temp : choose) {
-                choices.add(new Choice(temp, false));
+                if (studentAnswer.contains(temp)) {
+                    choices.add(new Choice(temp, true));
+                } else {
+                    choices.add(new Choice(temp, false));
+                }
             }
             adapter.notifyDataSetChanged();
         } else if (q.type == Question.TYPE_EMPTY) {
-            answerGV.setVisibility(View.GONE);
+            answerGV.setVisibility(View.INVISIBLE);
             answerET.setVisibility(View.VISIBLE);
-            answerWV.setVisibility(View.GONE);
+            answerWV.setVisibility(View.INVISIBLE);
+            answerET.setText(studentAnswer);
         } else if (q.type == Question.TYPE_JUDGE) {
             answerGV.setVisibility(View.VISIBLE);
-            answerET.setVisibility(View.GONE);
-            answerWV.setVisibility(View.GONE);
+            answerET.setVisibility(View.INVISIBLE);
+            answerWV.setVisibility(View.INVISIBLE);
             choices.clear();
-            choices.add(new Choice("对", false));
-            choices.add(new Choice("错", false));
+            if (studentAnswer.contains("对")) {
+                choices.add(new Choice("对", true));
+                choices.add(new Choice("错", false));
+            } else if (studentAnswer.contains("错")) {
+                choices.add(new Choice("对", false));
+                choices.add(new Choice("错", true));
+            } else {
+                choices.add(new Choice("对", false));
+                choices.add(new Choice("错", false));
+            }
             adapter.notifyDataSetChanged();
         } else if (q.type == Question.TYPE_ESSAY) {
-            answerGV.setVisibility(View.GONE);
-            answerET.setVisibility(View.GONE);
+            answerGV.setVisibility(View.INVISIBLE);
+            answerET.setVisibility(View.INVISIBLE);
             answerWV.setVisibility(View.VISIBLE);
+            //怎么保存。。。
         }
     }
 
@@ -298,7 +318,7 @@ public class QuestionActivity extends BaseActivity {
                 if (questionTime > 0) {
                     questionTime--;
                 } else {
-                    //时间到
+                    //时间到了没有提交怎么办？
                     submited = true;
                 }
             }
@@ -322,17 +342,17 @@ public class QuestionActivity extends BaseActivity {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            View roanswerWView = convertView;
+            View view = convertView;
             ViewHolder holder;
-            if (roanswerWView == null) {
-                roanswerWView = inflater.inflate(R.layout.item_answer, null);
+            if (view == null) {
+                view = inflater.inflate(R.layout.item_answer, null);
                 holder = new ViewHolder();
 
-                holder.choose = (TextView) roanswerWView.findViewById(R.id.choose);
+                holder.choose = (TextView) view.findViewById(R.id.choose);
 
-                roanswerWView.setTag(holder);
+                view.setTag(holder);
             } else {
-                holder = (ViewHolder) roanswerWView.getTag();
+                holder = (ViewHolder) view.getTag();
             }
             Choice c = choices.get(position);
             holder.choose.setText(c.content);
@@ -361,7 +381,7 @@ public class QuestionActivity extends BaseActivity {
                 }
             });
 
-            return roanswerWView;
+            return view;
         }
 
         public class ViewHolder {
@@ -407,19 +427,66 @@ public class QuestionActivity extends BaseActivity {
         }
     }
 
-    public void clickSubmit(View view) {
+    public void clickSubmit(View view) throws JSONException {
+        saveStudentAnswer();
         if (submited) {
             toast("你已经提交过了，请不要重复提交");
             return;
         }
+        JSONArray answerArray = new JSONArray();
+        for (Question q : questions) {
+            JSONObject answerObj = new JSONObject();
+            answerObj.put("qid", q.id);
+            answerObj.put("qtype", q.type);
+            String qanswer = q.studentAnswer;
+            answerObj.put("qanswer", qanswer);
+            answerArray.put(answerObj);
+        }
+        Log.d("test", "打印学生答题情况:" + answerArray.toString());
         //整理答案
-        String answer = "answer_xxxx";
+        String answer = "answer_" + answerArray.toString();
         boolean ret = Utils.sendToServer(answer);
         if (ret) {
             submited = true;
             mHandler.removeCallbacksAndMessages(null);
         } else {
             toast("提交失败");
+        }
+    }
+
+    //保存学生答题的答案，上下切换的时候显示用。。。
+    private void saveStudentAnswer() {
+        Question q = questions.get(current);
+        q.studentAnswer = "";
+        if (q.type == Question.TYPE_SINGLE) {
+            String temp = "";
+            for (Choice c : choices) {
+                if (c.selected) {
+                    temp = c.content;
+                }
+            }
+            q.studentAnswer = temp;
+        } else if (q.type == Question.TYPE_MULTI) {
+            String temp2 = "";
+            for (Choice c : choices) {
+                if (c.selected) {
+                    temp2 += c.content;
+                }
+            }
+            q.studentAnswer = temp2;
+        } else if (q.type == Question.TYPE_EMPTY) {
+            String temp2 = answerET.getText().toString().trim();
+            q.studentAnswer = temp2;
+        } else if (q.type == Question.TYPE_JUDGE) {
+            String temp = "";
+            for (Choice c : choices) {
+                if (c.selected) {
+                    temp = c.content;
+                }
+            }
+            q.studentAnswer = temp;
+        } else if (q.type == Question.TYPE_ESSAY) {
+            q.studentAnswer = "保存的截图地址";
         }
     }
 
@@ -431,8 +498,14 @@ public class QuestionActivity extends BaseActivity {
     @Override
     public void clickBack(View view) {
         if (!finished) {
+            String message = "";
+            if (submited) {
+                message = "老师还没有批改，是否退出本次问答/测评？";
+            } else {
+                message = "你尚未提交答案，是否退出本次问答/测评？";
+            }
             AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
-            AlertDialog dialog = builder.setTitle("提示").setMessage("是否退出本次问答/测评？")
+            AlertDialog dialog = builder.setTitle("提示").setMessage(message)
                     .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {

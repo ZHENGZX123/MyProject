@@ -217,9 +217,11 @@ import java.util.ArrayList;
 
 import cn.kiway.mdm.model.FileModel;
 
-
+//易敏有接口了，数据库还用吗。
 public class MyDBHelper extends SQLiteOpenHelper {
+
     public static final String DB_NAME = "mdmstudents.db";
+
 
     private static final String TABLE_FILE = "FILE";
     private static final String CREATE_TABLE_FILE = " create table  IF NOT EXISTS "
