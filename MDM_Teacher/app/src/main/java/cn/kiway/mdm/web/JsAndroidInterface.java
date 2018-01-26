@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
-import android.webkit.WebView;
 
 import com.leon.lfilepickerlibrary.LFilePicker;
 
@@ -34,15 +33,13 @@ import static cn.kiway.mdm.util.FileUtils.EnFILEPATH;
  */
 
 public class JsAndroidInterface {
-    public static String userAccount = "";
 
     private MainActivity activity;
-    private String className;
     public static final int requsetFile = 45612;
     public static final int requsetFile2 = 45613;
     public static String accessToken;
 
-    public JsAndroidInterface(MainActivity activity, WebView webView) {
+    public JsAndroidInterface(MainActivity activity) {
         this.activity = activity;
     }
 

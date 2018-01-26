@@ -33,6 +33,18 @@
             android:verticalSpacing="15dp"></GridView>
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/retryRL"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/titleRL"
+        android:visibility="gone"
+        >
+
+        <include layout="@layout/layout_retry"></include>
+    </RelativeLayout>
+
 
     <RelativeLayout
         android:id="@+id/toolsRL"

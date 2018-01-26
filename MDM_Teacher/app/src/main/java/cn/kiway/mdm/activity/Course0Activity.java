@@ -131,7 +131,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "course onSuccess = " + ret);
-                    dismissPD();
+                    hidePD();
                     try {
                         JSONObject data = new JSONObject(ret).getJSONObject("data");
                         course = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<Course>() {
@@ -158,7 +158,7 @@ public class Course0Activity extends ScreenSharingActivity {
                     Log.d("test", "course onFailure = " + s);
                     if (!check301(Course0Activity.this, s, "coursedetail")) {
                         toast("请求失败，请稍后再试");
-                        dismissPD();
+                        hidePD();
                         finish();
                     }
                 }
@@ -166,7 +166,7 @@ public class Course0Activity extends ScreenSharingActivity {
         } catch (Exception e) {
             e.printStackTrace();
             toast("请求失败，请稍后再试");
-            dismissPD();
+            hidePD();
         }
     }
 
@@ -225,7 +225,6 @@ public class Course0Activity extends ScreenSharingActivity {
     }
 
     public void huabi(View view) {
-        //等彭毅
         startActivity(new Intent(this, WhiteBoardActivity.class));
     }
 
@@ -276,7 +275,7 @@ public class Course0Activity extends ScreenSharingActivity {
 
     public void wenjian(View view) {
         //1.先选择一个文件
-        String selectFilePath = "/mnt/sdcard/test.jpg";
+        String selectFilePath = "/mnt/sdcard/1514424119655.png";
         //2.再选择学生
         startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_WENJIAN).putExtra("filePath", selectFilePath));
     }
@@ -530,6 +529,11 @@ public class Course0Activity extends ScreenSharingActivity {
                         toast("请选择一个问题");
                         return;
                     }
+                    //先暂时这么干。。。
+                    if (type != TYPE_QUESTION_CEPING && selectQuestions.size() > 1) {
+                        toast("只能选择一个问题");
+                        return;
+                    }
                     dialog.dismiss();
                     if (type == TYPE_QUESTION_DIANMINGDA) {
                         //点名答要手动选人
@@ -553,7 +557,7 @@ public class Course0Activity extends ScreenSharingActivity {
                         });
                     } else {
                         //测评是全班的，发送测评命令
-                        ZbusHost.questions(Course0Activity.this, selectQuestions, new OnListener() {
+                        ZbusHost.questions(Course0Activity.this, selectQuestions, questionTime, new OnListener() {
                             @Override
                             public void onSuccess() {
                                 startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", students).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
@@ -701,11 +705,11 @@ public class Course0Activity extends ScreenSharingActivity {
 
     private void sendQiangdaCommand(Student s, Question q) {
         showPD();
-        ZbusHost.question(this, s, q, 3, new OnListener() {
+        ZbusHost.question(this, s, q, 3, questionTime, new OnListener() {
 
             @Override
             public void onSuccess() {
-                dismissPD();
+                hidePD();
                 //toast("发送抢答命令成功");
                 ArrayList<Student> selectStudents = new ArrayList<>();
                 selectStudents.add(s);
@@ -715,7 +719,7 @@ public class Course0Activity extends ScreenSharingActivity {
 
             @Override
             public void onFailure() {
-                dismissPD();
+                hidePD();
                 toast("发送抢答命令失败");
             }
         });
@@ -724,11 +728,11 @@ public class Course0Activity extends ScreenSharingActivity {
 
     private void sendChoudaCommand(Student s, Question q) {
         showPD();
-        ZbusHost.question(this, s, q, 2, new OnListener() {
+        ZbusHost.question(this, s, q, 2, questionTime, new OnListener() {
 
             @Override
             public void onSuccess() {
-                dismissPD();
+                hidePD();
                 //toast("发送上课命令成功");
                 //点名答
                 ArrayList<Student> selectStudents = new ArrayList<>();
@@ -738,7 +742,7 @@ public class Course0Activity extends ScreenSharingActivity {
 
             @Override
             public void onFailure() {
-                dismissPD();
+                hidePD();
                 toast("发送抽答命令失败");
             }
         });
@@ -963,7 +967,7 @@ public class Course0Activity extends ScreenSharingActivity {
             @Override
             public void run() {
                 int ret = new HttpDownload().downFile(url, folder, fileName);//开始下载
-                dismissPD();
+                hidePD();
                 if (ret == -1) {//下载失败
                     toast("下载文件失败，请稍后再试");
                     return;

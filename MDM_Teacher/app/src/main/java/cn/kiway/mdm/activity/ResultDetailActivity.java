@@ -9,19 +9,27 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.entity.AnswerVo;
+import cn.kiway.mdm.entity.Choice;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.Utils;
+import cn.kiway.mdm.zbus.OnListener;
+import cn.kiway.mdm.zbus.ZbusHost;
 
 import static cn.kiway.mdm.util.Utils.showBigImage;
 
@@ -46,7 +54,9 @@ public class ResultDetailActivity extends BaseActivity {
     private TextView answerTV;
     private ImageView answerIV;
     private MyAdapter adapter;
-    private ArrayList<String> chooses = new ArrayList<>();
+    private ArrayList<Choice> choices = new ArrayList<>();
+    private ImageButton right;
+    private ImageButton wrong;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +84,8 @@ public class ResultDetailActivity extends BaseActivity {
         imgLL = (LinearLayout) findViewById(R.id.imgLL);
         imgLL2 = (LinearLayout) findViewById(R.id.imgLL2);
         ll_answer = (LinearLayout) findViewById(R.id.ll_answer);
+        right = (ImageButton) findViewById(R.id.right);
+        wrong = (ImageButton) findViewById(R.id.wrong);
 
         answerGV = (GridView) findViewById(R.id.answerGV);
         answerTV = (TextView) findViewById(R.id.answerTV);
@@ -163,55 +175,156 @@ public class ResultDetailActivity extends BaseActivity {
                 imgLL2.addView(iv, lp);
             }
         }
+
+        //reset
+        right.setBackgroundResource(R.drawable.right1);
+        wrong.setBackgroundResource(R.drawable.wrong1);
+
+        String studentAnswer = q.studentAnswer;
         //学生提交答案区域
         if (q.type == Question.TYPE_SINGLE || q.type == Question.TYPE_MULTI) {
             answerGV.setVisibility(View.VISIBLE);
             answerTV.setVisibility(View.GONE);
             answerIV.setVisibility(View.GONE);
-            chooses.clear();
-            chooses.add("A");
-            chooses.add("B");
-            chooses.add("C");
-            chooses.add("D");
+            choices.clear();
+            String choose[] = q.options.replace("\"", "").replace("[", "").replace("]", "").split(",");
+            for (String temp : choose) {
+                if (studentAnswer.contains(temp)) {
+                    choices.add(new Choice(temp, true));
+                } else {
+                    choices.add(new Choice(temp, false));
+                }
+            }
             adapter.notifyDataSetChanged();
+            //自动批改
+            if (q.type == Question.TYPE_SINGLE) {
+                if (q.answerVo.content.contains(studentAnswer)) {
+                    right.setBackgroundResource(R.drawable.right2);
+                    wrong.setBackgroundResource(R.drawable.wrong1);
+                    q.teacherJudge = 2;
+                } else {
+                    right.setBackgroundResource(R.drawable.right1);
+                    wrong.setBackgroundResource(R.drawable.wrong2);
+                    q.teacherJudge = 1;
+                }
+            } else if (q.type == Question.TYPE_MULTI) {
+                if (q.answerVo.content.replace("[", "").replace("]", "").replace("\"", "").replace(",", "").equals(studentAnswer)) {
+                    right.setBackgroundResource(R.drawable.right2);
+                    wrong.setBackgroundResource(R.drawable.wrong1);
+                    q.teacherJudge = 2;
+                } else {
+                    right.setBackgroundResource(R.drawable.right1);
+                    wrong.setBackgroundResource(R.drawable.wrong2);
+                    q.teacherJudge = 1;
+                }
+            }
         } else if (q.type == Question.TYPE_EMPTY) {
             answerGV.setVisibility(View.GONE);
             answerTV.setVisibility(View.VISIBLE);
             answerIV.setVisibility(View.GONE);
+            answerTV.setText(studentAnswer);
+            //老师来批改
         } else if (q.type == Question.TYPE_JUDGE) {
             answerGV.setVisibility(View.VISIBLE);
             answerTV.setVisibility(View.GONE);
             answerIV.setVisibility(View.GONE);
-            chooses.clear();
-            chooses.add("对");
-            chooses.add("错");
+            choices.clear();
+            if (studentAnswer.contains("对")) {
+                choices.add(new Choice("对", true));
+                choices.add(new Choice("错", false));
+            } else if (studentAnswer.contains("错")) {
+                choices.add(new Choice("对", false));
+                choices.add(new Choice("错", true));
+            } else {
+                choices.add(new Choice("对", false));
+                choices.add(new Choice("错", false));
+            }
             adapter.notifyDataSetChanged();
+            //自动批改
+            if (q.answerVo.content.contains(studentAnswer)) {
+                right.setBackgroundResource(R.drawable.right2);
+                wrong.setBackgroundResource(R.drawable.wrong1);
+                q.teacherJudge = 2;
+            } else {
+                right.setBackgroundResource(R.drawable.right1);
+                wrong.setBackgroundResource(R.drawable.wrong2);
+                q.teacherJudge = 1;
+            }
         } else if (q.type == Question.TYPE_ESSAY) {
             answerGV.setVisibility(View.GONE);
             answerTV.setVisibility(View.GONE);
             answerIV.setVisibility(View.VISIBLE);
+            ImageLoader.getInstance().displayImage(q.studentAnswer, answerIV, KWApplication.getLoaderOptions());
             answerIV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Utils.showBigImage(ResultDetailActivity.this, null, 0);
+                    Utils.showBigImage(ResultDetailActivity.this, new String[]{q.studentAnswer}, 0);
                 }
             });
+            //老师来批改
         }
     }
 
     public void right(View view) {
         Question q = questions.get(current);
-        if (q.type != Question.TYPE_ESSAY) {
-            toast("只有问题答题需要老师批改");
+        if (q.type != Question.TYPE_ESSAY && q.type != Question.TYPE_EMPTY) {
+            toast("只有填空题、问答题才需要老师批改");
             return;
         }
+        right.setBackgroundResource(R.drawable.right2);
+        wrong.setBackgroundResource(R.drawable.wrong1);
+        q.teacherJudge = 2;
     }
 
     public void wrong(View view) {
         Question q = questions.get(current);
-        if (q.type != Question.TYPE_ESSAY) {
-            toast("只有问题答题需要老师批改");
+        if (q.type != Question.TYPE_ESSAY && q.type != Question.TYPE_EMPTY) {
+            toast("只有填空题、问答题才需要老师批改");
             return;
+        }
+        right.setBackgroundResource(R.drawable.right1);
+        wrong.setBackgroundResource(R.drawable.wrong2);
+        q.teacherJudge = 1;
+    }
+
+    @Override
+    public void onBackPressed() {
+        clickBack(null);
+    }
+
+    @Override
+    public void clickBack(View view) {
+        for (Question q : questions) {
+            if (q.teacherJudge == 0) {
+                toast("该学生的答案有些未批改，请先批改");
+                return;
+            }
+        }
+
+        try {
+            JSONArray array = new JSONArray();
+            for (Question q : questions) {
+                JSONObject o = new JSONObject();
+                o.put("qid", q.id);
+                o.put("qtype", q.type);
+                o.put("qcollection", q.teacherJudge);
+                array.put(o);
+            }
+            //把批改的结果发给学生。
+            ZbusHost.collection(ResultDetailActivity.this, student, array.toString(), new OnListener() {
+                @Override
+                public void onSuccess() {
+                    toast("发送批改结果成功");
+                    finish();
+                }
+
+                @Override
+                public void onFailure() {
+                    toast("发送批改结果失败");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -243,8 +356,13 @@ public class ResultDetailActivity extends BaseActivity {
                 holder = (ViewHolder) rowView.getTag();
             }
 
-            String s = chooses.get(position);
-            holder.choose.setText(s);
+            Choice c = choices.get(position);
+            holder.choose.setText(c.content);
+            if (c.selected) {
+                holder.choose.setBackgroundResource(R.drawable.green);
+            } else {
+                holder.choose.setBackgroundResource(R.drawable.gray);
+            }
 
             return rowView;
         }
@@ -255,12 +373,12 @@ public class ResultDetailActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return chooses.size();
+            return choices.size();
         }
 
         @Override
-        public String getItem(int arg0) {
-            return chooses.get(arg0);
+        public Choice getItem(int arg0) {
+            return choices.get(arg0);
         }
 
         @Override

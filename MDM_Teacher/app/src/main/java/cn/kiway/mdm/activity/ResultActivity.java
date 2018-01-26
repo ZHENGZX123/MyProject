@@ -115,10 +115,10 @@ public class ResultActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Student s = students.get(position);
-//                if (!s.submit) {
-//                    toast("该学生未提交答案");
-//                    return;
-//                }
+                if (!s.submit) {
+                    toast("该学生未提交答案");
+                    return;
+                }
                 startActivity(new Intent(ResultActivity.this, ResultDetailActivity.class).putExtra("questions", questions).putExtra("student", s));
             }
         });
@@ -149,6 +149,37 @@ public class ResultActivity extends BaseActivity {
             mHandler.sendEmptyMessageDelayed(msg.what, 1000);
         }
     };
+
+    public void getOneAnswer(String studentIMEI, String answer) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (Student s : students) {
+                    if (s.imei.equals(studentIMEI)) {
+                        try {
+                            s.submit = true;
+                            JSONArray array = new JSONArray(answer);
+                            int count = array.length();
+                            for (int i = 0; i < count; i++) {
+                                JSONObject o = array.getJSONObject(i);
+                                String qid = o.getString("qid");
+                                String qanswer = o.getString("qanswer");
+                                Question q = questions.get(i);
+                                //首先要保持顺序正确
+                                if (q.id.equals(qid)) {
+                                    q.studentAnswer = qanswer;
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.d("test", "学生提交的和本次问题对应不上。。。有问题");
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
 
     private class MyAdapter extends BaseAdapter {
 
@@ -216,6 +247,9 @@ public class ResultActivity extends BaseActivity {
     }
 
     public void doEndQuestion() {
+        if (true) {
+            return;
+        }
         showPD();
         try {
             String url = KWApplication.clientUrl + "/device/teacher/course/student/result";
@@ -245,13 +279,13 @@ public class ResultActivity extends BaseActivity {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
-                    dismissPD();
+                    hidePD();
                 }
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
-                    dismissPD();
+                    hidePD();
                     if (!Utils.check301(ResultActivity.this, s, "questionResult")) {
                         toast("请求失败，请稍后再试");
                     }

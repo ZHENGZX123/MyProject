@@ -30,5 +30,4 @@ public class Student implements Serializable {
     public boolean selected;
     public boolean locked;//锁定
 
-
 }

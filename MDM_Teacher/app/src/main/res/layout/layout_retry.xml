@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/retry"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+        android:background="@null"
+        android:onClick="clickRetry"
+        android:text="获取数据失败，请点击重试"
+        android:textColor="#ffffff"
+        android:textSize="20sp" />
+
+</RelativeLayout>
