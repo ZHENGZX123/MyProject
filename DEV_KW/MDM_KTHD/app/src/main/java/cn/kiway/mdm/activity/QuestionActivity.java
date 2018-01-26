@@ -622,9 +622,7 @@ public class QuestionActivity extends BaseActivity {
                         int qcollection = o.getInt("qcollection");
                         //首先要保持顺序正确
                         Question q = questions.get(i);
-                        if (q.id.equals(qid)) {
-                            q.teacherJudge = qcollection;
-                        }
+                        q.teacherJudge = qcollection;
                     }
 
                     refresh();
