@@ -220,6 +220,13 @@ public class ResultDetailActivity extends BaseActivity {
             answerIV.setVisibility(View.GONE);
             answerTV.setText(studentAnswer);
             //老师来批改
+            if (q.teacherJudge == 2) {
+                right.setBackgroundResource(R.drawable.right2);
+                wrong.setBackgroundResource(R.drawable.wrong1);
+            } else if (q.teacherJudge == 1) {
+                right.setBackgroundResource(R.drawable.right1);
+                wrong.setBackgroundResource(R.drawable.wrong2);
+            }
         } else if (q.type == Question.TYPE_JUDGE) {
             answerGV.setVisibility(View.VISIBLE);
             answerTV.setVisibility(View.GONE);
@@ -258,6 +265,13 @@ public class ResultDetailActivity extends BaseActivity {
                 }
             });
             //老师来批改
+            if (q.teacherJudge == 2) {
+                right.setBackgroundResource(R.drawable.right2);
+                wrong.setBackgroundResource(R.drawable.wrong1);
+            } else if (q.teacherJudge == 1) {
+                right.setBackgroundResource(R.drawable.right1);
+                wrong.setBackgroundResource(R.drawable.wrong2);
+            }
         }
 
         //如果已经批改过了一次，直接赋值就好了。。。
