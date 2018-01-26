@@ -36,6 +36,7 @@ public class ZbusHost {
             return true;
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d("test", "doSendMsg e = " + e.toString());
         }
 
         return false;
