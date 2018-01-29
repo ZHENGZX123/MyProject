@@ -3892,14 +3892,15 @@ public class Launcher extends MainActivity
 
         InstallShortcutReceiver.disableAndFlushInstallQueue(this);
 
-        if (Utilities.ATLEAST_MARSHMALLOW) {
-            boolean hasNotificationAccess = false;
-            for (String packageName : NotificationManagerCompat.getEnabledListenerPackages(this)) {
-                hasNotificationAccess |= packageName.equals(getApplicationContext().getPackageName());
-            }
-            if (!hasNotificationAccess)
-                startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
-        }
+        //zhengkang 通知使用权
+//        if (Utilities.ATLEAST_MARSHMALLOW) {
+//            boolean hasNotificationAccess = false;
+//            for (String packageName : NotificationManagerCompat.getEnabledListenerPackages(this)) {
+//                hasNotificationAccess |= packageName.equals(getApplicationContext().getPackageName());
+//            }
+//            if (!hasNotificationAccess)
+//                startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+//        }
 
         NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
 

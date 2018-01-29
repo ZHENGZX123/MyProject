@@ -299,8 +299,8 @@ public class CommandUtil {
                 m.obj = data;
             } else if (command.equals("send_msg")
                     || command.equals("question")
-                    || command.equals("questionEnd1")
-                    || command.equals("questionEnd2")
+                    || command.equals("questionTimeup")
+                    || command.equals("questionEnd")
                     || command.equals("sign")
                     || command.equals("tongji")
                     || command.equals("qiangda")
