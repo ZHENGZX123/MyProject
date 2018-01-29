@@ -405,11 +405,11 @@ public class Utils {
                         } else if (type.equals("coursedetail")) {
                             ((Course0Activity) KWApplication.currentActivity).initData();
                         } else if (type.equals("knowledgeCountResult")) {
-                            ((StudentGridActivity) KWApplication.currentActivity).doEndTongji();
                         } else if (type.equals("questionResult")) {
-                            ((ResultActivity) KWApplication.currentActivity).doEndQuestion();
+                            ((ResultActivity) KWApplication.currentActivity).uploadResult();
                         }
                     } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
 

@@ -26,9 +26,10 @@ public class Student implements Serializable {
     public boolean online;//0没在线 1在线了
     public boolean come; //0没到 1到了
     public int known;
-    public boolean submit;
     public boolean selected;
     public boolean locked;//锁定
-    public boolean collected;//已经批改
+    
+    public boolean submited;//是否提交答案
+    public boolean collected;//是否已经批改
     public String collection;
 }

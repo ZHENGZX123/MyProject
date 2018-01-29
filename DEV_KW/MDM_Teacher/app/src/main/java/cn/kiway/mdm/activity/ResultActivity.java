@@ -63,7 +63,7 @@ public class ResultActivity extends BaseActivity {
     private ArrayList<Question> questions;
     private int questionTime;
 
-    private boolean finished;
+    private boolean timeup; //时间到
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,7 +117,7 @@ public class ResultActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Student s = students.get(position);
-                if (!s.submit) {
+                if (!s.submited) {
                     toast("该学生未提交答案");
                     return;
                 }
@@ -143,8 +143,8 @@ public class ResultActivity extends BaseActivity {
                 if (questionTime > 0) {
                     questionTime--;
                 } else {
-                    finished = true;
-                    doEndQuestion();
+                    timeup = true;
+                    stop(null);
                 }
             }
             time.setText(Utils.secToTime(questionTime));
@@ -152,14 +152,14 @@ public class ResultActivity extends BaseActivity {
         }
     };
 
-    public void getOneAnswer(String studentIMEI, String answer) {
+    public void getOneSubmit(String studentIMEI, String answer) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 for (Student s : students) {
                     if (s.imei.equals(studentIMEI)) {
                         try {
-                            s.submit = true;
+                            s.submited = true;
                             JSONArray array = new JSONArray(answer);
                             int count = array.length();
                             for (int i = 0; i < count; i++) {
@@ -209,7 +209,7 @@ public class ResultActivity extends BaseActivity {
             holder.name.setText(s.name);
 
             //绿色表示已答题提交，灰色表示还未作答的
-            if (s.submit) {
+            if (s.submited) {
                 holder.icon.setImageResource(R.drawable.icon2);
             } else {
                 holder.icon.setImageResource(R.drawable.icon1);
@@ -239,18 +239,15 @@ public class ResultActivity extends BaseActivity {
     }
 
     public void stop(View view) {
-        toast("停止答题");
-        finished = true;
+        toast("时间到，停止作答");
+        timeup = true;
         questionTime = 0;
         mHandler.removeCallbacksAndMessages(null);
-        doEndQuestion();
+
+        sendTimeupCommand();
     }
 
-    public void doEndQuestion() {
-        if (true) {
-            return;
-        }
-        showPD();
+    public void uploadResult() {
         try {
             String url = KWApplication.clientUrl + "/device/teacher/course/student/result";
             Log.d("test", "url = " + url);
@@ -279,13 +276,11 @@ public class ResultActivity extends BaseActivity {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
-                    hidePD();
                 }
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
-                    hidePD();
                     if (!Utils.check301(ResultActivity.this, s, "questionResult")) {
                         toast("请求失败，请稍后再试");
                     }
@@ -304,30 +299,62 @@ public class ResultActivity extends BaseActivity {
 
     @Override
     public void clickBack(View view) {
-        if (!finished) {
+        //1.答题是否结束
+        if (!timeup) {
+            toast("答题尚未结束，请先停止作答");
+            return;
+        }
+
+        //2.TODO 提示未提交的
+
+        //3.提示没有批改的
+        boolean allCollect = true;
+        for (Student s : students) {
+            if (s.submited) {//只查看已经提交的。
+                allCollect = allCollect | s.collected;
+            }
+        }
+        if (!allCollect) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
-            AlertDialog dialog = builder.setTitle("提示").setMessage("是否退出本次问答/测评？")
+            AlertDialog dialog = builder.setTitle("提示").setMessage("有学生答案尚未批改，是否退出本次问答/测评")
                     .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
-                            ZbusHost.endQuestion(ResultActivity.this, students, new OnListener() {
-                                @Override
-                                public void onSuccess() {
-                                    finish();
-                                }
-
-                                @Override
-                                public void onFailure() {
-                                    toast("发送退出命令失败");
-                                }
-                            });
+                            sendEndCommand();
                         }
                     })
                     .setPositiveButton(android.R.string.cancel, null).create();
             dialog.show();
             return;
         }
+        uploadResult();
         finish();
+    }
+
+    private void sendTimeupCommand() {
+        ZbusHost.questionTimeup(ResultActivity.this, students, new OnListener() {
+            @Override
+            public void onSuccess() {
+            }
+
+            @Override
+            public void onFailure() {
+            }
+        });
+    }
+
+    private void sendEndCommand() {
+        ZbusHost.questionEnd(ResultActivity.this, students, new OnListener() {
+            @Override
+            public void onSuccess() {
+                finish();
+            }
+
+            @Override
+            public void onFailure() {
+                toast("发送退出命令失败");
+            }
+        });
     }
 
 

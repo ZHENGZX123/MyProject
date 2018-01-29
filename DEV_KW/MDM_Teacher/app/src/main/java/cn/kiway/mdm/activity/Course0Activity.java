@@ -345,19 +345,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 }
                 dialog.dismiss();
                 //发送命令
-                ZbusHost.tongji(Course0Activity.this, selectKPs.get(0), new OnListener() {
-
-                    @Override
-                    public void onSuccess() {
-                        //toast("发送统计命令成功");
-                        startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_TONGJI));
-                    }
-
-                    @Override
-                    public void onFailure() {
-                        toast("发送统计命令失败");
-                    }
-                });
+                startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_TONGJI).putExtra("kps", selectKPs));
             }
         });
 
