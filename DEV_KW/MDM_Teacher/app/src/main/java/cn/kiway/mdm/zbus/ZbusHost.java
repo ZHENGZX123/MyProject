@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import cn.kiway.mdm.activity.ResultActivity;
 import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
@@ -230,6 +231,26 @@ public class ZbusHost {
             String title = "文件";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
             String msg = new JSONObject().put("data", new JSONObject().put("command", "wenjian").put("topic", topic).put("url", url)).toString();
+            for (Student s : students) {
+                String studentTopic = "kiwayMDM_student_" + s.imei;
+                doSendMsg(title, userId, msg, studentTopic);
+            }
+            if (onListener != null) {
+                onListener.onSuccess();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (onListener != null) {
+                onListener.onFailure();
+            }
+        }
+    }
+
+    public static void endQuestion(ResultActivity c, ArrayList<Student> students, OnListener onListener) {
+        try {
+            String title = "文件";
+            String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "endQuestion").put("topic", topic)).toString();
             for (Student s : students) {
                 String studentTopic = "kiwayMDM_student_" + s.imei;
                 doSendMsg(title, userId, msg, studentTopic);

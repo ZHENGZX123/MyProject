@@ -34,6 +34,8 @@ import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
+import cn.kiway.mdm.zbus.OnListener;
+import cn.kiway.mdm.zbus.ZbusHost;
 
 import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_CEPING;
 import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_DIANMINGDA;
@@ -308,7 +310,17 @@ public class ResultActivity extends BaseActivity {
                     .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
-                            finish();
+                            ZbusHost.endQuestion(ResultActivity.this, students, new OnListener() {
+                                @Override
+                                public void onSuccess() {
+                                    finish();
+                                }
+
+                                @Override
+                                public void onFailure() {
+                                    toast("发送退出命令失败");
+                                }
+                            });
                         }
                     })
                     .setPositiveButton(android.R.string.cancel, null).create();
