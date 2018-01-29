@@ -87,6 +87,8 @@ public class QuestionActivity extends BaseActivity {
 
     private boolean submited;//是否提交
     private boolean collected;//是否批改
+    private boolean timeup;//是否时间到
+
 
     private WebView currentWV;
 
@@ -363,14 +365,24 @@ public class QuestionActivity extends BaseActivity {
                 if (questionTime > 0) {
                     questionTime--;
                 } else {
-                    //时间到了没有提交怎么办？
-                    submited = true;
+                    timeup = true;
+                    questionTimeup();
                 }
             }
             time.setText("时间：" + Utils.secToTime(questionTime));
             mHandler.sendEmptyMessageDelayed(msg.what, 1000);
         }
     };
+
+    public void questionTimeup() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                timeup = true;
+                toast("答题时间到，还没有提交答案的同学请点击提交");
+            }
+        });
+    }
 
     private class MyAdapter extends BaseAdapter {
 
@@ -477,10 +489,9 @@ public class QuestionActivity extends BaseActivity {
             return;
         }
 
-        //确定要提交alert?
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
         builder.setTitle("提示");
-        builder.setMessage("确定要提交答题结果吗？");
+        builder.setMessage("确定要提交答题结果吗？提交后无法修改");
         builder.setNegativeButton("取消", null);
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
