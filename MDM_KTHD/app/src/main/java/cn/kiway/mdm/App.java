@@ -196,14 +196,21 @@ public class App extends KiwayApplication {
                         return;
                     }
                     String collection = data.optString("collection");
-                    ((QuestionActivity)currentActivity).setCollection(collection);
-                } else if (command.equals("questionEnd1")){
+                    ((QuestionActivity) currentActivity).setCollection(collection);
+                } else if (command.equals("questionTimeup")) {
                     if (!(currentActivity instanceof QuestionActivity)) {
                         Log.d("test", "学生把答题页面关闭了，不应该。。。");
                         return;
                     }
-                    ((QuestionActivity)currentActivity).toast("老师结束了这次答题");
-                    ((QuestionActivity)currentActivity).finish();
+                    ((QuestionActivity) currentActivity).toast("老师结束了这次答题");
+                    ((QuestionActivity) currentActivity).questionTimeup();
+                } else if (command.equals("questionEnd")) {
+                    if (!(currentActivity instanceof QuestionActivity)) {
+                        Log.d("test", "学生把答题页面关闭了，不应该。。。");
+                        return;
+                    }
+                    ((QuestionActivity) currentActivity).toast("老师结束了这次答题");
+                    ((QuestionActivity) currentActivity).finish();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
