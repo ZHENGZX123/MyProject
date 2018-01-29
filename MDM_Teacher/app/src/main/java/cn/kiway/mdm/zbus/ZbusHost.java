@@ -219,8 +219,8 @@ public class ZbusHost {
         Log.d("test", "发送给学生title = " + title + " , msg = " + msg + ", studentTopic = " + studentTopic);
         PushRecordVo vo = new PushRecordVo();
         vo.setTitle(title);
+        vo.setSenderId(userId);//发送的ID
         vo.setUserType(1);//发送方：1老师 2学生 3家长 4管理员
-        vo.setSenderId(userId);
         vo.setMessage(msg);
         ZbusUtils.sendMsg(studentTopic, vo);
     }
@@ -246,11 +246,31 @@ public class ZbusHost {
         }
     }
 
-    public static void endQuestion(ResultActivity c, ArrayList<Student> students, OnListener onListener) {
+    public static void questionTimeup(ResultActivity c, ArrayList<Student> students, OnListener onListener) {
         try {
-            String title = "文件";
+            String title = "答题时间到";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "endQuestion").put("topic", topic)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "questionTimeup").put("topic", topic)).toString();
+            for (Student s : students) {
+                String studentTopic = "kiwayMDM_student_" + s.imei;
+                doSendMsg(title, userId, msg, studentTopic);
+            }
+            if (onListener != null) {
+                onListener.onSuccess();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (onListener != null) {
+                onListener.onFailure();
+            }
+        }
+    }
+
+    public static void questionEnd(ResultActivity c, ArrayList<Student> students, OnListener onListener) {
+        try {
+            String title = "答题终止";
+            String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "questionEnd").put("topic", topic)).toString();
             for (Student s : students) {
                 String studentTopic = "kiwayMDM_student_" + s.imei;
                 doSendMsg(title, userId, msg, studentTopic);

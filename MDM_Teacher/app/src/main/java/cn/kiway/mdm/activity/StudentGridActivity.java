@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.mdm.KWApplication;
+import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
@@ -68,13 +69,13 @@ public class StudentGridActivity extends BaseActivity {
     private Button all;
     private ImageButton lock;
     private RelativeLayout toolsRL;
+    private View leftView;
 
     private int type;
     private GridView gv;
     private MyAdapter adapter;
 
     private ArrayList<Student> students = new ArrayList<>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,12 +100,15 @@ public class StudentGridActivity extends BaseActivity {
         ok = (Button) findViewById(R.id.ok);
         all = (Button) findViewById(R.id.all);
         lock = (ImageButton) findViewById(R.id.lock);
+        leftView = findViewById(R.id.leftView);
 
         if (type == TYPE_DIANMINGDA) {
             ok.setVisibility(View.GONE);
             toolsRL.setVisibility(View.GONE);
+            leftView.setVisibility(View.GONE);
         } else if (type == TYPE_TONGJI) {
-            //显示对话框移到获取学生列表成功
+            toolsRL.setVisibility(View.GONE);
+            leftView.setVisibility(View.GONE);
         } else if (type == TYPE_WENJIAN) {
             ok.setVisibility(View.VISIBLE);
             all.setVisibility(View.VISIBLE);
@@ -112,9 +116,11 @@ public class StudentGridActivity extends BaseActivity {
         } else if (type == TYPE_SUOPING) {
             lock.setVisibility(View.VISIBLE);
             toolsRL.setVisibility(View.GONE);
+            leftView.setVisibility(View.GONE);
         } else if (type == TYPE_CHAPING) {
             ok.setVisibility(View.GONE);
             toolsRL.setVisibility(View.GONE);
+            leftView.setVisibility(View.GONE);
         }
     }
 
@@ -240,7 +246,7 @@ public class StudentGridActivity extends BaseActivity {
                         if (type == TYPE_DIANMING) {
                             sendShangkeCommand();
                         } else if (type == TYPE_TONGJI) {
-                            showTongjidialog();
+                            sendTongjiCommand();
                         }
                     } catch (Exception e) {
                         toast("请求失败，请稍后再试");
@@ -264,6 +270,24 @@ public class StudentGridActivity extends BaseActivity {
             toast("请求失败，请稍后再试");
             hidePD();
         }
+    }
+
+    private void sendTongjiCommand() {
+        ArrayList<KnowledgePoint> selectKPs = (ArrayList<KnowledgePoint>) getIntent().getSerializableExtra("kps");
+        ZbusHost.tongji(StudentGridActivity.this, selectKPs.get(0), new OnListener() {
+
+            @Override
+            public void onSuccess() {
+                //toast("发送统计命令成功");
+                showTongjidialog();
+            }
+
+            @Override
+            public void onFailure() {
+                toast("发送统计命令失败");
+                finish();
+            }
+        });
     }
 
     private void sendShangkeCommand() {
@@ -458,6 +482,12 @@ public class StudentGridActivity extends BaseActivity {
 
     @Override
     public void dm(View view) {
+        //reset
+        for (Student s : students) {
+            s.come = false;
+        }
+        adapter.notifyDataSetChanged();
+
         dialog_dianming = new Dialog(this, R.style.popupDialog);
         dialog_dianming.setContentView(R.layout.dialog_dianming);
         dialog_dianming.show();
@@ -482,7 +512,6 @@ public class StudentGridActivity extends BaseActivity {
 
     @Override
     public void sk(View view) {
-        //FIXME 不点名直接上课，哇咔咔
         startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class).putExtra("students", students));
         finish();
     }
@@ -495,8 +524,8 @@ public class StudentGridActivity extends BaseActivity {
     private void doEndSign() {
         mHandler.removeMessages(TYPE_DIANMING);
         dialog_dianming.dismiss();
-        startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class).putExtra("students", students));
-        finish();
+        //startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class).putExtra("students", students));
+        //finish();
     }
 
     public void doStartSign() {
@@ -556,7 +585,7 @@ public class StudentGridActivity extends BaseActivity {
     public void doEndTongji() {
         //1.上报统计结果
         mHandler.removeMessages(TYPE_TONGJI);
-        showPD();
+        dialog_tongji.dismiss();
         try {
             String url = clientUrl + "/device/teacher/course/student/knowledge/result";
             Log.d("test", "url = " + url);
@@ -575,19 +604,12 @@ public class StudentGridActivity extends BaseActivity {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
-                    hidePD();
-                    //2.关闭对话框并退出
-                    dialog_tongji.dismiss();
-                    finish();
                 }
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
-                    hidePD();
-                    if (!Utils.check301(StudentGridActivity.this, s, "knowledgeCountResult")) {
-                        toast("请求失败，请稍后再试");
-                    }
+                    Utils.check301(StudentGridActivity.this, s, "knowledgeCountResult");
                 }
             });
         } catch (Exception e) {

@@ -26,7 +26,7 @@ public class ZbusMessageHandler implements MessageHandler {
         String msg = message.getBodyString();
         Log.d("test", "getBodyString = " + message.getBodyString());
 
-        //{"student":"890406562707861","command":"sign"}
+        //{"studentIMEI":"890406562707861","command":"sign"}
         try {
             JSONObject o = new JSONObject(msg);
             String command = o.optString("command");
@@ -57,7 +57,7 @@ public class ZbusMessageHandler implements MessageHandler {
             return;
         }
 
-        ((ResultActivity) KWApplication.currentActivity).getOneAnswer(studentIMEI , answer);
+        ((ResultActivity) KWApplication.currentActivity).getOneSubmit(studentIMEI , answer);
     }
 
     private void shangke(String studentIMEI) {
