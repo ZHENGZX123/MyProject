@@ -171,20 +171,20 @@ public class App extends KiwayApplication {
             Log.d("test", "accpterMessage msg = " + msg + "");
             getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
             try {
-                JSONObject data = new JSONObject(msg);
-                String command = data.optString("command");
+                JSONObject o = new JSONObject(msg);
+                String command = o.optString("command");
                 if (command.equals("question")) {//回答问题的
-                    ((BaseActivity) currentActivity).onQuestion(data);
+                    ((BaseActivity) currentActivity).onQuestion(o);
                 } else if (command.equals("sign")) {//签到
                     ((BaseActivity) currentActivity).onSign();
                 } else if (command.equals("tongji")) {//知识点统计
-                    String knowledge = data.optString("knowledge");
+                    String knowledge = o.optString("knowledge");
                     ((BaseActivity) currentActivity).onTongji(knowledge);
                 } else if (command.equals("qiangda")) {
                     ((BaseActivity) currentActivity).onQiangda();
                 } else if (command.equals("qiangdaResult")) {
-                    int result = data.optInt("result");
-                    String qiangdaStudentName = data.optString("qiangdaStudentName");
+                    int result = o.optInt("result");
+                    String qiangdaStudentName = o.optString("qiangdaStudentName");
                     ((BaseActivity) currentActivity).onQiangdaResult(result, qiangdaStudentName);
                 } else if (command.equals("wenjian")) {
                     ((BaseActivity) currentActivity).toast("接收到文件");
@@ -195,7 +195,7 @@ public class App extends KiwayApplication {
                         Log.d("test", "学生把答题页面关闭了，不应该。。。");
                         return;
                     }
-                    String collection = data.optString("collection");
+                    String collection = o.optString("collection");
                     ((QuestionActivity) currentActivity).setCollection(collection);
                 } else if (command.equals("questionTimeup")) {
                     if (!(currentActivity instanceof QuestionActivity)) {
@@ -211,6 +211,15 @@ public class App extends KiwayApplication {
                     }
                     ((QuestionActivity) currentActivity).toast("老师结束了这次答题");
                     ((QuestionActivity) currentActivity).finish();
+                } else if (command.equals("tuiping")) {
+                    int status = o.optInt("status");
+                    String topic = o.optString("topic");
+                    if (status == 1) {
+                        //打开
+                        ((BaseActivity) currentActivity).startPlayer(topic);
+                    } else {
+                        ((BaseActivity) currentActivity).stopPlayer();
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

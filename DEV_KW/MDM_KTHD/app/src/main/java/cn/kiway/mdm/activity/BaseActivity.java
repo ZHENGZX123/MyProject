@@ -27,6 +27,9 @@ import cn.kiway.mdm.dialog.NotifyShowDialog;
 import cn.kiway.mdm.dialog.QiangdaDialog;
 import cn.kiway.mdm.dialog.SignDialog;
 import cn.kiway.mdm.model.Question;
+import io.agora.openlive.model.ConstantApp;
+import io.agora.openlive.ui.LiveRoomActivity;
+import io.agora.rtc.Constants;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
 /**
@@ -197,5 +200,20 @@ public class BaseActivity extends Activity {
                         .show();
             }
         });
+    }
+
+    public void startPlayer(String roomName) {
+        //1.开始播放教师推屏
+        Intent i = new Intent(BaseActivity.this, LiveRoomActivity.class);
+        i.putExtra(ConstantApp.ACTION_KEY_CROLE, Constants.CLIENT_ROLE_AUDIENCE);
+        i.putExtra(ConstantApp.ACTION_KEY_ROOM_NAME, roomName);
+        startActivity(i);
+    }
+
+    public void stopPlayer() {
+        if (LiveRoomActivity.instance == null) {
+            return;
+        }
+        LiveRoomActivity.instance.finish();
     }
 }
