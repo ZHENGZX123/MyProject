@@ -1,0 +1,348 @@
+[
+    {
+        "outputFile": "F:\\kiway_xm\\MDM_Brower\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v21\\values-v21.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endLine": 5,
+                    "endColumn": 12,
+                    "endOffset": 274
+                },
+                "from": {
+                    "file": "F:\\kiway_xm\\MDM_Brower\\app\\src\\main\\res\\values-v21\\styles.xml",
+                    "position": {
+                        "startLine": 72,
+                        "startColumn": 4,
+                        "startOffset": 4001,
+                        "endLine": 75,
+                        "endColumn": 12,
+                        "endOffset": 4220
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 6,
+                    "startColumn": 4,
+                    "startOffset": 279,
+                    "endLine": 9,
+                    "endColumn": 12,
+                    "endOffset": 529
+                },
+                "from": {
+                    "file": "F:\\kiway_xm\\MDM_Brower\\app\\src\\main\\res\\values-v21\\styles.xml",
+                    "position": {
+                        "startLine": 67,
+                        "startColumn": 4,
+                        "startOffset": 3745,
+                        "endLine": 70,
+                        "endColumn": 12,
+                        "endOffset": 3995
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 10,
+                    "startColumn": 4,
+                    "startOffset": 534,
+                    "endLine": 21,
+                    "endColumn": 12,
+                    "endOffset": 1343
+                },
+                "from": {
+                    "file": "F:\\kiway_xm\\MDM_Brower\\app\\src\\main\\res\\values-v21\\styles.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 57,
+                        "endLine": 15,
+                        "endColumn": 12,
+                        "endOffset": 866
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 22,
+                    "startColumn": 4,
+                    "startOffset": 1348,
+                    "endLine": 30,
+                    "endColumn": 12,
+                    "endOffset": 1918
+                },
+                "from": {
+                    "file": "F:\\kiway_xm\\MDM_Brower\\app\\src\\main\\res\\values-v21\\styles.xml",
+                    "position": {
+                        "startLine": 57,
+                        "startColumn": 4,
+                        "startOffset": 3169,
+                        "endLine": 65,
+                        "endColumn": 12,
+                        "endOffset": 3739
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 31,
+                    "startColumn": 4,
+                    "startOffset": 1923,
+                    "endLine": 39,
+                    "endColumn": 12,
+                    "endOffset": 2499
+                },
+                "from": {
+                    "file": "F:\\kiway_xm\\MDM_Brower\\app\\src\\main\\res\\values-v21\\styles.xml",
+                    "position": {
+                        "startLine": 17,
+                        "startColumn": 4,
+                        "startOffset": 872,
+                        "endLine": 25,
+                        "endColumn": 12,
+                        "endOffset": 1448
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 40,
+                    "startColumn": 4,
+                    "startOffset": 2504,
+                    "endLine": 48,
+                    "endColumn": 12,
+                    "endOffset": 3076
+                },
+                "from": {
+                    "file": "F:\\kiway_xm\\MDM_Brower\\app\\src\\main\\res\\values-v21\\styles.xml",
+                    "position": {
+                        "startLine": 27,
+                        "startColumn": 4,
+                        "startOffset": 1454,
+                        "endLine": 35,
+                        "endColumn": 12,
+                        "endOffset": 2026
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 49,
+                    "startColumn": 4,
+                    "startOffset": 3081,
+                    "endLine": 57,
+                    "endColumn": 12,
+                    "endOffset": 3641
+                },
+                "from": {
+                    "file": "F:\\kiway_xm\\MDM_Brower\\app\\src\\main\\res\\values-v21\\styles.xml",
+                    "position": {
+                        "startLine": 47,
+                        "startColumn": 4,
+                        "startOffset": 2603,
+                        "endLine": 55,
+                        "endColumn": 12,
+                        "endOffset": 3163
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 58,
+                    "startColumn": 4,
+                    "startOffset": 3646,
+                    "endLine": 66,
+                    "endColumn": 12,
+                    "endOffset": 4210
+                },
+                "from": {
+                    "file": "F:\\kiway_xm\\MDM_Brower\\app\\src\\main\\res\\values-v21\\styles.xml",
+                    "position": {
+                        "startLine": 37,
+                        "startColumn": 4,
+                        "startOffset": 2032,
+                        "endLine": 45,
+                        "endColumn": 12,
+                        "endOffset": 2597
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "outputFile": "C:\\Users\\Administrator\\Desktop\\brower\\Ninja1\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v21\\values-v21.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endLine": 5,
+                    "endColumn": 12,
+                    "endOffset": 274
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\Desktop\\brower\\Ninja1\\app\\src\\main\\res\\values-v21\\styles.xml",
+                    "position": {
+                        "startLine": 72,
+                        "startColumn": 4,
+                        "startOffset": 4001,
+                        "endLine": 75,
+                        "endColumn": 12,
+                        "endOffset": 4220
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 6,
+                    "startColumn": 4,
+                    "startOffset": 279,
+                    "endLine": 9,
+                    "endColumn": 12,
+                    "endOffset": 529
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\Desktop\\brower\\Ninja1\\app\\src\\main\\res\\values-v21\\styles.xml",
+                    "position": {
+                        "startLine": 67,
+                        "startColumn": 4,
+                        "startOffset": 3745,
+                        "endLine": 70,
+                        "endColumn": 12,
+                        "endOffset": 3995
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 10,
+                    "startColumn": 4,
+                    "startOffset": 534,
+                    "endLine": 21,
+                    "endColumn": 12,
+                    "endOffset": 1343
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\Desktop\\brower\\Ninja1\\app\\src\\main\\res\\values-v21\\styles.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 57,
+                        "endLine": 15,
+                        "endColumn": 12,
+                        "endOffset": 866
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 22,
+                    "startColumn": 4,
+                    "startOffset": 1348,
+                    "endLine": 30,
+                    "endColumn": 12,
+                    "endOffset": 1918
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\Desktop\\brower\\Ninja1\\app\\src\\main\\res\\values-v21\\styles.xml",
+                    "position": {
+                        "startLine": 57,
+                        "startColumn": 4,
+                        "startOffset": 3169,
+                        "endLine": 65,
+                        "endColumn": 12,
+                        "endOffset": 3739
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 31,
+                    "startColumn": 4,
+                    "startOffset": 1923,
+                    "endLine": 39,
+                    "endColumn": 12,
+                    "endOffset": 2499
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\Desktop\\brower\\Ninja1\\app\\src\\main\\res\\values-v21\\styles.xml",
+                    "position": {
+                        "startLine": 17,
+                        "startColumn": 4,
+                        "startOffset": 872,
+                        "endLine": 25,
+                        "endColumn": 12,
+                        "endOffset": 1448
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 40,
+                    "startColumn": 4,
+                    "startOffset": 2504,
+                    "endLine": 48,
+                    "endColumn": 12,
+                    "endOffset": 3076
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\Desktop\\brower\\Ninja1\\app\\src\\main\\res\\values-v21\\styles.xml",
+                    "position": {
+                        "startLine": 27,
+                        "startColumn": 4,
+                        "startOffset": 1454,
+                        "endLine": 35,
+                        "endColumn": 12,
+                        "endOffset": 2026
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 49,
+                    "startColumn": 4,
+                    "startOffset": 3081,
+                    "endLine": 57,
+                    "endColumn": 12,
+                    "endOffset": 3641
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\Desktop\\brower\\Ninja1\\app\\src\\main\\res\\values-v21\\styles.xml",
+                    "position": {
+                        "startLine": 47,
+                        "startColumn": 4,
+                        "startOffset": 2603,
+                        "endLine": 55,
+                        "endColumn": 12,
+                        "endOffset": 3163
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 58,
+                    "startColumn": 4,
+                    "startOffset": 3646,
+                    "endLine": 66,
+                    "endColumn": 12,
+                    "endOffset": 4210
+                },
+                "from": {
+                    "file": "C:\\Users\\Administrator\\Desktop\\brower\\Ninja1\\app\\src\\main\\res\\values-v21\\styles.xml",
+                    "position": {
+                        "startLine": 37,
+                        "startColumn": 4,
+                        "startOffset": 2032,
+                        "endLine": 45,
+                        "endColumn": 12,
+                        "endOffset": 2597
+                    }
+                }
+            }
+        ]
+    }
+]
