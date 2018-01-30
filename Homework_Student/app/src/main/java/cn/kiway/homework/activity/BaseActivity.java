@@ -280,7 +280,6 @@ public class BaseActivity extends Activity {
         Countly.sharedInstance().onStop();
     }
 
-
     public void getBooks() {
         AsyncHttpClient client = new AsyncHttpClient();
         client.setTimeout(10000);
