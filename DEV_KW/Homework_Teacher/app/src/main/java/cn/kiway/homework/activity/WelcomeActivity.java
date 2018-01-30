@@ -1,11 +1,6 @@
 package cn.kiway.homework.activity;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,8 +14,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
-import org.xutils.http.RequestParams;
-import org.xutils.x;
 
 import java.io.File;
 
@@ -30,7 +23,6 @@ import cn.kiway.homework.util.CountlyUtil;
 import cn.kiway.homework.util.FileUtils;
 import cn.kiway.homework.util.HttpDownload;
 import cn.kiway.homework.util.MLog;
-import cn.kiway.homework.util.NetworkUtil;
 
 import static cn.kiway.homework.WXApplication.url;
 import static cn.kiway.homework.util.Utils.getCurrentVersion;
@@ -41,13 +33,10 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 public class WelcomeActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "1.1.1";
+    private static final String currentPackageVersion = "1.1.2";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
-
-    private Dialog dialog_download;
-    protected ProgressDialog pd;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,7 +49,7 @@ public class WelcomeActivity extends BaseActivity {
     }
 
     private void initView() {
-        pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
+
     }
 
     //下面是版本更新相关
@@ -104,6 +93,8 @@ public class WelcomeActivity extends BaseActivity {
         }.start();
     }
 
+    private String apkVersion;
+    private String apkUrl;
     public Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             if (isJump) {
@@ -115,14 +106,14 @@ public class WelcomeActivity extends BaseActivity {
                 try {
                     //1.apk更新
                     MLog.d("test", "新版本返回值" + ret);
-                    String apkVersion = new JSONObject(ret).getString("apkCode");
-                    String apkUrl = new JSONObject(ret).getString("apkUrl");
+                    apkVersion = new JSONObject(ret).getString("apkCode");
+                    apkUrl = new JSONObject(ret).getString("apkUrl");
 
                     String zipCode = new JSONObject(ret).getString("zipCode");
                     String zipUrl = new JSONObject(ret).getString("zipUrl");
 
                     if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
-                        downloadSilently(apkUrl, apkVersion);
+
                         jump();
                     } else {
                         //如果APK没有最新版本，比较包的版本。如果内置包的版本号比较高，直接替换
@@ -150,87 +141,9 @@ public class WelcomeActivity extends BaseActivity {
                 }
             } else if (msg.what == 3) {
                 jump();
-            } else if (msg.what == 4) {
-                pd.dismiss();
-                // 下载完成后安装
-                CountlyUtil.getInstance().addEvent("升级APP");
-                String savedFilePath = (String) msg.obj;
-                Intent intent = new Intent();
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setAction(android.content.Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
-                startActivity(intent);
-                finish();
-            } else if (msg.what == 5) {
-                pd.dismiss();
-                toast(R.string.downloadfailure);
-                jump();
-            } else if (msg.what == 6) {
-                pd.setProgress(msg.arg1);
             }
         }
     };
-
-    private void downloadSilently(String apkUrl, String version) {
-        boolean isWifi = NetworkUtil.isWifi(this);
-        if (!isWifi) {
-            MLog.d("test", "不是wifi...");
-            return;
-        }
-        final String savedFilePath = "/mnt/sdcard/cache/xtzy_teacher_" + version + ".apk";
-        if (new File(savedFilePath).exists()) {
-            MLog.d("test", "该文件已经下载好了");
-            askforInstall(savedFilePath);
-            return;
-        }
-        RequestParams params = new RequestParams(apkUrl);
-        params.setSaveFilePath(savedFilePath);
-        params.setAutoRename(false);
-        params.setAutoResume(true);
-        x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
-            @Override
-            public void onSuccess(File result) {
-                //成功后弹出对话框询问，是否安装
-                askforInstall(savedFilePath);
-            }
-
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-
-            }
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-
-            }
-
-            @Override
-            public void onFinished() {
-
-            }
-        });
-    }
-
-    private void askforInstall(final String savedFilePath) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeActivity.this, AlertDialog.THEME_HOLO_LIGHT);
-        dialog_download = builder.setMessage("发现新的版本，是否更新？本次更新不消耗流量。").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface arg0, int arg1) {
-                dialog_download.dismiss();
-                Message msg = new Message();
-                msg.what = 4;
-                msg.obj = savedFilePath;
-                mHandler.sendMessage(msg);
-            }
-        }).setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                jump();
-            }
-        }).create();
-        dialog_download.show();
-    }
 
     private void updatePackage(final String outer_package, final String downloadUrl) {
         new Thread() {
@@ -305,7 +218,8 @@ public class WelcomeActivity extends BaseActivity {
     }
 
     public void jump() {
-        startActivity(new Intent(this, MainActivity.class));
+        isJump = true;
+        startActivity(new Intent(this, MainActivity.class).putExtra("apkUrl", apkUrl).putExtra("apkVersion", apkVersion));
         finish();
     }
 }

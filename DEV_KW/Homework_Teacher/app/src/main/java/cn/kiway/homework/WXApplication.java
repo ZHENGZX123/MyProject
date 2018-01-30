@@ -51,7 +51,6 @@ public class WXApplication extends Application {
         } else {
             url = zhengshiUrl;
         }
-
     }
 
     public static String ROOT; //"/mnt/sdcard/kiway_teacher/";
@@ -71,7 +70,11 @@ public class WXApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        ROOT = this.getFilesDir().toString() + "/";
+        if (isTest) {
+            ROOT = "/mnt/sdcard/kiway_teacher/";
+        } else {
+            ROOT = this.getFilesDir().toString() + "/";
+        }
         Log.d("test", "ROOT = " + ROOT);
 
         initImageCache();

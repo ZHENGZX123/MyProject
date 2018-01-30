@@ -1,6 +1,9 @@
 package cn.kiway.homework.activity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.MediaRecorder;
@@ -8,9 +11,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
@@ -36,6 +39,8 @@ import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -50,6 +55,7 @@ import cn.kiway.homework.util.BadgeUtil;
 import cn.kiway.homework.util.CountlyUtil;
 import cn.kiway.homework.util.MLog;
 import cn.kiway.homework.util.MyDBHelper;
+import cn.kiway.homework.util.NetworkUtil;
 import cn.kiway.homework.util.ResourceUtil;
 import cn.kiway.homework.util.UploadUtil;
 import cn.kiway.homework.util.Utils;
@@ -59,10 +65,13 @@ import uk.co.senab.photoview.sample.ViewPagerActivity;
 import static cn.kiway.homework.WXApplication.ceshiUrl;
 import static cn.kiway.homework.WXApplication.url;
 import static cn.kiway.homework.WXApplication.zhengshiUrl;
+import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
 
+    private Dialog dialog_download;
+    protected ProgressDialog pd;
     private X5WebView wv;
     private RelativeLayout root;
     public static MainActivity instance;
@@ -88,19 +97,99 @@ public class MainActivity extends BaseActivity {
         initView();
         Utils.checkNetWork(this, false);
         initData();
-        huaweiPush();
         //checkIsPad(getIntent());
+        huaweiPush();
         load();
+        checkNewAPK();
     }
 
-
-    /*@Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        checkIsPad(intent);
+    private void checkNewAPK() {
+        //apkUrl , apkVersion
+        String apkUrl = getIntent().getStringExtra("apkUrl");
+        String apkVersion = getIntent().getStringExtra("apkVersion");
+        if (TextUtils.isEmpty(apkUrl)) {
+            return;
+        }
+        if (TextUtils.isEmpty(apkVersion)) {
+            return;
+        }
+        if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
+            downloadSilently(apkUrl, apkVersion);
+        }
     }
 
-    private void checkIsPad(Intent intent) {
+    private void downloadSilently(final String apkUrl, String version) {
+        final String savedFilePath = "/mnt/sdcard/cache/xtzy_teacher_" + version + ".apk";
+        if (new File(savedFilePath).exists()) {
+            MLog.d("test", "该文件已经下载好了");
+            askforInstall(savedFilePath);
+            return;
+        }
+        boolean isWifi = NetworkUtil.isWifi(this);
+        if (isWifi) {
+            startDownloadAPK(apkUrl, savedFilePath);
+        } else {
+            MLog.d("test", "不是wifi...");
+            //提示4G
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
+            dialog_download = builder.setMessage("有新的版本需要更新，您当前的网络是4G，确定使用流量下载新的APK吗？").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface arg0, int arg1) {
+                    dialog_download.dismiss();
+                    startDownloadAPK(apkUrl, savedFilePath);
+                }
+            }).setPositiveButton(android.R.string.cancel, null).create();
+            dialog_download.show();
+        }
+    }
+
+    private void startDownloadAPK(String apkUrl, final String savedFilePath) {
+        RequestParams params = new RequestParams(apkUrl);
+        params.setSaveFilePath(savedFilePath);
+        params.setAutoRename(false);
+        params.setAutoResume(true);
+        x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
+            @Override
+            public void onSuccess(File result) {
+                //成功后弹出对话框询问，是否安装
+                askforInstall(savedFilePath);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
+    }
+
+    private void askforInstall(final String savedFilePath) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
+        dialog_download = builder.setMessage("发现新的版本，是否更新？本次更新不消耗流量。").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                dialog_download.dismiss();
+                Message msg = new Message();
+                msg.what = 4;
+                msg.obj = savedFilePath;
+                mHandler.sendMessage(msg);
+            }
+        }).setPositiveButton(android.R.string.cancel, null).create();
+        dialog_download.show();
+    }
+
+    /*private void checkIsPad(Intent intent) {
         username = intent.getStringExtra("username");
         password = intent.getStringExtra("password");
         tab = intent.getStringExtra("tab");
@@ -149,6 +238,7 @@ public class MainActivity extends BaseActivity {
     }*/
 
     private void initView() {
+        pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
         root = (RelativeLayout) findViewById(R.id.root);
         wv = (X5WebView) findViewById(R.id.wv);
         kill = (Button) findViewById(R.id.kill);
@@ -189,7 +279,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void load() {
-        wv.clearCache(true);
         wv.loadUrl("file://" + WXApplication.ROOT + WXApplication.HTML);
     }
 
@@ -316,9 +405,6 @@ public class MainActivity extends BaseActivity {
             if (TextUtils.isEmpty(key)) {
                 return;
             }
-            if (TextUtils.isEmpty(value)) {
-                return;
-            }
             //加密
             getSharedPreferences("kiway", 0).edit().putString(key, value).commit();
         }
@@ -331,7 +417,7 @@ public class MainActivity extends BaseActivity {
             }
             //解密
             String ret = getSharedPreferences("kiway", 0).getString(key, "");
-            Log.d("test", "ret = " + ret);
+            MLog.d("test", "ret = " + ret);
             return ret;
         }
 
@@ -555,12 +641,6 @@ public class MainActivity extends BaseActivity {
             MLog.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , time = " + time + " , tagname = " + tagname + " , related = " + related + ", event = " + event);
             CountlyUtil.getInstance().addEvent(event);
 
-            //0.检查网络
-//            if (!method.equalsIgnoreCase("GET") && !NetworkUtil.isNetworkAvailable(getApplicationContext())) {
-//                toast("没有网络，请检查网络稍后再试");
-//                httpRequestCallback(tagname, "");
-//                return;
-//            }
             if (time.equals("0")) {
                 //1.重新获取
                 doHttpRequest(url, param, method, tagname, time, related);
@@ -868,7 +948,16 @@ public class MainActivity extends BaseActivity {
                         wv.loadUrl("javascript:reConnect()");
                     }
                 }
-                return;
+            } else if (msg.what == 4) {
+                // 下载完成后安装
+                CountlyUtil.getInstance().addEvent("升级APP");
+                String savedFilePath = (String) msg.obj;
+                Intent intent = new Intent();
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setAction(android.content.Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
+                startActivity(intent);
+                finish();
             }
         }
     };
