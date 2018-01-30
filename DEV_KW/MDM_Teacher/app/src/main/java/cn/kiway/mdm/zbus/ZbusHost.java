@@ -48,6 +48,27 @@ public class ZbusHost {
         }
     }
 
+    public static void tuiping(Activity c, int status, OnListener onListener) {
+        try {
+            String title = "推屏";
+            String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "tuiping").put("topic", topic).put("status", status)).toString();
+            for (Student s : students) {
+                String studentTopic = "kiwayMDM_student_" + s.imei;
+                doSendMsg(title, userId, msg, studentTopic);
+            }
+            if (onListener != null) {
+                onListener.onSuccess();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (onListener != null) {
+                onListener.onFailure();
+            }
+        }
+    }
+
+
     public static void qiangdaResult(Activity c, Student s, int result, String qiangdaStudentName, OnListener onListener) {
         try {
             String title = "抢答结果";
@@ -143,6 +164,45 @@ public class ZbusHost {
             String msg = new JSONObject().put("data", new JSONObject().put("command", "collection").put("topic", topic).put("collection", collection)).toString();
             String studentTopic = "kiwayMDM_student_" + s.imei;
             doSendMsg("批改结果", userId, msg, studentTopic);
+            if (onListener != null) {
+                onListener.onSuccess();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (onListener != null) {
+                onListener.onFailure();
+            }
+        }
+    }
+
+    public static void chaping(Activity c, Student s, OnListener onListener) {
+        try {
+            String title = "查屏";
+            String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "chaping").put("topic", topic)).toString();
+            String studentTopic = "kiwayMDM_student_" + s.imei;
+            doSendMsg(title, userId, msg, studentTopic);
+            if (onListener != null) {
+                onListener.onSuccess();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (onListener != null) {
+                onListener.onFailure();
+            }
+        }
+    }
+
+    public static void suoping(Activity c, ArrayList<Student> students, int suoping, OnListener onListener) {
+        try {
+            String title = "锁屏";
+            String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
+            //TODO 这个要按照易敏的格式
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "suoping").put("topic", topic).put("suoping", suoping)).toString();
+            for (Student s : students) {
+                String studentTopic = "kiwayMDM_student_" + s.imei;
+                doSendMsg(title, userId, msg, studentTopic);
+            }
             if (onListener != null) {
                 onListener.onSuccess();
             }

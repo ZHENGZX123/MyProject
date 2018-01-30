@@ -25,7 +25,6 @@ public class ZbusMessageHandler implements MessageHandler {
     public void handle(Message message, MqClient mqClient) throws IOException {
         String msg = message.getBodyString();
         Log.d("test", "getBodyString = " + message.getBodyString());
-
         //{"studentIMEI":"890406562707861","command":"sign"}
         try {
             JSONObject o = new JSONObject(msg);
@@ -57,7 +56,7 @@ public class ZbusMessageHandler implements MessageHandler {
             return;
         }
 
-        ((ResultActivity) KWApplication.currentActivity).getOneSubmit(studentIMEI , answer);
+        ((ResultActivity) KWApplication.currentActivity).getOneSubmit(studentIMEI, answer);
     }
 
     private void shangke(String studentIMEI) {
