@@ -55,7 +55,6 @@ import android.os.SystemClock;
 import android.os.Trace;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationManagerCompat;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -369,6 +368,7 @@ public class Launcher extends MainActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         if (DEBUG_STRICT_MODE) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectDiskReads()
@@ -2516,11 +2516,19 @@ public class Launcher extends MainActivity
             startActivity(new Intent(this, SettingActivity.class));
             return;
         }
-        if (packageName.contains("com.android.browser")) {
+        if (packageName.contains("com.android.browser")) {//浏览器
             startActivity(new Intent(this, WebViewActivity.class));
             return;
         }
-
+        if (packageName.contains("cn.kiway.brower")) {
+            Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage("cn.kiway.brower");
+            in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//重启APP
+            in.putExtra("enable_type", Utils.getEnable_Network(this));
+            in.putExtra("all_network", new MyDBHelper(this).getAllNetworks(Utils.getEnable_Network(this)));
+            in.putExtra("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+            startActivity(in);
+            return;
+        }
         if (packageName.contains("com.android.camera2")) {
             HttpUtil.childOperation(this, "useApp", "使用了相机APP");
             int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
@@ -2659,13 +2667,22 @@ public class Launcher extends MainActivity
             startActivity(new Intent(this, WebViewActivity.class));
             return;
         }
+        if (intent.getComponent().getPackageName().contains("cn.kiway.brower")) {
+            Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage("cn.kiway.brower");
+            in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//重启APP
+            in.putExtra("enable_type", Utils.getEnable_Network(this));
+            in.putExtra("all_network", new MyDBHelper(this).getAllNetworks(Utils.getEnable_Network(this)));
+            in.putExtra("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+            startActivity(in);
+            return;
+        }
         if (intent.getComponent().getPackageName().contains("com.android.camera2")) {
-            HttpUtil.childOperation(this, "useApp", "使用了相机APP");
             int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
             if (flag_camera == 0) {
                 toast("相机功能当前不能使用");
                 return;
             }
+            HttpUtil.childOperation(this, "useApp", "使用了相机APP");
         }
 
         if (intent == null) {
