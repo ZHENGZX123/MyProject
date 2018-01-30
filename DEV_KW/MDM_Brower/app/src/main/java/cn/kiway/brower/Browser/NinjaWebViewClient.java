@@ -41,11 +41,13 @@ public class NinjaWebViewClient extends WebViewClient {
     private AdBlock adBlock;
 
     private boolean white;
+
     public void updateWhite(boolean white) {
         this.white = white;
     }
 
     private boolean enable;
+
     public void enableAdBlock(boolean enable) {
         this.enable = enable;
     }
@@ -105,7 +107,7 @@ public class NinjaWebViewClient extends WebViewClient {
                 context.startActivity(intent);
                 return true;
             } catch (Exception e) {
-
+                e.printStackTrace();
             } // When intent fail will crash
         }
         if (checkUrlEnable(url)) {
@@ -116,7 +118,7 @@ public class NinjaWebViewClient extends WebViewClient {
             white = adBlock.isWhite(url);
             return false;
         } else {
-            Toast.makeText(context,"该网站不能访问",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "该网站不能访问", Toast.LENGTH_SHORT).show();
             return true;
         }
     }
@@ -211,7 +213,8 @@ public class NinjaWebViewClient extends WebViewClient {
     }
 
     @Override
-    public void onReceivedHttpAuthRequest(WebView view, @NonNull final HttpAuthHandler handler, String host, String realm) {
+    public void onReceivedHttpAuthRequest(WebView view, @NonNull final HttpAuthHandler handler, String host, String
+            realm) {
         Context holder = IntentUnit.getContext();
         if (holder == null || !(holder instanceof Activity)) {
             return;
@@ -221,7 +224,8 @@ public class NinjaWebViewClient extends WebViewClient {
         builder.setCancelable(false);
         builder.setTitle(R.string.dialog_title_sign_in);
 
-        LinearLayout signInLayout = (LinearLayout) LayoutInflater.from(holder).inflate(R.layout.dialog_sign_in, null, false);
+        LinearLayout signInLayout = (LinearLayout) LayoutInflater.from(holder).inflate(R.layout.dialog_sign_in, null,
+                false);
         final EditText userEdit = (EditText) signInLayout.findViewById(R.id.dialog_sign_in_username);
         final EditText passEdit = (EditText) signInLayout.findViewById(R.id.dialog_sign_in_password);
         passEdit.setTypeface(Typeface.DEFAULT);

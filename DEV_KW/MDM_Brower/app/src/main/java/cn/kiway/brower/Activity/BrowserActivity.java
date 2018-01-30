@@ -1093,7 +1093,7 @@ public class BrowserActivity extends Activity implements BrowserController {
             webView.activate();
 
             webView.loadUrl(url);
-            Log.e("**************1054", url);
+            Log.e("**************1096", url);
             updateOmnibox();
         } else {
             NinjaToast.show(this, R.string.toast_load_error);
