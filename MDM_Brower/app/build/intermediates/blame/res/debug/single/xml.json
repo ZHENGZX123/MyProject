@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "F:\\kiway_xm\\MDM_Brower\\app\\build\\intermediates\\res\\merged\\debug\\xml\\searchable.xml",
+        "source": "F:\\kiway_xm\\MDM_Brower\\app\\src\\main\\res\\xml\\searchable.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\brower\\Ninja1\\app\\build\\intermediates\\res\\merged\\debug\\xml\\searchable.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\brower\\Ninja1\\app\\src\\main\\res\\xml\\searchable.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\brower\\Ninja1\\app\\build\\intermediates\\res\\merged\\debug\\xml\\preference_clear.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\brower\\Ninja1\\app\\src\\main\\res\\xml\\preference_clear.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\Desktop\\brower\\Ninja1\\app\\build\\intermediates\\res\\merged\\debug\\xml\\preference_setting.xml",
+        "source": "C:\\Users\\Administrator\\Desktop\\brower\\Ninja1\\app\\src\\main\\res\\xml\\preference_setting.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Brower\\app\\build\\intermediates\\res\\merged\\debug\\xml\\preference_clear.xml",
+        "source": "F:\\kiway_xm\\MDM_Brower\\app\\src\\main\\res\\xml\\preference_clear.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Brower\\app\\build\\intermediates\\res\\merged\\debug\\xml\\preference_setting.xml",
+        "source": "F:\\kiway_xm\\MDM_Brower\\app\\src\\main\\res\\xml\\preference_setting.xml"
+    }
+]
