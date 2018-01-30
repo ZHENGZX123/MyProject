@@ -40,30 +40,6 @@
             android:text="杀死缓存"
             android:visibility="gone" />
 
-        <LinearLayout
-            android:id="@+id/layout_welcome"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#ffffff"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@mipmap/ic_launcher" />
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="协同教师"
-                android:textColor="#000000"
-                android:textSize="25sp" />
-
-        </LinearLayout>
-
     </RelativeLayout>
 
 </RelativeLayout>
