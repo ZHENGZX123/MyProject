@@ -37,6 +37,9 @@
     <string name="sp_passwords">
         SP_PASSWORDS_9
     </string>
+    <string name="sp_version">
+        SP_VERSION_9
+    </string>
     <string name="sp_rendering">
         SP_RENDERING_9
     </string>
