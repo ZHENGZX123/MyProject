@@ -1,6 +1,5 @@
 package cn.kiway.brower.Fragment;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,15 +8,6 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.webkit.CookieManager;
-import android.widget.FrameLayout;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import cn.kiway.brower.Activity.ClearActivity;
 import cn.kiway.brower.Activity.TokenActivity;
@@ -26,6 +16,7 @@ import cn.kiway.brower.Ninja.R;
 import cn.kiway.brower.Task.ExportBookmarksTask;
 import cn.kiway.brower.Task.ExportWhitelistTask;
 import cn.kiway.brower.Unit.IntentUnit;
+import cn.kiway.brower.Unit.Utils;
 import cn.kiway.brower.View.NinjaToast;
 
 public class SettingFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -36,27 +27,29 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
 
     private ListPreference searchEngine;
     private ListPreference notiPriority;
-    private ListPreference tabPosition;
     private ListPreference volumeControl;
     private ListPreference userAgent;
     private ListPreference rendering;
+    private Preference version;
 
     private String[] seEntries;
     private String[] npEntries;
-    private String[] tpEntries;
     private String[] vcEntries;
     private String[] ucEntries;
     private String[] rdEntries;
 
     private boolean spChange = false;
+
     public boolean isSPChange() {
         return spChange;
     }
 
     private boolean dbChange = false;
+
     public boolean isDBChange() {
         return dbChange;
     }
+
     public void setDBChange(boolean dbChange) {
         this.dbChange = dbChange;
     }
@@ -91,11 +84,6 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
         notiPriority = (ListPreference) findPreference(getString(R.string.sp_notification_priority));
         notiPriority.setSummary(summary);
 
-//        tpEntries = getResources().getStringArray(R.array.setting_entries_tab_position);
-//        summary = tpEntries[Integer.valueOf(sp.getString(getString(R.string.sp_anchor), "1"))];
-//        tabPosition = (ListPreference) findPreference(getString(R.string.sp_anchor));
-//        tabPosition.setSummary(summary);
-
 
         vcEntries = getResources().getStringArray(R.array.setting_entries_volume_control);
         summary = vcEntries[Integer.valueOf(sp.getString(getString(R.string.sp_volume), "1"))];
@@ -117,6 +105,9 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
         summary = rdEntries[Integer.valueOf(sp.getString(getString(R.string.sp_rendering), "0"))];
         rendering = (ListPreference) findPreference(getString(R.string.sp_rendering));
         rendering.setSummary(summary);
+
+        version=findPreference(getString(R.string.sp_version));
+        version.setSummary(Utils.getCurrentVersion(getActivity()));
     }
 
     @Override
@@ -159,15 +150,7 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
                 getActivity().startActivityForResult(clearControl, IntentUnit.REQUEST_CLEAR);
                 break;
             case R.string.setting_title_version:
-                NinjaToast.show(getActivity(), R.string.toast_emoji);
-                break;
-            case R.string.setting_title_license:
-                showLicenseDialog();
-                break;
-            case R.string.setting_title_donation:
-                showDonationDialog();
-                break;
-            default:
+                NinjaToast.show(getActivity(), Utils.getCurrentVersion(getActivity()));
                 break;
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
@@ -187,13 +170,7 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
         } else if (key.equals(getString(R.string.sp_notification_priority))) {
             String summary = npEntries[Integer.valueOf(sp.getString(key, "0"))];
             notiPriority.setSummary(summary);
-      } //  else if (key.equals(getString(R.string.sp_anchor))) {
-//            String summary = tpEntries[Integer.valueOf(sp.getString(key, "1"))];
-//            tabPosition.setSummary(summary);
-//            NinjaToast.show(getActivity(), R.string.toast_need_restart);
-//        }
-//
-else if (key.equals(getString(R.string.sp_volume))) {
+        } else if (key.equals(getString(R.string.sp_volume))) {
             String summary = vcEntries[Integer.valueOf(sp.getString(key, "1"))];
             volumeControl.setSummary(summary);
         } else if (key.equals(getString(R.string.sp_user_agent))) {
@@ -213,51 +190,4 @@ else if (key.equals(getString(R.string.sp_volume))) {
         }
     }
 
-    private void showLicenseDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setCancelable(true);
-
-        FrameLayout layout = (FrameLayout) getActivity().getLayoutInflater().inflate(R.layout.dialog_list, null, false);
-        builder.setView(layout);
-
-        List<Map<String, String>> list = new ArrayList<>();
-        String[] titles = getResources().getStringArray(R.array.license_titles);
-        String[] contents = getResources().getStringArray(R.array.license_contents);
-        String[] authors = getResources().getStringArray(R.array.license_authors);
-        String[] urls = getResources().getStringArray(R.array.license_urls);
-        for (int i = 0; i < 7; i++) {
-            Map<String, String> map = new HashMap<>();
-            map.put(LICENSE_TITLE, titles[i]);
-            map.put(LICENSE_CONTENT, contents[i]);
-            map.put(LICENSE_AUTHOR, authors[i]);
-            map.put(LICENSE_URL, urls[i]);
-            list.add(map);
-        }
-
-        SimpleAdapter adapter = new SimpleAdapter(
-                getActivity(),
-                list,
-                R.layout.dialog_license_item,
-                new String[] {LICENSE_TITLE, LICENSE_CONTENT, LICENSE_AUTHOR, LICENSE_URL},
-                new int[] {R.id.dialog_license_item_title, R.id.dialog_license_item_content, R.id.dialog_license_item_author, R.id.dialog_license_item_url}
-        );
-
-        ListView listView = (ListView) layout.findViewById(R.id.dialog_list);
-        listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
-        builder.create().show();
-    }
-
-    private void showDonationDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setCancelable(true);
-
-        FrameLayout layout = (FrameLayout) getActivity().getLayoutInflater().inflate(R.layout.dialog_desc, null, false);
-        TextView textView = (TextView) layout.findViewById(R.id.dialog_desc);
-        textView.setText(R.string.dialog_content_donation);
-
-        builder.setView(layout);
-        builder.create().show();
-    }
 }
