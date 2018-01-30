@@ -14,15 +14,25 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
-import android.webkit.*;
+import android.webkit.HttpAuthHandler;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import java.io.ByteArrayInputStream;
+import java.util.HashMap;
+
 import cn.kiway.brower.Ninja.R;
 import cn.kiway.brower.Unit.BrowserUnit;
 import cn.kiway.brower.Unit.IntentUnit;
 import cn.kiway.brower.View.NinjaWebView;
 
-import java.io.ByteArrayInputStream;
+import static cn.kiway.brower.Activity.BrowserActivity.checkUrlEnable;
 
 public class NinjaWebViewClient extends WebViewClient {
     private NinjaWebView ninjaWebView;
@@ -94,12 +104,23 @@ public class NinjaWebViewClient extends WebViewClient {
                 intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
                 context.startActivity(intent);
                 return true;
-            } catch (Exception e) {} // When intent fail will crash
-        }
+            } catch (Exception e) {
 
-        white = adBlock.isWhite(url);
-        return super.shouldOverrideUrlLoading(view, url);
+            } // When intent fail will crash
+        }
+        if (checkUrlEnable(url)) {
+            HashMap<String, String> extHeader;
+            extHeader = new HashMap<String, String>();//创建额外的请求头参数表
+            extHeader.put("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0");
+            view.loadUrl(url, extHeader);
+            white = adBlock.isWhite(url);
+            return false;
+        } else {
+            Toast.makeText(context,"该网站不能访问",Toast.LENGTH_SHORT).show();
+            return true;
+        }
     }
+
 
     @Deprecated
     @Override

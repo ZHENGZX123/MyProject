@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -74,6 +75,7 @@ public class HolderService extends Service implements BrowserController {
         ViewUnit.bound(this, webView);
 
         webView.loadUrl(RecordUnit.getHolder().getURL());
+        Log.e("*****HolderService",RecordUnit.getHolder().getURL().toString());
         webView.deactivate();
 
         BrowserContainer.add(webView);
