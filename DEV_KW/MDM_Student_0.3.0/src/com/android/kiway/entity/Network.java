@@ -1,10 +1,12 @@
 package com.android.kiway.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2017/10/26.
  */
 
-public class Network {
+public class Network implements Serializable{
 
     public String id;
     public String url;
