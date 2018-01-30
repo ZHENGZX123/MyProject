@@ -113,6 +113,7 @@ public class StudentGridActivity extends BaseActivity {
             ok.setVisibility(View.VISIBLE);
             all.setVisibility(View.VISIBLE);
             toolsRL.setVisibility(View.GONE);
+            leftView.setVisibility(View.GONE);
         } else if (type == TYPE_SUOPING) {
             lock.setVisibility(View.VISIBLE);
             toolsRL.setVisibility(View.GONE);
@@ -154,12 +155,11 @@ public class StudentGridActivity extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         //发送命令
-                        //全锁或者全解锁
-                        lockAll = !lockAll;
-                        for (Student s : students) {
-                            s.locked = lockAll;
+                        if (lockAll) {
+                            sendSuopingCommand2(0);
+                        } else {
+                            sendSuopingCommand2(1);
                         }
-                        adapter.notifyDataSetChanged();
                     }
                 }).setPositiveButton(android.R.string.cancel, null).create();
         dialog.show();
@@ -290,6 +290,65 @@ public class StudentGridActivity extends BaseActivity {
         });
     }
 
+    private void sendChapingCommand(Student s) {
+        ZbusHost.chaping(StudentGridActivity.this, s, new OnListener() {
+
+            @Override
+            public void onSuccess() {
+                //TODO 直接跳到liveroom
+            }
+
+            @Override
+            public void onFailure() {
+                toast("发送查屏命令失败");
+            }
+        });
+    }
+
+    private void sendSuopingCommand1(Student s, int suoping) {
+        ArrayList<Student> selectStudents = new ArrayList<>();
+        selectStudents.add(s);
+        ZbusHost.suoping(StudentGridActivity.this, selectStudents, suoping, new OnListener() {
+
+            @Override
+            public void onSuccess() {
+                //2.刷新界面
+                s.locked = !s.locked;
+                adapter.notifyDataSetChanged();
+                //3.修改lockAll变量
+                lockAll = true;
+                for (Student temp : students) {
+                    lockAll = lockAll & temp.locked;
+                }
+            }
+
+            @Override
+            public void onFailure() {
+                toast("发送锁屏命令失败");
+            }
+        });
+    }
+
+    private void sendSuopingCommand2(int suoping) {
+        ZbusHost.suoping(StudentGridActivity.this, students, suoping, new OnListener() {
+
+            @Override
+            public void onSuccess() {
+                //2.刷新界面
+                lockAll = !lockAll;
+                for (Student s : students) {
+                    s.locked = lockAll;
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure() {
+                toast("发送锁屏命令失败");
+            }
+        });
+    }
+
     private void sendShangkeCommand() {
         ZbusHost.shangke(StudentGridActivity.this, new OnListener() {
 
@@ -337,7 +396,7 @@ public class StudentGridActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Student s = students.get(position);
                 if (type == TYPE_DIANMING) {
-                    //toast(s.name + (s.come ? "到了" : "没到"));
+                    toast(s.name + (s.come ? "到了" : "没到"));
                 } else if (type == TYPE_DIANMINGDA) {
                     sendDianmingdaCommand(s);
                 } else if (type == TYPE_WENJIAN) {
@@ -356,7 +415,7 @@ public class StudentGridActivity extends BaseActivity {
                     }
                 } else if (type == TYPE_CHAPING) {
                     toast("查看" + s.name + "的屏幕");
-                    //跳页...
+                    sendChapingCommand(s);
                 } else if (type == TYPE_SUOPING) {
                     String message;
                     if (s.locked) {
@@ -370,13 +429,10 @@ public class StudentGridActivity extends BaseActivity {
                                 @Override
                                 public void onClick(DialogInterface arg0, int arg1) {
                                     //1.发送命令
-                                    //2.刷新界面
-                                    s.locked = !s.locked;
-                                    adapter.notifyDataSetChanged();
-                                    //3.修改lockAll变量
-                                    lockAll = true;
-                                    for (Student temp : students) {
-                                        lockAll = lockAll & temp.locked;
+                                    if (s.locked) {
+                                        sendSuopingCommand1(s, 0);
+                                    } else {
+                                        sendSuopingCommand1(s, 1);
                                     }
                                 }
                             }).setPositiveButton(android.R.string.cancel, null).create();
@@ -593,11 +649,13 @@ public class StudentGridActivity extends BaseActivity {
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
             JSONArray array = new JSONArray();
-            JSONObject o1 = new JSONObject();
-            o1.put("imei", "student imei");
-            o1.put("countId", "zbus countId");
-            o1.put("status", 0);//0没听懂 1听懂了
-            array.put(o1);
+            for (Student s : students) {
+                JSONObject o1 = new JSONObject();
+                o1.put("imei", s.imei);
+                o1.put("countId", "zbus countId");
+                o1.put("status", s.known);//0没听懂 1听懂了
+                array.put(o1);
+            }
             Log.d("test", "knowledge array = " + array.toString());
             StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
             client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {

@@ -339,6 +339,8 @@ public class ResultDetailActivity extends BaseActivity {
                 return;
             }
         }
+
+        toast("请点击右上角提交批改结果");
     }
 
     public void clickOK(View view) {

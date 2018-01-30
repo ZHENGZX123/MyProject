@@ -231,36 +231,51 @@ public class Course0Activity extends ScreenSharingActivity {
     private boolean tuiping;
 
     public void tuiping(View view) {
-        //先接入声网
-        setTuipingIV();
+        //1.发送推屏命令
         if (tuiping) {
-            endTuiping();
+            sendTuipingcommand(0);
         } else {
-            startTuiping();
+            sendTuipingcommand(1);
         }
-        tuiping = !tuiping;
-        setTuipingIV();
+    }
+
+    private void sendTuipingcommand(int status) {
+        showPD();
+        ZbusHost.tuiping(this, status, new OnListener() {
+
+            @Override
+            public void onSuccess() {
+                hidePD();
+                if (status == 1) {
+                    tuiping = true;
+                    tuipingIV.setBackgroundResource(R.drawable.screen_control2);
+                    startTuiping();
+                } else {
+                    tuiping = false;
+                    tuipingIV.setBackgroundResource(R.drawable.screen_control1);
+                    endTuiping();
+                }
+            }
+
+            @Override
+            public void onFailure() {
+                hidePD();
+                toast("发送推屏命令失败");
+            }
+        });
     }
 
     private void startTuiping() {
         toast("开始推屏");
         initModules();
         startCapture();
-        mRtcEngine.joinChannel(null, "kiway", "", 0);
+        mRtcEngine.joinChannel(null, ZbusHost.topic, "", 0);
     }
 
     private void endTuiping() {
         toast("结束推屏");
         mRtcEngine.leaveChannel();
         stopCapture();
-    }
-
-    private void setTuipingIV() {
-        if (tuiping) {
-            tuipingIV.setBackgroundResource(R.drawable.screen_control2);
-        } else {
-            tuipingIV.setBackgroundResource(R.drawable.screen_control1);
-        }
     }
 
     public void chaping(View view) {
