@@ -24,6 +24,7 @@ import android.text.Html;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.KeyListener;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -85,13 +86,15 @@ import cn.kiway.brower.View.NinjaWebView;
 import cn.kiway.brower.View.RecordAdapter;
 import cn.kiway.brower.View.SwipeToBoundListener;
 import cn.kiway.brower.View.SwitcherPanel;
+import cn.kiway.brower.enitiy.Network;
+import cn.kiway.brower.utils.HttpUtil;
 
 public class BrowserActivity extends Activity implements BrowserController {
     // Sync with NinjaToast.show() 2000ms delay
     private static final int DOUBLE_TAPS_QUIT_DEFAULT = 2000;
 
     private SwitcherPanel switcherPanel;
-  //  private int anchor;
+    //  private int anchor;
     private float dimen156dp;
     private float dimen144dp;
     private float dimen117dp;
@@ -132,6 +135,7 @@ public class BrowserActivity extends Activity implements BrowserController {
             onHideCustomView();
         }
     }
+
     private FullscreenHolder fullscreenHolder;
     private View customView;
     private VideoView videoView;
@@ -157,6 +161,7 @@ public class BrowserActivity extends Activity implements BrowserController {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getAppData();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(
                     getString(R.string.app_name),
@@ -165,15 +170,7 @@ public class BrowserActivity extends Activity implements BrowserController {
             );
             setTaskDescription(description);
         }
-
-        //SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-       // anchor = Integer.valueOf(sp.getString(getString(R.string.sp_anchor), "1"));
-      //  if (anchor == 0) {
-            setContentView(R.layout.main_top);
-      //  } else {
-        //    setContentView(R.layout.main_bottom);
-     //   }
-
+        setContentView(R.layout.main_top);
         create = true;
         shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
         mediumAnimTime = getResources().getInteger(android.R.integer.config_mediumAnimTime);
@@ -181,10 +178,12 @@ public class BrowserActivity extends Activity implements BrowserController {
         switcherPanel = (SwitcherPanel) findViewById(R.id.switcher_panel);
         switcherPanel.setStatusListener(new SwitcherPanel.StatusListener() {
             @Override
-            public void onFling() {}
+            public void onFling() {
+            }
 
             @Override
-            public void onExpanded() {}
+            public void onExpanded() {
+            }
 
             @Override
             public void onCollapsed() {
@@ -206,6 +205,49 @@ public class BrowserActivity extends Activity implements BrowserController {
 
         new AdBlock(this); // For AdBlock cold boot
         dispatchIntent(getIntent());
+    }
+
+    public static int enable_type;
+    public static ArrayList<Network> all_network = new ArrayList<Network>();
+
+    protected void getAppData() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            enable_type = intent.getIntExtra("enable_type", -1);
+            all_network = (ArrayList<Network>) intent.getSerializableExtra("all_network");
+            getSharedPreferences("kiway", 0).edit().putString("x-auth-token", intent.getStringExtra("x-auth-token"))
+                    .commit();
+        }
+    }
+
+    public static boolean checkUrlEnable(String url) {
+        Log.d("test", "enable_type = " + enable_type);
+        if (enable_type == 0) {
+            Log.d("test", "后台没有设置过url，或者设置过都清除了");
+            return true;
+        }
+        //1.白名单启用
+        if (enable_type == 1) {
+            boolean in = false;
+            for (Network n : all_network) {
+                if (url.contains(n.url)) {
+                    in = true;
+                    break;
+                }
+            }
+            return in;
+        }
+        if (enable_type == 2) {
+            boolean in = false;
+            for (Network n : all_network) {
+                if (url.contains(n.url)) {
+                    in = true;
+                    break;
+                }
+            }
+            return !in;
+        }
+        return false;
     }
 
     @Override
@@ -248,25 +290,14 @@ public class BrowserActivity extends Activity implements BrowserController {
 
         if (intent != null && intent.hasExtra(IntentUnit.OPEN)) { // From HolderActivity's menu
             pinAlbums(intent.getStringExtra(IntentUnit.OPEN));
-        } else if (intent != null && intent.getAction() != null && intent.getAction().equals(Intent.ACTION_WEB_SEARCH)) { // From ActionMode and some others
+        } else if (intent != null && intent.getAction() != null && intent.getAction().equals(Intent
+                .ACTION_WEB_SEARCH)) { // From ActionMode and some others
             pinAlbums(intent.getStringExtra(SearchManager.QUERY));
         } else if (intent != null && filePathCallback != null) {
             filePathCallback = null;
         } else {
-//            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-//            if (sp.getBoolean(getString(R.string.sp_first), true)) {
-//                String lang;
-//                if (getResources().getConfiguration().locale.getLanguage().equals("zh")) {
-//                    lang = BrowserUnit.INTRODUCTION_ZH;
-//                } else {
-//                    lang = BrowserUnit.INTRODUCTION_EN;
-//                }
-//                pinAlbums(BrowserUnit.BASE_URL + lang);
-//                sp.edit().putBoolean(getString(R.string.sp_first), false).commit();
-//            } else {
             //zzx add
-                pinAlbums(null);
-          //  }
+            pinAlbums(null);
         }
     }
 
@@ -588,7 +619,8 @@ public class BrowserActivity extends Activity implements BrowserController {
             gridView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    layout.setAlbumCover(ViewUnit.capture(layout, dimen144dp, dimen108dp, false, Bitmap.Config.RGB_565));
+                    layout.setAlbumCover(ViewUnit.capture(layout, dimen144dp, dimen108dp, false, Bitmap.Config
+                            .RGB_565));
                     updateProgress(BrowserUnit.PROGRESS_MAX);
                 }
             }, shortAnimTime);
@@ -646,7 +678,8 @@ public class BrowserActivity extends Activity implements BrowserController {
             listView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    layout.setAlbumCover(ViewUnit.capture(layout, dimen144dp, dimen108dp, false, Bitmap.Config.RGB_565));
+                    layout.setAlbumCover(ViewUnit.capture(layout, dimen144dp, dimen108dp, false, Bitmap.Config
+                            .RGB_565));
                     updateProgress(BrowserUnit.PROGRESS_MAX);
                 }
             }, shortAnimTime);
@@ -750,7 +783,8 @@ public class BrowserActivity extends Activity implements BrowserController {
     private synchronized void addAlbum(int flag) {
         final AlbumController holder;
         if (flag == BrowserUnit.FLAG_BOOKMARKS) {
-            NinjaRelativeLayout layout = (NinjaRelativeLayout) getLayoutInflater().inflate(R.layout.record_list, null, false);
+            NinjaRelativeLayout layout = (NinjaRelativeLayout) getLayoutInflater().inflate(R.layout.record_list,
+                    null, false);
             layout.setBrowserController(this);
             layout.setFlag(BrowserUnit.FLAG_BOOKMARKS);
             layout.setAlbumCover(ViewUnit.capture(layout, dimen144dp, dimen108dp, false, Bitmap.Config.RGB_565));
@@ -758,7 +792,8 @@ public class BrowserActivity extends Activity implements BrowserController {
             holder = layout;
             initBHList(layout, false);
         } else if (flag == BrowserUnit.FLAG_HISTORY) {
-            NinjaRelativeLayout layout = (NinjaRelativeLayout) getLayoutInflater().inflate(R.layout.record_list, null, false);
+            NinjaRelativeLayout layout = (NinjaRelativeLayout) getLayoutInflater().inflate(R.layout.record_list,
+                    null, false);
             layout.setBrowserController(this);
             layout.setFlag(BrowserUnit.FLAG_HISTORY);
             layout.setAlbumCover(ViewUnit.capture(layout, dimen144dp, dimen108dp, false, Bitmap.Config.RGB_565));
@@ -781,7 +816,8 @@ public class BrowserActivity extends Activity implements BrowserController {
         albumView.setVisibility(View.INVISIBLE);
 
         BrowserContainer.add(holder);
-        switcherContainer.addView(albumView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        switcherContainer.addView(albumView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams
+                .WRAP_CONTENT);
 
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.album_slide_in_up);
         animation.setAnimationListener(new Animation.AnimationListener() {
@@ -802,7 +838,8 @@ public class BrowserActivity extends Activity implements BrowserController {
         albumView.startAnimation(animation);
     }
 
-    private synchronized void addAlbum(String title, final String url, final boolean foreground, final Message resultMsg) {
+    private synchronized void addAlbum(String title, final String url, final boolean foreground, final Message
+            resultMsg) {
         final NinjaWebView webView = new NinjaWebView(this);
         webView.setBrowserController(this);
         webView.setFlag(BrowserUnit.FLAG_NINJA);
@@ -814,15 +851,18 @@ public class BrowserActivity extends Activity implements BrowserController {
         if (currentAlbumController != null && (currentAlbumController instanceof NinjaWebView) && resultMsg != null) {
             int index = BrowserContainer.indexOf(currentAlbumController) + 1;
             BrowserContainer.add(webView, index);
-            switcherContainer.addView(albumView, index, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            switcherContainer.addView(albumView, index, new LinearLayout.LayoutParams(LinearLayout.LayoutParams
+                    .WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
         } else {
             BrowserContainer.add(webView);
-            switcherContainer.addView(albumView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            switcherContainer.addView(albumView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams
+                    .WRAP_CONTENT);
         }
 
         if (!foreground) {
             ViewUnit.bound(this, webView);
             webView.loadUrl(url);
+            Log.e("**************831", url);
             webView.deactivate();
 
             albumView.setVisibility(View.VISIBLE);
@@ -850,6 +890,7 @@ public class BrowserActivity extends Activity implements BrowserController {
 
                 if (url != null && !url.isEmpty()) {
                     webView.loadUrl(url);
+                    Log.e("**************859", url);
                 } else if (resultMsg != null) {
                     WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
                     transport.setWebView(webView);
@@ -859,7 +900,8 @@ public class BrowserActivity extends Activity implements BrowserController {
         });
         albumView.startAnimation(animation);
     }
-//加载url
+
+    //加载url
     private synchronized void pinAlbums(String url) {
         hideSoftInput(inputBox);
         hideSearchPanel();
@@ -871,7 +913,8 @@ public class BrowserActivity extends Activity implements BrowserController {
             } else if (controller instanceof NinjaRelativeLayout) {
                 ((NinjaRelativeLayout) controller).setBrowserController(this);
             }
-            switcherContainer.addView(controller.getAlbumView(), LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            switcherContainer.addView(controller.getAlbumView(), LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout
+                    .LayoutParams.MATCH_PARENT);
             controller.getAlbumView().setVisibility(View.VISIBLE);
             controller.deactivate();
         }
@@ -895,7 +938,8 @@ public class BrowserActivity extends Activity implements BrowserController {
                 @Override
                 public void run() {
                     switcherScroller.smoothScrollTo(currentAlbumController.getAlbumView().getLeft(), 0);
-                    currentAlbumController.setAlbumCover(ViewUnit.capture(((View) currentAlbumController), dimen144dp, dimen108dp, false, Bitmap.Config.RGB_565));
+                    currentAlbumController.setAlbumCover(ViewUnit.capture(((View) currentAlbumController),
+                            dimen144dp, dimen108dp, false, Bitmap.Config.RGB_565));
                 }
             }, shortAnimTime);
         } else { // When url != null
@@ -906,11 +950,12 @@ public class BrowserActivity extends Activity implements BrowserController {
             webView.setAlbumTitle(getString(R.string.album_untitled));
             ViewUnit.bound(this, webView);
             webView.loadUrl(url);
-
+            Log.e("**************919", url);
             BrowserContainer.add(webView);
             final View albumView = webView.getAlbumView();
             albumView.setVisibility(View.VISIBLE);
-            switcherContainer.addView(albumView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            switcherContainer.addView(albumView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams
+                    .WRAP_CONTENT);
             contentFrame.removeAllViews();
             contentFrame.addView(webView);
 
@@ -925,14 +970,16 @@ public class BrowserActivity extends Activity implements BrowserController {
                 @Override
                 public void run() {
                     switcherScroller.smoothScrollTo(currentAlbumController.getAlbumView().getLeft(), 0);
-                    currentAlbumController.setAlbumCover(ViewUnit.capture(((View) currentAlbumController), dimen144dp, dimen108dp, false, Bitmap.Config.RGB_565));
+                    currentAlbumController.setAlbumCover(ViewUnit.capture(((View) currentAlbumController),
+                            dimen144dp, dimen108dp, false, Bitmap.Config.RGB_565));
                 }
             }, shortAnimTime);
         }
     }
 
     @Override
-    public synchronized void showAlbum(AlbumController controller, boolean anim, final boolean expand, final boolean capture) {
+    public synchronized void showAlbum(AlbumController controller, boolean anim, final boolean expand, final boolean
+            capture) {
         if (controller == null || controller == currentAlbumController) {
             switcherPanel.expanded();
             return;
@@ -946,10 +993,12 @@ public class BrowserActivity extends Activity implements BrowserController {
             Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.album_fade_out);
             fadeOut.setAnimationListener(new Animation.AnimationListener() {
                 @Override
-                public void onAnimationRepeat(Animation animation) {}
+                public void onAnimationRepeat(Animation animation) {
+                }
 
                 @Override
-                public void onAnimationEnd(Animation animation) {}
+                public void onAnimationEnd(Animation animation) {
+                }
 
                 @Override
                 public void onAnimationStart(Animation animation) {
@@ -978,7 +1027,8 @@ public class BrowserActivity extends Activity implements BrowserController {
                 }
 
                 if (capture) {
-                    currentAlbumController.setAlbumCover(ViewUnit.capture(((View) currentAlbumController), dimen144dp, dimen108dp, false, Bitmap.Config.RGB_565));
+                    currentAlbumController.setAlbumCover(ViewUnit.capture(((View) currentAlbumController),
+                            dimen144dp, dimen108dp, false, Bitmap.Config.RGB_565));
                 }
             }
         }, shortAnimTime);
@@ -1001,7 +1051,8 @@ public class BrowserActivity extends Activity implements BrowserController {
         switcherContainer.removeView(currentAlbumController.getAlbumView());
         contentFrame.removeAllViews(); ///
 
-        switcherContainer.addView(layout.getAlbumView(), index, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        switcherContainer.addView(layout.getAlbumView(), index, new LinearLayout.LayoutParams(LinearLayout
+                .LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         contentFrame.addView(layout);
         BrowserContainer.set(layout, index);
         currentAlbumController = layout;
@@ -1012,9 +1063,14 @@ public class BrowserActivity extends Activity implements BrowserController {
         if (currentAlbumController == null) {
             return;
         }
-
+        if (!checkUrlEnable(url)) {
+            NinjaToast.show(this, R.string.toast_load_error);
+            return;
+        }
+        HttpUtil.childOperation(this, "surfInternet", "上网" + url);
         if (currentAlbumController instanceof NinjaWebView) {
             ((NinjaWebView) currentAlbumController).loadUrl(url);
+            Log.e("**************1035", url);
             updateOmnibox();
         } else if (currentAlbumController instanceof NinjaRelativeLayout) {
             NinjaWebView webView = new NinjaWebView(this);
@@ -1029,13 +1085,15 @@ public class BrowserActivity extends Activity implements BrowserController {
             switcherContainer.removeView(currentAlbumController.getAlbumView());
             contentFrame.removeAllViews(); ///
 
-            switcherContainer.addView(webView.getAlbumView(), index, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            switcherContainer.addView(webView.getAlbumView(), index, new LinearLayout.LayoutParams(LinearLayout
+                    .LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             contentFrame.addView(webView);
             BrowserContainer.set(webView, index);
             currentAlbumController = webView;
             webView.activate();
 
             webView.loadUrl(url);
+            Log.e("**************1054", url);
             updateOmnibox();
         } else {
             NinjaToast.show(this, R.string.toast_load_error);
@@ -1186,7 +1244,8 @@ public class BrowserActivity extends Activity implements BrowserController {
         // Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         // intent.addCategory(Intent.CATEGORY_OPENABLE);
         // intent.setType("*/*");
-        // startActivityForResult(Intent.createChooser(intent, getString(R.string.main_file_chooser)), IntentUnit.REQUEST_FILE_16);
+        // startActivityForResult(Intent.createChooser(intent, getString(R.string.main_file_chooser)), IntentUnit
+        // .REQUEST_FILE_16);
         uploadMsg.onReceiveValue(null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -1201,7 +1260,8 @@ public class BrowserActivity extends Activity implements BrowserController {
     }
 
     @Override
-    public void showFileChooser(ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams fileChooserParams) {
+    public void showFileChooser(ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams
+            fileChooserParams) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             this.filePathCallback = filePathCallback;
 
@@ -1293,7 +1353,8 @@ public class BrowserActivity extends Activity implements BrowserController {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             try {
                 customViewCallback.onCustomViewHidden();
-            } catch (Throwable t) {}
+            } catch (Throwable t) {
+            }
         }
 
         customView.setKeepScreenOn(false);
@@ -1323,7 +1384,8 @@ public class BrowserActivity extends Activity implements BrowserController {
         final List<String> list = new ArrayList<>();
         list.add(getString(R.string.main_menu_new_tab));
         list.add(getString(R.string.main_menu_copy_link));
-        if (result != null && (result.getType() == WebView.HitTestResult.IMAGE_TYPE || result.getType() == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE)) {
+        if (result != null && (result.getType() == WebView.HitTestResult.IMAGE_TYPE || result.getType() == WebView
+                .HitTestResult.SRC_IMAGE_ANCHOR_TYPE)) {
             list.add(getString(R.string.main_menu_save));
         }
 
@@ -1563,12 +1625,14 @@ public class BrowserActivity extends Activity implements BrowserController {
                     } else {
                         String title = ninjaWebView.getTitle().trim();
                         String url = ninjaWebView.getUrl().trim();
-                        Bitmap bitmap = ViewUnit.capture(ninjaWebView, dimen156dp, dimen117dp, false, Bitmap.Config.ARGB_8888);
+                        Bitmap bitmap = ViewUnit.capture(ninjaWebView, dimen156dp, dimen117dp, false, Bitmap.Config
+                                .ARGB_8888);
                         String filename = System.currentTimeMillis() + BrowserUnit.SUFFIX_PNG;
                         int ordinal = action.listGrid().size();
                         GridItem item = new GridItem(title, url, filename, ordinal);
 
-                        if (BrowserUnit.bitmap2File(BrowserActivity.this, bitmap, filename) && action.addGridItem(item)) {
+                        if (BrowserUnit.bitmap2File(BrowserActivity.this, bitmap, filename) && action.addGridItem
+                                (item)) {
                             NinjaToast.show(BrowserActivity.this, R.string.toast_add_to_home_successful);
                         } else {
                             NinjaToast.show(BrowserActivity.this, R.string.toast_add_to_home_failed);
@@ -1611,7 +1675,8 @@ public class BrowserActivity extends Activity implements BrowserController {
                         public boolean onTouch(View v, MotionEvent event) {
                             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                                 relayoutOK.setTextColor(getResources().getColor(R.color.blue_500));
-                            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent
+                                    .ACTION_CANCEL) {
                                 relayoutOK.setTextColor(getResources().getColor(R.color.white));
                             }
 
