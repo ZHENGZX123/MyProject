@@ -54,6 +54,7 @@ public class BaseActivity extends Activity {
         if (Utils.getSystem().equals(SYS_EMUI)) {
             PushManager.requestToken(this);
             Log.i("huawei", "try to get Token ,current packageName is " + this.getPackageName());
+
         }
     }
 
