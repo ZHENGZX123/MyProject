@@ -194,6 +194,7 @@ public class FileUtils {
     public static void copyRawToSdcard(Context c, int id, String name) {
         InputStream inStream = c.getResources().openRawResource(id);//R.raw.tab0
         File file = new File(WXApplication.ROOT + name);
+//        File file = new File(c.getFilesDir() + name);
         FileOutputStream fileOutputStream = null;//存入SDCard
         try {
             fileOutputStream = new FileOutputStream(file);

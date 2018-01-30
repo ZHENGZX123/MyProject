@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Process;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
@@ -50,9 +51,10 @@ public class WXApplication extends Application {
         } else {
             url = zhengshiUrl;
         }
+
     }
 
-    public static String ROOT = "/mnt/sdcard/kiway_teacher/";
+    public static String ROOT; //"/mnt/sdcard/kiway_teacher/";
     public static String HTML = "xtzy_teacher/dist/index.html";
     public static String ZIP = "xtzy_teacher.zip";
 
@@ -69,6 +71,9 @@ public class WXApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        ROOT = this.getFilesDir().toString() + "/";
+        Log.d("test", "ROOT = " + ROOT);
+
         initImageCache();
 
         //小米推送
@@ -83,7 +88,7 @@ public class WXApplication extends Application {
         CountlyUtil.getInstance().init(this);
 
         //jpush
-        if (Utils.getSystem().equals(SYS_OTHER)){
+        if (Utils.getSystem().equals(SYS_OTHER)) {
             JPushInterface.setDebugMode(false);
             JPushInterface.init(this);
         }
@@ -93,8 +98,6 @@ public class WXApplication extends Application {
 
         //x5
         initTBS();
-
-
     }
 
     /**

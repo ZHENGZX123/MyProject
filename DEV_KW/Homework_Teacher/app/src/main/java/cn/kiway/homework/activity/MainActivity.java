@@ -1,9 +1,6 @@
 package cn.kiway.homework.activity;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.MediaRecorder;
@@ -11,14 +8,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -36,29 +32,14 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 
-import net.lingala.zip4j.core.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
-
 import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xutils.common.util.DensityUtil;
-import org.xutils.http.RequestParams;
-import org.xutils.x;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
@@ -67,11 +48,8 @@ import cn.kiway.homework.entity.HTTPCache;
 import cn.kiway.homework.teacher.R;
 import cn.kiway.homework.util.BadgeUtil;
 import cn.kiway.homework.util.CountlyUtil;
-import cn.kiway.homework.util.FileUtils;
-import cn.kiway.homework.util.HttpDownload;
 import cn.kiway.homework.util.MLog;
 import cn.kiway.homework.util.MyDBHelper;
-import cn.kiway.homework.util.NetworkUtil;
 import cn.kiway.homework.util.ResourceUtil;
 import cn.kiway.homework.util.UploadUtil;
 import cn.kiway.homework.util.Utils;
@@ -81,21 +59,12 @@ import uk.co.senab.photoview.sample.ViewPagerActivity;
 import static cn.kiway.homework.WXApplication.ceshiUrl;
 import static cn.kiway.homework.WXApplication.url;
 import static cn.kiway.homework.WXApplication.zhengshiUrl;
-import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "1.1.1";
 
-    private boolean isSuccess = false;
-    private boolean isJump = false;
-    private boolean checking = false;
-    private Dialog dialog_download;
-    protected ProgressDialog pd;
-    private int lastProgress;
     private X5WebView wv;
     private RelativeLayout root;
-    private LinearLayout layout_welcome;
     public static MainActivity instance;
     private Button kill;
     private String user = "";
@@ -118,15 +87,14 @@ public class MainActivity extends BaseActivity {
         fromCreate = true;
         initView();
         Utils.checkNetWork(this, false);
-        checkIsFirst();
         initData();
-        checkNewVersion();
         huaweiPush();
-        checkIsPad(getIntent());
+        //checkIsPad(getIntent());
+        load();
     }
 
 
-    @Override
+    /*@Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         checkIsPad(intent);
@@ -178,46 +146,29 @@ public class MainActivity extends BaseActivity {
             getSharedPreferences("kiway", 0).edit().putString("password", password).commit();
             getSharedPreferences("kiway", 0).edit().putString("tab", tab).commit();
         }
-    }
+    }*/
 
     private void initView() {
         root = (RelativeLayout) findViewById(R.id.root);
-        pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
         wv = (X5WebView) findViewById(R.id.wv);
         kill = (Button) findViewById(R.id.kill);
-        layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         BadgeUtil.sendBadgeNumber(getApplicationContext(), "0");
-        MLog.d("test", "onresume checking = " + checking);
-        if (checking) {
-            new Thread() {
-                @Override
-                public void run() {
-                    while (checking) {
-                        MLog.d("test", "checking loop...");
-                        try {
-                            sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    MLog.d("test", "checking loop end");
-                    try {
-                        sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    checkNotification();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            }.start();
-        } else {
-            //如果当前打开，直接跳转
-            checkNotification();
-        }
+                checkNotification();
+            }
+        }.start();
     }
 
     private synchronized void checkNotification() {
@@ -292,14 +243,14 @@ public class MainActivity extends BaseActivity {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
                 MLog.d("test", "shouldInterceptRequest url = " + url);
-                if ((url.startsWith("http") || url.startsWith("https"))
-                        && (url.endsWith("jpg") || url.endsWith("JPG") || url.endsWith("jpeg") || url.endsWith("JPEG") || url.endsWith("png") || url.endsWith("PNG"))) {
-                    InputStream is = getStreamByUrl(url);
-                    if (is == null) {
-                        return super.shouldInterceptRequest(view, url);
-                    }
-                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
-                }
+//                if ((url.startsWith("http") || url.startsWith("https"))
+//                        && (url.endsWith("jpg") || url.endsWith("JPG") || url.endsWith("jpeg") || url.endsWith("JPEG") || url.endsWith("png") || url.endsWith("PNG"))) {
+//                    InputStream is = getStreamByUrl(url);
+//                    if (is == null) {
+//                        return super.shouldInterceptRequest(view, url);
+//                    }
+//                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
+//                }
                 //des解密用
 //                else if (url.endsWith("js") || url.endsWith("css") || url.endsWith("html")) {
 //                    InputStream is = getStreamByUrl2(url.replace("file://", ""));
@@ -360,6 +311,31 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
+        public void setKeyAndValue(String key, String value) {
+            MLog.d("test", "setKeyAndValue is called , key = " + key + " , value = " + value);
+            if (TextUtils.isEmpty(key)) {
+                return;
+            }
+            if (TextUtils.isEmpty(value)) {
+                return;
+            }
+            //加密
+            getSharedPreferences("kiway", 0).edit().putString(key, value).commit();
+        }
+
+        @JavascriptInterface
+        public String getValueByKey(String key) {
+            MLog.d("test", "getValueByKey is called , key = " + key);
+            if (TextUtils.isEmpty(key)) {
+                return "";
+            }
+            //解密
+            String ret = getSharedPreferences("kiway", 0).getString(key, "");
+            Log.d("test", "ret = " + ret);
+            return ret;
+        }
+
+        @JavascriptInterface
         public String getOS() {
             MLog.d("test", "getOS is called");
             return "Android";
@@ -369,6 +345,7 @@ public class MainActivity extends BaseActivity {
         public void scanQR() {
             startActivityForResult(new Intent(MainActivity.this, CaptureActivity.class), QRSCAN);
         }
+
 
         @JavascriptInterface
         public void login(String param) {
@@ -714,11 +691,11 @@ public class MainActivity extends BaseActivity {
                 String[] paramSplit = param.split("=");
                 String key = paramSplit[0];
                 String value = "";
-                if(paramSplit.length > 1){
+                if (paramSplit.length > 1) {
                     value = paramSplit[1];
                 }
                 sb.append(key).append("=");
-                if(paramSplit.length >1) {
+                if (paramSplit.length > 1) {
                     sb.append(URLEncoder.encode(value));
                 }
                 sb.append("&");
@@ -873,32 +850,6 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    //下面是版本更新相关
-    public void checkNewVersion() {
-        checking = true;
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    sleep(1500);
-                    checkTimeout();
-                    HttpGet httpRequest = new HttpGet(url + "/download/version/zip_ls.json");
-                    DefaultHttpClient client = new DefaultHttpClient();
-                    HttpResponse response = client.execute(httpRequest);
-                    String ret = EntityUtils.toString(response.getEntity());
-                    MLog.d("test", "new version = " + ret);
-                    Message msg = new Message();
-                    msg.what = 2;
-                    msg.obj = ret;
-                    mHandler.sendMessage(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    mHandler.sendEmptyMessage(3);
-                }
-            }
-        }.start();
-    }
-
     public Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             if (msg.what == 1) {
@@ -919,316 +870,8 @@ public class MainActivity extends BaseActivity {
                 }
                 return;
             }
-            if (isJump) {
-                return;
-            }
-            isSuccess = true;
-            if (msg.what == 2) {
-                String ret = (String) msg.obj;
-                try {
-                    //1.apk更新
-                    MLog.d("test", "新版本返回值" + ret);
-                    String apkVersion = new JSONObject(ret).getString("apkCode");
-                    String apkUrl = new JSONObject(ret).getString("apkUrl");
-
-                    String zipCode = new JSONObject(ret).getString("zipCode");
-                    String zipUrl = new JSONObject(ret).getString("zipUrl");
-
-                    if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
-//                        showUpdateConfirmDialog(apkUrl);
-                        downloadSilently(apkUrl, apkVersion);
-                        jump(false);
-                    } else {
-                        //如果APK没有最新版本，比较包的版本。如果内置包的版本号比较高，直接替换
-                        boolean flag = false;
-                        String currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
-                        if (currentPackage.compareTo(currentPackageVersion) < 0) {
-                            MLog.d("test", "内置包的版本大，替换新包");
-                            getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
-                            checkIsFirst();
-                            flag = true;
-                        }
-                        //替换完内置包之后，比较内置包和外包，如果版本号还是小了，更新外包
-                        currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
-                        String outer_package = zipCode;
-                        if (currentPackage.compareTo(outer_package) < 0) {
-                            //提示有新的包，下载新的包
-                            MLog.d("test", "下载新的H5包");
-                            updatePackage(outer_package, zipUrl);
-                        } else {
-                            MLog.d("test", "H5包是最新的");
-                            jump(flag);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    jump(false);
-                }
-            } else if (msg.what == 3) {
-                jump(false);
-            } else if (msg.what == 4) {
-                pd.dismiss();
-                // 下载完成后安装
-                CountlyUtil.getInstance().addEvent("升级APP");
-                String savedFilePath = (String) msg.obj;
-                Intent intent = new Intent();
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setAction(android.content.Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
-                startActivity(intent);
-                finish();
-            } else if (msg.what == 5) {
-                pd.dismiss();
-                toast(R.string.downloadfailure);
-                jump(false);
-            } else if (msg.what == 6) {
-                pd.setProgress(msg.arg1);
-            }
         }
     };
-
-    private void downloadSilently(String apkUrl, String version) {
-        boolean isWifi = NetworkUtil.isWifi(this);
-        if (!isWifi) {
-            MLog.d("test", "不是wifi...");
-            return;
-        }
-        final String savedFilePath = "/mnt/sdcard/cache/xtzy_teacher_" + version + ".apk";
-        if (new File(savedFilePath).exists()) {
-            MLog.d("test", "该文件已经下载好了");
-            askforInstall(savedFilePath);
-            return;
-        }
-        RequestParams params = new RequestParams(apkUrl);
-        params.setSaveFilePath(savedFilePath);
-        params.setAutoRename(false);
-        params.setAutoResume(true);
-        x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
-            @Override
-            public void onSuccess(File result) {
-                //成功后弹出对话框询问，是否安装
-                askforInstall(savedFilePath);
-            }
-
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-
-            }
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-
-            }
-
-            @Override
-            public void onFinished() {
-
-            }
-        });
-    }
-
-    private void askforInstall(final String savedFilePath) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
-        dialog_download = builder.setMessage("发现新的版本，是否更新？本次更新不消耗流量。").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface arg0, int arg1) {
-                dialog_download.dismiss();
-                Message msg = new Message();
-                msg.what = 4;
-                msg.obj = savedFilePath;
-                mHandler.sendMessage(msg);
-            }
-        }).setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                jump(false);
-            }
-        }).create();
-        dialog_download.show();
-    }
-
-    private void updatePackage(final String outer_package, final String downloadUrl) {
-        new Thread() {
-            @Override
-            public void run() {
-                MLog.d("test", "updatePackage downloadUrl = " + downloadUrl);
-                final int ret = new HttpDownload().downFile(downloadUrl, WXApplication.ROOT, WXApplication.ZIP);
-                MLog.d("test", "下载新包 ret = " + ret);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (ret == -1) {
-                            jump(false);
-                            return;
-                        }
-                        MLog.d("test", "删除旧包");
-                        if (new File(WXApplication.ROOT + "xtzy_teacher").exists()) {
-                            FileUtils.delFolder(WXApplication.ROOT + "xtzy_teacher");
-                        }
-                        try {
-                            MLog.d("test", "解压新包");
-                            new ZipFile(WXApplication.ROOT + WXApplication.ZIP).extractAll(WXApplication.ROOT);
-                        } catch (ZipException e) {
-                            e.printStackTrace();
-                        }
-                        //解压完毕，删掉zip文件
-                        new File(WXApplication.ROOT + WXApplication.ZIP).delete();
-                        MLog.d("test", "解压完毕");
-                        getSharedPreferences("kiway", 0).edit().putString("version_package", outer_package).commit();
-                        jump(true);
-                    }
-                });
-            }
-        }.start();
-
-
-    }
-
-    protected void showUpdateConfirmDialog(final String url) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
-        dialog_download = builder.setMessage(R.string.getnewversion).setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface arg0, int arg1) {
-                dialog_download.dismiss();
-                downloadNewVersion(url);
-            }
-        }).setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                jump(false);
-            }
-        }).create();
-        dialog_download.setCancelable(false);
-        dialog_download.show();
-    }
-
-    protected void downloadNewVersion(final String urlString) {
-        pd.setMessage(getString(R.string.downloading));
-        pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        pd.show();
-        pd.setCancelable(false);
-        pd.setProgress(0);
-
-        new Thread() {
-            @SuppressWarnings("resource")
-            public void run() {
-                try {
-                    InputStream input = null;
-                    HttpURLConnection urlConn = null;
-                    URL url = new URL(urlString);
-                    urlConn = (HttpURLConnection) url.openConnection();
-                    urlConn.setRequestProperty("Accept-Encoding", "identity");
-                    urlConn.setReadTimeout(10000);
-                    urlConn.setConnectTimeout(10000);
-                    input = urlConn.getInputStream();
-                    int total = urlConn.getContentLength();
-                    File file = null;
-                    OutputStream output = null;
-                    if (!new File("/mnt/sdcard/cache/").exists()) {
-                        new File("/mnt/sdcard/cache/").mkdirs();
-                    }
-                    String savedFilePath = "/mnt/sdcard/cache/xtzy_teacher.apk";
-                    file = new File(savedFilePath);
-                    output = new FileOutputStream(file);
-                    byte[] buffer = new byte[1024];
-                    int temp = 0;
-                    int read = 0;
-                    while ((temp = input.read(buffer)) != -1) {
-                        output.write(buffer, 0, temp);
-                        read += temp;
-                        float progress = ((float) read) / total;
-                        int progress_int = (int) (progress * 100);
-                        if (lastProgress != progress_int) {
-                            lastProgress = progress_int;
-                            Message msg = new Message();
-                            msg.what = 6;// downloading
-                            msg.arg1 = progress_int;
-                            mHandler.sendMessage(msg);
-                        } else {
-                            // do not send msg
-                        }
-                    }
-                    output.flush();
-                    output.close();
-                    input.close();
-                    Message msg = new Message();
-                    msg.what = 4;
-                    msg.obj = savedFilePath;
-                    mHandler.sendMessage(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    mHandler.sendEmptyMessage(5);
-                }
-            }
-        }.start();
-    }
-
-    protected void checkTimeout() {
-        new Thread() {
-            public void run() {
-                try {
-                    sleep(3500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (isSuccess) {
-                    return;
-                }
-                jump(false);
-            }
-        }.start();
-    }
-
-    protected void checkIsFirst() {
-        if (!checkFileComplete()) {
-            MLog.d("test", "文件不完整");
-            getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
-        }
-        if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
-            CountlyUtil.getInstance().addEvent("安装APP");
-            getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", false).commit();
-            if (new File(WXApplication.ROOT).exists()) {
-                FileUtils.delFolder(WXApplication.ROOT);
-            }
-            if (!new File(WXApplication.ROOT).exists()) {
-                new File(WXApplication.ROOT).mkdirs();
-            }
-            //拷贝
-            FileUtils.copyRawToSdcard(this, R.raw.xtzy_teacher, WXApplication.ZIP);
-            //解压
-            try {
-                new ZipFile(WXApplication.ROOT + WXApplication.ZIP).extractAll(WXApplication.ROOT);
-            } catch (ZipException e) {
-                e.printStackTrace();
-            }
-            //解压完毕，删掉zip文件
-            new File(WXApplication.ROOT + WXApplication.ZIP).delete();
-            getSharedPreferences("kiway", 0).edit().putString("version_package", currentPackageVersion).commit();
-        }
-    }
-
-    private boolean checkFileComplete() {
-        if (!new File(WXApplication.ROOT + WXApplication.HTML).exists()) {
-            return false;
-        }
-        return true;
-    }
-
-    public void jump(final boolean refresh) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                layout_welcome.setVisibility(View.GONE);
-                if (refresh) {
-                    load();
-                }
-                //更新完成完成
-                checking = false;
-            }
-        });
-    }
 
     public void clickNetwork(View view) {
         startActivity(new Intent(this, NoNetActivity.class));
