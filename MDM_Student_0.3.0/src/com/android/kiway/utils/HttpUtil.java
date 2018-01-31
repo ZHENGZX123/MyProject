@@ -189,6 +189,7 @@ public class HttpUtil {
                                 //存进数据库里
                                 new MyDBHelper(c).deleteAppcharge(null);
                                 for (AppCharge n : networks) {
+                                    n.priority = 2;
                                     new MyDBHelper(c).addAppcharge(n);
                                 }
                             } catch (Exception e) {

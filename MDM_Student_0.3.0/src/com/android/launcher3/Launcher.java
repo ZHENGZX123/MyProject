@@ -2489,11 +2489,8 @@ public class Launcher extends MainActivity
             Toast.makeText(this, "所有的APP已被禁止使用", Toast.LENGTH_SHORT).show();
             return;
         }
-        // zzx 检查当前时间能不能用
-        if (!Utils.checkAPPTimeUse(new MyDBHelper(this).getTime(packageName), "HH:mm")) {
-            Toast.makeText(this, "该时间段内不可以使用", Toast.LENGTH_SHORT).show();
-            return;
-        }
+
+        //后台
         AppCharge app = new MyDBHelper(this).getAppChargesByPackage(packageName);
         if (app != null) {
             String timeRange = app.timeRange;// [{start end}{start end}]
@@ -2502,11 +2499,17 @@ public class Launcher extends MainActivity
                 JSONArray array = new JSONArray(timeRange);
                 boolean in = Utils.checkAPPTimeUse(array, "HH:mm:ss");
                 if (!in) {
-                    Toast.makeText(this, "该时间段内不可以使用", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "学校设置该时间段内不可以使用", Toast.LENGTH_SHORT).show();
                     return;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+            }
+        }else {
+            // zzx 家长检查当前时间能不能用
+            if (!Utils.checkAPPTimeUse(new MyDBHelper(this).getTime(packageName), "HH:mm")) {
+                Toast.makeText(this, "家长设置该时间段内不可以使用", Toast.LENGTH_SHORT).show();
+                return;
             }
         }
         Log.e(TAG, packageName);
@@ -2638,11 +2641,7 @@ public class Launcher extends MainActivity
 
         ItemInfo item = (ItemInfo) v.getTag();
         Intent intent = item.getIntent();
-        // zzx 检查当前时间能不能用
-        if (!Utils.checkAPPTimeUse(new MyDBHelper(this).getTime(intent.getComponent().getPackageName()), "HH:mm")) {
-            Toast.makeText(this, "该时间段内不可以使用", Toast.LENGTH_SHORT).show();
-            return;
-        }
+
         AppCharge app = new MyDBHelper(this).getAppChargesByPackage(intent.getComponent().getPackageName());
         if (app != null) {
             String timeRange = app.timeRange;// [{start end}{start end}]
@@ -2651,11 +2650,17 @@ public class Launcher extends MainActivity
                 JSONArray array = new JSONArray(timeRange);
                 boolean in = Utils.checkAPPTimeUse(array, "HH:mm:ss");
                 if (!in) {
-                    Toast.makeText(this, "该时间段内不可以使用", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "学校设置时间段内不可以使用", Toast.LENGTH_SHORT).show();
                     return;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+            }
+        }else {
+            // zzx 检查当前时间能不能用
+            if (!Utils.checkAPPTimeUse(new MyDBHelper(this).getTime(intent.getComponent().getPackageName()), "HH:mm")) {
+                Toast.makeText(this, "家长设置该时间段内不可以使用", Toast.LENGTH_SHORT).show();
+                return;
             }
         }
         Log.e(TAG, intent.getComponent().getPackageName());
