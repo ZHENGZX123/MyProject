@@ -279,6 +279,10 @@ public class Course0Activity extends ScreenSharingActivity {
     }
 
     public void chaping(View view) {
+        if (tuiping) {
+            toast("请先停止推屏");
+            return;
+        }
         //查看学生屏幕，需要获取学生列表。
         startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_CHAPING));
     }

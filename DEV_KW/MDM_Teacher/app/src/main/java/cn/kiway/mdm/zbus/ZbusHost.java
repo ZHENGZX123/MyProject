@@ -175,11 +175,11 @@ public class ZbusHost {
         }
     }
 
-    public static void chaping(Activity c, Student s, OnListener onListener) {
+    public static void chaping(Activity c, Student s, int chaping, OnListener onListener) {
         try {
             String title = "查屏";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "chaping").put("topic", topic)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "chaping").put("topic", topic).put("chaping", chaping)).toString();
             String studentTopic = "kiwayMDM_student_" + s.imei;
             doSendMsg(title, userId, msg, studentTopic);
             if (onListener != null) {
@@ -192,6 +192,7 @@ public class ZbusHost {
             }
         }
     }
+
 
     public static void suoping(Activity c, ArrayList<Student> students, int suoping, OnListener onListener) {
         try {
