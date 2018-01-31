@@ -14,6 +14,7 @@ public class AppCharge {
     public String packages;
     public String url;
     public String operation;
+    public int priority;
 
     @Override
     public String toString() {
@@ -25,6 +26,8 @@ public class AppCharge {
                 ", version='" + version + '\'' +
                 ", packages='" + packages + '\'' +
                 ", url='" + url + '\'' +
+                ", operation='" + operation + '\'' +
+                ", priority=" + priority +
                 '}';
     }
 }

@@ -245,7 +245,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_APP = " create table  IF NOT EXISTS "
             + TABLE_APP
             + "   (id integer primary key autoincrement, ids text, name  text,  type  text  , timeRange text , " +
-            "version text , packages text , url text)";
+            "version text , packages text , url text ,  priority text)";
 
 
     private static final String TABLE_CALL = "Call";
@@ -299,7 +299,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 16);
+        super(c, DB_NAME, null, 17);
     }
 
     @Override
@@ -510,6 +510,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         values.put("version", a.version);
         values.put("packages", a.packages);
         values.put("url", a.url);
+        values.put("priority", a.priority);
         db.insert(TABLE_APP, null, values);
         db.close();
     }
@@ -545,6 +546,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             String version = cur.getString(cur.getColumnIndex("version"));
             String packages = cur.getString(cur.getColumnIndex("packages"));
             String url = cur.getString(cur.getColumnIndex("url"));
+            int priority = cur.getInt(cur.getColumnIndex("priority"));
 
             AppCharge a = new AppCharge();
             a.id = id;
@@ -554,6 +556,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             a.version = version;
             a.packages = packages;
             a.url = url;
+            a.priority = priority;
             Appcharges.add(a);
         }
         cur.close();
@@ -577,6 +580,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             String version = cur.getString(cur.getColumnIndex("version"));
             packages = cur.getString(cur.getColumnIndex("packages"));
             String url = cur.getString(cur.getColumnIndex("url"));
+            int priority = cur.getInt(cur.getColumnIndex("priority"));
 
             a = new AppCharge();
             a.id = id;
@@ -586,6 +590,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             a.version = version;
             a.packages = packages;
             a.url = url;
+            a.priority = priority;
         }
         cur.close();
         db.close();
@@ -604,6 +609,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         cv.put("version", a.version);
         cv.put("packages", a.packages);
         cv.put("url", a.url);
+        cv.put("priority", a.priority);
 
         String[] args = {a.id};
         int ret = db.update(TABLE_APP, cv, "ids=?", args);
