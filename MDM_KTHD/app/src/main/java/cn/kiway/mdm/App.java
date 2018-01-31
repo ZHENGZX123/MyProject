@@ -24,6 +24,7 @@ import org.xutils.x;
 
 import cn.kiway.aidl.ClientCallback;
 import cn.kiway.mdm.activity.BaseActivity;
+import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.QuestionActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
 import studentsession.kiway.cn.mdmaidl.KiwayApplication;
@@ -46,6 +47,7 @@ public class App extends KiwayApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d("test", "KTHD APP oncreate");
         instance = this;
         //xutils
         x.Ext.init(this);
@@ -219,6 +221,13 @@ public class App extends KiwayApplication {
                         ((BaseActivity) currentActivity).startPlayer(topic);
                     } else {
                         ((BaseActivity) currentActivity).stopPlayer();
+                    }
+                } else if (command.equals("chaping")) {
+                    int chaping = o.optInt("chaping");
+                    if (chaping == 1) {
+                        ((MainActivity) currentActivity).startTuiping();
+                    } else {
+                        ((MainActivity) currentActivity).endTuiping();
                     }
                 }
             } catch (Exception e) {
