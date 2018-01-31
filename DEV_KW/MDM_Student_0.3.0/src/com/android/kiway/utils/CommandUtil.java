@@ -159,6 +159,7 @@ public class CommandUtil {
                         TypeToken<List<AppCharge>>() {
                         }.getType());
                 AppCharge app = apps.get(0);
+                app.priority = data.optInt("priority");
                 if (app.operation.equals("save")) {
                     new MyDBHelper(context).addAppcharge(app);
                 } else if (app.operation.equals("update")) {
