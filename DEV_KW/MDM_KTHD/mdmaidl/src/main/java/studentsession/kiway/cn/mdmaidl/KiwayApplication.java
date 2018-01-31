@@ -29,6 +29,7 @@ public class KiwayApplication extends Application {
             mRemoteInterface = RemoteInterface.Stub.asInterface(service);
             if (clientCallback != null)
                 registCallback();
+            Log.e("KTHD main","registCallback");
         }
 
         @Override
@@ -48,7 +49,6 @@ public class KiwayApplication extends Application {
     }
 
     private void connectService() {
-        clientCallback = null;
         Intent intent = new Intent();
         intent.setAction("cn.kiway.mdm.aidlservice.RemoteAidlService");
         // Android 5.0以上需要设置包名
@@ -57,6 +57,8 @@ public class KiwayApplication extends Application {
     }
 
     public void connectService(ClientCallback clientCallback) {
+
+        Log.e("KTHD main","connectServeice");
         Intent intent = new Intent();
         this.clientCallback = clientCallback;
         intent.setAction("cn.kiway.mdm.aidlservice.RemoteAidlService");
