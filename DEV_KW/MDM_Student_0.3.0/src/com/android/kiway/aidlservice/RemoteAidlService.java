@@ -55,14 +55,14 @@ public class RemoteAidlService extends Service {
         public void registClientCallback(ClientCallback callback) throws RemoteException {
             //向服务端注册回调
             clientCallback = callback;
-            Log.d(TAG, "Service registClientCallback()");
+            Log.e(TAG, "Service registClientCallback()"+callback);
         }
 
         @Override
         public void unRegistClientCallback(ClientCallback callback) throws RemoteException {
             //服务端取消注册回调
             clientCallback = null;
-            Log.d(TAG, "Service unRegistClientCallback()");
+            Log.e(TAG, "Service unRegistClientCallback()");
         }
 
         @Override
