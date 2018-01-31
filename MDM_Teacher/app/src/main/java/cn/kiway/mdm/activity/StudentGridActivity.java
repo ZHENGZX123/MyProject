@@ -76,6 +76,7 @@ public class StudentGridActivity extends BaseActivity {
     private MyAdapter adapter;
 
     private ArrayList<Student> students = new ArrayList<>();
+    private Student chapingStudent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +103,11 @@ public class StudentGridActivity extends BaseActivity {
         lock = (ImageButton) findViewById(R.id.lock);
         leftView = findViewById(R.id.leftView);
 
+
+//        hideTool(3);
+//        hideTool(4);
+//        hideTool(5);
+
         if (type == TYPE_DIANMINGDA) {
             ok.setVisibility(View.GONE);
             toolsRL.setVisibility(View.GONE);
@@ -123,6 +129,8 @@ public class StudentGridActivity extends BaseActivity {
             toolsRL.setVisibility(View.GONE);
             leftView.setVisibility(View.GONE);
         }
+
+
     }
 
     private boolean selectAll = false;
@@ -290,17 +298,22 @@ public class StudentGridActivity extends BaseActivity {
         });
     }
 
-    private void sendChapingCommand(Student s) {
-        ZbusHost.chaping(StudentGridActivity.this, s, new OnListener() {
+    private void sendChapingCommand(Student s, int chaping) {
+        ZbusHost.chaping(StudentGridActivity.this, s, chaping, new OnListener() {
 
             @Override
             public void onSuccess() {
-                //TODO 直接跳到liveroom
+                if (chaping == 1) {
+                    String roomName = "kiwayMDM_student_" + s.imei;
+                    startPlayer(roomName);
+                }
             }
 
             @Override
             public void onFailure() {
-                toast("发送查屏命令失败");
+                if (chaping == 1) {
+                    toast("发送查屏命令失败");
+                }
             }
         });
     }
@@ -415,7 +428,8 @@ public class StudentGridActivity extends BaseActivity {
                     }
                 } else if (type == TYPE_CHAPING) {
                     toast("查看" + s.name + "的屏幕");
-                    sendChapingCommand(s);
+                    chapingStudent = s;
+                    sendChapingCommand(s, 1);
                 } else if (type == TYPE_SUOPING) {
                     String message;
                     if (s.locked) {
@@ -768,5 +782,12 @@ public class StudentGridActivity extends BaseActivity {
                 count_tongji.setText(count + "/" + students.size());
             }
         });
+    }
+
+    //暂时把结束查屏放这里
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        sendChapingCommand(chapingStudent, 0);
     }
 }

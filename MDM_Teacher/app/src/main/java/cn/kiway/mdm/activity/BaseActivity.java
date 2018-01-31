@@ -2,6 +2,7 @@ package cn.kiway.mdm.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -13,6 +14,9 @@ import android.widget.Toast;
 
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.teacher.R;
+import io.agora.openlive.model.ConstantApp;
+import io.agora.openlive.ui.LiveRoomActivity;
+import io.agora.rtc.Constants;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -182,5 +186,20 @@ public class BaseActivity extends Activity {
 
     public void hideRetry() {
         retryRL.setVisibility(View.GONE);
+    }
+
+    public void startPlayer(String roomName) {
+        //1.开始播放教师推屏
+        Intent i = new Intent(BaseActivity.this, LiveRoomActivity.class);
+        i.putExtra(ConstantApp.ACTION_KEY_CROLE, Constants.CLIENT_ROLE_AUDIENCE);
+        i.putExtra(ConstantApp.ACTION_KEY_ROOM_NAME, roomName);
+        startActivity(i);
+    }
+
+    public void stopPlayer() {
+        if (LiveRoomActivity.instance == null) {
+            return;
+        }
+        LiveRoomActivity.instance.finish();
     }
 }
