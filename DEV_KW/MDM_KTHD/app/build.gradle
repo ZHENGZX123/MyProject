@@ -15,7 +15,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "cn.kiway.session"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 22
         versionCode 20
         versionName "0.2.0"
@@ -64,4 +64,5 @@ dependencies {
     compile project(':ImagePicker')
     compile files('libs/image_compress.jar')
     compile files('libs/gson-2.8.0.jar')
+    compile project(':AgoraPusher')
 }

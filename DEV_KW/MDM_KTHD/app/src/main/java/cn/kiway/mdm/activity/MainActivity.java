@@ -49,7 +49,7 @@ import studentsession.kiway.cn.mdm_studentsession.R;
 import static cn.kiway.mdm.utils.IContants.CHECK_VERSION_URL;
 import static cn.kiway.mdm.utils.Utils.getCurrentVersion;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends ScreenSharingActivity {
 
     public static MainActivity instantce;
     private Dialog dialog_download;
@@ -58,6 +58,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("test", "KTHD main oncreate");
+
         instantce = this;
         setContentView(R.layout.activity_main);
         getAppData();
@@ -486,5 +488,24 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    public void startTuiping() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                initModules();
+                startCapture();
+                mRtcEngine.joinChannel(null, "kiwayMDM_student_" + Utils.getIMEI(getApplicationContext()), "", 0);
+            }
+        });
+    }
 
+    public void endTuiping() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mRtcEngine.leaveChannel();
+                stopCapture();
+            }
+        });
+    }
 }
