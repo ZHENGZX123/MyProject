@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.GsonBuilder;
@@ -68,7 +67,6 @@ public class StudentGridActivity extends BaseActivity {
     private Button ok;
     private Button all;
     private ImageButton lock;
-    private RelativeLayout toolsRL;
     private View leftView;
 
     private int type;
@@ -77,6 +75,8 @@ public class StudentGridActivity extends BaseActivity {
 
     private ArrayList<Student> students = new ArrayList<>();
     private Student chapingStudent;
+
+    private boolean dianmingAlready;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,18 +97,17 @@ public class StudentGridActivity extends BaseActivity {
         adapter = new MyAdapter();
         gv.setAdapter(adapter);
 
-        toolsRL = (RelativeLayout) findViewById(R.id.toolsRL);
+
         ok = (Button) findViewById(R.id.ok);
         all = (Button) findViewById(R.id.all);
         lock = (ImageButton) findViewById(R.id.lock);
         leftView = findViewById(R.id.leftView);
 
-
-//        hideTool(3);
-//        hideTool(4);
-//        hideTool(5);
-
-        if (type == TYPE_DIANMINGDA) {
+        if (type == TYPE_DIANMING) {
+            hideTool(3);
+            hideTool(4);
+            hideTool(5);
+        } else if (type == TYPE_DIANMINGDA) {
             ok.setVisibility(View.GONE);
             toolsRL.setVisibility(View.GONE);
             leftView.setVisibility(View.GONE);
@@ -582,6 +581,10 @@ public class StudentGridActivity extends BaseActivity {
 
     @Override
     public void sk(View view) {
+        if (!dianmingAlready) {
+            toast("请先点名");
+            return;
+        }
         startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class).putExtra("students", students));
         finish();
     }
@@ -603,6 +606,8 @@ public class StudentGridActivity extends BaseActivity {
         ZbusHost.sign(this, new OnListener() {
             @Override
             public void onSuccess() {
+                dianmingAlready = true;
+
                 Log.d("test", "dianmingBtn onSuccess");
                 hidePD();
                 dianmingBtn.setBackgroundResource(R.drawable.dianmingbutton2);

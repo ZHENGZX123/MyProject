@@ -14,6 +14,7 @@ import cn.kiway.mdm.activity.ResultActivity;
 import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
+import cn.kiway.mdm.util.Utils;
 import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
 import cn.kiway.web.kthd.zbus.vo.PushRecordVo;
 
@@ -198,8 +199,14 @@ public class ZbusHost {
         try {
             String title = "锁屏";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            //TODO 这个要按照易敏的格式
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "suoping").put("topic", topic).put("suoping", suoping)).toString();
+            // 这个要按照易敏的格式
+            String commeand = "";
+            if (suoping == 1) {
+                commeand = "temporary_lockScreen";
+            } else {
+                commeand = "temporary_unlockScreen";
+            }
+            String msg = new JSONObject().put("data", new JSONObject().put("command", commeand).put("currentTime", Utils.longToDate("" + System.currentTimeMillis()))).toString();
             for (Student s : students) {
                 String studentTopic = "kiwayMDM_student_" + s.imei;
                 doSendMsg(title, userId, msg, studentTopic);

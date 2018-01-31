@@ -13,6 +13,7 @@ import cn.kiway.mdm.util.Utils;
  */
 
 public class JsAndroidInterface2 {
+
     public JsAndroidInterface2() {
     }
 
@@ -29,7 +30,8 @@ public class JsAndroidInterface2 {
         try {
             byte[] bitmapArray = Base64.decode(param.split(",")[1], Base64.DEFAULT);
             bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
-            Utils.saveBitmap(bitmap, System.currentTimeMillis() + ".png");
+            String filepath = System.currentTimeMillis() + ".png";
+            Utils.saveBitmap(bitmap, filepath);
         } catch (Exception e) {
             e.printStackTrace();
         }

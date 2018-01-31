@@ -82,6 +82,9 @@ public class WhiteBoardActivity extends BaseActivity {
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new WebChromeClient());
         wv.addJavascriptInterface(new JsAndroidInterface2(), "wx");
+
+
+        wv.loadUrl("javascript:getImage()");
     }
 
     @Override

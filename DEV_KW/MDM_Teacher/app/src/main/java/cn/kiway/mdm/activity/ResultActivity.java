@@ -177,6 +177,16 @@ public class ResultActivity extends BaseActivity {
                     }
                 }
                 adapter.notifyDataSetChanged();
+
+                //如果所有学生已经提交，停止答题。
+                boolean allSubmit = true;
+                for (Student s : students) {
+                    allSubmit = allSubmit | s.submited;
+                }
+                if (allSubmit) {
+                    timeup = true;
+                    mHandler.removeCallbacksAndMessages(null);
+                }
             }
         });
     }
@@ -304,7 +314,6 @@ public class ResultActivity extends BaseActivity {
             toast("答题尚未结束，请先停止作答");
             return;
         }
-
         //2.TODO 提示未提交的
 
         //3.提示没有批改的
