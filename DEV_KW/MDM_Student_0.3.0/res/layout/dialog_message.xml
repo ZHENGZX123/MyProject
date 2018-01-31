@@ -35,7 +35,7 @@
             android:visibility="gone"
             android:padding="10dp"
             android:text="不懂"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/_fd2424"
             android:textSize="16dp"/>
         <Button
             android:id="@+id/ok"
