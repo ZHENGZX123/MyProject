@@ -59,11 +59,18 @@ public class MainActivity extends ScreenSharingActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("test", "KTHD main oncreate");
-
+        App.instance.connectService(App.instance.mClientCallback);
         instantce = this;
         setContentView(R.layout.activity_main);
         getAppData();
         initView1();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e("KTHD main","onStart()");
+        App.instance.connectService(App.instance.mClientCallback);
     }
 
     void initView1() {
