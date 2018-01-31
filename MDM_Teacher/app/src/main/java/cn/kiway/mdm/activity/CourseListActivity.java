@@ -52,6 +52,9 @@ public class CourseListActivity extends BaseActivity {
 
     public void initView() {
         super.initView();
+
+        toolsRL.setVisibility(View.GONE);
+
         titleName.setText("上课");
         lv = (ListView) findViewById(R.id.courseLV);
         adapter = new MyAdapter();

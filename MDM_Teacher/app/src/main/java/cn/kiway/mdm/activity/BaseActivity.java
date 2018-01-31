@@ -29,13 +29,14 @@ public class BaseActivity extends Activity {
     public TextView titleName;
     public ImageButton videoBtn;
 
+    public RelativeLayout toolsRL;
     public ImageButton gj;
     public ImageButton dm;
     public ImageButton sk;
     public ImageButton wdq;
     public ImageButton cp;
-    public ImageButton rk;
 
+    public ImageButton rk;
     public ProgressDialog pd;
     private RelativeLayout retryRL;
 
@@ -51,6 +52,7 @@ public class BaseActivity extends Activity {
         teacherName = (TextView) findViewById(R.id.teacherName);
         teacherIcon = (ImageView) findViewById(R.id.teacherIcon);
         videoBtn = (ImageButton) findViewById(R.id.video);
+        toolsRL = (RelativeLayout) findViewById(R.id.toolsRL);
 
         gj = (ImageButton) findViewById(R.id.gj);
         dm = (ImageButton) findViewById(R.id.dm);
@@ -86,12 +88,6 @@ public class BaseActivity extends Activity {
 
         KWApplication.currentActivity = this;
 
-        boolean expandTool = getSharedPreferences("kiway", 0).getBoolean("expandTool", true);
-        if (expandTool) {
-            showTool();
-        } else {
-            hideTool();
-        }
     }
 
     public void toast(final String txt) {
@@ -118,39 +114,9 @@ public class BaseActivity extends Activity {
 
     //----------------------------------工具栏点击事件------------------------------
 
-
     public void gj(View view) {
-        boolean expandTool = getSharedPreferences("kiway", 0).getBoolean("expandTool", true);
-        expandTool = !expandTool;
-        if (expandTool) {
-            showTool();
-        } else {
-            hideTool();
-        }
-        getSharedPreferences("kiway", 0).edit().putBoolean("expandTool", expandTool).commit();
     }
 
-    private void showTool() {
-        try {
-            dm.setVisibility(View.VISIBLE);
-            sk.setVisibility(View.VISIBLE);
-            wdq.setVisibility(View.VISIBLE);
-            cp.setVisibility(View.VISIBLE);
-            rk.setVisibility(View.VISIBLE);
-        } catch (Exception e) {
-        }
-    }
-
-    private void hideTool() {
-        try {
-            dm.setVisibility(View.GONE);
-            sk.setVisibility(View.GONE);
-            wdq.setVisibility(View.GONE);
-            cp.setVisibility(View.GONE);
-            rk.setVisibility(View.GONE);
-        } catch (Exception e) {
-        }
-    }
 
     public void dm(View view) {
 
@@ -201,5 +167,25 @@ public class BaseActivity extends Activity {
             return;
         }
         LiveRoomActivity.instance.finish();
+    }
+
+    public void hideTool(int index) {
+        switch (index) {
+            case 1:
+                dm.setVisibility(View.GONE);
+                break;
+            case 2:
+                sk.setVisibility(View.GONE);
+                break;
+            case 3:
+                wdq.setVisibility(View.GONE);
+                break;
+            case 4:
+                cp.setVisibility(View.GONE);
+                break;
+            case 5:
+                rk.setVisibility(View.GONE);
+                break;
+        }
     }
 }

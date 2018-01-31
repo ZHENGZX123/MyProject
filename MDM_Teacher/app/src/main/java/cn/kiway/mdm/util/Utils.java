@@ -28,6 +28,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.activity.BaseActivity;
@@ -509,5 +511,10 @@ public class Utils {
         return input + last;
     }
 
-
+    public static String longToDate(String time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        java.util.Date date = new Date(Long.parseLong(time));
+        String str = sdf.format(date);
+        return str;
+    }
 }
