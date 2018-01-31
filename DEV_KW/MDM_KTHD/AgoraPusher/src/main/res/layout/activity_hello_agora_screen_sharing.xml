@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context="io.agora.rtc.ss.app.HelloAgoraScreenSharingActivity">
+
+    <TextView
+        android:id="@+id/channel_name_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/start_live_broadcasting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onLiveSharingScreenClicked"
+        android:text="@string/label_start_sharing_your_screen" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:onClick="whiteborad1"
+        android:text="H5白板" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:onClick="whiteborad2"
+        android:text="原生白板" />
+
+
+</LinearLayout>

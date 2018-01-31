@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="io.agora.rtc.ss.app">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+
+    <application>
+        <activity
+            android:name=".HelloAgoraScreenSharingActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"></activity>
+
+        <activity
+            android:name="io.agora.rtc.ss.capture.ScreenCapture$ScreenCaptureAssistantActivity"
+            android:theme="@android:style/Theme.Translucent" />
+
+        <activity
+            android:name=".WhiteboardActivity1"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"></activity>
+
+        <activity
+            android:name=".WhiteboardActivity2"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+    </application>
+
+</manifest>
