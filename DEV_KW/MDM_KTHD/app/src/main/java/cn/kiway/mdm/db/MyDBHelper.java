@@ -226,7 +226,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_FILE = "FILE";
     private static final String CREATE_TABLE_FILE = " create table  IF NOT EXISTS "
             + TABLE_FILE
-            + "   (id integer primary key autoincrement,  filename  text,  filepath  text , time text , sender text)";
+            + "   (id integer primary key autoincrement,  size  text,  name  text , id text , userId text, url text, " +
+            "type text,createDate text)";
 
     private static final String TABLE_NOTIFY_MSG = "NOTIFY_MSG";
     private static final String CREATE_TABLE_NOTIFY_MSG = " create table  IF NOT EXISTS "
@@ -306,10 +307,13 @@ public class MyDBHelper extends SQLiteOpenHelper {
         if (db == null)
             db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("filename", a.filename);
-        values.put("filepath", a.filepath);
-        values.put("time", a.time);
-        values.put("sender", a.sender);
+        values.put("size", a.size);
+        values.put("name", a.name);
+        values.put("id", a.id);
+        values.put("userId", a.userId);
+        values.put("url", a.url);
+        values.put("type", a.type);
+        values.put("createDate", a.createDate);
         db.insert(TABLE_FILE, null, values);
         db.close();
     }
@@ -321,10 +325,13 @@ public class MyDBHelper extends SQLiteOpenHelper {
         Cursor cur = db.query(TABLE_FILE, null, null, null, null, null, "time desc");
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             FileModel fm = new FileModel();
-            fm.filename = cur.getString(1);
-            fm.filepath = cur.getString(2);
-            fm.time = cur.getString(3);
-            fm.sender = cur.getString(4);
+            fm.size = cur.getString(1);
+            fm.name = cur.getString(2);
+            fm.id = cur.getString(3);
+            fm.userId = cur.getString(4);
+            fm.url = cur.getString(5);
+            fm.type = cur.getString(6);
+            fm.createDate = cur.getString(7);
             fms.add(fm);
         }
         cur.close();

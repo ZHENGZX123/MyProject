@@ -15,12 +15,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,7 +34,7 @@ import cn.kiway.mdm.utils.FileUtils;
 import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
-import static cn.kiway.mdm.App.clientUrl;
+import static cn.kiway.mdm.utils.HttpUtil.getMyScreenshotFile;
 
 /**
  * Created by Administrator on 2017/11/16.
@@ -53,32 +56,40 @@ public class FileListActivity extends BaseActivity {
         //假数据==改成易敏的，是用接口来做的。
         //new MyDBHelper(this).addFile(new FileModel("test1.pdf", "/mnt/sdcard/test1.pdf", "1516587513000", "李老师"));
         //new MyDBHelper(this).addFile(new FileModel("test2.doc", "/mnt/sdcard/test2.doc", "1516587513000", "陈老师"));
-        //new MyDBHelper(this).addFile(new FileModel("test3.png", "/mnt/sdcard/test3.pdf", "1516587513000", "snapshot"));
-        getDataFromServer();
+        //new MyDBHelper(this).addFile(new FileModel("test3.png", "/mnt/sdcard/test3.pdf", "1516587513000",
+        // "snapshot"));
         initView();
         initListener();
-        initData(1);
     }
 
-    private void getDataFromServer() {
+    private void getDataFromServer(final int type) {
+        initData(type);
         try {
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             RequestParams param = new RequestParams();
             Log.d("test", "param = " + param.toString());
-            String url = clientUrl + "/device/student/myScreenshotFile?type=1";
-            Log.d("test", "myScreenshotFile url = " + url);
-            client.get(this, url, param, new TextHttpResponseHandler() {
+            // String url = clientUrl + "/device/student/myScreenshotFile?type=1";
+            //  Log.d("test", "myScreenshotFile url = " + url);
+            client.get(this, getMyScreenshotFile + type, param, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "calls onSuccess = " + ret);
+                    Log.e("test", "calls onSuccess = " + ret);
+                    try {
+                        JSONObject data = new JSONObject(ret);
+                        if (data.optInt("statusCode") == 201) {
+                            Toast.makeText(FileListActivity.this, "暂无数据", Toast.LENGTH_SHORT).show();
+                        } else if (data.optInt("statusCode") == 200) {
+                            initData(type);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", "calls onFailure = " + s);
-                    //check301(FileListActivity.this, s);
                 }
             });
         } catch (Exception e) {
@@ -90,9 +101,9 @@ public class FileListActivity extends BaseActivity {
         files.clear();
         ArrayList<FileModel> temp = new MyDBHelper(this).getFiles();
         for (FileModel fm : temp) {
-            if (tab == 1 && !fm.sender.equals("snapshot")) {
+            if (tab == 1 && !fm.type.equals("2")) {
                 files.add(fm);
-            } else if (tab == 2 && fm.sender.equals("snapshot")) {
+            } else if (tab == 2 && fm.type.equals("2")) {
                 files.add(fm);
             }
         }
@@ -104,13 +115,13 @@ public class FileListActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 FileModel fm = files.get(i);
-                String filepath = fm.filepath;
+                String filepath = fm.url;
                 File f = new File(filepath);
                 if (!f.exists()) {
                     toast("文件不存在");
                 } else {
                     //TODO可以使用X5来完成
-                    FileUtils.openFile(FileListActivity.this, fm.filepath);
+                    FileUtils.openFile(FileListActivity.this, fm.url);
                 }
             }
         });
@@ -133,13 +144,13 @@ public class FileListActivity extends BaseActivity {
     public void clickTab1(View view) {
         tab1.setTextColor(Color.parseColor("#6699ff"));
         tab2.setTextColor(Color.parseColor("#000000"));
-        initData(1);
+        getDataFromServer(1);
     }
 
     public void clickTab2(View view) {
         tab1.setTextColor(Color.parseColor("#000000"));
         tab2.setTextColor(Color.parseColor("#6699ff"));
-        initData(2);
+        getDataFromServer(2);
     }
 
 
@@ -166,16 +177,16 @@ public class FileListActivity extends BaseActivity {
                 holder = (FileHolder) convertView.getTag();
             }
             FileModel fm = files.get(position);
-            String filepath = fm.filepath;
-            File f = new File(filepath);
-            holder.name.setText(fm.filename);
-            holder.time.setText(Utils.getDateField(Long.parseLong(fm.time), 9));
-            if (!f.exists()) {
+            String filepath = fm.url;
+           // File f = new File(filepath);
+            holder.name.setText(fm.name);
+            holder.time.setText(Utils.getDateField(Long.parseLong(fm.createDate), 9));
+            if (holder.size.equals("")) {
                 holder.size.setText("未知");
             } else {
-                holder.size.setText(FileUtils.GetFileSize(f));
+                holder.size.setText(fm.size);
             }
-            String suffix = fm.filename.toLowerCase();
+            String suffix = fm.createDate.toLowerCase();
             if (suffix.endsWith("pdf")) {
                 holder.type.setBackgroundResource(R.drawable.pdf);
             } else if (suffix.endsWith("doc") || suffix.endsWith("docx")) {

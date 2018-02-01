@@ -98,9 +98,9 @@ public class BaseActivity extends Activity {
     }
 
     MyProgressDialog progressDialog;
-    String proData = "";
+    JSONObject proData = new JSONObject();
 
-    public void downloadFile(String data) {
+    public void downloadFile(JSONObject data) {
         if (proData.equals(data) && progressDialog != null && progressDialog.isShowing())
             return;
         proData = data;

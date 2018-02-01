@@ -30,6 +30,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
@@ -38,14 +39,15 @@ import java.io.File;
 import java.util.ArrayList;
 
 import cn.kiway.mdm.App;
-import cn.kiway.mdm.db.MyDBHelper;
-import cn.kiway.mdm.model.FileModel;
 import cn.kiway.mdm.model.StudentQuestion;
+import cn.kiway.mdm.utils.FileUtils;
 import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.NetworkUtil;
+import cn.kiway.mdm.utils.UploadUtil;
 import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
+import static cn.kiway.mdm.utils.HttpUtil.uploadFile;
 import static cn.kiway.mdm.utils.IContants.CHECK_VERSION_URL;
 import static cn.kiway.mdm.utils.Utils.getCurrentVersion;
 
@@ -69,7 +71,7 @@ public class MainActivity extends ScreenSharingActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.e("KTHD main", "onStart()");
+        Log.e("KTHD main","onStart()");
         App.instance.connectService(App.instance.mClientCallback);
     }
 
@@ -101,7 +103,6 @@ public class MainActivity extends ScreenSharingActivity {
 
     public void onKT(View view) {
         //课堂分析
-        startActivity(new Intent(this, FenxiActivity.class));
     }
 
 
@@ -271,10 +272,32 @@ public class MainActivity extends ScreenSharingActivity {
         getWindow().getDecorView().setDrawingCacheEnabled(true);
         Bitmap bitmap = getWindow().getDecorView().getDrawingCache();
         String time = System.currentTimeMillis() + "";
-        String fileName = time + ".png";
+        final String fileName = time + ".png";
         Utils.saveBitmap(bitmap, fileName, App.ROOT);
         toast("请在我的文件里查看");
-        new MyDBHelper(this).addFile(new FileModel(fileName, App.ROOT + fileName, time, "snapshot"));
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                final String ret = UploadUtil.uploadFile(App.ROOT + fileName, uploadFile, fileName);
+                if (TextUtils.isEmpty(ret)) {
+                    toast("上传失败");
+                    return;
+                }
+                try {
+                    JSONObject obj = new JSONObject(ret);
+                    if (obj.optInt("statusCode") != 200) {
+                        toast("上传失败");
+                        return;
+                    }
+                    String url = obj.optJSONObject("data").optString("url");
+                    App.instance.uploadUserFile(url, 1, fileName, FileUtils.GetFileSize(new File(App.ROOT + fileName)));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.run();
+        //  new MyDBHelper(this).addFile(new FileModel(fileName, App.PATH + fileName, time, "snapshot"));
     }
 
     private ArrayList<StudentQuestion> studentQuestions = new ArrayList<>();
@@ -503,7 +526,7 @@ public class MainActivity extends ScreenSharingActivity {
             public void run() {
                 initModules();
                 startCapture();
-                mRtcEngine.joinChannel(null, Utils.getIMEI(getApplicationContext()), "", 0);
+                mRtcEngine.joinChannel(null, "kiwayMDM_student_" + Utils.getIMEI(getApplicationContext()), "", 0);
             }
         });
     }
