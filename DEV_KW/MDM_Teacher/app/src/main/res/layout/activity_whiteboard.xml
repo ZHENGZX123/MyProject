@@ -9,7 +9,7 @@
         layout="@layout/layout_title2"></include>
 
     <WebView
-        android:id="@+id/wv"
+        android:id="@+id/wv5"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></WebView>
 
