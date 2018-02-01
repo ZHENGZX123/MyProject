@@ -32,6 +32,7 @@ import com.android.kiway.utils.DESUtil;
 import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.MyDBHelper;
 import com.android.kiway.utils.Utils;
+import com.android.kiway.zbus.ZbusHost;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -49,8 +50,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import cn.kiway.mdmsdk.MDMHelper;
-import cn.kiway.web.kthd.zbus.ZbusConfiguration;
-import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
+import cn.kiway.zbus.utils.ZbusUtils;
 import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
 
@@ -59,9 +59,6 @@ import static com.android.kiway.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJL
 import static com.android.kiway.utils.HttpUtil.APPID;
 import static com.android.kiway.utils.HttpUtil.APPKEY;
 import static com.android.kiway.utils.Utils.huaweiPush;
-import static com.android.kiway.zbus.ZbusHost.teacherTopic;
-import static com.android.kiway.zbus.ZbusHost.zbusHost;
-import static com.android.kiway.zbus.ZbusHost.zbusPost;
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener {
 
@@ -136,16 +133,18 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         initZbus();
     }
 
-    private void initZbus() {
+    public void initZbus() {
+        Log.d("test", "initZbus");
         new Thread() {
             @Override
             public void run() {
                 try {
-                    ZbusConfiguration.instance.setHost(zbusHost);
-                    ZbusConfiguration.instance.setPort(zbusPost);
-                    ZbusConfiguration.instance.setProject(clientUrl);
-                    String topic = "kiwayMDM_student_" + Utils.getIMEI(getApplicationContext());
-                    Log.d("test", "学生订阅主题 = " + topic);
+                    String token = getSharedPreferences("huawei", 0).getString("token", "");
+                    if (TextUtils.isEmpty(token)) {
+                        return;
+                    }
+                    String topic = "kiway_push_" + token;
+                    Log.d("test", "topic = " + topic);
                     ZbusUtils.consumeMsg(topic, new MessageHandler() {
 
                         @Override
@@ -154,7 +153,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                             Log.d("test", "zbus receive message = " + msg);
                             CommandUtil.handleCommand(getApplicationContext(), msg);
                         }
-                    });
+                    }, ZbusHost.zbusHost + ":" + ZbusHost.zbusPost);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
