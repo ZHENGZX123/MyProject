@@ -59,12 +59,12 @@ public class MainActivity extends ScreenSharingActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("test", "KTHD main oncreate");
-        App.instance.connectService(App.instance.mClientCallback);
         instantce = this;
         setContentView(R.layout.activity_main);
         getAppData();
         initView1();
     }
+
 
     @Override
     protected void onStart() {
@@ -72,6 +72,7 @@ public class MainActivity extends ScreenSharingActivity {
         Log.e("KTHD main","onStart()");
         App.instance.connectService(App.instance.mClientCallback);
     }
+
 
     void initView1() {
         className = (TextView) findViewById(R.id.className);
@@ -270,9 +271,9 @@ public class MainActivity extends ScreenSharingActivity {
         Bitmap bitmap = getWindow().getDecorView().getDrawingCache();
         String time = System.currentTimeMillis() + "";
         String fileName = time + ".png";
-        Utils.saveBitmap(bitmap, fileName, App.PATH);
+        Utils.saveBitmap(bitmap, fileName, App.ROOT);
         toast("请在我的文件里查看");
-        new MyDBHelper(this).addFile(new FileModel(fileName, App.PATH + fileName, time, "snapshot"));
+        new MyDBHelper(this).addFile(new FileModel(fileName, App.ROOT + fileName, time, "snapshot"));
     }
 
     private ArrayList<StudentQuestion> studentQuestions = new ArrayList<>();
@@ -373,7 +374,7 @@ public class MainActivity extends ScreenSharingActivity {
     private void startRecord() {
         try {
             // 判断，若当前文件已存在，则删除
-            String path = App.PATH + "voice/";
+            String path = App.ROOT + "voice/";
             if (!new File(path).exists()) {
                 new File(path).mkdirs();
             }

@@ -40,7 +40,7 @@ public class App extends KiwayApplication {
     public boolean isAttenClass = false;
     public Activity currentActivity;
 
-    public static final String PATH = "/mnt/sdcard/kiway_mdm_kthd/";
+    public static final String ROOT = "/mnt/sdcard/kiway_mdm_kthd/";
     public static final String serverUrl = "http://192.168.8.161:8083/";
     public static final String clientUrl = "http://192.168.8.161:8085/";
 

@@ -51,6 +51,9 @@ import cn.kiway.mdm.utils.UploadUtil;
 import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
+import static cn.kiway.mdm.model.Question.TYPE_EMPTY;
+import static cn.kiway.mdm.model.Question.TYPE_ESSAY;
+
 /**
  * Created by Administrator on 2018/1/3.
  */
@@ -91,6 +94,7 @@ public class QuestionActivity extends BaseActivity {
 
 
     private WebView currentWV;
+    private ArrayList<JsAndroidInterface2> jsList = new ArrayList<>();
 
     private ImageButton right;
     private ImageButton wrong;
@@ -171,6 +175,7 @@ public class QuestionActivity extends BaseActivity {
             WebView wv = new WebView(this);
             setWebview(wv);
             wvContainer.addView(wv, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+
             String url = "file:///android_asset/whiteboard/index.html";
             Log.d("test", "url = " + url);
             wv.loadUrl(url);
@@ -207,13 +212,15 @@ public class QuestionActivity extends BaseActivity {
         wv.setWebViewClient(new MyWebViewClient());
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new WebChromeClient());
-        wv.addJavascriptInterface(new JsAndroidInterface2(this), "wx");
+
+        JsAndroidInterface2 js = new JsAndroidInterface2(this);
+        wv.addJavascriptInterface(js, "wx");
+        jsList.add(js);
     }
 
 
     private void initListener() {
     }
-
 
     public void prev(View view) {
         saveStudentAnswer();
@@ -243,7 +250,7 @@ public class QuestionActivity extends BaseActivity {
             type.setText("单选题");
         } else if (q.type == Question.TYPE_MULTI) {
             type.setText("多选题");
-        } else if (q.type == Question.TYPE_EMPTY) {
+        } else if (q.type == TYPE_EMPTY) {
             type.setText("填空题");
         } else if (q.type == Question.TYPE_JUDGE) {
             type.setText("判断题");
@@ -321,7 +328,7 @@ public class QuestionActivity extends BaseActivity {
                 }
             }
             adapter.notifyDataSetChanged();
-        } else if (q.type == Question.TYPE_EMPTY) {
+        } else if (q.type == TYPE_EMPTY) {
             answerGV.setVisibility(View.INVISIBLE);
             answerET.setVisibility(View.VISIBLE);
             wvContainer.setVisibility(View.INVISIBLE);
@@ -483,6 +490,8 @@ public class QuestionActivity extends BaseActivity {
         }
     }
 
+    private int getImageCount = 0;
+
     public void clickSubmit(View view) throws JSONException {
         if (submited) {
             toast("你已经提交过了，请不要重复提交");
@@ -499,30 +508,54 @@ public class QuestionActivity extends BaseActivity {
                 //1.save答案
                 saveStudentAnswer();
 
+                if (jsList.size() == 0) {
+                    doSubmitAnswer();
+                    return;
+                }
                 //2.如果有问答题，先上传图片
+                //size*10秒计时
+
                 new Thread() {
                     @Override
                     public void run() {
-                        try {
-                            showPD();
-                            for (Question q : questions) {
-                                if (q.type == Question.TYPE_ESSAY) {
-                                    //WebView wv = (WebView) wvContainer.getChildAt(q.wbIndex);
-                                    //String filepath = wv.getAnswerImage();
-                                    String filepath = "/mnt/sdcard/test.jpg";
-                                    String token = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-                                    String result = UploadUtil.uploadFile(filepath, App.clientUrl + "common/file?x-auth-token=" + token, "answer");
-                                    String url = new JSONObject(result).getJSONObject("data").getString("url");
-                                    q.studentAnswer = url;
-                                }
+                        showPD();
+                        getImageCount = 0;
+                        for (final Question q : questions) {
+                            if (q.type == Question.TYPE_ESSAY) {
+                                final WebView wv = (WebView) wvContainer.getChildAt(q.wbIndex);
+                                jsList.get(q.wbIndex).setListener(new JsAndroidInterface2.OnListener() {
+                                    @Override
+                                    public void onImage(String filepath) {
+                                        Log.d("test", "onImage = " + filepath);
+                                        String token = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                                        String result = UploadUtil.uploadFile(filepath, App.clientUrl + "common/file?x-auth-token=" + token, "answer");
+                                        String url = null;
+                                        try {
+                                            url = new JSONObject(result).getJSONObject("data").getString("url");
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            toast("上传图片错误");
+                                            hidePD();
+                                            return;
+                                        }
+                                        q.studentAnswer = url;
+                                        getImageCount++;
+                                        if (getImageCount == jsList.size()) {
+                                            //3.上传
+                                            hidePD();
+                                            doSubmitAnswer();
+                                        }
+                                    }
+                                });
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        wv.loadUrl("javascript:getImage()");
+                                    }
+                                });
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            toast("上传答案图片失败，请稍后再试");
-                            hidePD();
-                            return;
                         }
-                        doSubmitAnswer();
+
                     }
                 }.start();
             }
@@ -548,10 +581,33 @@ public class QuestionActivity extends BaseActivity {
                     String answer = "answer_" + answerArray.toString();
                     boolean ret = Utils.sendToServer(answer);
                     if (ret) {
-                        toast("提交答案成功，等待老师批改");
+                        //1.禁用webview
+                        int count = wvContainer.getChildCount();
+                        for (int i = 0; i < count; i++) {
+                            WebView wv = (WebView) wvContainer.getChildAt(i);
+                            wv.loadUrl("javascript:setWBEnable(0)");
+                        }
+                        //2.修改UI
                         submited = true;
                         mHandler.removeCallbacksAndMessages(null);
                         ok.setVisibility(View.GONE);
+                        //3.自动批改
+                        boolean auto = true;
+                        for (Question q : questions) {
+                            if (q.type == TYPE_EMPTY || q.type == TYPE_ESSAY) {
+                                auto = false;
+                            }
+                        }
+                        if (auto) {
+                            toast("提交答案成功，已经自动批改，请查看结果");
+                            collected = true;
+                            for (Question q : questions) {
+                                q.teacherJudge = autoTeacherJudge(q);
+                            }
+                            refresh();
+                        } else {
+                            toast("提交答案成功，等待老师批改");
+                        }
                     } else {
                         toast("提交答案失败");
                     }
@@ -561,6 +617,13 @@ public class QuestionActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private int autoTeacherJudge(Question q) {
+        if (q.answerVo.content.replace("[", "").replace("]", "").replace("\"", "").replace(",", "").equals(q.studentAnswer)) {
+            return 2;
+        }
+        return 1;
     }
 
     //保存学生答题的答案，上下切换的时候显示用。。。
@@ -583,7 +646,7 @@ public class QuestionActivity extends BaseActivity {
                 }
             }
             q.studentAnswer = temp2;
-        } else if (q.type == Question.TYPE_EMPTY) {
+        } else if (q.type == TYPE_EMPTY) {
             String temp2 = answerET.getText().toString().trim();
             q.studentAnswer = temp2;
         } else if (q.type == Question.TYPE_JUDGE) {
