@@ -258,12 +258,6 @@ public class ResultDetailActivity extends BaseActivity {
             answerTV.setVisibility(View.GONE);
             answerIV.setVisibility(View.VISIBLE);
             ImageLoader.getInstance().displayImage(q.studentAnswer, answerIV, KWApplication.getLoaderOptions());
-            answerIV.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Utils.showBigImage(ResultDetailActivity.this, new String[]{q.studentAnswer}, 0);
-                }
-            });
             //老师来批改
             if (q.teacherJudge == 2) {
                 right.setBackgroundResource(R.drawable.right2);

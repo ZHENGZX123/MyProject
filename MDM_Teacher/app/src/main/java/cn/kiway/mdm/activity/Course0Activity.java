@@ -847,14 +847,8 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder.line2.setVisibility(View.GONE);
             }
 
-            //FIXME
-            if (position == knowledgePoints.size() - 1) {
-                holder.date1.setVisibility(View.GONE);
-                holder.date2.setVisibility(View.GONE);
-            } else {
-                holder.date1.setVisibility(View.VISIBLE);
-                holder.date2.setVisibility(View.VISIBLE);
-            }
+            holder.date1.setVisibility(View.GONE);
+            holder.date2.setVisibility(View.GONE);
 
             holder.endBtn.setOnClickListener(new View.OnClickListener() {
                 @Override

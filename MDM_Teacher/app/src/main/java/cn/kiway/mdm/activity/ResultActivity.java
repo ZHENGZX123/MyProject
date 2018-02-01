@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,6 +42,7 @@ import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_CEPING;
 import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_DIANMINGDA;
 import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_QIANGDA;
 import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_SUIJICHOUDA;
+import static cn.kiway.mdm.teacher.R.id.stop;
 
 
 /**
@@ -56,6 +58,7 @@ public class ResultActivity extends BaseActivity {
     private TextView hint;
     private TextView unSubmitCount;
     private TextView unSubmitName;
+    private Button stopBtn;
 
     private GridView gv;
     private MyAdapter adapter;
@@ -90,6 +93,7 @@ public class ResultActivity extends BaseActivity {
         unSubmitCount.setText("剩余" + students.size() + "人未作答");
         unSubmitName = (TextView) findViewById(R.id.unSubmitName);
         unSubmitName.setMovementMethod(new ScrollingMovementMethod());
+        stopBtn = (Button) findViewById(stop);
 
         if (type == TYPE_QUESTION_DIANMINGDA) {
             titleName.setText("点名答");
@@ -186,6 +190,12 @@ public class ResultActivity extends BaseActivity {
                 if (allSubmit) {
                     timeup = true;
                     mHandler.removeCallbacksAndMessages(null);
+                    stopBtn.setBackgroundResource(R.drawable.endbutton_false);
+                    if (type == TYPE_QUESTION_CEPING) {
+                        hint.setText("测评结束");
+                    } else {
+                        hint.setText("答题结束");
+                    }
                 }
             }
         });
@@ -209,6 +219,7 @@ public class ResultActivity extends BaseActivity {
 
                 holder.name = (TextView) rowView.findViewById(R.id.name);
                 holder.icon = (ImageView) rowView.findViewById(R.id.icon);
+                holder.collected = (ImageView) rowView.findViewById(R.id.collected);
 
                 rowView.setTag(holder);
             } else {
@@ -224,12 +235,19 @@ public class ResultActivity extends BaseActivity {
             } else {
                 holder.icon.setImageResource(R.drawable.icon1);
             }
+            if (s.collected) {
+                holder.collected.setVisibility(View.VISIBLE);
+            } else {
+                holder.collected.setVisibility(View.GONE);
+            }
+
             return rowView;
         }
 
         public class ViewHolder {
             public TextView name;
             public ImageView icon;
+            public ImageView collected;
         }
 
         @Override
@@ -253,7 +271,7 @@ public class ResultActivity extends BaseActivity {
         timeup = true;
         questionTime = 0;
         mHandler.removeCallbacksAndMessages(null);
-
+        stopBtn.setBackgroundResource(R.drawable.endbutton_false);
         sendTimeupCommand();
     }
 
@@ -267,7 +285,7 @@ public class ResultActivity extends BaseActivity {
             JSONArray array = new JSONArray();
             JSONObject o1 = new JSONObject();
             o1.put("answerContent", "student imei");
-            o1.put("answerImg", "zbus countId");
+            //o1.put("answerImg", "zbus countId");
             o1.put("content", "");
             o1.put("examinationId", "");
             o1.put("id", "");
