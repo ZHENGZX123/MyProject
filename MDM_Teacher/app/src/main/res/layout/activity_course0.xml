@@ -224,7 +224,8 @@
                     android:layout_marginTop="8dp"
                     android:gravity="center"
                     android:onClick="shezhi"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="35dp"
