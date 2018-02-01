@@ -1,21 +1,27 @@
 package cn.kiway.mdm.web;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 import com.leon.lfilepickerlibrary.LFilePicker;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 
+import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 
-import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.StudentGridActivity;
 import cn.kiway.mdm.teacher.R;
@@ -24,9 +30,11 @@ import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.util.WifiUtils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
+import static cn.kiway.mdm.KWApplication.clientUrl;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMING;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.FileUtils.EnFILEPATH;
+import static cn.kiway.mdm.zbus.ZbusHost.APPID;
 
 /**
  * Created by Administrator on 2017/11/9.
@@ -97,8 +105,8 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public String getHost() {
-        Log.d("test", "getHost is called return " + KWApplication.clientUrl);
-        return KWApplication.clientUrl;
+        Log.d("test", "getHost is called return " + clientUrl);
+        return clientUrl;
     }
 
     @JavascriptInterface
@@ -204,6 +212,104 @@ public class JsAndroidInterface {
             this.activity.startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @JavascriptInterface
+    public void login(String info) {
+        Log.d("test", "login is called , info = " + info);
+        try {
+            JSONObject o = new JSONObject(info);
+            String token = o.optString("token");
+            String userId = o.optString("userId");
+            activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
+            activity.getSharedPreferences("kiway", 0).edit().putString("userId", userId).commit();
+            String imei = Utils.getIMEI(this.activity);
+            installationPush(this.activity, userId, imei);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @JavascriptInterface
+    public void logout() {
+        Log.d("test", "logout is called");
+        uninstallPush(this.activity);
+    }
+
+    public void installationPush(final Context c, final String userId, final String imei) {
+        try {
+            String xtoken = c.getSharedPreferences("kiway", 0).getString("accessToken", "");
+            if (TextUtils.isEmpty(xtoken)) {
+                return;
+            }
+            AsyncHttpClient client = new AsyncHttpClient();
+            Log.d("test", "xtoken = " + xtoken);
+            client.addHeader("x-auth-token", xtoken);
+            client.setTimeout(10000);
+            Log.d("test", "userId = " + userId);
+            JSONObject param = new JSONObject();
+            param.put("appId", APPID);
+            param.put("type", "huawei");
+            param.put("deviceId", imei);
+            param.put("userId", userId);
+            param.put("module", "student");
+            Log.d("test", "installationPush param = " + param.toString());
+            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+            String url = clientUrl + "/push/installation";
+            Log.d("test", "installationPush = " + url);
+            client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "installationPush onSuccess = " + ret);
+                    JsAndroidInterface.this.activity.initZbus();
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "installationPush onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
+        }
+    }
+
+    public void uninstallPush(Context c) {
+        try {
+            String xtoken = c.getSharedPreferences("kiway", 0).getString("accessToken", "");
+            String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
+            if (TextUtils.isEmpty(xtoken)) {
+                return;
+            }
+            AsyncHttpClient client = new AsyncHttpClient();
+            Log.d("test", "xtoken = " + xtoken);
+            client.addHeader("x-auth-token", xtoken);
+            client.setTimeout(10000);
+            RequestParams param = new RequestParams();
+            param.put("type", "huawei");
+            param.put("imei", Utils.getIMEI(c));
+            param.put("token", userId);
+            Log.d("test", "param = " + param.toString());
+            String url = clientUrl + "/device/uninstall";
+            Log.d("test", "uninstallPush = " + url);
+            client.post(c, url, param, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "uninstallPush onSuccess = " + ret);
+                    //callback loadurl(xxxcalback)
+                    c.getSharedPreferences("kiway", 0).edit().clear().commit();
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "uninstallPush onFailure = " + s);
+                    //callback
+
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
         }
     }
 }

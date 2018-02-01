@@ -69,7 +69,10 @@
             android:name="cn.kiway.mdm.activity.ResultActivity"
             android:screenOrientation="landscape"></activity>
         <activity
-            android:name="cn.kiway.mdm.activity.ClassResultActivity"
+            android:name="cn.kiway.mdm.activity.TongjiActivity"
+            android:screenOrientation="landscape"></activity>
+        <activity
+            android:name="cn.kiway.mdm.activity.TongjiActivity2"
             android:screenOrientation="landscape"></activity>
         <activity
             android:name="cn.kiway.mdm.activity.ResultDetailActivity"
@@ -80,7 +83,7 @@
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
 </manifest>

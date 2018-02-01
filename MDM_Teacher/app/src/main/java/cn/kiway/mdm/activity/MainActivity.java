@@ -56,9 +56,9 @@ import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.web.JsAndroidInterface;
 import cn.kiway.mdm.web.MyWebViewClient;
+import cn.kiway.mdm.zbus.ZbusHost;
 import cn.kiway.mdm.zbus.ZbusMessageHandler;
-import cn.kiway.web.kthd.zbus.ZbusConfiguration;
-import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
+import cn.kiway.zbus.utils.ZbusUtils;
 import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
 
@@ -71,14 +71,11 @@ import static cn.kiway.mdm.web.JsAndroidInterface.picPath;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile2;
 import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
-import static cn.kiway.mdm.zbus.ZbusHost.topic;
-import static cn.kiway.mdm.zbus.ZbusHost.zbusHost;
-import static cn.kiway.mdm.zbus.ZbusHost.zbusPost;
 
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.3.3";
+    private static final String currentPackageVersion = "0.3.4";
     private boolean isSuccess = false;
     private boolean isJump = false;
     private Dialog dialog_download;
@@ -125,17 +122,19 @@ public class MainActivity extends BaseActivity {
     };
 
     //初始化zbus
-    private void initZbus() {
+    public void initZbus() {
+        Log.d("test", "initZbus");
         new Thread() {
             @Override
             public void run() {
                 try {
-                    ZbusConfiguration.instance.setHost(zbusHost);
-                    ZbusConfiguration.instance.setPort(zbusPost);
-                    ZbusConfiguration.instance.setProject(clientUrl);
-                    topic = "kiwayMDM_teacher_" + Utils.getIMEI(getApplicationContext());
-                    Log.d("test", "老师订阅主题 = " + topic);
-                    ZbusUtils.consumeMsg(topic, new ZbusMessageHandler());
+                    String userId = getSharedPreferences("kiway", 0).getString("userId", "");
+                    if (TextUtils.isEmpty(userId)) {
+                        return;
+                    }
+                    String topic = "kiway_push_" + userId;
+                    Log.d("test", "topic = " + topic);
+                    ZbusUtils.consumeMsg(topic, new ZbusMessageHandler(), ZbusHost.zbusHost + ":" + ZbusHost.zbusPost);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

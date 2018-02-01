@@ -9,12 +9,12 @@ import cn.kiway.mdm.teacher.R;
  * Created by Administrator on 2018/1/17.
  */
 //班级测评统计
-public class ClassResultActivity extends BaseActivity {
+public class TongjiActivity2 extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_class_result);
+        setContentView(R.layout.activity_tongji2);
         initView();
     }
 
@@ -22,6 +22,6 @@ public class ClassResultActivity extends BaseActivity {
     public void initView() {
         super.initView();
 
-        titleName.setText("班级统计");
+        titleName.setText("知识点统计结果");
     }
 }
