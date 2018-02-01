@@ -9,6 +9,9 @@ import android.os.RemoteException;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -19,6 +22,8 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
+import org.apache.http.Header;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.x;
 
@@ -27,7 +32,11 @@ import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.QuestionActivity;
 import cn.kiway.mdm.activity.ScreenActivity;
+import cn.kiway.mdm.utils.Logger;
+import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdmaidl.KiwayApplication;
+
+import static cn.kiway.mdm.utils.HttpUtil.uploadUserFile;
 
 /**
  * Created by Administrator on 2017/12/4.
@@ -189,9 +198,10 @@ public class App extends KiwayApplication {
                     String qiangdaStudentName = o.optString("qiangdaStudentName");
                     ((BaseActivity) currentActivity).onQiangdaResult(result, qiangdaStudentName);
                 } else if (command.equals("wenjian")) {
-                    ((BaseActivity) currentActivity).toast("接收到文件");
+                    ((BaseActivity) currentActivity).downloadFile(o);
                     //1.显示文件
                     //2.上传到易敏的接口
+                    uploadUserFile(o.optString("url"),2,o.optString("fileName"),o.optString("size"));
                 } else if (command.equals("collection")) {
                     if (!(currentActivity instanceof QuestionActivity)) {
                         Log.d("test", "学生把答题页面关闭了，不应该。。。");
@@ -240,4 +250,46 @@ public class App extends KiwayApplication {
             //上课
         }
     };
+
+    public void uploadUserFile(final String url, final int type, final String name,final String size) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+        client.setTimeout(10000);
+        RequestParams param = new RequestParams();
+        param.put("url", url);
+        param.put("type",type);
+        param.put("name",name);
+        param.put("size",size);
+        client.post(this, uploadUserFile, param, new TextHttpResponseHandler() {
+            @Override
+            public void onSuccess(int code, Header[] headers, String ret) {
+                Log.d("test", "course onSuccess = " + ret);
+            }
+            @Override
+            public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
+                Logger.log("::::::::::::onFailure" + ret);
+                if (!ret.equals("")) {
+                    try {
+                        JSONObject data = new JSONObject(ret);
+                        if (data.optInt("statusCode") != 200) {
+                            Utils.login(App.this, new Utils.ReLogin() {
+                                @Override
+                                public void onSuccess() {
+                                    uploadUserFile(url, type, name,size);
+                                }
+
+                                @Override
+                                public void onFailure() {
+
+                                }
+                            });
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
 }

@@ -10,11 +10,19 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.RemoteException;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -34,6 +42,8 @@ import java.util.Locale;
 
 import cn.kiway.mdm.App;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
+
+import static cn.kiway.mdm.App.clientUrl;
 
 /**
  * Created by Administrator on 2017/6/8.
@@ -397,5 +407,68 @@ public class Utils {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static void login(final Context context, final ReLogin reLogin) {
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.setTimeout(10000);
+        String url = clientUrl + "device/login";
+        Log.d("test", "url = " + url);
+        RequestParams param = new RequestParams();
+        param.put("classId", context.getSharedPreferences("kiwaykthd", 0).getString("classId",
+                ""));
+        param.put("studentNumber", context.getSharedPreferences("kiwaykthd", 0).getString("studentNumber", ""));
+        param.put("mobileModel", Build.MODEL);
+        param.put("mobileBrand", Build.BRAND);
+        param.put("schoolId", context.getSharedPreferences("kiwaykthd", 0).getString("schoolId",
+                ""));
+        param.put("name", context.getSharedPreferences("kiwaykthd", 0).getString("studentName",
+                ""));
+        param.put("IMEI", Utils.getIMEI(context));
+        param.put("platform", "Android");
+        param.put("token", context.getSharedPreferences("kiwaykthd", 0).getString("huaweiToken",
+                ""));
+        param.put("operation", "login");
+        Log.d("test", "param = " + param.toString());
+        client.post(context, url, param, new TextHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int arg0, Header[] arg1, String ret) {
+                Log.d("test", "login onSuccess = " + ret);
+                try {
+                    JSONObject o = new JSONObject(ret);
+                    int StatusCode = o.optInt("statusCode");
+                    String token = o.getJSONObject("data").optString("token");
+                    context.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
+                    //TODO 返回pwd，密钥不一样怎么办
+                    Log.d("test", "login get token = " + token);
+                    if (StatusCode == 200) {
+                        if (reLogin != null)
+                            reLogin.onSuccess();
+                    } else {
+                        if (reLogin != null) {
+                            reLogin.onFailure();
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                Log.d("test", "onFailure ret = " + ret);
+                if (reLogin != null) {
+                    reLogin.onFailure();
+                }
+            }
+        });
+    }
+
+    public interface ReLogin {
+        public void onSuccess();
+
+        public void onFailure();
     }
 }

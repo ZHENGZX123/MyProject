@@ -6,29 +6,37 @@ package cn.kiway.mdm.model;
 
 public class FileModel {
 
-    @Override
-    public String toString() {
-        return "FileModel{" +
-                "filename='" + filename + '\'' +
-                ", filepath='" + filepath + '\'' +
-                ", time='" + time + '\'' +
-                ", sender='" + sender + '\'' +
-                '}';
-    }
-
-    public String filename;
-    public String filepath;
-    public String time;
-    public String sender;//snapshot就是截图资料
+    public String size;
+    public String name;
+    public String id;
+    public String userId;
+    public String url;//snapshot就是截图资料
+    public String type;
+    public String createDate;
 
 
-    public FileModel(String filename, String filepath, String time, String sender) {
-        this.filename = filename;
-        this.filepath = filepath;
-        this.time = time;
-        this.sender = sender;
+    public FileModel(String size,String name, String id, String userId, String url,String type,String createDate) {
+        this.size=size;
+        this.name = name;
+        this.id = id;
+        this.userId = userId;
+        this.url = url;
+        this.type = type;
+        this.createDate = createDate;
     }
 
     public FileModel() {
+    }
+
+    @Override
+    public String toString() {
+        return "FileModel{" +
+                "name='" + name + '\'' +
+                ", id='" + id + '\'' +
+                ", userId='" + userId + '\'' +
+                ", url='" + url + '\'' +
+                ", type='" + type + '\'' +
+                ", createDate='" + createDate + '\'' +
+                '}';
     }
 }
