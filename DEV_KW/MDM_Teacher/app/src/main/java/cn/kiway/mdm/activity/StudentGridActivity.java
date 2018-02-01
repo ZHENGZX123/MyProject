@@ -304,7 +304,7 @@ public class StudentGridActivity extends BaseActivity {
             @Override
             public void onSuccess() {
                 if (chaping == 1) {
-                    String roomName = "kiwayMDM_student_" + s.imei;
+                    String roomName = s.imei;
                     startPlayer(roomName);
                 }
             }
@@ -592,7 +592,7 @@ public class StudentGridActivity extends BaseActivity {
 
     @Override
     public void rk(View view) {
-        startActivity(new Intent(StudentGridActivity.this, ClassResultActivity.class));
+        startActivity(new Intent(StudentGridActivity.this, TongjiActivity.class));
     }
 
     private void doEndSign() {

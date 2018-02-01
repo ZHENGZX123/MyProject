@@ -307,7 +307,8 @@ public class Course0Activity extends ScreenSharingActivity {
         toast("开始推屏");
         initModules();
         startCapture();
-        mRtcEngine.joinChannel(null, ZbusHost.topic, "", 0);
+        String userId = getSharedPreferences("kiway", 0).getString("userId", "");
+        mRtcEngine.joinChannel(null, userId, "", 0);
     }
 
     private void endTuiping() {

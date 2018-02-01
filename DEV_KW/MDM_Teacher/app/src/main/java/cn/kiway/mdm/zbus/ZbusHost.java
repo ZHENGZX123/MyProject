@@ -9,14 +9,16 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import cn.kiway.mdm.activity.ResultActivity;
 import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.util.Utils;
-import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
-import cn.kiway.web.kthd.zbus.vo.PushRecordVo;
+import cn.kiway.zbus.utils.ZbusUtils;
+import cn.kiway.zbus.vo.PushMessageVo;
 
 import static cn.kiway.mdm.KWApplication.students;
 
@@ -26,17 +28,19 @@ import static cn.kiway.mdm.KWApplication.students;
 
 public class ZbusHost {
     public static String zbusHost = "192.168.8.161";
-    public static String zbusPost = "15555";
-    public static String topic = "";
+    public static String zbusPost = "15556";//15555
+
+    public static final String APPID = "f2ec1fb69b27c7ab5260d2eb7cd95dea";
+    public static final String APPKEY = "9a9b01f8ab910e12422bcc0e88d95dff2f95f582";
 
     public static void tongji(Activity c, KnowledgePoint kp, OnListener onListener) {
         try {
             String title = "知识点统计";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "tongji").put("topic", topic).put("knowledge", kp.content)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "tongji").put("teacherUserId", userId).put("knowledge", kp.content)).toString();
             for (Student s : students) {
-                String studentTopic = "kiwayMDM_student_" + s.imei;
-                doSendMsg(title, userId, msg, studentTopic);
+
+                doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
                 onListener.onSuccess();
@@ -53,10 +57,9 @@ public class ZbusHost {
         try {
             String title = "推屏";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "tuiping").put("topic", topic).put("status", status)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "tuiping").put("teacherUserId", userId).put("status", status)).toString();
             for (Student s : students) {
-                String studentTopic = "kiwayMDM_student_" + s.imei;
-                doSendMsg(title, userId, msg, studentTopic);
+                doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
                 onListener.onSuccess();
@@ -69,14 +72,12 @@ public class ZbusHost {
         }
     }
 
-
     public static void qiangdaResult(Activity c, Student s, int result, String qiangdaStudentName, OnListener onListener) {
         try {
             String title = "抢答结果";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "qiangdaResult").put("topic", topic).put("result", result).put("qiangdaStudentName", qiangdaStudentName)).toString();
-            String studentTopic = "kiwayMDM_student_" + s.imei;
-            doSendMsg(title, userId, msg, studentTopic);
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "qiangdaResult").put("teacherUserId", userId).put("result", result).put("qiangdaStudentName", qiangdaStudentName)).toString();
+            doSendMsg(c, title, userId, msg, s.token);
             if (onListener != null) {
                 onListener.onSuccess();
             }
@@ -92,10 +93,10 @@ public class ZbusHost {
         try {
             String title = "抢答";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "qiangda").put("topic", topic)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "qiangda").put("teacherUserId", userId)).toString();
             for (Student s : students) {
-                String studentTopic = "kiwayMDM_student_" + s.imei;
-                doSendMsg(title, userId, msg, studentTopic);
+
+                doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
                 onListener.onSuccess();
@@ -122,9 +123,9 @@ public class ZbusHost {
             ArrayList<Question> questions = new ArrayList<>();
             questions.add(q);
             String questionStr = new Gson().toJson(questions);
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("topic", topic).put("questions", questionStr).put("questionType", questionType).put("questionTime", questionTime)).toString();
-            String studentTopic = "kiwayMDM_student_" + s.imei;
-            doSendMsg(title, userId, msg, studentTopic);
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("teacherUserId", userId).put("questions", questionStr).put("questionType", questionType).put("questionTime", questionTime)).toString();
+
+            doSendMsg(c, title, userId, msg, s.token);
             if (onListener != null) {
                 onListener.onSuccess();
             }
@@ -142,10 +143,10 @@ public class ZbusHost {
             String title = "测评";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
             String questionStr = new Gson().toJson(questions);
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("topic", topic).put("questions", questionStr).put("questionType", 4).put("questionTime", questionTime)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("teacherUserId", userId).put("questions", questionStr).put("questionType", 4).put("questionTime", questionTime)).toString();
             for (Student s : students) {
-                String studentTopic = "kiwayMDM_student_" + s.imei;
-                doSendMsg(title, userId, msg, studentTopic);
+
+                doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
                 onListener.onSuccess();
@@ -161,10 +162,11 @@ public class ZbusHost {
 
     public static void collection(Activity c, Student s, String collection, OnListener onListener) {
         try {
+            String title = "批改结果";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "collection").put("topic", topic).put("collection", collection)).toString();
-            String studentTopic = "kiwayMDM_student_" + s.imei;
-            doSendMsg("批改结果", userId, msg, studentTopic);
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "collection").put("teacherUserId", userId).put("collection", collection)).toString();
+
+            doSendMsg(c, title, userId, msg, s.token);
             if (onListener != null) {
                 onListener.onSuccess();
             }
@@ -180,9 +182,9 @@ public class ZbusHost {
         try {
             String title = "查屏";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "chaping").put("topic", topic).put("chaping", chaping)).toString();
-            String studentTopic = "kiwayMDM_student_" + s.imei;
-            doSendMsg(title, userId, msg, studentTopic);
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "chaping").put("teacherUserId", userId).put("chaping", chaping)).toString();
+
+            doSendMsg(c, title, userId, msg, s.token);
             if (onListener != null) {
                 onListener.onSuccess();
             }
@@ -208,8 +210,8 @@ public class ZbusHost {
             }
             String msg = new JSONObject().put("data", new JSONObject().put("command", commeand).put("currentTime", Utils.longToDate("" + System.currentTimeMillis()))).toString();
             for (Student s : students) {
-                String studentTopic = "kiwayMDM_student_" + s.imei;
-                doSendMsg(title, userId, msg, studentTopic);
+
+                doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
                 onListener.onSuccess();
@@ -226,10 +228,9 @@ public class ZbusHost {
         try {
             String title = "上课";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "shangke").put("ip", "").put("platform", "android").put("topic", topic)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "shangke").put("ip", "").put("platform", "android").put("teacherUserId", userId)).toString();
             for (Student s : students) {
-                String studentTopic = "kiwayMDM_student_" + s.imei;
-                doSendMsg(title, userId, msg, studentTopic);
+                doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
                 onListener.onSuccess();
@@ -246,10 +247,10 @@ public class ZbusHost {
         try {
             String title = "下课";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "xiake").put("ip", "").put("platform", "android").put("topic", topic)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "xiake").put("ip", "").put("platform", "android").put("teacherUserId", userId)).toString();
             for (Student s : students) {
-                String studentTopic = "kiwayMDM_student_" + s.imei;
-                doSendMsg(title, userId, msg, studentTopic);
+
+                doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
                 onListener.onSuccess();
@@ -266,10 +267,10 @@ public class ZbusHost {
         try {
             String title = "点名";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "sign").put("topic", topic)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "sign").put("teacherUserId", userId)).toString();
             for (Student s : students) {
-                String studentTopic = "kiwayMDM_student_" + s.imei;
-                doSendMsg(title, userId, msg, studentTopic);
+
+                doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
                 onListener.onSuccess();
@@ -282,26 +283,35 @@ public class ZbusHost {
         }
     }
 
-    private static void doSendMsg(String title, String userId, String msg, String studentTopic) throws
+    private static void doSendMsg(Context c, String title, String userId, String msg, String token) throws
             Exception {
-        Log.d("test", "发送给学生title = " + title + " , msg = " + msg + ", studentTopic = " + studentTopic);
-        PushRecordVo vo = new PushRecordVo();
-        vo.setTitle(title);
-        vo.setSenderId(userId);//发送的ID
-        vo.setUserType(1);//发送方：1老师 2学生 3家长 4管理员
-        vo.setMessage(msg);
-        ZbusUtils.sendMsg(studentTopic, vo);
+        //topic : 上报的 deviceId#userId
+        String topic = Utils.getIMEI(c) + "#" + userId;
+        String url = zbusHost + ":" + zbusPost;
+        PushMessageVo pushMessageVo = new PushMessageVo();
+        pushMessageVo.setDescription(title);
+        pushMessageVo.setTitle(title);
+        pushMessageVo.setMessage(msg);
+        pushMessageVo.setAppId(APPID);
+        pushMessageVo.setModule("student");
+        Set<String> userIds = new HashSet<>();
+        userIds.add(token);
+        pushMessageVo.setUserId(userIds);//学生token
+        pushMessageVo.setSenderId(userId);//老师的userId
+        pushMessageVo.setPushType("zbus");
+
+        Log.d("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
+        ZbusUtils.sendMsg(topic, url, pushMessageVo);
     }
 
 
-    public static void wenjian(Activity c, ArrayList<Student> students, String url,String fileName, OnListener onListener) {
+    public static void wenjian(Activity c, ArrayList<Student> students, String url, String fileName, OnListener onListener) {
         try {
             String title = "文件";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "wenjian").put("topic", topic).put("url", url)).put("fileName",fileName).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "wenjian").put("teacherUserId", userId).put("url", url).put("fileName", fileName)).toString();
             for (Student s : students) {
-                String studentTopic = "kiwayMDM_student_" + s.imei;
-                doSendMsg(title, userId, msg, studentTopic);
+                doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
                 onListener.onSuccess();
@@ -318,10 +328,10 @@ public class ZbusHost {
         try {
             String title = "答题时间到";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "questionTimeup").put("topic", topic)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "questionTimeup").put("teacherUserId", userId)).toString();
             for (Student s : students) {
-                String studentTopic = "kiwayMDM_student_" + s.imei;
-                doSendMsg(title, userId, msg, studentTopic);
+
+                doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
                 onListener.onSuccess();
@@ -338,10 +348,10 @@ public class ZbusHost {
         try {
             String title = "答题终止";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "questionEnd").put("topic", topic)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "questionEnd").put("teacherUserId", userId)).toString();
             for (Student s : students) {
-                String studentTopic = "kiwayMDM_student_" + s.imei;
-                doSendMsg(title, userId, msg, studentTopic);
+
+                doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
                 onListener.onSuccess();
