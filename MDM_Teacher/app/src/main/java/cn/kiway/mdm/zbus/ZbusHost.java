@@ -39,7 +39,6 @@ public class ZbusHost {
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
             String msg = new JSONObject().put("data", new JSONObject().put("command", "tongji").put("teacherUserId", userId).put("knowledge", kp.content)).toString();
             for (Student s : students) {
-
                 doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
@@ -95,7 +94,6 @@ public class ZbusHost {
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
             String msg = new JSONObject().put("data", new JSONObject().put("command", "qiangda").put("teacherUserId", userId)).toString();
             for (Student s : students) {
-
                 doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
@@ -124,7 +122,6 @@ public class ZbusHost {
             questions.add(q);
             String questionStr = new Gson().toJson(questions);
             String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("teacherUserId", userId).put("questions", questionStr).put("questionType", questionType).put("questionTime", questionTime)).toString();
-
             doSendMsg(c, title, userId, msg, s.token);
             if (onListener != null) {
                 onListener.onSuccess();
@@ -145,7 +142,6 @@ public class ZbusHost {
             String questionStr = new Gson().toJson(questions);
             String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("teacherUserId", userId).put("questions", questionStr).put("questionType", 4).put("questionTime", questionTime)).toString();
             for (Student s : students) {
-
                 doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
@@ -165,7 +161,6 @@ public class ZbusHost {
             String title = "批改结果";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
             String msg = new JSONObject().put("data", new JSONObject().put("command", "collection").put("teacherUserId", userId).put("collection", collection)).toString();
-
             doSendMsg(c, title, userId, msg, s.token);
             if (onListener != null) {
                 onListener.onSuccess();
@@ -183,7 +178,6 @@ public class ZbusHost {
             String title = "查屏";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
             String msg = new JSONObject().put("data", new JSONObject().put("command", "chaping").put("teacherUserId", userId).put("chaping", chaping)).toString();
-
             doSendMsg(c, title, userId, msg, s.token);
             if (onListener != null) {
                 onListener.onSuccess();
@@ -210,7 +204,6 @@ public class ZbusHost {
             }
             String msg = new JSONObject().put("data", new JSONObject().put("command", commeand).put("currentTime", Utils.longToDate("" + System.currentTimeMillis()))).toString();
             for (Student s : students) {
-
                 doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
@@ -249,7 +242,6 @@ public class ZbusHost {
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
             String msg = new JSONObject().put("data", new JSONObject().put("command", "xiake").put("ip", "").put("platform", "android").put("teacherUserId", userId)).toString();
             for (Student s : students) {
-
                 doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
@@ -269,7 +261,6 @@ public class ZbusHost {
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
             String msg = new JSONObject().put("data", new JSONObject().put("command", "sign").put("teacherUserId", userId)).toString();
             for (Student s : students) {
-
                 doSendMsg(c, title, userId, msg, s.token);
             }
             if (onListener != null) {
@@ -301,7 +292,16 @@ public class ZbusHost {
         pushMessageVo.setPushType("zbus");
 
         Log.d("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
-        ZbusUtils.sendMsg(topic, url, pushMessageVo);
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    ZbusUtils.sendMsg(topic, url, pushMessageVo);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
 
