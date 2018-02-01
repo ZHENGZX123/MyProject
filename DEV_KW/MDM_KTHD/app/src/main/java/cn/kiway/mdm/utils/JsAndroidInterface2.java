@@ -41,7 +41,12 @@ public class JsAndroidInterface2 {
         try {
             byte[] bitmapArray = Base64.decode(param.split(",")[1], Base64.DEFAULT);
             bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
-            Utils.saveBitmap(bitmap, System.currentTimeMillis() + ".png", App.PATH);
+            String filename = System.currentTimeMillis() + ".png";
+            String filepath = App.ROOT + "image/" + filename;
+            Utils.saveBitmap(bitmap, filename, App.ROOT + "image/");
+            if (this.listener != null) {
+                this.listener.onImage(filepath);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,5 +67,17 @@ public class JsAndroidInterface2 {
         Intent intent = new Intent(this.activity, ImageGridActivity.class);
         this.activity.startActivityForResult(intent, SELECT_PHOTO);
     }
+
+
+    private OnListener listener;
+
+    public void setListener(OnListener l) {
+        this.listener = l;
+    }
+
+    public interface OnListener {
+        void onImage(String filepath);
+    }
+
 
 }
