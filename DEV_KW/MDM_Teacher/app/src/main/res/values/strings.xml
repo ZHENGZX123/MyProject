@@ -10,6 +10,7 @@
     <string name="upload">正在上传,请稍后</string>
     <string name="yasuo">正在压缩图片,请稍后</string>
     <string name="yasuoshibai">压缩失败,请重试</string>
+    <string name="caijianshibai">裁剪图片失败,请重试</string>
     <string name="upload_fialt">上传失败，请稍后再试</string>
     <string name="choose_file">请选择 kiwaymdm 下面的文件</string>
     <string name="new_version">发现新的版本，是否更新？本次更新不消耗流量。</string>

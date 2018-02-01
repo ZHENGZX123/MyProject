@@ -50,6 +50,7 @@ import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.FileUtils;
 import cn.kiway.mdm.util.HttpDownload;
+import cn.kiway.mdm.util.Logger;
 import cn.kiway.mdm.util.NetworkUtil;
 import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
@@ -246,12 +247,12 @@ public class MainActivity extends BaseActivity {
                 return;
             List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
             String filePath = list.get(0);
-            if (filePath.endsWith(".jpg") || filePath.endsWith(".jpeg") || filePath.endsWith(".png") || filePath
-                    .endsWith(".JPG") || filePath.endsWith(".JPEG") || filePath.endsWith(".PNG")) {
+            // uploadFile(filePath, true);
+            if (Utils.isImage(filePath)) {
                 //需要裁剪的图片路径
                 Uri sourceUri = Uri.fromFile(new File(filePath));
                 //裁剪完毕的图片存放路径
-                Uri destinationUri = Uri.fromFile(new File(filePath.split("\\.")[0] + "1."+filePath.split("\\.")[1]));
+                Uri destinationUri = Uri.fromFile(new File(filePath.split("\\.")[0] + "1." + filePath.split("\\.")[1]));
                 UCrop.of(sourceUri, destinationUri) //定义路径
                         .withAspectRatio(4, 3) //定义裁剪比例 4:3 ， 16:9
                         .withMaxResultSize(500, 500) //定义裁剪图片宽高最大值
@@ -271,8 +272,9 @@ public class MainActivity extends BaseActivity {
                     .withMaxResultSize(500, 500) //定义裁剪图片宽高最大值
                     .start(this);
         } //裁剪成功后调用
-        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+        else if (requestCode == UCrop.REQUEST_CROP) {
             final Uri resultUri = UCrop.getOutput(data);
+            Logger.log(":::::::::::" + resultUri.getPath());
             //压缩图片
             Luban.with(this).load(resultUri.getPath()).ignoreBy(100).setTargetDir(getPath()).setCompressListener(new OnCompressListener() {
                 @Override
@@ -310,6 +312,8 @@ public class MainActivity extends BaseActivity {
             //出错时进入该分支
         } else if (resultCode == UCrop.RESULT_ERROR) {
             final Throwable cropError = UCrop.getError(data);
+            Logger.log("cropError:::::" + cropError.toString());
+            Toast.makeText(this, getString(R.string.caijianshibai), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -323,9 +327,13 @@ public class MainActivity extends BaseActivity {
     }
 
     public void uploadFile(String filePath, boolean copy) {
+        boolean isImage = false;
+        if (Utils.isImage(filePath))
+            isImage = true;
         File file = new File(filePath);
         pd.show();
         pd.setMessage(getString(R.string.upload));
+        boolean finalIsImage = isImage;
         new Thread() {
             @Override
             public void run() {
@@ -338,6 +346,8 @@ public class MainActivity extends BaseActivity {
                     public void run() {
                         try {
                             pd.dismiss();
+                            if (finalIsImage)//因为剪切会多一张图，所以不管上传成功失败都要删除
+                                file.delete();
                             if (TextUtils.isEmpty(ret)) {
                                 toast(getString(R.string.upload_fialt));
                                 return;

@@ -517,4 +517,10 @@ public class Utils {
         String str = sdf.format(date);
         return str;
     }
+    public static boolean isImage(String filePath){
+        if (filePath.endsWith(".jpg") || filePath.endsWith(".jpeg") || filePath.endsWith(".png") || filePath
+                .endsWith(".JPG") || filePath.endsWith(".JPEG") || filePath.endsWith(".PNG"))
+            return true;
+        return false;
+    }
 }
