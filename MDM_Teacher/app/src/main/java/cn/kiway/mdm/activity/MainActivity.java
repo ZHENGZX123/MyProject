@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.leon.lfilepickerlibrary.utils.Constant;
+import com.yalantis.ucrop.UCrop;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -245,13 +246,35 @@ public class MainActivity extends BaseActivity {
                 return;
             List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
             String filePath = list.get(0);
-            //1.上传
-            uploadFile(filePath, true);
-
+            if (filePath.endsWith(".jpg") || filePath.endsWith(".jpeg") || filePath.endsWith(".png") || filePath
+                    .endsWith(".JPG") || filePath.endsWith(".JPEG") || filePath.endsWith(".PNG")) {
+                //需要裁剪的图片路径
+                Uri sourceUri = Uri.fromFile(new File(filePath));
+                //裁剪完毕的图片存放路径
+                Uri destinationUri = Uri.fromFile(new File(filePath.split("\\.")[0] + "1."+filePath.split("\\.")[1]));
+                UCrop.of(sourceUri, destinationUri) //定义路径
+                        .withAspectRatio(4, 3) //定义裁剪比例 4:3 ， 16:9
+                        .withMaxResultSize(500, 500) //定义裁剪图片宽高最大值
+                        .start(this);
+            } else {
+                uploadFile(filePath, true);
+            }
         } else if (requestCode == REQUEST_ORIGINAL) {
             if (resultCode != RESULT_OK)
                 return;
-            Luban.with(this).load(picPath).ignoreBy(100).setTargetDir(getPath()).setCompressListener(new OnCompressListener() {
+            //需要裁剪的图片路径
+            Uri sourceUri = Uri.fromFile(new File(picPath));
+            //裁剪完毕的图片存放路径
+            Uri destinationUri = Uri.fromFile(new File(picPath.split(".")[0] + "1.png"));
+            UCrop.of(sourceUri, destinationUri) //定义路径
+                    .withAspectRatio(4, 3) //定义裁剪比例 4:3 ， 16:9
+                    .withMaxResultSize(500, 500) //定义裁剪图片宽高最大值
+                    .start(this);
+        } //裁剪成功后调用
+        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+            final Uri resultUri = UCrop.getOutput(data);
+            //压缩图片
+            Luban.with(this).load(resultUri.getPath()).ignoreBy(100).setTargetDir(getPath()).setCompressListener(new OnCompressListener() {
                 @Override
                 public void onStart() {
                     runOnUiThread(new Runnable() {
@@ -267,7 +290,7 @@ public class MainActivity extends BaseActivity {
 
                 @Override
                 public void onSuccess(File file) {
-                    uploadFile(file.getAbsolutePath(), false);
+                    uploadFile(file.getAbsolutePath(), true);
                 }
 
                 @Override
@@ -283,6 +306,10 @@ public class MainActivity extends BaseActivity {
                     });
                 }
             }).launch();    //启动压缩
+
+            //出错时进入该分支
+        } else if (resultCode == UCrop.RESULT_ERROR) {
+            final Throwable cropError = UCrop.getError(data);
         }
     }
 
@@ -345,7 +372,8 @@ public class MainActivity extends BaseActivity {
                 try {
                     sleep(1500);
                     checkTimeout();
-                    HttpGet httpRequest = new HttpGet(KWApplication.clientUrl + "/static/download/version/zip_teacher.json");
+                    HttpGet httpRequest = new HttpGet(KWApplication.clientUrl + "/static/download/version/zip_teacher" +
+                            ".json");
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
