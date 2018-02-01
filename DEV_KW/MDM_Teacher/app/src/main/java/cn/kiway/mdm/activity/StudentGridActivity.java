@@ -658,6 +658,7 @@ public class StudentGridActivity extends BaseActivity {
     }
 
     public void doEndTongji() {
+        toast("统计结束");
         //1.上报统计结果
         mHandler.removeMessages(TYPE_TONGJI);
         dialog_tongji.dismiss();
@@ -671,7 +672,6 @@ public class StudentGridActivity extends BaseActivity {
             for (Student s : students) {
                 JSONObject o1 = new JSONObject();
                 o1.put("imei", s.imei);
-                //o1.put("countId", "zbus countId");
                 o1.put("status", s.known);
                 array.put(o1);
             }
@@ -715,7 +715,6 @@ public class StudentGridActivity extends BaseActivity {
                 if (totalcount_tongji > 0) {
                     mHandler.sendEmptyMessageDelayed(TYPE_TONGJI, 1000);
                 } else {
-                    toast("统计结束");
                     doEndTongji();
                 }
             }

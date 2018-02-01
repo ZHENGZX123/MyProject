@@ -42,6 +42,8 @@ import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_CEPING;
 import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_DIANMINGDA;
 import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_QIANGDA;
 import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_SUIJICHOUDA;
+import static cn.kiway.mdm.entity.Question.TYPE_EMPTY;
+import static cn.kiway.mdm.entity.Question.TYPE_ESSAY;
 import static cn.kiway.mdm.teacher.R.id.stop;
 
 
@@ -160,6 +162,7 @@ public class ResultActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                //1.刷新界面
                 for (Student s : students) {
                     if (s.imei.equals(studentIMEI)) {
                         try {
@@ -168,11 +171,29 @@ public class ResultActivity extends BaseActivity {
                             int count = array.length();
                             for (int i = 0; i < count; i++) {
                                 JSONObject o = array.getJSONObject(i);
-                                String qid = o.getString("qid");
                                 String qanswer = o.getString("qanswer");
                                 Question q = questions.get(i);
                                 //首先要保持顺序正确
                                 q.studentAnswer = qanswer;
+                            }
+                            //2.自动批改
+                            boolean auto = true;
+                            for (Question q : questions) {
+                                if (q.type == TYPE_EMPTY || q.type == TYPE_ESSAY) {
+                                    auto = false;
+                                }
+                            }
+                            if (auto) {
+                                array = new JSONArray();
+                                for (Question q : questions) {
+                                    JSONObject o = new JSONObject();
+                                    o.put("qid", q.id);
+                                    o.put("qtype", q.type);
+                                    o.put("qcollection", autoTeacherJudge(q));
+                                    array.put(o);
+                                }
+                                s.collected = true;
+                                s.collection = array.toString();
                             }
                         } catch (Exception e) {
                             Log.d("test", "学生提交的和本次问题对应不上。。。有问题");
@@ -182,7 +203,7 @@ public class ResultActivity extends BaseActivity {
                 }
                 adapter.notifyDataSetChanged();
 
-                //如果所有学生已经提交，停止答题。
+                //3.如果所有学生已经提交，停止答题。
                 boolean allSubmit = true;
                 for (Student s : students) {
                     allSubmit = allSubmit | s.submited;
@@ -199,6 +220,13 @@ public class ResultActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private int autoTeacherJudge(Question q) {
+        if (q.answerVo.content.replace("[", "").replace("]", "").replace("\"", "").replace(",", "").equals(q.studentAnswer)) {
+            return 2;
+        }
+        return 1;
     }
 
     private class MyAdapter extends BaseAdapter {
@@ -283,21 +311,23 @@ public class ResultActivity extends BaseActivity {
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
             JSONArray array = new JSONArray();
-            JSONObject o1 = new JSONObject();
-            o1.put("answerContent", "student imei");
-            //o1.put("answerImg", "zbus countId");
-            o1.put("content", "");
-            o1.put("examinationId", "");
-            o1.put("id", "");
-            o1.put("imei", "");
-            o1.put("name", "");
-            o1.put("questionContent", "");
-            o1.put("questionImg", "");
-            o1.put("questionOptions", "");
-            o1.put("questionType", 0);
-            o1.put("status", 0);
-            o1.put("type", 0);
-            array.put(o1);
+            for (Student s : students) {
+                //TODO 这里不会做。
+                JSONObject o1 = new JSONObject();
+                o1.put("answerContent", "");
+                o1.put("content", "");
+                o1.put("examinationId", "");
+                o1.put("id", "");
+                o1.put("imei", s.imei);
+                o1.put("name", "");
+                o1.put("questionContent", "");
+                o1.put("questionImg", "");
+                o1.put("questionOptions", "");
+                o1.put("questionType", 0);
+                o1.put("status", 0);
+                o1.put("type", 0);
+                array.put(o1);
+            }
             Log.d("test", "knowledge array = " + array.toString());
             StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
             client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
@@ -392,7 +422,6 @@ public class ResultActivity extends BaseActivity {
             String studentIMEI = data.getStringExtra("studentIMEI");
             boolean collected = data.getBooleanExtra("collected", false);
             String collection = data.getStringExtra("collection");
-
             Student s = getStudentByIMEI(studentIMEI);
             if (s == null) {
                 Log.d("test", "见鬼了哦");
