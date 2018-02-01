@@ -266,7 +266,7 @@ public class MainActivity extends BaseActivity {
             //需要裁剪的图片路径
             Uri sourceUri = Uri.fromFile(new File(picPath));
             //裁剪完毕的图片存放路径
-            Uri destinationUri = Uri.fromFile(new File(picPath.split(".")[0] + "1.png"));
+            Uri destinationUri = Uri.fromFile(new File(picPath.split("\\.")[0] + "1.png"));
             UCrop.of(sourceUri, destinationUri) //定义路径
                     .withAspectRatio(4, 3) //定义裁剪比例 4:3 ， 16:9
                     .withMaxResultSize(500, 500) //定义裁剪图片宽高最大值
@@ -313,7 +313,13 @@ public class MainActivity extends BaseActivity {
         } else if (resultCode == UCrop.RESULT_ERROR) {
             final Throwable cropError = UCrop.getError(data);
             Logger.log("cropError:::::" + cropError.toString());
-            Toast.makeText(this, getString(R.string.caijianshibai), Toast.LENGTH_SHORT).show();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MainActivity.this, getString(R.string.caijianshibai), Toast.LENGTH_SHORT).show();
+                }
+            });
+
         }
     }
 

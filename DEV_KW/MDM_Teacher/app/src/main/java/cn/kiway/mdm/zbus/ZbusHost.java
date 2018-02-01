@@ -298,7 +298,7 @@ public class ZbusHost {
         try {
             String title = "文件";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "wenjian").put("topic", topic).put("url", url)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "wenjian").put("topic", topic).put("url", url)).put("fileName","").toString();
             for (Student s : students) {
                 String studentTopic = "kiwayMDM_student_" + s.imei;
                 doSendMsg(title, userId, msg, studentTopic);
