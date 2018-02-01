@@ -500,12 +500,12 @@ public class StudentGridActivity extends BaseActivity {
                     holder.icon.setImageResource(R.drawable.icon1);
                 }
             } else if (type == TYPE_TONGJI) {
-                //明白是1，没明白是2，未回复是0
-                if (s.known == 0) {
+                //0没明白，1是明白，未回复是2
+                if (s.known == 2) {
                     holder.icon.setImageResource(R.drawable.icon1);
                 } else if (s.known == 1) {
                     holder.icon.setImageResource(R.drawable.icon2);
-                } else if (s.known == 2) {
+                } else if (s.known == 0) {
                     holder.icon.setImageResource(R.drawable.icon3);
                 }
             } else if (type == TYPE_SUOPING) {
@@ -671,8 +671,8 @@ public class StudentGridActivity extends BaseActivity {
             for (Student s : students) {
                 JSONObject o1 = new JSONObject();
                 o1.put("imei", s.imei);
-                o1.put("countId", "zbus countId");
-                o1.put("status", s.known);//0没听懂 1听懂了
+                //o1.put("countId", "zbus countId");
+                o1.put("status", s.known);
                 array.put(o1);
             }
             Log.d("test", "knowledge array = " + array.toString());

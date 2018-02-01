@@ -517,10 +517,27 @@ public class Utils {
         String str = sdf.format(date);
         return str;
     }
+
+
+    public static String longToDate2(String time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM.dd");
+        java.util.Date date = new Date(Long.parseLong(time));
+        String str = sdf.format(date);
+        return str;
+    }
+
+    public static String longToDate3(String time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+        java.util.Date date = new Date(Long.parseLong(time));
+        String str = sdf.format(date);
+        return str;
+    }
+
     public static boolean isImage(String filePath){
         if (filePath.endsWith(".jpg") || filePath.endsWith(".jpeg") || filePath.endsWith(".png") || filePath
                 .endsWith(".JPG") || filePath.endsWith(".JPEG") || filePath.endsWith(".PNG"))
             return true;
         return false;
     }
+
 }

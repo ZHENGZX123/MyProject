@@ -87,7 +87,7 @@ public class CourseListActivity extends BaseActivity {
         //TODO后台不排序的话，分页没法做啊。
         showPD();
         try {
-            String url = KWApplication.clientUrl + "/device/teacher/course/attend?currentPage=1&pageSize=100";
+            String url = KWApplication.clientUrl + "/device/teacher/course/attend?currentPage=1&pageSize=1024";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -112,7 +112,12 @@ public class CourseListActivity extends BaseActivity {
                         Collections.sort(courses, new Comparator<Course>() {
                             @Override
                             public int compare(Course o1, Course o2) {
-                                return o1.attendCourse - o2.attendCourse;
+                                int diff = o1.attendCourse - o2.attendCourse;
+                                if (diff != 0) {
+                                    return diff;
+                                }
+                                int diff2 = (int) (Long.parseLong(o2.createDate) - Long.parseLong(o1.createDate));
+                                return diff2;
                             }
                         });
                         adapter.notifyDataSetChanged();
@@ -161,6 +166,9 @@ public class CourseListActivity extends BaseActivity {
                 holder.line2 = (TextView) rowView.findViewById(R.id.line2);
                 holder.line0 = (TextView) rowView.findViewById(R.id.line0);
 
+                holder.date1 = (TextView) rowView.findViewById(R.id.date1);
+                holder.date2 = (TextView) rowView.findViewById(R.id.date2);
+
                 rowView.setTag(holder);
             } else {
                 holder = (ViewHolder) rowView.getTag();
@@ -180,13 +188,21 @@ public class CourseListActivity extends BaseActivity {
                 holder.yishangke.setVisibility(View.GONE);
                 holder.ball.setImageResource(R.drawable.ball2);
                 holder.line2.setBackgroundColor(Color.parseColor("#6699ff"));
+                holder.date1.setVisibility(View.GONE);
+                holder.date2.setVisibility(View.GONE);
             } else if (s.attendCourse == 1) {
                 holder.title1.setTextColor(Color.parseColor("#cccccc"));
                 holder.title2.setTextColor(Color.parseColor("#cccccc"));
                 holder.yishangke.setVisibility(View.VISIBLE);
                 holder.ball.setImageResource(R.drawable.ball1);
                 holder.line2.setBackgroundColor(Color.parseColor("#cccccc"));
+                holder.date1.setVisibility(View.VISIBLE);
+                holder.date2.setVisibility(View.VISIBLE);
+
+                holder.date1.setText(Utils.longToDate2(s.createDate));
+                holder.date2.setText(Utils.longToDate3(s.createDate));
             }
+
             holder.title1.setText(s.name);
             String subtitle = "";
             int count = s.knowledgePoints.size();
@@ -206,6 +222,8 @@ public class CourseListActivity extends BaseActivity {
             public TextView line0;
             public TextView line2;
             public ImageView ball;
+            public TextView date1;
+            public TextView date2;
 
         }
 

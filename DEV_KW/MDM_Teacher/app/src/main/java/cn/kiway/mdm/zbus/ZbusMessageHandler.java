@@ -38,7 +38,7 @@ public class ZbusMessageHandler implements MessageHandler {
             } else if (command.equals("tongji_know")) {
                 tongji(studentIMEI, 1);
             } else if (command.equals("tongji_unknow")) {
-                tongji(studentIMEI, 2);
+                tongji(studentIMEI, 0);
             } else if (command.equals("qiangda")) {
                 qiangda(studentIMEI);
             } else if (command.startsWith("answer")) {
