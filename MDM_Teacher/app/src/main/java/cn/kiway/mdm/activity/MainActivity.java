@@ -225,6 +225,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode!=RESULT_OK)
+            return;
         if (requestCode == QRSCAN) {
             if (data == null) {
                 return;
@@ -271,10 +273,9 @@ public class MainActivity extends BaseActivity {
                     .withAspectRatio(4, 3) //定义裁剪比例 4:3 ， 16:9
                     .withMaxResultSize(500, 500) //定义裁剪图片宽高最大值
                     .start(this);
-        } //裁剪成功后调用
-        else if (requestCode == UCrop.REQUEST_CROP) {
+        } else if (requestCode == UCrop.REQUEST_CROP) {
+
             final Uri resultUri = UCrop.getOutput(data);
-            Logger.log(":::::::::::" + resultUri.getPath());
             //压缩图片
             Luban.with(this).load(resultUri.getPath()).ignoreBy(100).setTargetDir(getPath()).setCompressListener(new OnCompressListener() {
                 @Override
@@ -308,9 +309,7 @@ public class MainActivity extends BaseActivity {
                     });
                 }
             }).launch();    //启动压缩
-
-            //出错时进入该分支
-        } else if (resultCode == UCrop.RESULT_ERROR) {
+        } else if (resultCode == UCrop.RESULT_ERROR) {   //出错时进入该分支
             final Throwable cropError = UCrop.getError(data);
             Logger.log("cropError:::::" + cropError.toString());
             runOnUiThread(new Runnable() {
@@ -319,7 +318,6 @@ public class MainActivity extends BaseActivity {
                     Toast.makeText(MainActivity.this, getString(R.string.caijianshibai), Toast.LENGTH_SHORT).show();
                 }
             });
-
         }
     }
 

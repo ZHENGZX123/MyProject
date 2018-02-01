@@ -185,16 +185,19 @@ public class Course0Activity extends ScreenSharingActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RECORD_REQUEST_CODE && resultCode == RESULT_OK) {
+        if (resultCode != RESULT_OK)
+            return;
+        if (requestCode == RECORD_REQUEST_CODE) {
             mediaProjection = projectionManager.getMediaProjection(resultCode, data);
             KWApplication.recordService.setMediaProject(mediaProjection);
             KWApplication.recordService.startRecord();
         } else if (requestCode == UCrop.REQUEST_CROP) {
             final Uri resultUri = UCrop.getOutput(data);
-            sendFile(resultUri.getPath());
+            if (resultUri != null)
+                sendFile(resultUri.getPath());
         } else if (requestCode == REQUEST_ORIGINAL) {
             cropImage(picPath);
-        }else if (requestCode==requsetFile2){
+        } else if (requestCode == requsetFile2) {
             List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
             String filePath = list.get(0);
             sendFile(filePath);
@@ -345,7 +348,7 @@ public class Course0Activity extends ScreenSharingActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(Course0Activity.this,getString(R.string.chooseStudent),Toast.LENGTH_SHORT).show();
+                Toast.makeText(Course0Activity.this, getString(R.string.chooseStudent), Toast.LENGTH_SHORT).show();
             }
         });
         //2.再选择学生
