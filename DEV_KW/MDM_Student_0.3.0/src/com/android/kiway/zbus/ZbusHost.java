@@ -7,8 +7,13 @@ import com.android.kiway.utils.Utils;
 
 import org.json.JSONObject;
 
-import cn.kiway.web.kthd.zbus.utils.ZbusUtils;
-import cn.kiway.web.kthd.zbus.vo.PushRecordVo;
+import java.util.HashSet;
+import java.util.Set;
+
+import cn.kiway.zbus.utils.ZbusUtils;
+import cn.kiway.zbus.vo.PushMessageVo;
+
+import static com.android.kiway.utils.HttpUtil.APPID;
 
 /**
  * Created by Administrator on 2018/1/2.
@@ -16,8 +21,8 @@ import cn.kiway.web.kthd.zbus.vo.PushRecordVo;
 
 public class ZbusHost {
     public static String zbusHost = "192.168.8.161";
-    public static String zbusPost = "15555";
-    public static String teacherTopic = "";
+    public static String zbusPost = "15556";//15555
+    public static String teacherUserId = "";
 
 
     public static boolean doSendMsg(Context c, String cmd) {
@@ -25,13 +30,28 @@ public class ZbusHost {
             JSONObject obj = new JSONObject();
             obj.put("studentIMEI", Utils.getIMEI(c));
             obj.put("command", cmd);
-            PushRecordVo vo = new PushRecordVo();
-            vo.setTitle("课堂互动");
-            vo.setUserType(2);//发送方：1老师 2学生 3家长 4管理员
-            vo.setSenderId(Utils.getIMEI(c));
-            vo.setMessage(obj.toString());
-            Log.d("test", "发送给老师 = " + teacherTopic);
-            ZbusUtils.sendMsg(teacherTopic, vo);
+
+            String title = "标题";
+            String msg = obj.toString();
+
+            String token = c.getSharedPreferences("huawei", 0).getString("token", "");
+            //final String topic, String message, final String url, final PushMessageVo vo
+            //topic : 上报的 deviceId#userId
+            String topic = Utils.getIMEI(c) + "#" + token;
+            String url = zbusHost + ":" + zbusPost;
+            PushMessageVo pushMessageVo = new PushMessageVo();
+            pushMessageVo.setDescription(title);
+            pushMessageVo.setTitle(title);
+            pushMessageVo.setMessage(msg);
+            pushMessageVo.setAppId(APPID);
+            pushMessageVo.setModule("student");
+            Set<String> userIds = new HashSet<>();
+            userIds.add(teacherUserId);
+            pushMessageVo.setUserId(userIds);//老师的userid
+            pushMessageVo.setSenderId(token);//学生的token
+            pushMessageVo.setPushType("zbus");
+
+            ZbusUtils.sendMsg(topic, url, pushMessageVo);
 
             return true;
         } catch (Exception e) {

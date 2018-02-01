@@ -68,7 +68,7 @@ public class CommandUtil {
             String dataStr = new JSONObject(receive).getString("data");
             JSONObject data = new JSONObject(dataStr);
             String command = data.optString("command");
-            ZbusHost.teacherTopic = data.optString("topic");
+            ZbusHost.teacherUserId = data.optString("teacherUserId");
 
             Message m = new Message();
 
