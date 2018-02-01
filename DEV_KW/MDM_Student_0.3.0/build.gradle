@@ -116,10 +116,10 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'org.xutils:xutils:3.5.0'
     compile 'com.borax12.materialdaterangepicker:library:1.9'
-    compile files('libs/kthdZbus-0.0.1.jar')
     compile files('libs/netty-all-4.0.51.Final.jar')
     compile files('libs/zbus-0.11.3.jar')
     compile files('libs/fastjson-1.2.24.jar')
+    compile files('libs/push-server-zbus-1.0.0.jar')
 }
 
 protobuf {
