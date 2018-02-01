@@ -215,10 +215,10 @@ public class App extends KiwayApplication {
                     ((QuestionActivity) currentActivity).finish();
                 } else if (command.equals("tuiping")) {
                     int status = o.optInt("status");
-                    String topic = o.optString("topic");
+                    String teacherUserId = o.optString("teacherUserId");
                     if (status == 1) {
                         //打开
-                        ((BaseActivity) currentActivity).startPlayer(topic);
+                        ((BaseActivity) currentActivity).startPlayer(teacherUserId);
                     } else {
                         ((BaseActivity) currentActivity).stopPlayer();
                     }
