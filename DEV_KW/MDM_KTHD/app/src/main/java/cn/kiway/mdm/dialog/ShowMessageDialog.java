@@ -146,11 +146,6 @@ public class ShowMessageDialog extends Dialog implements View.OnClickListener, D
             super.handleMessage(msg);
             switch (msg.what) {
                 case SIGNDIALOG://签到
-//                    try {
-//                        ZbusUtils.sendMsg(zbusTeacherTopic,"");
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
                     break;
                 case REPONSEDIALOG://响应器回应听懂
                     break;

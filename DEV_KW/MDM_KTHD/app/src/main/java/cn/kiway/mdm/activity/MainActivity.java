@@ -69,7 +69,7 @@ public class MainActivity extends ScreenSharingActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.e("KTHD main","onStart()");
+        Log.e("KTHD main", "onStart()");
         App.instance.connectService(App.instance.mClientCallback);
     }
 
@@ -101,6 +101,7 @@ public class MainActivity extends ScreenSharingActivity {
 
     public void onKT(View view) {
         //课堂分析
+        startActivity(new Intent(this, FenxiActivity.class));
     }
 
 
@@ -502,7 +503,7 @@ public class MainActivity extends ScreenSharingActivity {
             public void run() {
                 initModules();
                 startCapture();
-                mRtcEngine.joinChannel(null, "kiwayMDM_student_" + Utils.getIMEI(getApplicationContext()), "", 0);
+                mRtcEngine.joinChannel(null, Utils.getIMEI(getApplicationContext()), "", 0);
             }
         });
     }
