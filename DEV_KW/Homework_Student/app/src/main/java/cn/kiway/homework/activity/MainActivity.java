@@ -124,10 +124,10 @@ public class MainActivity extends BaseActivity {
             askforInstall(savedFilePath);
             return;
         }
-        boolean isWifi = NetworkUtil.isWifi(this);
-        if (isWifi) {
+        int isWifi = NetworkUtil.isWifi(this);
+        if (isWifi == 1) {
             startDownloadAPK(apkUrl, savedFilePath);
-        } else {
+        } else if (isWifi == 0) {
             MLog.d("test", "不是wifi...");
             //提示4G
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
@@ -135,6 +135,7 @@ public class MainActivity extends BaseActivity {
 
                 @Override
                 public void onClick(DialogInterface arg0, int arg1) {
+                    toast("后台下载APK文件");
                     dialog_download.dismiss();
                     startDownloadAPK(apkUrl, savedFilePath);
                 }
