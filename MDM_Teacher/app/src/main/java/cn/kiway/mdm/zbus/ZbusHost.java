@@ -294,11 +294,11 @@ public class ZbusHost {
     }
 
 
-    public static void wenjian(Activity c, ArrayList<Student> students, String url, OnListener onListener) {
+    public static void wenjian(Activity c, ArrayList<Student> students, String url,String fileName, OnListener onListener) {
         try {
             String title = "文件";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "wenjian").put("topic", topic).put("url", url)).put("fileName","").toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "wenjian").put("topic", topic).put("url", url)).put("fileName",fileName).toString();
             for (Student s : students) {
                 String studentTopic = "kiwayMDM_student_" + s.imei;
                 doSendMsg(title, userId, msg, studentTopic);
