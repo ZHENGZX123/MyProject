@@ -69,12 +69,8 @@ public class WXApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        if (isTest) {
-            ROOT = "/mnt/sdcard/kiway_teacher/";
-        } else {
-            ROOT = this.getFilesDir().toString() + "/";
-        }
+        //ROOT = "/mnt/sdcard/kiway_teacher/";
+        ROOT = this.getFilesDir().toString() + "/";
         Log.d("test", "ROOT = " + ROOT);
 
         initImageCache();
