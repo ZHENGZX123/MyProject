@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="协同教师"
+            android:text="协同作业"
             android:textColor="#000000"
             android:textSize="25sp" />
 
