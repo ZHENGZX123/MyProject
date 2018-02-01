@@ -38,6 +38,7 @@ import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.Logger;
 import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.zbus.OnListener;
@@ -191,6 +192,7 @@ public class StudentGridActivity extends BaseActivity {
                 public void run() {
                     try {
                         File file = new File(getIntent().getStringExtra("filePath"));
+                        Logger.log("::::::::"+file.getName());
                         String accessToken = getSharedPreferences("kiway", 0).getString("accessToken", "");
                         final String ret = UploadUtil.uploadFile(file, clientUrl + "/common/file?x-auth-token=" + accessToken, file.getName());
                         Log.d("test", "upload ret = " + ret);
@@ -198,7 +200,8 @@ public class StudentGridActivity extends BaseActivity {
 
                         JSONObject obj = new JSONObject(ret);
                         String url = obj.optJSONObject("data").optString("url");
-                        ZbusHost.wenjian(StudentGridActivity.this, selectStudents, url, new OnListener() {
+
+                        ZbusHost.wenjian(StudentGridActivity.this, selectStudents, url,file.getName(), new OnListener() {
                             @Override
                             public void onSuccess() {
                                 hidePD();
