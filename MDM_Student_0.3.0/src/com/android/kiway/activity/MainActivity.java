@@ -43,6 +43,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -149,9 +150,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
                         @Override
                         public void handle(io.zbus.mq.Message message, MqClient mqClient) throws IOException {
-                            String msg = message.getBodyString();
-                            Log.d("test", "zbus receive message = " + msg);
-                            CommandUtil.handleCommand(getApplicationContext(), msg);
+                            String temp = message.getBodyString();
+                            Log.d("test", "zbus receive message = " + temp);
+                            try {
+                                String msg = new JSONObject(temp).optString("message");
+                                CommandUtil.handleCommand(getApplicationContext(), msg);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }, ZbusHost.zbusHost + ":" + ZbusHost.zbusPost);
                 } catch (Exception e) {
