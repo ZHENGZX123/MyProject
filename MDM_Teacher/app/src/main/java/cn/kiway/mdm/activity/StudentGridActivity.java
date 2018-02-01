@@ -192,7 +192,6 @@ public class StudentGridActivity extends BaseActivity {
                 public void run() {
                     try {
                         File file = new File(getIntent().getStringExtra("filePath"));
-                        Logger.log("::::::::"+file.getName());
                         String accessToken = getSharedPreferences("kiway", 0).getString("accessToken", "");
                         final String ret = UploadUtil.uploadFile(file, clientUrl + "/common/file?x-auth-token=" + accessToken, file.getName());
                         Log.d("test", "upload ret = " + ret);

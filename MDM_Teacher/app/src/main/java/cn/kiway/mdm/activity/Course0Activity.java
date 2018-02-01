@@ -32,6 +32,8 @@ import android.widget.Toast;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.leon.lfilepickerlibrary.LFilePicker;
+import com.leon.lfilepickerlibrary.utils.Constant;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -74,6 +76,7 @@ import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
 import static cn.kiway.mdm.util.Utils.check301;
 import static cn.kiway.mdm.util.Utils.showBigImage;
 import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
+import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile2;
 
 /**
  * Created by Administrator on 2017/12/28.
@@ -191,6 +194,10 @@ public class Course0Activity extends ScreenSharingActivity {
             sendFile(resultUri.getPath());
         } else if (requestCode == REQUEST_ORIGINAL) {
             cropImage(picPath);
+        }else if (requestCode==requsetFile2){
+            List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
+            String filePath = list.get(0);
+            sendFile(filePath);
         }
     }
 
@@ -324,6 +331,13 @@ public class Course0Activity extends ScreenSharingActivity {
         //1.先选择一个文件
         String selectFilePath = "/mnt/sdcard/1514424119655.png";
         sendFile(selectFilePath);
+
+        new LFilePicker()
+                .withActivity(this)
+                .withTitle(getString(R.string.filepath3))
+                .withRequestCode(requsetFile2)
+                .withMutilyMode(false)
+                .start();
     }
 
 
