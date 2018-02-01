@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -35,6 +36,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tencent.smtt.sdk.TbsReaderView;
+import com.yalantis.ucrop.UCrop;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
@@ -71,6 +73,7 @@ import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
 import static cn.kiway.mdm.util.Utils.check301;
 import static cn.kiway.mdm.util.Utils.showBigImage;
+import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
 
 /**
  * Created by Administrator on 2017/12/28.
@@ -183,6 +186,11 @@ public class Course0Activity extends ScreenSharingActivity {
             mediaProjection = projectionManager.getMediaProjection(resultCode, data);
             KWApplication.recordService.setMediaProject(mediaProjection);
             KWApplication.recordService.startRecord();
+        } else if (requestCode == UCrop.REQUEST_CROP) {
+            final Uri resultUri = UCrop.getOutput(data);
+            sendFile(resultUri.getPath());
+        } else if (requestCode == REQUEST_ORIGINAL) {
+            cropImage(picPath);
         }
     }
 
@@ -214,16 +222,34 @@ public class Course0Activity extends ScreenSharingActivity {
     //-------------------------tools1----------------------
 
     public void jieping(View view) {
-        Utils.GetandSaveCurrentImage(this);
+        String filePath = Utils.GetandSaveCurrentImage(this);
+        if (!filePath.equals("")) {
+            if (Utils.isImage(filePath)) {
+                cropImage(filePath);
+            }
+        }
     }
+
+    String picPath;
 
     public void paizhao(View view) {
         //众人通是拍照后，放在画布上。
-        String picPath = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
+        picPath = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Uri uri = Uri.fromFile(new File(picPath));
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_ORIGINAL);
+    }
+
+    public void cropImage(String filePath) {
+        //需要裁剪的图片路径
+        Uri sourceUri = Uri.fromFile(new File(filePath));
+        //裁剪完毕的图片存放路径
+        Uri destinationUri = Uri.fromFile(new File(filePath.split("\\.")[0] + "1." + filePath.split("\\.")[1]));
+        UCrop.of(sourceUri, destinationUri) //定义路径
+                .withAspectRatio(4, 3) //定义裁剪比例 4:3 ， 16:9
+                .withMaxResultSize(500, 500) //定义裁剪图片宽高最大值
+                .start(this);
     }
 
     public void huabi(View view) {
@@ -297,10 +323,21 @@ public class Course0Activity extends ScreenSharingActivity {
     public void wenjian(View view) {
         //1.先选择一个文件
         String selectFilePath = "/mnt/sdcard/1514424119655.png";
-        //2.再选择学生
-        startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_WENJIAN).putExtra("filePath", selectFilePath));
+        sendFile(selectFilePath);
     }
 
+
+    public void sendFile(String filePath) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(Course0Activity.this,getString(R.string.chooseStudent),Toast.LENGTH_SHORT).show();
+            }
+        });
+        //2.再选择学生
+        startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_WENJIAN).putExtra("filePath",
+                filePath));
+    }
 
     public void shezhi(View view) {
         //设置？？？不知道是什么。
@@ -366,7 +403,8 @@ public class Course0Activity extends ScreenSharingActivity {
                 }
                 dialog.dismiss();
                 //发送命令
-                startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_TONGJI).putExtra("kps", selectKPs));
+                startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type",
+                        TYPE_TONGJI).putExtra("kps", selectKPs));
             }
         });
 
@@ -546,7 +584,9 @@ public class Course0Activity extends ScreenSharingActivity {
                     dialog.dismiss();
                     if (type == TYPE_QUESTION_DIANMINGDA) {
                         //点名答要手动选人
-                        startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type", TYPE_DIANMINGDA).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
+                        startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type",
+                                TYPE_DIANMINGDA).putExtra("questionTime", questionTime).putExtra("questions",
+                                selectQuestions));
                     } else if (type == TYPE_QUESTION_SUIJICHOUDA) {
                         //随机抽答，弹出抽取框
                         showChoudaqiDialog();
@@ -569,7 +609,9 @@ public class Course0Activity extends ScreenSharingActivity {
                         ZbusHost.questions(Course0Activity.this, selectQuestions, questionTime, new OnListener() {
                             @Override
                             public void onSuccess() {
-                                startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", type).putExtra("students", students).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
+                                startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type",
+                                        type).putExtra("students", students).putExtra("questionTime", questionTime)
+                                        .putExtra("questions", selectQuestions));
                             }
 
                             @Override
@@ -723,7 +765,9 @@ public class Course0Activity extends ScreenSharingActivity {
                 ArrayList<Student> selectStudents = new ArrayList<>();
                 selectStudents.add(s);
                 toast(s.name + "抢答成功");
-                startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", TYPE_QUESTION_QIANGDA).putExtra("students", selectStudents).putExtra("questionTime", questionTime).putExtra("questions", selectQuestions));
+                startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type",
+                        TYPE_QUESTION_QIANGDA).putExtra("students", selectStudents).putExtra("questionTime",
+                        questionTime).putExtra("questions", selectQuestions));
             }
 
             @Override
@@ -746,7 +790,10 @@ public class Course0Activity extends ScreenSharingActivity {
                 //点名答
                 ArrayList<Student> selectStudents = new ArrayList<>();
                 selectStudents.add(s);
-                startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type", TYPE_QUESTION_DIANMINGDA).putExtra("students", selectStudents).putExtra("questionTime", getIntent().getIntExtra("questionTime", 0)).putExtra("questions", getIntent().getSerializableExtra("questions")));
+                startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type",
+                        TYPE_QUESTION_DIANMINGDA).putExtra("students", selectStudents).putExtra("questionTime",
+                        getIntent().getIntExtra("questionTime", 0)).putExtra("questions", getIntent()
+                        .getSerializableExtra("questions")));
             }
 
             @Override
@@ -869,8 +916,9 @@ public class Course0Activity extends ScreenSharingActivity {
             if (TextUtils.isEmpty(attachInfo)) {
                 return;
             }
-            ArrayList<AttachInfoVo> infos = new GsonBuilder().create().fromJson(attachInfo, new TypeToken<List<AttachInfoVo>>() {
-            }.getType());
+            ArrayList<AttachInfoVo> infos = new GsonBuilder().create().fromJson(attachInfo, new
+                    TypeToken<List<AttachInfoVo>>() {
+                    }.getType());
             int count = infos.size();
             if (count == 0) {
                 return;
@@ -882,7 +930,8 @@ public class Course0Activity extends ScreenSharingActivity {
                 //TODO icon
                 TextView name = (TextView) layout_doc.findViewById(R.id.name);
                 name.setText(info.fileName);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
                 lp.setMargins(10, 10, 10, 10);
                 holder.type1RL.addView(layout_doc, lp);
                 layout_doc.setOnClickListener(new View.OnClickListener() {
@@ -916,7 +965,8 @@ public class Course0Activity extends ScreenSharingActivity {
                     }
                 });
                 ImageLoader.getInstance().displayImage(imgs[i], iv, KWApplication.getLoaderOptions());
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
                 lp.setMargins(10, 10, 10, 10);
                 holder.type0RL.addView(iv, lp);
             }

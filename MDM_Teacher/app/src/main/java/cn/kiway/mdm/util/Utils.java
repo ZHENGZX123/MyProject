@@ -181,7 +181,7 @@ public class Utils {
     /**
      * 获取和保存当前屏幕的截图
      */
-    public static void GetandSaveCurrentImage(Activity c) {
+    public static String GetandSaveCurrentImage(Activity c) {
         //1.构建Bitmap
         WindowManager windowManager = c.getWindowManager();
         Display display = windowManager.getDefaultDisplay();
@@ -192,7 +192,7 @@ public class Utils {
         View decorview = c.getWindow().getDecorView();
         decorview.setDrawingCacheEnabled(true);
         Bmp = decorview.getDrawingCache();
-        String SavePath = "/mnt/sdcard/";
+        String SavePath = "/mnt/sdcard/kiway_mdm_teacher/jieping/";
         //3.保存Bitmap
         try {
             File path = new File(SavePath);
@@ -211,11 +211,14 @@ public class Utils {
                 Bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
                 fos.flush();
                 fos.close();
-                Toast.makeText(c, "截屏文件已保存至SD卡根目录", Toast.LENGTH_LONG).show();
+                Toast.makeText(c, "截屏文件已保存至kiway_mdm_teacher/jieping/目录下", Toast.LENGTH_LONG).show();
+                return filepath;
             }
+            return "";
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return "";
     }
 
     public static String getFileType(String path) {
