@@ -6,6 +6,7 @@
     <string name="downloading">正在下载新版本，请稍等</string>
     <string name="filepath">"请将文件移动到此目录下（kiwaymdm）"</string>
     <string name="filepath2">"请选择备课要使用的文件"</string>
+    <string name="filepath3">"请选择发送的文件"</string>
     <string name="student_no_inline">学生还没上线</string>
     <string name="upload">正在上传,请稍后</string>
     <string name="yasuo">正在压缩图片,请稍后</string>
