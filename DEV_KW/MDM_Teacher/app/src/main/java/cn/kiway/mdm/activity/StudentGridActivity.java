@@ -38,7 +38,6 @@ import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
-import cn.kiway.mdm.util.Logger;
 import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.zbus.OnListener;
