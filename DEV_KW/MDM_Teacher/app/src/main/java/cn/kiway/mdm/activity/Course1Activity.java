@@ -62,7 +62,8 @@ public class Course1Activity extends BaseActivity {
         //1.知识点详情
         try {
             showPD();
-            String url = KWApplication.clientUrl + "/device/teacher/course/" + course.id;
+            String url = KWApplication.clientUrl + "/device/teacher/course/" + course.id + "/attend";
+            Log.d("test", "url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
