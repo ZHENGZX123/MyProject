@@ -172,7 +172,8 @@ public class Utils {
                 ((Activity) context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, context.getString(R.string.mobile_no_office), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, context.getString(R.string.mobile_no_office), Toast.LENGTH_SHORT)
+                                .show();
                     }
                 });
         }
@@ -261,7 +262,8 @@ public class Utils {
         try {
             //1.发“上课”推送命令
             ((BaseActivity) c).showPD();
-            String url = KWApplication.clientUrl + "/device/push/teacher/attendClass?flag=1&ip=" + wifiIp + "&platform=Android";
+            String url = KWApplication.clientUrl + "/device/push/teacher/attendClass?flag=1&ip=" + wifiIp +
+                    "&platform=Android";
             Log.d("test", "shangke url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
@@ -303,7 +305,8 @@ public class Utils {
     public static void xiake(Activity c) {
         try {
             //1.发“下课”推送命令
-            String url = KWApplication.clientUrl + "/device/push/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
+            String url = KWApplication.clientUrl +
+                    "/device/push/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -412,6 +415,8 @@ public class Utils {
                         } else if (type.equals("knowledgeCountResult")) {
                         } else if (type.equals("questionResult")) {
                             ((ResultActivity) KWApplication.currentActivity).uploadResult();
+                        } else if (type.equals("filepush")) {
+                            ((StudentGridActivity) KWApplication.currentActivity).uploadUserfile();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -536,7 +541,7 @@ public class Utils {
         return str;
     }
 
-    public static boolean isImage(String filePath){
+    public static boolean isImage(String filePath) {
         if (filePath.endsWith(".jpg") || filePath.endsWith(".jpeg") || filePath.endsWith(".png") || filePath
                 .endsWith(".JPG") || filePath.endsWith(".JPEG") || filePath.endsWith(".PNG"))
             return true;

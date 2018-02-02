@@ -201,6 +201,7 @@ public class Course0Activity extends ScreenSharingActivity {
             List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
             String filePath = list.get(0);
             sendFile(filePath);
+
         }
     }
 
@@ -333,8 +334,8 @@ public class Course0Activity extends ScreenSharingActivity {
 
     public void wenjian(View view) {
         //1.先选择一个文件
-        String selectFilePath = "/mnt/sdcard/1514424119655.png";
-        sendFile(selectFilePath);
+       // String selectFilePath = "/mnt/sdcard/1514424119655.png";
+       // sendFile(selectFilePath);
 
         new LFilePicker()
                 .withActivity(this)
