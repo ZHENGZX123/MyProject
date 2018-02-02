@@ -59,6 +59,8 @@ import cn.kiway.mdm.web.MyWebViewClient;
 import cn.kiway.mdm.zbus.ZbusHost;
 import cn.kiway.mdm.zbus.ZbusMessageHandler;
 import cn.kiway.zbus.utils.ZbusUtils;
+import io.zbus.mq.Broker;
+import io.zbus.mq.Producer;
 import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
 
@@ -132,6 +134,9 @@ public class MainActivity extends BaseActivity {
                     if (TextUtils.isEmpty(userId)) {
                         return;
                     }
+                    Broker broker = new Broker(ZbusHost.zbusHost + ":" + ZbusHost.zbusPost);
+                    Producer p = new Producer(broker);
+                    ZbusUtils.init(broker,p);
                     String topic = "kiway_push_" + userId;
                     Log.d("test", "topic = " + topic);
                     ZbusUtils.consumeMsg(topic, new ZbusMessageHandler(), ZbusHost.zbusHost + ":" + ZbusHost.zbusPost);
@@ -141,6 +146,8 @@ public class MainActivity extends BaseActivity {
             }
         }.start();
     }
+
+
 
     public void initView() {
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
@@ -653,5 +660,6 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbindService(connection);
+        ZbusUtils.close();
     }
 }

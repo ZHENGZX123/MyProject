@@ -43,12 +43,32 @@ public class ZbusHost {
                     String msg = new JSONObject().put("data", new JSONObject().put("command", "tongji").put("teacherUserId", userId).put("knowledge", kp.content)).toString();
                     doSendMsg(c, title, userId, msg, students);
                     if (onListener != null) {
-                        onListener.onSuccess();
+                        c.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                c.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        onListener.onSuccess();
+                                    }
+                                });
+                            }
+                        });
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     if (onListener != null) {
-                        onListener.onFailure();
+                        c.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                c.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        onListener.onFailure();
+                                    }
+                                });
+                            }
+                        });
                     }
                 }
             }
@@ -65,12 +85,22 @@ public class ZbusHost {
                     String msg = new JSONObject().put("data", new JSONObject().put("command", "tuiping").put("teacherUserId", userId).put("status", status)).toString();
                     doSendMsg(c, title, userId, msg, students);
                     if (onListener != null) {
-                        onListener.onSuccess();
+                        c.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                onListener.onSuccess();
+                            }
+                        });
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     if (onListener != null) {
-                        onListener.onFailure();
+                        c.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                onListener.onFailure();
+                            }
+                        });
                     }
                 }
             }
@@ -86,12 +116,22 @@ public class ZbusHost {
             students.add(s);
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
-                onListener.onSuccess();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (onListener != null) {
-                onListener.onFailure();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
             }
         }
     }
@@ -103,12 +143,22 @@ public class ZbusHost {
             String msg = new JSONObject().put("data", new JSONObject().put("command", "qiangda").put("teacherUserId", userId)).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
-                onListener.onSuccess();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (onListener != null) {
-                onListener.onFailure();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
             }
         }
     }
@@ -132,12 +182,22 @@ public class ZbusHost {
             students.add(s);
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
-                onListener.onSuccess();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (onListener != null) {
-                onListener.onFailure();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
             }
         }
     }
@@ -151,12 +211,22 @@ public class ZbusHost {
             String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("teacherUserId", userId).put("questions", questionStr).put("questionType", 4).put("questionTime", questionTime)).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
-                onListener.onSuccess();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (onListener != null) {
-                onListener.onFailure();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
             }
         }
     }
@@ -171,12 +241,22 @@ public class ZbusHost {
             students.add(s);
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
-                onListener.onSuccess();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (onListener != null) {
-                onListener.onFailure();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
             }
         }
     }
@@ -190,12 +270,22 @@ public class ZbusHost {
             students.add(s);
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
-                onListener.onSuccess();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (onListener != null) {
-                onListener.onFailure();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
             }
         }
     }
@@ -215,12 +305,22 @@ public class ZbusHost {
             String msg = new JSONObject().put("data", new JSONObject().put("command", commeand).put("currentTime", Utils.longToDate("" + System.currentTimeMillis()))).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
-                onListener.onSuccess();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (onListener != null) {
-                onListener.onFailure();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
             }
         }
     }
@@ -235,31 +335,51 @@ public class ZbusHost {
                     String msg = new JSONObject().put("data", new JSONObject().put("command", "shangke").put("ip", "").put("platform", "android").put("teacherUserId", userId)).toString();
                     doSendMsg(c, title, userId, msg, students);
                     if (onListener != null) {
-                        onListener.onSuccess();
+                        c.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                onListener.onSuccess();
+                            }
+                        });
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     if (onListener != null) {
-                        onListener.onFailure();
+                        c.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                onListener.onFailure();
+                            }
+                        });
                     }
                 }
             }
         }.start();
     }
 
-    public static void xiake(Context c, OnListener onListener) {
+    public static void xiake(Activity c, OnListener onListener) {
         try {
             String title = "下课";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
             String msg = new JSONObject().put("data", new JSONObject().put("command", "xiake").put("ip", "").put("platform", "android").put("teacherUserId", userId)).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
-                onListener.onSuccess();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (onListener != null) {
-                onListener.onFailure();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
             }
         }
     }
@@ -271,12 +391,22 @@ public class ZbusHost {
             String msg = new JSONObject().put("data", new JSONObject().put("command", "sign").put("teacherUserId", userId)).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
-                onListener.onSuccess();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (onListener != null) {
-                onListener.onFailure();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
             }
         }
     }
@@ -312,12 +442,22 @@ public class ZbusHost {
             String msg = new JSONObject().put("data", new JSONObject().put("command", "wenjian").put("teacherUserId", userId).put("url", url).put("fileName", fileName)).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
-                onListener.onSuccess();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (onListener != null) {
-                onListener.onFailure();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
             }
         }
     }
@@ -329,12 +469,22 @@ public class ZbusHost {
             String msg = new JSONObject().put("data", new JSONObject().put("command", "questionTimeup").put("teacherUserId", userId)).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
-                onListener.onSuccess();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (onListener != null) {
-                onListener.onFailure();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
             }
         }
     }
@@ -346,12 +496,22 @@ public class ZbusHost {
             String msg = new JSONObject().put("data", new JSONObject().put("command", "questionEnd").put("teacherUserId", userId)).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
-                onListener.onSuccess();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (onListener != null) {
-                onListener.onFailure();
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
             }
         }
     }
