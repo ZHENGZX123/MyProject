@@ -54,13 +54,14 @@ public class WelcomeActivity extends BaseActivity {
 
     //下面是版本更新相关
     public void checkNewVersion() {
+        final String checkUrl = url + "/download/version/zip_xs.json";
         new Thread() {
             @Override
             public void run() {
                 try {
                     sleep(2500);
                     checkTimeout();
-                    HttpGet httpRequest = new HttpGet(url + "/download/version/zip_ls.json");
+                    HttpGet httpRequest = new HttpGet(checkUrl);
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
