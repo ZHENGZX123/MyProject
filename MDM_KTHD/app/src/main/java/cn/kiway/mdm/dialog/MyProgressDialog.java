@@ -16,8 +16,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 
-import cn.kiway.mdm.db.MyDBHelper;
-import cn.kiway.mdm.model.FileModel;
 import cn.kiway.mdm.utils.HttpDownload;
 import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.Utils;
@@ -107,16 +105,16 @@ public class MyProgressDialog extends Dialog implements View.OnClickListener {
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                FileModel a = new FileModel();//保存记录到本地
-                a.filename = fileName;
-                a.time = System.currentTimeMillis() + "";
-                a.filepath = downPath + fileName;
-                new MyDBHelper(context).addFile(a);
-                textView.setEnabled(true);
-                progressBar.setVisibility(View.GONE);
-                textView.setText(fileName+ "\n接收完成!");
-                button.setVisibility(View.VISIBLE);
-                button.setText("打开文件");
+//                FileModel a = new FileModel();//保存记录到本地
+//                a.filename = fileName;
+//                a.time = System.currentTimeMillis() + "";
+//                a.filepath = downPath + fileName;
+//                new MyDBHelper(context).addFile(a);
+//                textView.setEnabled(true);
+//                progressBar.setVisibility(View.GONE);
+//                textView.setText(fileName+ "\n接收完成!");
+//                button.setVisibility(View.VISIBLE);
+//                button.setText("打开文件");
 //                if (App.instance.currentActivity != null && App.instance.currentActivity instanceof
 //                        FileListActivity) {
 //                    ((FileListActivity) App.instance.currentActivity).refreshUI();
