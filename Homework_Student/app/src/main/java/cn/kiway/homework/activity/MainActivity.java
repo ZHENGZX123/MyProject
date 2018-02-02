@@ -258,6 +258,7 @@ public class MainActivity extends BaseActivity {
             }
         }
         WebSettings settings = wv.getSettings();
+        settings.setSavePassword(false);
         settings.setJavaScriptEnabled(true);
         settings.setAppCacheEnabled(true);
         settings.setUseWideViewPort(true);

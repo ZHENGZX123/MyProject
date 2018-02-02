@@ -33,7 +33,7 @@ import static cn.kiway.homework.util.Utils.getCurrentVersion;
 
 public class WelcomeActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "1.1.2";
+    private static final String currentPackageVersion = "1.1.3";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
