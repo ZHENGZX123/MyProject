@@ -256,6 +256,7 @@ public class App extends KiwayApplication {
     };
 
     public void uploadUserFile(final String url, final int type, final String name,final String size) {
+
         AsyncHttpClient client = new AsyncHttpClient();
         client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
         client.setTimeout(10000);
@@ -264,6 +265,7 @@ public class App extends KiwayApplication {
         param.put("type",type);
         param.put("name",name);
         param.put("size",size);
+
         client.post(this, uploadUserFile, param, new TextHttpResponseHandler() {
             @Override
             public void onSuccess(int code, Header[] headers, String ret) {

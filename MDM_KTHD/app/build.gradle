@@ -3,8 +3,8 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         kiway {
-//            storeFile file('F:/android_signature/kiway.key')
-            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+           storeFile file('F:/android_signature/kiway.key')
+         //   storeFile file('C:/Users/Administrator/.android/kiway.keystore')
             storePassword 'kiway123'
             keyAlias 'kiway'
             keyPassword 'kiway123'
@@ -65,4 +65,5 @@ dependencies {
     compile files('libs/image_compress.jar')
     compile files('libs/gson-2.8.0.jar')
     compile project(':AgoraPusher')
+    compile 'com.github.open-android:PullToRefresh:v1.0'
 }

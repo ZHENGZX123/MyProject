@@ -1,5 +1,6 @@
 package cn.kiway.mdm.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,24 +18,30 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.itheima.pulltorefreshlib.PullToRefreshBase;
+import com.itheima.pulltorefreshlib.PullToRefreshListView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
 
-import cn.kiway.mdm.db.MyDBHelper;
 import cn.kiway.mdm.model.FileModel;
 import cn.kiway.mdm.utils.FileUtils;
+import cn.kiway.mdm.utils.HttpDownload;
+import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
-import static cn.kiway.mdm.utils.HttpUtil.getMyScreenshotFile;
+import static cn.kiway.mdm.dialog.MyProgressDialog.downPath;
+import static cn.kiway.mdm.utils.HttpUtil.getMyFile;
+import static studentsession.kiway.cn.mdm_studentsession.R.id.sender;
 
 /**
  * Created by Administrator on 2017/11/16.
@@ -42,70 +49,87 @@ import static cn.kiway.mdm.utils.HttpUtil.getMyScreenshotFile;
 
 public class FileListActivity extends BaseActivity {
 
-    private ListView listView;
+    private PullToRefreshListView listView;
     private FileAdapter adapter;
     private ArrayList<FileModel> files = new ArrayList<>();
     private Button tab1;
     private Button tab2;
+    int Page = 1; //当前请求的页数
+    int totalPage;//总的页数
+    int totalRecord;//总的数据
+    boolean isClear = true;
+
+    int tag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_list);
-
-        //假数据==改成易敏的，是用接口来做的。
-        //new MyDBHelper(this).addFile(new FileModel("test1.pdf", "/mnt/sdcard/test1.pdf", "1516587513000", "李老师"));
-        //new MyDBHelper(this).addFile(new FileModel("test2.doc", "/mnt/sdcard/test2.doc", "1516587513000", "陈老师"));
-        //new MyDBHelper(this).addFile(new FileModel("test3.png", "/mnt/sdcard/test3.pdf", "1516587513000",
-        // "snapshot"));
         initView();
         initListener();
+        Page = 1;
+        getDataFromServer(1);
     }
 
-    private void getDataFromServer(final int type) {
-        initData(type);
+
+    private void getDataFromServer(final int tag) {
+        // initData(type);
+        this.tag = tag;
         try {
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             RequestParams param = new RequestParams();
             Log.d("test", "param = " + param.toString());
-            // String url = clientUrl + "/device/student/myScreenshotFile?type=1";
-            //  Log.d("test", "myScreenshotFile url = " + url);
-            client.get(this, getMyScreenshotFile + type, param, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.e("test", "calls onSuccess = " + ret);
-                    try {
-                        JSONObject data = new JSONObject(ret);
-                        if (data.optInt("statusCode") == 201) {
-                            Toast.makeText(FileListActivity.this, "暂无数据", Toast.LENGTH_SHORT).show();
-                        } else if (data.optInt("statusCode") == 200) {
-                            initData(type);
+            String url = getMyFile +tag+ "&currentPage=" + Page;//截图资料;
+            Logger.log(url);
+            client.get(this, url, param, new
+                    TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.e("test", "calls onSuccess = " + ret);
+                            listView.onRefreshComplete();
+                            try {
+                                JSONObject data = new JSONObject(ret);
+                                if (data.optInt("statusCode") == 201) {
+                                    Toast.makeText(FileListActivity.this, data.optString("errorMsg"), Toast.LENGTH_SHORT).show();
+                                } else if (data.optInt("statusCode") == 200) {
+                                    totalPage = data.optJSONObject("data").optInt("totalPage");
+                                    totalRecord = data.optJSONObject("data").optInt("totalRecord");
+                                    JSONArray array = data.optJSONObject("data").optJSONArray("list");
+                                    initData(array);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "calls onFailure = " + s);
-                }
-            });
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "calls onFailure = " + s);
+                            listView.onRefreshComplete();
+                        }
+                    });
         } catch (Exception e) {
             Log.d("test", "e = " + e.toString());
         }
     }
 
-    private void initData(int tab) {
-        files.clear();
-        ArrayList<FileModel> temp = new MyDBHelper(this).getFiles();
-        for (FileModel fm : temp) {
-            if (tab == 1 && !fm.type.equals("2")) {
-                files.add(fm);
-            } else if (tab == 2 && fm.type.equals("2")) {
-                files.add(fm);
-            }
+    private void initData(JSONArray array) {
+        if (isClear)
+            files.clear();
+        for (int i = 0; i < array.length(); i++) {
+            FileModel fm = new FileModel();
+            JSONObject item = array.optJSONObject(i);
+            fm.setSize(item.optString("size"));
+            fm.setId(item.optString("id"));
+            fm.setUserId(item.optString("userId"));
+            fm.setUrl(item.optString("url"));
+            fm.setType(item.optString("type"));
+            fm.setCreateDate(item.optString("createDate"));
+            fm.setName(item.optString("name"));
+            fm.setUserName(item.optString("userName"));
+            files.add(fm);
         }
         adapter.notifyDataSetChanged();
     }
@@ -114,14 +138,39 @@ public class FileListActivity extends BaseActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                FileModel fm = files.get(i);
-                String filepath = fm.url;
+                final FileModel fm = files.get(i - 1);
+                final String filepath = downPath + fm.name;
                 File f = new File(filepath);
                 if (!f.exists()) {
-                    toast("文件不存在");
+                    final ProgressDialog progressDialog=new ProgressDialog(FileListActivity.this);
+                    progressDialog.setMessage("正在打开中，请稍后");
+                    progressDialog.show();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            int ret = new HttpDownload().downFile(fm.url, downPath, fm.name);//开始下载
+                            Log.d("test", "download ret = " + ret);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressDialog.dismiss();
+                                }
+                            });
+                            if (ret == -1) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        toast("文件不存在");
+                                    }
+                                });
+                            } else {
+                                FileUtils.openFile(FileListActivity.this, filepath);
+                            }
+                        }
+                    }).start();
                 } else {
                     //TODO可以使用X5来完成
-                    FileUtils.openFile(FileListActivity.this, fm.url);
+                    FileUtils.openFile(FileListActivity.this, filepath);
                 }
             }
         });
@@ -131,12 +180,12 @@ public class FileListActivity extends BaseActivity {
     public void initView() {
         super.initView();
         titleName.setText("我的文件");
-
         tab1 = (Button) findViewById(R.id.tab1);
         tab2 = (Button) findViewById(R.id.tab2);
-
-        listView = (ListView) findViewById(R.id.list_view);
-
+        listView = (PullToRefreshListView) findViewById(R.id.list_view);
+        listView.setMode(PullToRefreshBase.Mode.BOTH);
+        //设置刷新监听
+        listView.setOnRefreshListener(mListViewOnRefreshListener2);
         adapter = new FileAdapter(this);
         listView.setAdapter(adapter);
     }
@@ -144,12 +193,20 @@ public class FileListActivity extends BaseActivity {
     public void clickTab1(View view) {
         tab1.setTextColor(Color.parseColor("#6699ff"));
         tab2.setTextColor(Color.parseColor("#000000"));
+        Page = 1;
+        isClear = true;
+        files.clear();
+        adapter.notifyDataSetChanged();
         getDataFromServer(1);
     }
 
     public void clickTab2(View view) {
         tab1.setTextColor(Color.parseColor("#000000"));
         tab2.setTextColor(Color.parseColor("#6699ff"));
+        Page = 1;
+        isClear = true;
+        files.clear();
+        adapter.notifyDataSetChanged();
         getDataFromServer(2);
     }
 
@@ -170,21 +227,24 @@ public class FileListActivity extends BaseActivity {
                 holder.name = (TextView) convertView.findViewById(R.id.name);
                 holder.time = (TextView) convertView.findViewById(R.id.time);
                 holder.type = (ImageView) convertView.findViewById(R.id.type);
-                holder.sender = (TextView) convertView.findViewById(R.id.sender);
+                holder.sender = (TextView) convertView.findViewById(sender);
                 holder.size = (TextView) convertView.findViewById(R.id.size);
                 convertView.setTag(holder);
             } else {
                 holder = (FileHolder) convertView.getTag();
             }
             FileModel fm = files.get(position);
-            String filepath = fm.url;
-           // File f = new File(filepath);
-            holder.name.setText(fm.name);
-            holder.time.setText(Utils.getDateField(Long.parseLong(fm.createDate), 9));
+            holder.name.setText(fm.getName());
+            holder.time.setText(Utils.getDateField(Long.parseLong(fm.getCreateDate()), 9));
             if (holder.size.equals("")) {
                 holder.size.setText("未知");
             } else {
-                holder.size.setText(fm.size);
+                holder.size.setText(fm.getSize());
+            }
+            if (tag == 2) {
+                holder.sender.setText("来自: " + getSharedPreferences("kiwaykthd", 0).getString("studentName", ""));
+            } else {
+                holder.sender.setText("来自: " + fm.getUserName());
             }
             String suffix = fm.createDate.toLowerCase();
             if (suffix.endsWith("pdf")) {
@@ -210,4 +270,39 @@ public class FileListActivity extends BaseActivity {
         }
     }
 
+    private PullToRefreshBase.OnRefreshListener2<ListView> mListViewOnRefreshListener2 = new PullToRefreshBase
+            .OnRefreshListener2<ListView>() {
+
+        /**
+         * 下拉刷新回调
+         * @param refreshView
+         */
+        @Override
+        public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+            Page = 1;
+            isClear = true;
+            getDataFromServer(tag);
+        }
+
+        /**
+         * 上拉加载更多回调
+         * @param refreshView
+         */
+        @Override
+        public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+            if (Page >= totalPage) {
+                Toast.makeText(FileListActivity.this, "已加载全部", Toast.LENGTH_SHORT).show();
+                listView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        listView.onRefreshComplete();
+                    }
+                }, 1000);
+                return;
+            }
+            Page++;
+            isClear = false;
+            getDataFromServer(tag);
+        }
+    };
 }

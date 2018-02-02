@@ -65,13 +65,24 @@ public class MainActivity extends ScreenSharingActivity {
         setContentView(R.layout.activity_main);
         getAppData();
         initView1();
+        Utils.login(this, new Utils.ReLogin() {
+            @Override
+            public void onSuccess() {
+                Logger.log("onSuccesss");
+            }
+
+            @Override
+            public void onFailure() {
+                Logger.log("onSuccesssFailuer");
+            }
+        });
     }
 
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.e("KTHD main","onStart()");
+        Log.e("KTHD main", "onStart()");
         App.instance.connectService(App.instance.mClientCallback);
     }
 
@@ -168,7 +179,10 @@ public class MainActivity extends ScreenSharingActivity {
 
     public Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
-            if (msg.what == 2) {
+            if (msg.what == 1) {
+                App.instance.uploadUserFile(msg.obj.toString(), 1, fileName, FileUtils.GetFileSize(new File(App.ROOT
+                        + fileName)));
+            } else if (msg.what == 2) {
                 String ret = (String) msg.obj;
                 try {
                     //1.apk更新
@@ -266,19 +280,19 @@ public class MainActivity extends ScreenSharingActivity {
     }
 
     //--------------------------------------------------2.0新增--------------------------
+    String fileName;
 
     public void clickSnapshot(View view) {
         //保存截图到本地
         getWindow().getDecorView().setDrawingCacheEnabled(true);
         Bitmap bitmap = getWindow().getDecorView().getDrawingCache();
         String time = System.currentTimeMillis() + "";
-        final String fileName = time + ".png";
+        fileName = time + ".png";
         Utils.saveBitmap(bitmap, fileName, App.ROOT);
         toast("请在我的文件里查看");
         new Thread() {
             @Override
             public void run() {
-                super.run();
                 final String ret = UploadUtil.uploadFile(App.ROOT + fileName, uploadFile, fileName);
                 if (TextUtils.isEmpty(ret)) {
                     toast("上传失败");
@@ -290,16 +304,23 @@ public class MainActivity extends ScreenSharingActivity {
                         toast("上传失败");
                         return;
                     }
+                    Logger.log("::::::::" + obj);
                     String url = obj.optJSONObject("data").optString("url");
-                    App.instance.uploadUserFile(url, 1, fileName, FileUtils.GetFileSize(new File(App.ROOT + fileName)));
+
+                    Message message = new Message();
+                    message.what = 1;
+                    message.obj = url;
+                    mHandler.sendMessage(message);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-        }.run();
-        //  new MyDBHelper(this).addFile(new FileModel(fileName, App.PATH + fileName, time, "snapshot"));
+        }.start();
+
     }
 
+    ;
     private ArrayList<StudentQuestion> studentQuestions = new ArrayList<>();
     private StudentQuestionAdapter questionAdapter;
 
