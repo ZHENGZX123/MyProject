@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -38,6 +39,8 @@ import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.FileUtils;
+import cn.kiway.mdm.util.Logger;
 import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.zbus.OnListener;
@@ -78,6 +81,12 @@ public class StudentGridActivity extends BaseActivity {
 
     private boolean dianmingAlready;
     private ArrayList<KnowledgePoint> selectKPs;
+
+
+    static String uploadurl;
+    static String uploadname;
+    static String uploadsize;
+    ArrayList<Student> selectStudents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,7 +181,7 @@ public class StudentGridActivity extends BaseActivity {
     }
 
     public void clickOK(View v) {
-        ArrayList<Student> selectStudents = new ArrayList<>();
+        selectStudents = new ArrayList<>();
         for (Student s : students) {
             if (s.selected) {
                 selectStudents.add(s);
@@ -190,15 +199,22 @@ public class StudentGridActivity extends BaseActivity {
                 public void run() {
                     try {
                         File file = new File(getIntent().getStringExtra("filePath"));
+                        Logger.log("::::::::" + file.getName());
                         String accessToken = getSharedPreferences("kiway", 0).getString("accessToken", "");
-                        final String ret = UploadUtil.uploadFile(file, clientUrl + "/common/file?x-auth-token=" + accessToken, file.getName());
+                        final String ret = UploadUtil.uploadFile(file, clientUrl + "/common/file?x-auth-token=" +
+                                accessToken, file.getName());
                         Log.d("test", "upload ret = " + ret);
                         //2.发送文件url给学生
-
                         JSONObject obj = new JSONObject(ret);
                         String url = obj.optJSONObject("data").optString("url");
+                        //zzx add 上传文件记录
+                        StudentGridActivity.uploadurl = url;
+                        StudentGridActivity.uploadname = file.getName();
+                        StudentGridActivity.uploadsize = FileUtils.GetFileSize(file);
+                        uploadUserfile();
+                        ZbusHost.wenjian(StudentGridActivity.this, selectStudents, url, file.getName(), FileUtils
+                                .GetFileSize(file), new OnListener() {
 
-                        ZbusHost.wenjian(StudentGridActivity.this, selectStudents, url, file.getName(), new OnListener() {
                             @Override
                             public void onSuccess() {
                                 hidePD();
@@ -220,6 +236,44 @@ public class StudentGridActivity extends BaseActivity {
                 }
             }.start();
         }
+    }
+
+
+    public void uploadUserfile() {
+        ArrayList<String> selectImei = new ArrayList<String>();
+        for (int i = 0; i < selectStudents.size(); i++) {
+            selectImei.add(selectStudents.get(i).imei);
+        }
+        Logger.log(":::::"+selectImei.toString());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AsyncHttpClient client = new AsyncHttpClient();
+                client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
+                client.setTimeout(10000);
+                RequestParams param = new RequestParams();
+                param.put("url", uploadurl);
+                param.put("name", uploadname);
+                param.put("size", uploadsize);
+                param.put("imeis", selectImei.toString());
+                param.put("type", 2 + "");
+                client.post(StudentGridActivity.this, clientUrl + "/device/teacher/teacher/file/push", param, new
+                        TextHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int code, Header[] headers, String ret) {
+                             Logger.log("course onSuccess = " + ret);
+                            }
+
+                            @Override
+                            public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
+                                Logger.log("::::::::::::onFailure" + ret);
+                                if (!Utils.check301(StudentGridActivity.this, ret, "filepush")) {
+                                    toast("请求失败，请稍后再试");
+                                }
+                            }
+                        });
+            }
+        });
     }
 
     @Override

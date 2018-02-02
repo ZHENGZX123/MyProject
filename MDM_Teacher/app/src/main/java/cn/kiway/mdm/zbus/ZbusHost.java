@@ -435,11 +435,11 @@ public class ZbusHost {
     }
 
 
-    public static void wenjian(Activity c, ArrayList<Student> students, String url, String fileName, OnListener onListener) {
+    public static void wenjian(Activity c, ArrayList<Student> students, String url,String fileName, String fileSize,OnListener onListener) {
         try {
             String title = "文件";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "wenjian").put("teacherUserId", userId).put("url", url).put("fileName", fileName)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "wenjian").put("teacherUserId", userId).put("url", url)).put("fileName",fileName).put("size",fileSize).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
                 c.runOnUiThread(new Runnable() {

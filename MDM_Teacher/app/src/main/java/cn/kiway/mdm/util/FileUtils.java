@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 
 import cn.kiway.mdm.KWApplication;
 
@@ -273,6 +274,26 @@ public class FileUtils {
             e.printStackTrace();
         }
     }
-
+    public static String GetFileSize(File file) {
+        String size = "";
+        if (file.exists() && file.isFile()) {
+            long fileS = file.length();
+            DecimalFormat df = new DecimalFormat("#.00");
+            if (fileS < 1024) {
+                size = df.format((double) fileS) + "BT";
+            } else if (fileS < 1048576) {
+                size = df.format((double) fileS / 1024) + "KB";
+            } else if (fileS < 1073741824) {
+                size = df.format((double) fileS / 1048576) + "MB";
+            } else {
+                size = df.format((double) fileS / 1073741824) + "GB";
+            }
+        } else if (file.exists() && file.isDirectory()) {
+            size = "";
+        } else {
+            size = "0BT";
+        }
+        return size;
+    }
 }
 
