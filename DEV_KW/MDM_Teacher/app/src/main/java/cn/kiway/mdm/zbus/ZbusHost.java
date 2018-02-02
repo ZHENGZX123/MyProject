@@ -515,4 +515,32 @@ public class ZbusHost {
             }
         }
     }
+
+    //测试用
+    public static void test(Activity c, int id, OnListener onListener) {
+        try {
+            String title = "测试用";
+            String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "test").put("teacherUserId", userId).put("time", System.currentTimeMillis()).put("id", id)).toString();
+            doSendMsg(c, title, userId, msg, students);
+            if (onListener != null) {
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (onListener != null) {
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
+            }
+        }
+    }
 }
