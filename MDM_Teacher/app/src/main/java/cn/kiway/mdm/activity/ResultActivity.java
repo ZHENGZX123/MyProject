@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -322,7 +323,9 @@ public class ResultActivity extends BaseActivity {
                     JSONArray array2 = new JSONArray();
                     for (Question q : questions) {
                         JSONObject o2 = new JSONObject();
-                        o2.put("content", q.studentAnswer);//学生答案
+                        o2.put("questionId", q.id);
+                        o2.put("courseId", q.courseId);
+                        o2.put("content", TextUtils.isEmpty(q.studentAnswer) ? "" : q.studentAnswer);//学生答案
                         o2.put("questionContent", q.answerVo.content);//正确答案
                         o2.put("questionImg", q.img);
                         o2.put("questionOptions", q.operation);
@@ -331,6 +334,8 @@ public class ResultActivity extends BaseActivity {
                             status = 0;
                         } else if (q.teacherJudge == 2) {
                             status = 1;
+                        } else {
+                            status = 2;
                         }
                         o2.put("status", status);//0错误 1正确 2未作答
                         o2.put("type", q.type);//问题本身类型
@@ -339,9 +344,10 @@ public class ResultActivity extends BaseActivity {
                     o.put("question", array2);
                     array.put(o);
                 }
-                param = array.toString()
+                param = array.toString();
             } else {
                 //其他
+                JSONArray array = new JSONArray();
                 Student s = students.get(0);
                 Question q = questions.get(0);
                 JSONObject o = new JSONObject();
@@ -350,6 +356,8 @@ public class ResultActivity extends BaseActivity {
                 o.put("pushType", type);
                 o.put("content", q.studentAnswer);//学生答案
                 o.put("questionContent", q.answerVo.content);//正确答案
+                o.put("questionId", q.id);
+                o.put("courseId", q.courseId);
                 o.put("questionImg", q.img);
                 o.put("questionOptions", q.operation);
                 int status = 0;
@@ -361,7 +369,8 @@ public class ResultActivity extends BaseActivity {
                 o.put("status", status);//0错误 1正确 2未作答
                 o.put("type", q.type);//问题本身类型
                 o.put("question", new JSONArray());
-                param = o.toString();
+                array.put(o);
+                param = array.toString();
             }
             Log.d("test", "question param array = " + param);
             StringEntity stringEntity = new StringEntity(param, "utf-8");
@@ -419,6 +428,8 @@ public class ResultActivity extends BaseActivity {
             dialog.show();
             return;
         }
+
+        //如果是老师中断的话，不用提交结果
         uploadResult();
         finish();
     }
