@@ -207,7 +207,7 @@ public class ResultActivity extends BaseActivity {
                 //3.如果所有学生已经提交，停止答题。
                 boolean allSubmit = true;
                 for (Student s : students) {
-                    allSubmit = allSubmit | s.submited;
+                    allSubmit = allSubmit & s.submited;
                 }
                 if (allSubmit) {
                     timeup = true;
