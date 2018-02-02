@@ -383,9 +383,7 @@ public class ResultActivity extends BaseActivity {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
-                    if (!Utils.check301(ResultActivity.this, s, "questionResult")) {
-                        toast("请求失败，请稍后再试");
-                    }
+                    Utils.check301(ResultActivity.this, s, "questionResult");
                 }
             });
         } catch (Exception e) {

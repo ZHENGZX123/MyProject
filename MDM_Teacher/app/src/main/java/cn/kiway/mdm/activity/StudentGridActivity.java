@@ -283,10 +283,11 @@ public class StudentGridActivity extends BaseActivity {
     }
 
     public void initData() {
-        //zhengkang add , 如果已经有学生，就不用重复获取了，节省流量，不过状态可能会有点其他问题
+        //zhengkang add 0202, 如果已经有学生，就不用重复获取了，节省流量，不过状态可能会有点其他问题
         if (KWApplication.students.size() != 0) {
             students = KWApplication.students;
             adapter.notifyDataSetChanged();
+            onSuccess();
             return;
         }
 
@@ -311,11 +312,8 @@ public class StudentGridActivity extends BaseActivity {
                         adapter.notifyDataSetChanged();
                         //2.发送上课命令
                         KWApplication.students = students;
-                        if (type == TYPE_DIANMING) {
-                            sendShangkeCommand();
-                        } else if (type == TYPE_TONGJI) {
-                            sendTongjiCommand();
-                        }
+
+                        StudentGridActivity.this.onSuccess();
                         //sendTestCommand();
                     } catch (Exception e) {
                         toast("请求失败，请稍后再试");
@@ -338,6 +336,14 @@ public class StudentGridActivity extends BaseActivity {
             e.printStackTrace();
             toast("请求失败，请稍后再试");
             hidePD();
+        }
+    }
+
+    private void onSuccess() {
+        if (type == TYPE_DIANMING) {
+            sendShangkeCommand();
+        } else if (type == TYPE_TONGJI) {
+            sendTongjiCommand();
         }
     }
 
@@ -669,7 +675,7 @@ public class StudentGridActivity extends BaseActivity {
             toast("请先点名");
             return;
         }
-        startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class).putExtra("students", students));
+        startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class));
         finish();
     }
 
@@ -681,8 +687,6 @@ public class StudentGridActivity extends BaseActivity {
     private void doEndSign() {
         mHandler.removeMessages(TYPE_DIANMING);
         dialog_dianming.dismiss();
-        //startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class).putExtra("students", students));
-        //finish();
     }
 
     public void doStartSign() {
@@ -746,6 +750,10 @@ public class StudentGridActivity extends BaseActivity {
         //1.上报统计结果
         mHandler.removeMessages(TYPE_TONGJI);
         dialog_tongji.dismiss();
+        uploadResult();
+    }
+
+    public void uploadResult() {
         try {
             String url = clientUrl + "/device/teacher/course/student/knowledge/result";
             Log.d("test", "url = " + url);
@@ -779,6 +787,7 @@ public class StudentGridActivity extends BaseActivity {
             toast("请求失败，请稍后再试");
         }
     }
+
 
     private Handler mHandler = new Handler() {
         @Override
@@ -838,14 +847,15 @@ public class StudentGridActivity extends BaseActivity {
                     }
                 }
                 adapter.notifyDataSetChanged();
-
                 int count = 0;
                 for (Student s : students) {
                     if (s.come) {
                         count++;
                     }
                 }
-                count_dianming.setText(count + "/" + students.size());
+                if (count_dianming != null) {
+                    count_dianming.setText(count + "/" + students.size());
+                }
             }
         });
     }
@@ -868,7 +878,9 @@ public class StudentGridActivity extends BaseActivity {
                         count++;
                     }
                 }
-                count_tongji.setText(count + "/" + students.size());
+                if (count_tongji != null) {
+                    count_tongji.setText(count + "/" + students.size());
+                }
             }
         });
     }
