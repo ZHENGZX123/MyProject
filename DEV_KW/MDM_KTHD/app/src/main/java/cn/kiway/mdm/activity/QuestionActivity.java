@@ -131,7 +131,6 @@ public class QuestionActivity extends BaseActivity {
         right = (ImageButton) findViewById(R.id.right);
         wrong = (ImageButton) findViewById(R.id.wrong);
         ll_teacher_judge = (LinearLayout) findViewById(R.id.ll_teacher_judge);
-
         answerGV = (GridView) findViewById(R.id.answerGV);
         answerET = (EditText) findViewById(R.id.answerET);
         wvContainer = (RelativeLayout) findViewById(R.id.wvContainer);
@@ -151,7 +150,6 @@ public class QuestionActivity extends BaseActivity {
             titleName.setText("测评");
         }
     }
-
 
     private void initData() {
         if (questionTime == 0) {
@@ -175,7 +173,6 @@ public class QuestionActivity extends BaseActivity {
             WebView wv = new WebView(this);
             setWebview(wv);
             wvContainer.addView(wv, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-
             String url = "file:///android_asset/whiteboard/index.html";
             Log.d("test", "url = " + url);
             wv.loadUrl(url);
