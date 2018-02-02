@@ -226,8 +226,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_FILE = "FILE";
     private static final String CREATE_TABLE_FILE = " create table  IF NOT EXISTS "
             + TABLE_FILE
-            + "   (id integer primary key autoincrement,  size  text,  name  text , id text , userId text, url text, " +
-            "type text,createDate text)";
+            + "   (id integer primary key autoincrement,  size  text,  name  text , ids text , userId text, url text " +
+            ", " +
+            "type text , createDate text,userName text)";
 
     private static final String TABLE_NOTIFY_MSG = "NOTIFY_MSG";
     private static final String CREATE_TABLE_NOTIFY_MSG = " create table  IF NOT EXISTS "
@@ -238,7 +239,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 13);
+        super(c, DB_NAME, null, 16);
     }
 
     @Override
@@ -309,12 +310,16 @@ public class MyDBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("size", a.size);
         values.put("name", a.name);
-        values.put("id", a.id);
+        values.put("ids", a.id);
         values.put("userId", a.userId);
         values.put("url", a.url);
         values.put("type", a.type);
         values.put("createDate", a.createDate);
-        db.insert(TABLE_FILE, null, values);
+        values.put("userName", a.userName);
+        String[] args = {a.id};
+        int ret = db.update(TABLE_FILE, values, "ids=?", args);
+        if (ret == 0)
+            db.insert(TABLE_FILE, null, values);
         db.close();
     }
 
@@ -322,7 +327,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         if (db == null)
             db = getWritableDatabase();
         ArrayList<FileModel> fms = new ArrayList<>();
-        Cursor cur = db.query(TABLE_FILE, null, null, null, null, null, "time desc");
+        Cursor cur = db.query(TABLE_FILE, null, null, null, null, null, "createDate desc");
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             FileModel fm = new FileModel();
             fm.size = cur.getString(1);
@@ -332,6 +337,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             fm.url = cur.getString(5);
             fm.type = cur.getString(6);
             fm.createDate = cur.getString(7);
+            fm.userName = cur.getString(8);
             fms.add(fm);
         }
         cur.close();

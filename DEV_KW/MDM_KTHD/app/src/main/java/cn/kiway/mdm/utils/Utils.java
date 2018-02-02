@@ -413,7 +413,7 @@ public class Utils {
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.setTimeout(10000);
-        String url = clientUrl + "device/login";
+        String url = clientUrl + "device/student/login";
         Log.d("test", "url = " + url);
         RequestParams param = new RequestParams();
         param.put("classId", context.getSharedPreferences("kiwaykthd", 0).getString("classId",
@@ -438,6 +438,7 @@ public class Utils {
                 Log.d("test", "login onSuccess = " + ret);
                 try {
                     JSONObject o = new JSONObject(ret);
+                    Logger.log("login::::::"+ret);
                     int StatusCode = o.optInt("statusCode");
                     String token = o.getJSONObject("data").optString("token");
                     context.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
@@ -447,6 +448,7 @@ public class Utils {
                         if (reLogin != null)
                             reLogin.onSuccess();
                     } else {
+
                         if (reLogin != null) {
                             reLogin.onFailure();
                         }

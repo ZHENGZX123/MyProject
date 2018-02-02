@@ -32,7 +32,7 @@ public class MyProgressDialog extends Dialog implements View.OnClickListener {
     Activity context;
     ProgressBar progressBar;
     JSONObject data;
-    String downPath = "/mnt/sdcard/kiwayFile/";//下载文件目录
+    public static  final String downPath = "/mnt/sdcard/kiwayFile/";//下载文件目录
     TextView textView;
     Button button;
     String downUrl;//下载地址
@@ -105,16 +105,16 @@ public class MyProgressDialog extends Dialog implements View.OnClickListener {
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-//                FileModel a = new FileModel();//保存记录到本地
-//                a.filename = fileName;
-//                a.time = System.currentTimeMillis() + "";
-//                a.filepath = downPath + fileName;
-//                new MyDBHelper(context).addFile(a);
-//                textView.setEnabled(true);
-//                progressBar.setVisibility(View.GONE);
-//                textView.setText(fileName+ "\n接收完成!");
-//                button.setVisibility(View.VISIBLE);
-//                button.setText("打开文件");
+              //  FileModel a = new FileModel();//保存记录到本地
+               // a.name = fileName;
+               // a.createDate = System.currentTimeMillis() + "";
+               // a.url = downPath + fileName;
+                //new MyDBHelper(context).addFile(a);
+                textView.setEnabled(true);
+                progressBar.setVisibility(View.GONE);
+                textView.setText(fileName+ "\n接收完成!");
+                button.setVisibility(View.VISIBLE);
+                button.setText("打开文件");
 //                if (App.instance.currentActivity != null && App.instance.currentActivity instanceof
 //                        FileListActivity) {
 //                    ((FileListActivity) App.instance.currentActivity).refreshUI();
