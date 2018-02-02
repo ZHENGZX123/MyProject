@@ -313,6 +313,11 @@ public class CommandUtil {
                     ) {
                 m.what = MSG_MESSAGE;
                 m.obj = data;
+            } else if (command.equals("test")) {
+                int id = data.optInt("id");
+                long sendTime = data.optLong("time");
+                long currentTime = System.currentTimeMillis();
+                Log.d("test", "id = " + id + " , delay = " + (currentTime - sendTime));
             }
             if (KWApp.instance == null) {
                 return false;
