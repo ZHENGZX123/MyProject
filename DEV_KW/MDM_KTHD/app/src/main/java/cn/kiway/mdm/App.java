@@ -180,6 +180,10 @@ public class App extends KiwayApplication {
         @Override
         public void accpterMessage(String msg, String token) throws RemoteException {
             Log.d("test", "accpterMessage msg = " + msg + "");
+            if (currentActivity == null) {
+                Log.d("test", "智慧课堂没打开的时候不能接收命令");
+                return;
+            }
             getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
             try {
                 JSONObject o = new JSONObject(msg);
