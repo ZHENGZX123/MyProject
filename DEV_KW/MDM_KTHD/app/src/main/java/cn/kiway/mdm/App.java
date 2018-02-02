@@ -180,10 +180,7 @@ public class App extends KiwayApplication {
         @Override
         public void accpterMessage(String msg, String token) throws RemoteException {
             Log.d("test", "accpterMessage msg = " + msg + "");
-            if (currentActivity == null) {
-                Log.d("test", "智慧课堂没打开的时候不能接收命令");
-                return;
-            }
+            
             getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
             try {
                 JSONObject o = new JSONObject(msg);
@@ -205,7 +202,7 @@ public class App extends KiwayApplication {
                     ((BaseActivity) currentActivity).downloadFile(o);
                     //1.显示文件
                     //2.上传到易敏的接口
-                    uploadUserFile(o.optString("url"),2,o.optString("fileName"),o.optString("size"));
+                    uploadUserFile(o.optString("url"), 2, o.optString("fileName"), o.optString("size"));
                 } else if (command.equals("collection")) {
                     if (!(currentActivity instanceof QuestionActivity)) {
                         Log.d("test", "学生把答题页面关闭了，不应该。。。");
@@ -219,7 +216,7 @@ public class App extends KiwayApplication {
                         return;
                     }
                     ((QuestionActivity) currentActivity).toast("老师结束了这次答题");
-                    ((QuestionActivity) currentActivity).questionTimeup();
+                    ((QuestionActivity) currentActivity).questionTimeup(false);
                 } else if (command.equals("questionEnd")) {
                     if (!(currentActivity instanceof QuestionActivity)) {
                         Log.d("test", "学生把答题页面关闭了，不应该。。。");
@@ -255,22 +252,23 @@ public class App extends KiwayApplication {
         }
     };
 
-    public void uploadUserFile(final String url, final int type, final String name,final String size) {
+    public void uploadUserFile(final String url, final int type, final String name, final String size) {
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
         client.setTimeout(10000);
         RequestParams param = new RequestParams();
         param.put("url", url);
-        param.put("type",type);
-        param.put("name",name);
-        param.put("size",size);
+        param.put("type", type);
+        param.put("name", name);
+        param.put("size", size);
 
         client.post(this, uploadUserFile, param, new TextHttpResponseHandler() {
             @Override
             public void onSuccess(int code, Header[] headers, String ret) {
                 Log.d("test", "course onSuccess = " + ret);
             }
+
             @Override
             public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
                 Logger.log("::::::::::::onFailure" + ret);
@@ -281,7 +279,7 @@ public class App extends KiwayApplication {
                             Utils.login(App.this, new Utils.ReLogin() {
                                 @Override
                                 public void onSuccess() {
-                                    uploadUserFile(url, type, name,size);
+                                    uploadUserFile(url, type, name, size);
                                 }
 
                                 @Override
