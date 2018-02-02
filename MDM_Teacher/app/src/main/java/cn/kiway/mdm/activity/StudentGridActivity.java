@@ -77,6 +77,7 @@ public class StudentGridActivity extends BaseActivity {
     private Student chapingStudent;
 
     private boolean dianmingAlready;
+    private ArrayList<KnowledgePoint> selectKPs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,8 +129,6 @@ public class StudentGridActivity extends BaseActivity {
             toolsRL.setVisibility(View.GONE);
             leftView.setVisibility(View.GONE);
         }
-
-
     }
 
     private boolean selectAll = false;
@@ -199,7 +198,7 @@ public class StudentGridActivity extends BaseActivity {
                         JSONObject obj = new JSONObject(ret);
                         String url = obj.optJSONObject("data").optString("url");
 
-                        ZbusHost.wenjian(StudentGridActivity.this, selectStudents, url,file.getName(), new OnListener() {
+                        ZbusHost.wenjian(StudentGridActivity.this, selectStudents, url, file.getName(), new OnListener() {
                             @Override
                             public void onSuccess() {
                                 hidePD();
@@ -256,6 +255,7 @@ public class StudentGridActivity extends BaseActivity {
                         } else if (type == TYPE_TONGJI) {
                             sendTongjiCommand();
                         }
+                        //sendTestCommand();
                     } catch (Exception e) {
                         toast("请求失败，请稍后再试");
                         hidePD();
@@ -280,8 +280,30 @@ public class StudentGridActivity extends BaseActivity {
         }
     }
 
+    int id = 0;
+
+    private void sendTestCommand() {
+        new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    ZbusHost.test(StudentGridActivity.this, id, null);
+                    id++;
+                    if (id == 100) {
+                        break;
+                    }
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+    }
+
     private void sendTongjiCommand() {
-        ArrayList<KnowledgePoint> selectKPs = (ArrayList<KnowledgePoint>) getIntent().getSerializableExtra("kps");
+        selectKPs = (ArrayList<KnowledgePoint>) getIntent().getSerializableExtra("kps");
         ZbusHost.tongji(StudentGridActivity.this, selectKPs.get(0), new OnListener() {
 
             @Override
@@ -674,6 +696,7 @@ public class StudentGridActivity extends BaseActivity {
                 JSONObject o1 = new JSONObject();
                 o1.put("imei", s.imei);
                 o1.put("status", s.known);
+                o1.put("knowledgeId", selectKPs.get(0).id);
                 array.put(o1);
             }
             Log.d("test", "knowledge array = " + array.toString());

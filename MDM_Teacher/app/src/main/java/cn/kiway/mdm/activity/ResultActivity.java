@@ -306,30 +306,65 @@ public class ResultActivity extends BaseActivity {
     public void uploadResult() {
         try {
             String url = KWApplication.clientUrl + "/device/teacher/course/student/result";
-            Log.d("test", "url = " + url);
+            Log.d("test", "question url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
-            JSONArray array = new JSONArray();
-            for (Student s : students) {
-                //TODO 这里不会做。
-                JSONObject o1 = new JSONObject();
-                o1.put("answerContent", "");
-                o1.put("content", "");
-                o1.put("examinationId", "");
-                o1.put("id", "");
-                o1.put("imei", s.imei);
-                o1.put("name", "");
-                o1.put("questionContent", "");
-                o1.put("questionImg", "");
-                o1.put("questionOptions", "");
-                o1.put("questionType", 0);
-                o1.put("status", 0);
-                o1.put("type", 0);
-                array.put(o1);
+
+            String param = null;
+            if (type == TYPE_QUESTION_CEPING) {
+                JSONArray array = new JSONArray();
+                for (Student s : students) {
+                    JSONObject o = new JSONObject();
+                    o.put("imei", s.imei);
+                    o.put("name", s.name);
+                    o.put("pushType", type);
+                    JSONArray array2 = new JSONArray();
+                    for (Question q : questions) {
+                        JSONObject o2 = new JSONObject();
+                        o2.put("content", q.studentAnswer);//学生答案
+                        o2.put("questionContent", q.answerVo.content);//正确答案
+                        o2.put("questionImg", q.img);
+                        o2.put("questionOptions", q.operation);
+                        int status = 0;
+                        if (q.teacherJudge == 1) {
+                            status = 0;
+                        } else if (q.teacherJudge == 2) {
+                            status = 1;
+                        }
+                        o2.put("status", status);//0错误 1正确 2未作答
+                        o2.put("type", q.type);//问题本身类型
+                        array2.put(o2);
+                    }
+                    o.put("question", array2);
+                    array.put(o);
+                }
+                param = array.toString()
+            } else {
+                //其他
+                Student s = students.get(0);
+                Question q = questions.get(0);
+                JSONObject o = new JSONObject();
+                o.put("imei", s.imei);
+                o.put("name", s.name);
+                o.put("pushType", type);
+                o.put("content", q.studentAnswer);//学生答案
+                o.put("questionContent", q.answerVo.content);//正确答案
+                o.put("questionImg", q.img);
+                o.put("questionOptions", q.operation);
+                int status = 0;
+                if (q.teacherJudge == 1) {
+                    status = 0;
+                } else if (q.teacherJudge == 2) {
+                    status = 1;
+                }
+                o.put("status", status);//0错误 1正确 2未作答
+                o.put("type", q.type);//问题本身类型
+                o.put("question", new JSONArray());
+                param = o.toString();
             }
-            Log.d("test", "knowledge array = " + array.toString());
-            StringEntity stringEntity = new StringEntity(array.toString(), "utf-8");
+            Log.d("test", "question param array = " + param);
+            StringEntity stringEntity = new StringEntity(param, "utf-8");
             client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
