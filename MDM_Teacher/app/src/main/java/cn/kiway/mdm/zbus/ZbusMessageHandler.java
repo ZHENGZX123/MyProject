@@ -24,10 +24,11 @@ public class ZbusMessageHandler implements MessageHandler {
     @Override
     public void handle(Message message, MqClient mqClient) throws IOException {
         String temp = message.getBodyString();
-        Log.d("test", "getBodyString = " + message.getBodyString());
+        Log.d("test", "getBodyString = " + temp);
         //{"studentIMEI":"890406562707861","command":"sign"}
         try {
-            JSONObject o = new JSONObject(temp).optJSONObject("message");
+            String msg = new JSONObject(temp).optString("message");
+            JSONObject o = new JSONObject(msg);
             String command = o.optString("command");
             String studentIMEI = o.optString("studentIMEI");
 
