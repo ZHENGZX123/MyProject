@@ -62,7 +62,7 @@
             android:screenOrientation="landscape"></activity>
 
         <activity
-            android:name="cn.kiway.mdm.activity.Course2Activity"
+            android:name="cn.kiway.mdm.activity.Course1Activity"
             android:screenOrientation="landscape"></activity>
 
         <activity

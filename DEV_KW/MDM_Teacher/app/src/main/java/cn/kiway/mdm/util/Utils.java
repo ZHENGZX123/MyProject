@@ -34,6 +34,7 @@ import java.util.Date;
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.Course0Activity;
+import cn.kiway.mdm.activity.Course1Activity;
 import cn.kiway.mdm.activity.CourseListActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ResultActivity;
@@ -405,18 +406,21 @@ public class Utils {
                         } else if (type.equals("endclass")) {
                             endClass(c, courseID);
                         } else if (type.equals("students")) {
-                            ((StudentGridActivity) KWApplication.currentActivity).initData();
+                            ((StudentGridActivity) c).initData();
                         } else if (type.equals("sign")) {
-                            ((StudentGridActivity) KWApplication.currentActivity).doStartSign();
+                            ((StudentGridActivity) c).doStartSign();
                         } else if (type.equals("courselist")) {
-                            ((CourseListActivity) KWApplication.currentActivity).initData();
+                            ((CourseListActivity) c).initData();
                         } else if (type.equals("coursedetail")) {
-                            ((Course0Activity) KWApplication.currentActivity).initData();
+                            ((Course0Activity) c).initData();
+                        } else if (type.equals("coursedetail1")) {
+                            ((Course1Activity) c).initData();
                         } else if (type.equals("knowledgeCountResult")) {
+                            ((StudentGridActivity) c).uploadResult();
                         } else if (type.equals("questionResult")) {
-                            ((ResultActivity) KWApplication.currentActivity).uploadResult();
+                            ((ResultActivity) c).uploadResult();
                         } else if (type.equals("filepush")) {
-                            ((StudentGridActivity) KWApplication.currentActivity).uploadUserfile();
+                            ((StudentGridActivity) c).uploadUserfile();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
