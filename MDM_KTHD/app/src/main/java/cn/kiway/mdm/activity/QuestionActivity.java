@@ -370,7 +370,7 @@ public class QuestionActivity extends BaseActivity {
                     questionTime--;
                 } else {
                     timeup = true;
-                    questionTimeup();
+                    questionTimeup(true);
                 }
             }
             time.setText("时间：" + Utils.secToTime(questionTime));
@@ -378,12 +378,14 @@ public class QuestionActivity extends BaseActivity {
         }
     };
 
-    public void questionTimeup() {
+    public void questionTimeup(final boolean show) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 timeup = true;
-                toast("答题时间到，还没有提交答案的同学请点击提交");
+                if (show) {
+                    toast("答题时间到，还没有提交答案的同学请点击提交");
+                }
             }
         });
     }
