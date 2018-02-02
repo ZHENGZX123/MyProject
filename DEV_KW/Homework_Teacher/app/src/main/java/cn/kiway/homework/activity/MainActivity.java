@@ -303,6 +303,7 @@ public class MainActivity extends BaseActivity {
             }
         }
         com.tencent.smtt.sdk.WebSettings settings = wv.getSettings();
+        settings.setSavePassword(false);
         settings.setJavaScriptEnabled(true);
         settings.setAppCacheEnabled(true);
         settings.setUseWideViewPort(true);
@@ -310,11 +311,12 @@ public class MainActivity extends BaseActivity {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
-        if (Utils.isTabletDevice(this)) {
-            settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.LARGER);
-        } else {
-            settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.NORMAL);
-        }
+        //智慧课堂平板项目好像不维护了
+//        if (Utils.isTabletDevice(this)) {
+//            settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.LARGER);
+//        } else {
+//            settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.NORMAL);
+//        }
 
         wv.setWebViewClient(new WebViewClient() {
 
@@ -829,21 +831,17 @@ public class MainActivity extends BaseActivity {
         final String finalResult = result;
         runOnUiThread(new Runnable() {
             @Override
-                try
-
-            {
-                String r = finalResult.replace("null", "\"\"").replace("\"\"\"\"", "\"\"");
-                MLog.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + r);
-                wv.loadUrl("javascript:" + tagname + "(" + r + ")");
-            } catch(
-            Exception e)
-
-            {
-                e.printStackTrace();
+            public void run() {
+                try {
+                    String r = finalResult.replace("null", "\"\"").replace("\"\"\"\"", "\"\"");
+                    MLog.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + r);
+                    wv.loadUrl("javascript:" + tagname + "(" + r + ")");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }
-    });
-}
+        });
+    }
 
     //录音
     private void startRecord() {
