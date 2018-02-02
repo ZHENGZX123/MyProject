@@ -52,8 +52,10 @@ import java.util.Date;
 
 import cn.kiway.mdmsdk.MDMHelper;
 import cn.kiway.zbus.utils.ZbusUtils;
+import io.zbus.mq.Broker;
 import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
+import io.zbus.mq.Producer;
 
 import static com.android.kiway.KWApp.clientUrl;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
@@ -144,6 +146,9 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     if (TextUtils.isEmpty(token)) {
                         return;
                     }
+                    Broker broker = new Broker(ZbusHost.zbusHost + ":" + ZbusHost.zbusPost);
+                    Producer p = new Producer(broker);
+                    ZbusUtils.init(broker,p);
                     String topic = "kiway_push_" + token;
                     Log.d("test", "topic = " + topic);
                     ZbusUtils.consumeMsg(topic, new MessageHandler() {
@@ -455,6 +460,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         if (mLocationClient != null) {
             mLocationClient.stop();
         }
+
+        ZbusUtils.close();
     }
 
 
