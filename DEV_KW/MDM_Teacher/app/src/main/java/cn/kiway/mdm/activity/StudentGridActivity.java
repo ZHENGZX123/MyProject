@@ -229,6 +229,13 @@ public class StudentGridActivity extends BaseActivity {
     }
 
     public void initData() {
+        //zhengkang add , 如果已经有学生，就不用重复获取了，节省流量，不过状态可能会有点其他问题
+        if (KWApplication.students.size() != 0) {
+            students = KWApplication.students;
+            adapter.notifyDataSetChanged();
+            return;
+        }
+
         try {
             showPD();
             hideRetry();

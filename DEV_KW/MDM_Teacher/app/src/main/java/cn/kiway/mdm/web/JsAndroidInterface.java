@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 
+import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.StudentGridActivity;
 import cn.kiway.mdm.teacher.R;
@@ -151,6 +152,8 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public void shangke(String info) {
+        KWApplication.students.clear();
+
         Log.d("test", "shangke info = " + info);
         try {
             JSONObject o = new JSONObject(info);
