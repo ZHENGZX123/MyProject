@@ -68,7 +68,7 @@ public class FenxiActivity extends BaseActivity {
         this.tag = tag;
         try {
             AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token"," 2df74dc0-1071-4ce0-9dbf-b7ebdd4b360c");
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             RequestParams param = new RequestParams();
             Log.d("test", "param = " + param.toString());
