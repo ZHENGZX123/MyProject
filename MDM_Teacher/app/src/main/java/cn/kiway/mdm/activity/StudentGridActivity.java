@@ -81,7 +81,7 @@ public class StudentGridActivity extends BaseActivity {
 
     private boolean dianmingAlready;
     private ArrayList<KnowledgePoint> selectKPs;
-
+    private String selectCourseId;
 
     static String uploadurl;
     static String uploadname;
@@ -311,9 +311,8 @@ public class StudentGridActivity extends BaseActivity {
                         adapter.notifyDataSetChanged();
                         //2.发送上课命令
                         KWApplication.students = students;
-
-                        StudentGridActivity.this.onSuccess();
                         //sendTestCommand();
+                        StudentGridActivity.this.onSuccess();
                     } catch (Exception e) {
                         toast("请求失败，请稍后再试");
                         hidePD();
@@ -369,6 +368,7 @@ public class StudentGridActivity extends BaseActivity {
     }
 
     private void sendTongjiCommand() {
+        selectCourseId = getIntent().getStringExtra("courseId");
         selectKPs = (ArrayList<KnowledgePoint>) getIntent().getSerializableExtra("kps");
         ZbusHost.tongji(StudentGridActivity.this, selectKPs.get(0), new OnListener() {
 
@@ -750,6 +750,7 @@ public class StudentGridActivity extends BaseActivity {
         mHandler.removeMessages(TYPE_TONGJI);
         dialog_tongji.dismiss();
         uploadResult();
+        Utils.courseOperation(this, selectCourseId, 2, selectKPs.get(0).id);
     }
 
     public void uploadResult() {

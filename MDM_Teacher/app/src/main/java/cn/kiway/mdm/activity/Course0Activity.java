@@ -105,9 +105,9 @@ public class Course0Activity extends ScreenSharingActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course0);
-
         course = (Course) getIntent().getSerializableExtra("course");
 
+        Utils.courseOperation(this, course.id, 1, "");
         initView();
         initData();
         initRecord();
@@ -334,8 +334,8 @@ public class Course0Activity extends ScreenSharingActivity {
 
     public void wenjian(View view) {
         //1.先选择一个文件
-       // String selectFilePath = "/mnt/sdcard/1514424119655.png";
-       // sendFile(selectFilePath);
+        // String selectFilePath = "/mnt/sdcard/1514424119655.png";
+        // sendFile(selectFilePath);
 
         new LFilePicker()
                 .withActivity(this)

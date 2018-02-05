@@ -367,6 +367,40 @@ public class Utils {
         }
     }
 
+    //保存课程操作行为
+    public static void courseOperation(Activity c, String courseID, int type, String someID) {
+        try {
+            //1.发“下课”推送命令
+            String url = KWApplication.clientUrl +
+                    "/device/teacher/course/" + courseID + "/courseOperation";
+            Log.d("test", "courseOperation url = " + url);
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.setTimeout(10000);
+            RequestParams param = new RequestParams();
+            param.put("courseId", courseID);
+            param.put("knowledgeId", someID);
+            param.put("examinationId", someID);
+            param.put("type", type);
+            Log.d("test", "courseOperation param array = " + param.toString());
+            client.post(c, url, param, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "courseOperation onSuccess = " + ret);
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", " onFailure = " + s);
+                    //TODO
+                    check301(c, s, "courseOperation");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static boolean check301(final Activity c, String result, String type) {
         if (c == null) {
             return false;

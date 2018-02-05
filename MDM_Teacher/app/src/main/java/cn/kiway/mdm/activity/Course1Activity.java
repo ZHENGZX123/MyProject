@@ -27,6 +27,7 @@ import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.entity.Course;
 import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.Utils;
 
 import static cn.kiway.mdm.util.Utils.check301;
 

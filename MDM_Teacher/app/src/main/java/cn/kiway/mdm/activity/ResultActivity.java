@@ -378,6 +378,7 @@ public class ResultActivity extends BaseActivity {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
+                    //list//map<courseId-examId>
                 }
 
                 @Override

@@ -225,7 +225,6 @@ public class CourseListActivity extends BaseActivity {
             public ImageView ball;
             public TextView date1;
             public TextView date2;
-
         }
 
         @Override

@@ -435,11 +435,11 @@ public class ZbusHost {
     }
 
 
-    public static void wenjian(Activity c, ArrayList<Student> students, String url,String fileName, String fileSize,OnListener onListener) {
+    public static void wenjian(Activity c, ArrayList<Student> students, String url, String fileName, String fileSize, OnListener onListener) {
         try {
             String title = "文件";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "wenjian").put("teacherUserId", userId).put("url", url)).put("fileName",fileName).put("size",fileSize).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "wenjian").put("teacherUserId", userId).put("url", url)).put("fileName", fileName).put("size", fileSize).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
                 c.runOnUiThread(new Runnable() {
@@ -521,7 +521,9 @@ public class ZbusHost {
         try {
             String title = "测试用";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "test").put("teacherUserId", userId).put("time", System.currentTimeMillis()).put("id", id)).toString();
+            long time = System.currentTimeMillis();
+            String randomString = "" + time + time + time + time + time + time + time;
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "test").put("teacherUserId", userId).put("time", time).put("id", id).put("randomString", randomString)).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
                 c.runOnUiThread(new Runnable() {
