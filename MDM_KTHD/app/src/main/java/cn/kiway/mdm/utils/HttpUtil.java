@@ -11,5 +11,8 @@ public class HttpUtil {
     public final static String uploadUserFile = clientUrl + "device/student/userFile";//学生上传文件记录
 
 
+    public final static String getMyClassAnalysis = clientUrl + "device/student/classStatusAnalysis?style=";//获取课堂分析情况
+    public final static String getAnalysisDetial = clientUrl + "/device/student/classStatusAnalysis/detail/";
+
     public final static String uploadFile = clientUrl + "common/file?x-auth-token=";
 }

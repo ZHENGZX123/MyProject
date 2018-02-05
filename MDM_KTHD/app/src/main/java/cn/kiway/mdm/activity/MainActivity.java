@@ -114,6 +114,7 @@ public class MainActivity extends ScreenSharingActivity {
 
     public void onKT(View view) {
         //课堂分析
+        startActivity(new Intent(this,FenxiActivity.class));
     }
 
 
