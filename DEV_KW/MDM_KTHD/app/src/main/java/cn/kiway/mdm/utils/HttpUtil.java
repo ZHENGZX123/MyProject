@@ -12,7 +12,8 @@ public class HttpUtil {
 
 
     public final static String getMyClassAnalysis = clientUrl + "device/student/classStatusAnalysis?style=";//获取课堂分析情况
-    public final static String getAnalysisDetial = clientUrl + "/device/student/classStatusAnalysis/detail/";
+    public final static String getAnalysisDetial = clientUrl + "device/student/classStatusAnalysis/detail/";
+    public final static String getYiShangkeUrl = clientUrl + "device/student/attend";
 
     public final static String uploadFile = clientUrl + "common/file?x-auth-token=";
 }
