@@ -36,7 +36,7 @@ import static cn.kiway.mdm.utils.HttpUtil.getAnalysisDetial;
 public class FenxiDetailActivity extends BaseActivity {
     Fenxi fenxi;
     TextView titleName, qusetionType,content,answerTV;
-    ImageView status;
+    ImageView status,answerIV;
     private GridView answerGV;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,6 +56,7 @@ public class FenxiDetailActivity extends BaseActivity {
         content= (TextView) findViewById(R.id.content);
         answerGV= (GridView) findViewById(R.id.answerGV);
         answerTV= (TextView) findViewById(R.id.answerTV);
+        answerIV= (ImageView) findViewById(R.id.answerIV);
         if (fenxi.getType() == TYPE_QUESTION_DIANMINGDA) {
             titleName.setText("点名答");
         } else if (fenxi.getType() == TYPE_QUESTION_QIANGDA) {
@@ -155,20 +156,27 @@ public class FenxiDetailActivity extends BaseActivity {
             qusetionType.setText("单选题");
             answerGV.setVisibility(View.VISIBLE);
             answerTV.setVisibility(View.GONE);
+            answerIV.setVisibility(View.GONE);
         } else if (type == Question.TYPE_MULTI) {
             qusetionType.setText("多选题");
             answerGV.setVisibility(View.VISIBLE);
             answerTV.setVisibility(View.GONE);
+            answerIV.setVisibility(View.GONE);
         } else if (type == TYPE_EMPTY) {
             qusetionType.setText("填空题");
-            answerGV.setVisibility(View.VISIBLE);
-            answerTV.setVisibility(View.GONE);
+            answerGV.setVisibility(View.GONE);
+            answerTV.setVisibility(View.VISIBLE);
+            answerIV.setVisibility(View.GONE);
         } else if (type == Question.TYPE_JUDGE) {
             qusetionType.setText("判断题");
             answerGV.setVisibility(View.VISIBLE);
             answerTV.setVisibility(View.GONE);
+            answerIV.setVisibility(View.GONE);
         } else if (type == Question.TYPE_ESSAY) {
             qusetionType.setText("问答题");
+            answerGV.setVisibility(View.GONE);
+            answerTV.setVisibility(View.GONE);
+            answerIV.setVisibility(View.VISIBLE);
         }
         content.setText(data.optString("questionContent"));
     }
