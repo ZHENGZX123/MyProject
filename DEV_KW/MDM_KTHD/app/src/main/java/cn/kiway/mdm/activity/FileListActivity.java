@@ -42,6 +42,7 @@ import studentsession.kiway.cn.mdm_studentsession.R;
 import static cn.kiway.mdm.dialog.MyProgressDialog.downPath;
 import static cn.kiway.mdm.utils.HttpUtil.getMyFile;
 import static studentsession.kiway.cn.mdm_studentsession.R.id.sender;
+import static studentsession.kiway.cn.mdm_studentsession.R.id.size;
 
 /**
  * Created by Administrator on 2017/11/16.
@@ -105,9 +106,31 @@ public class FileListActivity extends BaseActivity {
                         }
 
                         @Override
-                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            Log.d("test", "calls onFailure = " + s);
-                            listView.onRefreshComplete();
+                        public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
+                            Log.d("test", "calls onFailure = " +ret);
+                            Logger.log("::::::::::::onFailure" + ret);
+                            if (!ret.equals("")) {
+                                try {
+                                    JSONObject data = new JSONObject(ret);
+                                    if (data.optInt("statusCode") != 200) {
+                                        Utils.login(FileListActivity.this, new Utils.ReLogin() {
+                                            @Override
+                                            public void onSuccess() {
+                                                getDataFromServer(tag);
+                                            }
+
+                                            @Override
+                                            public void onFailure() {
+                                                listView.onRefreshComplete();
+                                            }
+                                        });
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }else {
+                                listView.onRefreshComplete();
+                            }
                         }
                     });
         } catch (Exception e) {
@@ -228,7 +251,7 @@ public class FileListActivity extends BaseActivity {
                 holder.time = (TextView) convertView.findViewById(R.id.time);
                 holder.type = (ImageView) convertView.findViewById(R.id.type);
                 holder.sender = (TextView) convertView.findViewById(sender);
-                holder.size = (TextView) convertView.findViewById(R.id.size);
+                holder.size = (TextView) convertView.findViewById(size);
                 convertView.setTag(holder);
             } else {
                 holder = (FileHolder) convertView.getTag();
