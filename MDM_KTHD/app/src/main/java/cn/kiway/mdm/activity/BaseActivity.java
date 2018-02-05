@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -108,7 +109,12 @@ public class BaseActivity extends Activity {
             @Override
             public void run() {
                 progressDialog = new MyProgressDialog(BaseActivity.this, proData);
-                progressDialog.show();
+
+                try {
+                    progressDialog.show();
+                } catch (WindowManager.BadTokenException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -121,10 +127,12 @@ public class BaseActivity extends Activity {
                 int questionTime = data.optInt("questionTime");
                 String questionStr = data.optString("questions");
                 Log.d("test", "questionStr = " + questionStr);
-                ArrayList<Question> questions = new GsonBuilder().create().fromJson(questionStr, new TypeToken<List<Question>>() {
-                }.getType());
+                ArrayList<Question> questions = new GsonBuilder().create().fromJson(questionStr, new
+                        TypeToken<List<Question>>() {
+                        }.getType());
                 Log.d("test", "questions = " + questions);
-                startActivity(new Intent(BaseActivity.this, QuestionActivity.class).putExtra("questions", questions).putExtra("questionTime", questionTime).putExtra("questionType", questionType));
+                startActivity(new Intent(BaseActivity.this, QuestionActivity.class).putExtra("questions", questions)
+                        .putExtra("questionTime", questionTime).putExtra("questionType", questionType));
             }
         });
     }
@@ -133,8 +141,15 @@ public class BaseActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (qiangdaDialog != null && qiangdaDialog.isShowing())
+                    return;
                 qiangdaDialog = new QiangdaDialog(BaseActivity.this);
-                qiangdaDialog.show();
+
+                try {
+                    qiangdaDialog.show();
+                } catch (WindowManager.BadTokenException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -146,12 +161,17 @@ public class BaseActivity extends Activity {
                 if (qiangdaDialog == null) {
                     return;
                 }
-                qiangdaDialog.show();
-                if (result == 1) {
-                    qiangdaDialog.setQiangdaResult("恭喜你抢到了答题权");
-                } else {
-                    qiangdaDialog.setQiangdaResult(qiangdaStudentName + "抢到了答题权");
+                try {
+                    qiangdaDialog.show();
+                    if (result == 1) {
+                        qiangdaDialog.setQiangdaResult("恭喜你抢到了答题权");
+                    } else {
+                        qiangdaDialog.setQiangdaResult(qiangdaStudentName + "抢到了答题权");
+                    }
+                } catch (WindowManager.BadTokenException e) {
+                    e.printStackTrace();
                 }
+
             }
         });
     }
@@ -160,8 +180,14 @@ public class BaseActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (signDialog != null && signDialog.isShowing())
+                    return;
                 signDialog = new SignDialog(BaseActivity.this);
-                signDialog.show();
+                try {
+                    signDialog.show();
+                } catch (WindowManager.BadTokenException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -170,8 +196,15 @@ public class BaseActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (knowDialog != null && knowDialog.isShowing())
+                    return;
                 knowDialog = new KnowledgeDialog(BaseActivity.this, knowledge);
-                knowDialog.show();
+
+                try {
+                    knowDialog.show();
+                } catch (WindowManager.BadTokenException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
