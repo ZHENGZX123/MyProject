@@ -214,7 +214,6 @@ public class StudentGridActivity extends BaseActivity {
                         uploadUserfile();
                         ZbusHost.wenjian(StudentGridActivity.this, selectStudents, url, file.getName(), FileUtils
                                 .GetFileSize(file), new OnListener() {
-
                             @Override
                             public void onSuccess() {
                                 hidePD();
@@ -244,7 +243,7 @@ public class StudentGridActivity extends BaseActivity {
         for (int i = 0; i < selectStudents.size(); i++) {
             selectImei.add(selectStudents.get(i).imei);
         }
-        Logger.log(":::::"+selectImei.toString());
+        Logger.log(":::::" + selectImei.toString());
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -261,7 +260,7 @@ public class StudentGridActivity extends BaseActivity {
                         TextHttpResponseHandler() {
                             @Override
                             public void onSuccess(int code, Header[] headers, String ret) {
-                             Logger.log("course onSuccess = " + ret);
+                                Logger.log("course onSuccess = " + ret);
                             }
 
                             @Override
@@ -890,5 +889,14 @@ public class StudentGridActivity extends BaseActivity {
     protected void onRestart() {
         super.onRestart();
         sendChapingCommand(chapingStudent, 0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (type == TYPE_DIANMING) {
+            //发送下课命令
+            ZbusHost.xiake(this, null);
+        }
+        super.onBackPressed();
     }
 }
