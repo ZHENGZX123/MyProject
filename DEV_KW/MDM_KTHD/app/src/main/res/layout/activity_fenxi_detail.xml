@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
     <include
         android:id="@+id/titleRL"
@@ -32,21 +32,21 @@
                     android:layout_margin="30dp"
                     android:text="选择题"
                     android:textColor="#000000"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"/>
 
                 <TextView
                     android:id="@+id/content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
-                    android:textColor="#000000" />
+                    android:textColor="#000000"/>
 
                 <LinearLayout
                     android:id="@+id/imgLL"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
-                    android:orientation="vertical" />
+                    android:orientation="vertical"/>
 
                 <Button
                     android:layout_width="wrap_content"
@@ -58,7 +58,8 @@
                     android:onClick="showAnswer"
                     android:padding="10dp"
                     android:text="显示答案"
-                    android:textColor="#ffffff" />
+                    android:visibility="gone"
+                    android:textColor="#ffffff"/>
 
                 <LinearLayout
                     android:id="@+id/ll_answer"
@@ -74,13 +75,13 @@
                         android:layout_marginLeft="30dp"
                         android:text="答案："
                         android:textColor="#000000"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"/>
 
                     <LinearLayout
                         android:id="@+id/imgLL2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical" />
+                        android:orientation="vertical"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -100,7 +101,7 @@
                 android:layout_margin="20dp"
                 android:text="答题卡"
                 android:textColor="#000000"
-                android:textSize="18sp" />
+                android:textSize="18sp"/>
 
             <TextView
                 android:id="@+id/line"
@@ -109,7 +110,7 @@
                 android:layout_below="@+id/hint"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:background="#aaaaaa" />
+                android:background="#aaaaaa"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -124,7 +125,7 @@
                     android:layout_height="match_parent"
                     android:layout_margin="20dp"
                     android:numColumns="4"
-                    android:scrollbars="none" />
+                    android:scrollbars="none"/>
 
                 <TextView
                     android:id="@+id/answerTV"
@@ -132,15 +133,21 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
                     android:textColor="#000000"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"/>
 
                 <ImageView
                     android:id="@+id/answerIV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp" />
+                    android:layout_margin="20dp"/>
 
-
+                <ImageView
+                    android:id="@+id/status"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/u4620"/>
             </RelativeLayout>
 
             <LinearLayout
@@ -160,7 +167,7 @@
                     android:padding="10dp"
                     android:text="    上一题    "
                     android:textColor="#6699ff"
-                    android:visibility="gone" />
+                    android:visibility="gone"/>
 
                 <Button
                     android:id="@+id/next"
@@ -171,7 +178,8 @@
                     android:onClick="next"
                     android:padding="10dp"
                     android:text="    下一题    "
-                    android:textColor="#6699ff" />
+                    android:textColor="#6699ff"
+                    android:visibility="gone"/>
             </LinearLayout>
 
             <TextView
@@ -180,7 +188,7 @@
                 android:layout_above="@+id/ll_bottom"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:background="#aaaaaa" />
+                android:background="#aaaaaa"/>
 
 
         </RelativeLayout>
