@@ -33,6 +33,7 @@ import cn.kiway.mdm.entity.Course;
 import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Utils;
+import cn.kiway.mdm.zbus.ZbusHost;
 
 
 public class CourseListActivity extends BaseActivity {
@@ -241,6 +242,13 @@ public class CourseListActivity extends BaseActivity {
         public long getItemId(int arg0) {
             return arg0;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        //发送下课命令
+        ZbusHost.xiake(this, null);
+        super.onBackPressed();
     }
 
 }
