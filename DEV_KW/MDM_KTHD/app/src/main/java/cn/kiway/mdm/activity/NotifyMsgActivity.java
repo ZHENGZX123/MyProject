@@ -8,8 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
+
+import com.itheima.pulltorefreshlib.PullToRefreshListView;
 
 import org.json.JSONArray;
 
@@ -23,7 +24,7 @@ import studentsession.kiway.cn.mdm_studentsession.R;
 
 public class NotifyMsgActivity extends BaseActivity {
     JSONArray array = new JSONArray();
-    ListView listView;
+    PullToRefreshListView listView;
     NotifyMsgAdapter adapter;
 
     @Override
@@ -32,8 +33,8 @@ public class NotifyMsgActivity extends BaseActivity {
         setContentView(R.layout.activity_file_list);
         ((TextView) findViewById(R.id.titleName)).setText("消息列表");
         array = new MyDBHelper(this).getNotifyMessage();
-        listView = (ListView) findViewById(R.id.list_view);
-        listView.setDividerHeight(0);
+        listView = (PullToRefreshListView) findViewById(R.id.list_view);
+       // listView.setDividerHeight(0);
         adapter = new NotifyMsgAdapter(this);
         listView.setAdapter(adapter);
     }

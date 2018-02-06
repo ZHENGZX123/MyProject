@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#001100">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:id="@+id/clock"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="50dp"
+            android:src="@drawable/clock" />
+
+        <TextView
+            android:id="@+id/line0"
+            android:layout_width="2dp"
+            android:layout_height="13dp"
+            android:layout_below="@+id/clock"
+            android:layout_marginLeft="69dp"
+            android:layout_marginTop="-3dp"
+            android:background="#6699ff" />
+
+        <TextView
+            android:id="@+id/line"
+            android:layout_width="2dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/contentRL"
+            android:layout_alignTop="@+id/contentRL"
+            android:layout_marginLeft="69dp"
+            android:background="#6699ff" />
+
+        <ImageView
+            android:id="@+id/ball"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_below="@id/line0"
+            android:layout_marginLeft="65dp"
+            android:layout_marginTop="12dp"
+            android:src="@drawable/ball1" />
+
+        <TextView
+            android:id="@+id/line2"
+            android:layout_width="20dp"
+            android:layout_height="2dp"
+            android:layout_alignTop="@+id/ball"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/ball"
+            android:background="#cccccc" />
+
+        <RelativeLayout
+            android:id="@+id/contentRL"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/line0"
+            android:layout_toRightOf="@+id/line">
+
+            <TextView
+                android:id="@+id/title1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="5dp"
+                android:text="课程标题"
+                android:textColor="#6699ff"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/title2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title1"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="5dp"
+                android:textColor="#6699ff"
+                android:text="知识点1：\n知识点2：" />
+
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/date1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/line0"
+            android:layout_marginTop="5dp"
+            android:text="12.13"
+            android:textColor="#cccccc"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/date2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/date1"
+            android:layout_below="@id/date1"
+            android:text="2017"
+            android:textColor="#cccccc"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/yishangke"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/yishangke" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
