@@ -91,7 +91,7 @@ public class YiShangKeActivity extends BaseActivity {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.e("test", "calls onSuccess = " + ret);
-
+listView.onRefreshComplete();
                             try {
                                 JSONObject data = new JSONObject(ret);
                                 if (data.optInt("statusCode") == 201) {
@@ -116,7 +116,7 @@ public class YiShangKeActivity extends BaseActivity {
                         public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
                             Log.d("test", "calls onFailure = " + ret);
                             Logger.log("::::::::::::onFailure" + ret);
-                            if (!ret.equals("")) {
+                            if (ret!=null&&!ret.equals("")) {
                                 try {
                                     JSONObject data = new JSONObject(ret);
                                     if (data.optInt("statusCode") != 200) {
