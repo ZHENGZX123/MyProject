@@ -163,7 +163,6 @@ public class FileListActivity extends BaseActivity {
             files.add(fm);
         }
         adapter.notifyDataSetChanged();
-
     }
 
     private void initListener() {
