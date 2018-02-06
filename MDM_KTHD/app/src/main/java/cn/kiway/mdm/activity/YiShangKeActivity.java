@@ -99,6 +99,13 @@ public class YiShangKeActivity extends BaseActivity {
                                     totalPage = data.optJSONObject("data").optInt("totalPage");
                                     totalRecord = data.optJSONObject("data").optInt("totalRecord");
                                 }
+                                if (courseAdapter.getCount() > 0) {
+                                    listView.setVisibility(View.VISIBLE);
+                                    findViewById(R.id.no_data).setVisibility(View.GONE);
+                                } else {
+                                    listView.setVisibility(View.GONE);
+                                    findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
