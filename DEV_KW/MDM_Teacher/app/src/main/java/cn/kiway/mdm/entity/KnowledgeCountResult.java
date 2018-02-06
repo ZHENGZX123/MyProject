@@ -1,10 +1,12 @@
 package cn.kiway.mdm.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2018/2/6.
  */
 
-public class KnowledgeCountResult {
+public class KnowledgeCountResult implements Serializable{
 
     public String knowledgeId;
     public String knowledgeName;
