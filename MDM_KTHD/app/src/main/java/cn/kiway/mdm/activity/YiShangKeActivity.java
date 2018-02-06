@@ -67,6 +67,7 @@ public class YiShangKeActivity extends BaseActivity {
         courseAdapter = new CourseAdapter(this);
         listView.setAdapter(courseAdapter);
         listView.setOnRefreshListener(mListViewOnRefreshListener2);
+        listView.setMode(PullToRefreshBase.Mode.BOTH);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
