@@ -26,6 +26,7 @@ public class Question implements Serializable {
     public AnswerVo answerVo;
     public UserExaminationResultVo userExaminationResultVo;//测评有用
     public ArrayList<UserExaminationResultVo> userExaminationResultVos;//其他问答有用
+    public String examinationId;
 
     public boolean selected;
     public String studentAnswer;

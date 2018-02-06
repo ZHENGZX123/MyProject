@@ -36,7 +36,6 @@ import cn.kiway.mdm.entity.KnowledgeCountResult;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.teacher.R;
 
-import static cn.kiway.mdm.teacher.R.id.ceping;
 import static cn.kiway.mdm.util.Utils.check301;
 import static cn.kiway.mdm.util.Utils.showBigImage;
 
@@ -102,13 +101,12 @@ public class Course1Activity extends BaseActivity {
                                 String name = valueObj.getString("name");
                                 item.title = name;
                             } else if (type == 2) {
+                                //统计结果
                                 JSONObject valueObj = data.getJSONObject(key);
                                 JSONArray array = valueObj.getJSONArray("knowledgeCountResult");
-                                ArrayList<KnowledgeCountResult> results = new GsonBuilder().create().fromJson(array.toString(), new TypeToken<List<KnowledgeCountResult>>() {
+                                item.results = new GsonBuilder().create().fromJson(array.toString(), new TypeToken<List<KnowledgeCountResult>>() {
                                 }.getType());
-                                Log.d("test", results.toString());
-                                item.title = "知识点：" + results.get(0).knowledgeName;
-                                //统计结果
+                                item.title = "知识点：" + item.results.get(0).knowledgeName;
                             } else {
                                 JSONArray valueObj = data.getJSONArray(key);
                                 item.questions = new GsonBuilder().create().fromJson(valueObj.toString(), new TypeToken<ArrayList<Question>>() {
@@ -201,7 +199,7 @@ public class Course1Activity extends BaseActivity {
                 holder.tongji.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(Course1Activity.this, TongjiActivity2.class));
+                        startActivity(new Intent(Course1Activity.this, AttendTongjiActivity.class).putExtra("type", 1).putExtra("item", item));
                     }
                 });
                 holder.type6RL.setVisibility(View.GONE);
@@ -326,7 +324,7 @@ public class Course1Activity extends BaseActivity {
             ceping.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(Course1Activity.this, TongjiActivity2.class));
+                    startActivity(new Intent(Course1Activity.this, AttendTongjiActivity.class).putExtra("type", 2).putExtra("item", item));
                 }
             });
 

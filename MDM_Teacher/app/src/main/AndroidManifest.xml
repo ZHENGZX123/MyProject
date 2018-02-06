@@ -69,10 +69,7 @@
             android:name="cn.kiway.mdm.activity.ResultActivity"
             android:screenOrientation="landscape"></activity>
         <activity
-            android:name="cn.kiway.mdm.activity.TongjiActivity"
-            android:screenOrientation="landscape"></activity>
-        <activity
-            android:name="cn.kiway.mdm.activity.TongjiActivity2"
+            android:name="cn.kiway.mdm.activity.AttendTongjiActivity"
             android:screenOrientation="landscape"></activity>
         <activity
             android:name="cn.kiway.mdm.activity.ResultDetailActivity"
