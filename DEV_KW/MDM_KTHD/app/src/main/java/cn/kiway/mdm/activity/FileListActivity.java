@@ -82,7 +82,7 @@ public class FileListActivity extends BaseActivity {
             client.setTimeout(10000);
             RequestParams param = new RequestParams();
             Log.d("test", "param = " + param.toString());
-            String url = getMyFile +tag+ "&currentPage=" + Page;//截图资料;
+            String url = getMyFile + tag + "&currentPage=" + Page;//截图资料;
             Logger.log(url);
             client.get(this, url, param, new
                     TextHttpResponseHandler() {
@@ -93,12 +93,20 @@ public class FileListActivity extends BaseActivity {
                             try {
                                 JSONObject data = new JSONObject(ret);
                                 if (data.optInt("statusCode") == 201) {
-                                    Toast.makeText(FileListActivity.this, data.optString("errorMsg"), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(FileListActivity.this, data.optString("errorMsg"), Toast
+                                            .LENGTH_SHORT).show();
                                 } else if (data.optInt("statusCode") == 200) {
                                     totalPage = data.optJSONObject("data").optInt("totalPage");
                                     totalRecord = data.optJSONObject("data").optInt("totalRecord");
                                     JSONArray array = data.optJSONObject("data").optJSONArray("list");
                                     initData(array);
+                                }
+                                if (adapter.getCount() > 0) {
+                                    listView.setVisibility(View.VISIBLE);
+                                    findViewById(R.id.no_data).setVisibility(View.GONE);
+                                } else {
+                                    listView.setVisibility(View.GONE);
+                                    findViewById(R.id.no_data).setVisibility(View.VISIBLE);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -107,7 +115,7 @@ public class FileListActivity extends BaseActivity {
 
                         @Override
                         public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
-                            Log.d("test", "calls onFailure = " +ret);
+                            Log.d("test", "calls onFailure = " + ret);
                             Logger.log("::::::::::::onFailure" + ret);
                             if (!ret.equals("")) {
                                 try {
@@ -128,7 +136,7 @@ public class FileListActivity extends BaseActivity {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                            }else {
+                            } else {
                                 listView.onRefreshComplete();
                             }
                         }
@@ -155,6 +163,7 @@ public class FileListActivity extends BaseActivity {
             files.add(fm);
         }
         adapter.notifyDataSetChanged();
+
     }
 
     private void initListener() {
@@ -165,7 +174,7 @@ public class FileListActivity extends BaseActivity {
                 final String filepath = downPath + fm.name;
                 File f = new File(filepath);
                 if (!f.exists()) {
-                    final ProgressDialog progressDialog=new ProgressDialog(FileListActivity.this);
+                    final ProgressDialog progressDialog = new ProgressDialog(FileListActivity.this);
                     progressDialog.setMessage("正在打开中，请稍后");
                     progressDialog.show();
                     new Thread(new Runnable() {

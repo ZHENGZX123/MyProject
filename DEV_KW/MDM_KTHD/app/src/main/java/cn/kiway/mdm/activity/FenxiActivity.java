@@ -89,6 +89,13 @@ public class FenxiActivity extends BaseActivity {
                                     JSONArray array = data.optJSONArray("data");
                                     initData(array);
                                 }
+                                if (adapter.getCount() > 0) {
+                                    listView.setVisibility(View.VISIBLE);
+                                    findViewById(R.id.no_data).setVisibility(View.GONE);
+                                } else {
+                                    listView.setVisibility(View.GONE);
+                                    findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
