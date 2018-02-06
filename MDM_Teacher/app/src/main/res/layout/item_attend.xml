@@ -12,7 +12,7 @@
             android:id="@+id/clock"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="50dp"
+            android:layout_marginLeft="80dp"
             android:src="@drawable/clock" />
 
         <TextView
@@ -20,7 +20,7 @@
             android:layout_width="2dp"
             android:layout_height="13dp"
             android:layout_below="@+id/clock"
-            android:layout_marginLeft="69dp"
+            android:layout_marginLeft="99dp"
             android:layout_marginTop="-3dp"
             android:background="#6699ff" />
 
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/contentRL"
             android:layout_alignTop="@+id/contentRL"
-            android:layout_marginLeft="69dp"
+            android:layout_marginLeft="99dp"
             android:background="#6699ff" />
 
         <ImageView
@@ -38,7 +38,7 @@
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:layout_below="@id/line0"
-            android:layout_marginLeft="65dp"
+            android:layout_marginLeft="94dp"
             android:layout_marginTop="12dp"
             android:src="@drawable/ball2" />
 
@@ -77,39 +77,39 @@
                 android:layout_marginTop="8dp">
 
                 <LinearLayout
-                    android:id="@+id/type0RL"
+                    android:id="@+id/type2RL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"></LinearLayout>
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="知识点统计"
+                        android:textColor="#6699ff" />
+
+                    <Button
+                        android:id="@+id/tongji"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="统计结果" />
+                </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/type1RL"
+                    android:id="@+id/type345RL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="gone">
-                </LinearLayout>
+                    android:visibility="gone"></LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/type_2RL"
+                    android:id="@+id/type6RL"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:gravity="center_horizontal"
-                    android:visibility="gone">
-
-                    <Button
-                        android:id="@+id/endBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/endbutton"
-                        android:paddingBottom="5dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:paddingTop="5dp"
-                        android:text="结束课程"
-                        android:textColor="#ffffff" />
-                </LinearLayout>
-
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"></LinearLayout>
 
             </RelativeLayout>
 

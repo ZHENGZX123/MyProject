@@ -670,10 +670,10 @@ public class StudentGridActivity extends BaseActivity {
 
     @Override
     public void sk(View view) {
-        if (!dianmingAlready) {
-            toast("请先点名");
-            return;
-        }
+//        if (!dianmingAlready) {
+//            toast("请先点名");
+//            return;
+//        }
         startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class));
         finish();
     }

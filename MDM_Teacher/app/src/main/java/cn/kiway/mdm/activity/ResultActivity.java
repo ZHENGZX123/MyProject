@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -174,7 +173,7 @@ public class ResultActivity extends BaseActivity {
                                 JSONObject o = array.getJSONObject(i);
                                 String qanswer = o.getString("qanswer");
                                 Question q = questions.get(i);
-                                //首先要保持顺序正确
+                                //TODO 这里死菜菜了。。。
                                 q.studentAnswer = qanswer;
                             }
                             //2.自动批改
@@ -311,24 +310,23 @@ public class ResultActivity extends BaseActivity {
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
-
             String param = null;
             if (type == TYPE_QUESTION_CEPING) {
                 JSONArray array = new JSONArray();
-                for (Student s : students) {
-                    JSONObject o = new JSONObject();
-                    o.put("imei", s.imei);
-                    o.put("name", s.name);
-                    o.put("pushType", type);
-                    JSONArray array2 = new JSONArray();
-                    for (Question q : questions) {
-                        JSONObject o2 = new JSONObject();
-                        o2.put("questionId", q.id);
-                        o2.put("courseId", q.courseId);
-                        o2.put("content", TextUtils.isEmpty(q.studentAnswer) ? "" : q.studentAnswer);//学生答案
-                        o2.put("questionContent", q.answerVo.content);//正确答案
-                        o2.put("questionImg", q.img);
-                        o2.put("questionOptions", q.operation);
+                for (Question q : questions) {
+                    JSONObject o2 = new JSONObject();
+                    o2.put("pushType", type);
+                    o2.put("questionId", q.id);
+                    o2.put("courseId", q.courseId);
+                    o2.put("questionContent", q.answerVo.content);//正确答案
+                    o2.put("questionImg", q.img);
+                    o2.put("questionOptions", q.operation);
+                    JSONArray temp = new JSONArray();
+                    for (Student s : students) {
+                        JSONObject o = new JSONObject();
+                        o.put("imei", s.imei);
+                        o.put("name", s.name);
+                        o.put("content", "学生答案TODO");//学生答案TextUtils.isEmpty(q.studentAnswer) ? "" : q.studentAnswer
                         int status = 0;
                         if (q.teacherJudge == 1) {
                             status = 0;
@@ -337,12 +335,12 @@ public class ResultActivity extends BaseActivity {
                         } else {
                             status = 2;
                         }
-                        o2.put("status", status);//0错误 1正确 2未作答
-                        o2.put("type", q.type);//问题本身类型
-                        array2.put(o2);
+                        o.put("status", status);//0错误 1正确 2未作答
+                        o.put("type", q.type);//问题本身类型
+                        temp.put(o);
                     }
-                    o.put("question", array2);
-                    array.put(o);
+                    o2.put("students", temp);
+                    array.put(o2);
                 }
                 param = array.toString();
             } else {
@@ -378,7 +376,23 @@ public class ResultActivity extends BaseActivity {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
-                    //list//map<courseId-examId>
+                    try {
+                        JSONObject o = new JSONObject(ret);
+                        JSONArray data = o.getJSONArray("data");
+                        int size = data.length();
+                        StringBuilder ping = new StringBuilder();
+                        String courseId = "";
+                        for (int i = 0; i < size; i++) {
+                            String temp = data.getJSONObject(i).toString().replace("{", "").replace("\"", "").replace("}", "");
+                            courseId = temp.split(":")[0];
+                            String examinationId = temp.split(":")[1];
+                            ping.append(examinationId).append(",");
+                        }
+                        ping.deleteCharAt(ping.length() - 1);
+                        Utils.courseOperation(ResultActivity.this, courseId, type + 2, ping.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
