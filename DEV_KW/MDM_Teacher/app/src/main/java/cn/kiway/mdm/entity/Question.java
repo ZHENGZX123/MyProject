@@ -1,7 +1,7 @@
 package cn.kiway.mdm.entity;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2018/1/3.
@@ -21,11 +21,11 @@ public class Question implements Serializable {
     public String options;//选择题用到
     public String id;
     public int type;    // 1是单选题 2是多选题 3填空题  4判断题  5问答题
-    public String operation;//
+    public String operation;//无用
     public String createDate;
     public AnswerVo answerVo;
-    public UserExaminationResultVo userExaminationResultVo;//
-    public List<UserExaminationResultVo> userExaminationResultVos;//
+    public UserExaminationResultVo userExaminationResultVo;//测评有用
+    public ArrayList<UserExaminationResultVo> userExaminationResultVos;//其他问答有用
 
     public boolean selected;
     public String studentAnswer;

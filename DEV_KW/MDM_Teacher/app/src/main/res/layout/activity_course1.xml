@@ -22,7 +22,7 @@
             android:layout_weight="2"></View>
 
         <ListView
-            android:id="@+id/KnowledgePointLV"
+            android:id="@+id/lv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"

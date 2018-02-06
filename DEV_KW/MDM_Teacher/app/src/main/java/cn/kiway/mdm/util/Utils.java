@@ -370,7 +370,6 @@ public class Utils {
     //保存课程操作行为
     public static void courseOperation(Activity c, String courseID, int type, String someID) {
         try {
-            //1.发“下课”推送命令
             String url = KWApplication.clientUrl +
                     "/device/teacher/course/" + courseID + "/courseOperation";
             Log.d("test", "courseOperation url = " + url);
@@ -379,8 +378,11 @@ public class Utils {
             client.setTimeout(10000);
             RequestParams param = new RequestParams();
             param.put("courseId", courseID);
-            param.put("knowledgeId", someID);
-            param.put("examinationId", someID);
+            if (type == 2) {
+                param.put("knowledgeId", someID);
+            } else if (type > 2) {
+                param.put("examinationId", someID);
+            }
             param.put("type", type);
             Log.d("test", "courseOperation param array = " + param.toString());
             client.post(c, url, param, new TextHttpResponseHandler() {
@@ -392,8 +394,7 @@ public class Utils {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", " onFailure = " + s);
-                    //TODO
-                    check301(c, s, "courseOperation");
+                    //这个接口可以不检测301
                 }
             });
         } catch (Exception e) {

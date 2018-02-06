@@ -423,7 +423,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 dialog.dismiss();
                 //发送命令
                 startActivity(new Intent(Course0Activity.this, StudentGridActivity.class).putExtra("type",
-                        TYPE_TONGJI).putExtra("kps", selectKPs));
+                        TYPE_TONGJI).putExtra("kps", selectKPs).putExtra("courseId", course.id));
             }
         });
 
