@@ -109,7 +109,7 @@ public class MainActivity extends ScreenSharingActivity {
     }
 
     public void onMsg(View view) {//查看消息
-        startActivity(new Intent(this, NotifyMsgActivity.class));
+        startActivity(new Intent(this, YiShangKeActivity.class));
     }
 
     public void onKT(View view) {
