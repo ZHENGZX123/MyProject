@@ -165,6 +165,7 @@ public class YiShangKeActivity extends BaseActivity {
             course.setKnowledgePoints(knowledgePointses);
             allCourses.add(course);
         }
+        courseAdapter.notifyDataSetChanged();
     }
 
     public class CourseAdapter extends ArrayAdapter {
@@ -198,7 +199,6 @@ public class YiShangKeActivity extends BaseActivity {
             holder.date2.setText(Utils.getDateField(Long.parseLong(course.getCreateDate()), 1));
             holder.title.setText(course.getName());
             holder.content.setText(course.getknowledgeContent());
-
             return convertView;
         }
 
@@ -223,11 +223,9 @@ public class YiShangKeActivity extends BaseActivity {
          */
         @Override
         public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-
             Page = 1;
             isClear = true;
             loadData();
-
         }
 
         /**
@@ -236,7 +234,6 @@ public class YiShangKeActivity extends BaseActivity {
          */
         @Override
         public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-
             if (Page >= totalPage) {
                 Toast.makeText(YiShangKeActivity.this, "已加载全部", Toast.LENGTH_SHORT).show();
                 listView.postDelayed(new Runnable() {
