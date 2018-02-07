@@ -24,6 +24,7 @@ import com.android.kiway.utils.Utils;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 
+
 /**
  * Created by Administrator on 2017/9/4.
  */
@@ -36,12 +37,7 @@ public class EulaActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_eula);
-        /////////////////////////////////////////////
-//        FxService.setIp("10.0.10.220");
-//        FxService.setCanSendImage(true);
-//        Intent intent = new Intent(getApplicationContext(), FxService.class);
-//        startService(intent);
-        /////////////////////////////////////////////
+
         mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
 
