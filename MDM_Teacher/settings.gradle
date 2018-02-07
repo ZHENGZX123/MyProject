@@ -1,1 +1,1 @@
-include ':app', ":lfilepickerlibrary", ':AgoraPusher', "photoview", ':libvideoprp', ':AgoraPlayer', ':imgaeCrop'
+include ':app', ":lfilepickerlibrary", ':AgoraPusher', "photoview", ':libvideoprp', ':AgoraPlayer', ':imgaeCrop', ':superplayerlibrary', ':ijkplayerlibrary'
