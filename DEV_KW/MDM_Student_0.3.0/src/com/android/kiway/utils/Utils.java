@@ -35,7 +35,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.android.kiway.KWApp;
-import com.android.kiway.activity.AppListActivity3;
 import com.android.kiway.activity.ComposeSmsActivity;
 import com.android.kiway.activity.MainActivity;
 import com.android.kiway.activity.ScreenMDMActivity;
@@ -716,7 +715,7 @@ public class Utils {
 
     public static String getRunningAPP(Context context) {
         String packageName = "";
-        if (Build.MODEL.equals("rk3288")) {
+        if (Build.MODEL.equals("rk3288") || Build.MODEL.equals("rk3368-P9")) {
             packageName = MDMHelper.getAdapter().getRunningAPP();
             Log.d("aaa", "packageName1 = " + packageName);
             return packageName;
