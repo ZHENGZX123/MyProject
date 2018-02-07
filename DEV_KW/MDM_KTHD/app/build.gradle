@@ -66,4 +66,5 @@ dependencies {
     compile files('libs/gson-2.8.0.jar')
     compile project(':AgoraPusher')
     compile 'com.github.open-android:PullToRefresh:v1.0'
+    compile project(':superplayerlibrary')
 }
