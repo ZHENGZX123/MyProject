@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#001100">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:id="@+id/clock"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="80dp"
+            android:src="@drawable/clock" />
+
+        <TextView
+            android:id="@+id/line0"
+            android:layout_width="2dp"
+            android:layout_height="13dp"
+            android:layout_below="@+id/clock"
+            android:layout_marginLeft="99dp"
+            android:layout_marginTop="-3dp"
+            android:background="#6699ff" />
+
+        <TextView
+            android:id="@+id/line"
+            android:layout_width="2dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/contentRL"
+            android:layout_alignTop="@+id/contentRL"
+            android:layout_marginLeft="99dp"
+            android:background="#6699ff" />
+
+        <ImageView
+            android:id="@+id/ball"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_below="@id/line0"
+            android:layout_marginLeft="94dp"
+            android:layout_marginTop="12dp"
+            android:src="@drawable/ball2" />
+
+        <TextView
+            android:id="@+id/line2"
+            android:layout_width="20dp"
+            android:layout_height="2dp"
+            android:layout_alignTop="@+id/ball"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/ball"
+            android:background="#6699ff" />
+
+        <RelativeLayout
+            android:id="@+id/contentRL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/line0"
+            android:layout_alignStart="@+id/line0">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="5dp"
+                android:text="课程标题"
+                android:textColor="#6699ff"
+                android:textSize="18sp" />
+
+            <!-- 根据类型显示不同的样式 暂时50dp-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:id="@+id/type2RL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="知识点统计"
+                        android:textColor="#6699ff" />
+
+                    <Button
+                        android:id="@+id/tongji"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="统计结果" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/type345RL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"></LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/type6RL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"></LinearLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/date1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/line0"
+            android:text="2017.12.13"
+            android:textColor="#ffffff"
+            android:maxLines="1"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/date2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/date1"
+            android:layout_below="@id/date1"
+            android:text="09.10"
+            android:maxLines="1"
+            android:textColor="#6699ff"
+            android:textSize="16sp" />
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

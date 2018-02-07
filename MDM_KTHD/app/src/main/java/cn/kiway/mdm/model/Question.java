@@ -1,6 +1,7 @@
 package cn.kiway.mdm.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2018/1/3.
@@ -13,6 +14,14 @@ public class Question implements Serializable {
     public static final int TYPE_EMPTY = 3;
     public static final int TYPE_JUDGE = 4;
     public static final int TYPE_ESSAY = 5;
+
+
+
+    public UserExaminationResultVo userExaminationResultVo;//测评有用
+    public ArrayList<UserExaminationResultVo> userExaminationResultVos;//其他问答有用
+    public String examinationId;
+
+
 
     public String courseId;
     public String content;
@@ -27,6 +36,9 @@ public class Question implements Serializable {
     public String studentAnswer = "";//学生做题的答案
     public int wbIndex;
     public int teacherJudge; // 未批改0  错误1  正确2
+
+
+
 
     @Override
     public String toString() {

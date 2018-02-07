@@ -71,6 +71,25 @@
             android:launchMode="singleTask"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
+
+        <activity
+            android:name="cn.kiway.mdm.activity.Course1Activity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
+        <activity
+            android:name="cn.kiway.mdm.activity.TongjiActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
+        <activity
+            android:name="cn.kiway.mdm.activity.VideoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <activity
             android:name="cn.kiway.mdm.activity.UserInfoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
