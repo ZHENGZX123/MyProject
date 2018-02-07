@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="F:\kiway_xm\MDM_KTHD\superplayerlibrary\src\main\assets"/><source path="F:\kiway_xm\MDM_KTHD\superplayerlibrary\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="F:\kiway_xm\MDM_KTHD\superplayerlibrary\src\debug\assets"/></dataSet></merger>
