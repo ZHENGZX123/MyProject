@@ -32,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import cn.kiway.mdm.KWApplication;
-import cn.kiway.mdm.activity.AttendTongjiActivity;
 import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.Course0Activity;
 import cn.kiway.mdm.activity.Course1Activity;
@@ -457,8 +456,6 @@ public class Utils {
                             ((ResultActivity) c).uploadResult();
                         } else if (type.equals("filepush")) {
                             ((StudentGridActivity) c).uploadUserfile();
-                        } else if (type.equals("cepingTongji")) {
-                            ((AttendTongjiActivity) c).initData();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -67,6 +67,8 @@ public class Course1Activity extends BaseActivity {
         toolsRL.setVisibility(View.GONE);
         videoBtn.setVisibility(View.VISIBLE);
 
+        titleName.setText(course.name);
+
         lv = (ListView) findViewById(R.id.lv);
         adapter = new CourseAdapter();
         lv.setAdapter(adapter);
@@ -111,6 +113,7 @@ public class Course1Activity extends BaseActivity {
                                 JSONArray valueObj = data.getJSONArray(key);
                                 item.questions = new GsonBuilder().create().fromJson(valueObj.toString(), new TypeToken<ArrayList<Question>>() {
                                 }.getType());
+                                item.title = "问答/测评";
                             }
                             //检查重复的type1，确定type1都在上面？？？
                             int count_type1 = 0;
@@ -218,7 +221,7 @@ public class Course1Activity extends BaseActivity {
 
             holder.title.setText(item.title);
             holder.date1.setText(item.time.split(" ")[0]);
-            holder.date2.setText(item.time.split(" ")[1]);
+            holder.date2.setText(item.time.split(" ")[1].split("\\.")[0]);
             return rowView;
         }
 
