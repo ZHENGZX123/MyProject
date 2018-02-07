@@ -114,7 +114,7 @@ public class MainActivity extends ScreenSharingActivity {
 
     public void onKT(View view) {
         //课堂分析
-        startActivity(new Intent(this,FenxiActivity.class));
+        startActivity(new Intent(this, FenxiActivity.class));
     }
 
 
@@ -190,9 +190,6 @@ public class MainActivity extends ScreenSharingActivity {
                     Log.d("test", "新版本返回值" + ret);
                     String apkVersion = new JSONObject(ret).getString("apkCode");
                     String apkUrl = new JSONObject(ret).getString("apkUrl");
-
-                    String zipCode = new JSONObject(ret).getString("zipCode");
-                    String zipUrl = new JSONObject(ret).getString("zipUrl");
                     if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
                         downloadSilently(apkUrl, apkVersion);
                     }
@@ -270,7 +267,6 @@ public class MainActivity extends ScreenSharingActivity {
     }
 
     ////////////////以上是版本更新
-    long time;
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -321,11 +317,15 @@ public class MainActivity extends ScreenSharingActivity {
 
     }
 
-    ;
     private ArrayList<StudentQuestion> studentQuestions = new ArrayList<>();
     private StudentQuestionAdapter questionAdapter;
 
     public void clickAsk(View view) {
+//        if (!app.isAttenClass) {
+//            toast("只有上课期间才可以提问");
+//            return;
+//        }
+
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_ask);
         dialog.show();
@@ -356,17 +356,34 @@ public class MainActivity extends ScreenSharingActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String contentStr = content.getText().toString();
-                if (TextUtils.isEmpty(contentStr)) {
-                    toast("内容不能为空");
-                    return;
+                try {
+                    String contentStr = content.getText().toString();
+                    if (TextUtils.isEmpty(contentStr)) {
+                        toast("内容不能为空");
+                        return;
+                    }
+                    //1.使用zbus发送
+                    JSONObject o = new JSONObject();
+                    o.put("type", 1);
+                    o.put("content", contentStr);
+                    o.put("time", System.currentTimeMillis());
+                    o.put("name", "学生");
+                    o.put("avatar", "");
+                    boolean ret = Utils.sendToServer("question_" + o.toString());
+                    if (!ret) {
+                        toast("提问失败");
+                        return;
+                    }
+                    //2.刷新界面
+                    StudentQuestion q = new StudentQuestion();
+                    q.type = 1;
+                    q.content = contentStr;
+                    studentQuestions.add(q);
+                    questionAdapter.notifyDataSetChanged();
+                    content.setText("");
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                StudentQuestion q = new StudentQuestion();
-                q.type = 1;
-                q.content = contentStr;
-                studentQuestions.add(q);
-                questionAdapter.notifyDataSetChanged();
-                content.setText("");
             }
         });
     }
@@ -458,15 +475,46 @@ public class MainActivity extends ScreenSharingActivity {
             toast("录制时间太短");
             return;
         }
-        //1.上传录制文件
 
-        //2.刷新界面
-        StudentQuestion q = new StudentQuestion();
-        q.type = 2;
-        q.duration = duration;
-        q.filepath = recordFile.getAbsolutePath();
-        studentQuestions.add(q);
-        questionAdapter.notifyDataSetChanged();
+        new Thread() {
+            @Override
+            public void run() {
+                //1.上传录制文件
+                String token = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                String result = UploadUtil.uploadFile(recordFile.getAbsolutePath(), App.clientUrl + "common/file?x-auth-token=" + token, recordFile.getName());
+                try {
+                    String url = new JSONObject(result).getJSONObject("data").getString("url");
+                    JSONObject o = new JSONObject();
+                    o.put("type", 2);
+                    o.put("content", url);
+                    o.put("time", System.currentTimeMillis());
+                    o.put("name", "学生");
+                    o.put("avatar", "");
+                    o.put("duration", duration);
+                    boolean ret = Utils.sendToServer("question_" + o.toString());
+                    if (!ret) {
+                        toast("提问失败");
+                        return;
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //2.刷新界面
+                            StudentQuestion q = new StudentQuestion();
+                            q.type = 2;
+                            q.duration = duration;
+                            q.filepath = recordFile.getAbsolutePath();
+                            studentQuestions.add(q);
+                            questionAdapter.notifyDataSetChanged();
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    toast("发送录音失败");
+                    return;
+                }
+            }
+        }.start();
     }
 
 
@@ -548,7 +596,7 @@ public class MainActivity extends ScreenSharingActivity {
             public void run() {
                 initModules();
                 startCapture();
-                mRtcEngine.joinChannel(null, "kiwayMDM_student_" + Utils.getIMEI(getApplicationContext()), "", 0);
+                mRtcEngine.joinChannel(null, Utils.getIMEI(getApplicationContext()), "", 0);
             }
         });
     }
