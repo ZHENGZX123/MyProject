@@ -64,11 +64,12 @@ public class ResultActivity extends BaseActivity {
 
     private GridView gv;
     private MyAdapter adapter;
-    private ArrayList<Student> students;
-    private ArrayList<Question> questions;
     private int questionTime;
-
     private boolean timeup; //时间到
+
+
+    public static ArrayList<Student> students;
+    public static ArrayList<Question> questions;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,6 +80,15 @@ public class ResultActivity extends BaseActivity {
         students = (ArrayList<Student>) getIntent().getSerializableExtra("students");
         questions = (ArrayList<Question>) getIntent().getSerializableExtra("questions");
         questionTime = getIntent().getIntExtra("questionTime", 0);
+
+        //给question设置studentAnswers和teacherJudges。
+        int studentCount = students.size();
+        for (Question q : questions) {
+            for (int i = 0; i < studentCount; i++) {
+                q.studentAnswers.add("");
+                q.teacherJudges.add(0);
+            }
+        }
 
         initView();
         initData();
@@ -127,7 +137,7 @@ public class ResultActivity extends BaseActivity {
                     toast("该学生未提交答案");
                     return;
                 }
-                startActivityForResult(new Intent(ResultActivity.this, ResultDetailActivity.class).putExtra("questions", questions).putExtra("student", s), 8888);
+                startActivityForResult(new Intent(ResultActivity.this, ResultDetailActivity.class).putExtra("studentIndex", position), 8888);
             }
         });
     }
@@ -163,7 +173,9 @@ public class ResultActivity extends BaseActivity {
             @Override
             public void run() {
                 //1.刷新界面
-                for (Student s : students) {
+                int studentCount = students.size();
+                for (int studentIndex = 0; studentIndex < studentCount; studentIndex++) {
+                    Student s = students.get(studentIndex);
                     if (s.imei.equals(studentIMEI)) {
                         try {
                             s.submited = true;
@@ -173,8 +185,7 @@ public class ResultActivity extends BaseActivity {
                                 JSONObject o = array.getJSONObject(i);
                                 String qanswer = o.getString("qanswer");
                                 Question q = questions.get(i);
-                                //TODO 这里死菜菜了。。。
-                                q.studentAnswer = qanswer;
+                                q.studentAnswers.set(studentIndex, qanswer);
                             }
                             //2.自动批改
                             boolean auto = true;
@@ -184,16 +195,10 @@ public class ResultActivity extends BaseActivity {
                                 }
                             }
                             if (auto) {
-                                array = new JSONArray();
                                 for (Question q : questions) {
-                                    JSONObject o = new JSONObject();
-                                    o.put("qid", q.id);
-                                    o.put("qtype", q.type);
-                                    o.put("qcollection", autoTeacherJudge(q));
-                                    array.put(o);
+                                    q.teacherJudges.set(studentIndex, autoTeacherJudge(q, studentIndex));
                                 }
                                 s.collected = true;
-                                s.collection = array.toString();
                             }
                         } catch (Exception e) {
                             Log.d("test", "学生提交的和本次问题对应不上。。。有问题");
@@ -222,8 +227,8 @@ public class ResultActivity extends BaseActivity {
         });
     }
 
-    private int autoTeacherJudge(Question q) {
-        if (q.answerVo.content.replace("[", "").replace("]", "").replace("\"", "").replace(",", "").equals(q.studentAnswer)) {
+    private int autoTeacherJudge(Question q, int studentIndex) {
+        if (q.answerVo.content.replace("[", "").replace("]", "").replace("\"", "").replace(",", "").equals(q.studentAnswers.get(studentIndex))) {
             return 2;
         }
         return 1;
@@ -322,15 +327,17 @@ public class ResultActivity extends BaseActivity {
                     o2.put("questionImg", q.img);
                     o2.put("questionOptions", q.operation);
                     JSONArray temp = new JSONArray();
-                    for (Student s : students) {
+                    int studentCount = students.size();
+                    for (int studentIndex = 0; studentIndex < studentCount; studentIndex++) {
+                        Student s = students.get(studentIndex);
                         JSONObject o = new JSONObject();
                         o.put("imei", s.imei);
                         o.put("name", s.name);
-                        o.put("content", "学生答案TODO");//学生答案TextUtils.isEmpty(q.studentAnswer) ? "" : q.studentAnswer
+                        o.put("content", q.studentAnswers.get(studentIndex));
                         int status = 0;
-                        if (q.teacherJudge == 1) {
+                        if (q.teacherJudges.get(studentIndex) == 1) {
                             status = 0;
-                        } else if (q.teacherJudge == 2) {
+                        } else if (q.teacherJudges.get(studentIndex) == 2) {
                             status = 1;
                         } else {
                             status = 2;
@@ -352,16 +359,16 @@ public class ResultActivity extends BaseActivity {
                 o.put("imei", s.imei);
                 o.put("name", s.name);
                 o.put("pushType", type);
-                o.put("content", q.studentAnswer);//学生答案
+                o.put("content", q.studentAnswers.get(0));//学生答案
                 o.put("questionContent", q.answerVo.content);//正确答案
                 o.put("questionId", q.id);
                 o.put("courseId", q.courseId);
                 o.put("questionImg", q.img);
                 o.put("questionOptions", q.operation);
                 int status = 0;
-                if (q.teacherJudge == 1) {
+                if (q.teacherJudges.get(0) == 1) {
                     status = 0;
-                } else if (q.teacherJudge == 2) {
+                } else if (q.teacherJudges.get(0) == 2) {
                     status = 1;
                 }
                 o.put("status", status);//0错误 1正确 2未作答
@@ -478,16 +485,6 @@ public class ResultActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 8888 && resultCode == 8888) {
-            String studentIMEI = data.getStringExtra("studentIMEI");
-            boolean collected = data.getBooleanExtra("collected", false);
-            String collection = data.getStringExtra("collection");
-            Student s = getStudentByIMEI(studentIMEI);
-            if (s == null) {
-                Log.d("test", "见鬼了哦");
-                return;
-            }
-            s.collected = collected;
-            s.collection = collection;
             adapter.notifyDataSetChanged();
         }
     }

@@ -68,4 +68,5 @@ dependencies {
     compile project(':AgoraPlayer')
     compile project(':imgaeCrop')
     compile files('libs/push-server-zbus-1.0.0.jar')
+    compile project(':superplayerlibrary')
 }

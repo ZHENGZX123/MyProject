@@ -1,6 +1,5 @@
 package cn.kiway.mdm.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -28,10 +27,10 @@ import cn.kiway.mdm.entity.Choice;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
-import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
 
+import static cn.kiway.mdm.activity.ResultActivity.questions;
 import static cn.kiway.mdm.util.Utils.showBigImage;
 
 /**
@@ -41,7 +40,6 @@ import static cn.kiway.mdm.util.Utils.showBigImage;
 public class ResultDetailActivity extends BaseActivity {
 
     private Student student;
-    private ArrayList<Question> questions;
     private Button prev;
     private Button next;
     private int current = 0;
@@ -59,14 +57,15 @@ public class ResultDetailActivity extends BaseActivity {
     private ImageButton right;
     private ImageButton wrong;
     private Button ok;
+    private int studentIndex;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result_detail);
 
-        student = (Student) getIntent().getSerializableExtra("student");
-        questions = (ArrayList<Question>) getIntent().getSerializableExtra("questions");
+        studentIndex = getIntent().getIntExtra("studentIndex", 0);
+        student = ResultActivity.students.get(studentIndex);
 
         initView();
         refresh();
@@ -188,7 +187,7 @@ public class ResultDetailActivity extends BaseActivity {
         right.setBackgroundResource(R.drawable.right1);
         wrong.setBackgroundResource(R.drawable.wrong1);
 
-        String studentAnswer = q.studentAnswer;
+        String studentAnswer = q.studentAnswers.get(studentIndex);
         //学生提交答案区域
         if (q.type == Question.TYPE_SINGLE || q.type == Question.TYPE_MULTI) {
             answerGV.setVisibility(View.VISIBLE);
@@ -208,11 +207,11 @@ public class ResultDetailActivity extends BaseActivity {
             if (q.answerVo.content.replace("[", "").replace("]", "").replace("\"", "").replace(",", "").equals(studentAnswer)) {
                 right.setBackgroundResource(R.drawable.right2);
                 wrong.setBackgroundResource(R.drawable.wrong1);
-                q.teacherJudge = 2;
+                q.teacherJudges.set(studentIndex, 2);
             } else {
                 right.setBackgroundResource(R.drawable.right1);
                 wrong.setBackgroundResource(R.drawable.wrong2);
-                q.teacherJudge = 1;
+                q.teacherJudges.set(studentIndex, 1);
             }
         } else if (q.type == Question.TYPE_EMPTY) {
             answerGV.setVisibility(View.GONE);
@@ -220,10 +219,10 @@ public class ResultDetailActivity extends BaseActivity {
             answerIV.setVisibility(View.GONE);
             answerTV.setText(studentAnswer);
             //老师来批改
-            if (q.teacherJudge == 2) {
+            if (q.teacherJudges.get(studentIndex) == 2) {
                 right.setBackgroundResource(R.drawable.right2);
                 wrong.setBackgroundResource(R.drawable.wrong1);
-            } else if (q.teacherJudge == 1) {
+            } else if (q.teacherJudges.get(studentIndex) == 1) {
                 right.setBackgroundResource(R.drawable.right1);
                 wrong.setBackgroundResource(R.drawable.wrong2);
             }
@@ -247,22 +246,22 @@ public class ResultDetailActivity extends BaseActivity {
             if (q.answerVo.content.replace("[", "").replace("]", "").replace("\"", "").replace(",", "").equals(studentAnswer)) {
                 right.setBackgroundResource(R.drawable.right2);
                 wrong.setBackgroundResource(R.drawable.wrong1);
-                q.teacherJudge = 2;
+                q.teacherJudges.set(studentIndex, 2);
             } else {
                 right.setBackgroundResource(R.drawable.right1);
                 wrong.setBackgroundResource(R.drawable.wrong2);
-                q.teacherJudge = 1;
+                q.teacherJudges.set(studentIndex, 1);
             }
         } else if (q.type == Question.TYPE_ESSAY) {
             answerGV.setVisibility(View.GONE);
             answerTV.setVisibility(View.GONE);
             answerIV.setVisibility(View.VISIBLE);
-            ImageLoader.getInstance().displayImage(q.studentAnswer, answerIV, KWApplication.getLoaderOptions());
+            ImageLoader.getInstance().displayImage(q.studentAnswers.get(studentIndex), answerIV, KWApplication.getLoaderOptions());
             //老师来批改
-            if (q.teacherJudge == 2) {
+            if (q.teacherJudges.get(studentIndex) == 2) {
                 right.setBackgroundResource(R.drawable.right2);
                 wrong.setBackgroundResource(R.drawable.wrong1);
-            } else if (q.teacherJudge == 1) {
+            } else if (q.teacherJudges.get(studentIndex) == 1) {
                 right.setBackgroundResource(R.drawable.right1);
                 wrong.setBackgroundResource(R.drawable.wrong2);
             }
@@ -272,9 +271,7 @@ public class ResultDetailActivity extends BaseActivity {
         if (student.collected) {
             //利用collection给right和wrong赋值
             try {
-                JSONArray array = new JSONArray(student.collection);
-                JSONObject o = array.getJSONObject(current);
-                int teacherJudge = o.getInt("qcollection");
+                int teacherJudge = questions.get(current).teacherJudges.get(studentIndex);
                 if (teacherJudge == 2) {
                     right.setBackgroundResource(R.drawable.right2);
                     wrong.setBackgroundResource(R.drawable.wrong1);
@@ -299,7 +296,7 @@ public class ResultDetailActivity extends BaseActivity {
         }
         right.setBackgroundResource(R.drawable.right2);
         wrong.setBackgroundResource(R.drawable.wrong1);
-        q.teacherJudge = 2;
+        q.teacherJudges.set(studentIndex, 2);
     }
 
     public void wrong(View view) {
@@ -313,7 +310,7 @@ public class ResultDetailActivity extends BaseActivity {
         }
         right.setBackgroundResource(R.drawable.right1);
         wrong.setBackgroundResource(R.drawable.wrong2);
-        q.teacherJudge = 1;
+        q.teacherJudges.set(studentIndex, 1);
     }
 
     @Override
@@ -328,7 +325,7 @@ public class ResultDetailActivity extends BaseActivity {
             return;
         }
         for (Question q : questions) {
-            if (q.teacherJudge == 0) {
+            if (q.teacherJudges.get(studentIndex) == 0) {
                 toast("该学生的答案有些未批改，请先批改");
                 return;
             }
@@ -339,7 +336,7 @@ public class ResultDetailActivity extends BaseActivity {
 
     public void clickOK(View view) {
         for (Question q : questions) {
-            if (q.teacherJudge == 0) {
+            if (q.teacherJudges.get(studentIndex) == 0) {
                 toast("该学生的答案有些未批改，请先批改");
                 return;
             }
@@ -350,7 +347,7 @@ public class ResultDetailActivity extends BaseActivity {
                 JSONObject o = new JSONObject();
                 o.put("qid", q.id);
                 o.put("qtype", q.type);
-                o.put("qcollection", q.teacherJudge);
+                o.put("teacherJudge", q.teacherJudges.get(studentIndex));
                 array.put(o);
             }
             //把批改的结果发给学生。
@@ -358,11 +355,8 @@ public class ResultDetailActivity extends BaseActivity {
                 @Override
                 public void onSuccess() {
                     toast("发送批改结果成功");
-                    Intent in = new Intent();
-                    in.putExtra("collected", true);
-                    in.putExtra("studentIMEI", student.imei);
-                    in.putExtra("collection", array.toString());
-                    setResult(8888, in);
+                    student.collected = true;
+                    setResult(8888);
                     finish();
                 }
 
