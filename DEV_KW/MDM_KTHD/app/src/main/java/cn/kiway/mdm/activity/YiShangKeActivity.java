@@ -1,6 +1,7 @@
 package cn.kiway.mdm.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,6 +29,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import cn.kiway.mdm.model.Course;
+import cn.kiway.mdm.model.ZzxCourse;
 import cn.kiway.mdm.model.knowledgePoints;
 import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.Utils;
@@ -42,7 +44,7 @@ import static cn.kiway.mdm.utils.HttpUtil.getYiShangkeUrl;
 public class YiShangKeActivity extends BaseActivity {
     TextView titleName;
     PullToRefreshListView listView;
-    private ArrayList<Course> allCourses = new ArrayList<>();//所有课程列表
+    private ArrayList<ZzxCourse> allCourses = new ArrayList<>();//所有课程列表
     CourseAdapter courseAdapter;
     boolean isClear = true;//是否清除数据
     int Page = 1; //当前请求的页数
@@ -71,7 +73,11 @@ public class YiShangKeActivity extends BaseActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Course course = allCourses.get(position);
+                ZzxCourse course = allCourses.get(position-1);
+                Course course1=new Course();
+                course1.id=course.getId();
+                course1.name=course.getName();
+                startActivity(new Intent(YiShangKeActivity.this,Course1Activity.class).putExtra("course",course1));
             }
         });
     }
@@ -149,7 +155,7 @@ listView.onRefreshComplete();
             allCourses.clear();
         for (int i = 0; i < array.length(); i++) {
             JSONObject item = array.optJSONObject(i);
-            Course course = new Course();
+            ZzxCourse course = new ZzxCourse();
             course.setAttachInfo(item.optString("attachInfo"));
             course.setName(item.optString("name"));
             course.setId(item.optString("id"));
@@ -204,7 +210,7 @@ listView.onRefreshComplete();
             } else {
                 convertView.findViewById(R.id.clock).setVisibility(View.GONE);
             }
-            Course course = allCourses.get(position);
+            ZzxCourse course = allCourses.get(position);
             holder.date1.setText(Utils.getDateField(Long.parseLong(course.getCreateDate()), 5));
             holder.date2.setText(Utils.getDateField(Long.parseLong(course.getCreateDate()), 1));
             holder.title.setText(course.getName());

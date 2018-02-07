@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by Administrator on 2018/2/6.
  */
 
-public class Course {
+public class ZzxCourse {
     public String attachInfo;
     public String name;
     public String id;

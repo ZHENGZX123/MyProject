@@ -140,7 +140,7 @@ public class FenxiActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 //知识点没有详情。
-                Fenxi fenxi = fenxis.get(position);
+                Fenxi fenxi = fenxis.get(position-1);
                 startActivity(new Intent(FenxiActivity.this, FenxiDetailActivity.class).putExtra("fenxi",fenxi));
             }
         });
