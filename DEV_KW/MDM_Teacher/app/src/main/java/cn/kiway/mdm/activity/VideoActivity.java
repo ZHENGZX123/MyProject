@@ -16,8 +16,7 @@ public class VideoActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
 
-//        url = getIntent().getStringExtra("url");
-        url = "/mnt/sdcard/test.mp4";
+        url = getIntent().getStringExtra("url");
 
         VideoView vv = (VideoView) findViewById(R.id.vv);
         MediaController mediaController = new MediaController(this);

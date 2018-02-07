@@ -25,6 +25,7 @@ public class RecordService extends Service {
     private int width = 720;
     private int height = 1080;
     private int dpi;
+    public String output;
 
 
     @Override
@@ -100,7 +101,8 @@ public class RecordService extends Service {
         mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);//DEFAULT WEBM MPEG_4 THREE_GPP
-        mediaRecorder.setOutputFile(getsaveDirectory() + System.currentTimeMillis() + ".mp4");
+        output = getsaveDirectory() + System.currentTimeMillis() + ".mp4";
+        mediaRecorder.setOutputFile(output);
         mediaRecorder.setVideoSize(width, height);
         mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);//DEFAULT VP8 H264
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);//AMR_NB

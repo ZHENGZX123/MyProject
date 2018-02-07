@@ -58,10 +58,12 @@ import cn.kiway.mdm.entity.StudentQuestion;
 import cn.kiway.mdm.entity.TeachingContentVo;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
+import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
 
+import static cn.kiway.mdm.KWApplication.clientUrl;
 import static cn.kiway.mdm.KWApplication.students;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_CHAPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
@@ -101,6 +103,10 @@ public class Course0Activity extends ScreenSharingActivity {
     //选择的题目
     private ArrayList<Question> selectQuestions;
 
+    //录课
+    private boolean recording = false;
+    private ArrayList<String> recordFiles = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,7 +137,7 @@ public class Course0Activity extends ScreenSharingActivity {
         //1.知识点详情
         try {
             showPD();
-            String url = KWApplication.clientUrl + "/device/teacher/course/" + course.id;
+            String url = clientUrl + "/device/teacher/course/" + course.id;
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
             client.setTimeout(10000);
@@ -188,9 +194,12 @@ public class Course0Activity extends ScreenSharingActivity {
         if (resultCode != RESULT_OK)
             return;
         if (requestCode == RECORD_REQUEST_CODE) {
+            toast("开始录制本地视频");
             mediaProjection = projectionManager.getMediaProjection(resultCode, data);
             KWApplication.recordService.setMediaProject(mediaProjection);
             KWApplication.recordService.startRecord();
+            recording = true;
+            recordFiles.add(KWApplication.recordService.output);
         } else if (requestCode == UCrop.REQUEST_CROP) {
             final Uri resultUri = UCrop.getOutput(data);
             if (resultUri != null)
@@ -216,12 +225,23 @@ public class Course0Activity extends ScreenSharingActivity {
         }
         if (tuiping) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
-            AlertDialog dialog = builder.setTitle("提示").setMessage("退出将会关闭屏幕推送")
+            AlertDialog dialog = builder.setTitle("提示").setMessage("屏幕推送中，是否关闭")
                     .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
                             endTuiping();
-                            Course0Activity.super.onBackPressed();
+                        }
+                    }).setPositiveButton(android.R.string.cancel, null).create();
+            dialog.show();
+            return;
+        }
+        if (recording) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+            AlertDialog dialog = builder.setTitle("提示").setMessage("本地录课中，是否关闭")
+                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            stopRecord();
                         }
                     }).setPositiveButton(android.R.string.cancel, null).create();
             dialog.show();
@@ -833,11 +853,16 @@ public class Course0Activity extends ScreenSharingActivity {
     }
 
     public void stopRecord() {
+        toast("结束录制本地视频");
+        recording = false;
         if (KWApplication.recordService.isRunning()) {
             KWApplication.recordService.stopRecord();
         }
-        //上传视频文件。。。
-        //上传课程记录。。。
+    }
+
+    @Override
+    public void rk(View view) {
+        startRecord();
     }
 
     //------------------------内容列表相关-------------------------------------------------
@@ -919,9 +944,7 @@ public class Course0Activity extends ScreenSharingActivity {
             holder.endBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Utils.xiake(Course0Activity.this);
-                    ZbusHost.xiake(Course0Activity.this, null);
-                    Utils.endClass(Course0Activity.this, course.id);
+                    doEndClass();
                 }
             });
 
@@ -1019,6 +1042,35 @@ public class Course0Activity extends ScreenSharingActivity {
         public long getItemId(int arg0) {
             return arg0;
         }
+    }
+
+    private void doEndClass() {
+        //Utils.xiake(Course0Activity.this);
+        ZbusHost.xiake(Course0Activity.this, null);
+        Utils.endClass(Course0Activity.this, course.id);
+        //后台上传录制视频
+        if (!recording) {
+            return;
+        }
+        stopRecord();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    for (String s : recordFiles) {
+                        File file = new File(s);
+                        String accessToken = getSharedPreferences("kiway", 0).getString("accessToken", "");
+                        final String ret = UploadUtil.uploadFile(file, clientUrl + "/common/file?x-auth-token=" +
+                                accessToken, file.getName());
+                        JSONObject obj = new JSONObject(ret);
+                        String url = obj.optJSONObject("data").optString("url");
+                        Utils.addVideoRecord(Course0Activity.this, course.id, url, "mp4");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     public void downloadAndOpenFile(String url, String fileName) {
@@ -1212,4 +1264,5 @@ public class Course0Activity extends ScreenSharingActivity {
             return arg0;
         }
     }
+
 }

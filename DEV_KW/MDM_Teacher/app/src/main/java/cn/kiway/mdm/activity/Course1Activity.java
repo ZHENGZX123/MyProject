@@ -34,6 +34,7 @@ import cn.kiway.mdm.entity.AttendItem;
 import cn.kiway.mdm.entity.Course;
 import cn.kiway.mdm.entity.KnowledgeCountResult;
 import cn.kiway.mdm.entity.Question;
+import cn.kiway.mdm.entity.Video;
 import cn.kiway.mdm.teacher.R;
 
 import static cn.kiway.mdm.util.Utils.check301;
@@ -49,6 +50,7 @@ public class Course1Activity extends BaseActivity {
     private ArrayList<AttendItem> items = new ArrayList<>();
 
     private Course course;
+    private ArrayList<Video> videos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,42 +96,48 @@ public class Course1Activity extends BaseActivity {
                         Iterator it = data.keys();
                         while (it.hasNext()) {
                             String key = (String) it.next();
-                            int type = Integer.parseInt(key.split("#")[1]);
-                            AttendItem item = new AttendItem();
-                            item.type = type;
-                            item.time = key.split("#")[0];
-                            if (type == 1) {
-                                JSONObject valueObj = data.getJSONObject(key);
-                                String name = valueObj.getString("name");
-                                item.title = name;
-                            } else if (type == 2) {
-                                //统计结果
-                                JSONObject valueObj = data.getJSONObject(key);
-                                JSONArray array = valueObj.getJSONArray("knowledgeCountResult");
-                                item.results = new GsonBuilder().create().fromJson(array.toString(), new TypeToken<List<KnowledgeCountResult>>() {
-                                }.getType());
-                                item.title = "知识点：" + item.results.get(0).knowledgeName;
-                            } else {
+                            if (key.contains("#")) {
+                                int type = Integer.parseInt(key.split("#")[1]);
+                                AttendItem item = new AttendItem();
+                                item.type = type;
+                                item.time = key.split("#")[0];
+                                if (type == 1) {
+                                    JSONObject valueObj = data.getJSONObject(key);
+                                    String name = valueObj.getString("name");
+                                    item.title = name;
+                                } else if (type == 2) {
+                                    //统计结果
+                                    JSONObject valueObj = data.getJSONObject(key);
+                                    JSONArray array = valueObj.getJSONArray("knowledgeCountResult");
+                                    item.results = new GsonBuilder().create().fromJson(array.toString(), new TypeToken<List<KnowledgeCountResult>>() {
+                                    }.getType());
+                                    item.title = "知识点：" + item.results.get(0).knowledgeName;
+                                } else {
+                                    JSONArray valueObj = data.getJSONArray(key);
+                                    item.questions = new GsonBuilder().create().fromJson(valueObj.toString(), new TypeToken<ArrayList<Question>>() {
+                                    }.getType());
+                                    item.title = "问答/测评";
+                                }
+                                //检查重复的type1，确定type1都在上面？？？
+                                int count_type1 = 0;
+                                for (AttendItem i : items) {
+                                    if (i.type == 1) {
+                                        count_type1++;
+                                    }
+                                }
+                                if (count_type1 > 1) {
+                                    for (int i = 0; i < count_type1 - 1; i++) {
+                                        items.remove(0);
+                                    }
+                                }
+                                items.add(item);
+                            } else if (key.equals("courseVideos")) {
                                 JSONArray valueObj = data.getJSONArray(key);
-                                item.questions = new GsonBuilder().create().fromJson(valueObj.toString(), new TypeToken<ArrayList<Question>>() {
+                                videos = new GsonBuilder().create().fromJson(valueObj.toString(), new TypeToken<ArrayList<Video>>() {
                                 }.getType());
-                                item.title = "问答/测评";
                             }
-                            //检查重复的type1，确定type1都在上面？？？
-                            int count_type1 = 0;
-                            for (AttendItem i : items) {
-                                if (i.type == 1) {
-                                    count_type1++;
-                                }
-                            }
-                            if (count_type1 > 1) {
-                                for (int i = 0; i < count_type1 - 1; i++) {
-                                    items.remove(0);
-                                }
-                            }
-                            items.add(item);
-                            adapter.notifyDataSetChanged();
                         }
+                        adapter.notifyDataSetChanged();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -336,6 +344,13 @@ public class Course1Activity extends BaseActivity {
     }
 
     public void clickVideo(View view) {
-        startActivity(new Intent(this, VideoActivity.class));
+        if (videos.size() == 0) {
+            toast("该课程没有录课");
+            return;
+        }
+        //暂时先播放第1个，回头处理
+        //最好边播放边下载
+        String url = videos.get(0).url;
+        startActivity(new Intent(this, VideoActivity.class).putExtra("url", url));
     }
 }

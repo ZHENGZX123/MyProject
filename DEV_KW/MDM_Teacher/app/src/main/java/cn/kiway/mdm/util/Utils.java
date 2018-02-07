@@ -322,7 +322,6 @@ public class Utils {
                     Log.d("test", " onFailure = " + s);
                     if (!check301(c, s, "xiake")) {
                         toast(c, "请求失败，请稍后再试");
-                        ((BaseActivity) c).hidePD();
                     }
                 }
             });
@@ -587,4 +586,36 @@ public class Utils {
         return false;
     }
 
+    public static void addVideoRecord(Activity c, String courseID, String fileUrl, String fileSuffix) {
+        c.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String url = KWApplication.clientUrl + "/device/teacher/course/" + courseID + "/video";
+                    Log.d("test", "addVideoRecord url = " + url);
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
+                    client.setTimeout(10000);
+                    RequestParams param = new RequestParams();
+                    param.put("url", fileUrl);
+                    param.put("suffix", fileSuffix);
+                    Log.d("test", "addVideoRecord param = " + param.toString());
+                    client.post(c, url, param, new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", " onSuccess = " + ret);
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", " onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    toast(c, "请求失败，请稍后再试");
+                }
+            }
+        });
+    }
 }
