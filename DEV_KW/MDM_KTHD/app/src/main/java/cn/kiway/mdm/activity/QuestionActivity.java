@@ -527,13 +527,13 @@ public class QuestionActivity extends BaseActivity {
                                     public void onImage(String filepath) {
                                         Log.d("test", "onImage = " + filepath);
                                         String token = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-                                        String result = UploadUtil.uploadFile(filepath, App.clientUrl + "common/file?x-auth-token=" + token, "answer");
+                                        String result = UploadUtil.uploadFile(filepath, App.clientUrl + "common/file?x-auth-token=" + token, new File(filepath).getName());
                                         String url = null;
                                         try {
                                             url = new JSONObject(result).getJSONObject("data").getString("url");
                                         } catch (JSONException e) {
                                             e.printStackTrace();
-                                            toast("上传图片错误");
+                                            toast("上传图片失败");
                                             hidePD();
                                             return;
                                         }
