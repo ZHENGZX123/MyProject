@@ -68,7 +68,7 @@ public class Course1Activity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
-findViewById(R.id.video).setVisibility(View.VISIBLE);
+        findViewById(R.id.video).setVisibility(View.VISIBLE);
         titleName.setText(course.name);
 
         lv = (ListView) findViewById(R.id.lv);
@@ -125,18 +125,6 @@ findViewById(R.id.video).setVisibility(View.VISIBLE);
                                 }.getType());
                             }
                         }
-                        //检查重复的type1，确定type1都在上面？？？
-                        int count_type1 = 0;
-                        for (AttendItem i : items) {
-                            if (i.type == 1) {
-                                count_type1++;
-                            }
-                        }
-                        if (count_type1 > 1) {
-                            for (int i = 0; i < count_type1 - 1; i++) {
-                                items.remove(0);
-                            }
-                        }
                         adapter.notifyDataSetChanged();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -146,7 +134,7 @@ findViewById(R.id.video).setVisibility(View.VISIBLE);
                 @Override
                 public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
                     Log.d("test", "course onFailure = " + ret);
-                    if (ret!=null&&!ret.equals("")) {
+                    if (ret != null && !ret.equals("")) {
                         try {
                             JSONObject data = new JSONObject(ret);
                             if (data.optInt("statusCode") != 200) {
@@ -292,7 +280,7 @@ findViewById(R.id.video).setVisibility(View.VISIBLE);
             if (!TextUtils.isEmpty(s.img)) {
                 String imgs[] = s.img.split(",");
                 for (int i = 0; i < imgs.length; i++) {
-                  final String imageUrl = imgs[i];
+                    final String imageUrl = imgs[i];
                     ImageView iv = new ImageView(Course1Activity.this);
                     iv.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -315,7 +303,7 @@ findViewById(R.id.video).setVisibility(View.VISIBLE);
             if (!TextUtils.isEmpty(s.img)) {
                 String imgs[] = s.img.split(",");
                 for (int i = 0; i < imgs.length; i++) {
-                   final String imageUrl = imgs[i];
+                    final String imageUrl = imgs[i];
                     ImageView iv = new ImageView(Course1Activity.this);
                     iv.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -368,6 +356,6 @@ findViewById(R.id.video).setVisibility(View.VISIBLE);
         //暂时先播放第1个，回头处理
         //最好边播放边下载
         String url = videos.get(0).url;
-        startActivity(new Intent(this, VideoActivity.class).putExtra("url", url).putExtra("name",course.name+"课程视频"));
+        startActivity(new Intent(this, VideoActivity.class).putExtra("url", url).putExtra("name", course.name + "课程视频"));
     }
 }
