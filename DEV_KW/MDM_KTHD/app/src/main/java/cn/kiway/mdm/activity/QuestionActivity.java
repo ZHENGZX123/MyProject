@@ -692,10 +692,10 @@ public class QuestionActivity extends BaseActivity {
                     for (int i = 0; i < count; i++) {
                         JSONObject o = array.getJSONObject(i);
                         String qid = o.getString("qid");
-                        int qcollection = o.getInt("qcollection");
+                        int teacherJudge = o.getInt("teacherJudge");
                         //首先要保持顺序正确
                         Question q = questions.get(i);
-                        q.teacherJudge = qcollection;
+                        q.teacherJudge = teacherJudge;
                     }
 
                     refresh();
