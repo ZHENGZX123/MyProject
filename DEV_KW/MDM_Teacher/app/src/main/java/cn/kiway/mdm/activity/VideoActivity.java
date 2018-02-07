@@ -1,27 +1,50 @@
 package cn.kiway.mdm.activity;
 
 import android.os.Bundle;
-import android.widget.MediaController;
-import android.widget.VideoView;
+
+import com.superplayer.library.SuperPlayer;
 
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.Logger;
 
 
-public class VideoActivity extends BaseActivity {
+public class VideoActivity extends BaseActivity implements SuperPlayer.OnNetChangeListener{
 
-    private String url;
-
+    private String url,name;
+    private SuperPlayer player;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
-
         url = getIntent().getStringExtra("url");
+        name = getIntent().getStringExtra("name");
+        Logger.log(url);
+        player = (SuperPlayer) findViewById(R.id.view_super_player);
+        player.setLive(false);//true：表示直播地址；false表示点播地址
+        player.setScaleType(SuperPlayer.SCALETYPE_FILLPARENT);
+        //player.setTitle(name).play(Environment.getExternalStorageDirectory()+"/test.mp4");//设置视频的titleName
+        player.setTitle(name).play(url);//设置视频的titleName
+    }
+    /**
+     * 网络链接监听类
+     */
+    @Override
+    public void onWifi() {
+        toast( R.string.network_wifi);
+    }
 
-        VideoView vv = (VideoView) findViewById(R.id.vv);
-        MediaController mediaController = new MediaController(this);
-        vv.setMediaController(mediaController);
-        vv.setVideoPath(url);
-        vv.start();
+    @Override
+    public void onMobile() {
+        toast( R.string.network_mobile);
+    }
+
+    @Override
+    public void onDisConnect() {
+        toast(  R.string.network_dis);
+    }
+
+    @Override
+    public void onNoAvailable() {
+        toast(  R.string.network_error);
     }
 }

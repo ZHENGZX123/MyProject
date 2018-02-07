@@ -301,7 +301,7 @@ public class StudentGridActivity extends BaseActivity {
             client.get(this, url, null, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", " onSuccess = " + ret);
+                    Log.e("test", " onSuccess = " + ret);
                     hideRetry();
                     hidePD();
                     try {
@@ -323,7 +323,7 @@ public class StudentGridActivity extends BaseActivity {
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", " onFailure = " + s);
+                    Log.e("test", " onFailure = " + s);
                     if (!Utils.check301(StudentGridActivity.this, s, "students")) {
                         toast("请求失败，请稍后再试");
                         hidePD();
