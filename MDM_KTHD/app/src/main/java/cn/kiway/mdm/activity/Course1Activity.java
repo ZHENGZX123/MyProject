@@ -368,6 +368,6 @@ findViewById(R.id.video).setVisibility(View.VISIBLE);
         //暂时先播放第1个，回头处理
         //最好边播放边下载
         String url = videos.get(0).url;
-        startActivity(new Intent(this, VideoActivity.class).putExtra("url", url));
+        startActivity(new Intent(this, VideoActivity.class).putExtra("url", url).putExtra("name",course.name+"课程视频"));
     }
 }
