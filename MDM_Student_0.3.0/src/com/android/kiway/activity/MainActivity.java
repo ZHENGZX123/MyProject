@@ -148,7 +148,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     }
                     Broker broker = new Broker(ZbusHost.zbusHost + ":" + ZbusHost.zbusPost);
                     Producer p = new Producer(broker);
-                    ZbusUtils.init(broker,p);
+                    ZbusUtils.init(broker, p);
                     String topic = "kiway_push_" + token;
                     Log.d("test", "topic = " + topic);
                     ZbusUtils.consumeMsg(topic, new MessageHandler() {
@@ -335,7 +335,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void setUsageStats() {
-        if (!Build.MODEL.equals("rk3288") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !hasPermission
+        if ((!Build.MODEL.equals("rk3288") || !Build.MODEL.equals("rk3288")) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !hasPermission
                 ()) {
             showMessageDailog = new ShowMessageDailog(this);
             showMessageDailog.setShowMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开", YUXUNFANWENJLU);
