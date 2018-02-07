@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
@@ -44,6 +45,7 @@ import org.apache.http.Header;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -106,6 +108,11 @@ public class Course0Activity extends ScreenSharingActivity {
     //录课
     private boolean recording = false;
     private ArrayList<String> recordFiles = new ArrayList<>();
+
+    //学生提问
+    private Dialog studentAskDialog;
+    private ArrayList<StudentQuestion> studentQuestions = new ArrayList<>();
+    private StudentQuestionAdapter sqAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -380,27 +387,6 @@ public class Course0Activity extends ScreenSharingActivity {
 
     public void shezhi(View view) {
         //设置？？？不知道是什么。
-        final Dialog dialog = new Dialog(this, R.style.popupDialog);
-        dialog.setContentView(R.layout.dialog_ask);
-        dialog.show();
-
-        Button close = (Button) dialog.findViewById(R.id.close);
-        ListView lv = (ListView) dialog.findViewById(R.id.lv);
-        sqAdapter = new StudentQuestionAdapter();
-        lv.setAdapter(sqAdapter);
-
-        //假数据
-        studentQuestions.add(new StudentQuestion(1, "老师好", 0, "", "1516669301000", "小明", ""));
-        studentQuestions.add(new StudentQuestion(2, "", 5, "http://", "1516669301000", "小红", ""));
-        studentQuestions.add(new StudentQuestion(1, "这里没有听懂", 0, "", "1516669301000", "小王", ""));
-        sqAdapter.notifyDataSetChanged();
-
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
     }
 
     //-------------------------tools2----------------------
@@ -673,46 +659,49 @@ public class Course0Activity extends ScreenSharingActivity {
     private String qiangdaStudentIMEI;
 
     public void qiangdaOneStudent(String studentIMEI) {
-        Student s = getStudentByIMEI(studentIMEI);
-        if (s == null) {
-            Log.d("test", "神秘学生，不可能");
-            return;
-        }
-        if (!TextUtils.isEmpty(qiangdaStudentIMEI)) {
-            Log.d("test", "已经有其他人抢到了，点了也没有用");
-            //给他们发送抢答失败消息
-            String qiangdaStudentName = getStudentByIMEI(qiangdaStudentIMEI).name;
-            ZbusHost.qiangdaResult(this, s, 0, qiangdaStudentName, null);
-            return;
-        }
-        Question q = selectQuestions.get(0);
-        qiangdaStudentIMEI = studentIMEI;
-        //给他发送抢答成功
-        ZbusHost.qiangdaResult(this, s, 1, qiangdaStudentIMEI, new OnListener() {
+        runOnUiThread(new Runnable() {
             @Override
-            public void onSuccess() {
-                toast("发送抢答命令成功");
-                //过2秒发题目
-                new Thread() {
+            public void run() {
+                Student s = getStudentByIMEI(studentIMEI);
+                if (s == null) {
+                    Log.d("test", "神秘学生，不可能");
+                    return;
+                }
+                if (!TextUtils.isEmpty(qiangdaStudentIMEI)) {
+                    Log.d("test", "已经有其他人抢到了，点了也没有用");
+                    //给他们发送抢答失败消息
+                    String qiangdaStudentName = getStudentByIMEI(qiangdaStudentIMEI).name;
+                    ZbusHost.qiangdaResult(Course0Activity.this, s, 0, qiangdaStudentName, null);
+                    return;
+                }
+                Question q = selectQuestions.get(0);
+                qiangdaStudentIMEI = studentIMEI;
+                //给他发送抢答成功
+                ZbusHost.qiangdaResult(Course0Activity.this, s, 1, qiangdaStudentIMEI, new OnListener() {
                     @Override
-                    public void run() {
-                        try {
-                            sleep(2000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        sendQiangdaCommand(s, q);
+                    public void onSuccess() {
+                        toast("发送抢答命令成功");
+                        //过2秒发题目
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    sleep(2000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                sendQiangdaCommand(s, q);
+                            }
+                        }.start();
                     }
-                }.start();
-            }
 
-            @Override
-            public void onFailure() {
-                toast("发送抢答命令失败");
+                    @Override
+                    public void onFailure() {
+                        toast("发送抢答命令失败");
+                    }
+                });
             }
         });
-
-
     }
 
     private Student getStudentByIMEI(String imei) {
@@ -862,7 +851,11 @@ public class Course0Activity extends ScreenSharingActivity {
 
     @Override
     public void rk(View view) {
-        startRecord();
+        if (recording) {
+            stopRecord();
+        } else {
+            startRecord();
+        }
     }
 
     //------------------------内容列表相关-------------------------------------------------
@@ -1073,6 +1066,44 @@ public class Course0Activity extends ScreenSharingActivity {
         }.start();
     }
 
+    public void downloadAndOpenFile2(String url, String fileName) {
+        //1.下载文件
+        //2.打开播放
+        final String folder = DOWNFILEPATH;
+        if (!new File(folder).exists()) {
+            new File(folder).mkdirs();
+        }
+        if (new File(folder + fileName).exists()) {
+            //直接打开
+            playMusic(folder + fileName);
+            return;
+        }
+        showPD();
+        new Thread() {
+            @Override
+            public void run() {
+                int ret = new HttpDownload().downFile(url, folder, fileName);//开始下载
+                hidePD();
+                if (ret == -1) {//下载失败
+                    toast("下载文件失败，请稍后再试");
+                    return;
+                }
+                playMusic(folder + fileName);
+            }
+        }.start();
+    }
+
+    private void playMusic(String file) {
+        MediaPlayer mp = new MediaPlayer();
+        try {
+            mp.setDataSource(file);
+            mp.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mp.start();
+    }
+
     public void downloadAndOpenFile(String url, String fileName) {
         //1.下载文件
         //2.打开播放
@@ -1194,10 +1225,6 @@ public class Course0Activity extends ScreenSharingActivity {
         }
     }
 
-
-    private ArrayList<StudentQuestion> studentQuestions = new ArrayList<>();
-    private StudentQuestionAdapter sqAdapter;
-
     private class StudentQuestionAdapter extends BaseAdapter {
 
         private final LayoutInflater inflater;
@@ -1218,6 +1245,8 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder.name = (TextView) rowView.findViewById(R.id.name);
                 holder.play = (ImageView) rowView.findViewById(R.id.play);
                 holder.avatar = (ImageView) rowView.findViewById(R.id.avatar);
+                holder.contentRL = (RelativeLayout) rowView.findViewById(R.id.contentRL);
+
                 rowView.setTag(holder);
             } else {
                 holder = (ViewHolder) rowView.getTag();
@@ -1236,6 +1265,13 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder.play.setVisibility(View.VISIBLE);
                 holder.duration.setVisibility(View.VISIBLE);
                 holder.duration.setText(q.duration + "秒");
+                holder.contentRL.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String url = q.content;
+                        downloadAndOpenFile2(url, System.currentTimeMillis() + ".mp3");
+                    }
+                });
             }
 
             return rowView;
@@ -1247,6 +1283,7 @@ public class Course0Activity extends ScreenSharingActivity {
             public TextView name;
             public ImageView play;
             public ImageView avatar;
+            public RelativeLayout contentRL;
         }
 
         @Override
@@ -1263,6 +1300,55 @@ public class Course0Activity extends ScreenSharingActivity {
         public long getItemId(int arg0) {
             return arg0;
         }
+    }
+
+    public void questiOneStudent(String studentIMEI, String question) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject o = new JSONObject(question);
+                    int type = o.optInt("type");
+                    String content = o.optString("content");
+                    String time = o.optString("time");
+                    String name = o.optString("name");
+                    String avatar = o.optString("avatar");
+                    int duration = o.optInt("duration");
+                    toast("收到学生提问");
+
+                    if (studentAskDialog == null) {
+                        studentAskDialog = new Dialog(Course0Activity.this, R.style.popupDialog);
+                        studentAskDialog.setContentView(R.layout.dialog_ask);
+                    }
+                    if (!studentAskDialog.isShowing()) {
+                        studentAskDialog.show();
+                    }
+
+                    Button close = (Button) studentAskDialog.findViewById(R.id.close);
+                    ListView lv = (ListView) studentAskDialog.findViewById(R.id.lv);
+                    sqAdapter = new StudentQuestionAdapter();
+                    lv.setAdapter(sqAdapter);
+
+                    if (type == 1) {
+                        studentQuestions.add(new StudentQuestion(1, content, 0, "", time, name, avatar));
+                    } else if (type == 2) {
+                        studentQuestions.add(new StudentQuestion(2, "", duration, content, time, name, avatar));
+                    }
+                    sqAdapter.notifyDataSetChanged();
+
+                    close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            studentAskDialog.dismiss();
+                        }
+                    });
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 }

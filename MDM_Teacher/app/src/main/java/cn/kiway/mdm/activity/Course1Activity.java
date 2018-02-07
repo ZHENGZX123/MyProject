@@ -118,23 +118,23 @@ public class Course1Activity extends BaseActivity {
                                     }.getType());
                                     item.title = "问答/测评";
                                 }
-                                //检查重复的type1，确定type1都在上面？？？
-                                int count_type1 = 0;
-                                for (AttendItem i : items) {
-                                    if (i.type == 1) {
-                                        count_type1++;
-                                    }
-                                }
-                                if (count_type1 > 1) {
-                                    for (int i = 0; i < count_type1 - 1; i++) {
-                                        items.remove(0);
-                                    }
-                                }
                                 items.add(item);
                             } else if (key.equals("courseVideos")) {
                                 JSONArray valueObj = data.getJSONArray(key);
                                 videos = new GsonBuilder().create().fromJson(valueObj.toString(), new TypeToken<ArrayList<Video>>() {
                                 }.getType());
+                            }
+                        }
+                        //检查重复的type1，确定type1都在上面？？？
+                        int count_type1 = 0;
+                        for (AttendItem i : items) {
+                            if (i.type == 1) {
+                                count_type1++;
+                            }
+                        }
+                        if (count_type1 > 1) {
+                            for (int i = 0; i < count_type1 - 1; i++) {
+                                items.remove(0);
                             }
                         }
                         adapter.notifyDataSetChanged();

@@ -44,11 +44,21 @@ public class ZbusMessageHandler implements MessageHandler {
                 qiangda(studentIMEI);
             } else if (command.startsWith("answer")) {
                 answer(studentIMEI, command.split("_")[1]);
+            } else if (command.startsWith("question")) {
+                question(studentIMEI, command.split("_")[1]);
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void question(String studentIMEI, String question) {
+        if (!(KWApplication.currentActivity instanceof Course0Activity)) {
+            Log.d("test", "不是当前页面，信息可能已过期");
+            return;
+        }
+        ((Course0Activity) KWApplication.currentActivity).questiOneStudent(studentIMEI, question);
     }
 
     private void answer(String studentIMEI, String answer) {
@@ -74,7 +84,6 @@ public class ZbusMessageHandler implements MessageHandler {
             Log.d("test", "不是当前页面，信息可能已过期");
             return;
         }
-
         ((Course0Activity) KWApplication.currentActivity).qiangdaOneStudent(studentIMEI);
     }
 
@@ -91,7 +100,8 @@ public class ZbusMessageHandler implements MessageHandler {
             Log.d("test", "不是当前页面，信息可能已过期");
             return;
         }
-
         ((StudentGridActivity) KWApplication.currentActivity).signOneStudent(studentIMEI);
     }
+
+
 }
