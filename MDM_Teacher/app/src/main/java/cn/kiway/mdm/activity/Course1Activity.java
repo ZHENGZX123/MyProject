@@ -202,7 +202,7 @@ public class Course1Activity extends BaseActivity {
                 holder.tongji.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(Course1Activity.this, AttendTongjiActivity.class).putExtra("type", 1).putExtra("item", item));
+                        startActivity(new Intent(Course1Activity.this, TongjiActivity.class).putExtra("type", 1).putExtra("item", item));
                     }
                 });
                 holder.type6RL.setVisibility(View.GONE);
@@ -327,7 +327,7 @@ public class Course1Activity extends BaseActivity {
             ceping.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(Course1Activity.this, AttendTongjiActivity.class).putExtra("type", 2).putExtra("item", item));
+                    startActivity(new Intent(Course1Activity.this, TongjiActivity.class).putExtra("type", 2).putExtra("item", item));
                 }
             });
 

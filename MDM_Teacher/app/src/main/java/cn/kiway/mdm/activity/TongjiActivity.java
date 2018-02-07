@@ -19,7 +19,7 @@ import cn.kiway.mdm.teacher.R;
  * Created by Administrator on 2018/1/17.
  */
 //统计:知识点没接口、测评有接口
-public class AttendTongjiActivity extends BaseActivity {
+public class TongjiActivity extends BaseActivity {
 
     private int type;//1知识点统计 2问题统计
 
@@ -51,7 +51,7 @@ public class AttendTongjiActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_attend_tongji);
+        setContentView(R.layout.activity_tongji);
 
         type = getIntent().getIntExtra("type", 1);
         item = (AttendItem) getIntent().getSerializableExtra("item");
