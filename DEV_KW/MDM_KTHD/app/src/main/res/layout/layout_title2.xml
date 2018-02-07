@@ -44,6 +44,7 @@
         android:textColor="#ffffff"
         android:textSize="20sp"
         android:visibility="gone" />
+
     <ImageButton
         android:id="@+id/video"
         android:layout_width="35dp"
