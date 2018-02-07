@@ -125,18 +125,6 @@ public class Course1Activity extends BaseActivity {
                                 }.getType());
                             }
                         }
-                        //检查重复的type1，确定type1都在上面？？？
-                        int count_type1 = 0;
-                        for (AttendItem i : items) {
-                            if (i.type == 1) {
-                                count_type1++;
-                            }
-                        }
-                        if (count_type1 > 1) {
-                            for (int i = 0; i < count_type1 - 1; i++) {
-                                items.remove(0);
-                            }
-                        }
                         adapter.notifyDataSetChanged();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -351,6 +339,6 @@ public class Course1Activity extends BaseActivity {
         //暂时先播放第1个，回头处理
         //最好边播放边下载
         String url = videos.get(0).url;
-        startActivity(new Intent(this, VideoActivity.class).putExtra("url", url).putExtra("name",course.name));
+        startActivity(new Intent(this, VideoActivity.class).putExtra("url", url).putExtra("name", course.name));
     }
 }
