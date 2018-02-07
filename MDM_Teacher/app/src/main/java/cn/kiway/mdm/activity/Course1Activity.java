@@ -351,6 +351,6 @@ public class Course1Activity extends BaseActivity {
         //暂时先播放第1个，回头处理
         //最好边播放边下载
         String url = videos.get(0).url;
-        startActivity(new Intent(this, VideoActivity.class).putExtra("url", url));
+        startActivity(new Intent(this, VideoActivity.class).putExtra("url", url).putExtra("name",course.name));
     }
 }

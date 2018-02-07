@@ -217,7 +217,6 @@ public class Course0Activity extends ScreenSharingActivity {
             List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
             String filePath = list.get(0);
             sendFile(filePath);
-
         }
     }
 
