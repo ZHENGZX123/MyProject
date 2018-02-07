@@ -31,7 +31,8 @@ public class ZbusHost {
             obj.put("studentIMEI", Utils.getIMEI(c));
             obj.put("command", cmd);
 
-            String title = "标题";
+            String title = "title";
+            String desc = "desc";
             String msg = obj.toString();
 
             String token = c.getSharedPreferences("huawei", 0).getString("token", "");
@@ -40,8 +41,8 @@ public class ZbusHost {
             String topic = Utils.getIMEI(c) + "#" + token;
             String url = zbusHost + ":" + zbusPost;
             PushMessageVo pushMessageVo = new PushMessageVo();
-            pushMessageVo.setDescription(title);
             pushMessageVo.setTitle(title);
+            pushMessageVo.setDescription(desc);
             pushMessageVo.setMessage(msg);
             pushMessageVo.setAppId(APPID);
             pushMessageVo.setModule("student");
