@@ -1268,7 +1268,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder.contentRL.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String url = q.content;
+                        String url = q.filepath;
                         downloadAndOpenFile2(url, System.currentTimeMillis() + ".mp3");
                     }
                 });
