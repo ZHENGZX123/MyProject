@@ -102,7 +102,8 @@ public class StudentGridActivity extends BaseActivity {
 
     public void initView() {
         super.initView();
-        titleName.setText("二年级一班");
+        String className = getSharedPreferences("kiway", 0).getString("className", "");
+        titleName.setText(className);
         gv = (GridView) findViewById(R.id.studentGV);
         adapter = new MyAdapter();
         gv.setAdapter(adapter);
@@ -680,7 +681,7 @@ public class StudentGridActivity extends BaseActivity {
 
     @Override
     public void rk(View view) {
-        
+
     }
 
     private void doEndSign() {

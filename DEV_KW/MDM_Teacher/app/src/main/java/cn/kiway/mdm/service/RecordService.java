@@ -100,7 +100,7 @@ public class RecordService extends Service {
     private void initRecorder() {
         mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);//DEFAULT WEBM MPEG_4 THREE_GPP
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);//DEFAULT WEBM MPEG_4 THREE_GPP
         output = getsaveDirectory() + System.currentTimeMillis() + ".mp4";
         mediaRecorder.setOutputFile(output);
         mediaRecorder.setVideoSize(width, height);
