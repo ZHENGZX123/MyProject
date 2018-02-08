@@ -1801,10 +1801,10 @@ public class LauncherModel extends BroadcastReceiver
                     //// TODO: 2018/1/18   过滤所需的apk
                     Log.e("AppListUtils", AppListUtils.getAppListData().toString());
                     if (AppListUtils.getAppListData().toString().contains(app.getApplicationInfo().packageName) ||
-                           new MyDBHelper(mContext).checkAppInCustom(app.getApplicationInfo().packageName)) {
+                            new MyDBHelper(mContext).checkAppInCustom(app.getApplicationInfo().packageName)) {
                         mBgAllAppsList.add(new AppInfo(app, user, quietMode), app);
                         new MyDBHelper(mContext).addCustonApp(app.getApplicationInfo().packageName);
-                   }
+                    }
                 }
                 final ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(mContext, user);
                 if (heuristic != null) {

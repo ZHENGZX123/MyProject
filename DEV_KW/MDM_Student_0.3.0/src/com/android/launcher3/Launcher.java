@@ -2505,7 +2505,7 @@ public class Launcher extends MainActivity
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }else {
+        } else {
             // zzx 家长检查当前时间能不能用
             if (!Utils.checkAPPTimeUse(new MyDBHelper(this).getTime(packageName), "HH:mm")) {
                 Toast.makeText(this, "家长设置该时间段内不可以使用", Toast.LENGTH_SHORT).show();
@@ -2519,11 +2519,11 @@ public class Launcher extends MainActivity
             startActivity(new Intent(this, SettingActivity.class));
             return;
         }
-        if (packageName.contains("com.android.browser")) {//浏览器
+        if (packageName.contains("com.android.browser") || packageName.contains("cn.kiway.browser")) {//浏览器
             startActivity(new Intent(this, WebViewActivity.class));
             return;
         }
-        if (packageName.contains("cn.kiway.brower")) {
+        if (packageName.contains("com.android.browser") || packageName.contains("cn.kiway.browser")) {
             Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage("cn.kiway.brower");
             in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//重启APP
             in.putExtra("enable_type", Utils.getEnable_Network(this));
@@ -2656,7 +2656,7 @@ public class Launcher extends MainActivity
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }else {
+        } else {
             // zzx 检查当前时间能不能用
             if (!Utils.checkAPPTimeUse(new MyDBHelper(this).getTime(intent.getComponent().getPackageName()), "HH:mm")) {
                 Toast.makeText(this, "家长设置该时间段内不可以使用", Toast.LENGTH_SHORT).show();
@@ -2668,11 +2668,8 @@ public class Launcher extends MainActivity
             startActivity(new Intent(this, SystemSetupActivity.class));
             return;
         }
-        if (intent.getComponent().getPackageName().contains("com.android.browser")) {//浏览器
-            startActivity(new Intent(this, WebViewActivity.class));
-            return;
-        }
-        if (intent.getComponent().getPackageName().contains("cn.kiway.brower")) {
+
+        if (intent.getComponent().getPackageName().contains("com.android.browser")||intent.getComponent().getPackageName().contains("cn.kiway.brower")) {
             Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage("cn.kiway.brower");
             in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//重启APP
             in.putExtra("enable_type", Utils.getEnable_Network(this));
