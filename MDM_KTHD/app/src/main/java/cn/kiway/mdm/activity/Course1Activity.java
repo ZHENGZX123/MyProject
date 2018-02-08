@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -45,6 +46,8 @@ import static cn.kiway.mdm.utils.Utils.showBigImage;
  */
 public class Course1Activity extends BaseActivity {
 
+    private ImageButton videoBtn;
+
     private ListView lv;
     private CourseAdapter adapter;
     private ArrayList<AttendItem> items = new ArrayList<>();
@@ -67,7 +70,8 @@ public class Course1Activity extends BaseActivity {
     public void initView() {
         super.initView();
 
-
+        videoBtn = (ImageButton) findViewById(R.id.video);
+        videoBtn.setVisibility(View.VISIBLE);
         titleName.setText(course.name);
 
         lv = (ListView) findViewById(R.id.lv);
