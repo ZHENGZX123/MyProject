@@ -164,7 +164,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                                 e.printStackTrace();
                             }
                         }
-                    }, ZbusHost.zbusHost + ":" + ZbusHost.zbusPost);
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

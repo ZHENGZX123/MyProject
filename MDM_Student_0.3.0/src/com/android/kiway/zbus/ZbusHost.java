@@ -52,7 +52,7 @@ public class ZbusHost {
             pushMessageVo.setSenderId(token);//学生的token
             pushMessageVo.setPushType("zbus");
 
-            ZbusUtils.sendMsg(topic, url, pushMessageVo);
+            ZbusUtils.sendMsg(topic, pushMessageVo);
 
             return true;
         } catch (Exception e) {
