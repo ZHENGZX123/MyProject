@@ -73,11 +73,11 @@ public class YiShangKeActivity extends BaseActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                ZzxCourse course = allCourses.get(position-1);
-                Course course1=new Course();
-                course1.id=course.getId();
-                course1.name=course.getName();
-                startActivity(new Intent(YiShangKeActivity.this,Course1Activity.class).putExtra("course",course1));
+                ZzxCourse course = allCourses.get(position - 1);
+                Course course1 = new Course();
+                course1.id = course.getId();
+                course1.name = course.getName();
+                startActivity(new Intent(YiShangKeActivity.this, Course1Activity.class).putExtra("course", course1));
             }
         });
     }
@@ -85,8 +85,7 @@ public class YiShangKeActivity extends BaseActivity {
     public void loadData() {
         try {
             AsyncHttpClient client = new AsyncHttpClient();
-             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-          //  client.addHeader("x-auth-token", "bad46ae3-0f9e-44b7-95da-75bf26d2107a");
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             RequestParams param = new RequestParams();
             Log.d("test", "param = " + param.toString());
@@ -97,7 +96,7 @@ public class YiShangKeActivity extends BaseActivity {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.e("test", "calls onSuccess = " + ret);
-listView.onRefreshComplete();
+                            listView.onRefreshComplete();
                             try {
                                 JSONObject data = new JSONObject(ret);
                                 if (data.optInt("statusCode") == 201) {
@@ -122,7 +121,7 @@ listView.onRefreshComplete();
                         public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
                             Log.d("test", "calls onFailure = " + ret);
                             Logger.log("::::::::::::onFailure" + ret);
-                            if (ret!=null&&!ret.equals("")) {
+                            if (ret != null && !ret.equals("")) {
                                 try {
                                     JSONObject data = new JSONObject(ret);
                                     if (data.optInt("statusCode") != 200) {
@@ -212,7 +211,7 @@ listView.onRefreshComplete();
             }
             ZzxCourse course = allCourses.get(position);
             holder.date1.setText(Utils.getDateField(Long.parseLong(course.getCreateDate()), 5));
-            holder.date2.setText(Utils.getDateField(Long.parseLong(course.getCreateDate()), 1));
+            holder.date2.setText(Utils.getDateField(Long.parseLong(course.getCreateDate()), 0));
             holder.title.setText(course.getName());
             holder.content.setText(course.getknowledgeContent());
             return convertView;

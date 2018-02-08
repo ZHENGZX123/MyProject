@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -23,7 +22,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -68,7 +66,8 @@ public class Course1Activity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
-        findViewById(R.id.video).setVisibility(View.VISIBLE);
+
+
         titleName.setText(course.name);
 
         lv = (ListView) findViewById(R.id.lv);
@@ -80,7 +79,7 @@ public class Course1Activity extends BaseActivity {
         //1.知识点详情
         try {
             showPD();
-            String url = App.clientUrl + "device/teacher/course/" + course.id + "/attend";
+            String url = App.clientUrl + "/device/teacher/course/" + course.id + "/attend";
             Log.d("test", "url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
@@ -104,7 +103,7 @@ public class Course1Activity extends BaseActivity {
                                 if (type == 1) {
                                     JSONObject valueObj = data.getJSONObject(key);
                                     String name = valueObj.getString("name");
-                                    item.title = name;
+                                    item.title = " 上课";//name;
                                 } else if (type == 2) {
                                     //统计结果
                                     JSONObject valueObj = data.getJSONObject(key);
@@ -116,7 +115,15 @@ public class Course1Activity extends BaseActivity {
                                     JSONArray valueObj = data.getJSONArray(key);
                                     item.questions = new GsonBuilder().create().fromJson(valueObj.toString(), new TypeToken<ArrayList<Question>>() {
                                     }.getType());
-                                    item.title = "问答/测评";
+                                    if (type == 3) {
+                                        item.title = "点名答题目";
+                                    } else if (type == 4) {
+                                        item.title = "抢答题目";
+                                    } else if (type == 5) {
+                                        item.title = "抽答题目";
+                                    } else if (type == 6) {
+                                        item.title = "测评选题";
+                                    }
                                 }
                                 items.add(item);
                             } else if (key.equals("courseVideos")) {
@@ -134,27 +141,24 @@ public class Course1Activity extends BaseActivity {
                 @Override
                 public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
                     Log.d("test", "course onFailure = " + ret);
-                    if (ret != null && !ret.equals("")) {
-                        try {
-                            JSONObject data = new JSONObject(ret);
-                            if (data.optInt("statusCode") != 200) {
-                                Utils.login(Course1Activity.this, new Utils.ReLogin() {
-                                    @Override
-                                    public void onSuccess() {
-                                        initData();
-                                    }
+                    try {
+                        JSONObject data = new JSONObject(ret);
+                        if (data.optInt("statusCode") != 200) {
+                            Utils.login(Course1Activity.this, new Utils.ReLogin() {
+                                @Override
+                                public void onSuccess() {
+                                    initData();
+                                }
 
-                                    @Override
-                                    public void onFailure() {
-                                        hidePD();
-                                        finish();
-                                    }
-                                });
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                                @Override
+                                public void onFailure() {
+                                    hidePD();
+                                    finish();
+                                }
+                            });
                         }
-                    } else {
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             });
@@ -180,19 +184,16 @@ public class Course1Activity extends BaseActivity {
             if (rowView == null) {
                 rowView = inflater.inflate(R.layout.item_attend, null);
                 holder = new ViewHolder();
-
-                holder.title = (TextView) rowView.findViewById(R.id.title);
                 holder.clock = (ImageView) rowView.findViewById(R.id.clock);
                 holder.ball = (ImageView) rowView.findViewById(R.id.ball);
                 holder.line = (TextView) rowView.findViewById(R.id.line);
                 holder.line2 = (TextView) rowView.findViewById(R.id.line2);
                 holder.date1 = (TextView) rowView.findViewById(R.id.date1);
                 holder.date2 = (TextView) rowView.findViewById(R.id.date2);
+                holder.type1RL = (LinearLayout) rowView.findViewById(R.id.type1RL);
                 holder.type2RL = (LinearLayout) rowView.findViewById(R.id.type2RL);
                 holder.type345RL = (LinearLayout) rowView.findViewById(R.id.type345RL);
                 holder.type6RL = (LinearLayout) rowView.findViewById(R.id.type6RL);
-                holder.tongji = (Button) rowView.findViewById(R.id.tongji);
-
                 rowView.setTag(holder);
             } else {
                 holder = (ViewHolder) rowView.getTag();
@@ -206,50 +207,46 @@ public class Course1Activity extends BaseActivity {
             final AttendItem item = items.get(position);
             int type = item.type;
             if (type == 1) {
+                holder.type1RL.setVisibility(View.VISIBLE);
                 holder.type2RL.setVisibility(View.GONE);
                 holder.type345RL.setVisibility(View.GONE);
                 holder.type6RL.setVisibility(View.GONE);
+                addContent1(holder, item);
             } else if (type == 2) {
+                holder.type1RL.setVisibility(View.GONE);
                 holder.type2RL.setVisibility(View.VISIBLE);
                 holder.type345RL.setVisibility(View.GONE);
-                holder.tongji.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(Course1Activity.this, TongjiActivity.class).putExtra("type", 1).putExtra("item", item));
-                    }
-                });
                 holder.type6RL.setVisibility(View.GONE);
+                addContent2(holder, item);
             } else if (type == 3 || type == 4 || type == 5) {
-                //题目
+                holder.type1RL.setVisibility(View.GONE);
                 holder.type2RL.setVisibility(View.GONE);
                 holder.type345RL.setVisibility(View.VISIBLE);
                 holder.type6RL.setVisibility(View.GONE);
                 addContent345(holder, item);
             } else if (type == 6) {
+                holder.type1RL.setVisibility(View.GONE);
                 holder.type2RL.setVisibility(View.GONE);
                 holder.type345RL.setVisibility(View.GONE);
                 holder.type6RL.setVisibility(View.VISIBLE);
                 addContent6(holder, item);
             }
-
-            holder.title.setText(item.title);
             holder.date1.setText(item.time.split(" ")[0]);
             holder.date2.setText(item.time.split(" ")[1].split("\\.")[0]);
             return rowView;
         }
 
         public class ViewHolder {
-            public TextView title;
             public ImageView clock;
             public TextView line;
             public TextView line2;
             public ImageView ball;
             public TextView date1;
             public TextView date2;
+            public LinearLayout type1RL;
             public LinearLayout type2RL;
             public LinearLayout type345RL;
             public LinearLayout type6RL;
-            public Button tongji;
         }
 
         @Override
@@ -267,6 +264,27 @@ public class Course1Activity extends BaseActivity {
             return arg0;
         }
 
+        private void addContent1(ViewHolder holder, AttendItem item) {
+            holder.type1RL.removeAllViews();
+            LinearLayout layout_question1 = (LinearLayout) inflater.inflate(R.layout.layout_question1, null);
+            TextView title = (TextView) layout_question1.findViewById(R.id.title);
+            title.setText(item.title);
+            holder.type1RL.addView(layout_question1);
+        }
+
+        private void addContent2(ViewHolder holder, final AttendItem item) {
+            holder.type2RL.removeAllViews();
+            LinearLayout layout_question2 = (LinearLayout) inflater.inflate(R.layout.layout_question2, null);
+
+            LinearLayout tongji = (LinearLayout) layout_question2.findViewById(R.id.tongji);
+            tongji.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(Course1Activity.this, TongjiActivity.class).putExtra("type", 1).putExtra("item", item));
+                }
+            });
+            holder.type2RL.addView(layout_question2);
+        }
 
         private void addContent345(ViewHolder holder, AttendItem item) {
             holder.type345RL.removeAllViews();
@@ -274,9 +292,11 @@ public class Course1Activity extends BaseActivity {
             Question s = item.questions.get(0);
             LinearLayout layout_question345 = (LinearLayout) inflater.inflate(R.layout.layout_question345, null);
             //问题
+            TextView title = (TextView) layout_question345.findViewById(R.id.title);
             TextView content = (TextView) layout_question345.findViewById(R.id.content);
             LinearLayout imgLL = (LinearLayout) layout_question345.findViewById(R.id.imgLL);
-            content.setText("题目：" + s.content);
+            title.setText(item.title);
+            content.setText(s.content);
             if (!TextUtils.isEmpty(s.img)) {
                 String imgs[] = s.img.split(",");
                 for (int i = 0; i < imgs.length; i++) {
@@ -297,9 +317,28 @@ public class Course1Activity extends BaseActivity {
                 }
             }
             //答案
+            TextView title2 = (TextView) layout_question345.findViewById(R.id.title2);
             TextView content2 = (TextView) layout_question345.findViewById(R.id.content2);
             LinearLayout imgLL2 = (LinearLayout) layout_question345.findViewById(R.id.imgLL2);
-            content2.setText(s.userExaminationResultVo.name + "的答案：" + s.userExaminationResultVo.content);
+
+            String studentName = item.questions.get(0).userExaminationResultVo.name;
+            int status = item.questions.get(0).userExaminationResultVo.status;
+            String judgeMent = "";
+            if (status == 0) {
+                judgeMent = "回答错误";
+            } else if (status == 1) {
+                judgeMent = "回答正确";
+            } else if (status == 2) {
+                judgeMent = "未作答";
+            }
+            if (item.type == 3) {
+                title2.setText("点名答结果：" + studentName + " " + judgeMent);
+            } else if (item.type == 4) {
+                title2.setText("抢答结果：" + studentName + " " + judgeMent);
+            } else if (item.type == 5) {
+                title2.setText("抽答结果：" + studentName + " " + judgeMent);
+            }
+            content2.setText(s.userExaminationResultVo.content);
             if (!TextUtils.isEmpty(s.img)) {
                 String imgs[] = s.img.split(",");
                 for (int i = 0; i < imgs.length; i++) {
@@ -328,7 +367,10 @@ public class Course1Activity extends BaseActivity {
 
             //这里只显示问题。。。是一个列表
             LinearLayout layout_question6 = (LinearLayout) inflater.inflate(R.layout.layout_question6, null);
+            TextView title = (TextView) layout_question6.findViewById(R.id.title);
             LinearLayout questionLL = (LinearLayout) layout_question6.findViewById(R.id.questionLL);
+            title.setText(item.title);
+
             //循环添加问题即可
             for (Question q : item.questions) {
                 TextView tv = new TextView(Course1Activity.this);
@@ -336,7 +378,7 @@ public class Course1Activity extends BaseActivity {
                 tv.setTextColor(Color.parseColor("#6699ff"));
                 questionLL.addView(tv);
             }
-            Button ceping = (Button) layout_question6.findViewById(R.id.ceping);
+            LinearLayout ceping = (LinearLayout) layout_question6.findViewById(R.id.ceping);
             ceping.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -356,6 +398,6 @@ public class Course1Activity extends BaseActivity {
         //暂时先播放第1个，回头处理
         //最好边播放边下载
         String url = videos.get(0).url;
-        startActivity(new Intent(this, VideoActivity.class).putExtra("url", url).putExtra("name", course.name + "课程视频"));
+        startActivity(new Intent(this, VideoActivity.class).putExtra("url", url).putExtra("name", course.name));
     }
 }

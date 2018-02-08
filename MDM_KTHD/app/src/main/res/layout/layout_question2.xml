@@ -9,30 +9,24 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="title"
+        android:text="知识点"
         android:textColor="#6699ff" />
 
     <LinearLayout
-        android:id="@+id/questionLL"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"></LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="测评结果"
+            android:text="统计结果"
             android:textColor="#6699ff" />
 
         <LinearLayout
-            android:id="@+id/ceping"
+            android:id="@+id/tongji"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
@@ -53,11 +47,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="10dp"
-                android:text="测评结果"
+                android:text="统计结果"
                 android:textColor="#ffffff" />
 
         </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>
-
