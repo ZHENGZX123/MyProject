@@ -20,7 +20,9 @@
             android:id="@+id/hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="20dp"
             android:text="知识点统计："
             android:textColor="#000000"
             android:textSize="20sp" />
@@ -29,7 +31,7 @@
             android:id="@+id/content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_alignTop="@+id/hint"
             android:layout_toRightOf="@+id/hint"
             android:text="content"
             android:textColor="#6699ff"
@@ -40,7 +42,6 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/hint"
-            android:layout_marginBottom="20dp"
             android:background="#aaaaaa" />
 
         <RelativeLayout

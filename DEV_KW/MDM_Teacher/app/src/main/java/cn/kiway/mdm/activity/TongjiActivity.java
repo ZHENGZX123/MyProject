@@ -142,14 +142,18 @@ public class TongjiActivity extends BaseActivity {
         float rate2 = (float) p2 / total;
         float rate3 = (float) p3 / total;
 
-        int totalHeight = DensityUtil.dip2px(100);//高度最好这样计算：总高度-上下栏
+        int diff = 150;
+        if (type == 2) {
+            diff = 220;
+        }
+        int totalHeight = (DensityUtil.getScreenHeight() - DensityUtil.dip2px(diff)) / 2; //DensityUtil.dip2px(100);//高度最好这样计算：总高度-上下栏
         int height1 = (int) (totalHeight * rate1);
         int height2 = (int) (totalHeight * rate2);
         int height3 = (int) (totalHeight * rate3);
 
-        color1.getLayoutParams().height = height1;
-        color2.getLayoutParams().height = height2;
-        color3.getLayoutParams().height = height3;
+        color1.getLayoutParams().height = (height1 == 0 ? 1 : height1);
+        color2.getLayoutParams().height = (height2 == 0 ? 1 : height2);
+        color3.getLayoutParams().height = (height3 == 0 ? 1 : height3);
 
         people1.setText(p1 + "人");
         people2.setText(p2 + "人");
