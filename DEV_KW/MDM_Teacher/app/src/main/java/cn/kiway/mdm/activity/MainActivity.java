@@ -336,14 +336,14 @@ public class MainActivity extends BaseActivity {
         return path;
     }
 
-    public void uploadFile(String filePath, boolean copy) {
+    public void uploadFile(final String filePath, final boolean copy) {
         boolean isImage = false;
         if (Utils.isImage(filePath))
             isImage = true;
-        File file = new File(filePath);
+        final File file = new File(filePath);
         pd.show();
         pd.setMessage(getString(R.string.upload));
-        boolean finalIsImage = isImage;
+        final boolean finalIsImage = isImage;
         new Thread() {
             @Override
             public void run() {

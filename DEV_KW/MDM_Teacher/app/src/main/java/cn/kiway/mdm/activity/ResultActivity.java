@@ -168,7 +168,7 @@ public class ResultActivity extends BaseActivity {
         }
     };
 
-    public void getOneSubmit(String studentIMEI, String answer) {
+    public void getOneSubmit(final String studentIMEI, final String answer) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

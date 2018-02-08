@@ -33,7 +33,7 @@ public class ZbusHost {
     public static final String APPID = "f2ec1fb69b27c7ab5260d2eb7cd95dea";
     public static final String APPKEY = "9a9b01f8ab910e12422bcc0e88d95dff2f95f582";
 
-    public static void tongji(Activity c, KnowledgePoint kp, OnListener onListener) {
+    public static void tongji(final Activity c, final KnowledgePoint kp, final OnListener onListener) {
         new Thread() {
             @Override
             public void run() {
@@ -75,7 +75,7 @@ public class ZbusHost {
         }.start();
     }
 
-    public static void tuiping(Activity c, int status, OnListener onListener) {
+    public static void tuiping(final Activity c, final int status, final OnListener onListener) {
         new Thread() {
             @Override
             public void run() {
@@ -107,7 +107,7 @@ public class ZbusHost {
         }.start();
     }
 
-    public static void qiangdaResult(Activity c, Student s, int result, String qiangdaStudentName, OnListener onListener) {
+    public static void qiangdaResult(Activity c, Student s, int result, String qiangdaStudentName, final OnListener onListener) {
         try {
             String title = "抢答结果";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
@@ -136,7 +136,7 @@ public class ZbusHost {
         }
     }
 
-    public static void qiangda(Activity c, OnListener onListener) {
+    public static void qiangda(Activity c, final OnListener onListener) {
         try {
             String title = "抢答";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
@@ -163,7 +163,7 @@ public class ZbusHost {
         }
     }
 
-    public static void question(Activity c, Student s, Question q, int questionType, int questionTime, OnListener onListener) {
+    public static void question(Activity c, Student s, Question q, int questionType, int questionTime, final OnListener onListener) {
         try {
             String title = null;
             if (questionType == 1) {
@@ -203,7 +203,7 @@ public class ZbusHost {
     }
 
     //测评专用
-    public static void questions(Activity c, ArrayList<Question> questions, int questionTime, OnListener onListener) {
+    public static void questions(Activity c, ArrayList<Question> questions, int questionTime, final OnListener onListener) {
         try {
             String title = "测评";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
@@ -232,7 +232,7 @@ public class ZbusHost {
     }
 
 
-    public static void collection(Activity c, Student s, String collection, OnListener onListener) {
+    public static void collection(Activity c, Student s, String collection, final OnListener onListener) {
         try {
             String title = "批改结果";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
@@ -261,7 +261,7 @@ public class ZbusHost {
         }
     }
 
-    public static void chaping(Activity c, Student s, int chaping, OnListener onListener) {
+    public static void chaping(Activity c, Student s, int chaping, final OnListener onListener) {
         try {
             String title = "查屏";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
@@ -291,7 +291,7 @@ public class ZbusHost {
     }
 
 
-    public static void suoping(Activity c, ArrayList<Student> students, int suoping, OnListener onListener) {
+    public static void suoping(Activity c, ArrayList<Student> students, int suoping, final OnListener onListener) {
         try {
             String title = "锁屏";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
@@ -325,7 +325,7 @@ public class ZbusHost {
         }
     }
 
-    public static void shangke(Activity c, OnListener onListener) {
+    public static void shangke(final Activity c, final OnListener onListener) {
         new Thread() {
             @Override
             public void run() {
@@ -357,7 +357,7 @@ public class ZbusHost {
         }.start();
     }
 
-    public static void xiake(Activity c, OnListener onListener) {
+    public static void xiake(Activity c, final OnListener onListener) {
         try {
             String title = "下课";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
@@ -384,7 +384,7 @@ public class ZbusHost {
         }
     }
 
-    public static void sign(Activity c, OnListener onListener) {
+    public static void sign(Activity c, final OnListener onListener) {
         try {
             String title = "点名";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
@@ -435,7 +435,7 @@ public class ZbusHost {
     }
 
 
-    public static void wenjian(Activity c, ArrayList<Student> students, String url, String fileName, String fileSize, OnListener onListener) {
+    public static void wenjian(Activity c, ArrayList<Student> students, String url, String fileName, String fileSize, final OnListener onListener) {
         try {
             String title = "文件";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
@@ -462,7 +462,7 @@ public class ZbusHost {
         }
     }
 
-    public static void questionTimeup(ResultActivity c, ArrayList<Student> students, OnListener onListener) {
+    public static void questionTimeup(ResultActivity c, ArrayList<Student> students, final OnListener onListener) {
         try {
             String title = "答题时间到";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
@@ -489,7 +489,7 @@ public class ZbusHost {
         }
     }
 
-    public static void questionEnd(ResultActivity c, ArrayList<Student> students, OnListener onListener) {
+    public static void questionEnd(ResultActivity c, ArrayList<Student> students, final OnListener onListener) {
         try {
             String title = "答题终止";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
@@ -517,7 +517,7 @@ public class ZbusHost {
     }
 
     //测试用
-    public static void test(Activity c, int id, OnListener onListener) {
+    public static void test(Activity c, int id, final OnListener onListener) {
         try {
             String title = "测试用";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");

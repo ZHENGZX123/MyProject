@@ -10,9 +10,8 @@ import java.util.ArrayList;
 public class AttendItem implements Serializable {
 
     public int type;
-    public String title;
     public String time;
-
+    public String title;
     public ArrayList<KnowledgeCountResult> results;
     public ArrayList<Question> questions;
 }

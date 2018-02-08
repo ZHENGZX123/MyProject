@@ -240,7 +240,7 @@ public class StudentGridActivity extends BaseActivity {
 
 
     public void uploadUserfile() {
-        ArrayList<String> selectImei = new ArrayList<String>();
+        final ArrayList<String> selectImei = new ArrayList<String>();
         for (int i = 0; i < selectStudents.size(); i++) {
             selectImei.add(selectStudents.get(i).imei);
         }
@@ -347,6 +347,7 @@ public class StudentGridActivity extends BaseActivity {
     }
 
     int id = 0;
+
     private void sendTestCommand() {
         new Thread() {
             @Override
@@ -386,7 +387,7 @@ public class StudentGridActivity extends BaseActivity {
         });
     }
 
-    private void sendChapingCommand(Student s, int chaping) {
+    private void sendChapingCommand(final Student s, final int chaping) {
         ZbusHost.chaping(StudentGridActivity.this, s, chaping, new OnListener() {
 
             @Override
@@ -406,7 +407,7 @@ public class StudentGridActivity extends BaseActivity {
         });
     }
 
-    private void sendSuopingCommand1(Student s, int suoping) {
+    private void sendSuopingCommand1(final Student s, int suoping) {
         ArrayList<Student> selectStudents = new ArrayList<>();
         selectStudents.add(s);
         ZbusHost.suoping(StudentGridActivity.this, selectStudents, suoping, new OnListener() {
@@ -465,7 +466,7 @@ public class StudentGridActivity extends BaseActivity {
         });
     }
 
-    private void sendDianmingdaCommand(Student s) {
+    private void sendDianmingdaCommand(final Student s) {
         showPD();
         ArrayList<Question> questions = (ArrayList<Question>) getIntent().getSerializableExtra("questions");
         Question q = questions.get(0);
@@ -495,7 +496,7 @@ public class StudentGridActivity extends BaseActivity {
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Student s = students.get(position);
+                final Student s = students.get(position);
                 if (type == TYPE_DIANMING) {
                     toast(s.name + (s.come ? "到了" : "没到"));
                 } else if (type == TYPE_DIANMINGDA) {
@@ -821,7 +822,7 @@ public class StudentGridActivity extends BaseActivity {
         mHandler.removeCallbacksAndMessages(null);
     }
 
-    public void onelineOneStudent(String studentIMEI) {
+    public void onelineOneStudent(final String studentIMEI) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -836,7 +837,7 @@ public class StudentGridActivity extends BaseActivity {
     }
 
 
-    public void signOneStudent(String studentIMEI) {
+    public void signOneStudent(final String studentIMEI) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -860,7 +861,7 @@ public class StudentGridActivity extends BaseActivity {
     }
 
 
-    public void knowOneStudent(String student, int known) {
+    public void knowOneStudent(final String student, final int known) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
