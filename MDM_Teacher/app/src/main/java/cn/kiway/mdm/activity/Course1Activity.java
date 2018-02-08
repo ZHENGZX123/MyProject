@@ -261,6 +261,7 @@ public class Course1Activity extends BaseActivity {
         private void addContent2(ViewHolder holder, AttendItem item) {
             holder.type2RL.removeAllViews();
             LinearLayout layout_question2 = (LinearLayout) inflater.inflate(R.layout.layout_question2, null);
+
             LinearLayout tongji = (LinearLayout) layout_question2.findViewById(R.id.tongji);
             tongji.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -277,8 +278,10 @@ public class Course1Activity extends BaseActivity {
             Question s = item.questions.get(0);
             LinearLayout layout_question345 = (LinearLayout) inflater.inflate(R.layout.layout_question345, null);
             //问题
+            TextView title = (TextView) layout_question345.findViewById(R.id.title);
             TextView content = (TextView) layout_question345.findViewById(R.id.content);
             LinearLayout imgLL = (LinearLayout) layout_question345.findViewById(R.id.imgLL);
+            title.setText(item.title);
             content.setText(s.content);
             if (!TextUtils.isEmpty(s.img)) {
                 String imgs[] = s.img.split(",");
@@ -350,7 +353,10 @@ public class Course1Activity extends BaseActivity {
 
             //这里只显示问题。。。是一个列表
             LinearLayout layout_question6 = (LinearLayout) inflater.inflate(R.layout.layout_question6, null);
+            TextView title = (TextView) layout_question6.findViewById(R.id.title);
             LinearLayout questionLL = (LinearLayout) layout_question6.findViewById(R.id.questionLL);
+            title.setText(item.title);
+
             //循环添加问题即可
             for (Question q : item.questions) {
                 TextView tv = new TextView(Course1Activity.this);
