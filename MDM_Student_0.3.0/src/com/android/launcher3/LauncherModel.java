@@ -1802,6 +1802,7 @@ public class LauncherModel extends BroadcastReceiver
                     Log.e("AppListUtils", AppListUtils.getAppListData().toString());
                     if (AppListUtils.getAppListData().toString().contains(app.getApplicationInfo().packageName) ||
                             new MyDBHelper(mContext).checkAppInCustom(app.getApplicationInfo().packageName)) {
+
                         mBgAllAppsList.add(new AppInfo(app, user, quietMode), app);
                         new MyDBHelper(mContext).addCustonApp(app.getApplicationInfo().packageName);
                     }
