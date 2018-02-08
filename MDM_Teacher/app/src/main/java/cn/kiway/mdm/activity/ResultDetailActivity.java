@@ -147,7 +147,7 @@ public class ResultDetailActivity extends BaseActivity {
         if (!TextUtils.isEmpty(q.img)) {
             String imgs[] = q.img.split(",");
             for (int i = 0; i < imgs.length; i++) {
-                String imageUrl = imgs[i];
+                final String imageUrl = imgs[i];
                 ImageView iv = new ImageView(this);
                 iv.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -168,7 +168,7 @@ public class ResultDetailActivity extends BaseActivity {
         if (!TextUtils.isEmpty(a.img)) {
             String imgs[] = a.img.split(",");
             for (int i = 0; i < imgs.length; i++) {
-                String imageUrl = imgs[i];
+                final String imageUrl = imgs[i];
                 ImageView iv = new ImageView(this);
                 iv.setOnClickListener(new View.OnClickListener() {
                     @Override

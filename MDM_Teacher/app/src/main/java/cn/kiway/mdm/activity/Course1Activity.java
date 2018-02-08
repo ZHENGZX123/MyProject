@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -171,8 +170,6 @@ public class Course1Activity extends BaseActivity {
             if (rowView == null) {
                 rowView = inflater.inflate(R.layout.item_attend, null);
                 holder = new ViewHolder();
-
-                holder.title = (TextView) rowView.findViewById(R.id.title);
                 holder.clock = (ImageView) rowView.findViewById(R.id.clock);
                 holder.ball = (ImageView) rowView.findViewById(R.id.ball);
                 holder.line = (TextView) rowView.findViewById(R.id.line);
@@ -183,8 +180,6 @@ public class Course1Activity extends BaseActivity {
                 holder.type2RL = (LinearLayout) rowView.findViewById(R.id.type2RL);
                 holder.type345RL = (LinearLayout) rowView.findViewById(R.id.type345RL);
                 holder.type6RL = (LinearLayout) rowView.findViewById(R.id.type6RL);
-                holder.tongji = (Button) rowView.findViewById(R.id.tongji);
-
                 rowView.setTag(holder);
             } else {
                 holder = (ViewHolder) rowView.getTag();
@@ -195,26 +190,21 @@ public class Course1Activity extends BaseActivity {
                 holder.clock.setVisibility(View.GONE);
             }
 
-            AttendItem item = items.get(position);
+            final AttendItem item = items.get(position);
             int type = item.type;
             if (type == 1) {
                 holder.type1RL.setVisibility(View.VISIBLE);
                 holder.type2RL.setVisibility(View.GONE);
                 holder.type345RL.setVisibility(View.GONE);
                 holder.type6RL.setVisibility(View.GONE);
+                addContent1(holder, item);
             } else if (type == 2) {
                 holder.type1RL.setVisibility(View.GONE);
                 holder.type2RL.setVisibility(View.VISIBLE);
                 holder.type345RL.setVisibility(View.GONE);
-                holder.tongji.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(Course1Activity.this, TongjiActivity.class).putExtra("type", 1).putExtra("item", item));
-                    }
-                });
                 holder.type6RL.setVisibility(View.GONE);
+                addContent2(holder, item);
             } else if (type == 3 || type == 4 || type == 5) {
-                //题目
                 holder.type1RL.setVisibility(View.GONE);
                 holder.type2RL.setVisibility(View.GONE);
                 holder.type345RL.setVisibility(View.VISIBLE);
@@ -227,15 +217,12 @@ public class Course1Activity extends BaseActivity {
                 holder.type6RL.setVisibility(View.VISIBLE);
                 addContent6(holder, item);
             }
-
-            holder.title.setText(item.title);
             holder.date1.setText(item.time.split(" ")[0]);
             holder.date2.setText(item.time.split(" ")[1].split("\\.")[0]);
             return rowView;
         }
 
         public class ViewHolder {
-            public TextView title;
             public ImageView clock;
             public TextView line;
             public TextView line2;
@@ -246,7 +233,6 @@ public class Course1Activity extends BaseActivity {
             public LinearLayout type2RL;
             public LinearLayout type345RL;
             public LinearLayout type6RL;
-            public Button tongji;
         }
 
         @Override
@@ -264,6 +250,26 @@ public class Course1Activity extends BaseActivity {
             return arg0;
         }
 
+        private void addContent1(ViewHolder holder, AttendItem item) {
+            holder.type1RL.removeAllViews();
+            LinearLayout layout_question1 = (LinearLayout) inflater.inflate(R.layout.layout_question1, null);
+            TextView title = (TextView) layout_question1.findViewById(R.id.title);
+            title.setText(item.title);
+            holder.type1RL.addView(layout_question1);
+        }
+
+        private void addContent2(ViewHolder holder, AttendItem item) {
+            holder.type2RL.removeAllViews();
+            LinearLayout layout_question2 = (LinearLayout) inflater.inflate(R.layout.layout_question2, null);
+            LinearLayout tongji = (LinearLayout) layout_question2.findViewById(R.id.tongji);
+            tongji.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(Course1Activity.this, TongjiActivity.class).putExtra("type", 1).putExtra("item", item));
+                }
+            });
+            holder.type2RL.addView(layout_question2);
+        }
 
         private void addContent345(ViewHolder holder, AttendItem item) {
             holder.type345RL.removeAllViews();
@@ -277,7 +283,7 @@ public class Course1Activity extends BaseActivity {
             if (!TextUtils.isEmpty(s.img)) {
                 String imgs[] = s.img.split(",");
                 for (int i = 0; i < imgs.length; i++) {
-                    String imageUrl = imgs[i];
+                    final String imageUrl = imgs[i];
                     ImageView iv = new ImageView(Course1Activity.this);
                     iv.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -319,7 +325,7 @@ public class Course1Activity extends BaseActivity {
             if (!TextUtils.isEmpty(s.img)) {
                 String imgs[] = s.img.split(",");
                 for (int i = 0; i < imgs.length; i++) {
-                    String imageUrl = imgs[i];
+                    final String imageUrl = imgs[i];
                     ImageView iv = new ImageView(Course1Activity.this);
                     iv.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -339,7 +345,7 @@ public class Course1Activity extends BaseActivity {
             holder.type345RL.addView(layout_question345);
         }
 
-        private void addContent6(ViewHolder holder, AttendItem item) {
+        private void addContent6(ViewHolder holder, final AttendItem item) {
             holder.type6RL.removeAllViews();
 
             //这里只显示问题。。。是一个列表

@@ -58,50 +58,27 @@
             android:layout_below="@+id/line0"
             android:layout_toRightOf="@+id/line">
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="5dp"
-                android:text="课程标题"
-                android:textColor="#6699ff"
-                android:textSize="18sp" />
 
             <!-- 根据类型显示不同的样式 暂时50dp-->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/title"
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="8dp">
 
                 <LinearLayout
                     android:id="@+id/type1RL"
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:orientation="horizontal"></LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"></LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/type2RL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="知识点统计"
-                        android:textColor="#6699ff" />
-
-                    <Button
-                        android:id="@+id/tongji"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:text="统计结果" />
-                </LinearLayout>
+                    android:orientation="vertical"
+                    android:visibility="gone"></LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/type345RL"
@@ -126,6 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/line0"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="8dp"
             android:text="2017.12.13"
             android:textColor="#ffffff"
@@ -137,6 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_alignRight="@+id/date1"
             android:layout_below="@id/date1"
+            android:layout_marginLeft="20dp"
             android:text="09.10"
             android:textColor="#6699ff"
             android:textSize="16sp" />

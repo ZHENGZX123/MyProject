@@ -104,7 +104,7 @@ public class Utils {
         return installed;
     }
 
-    public static void openFile(Context context, String filePath) {
+    public static void openFile(final Context context, String filePath) {
         Log.d("test", "openFile filepath = " + filePath);
         if (TextUtils.isEmpty(filePath)) {
             Toast.makeText(context, "文件路径不能为空", Toast.LENGTH_SHORT).show();
@@ -258,7 +258,7 @@ public class Utils {
 
     private static String wifiIp;
 
-    public static void shangke(Activity c, String wifiIp) {
+    public static void shangke(final Activity c, String wifiIp) {
         Utils.wifiIp = wifiIp;
         try {
             //1.发“上课”推送命令
@@ -303,7 +303,7 @@ public class Utils {
         }
     }
 
-    public static void xiake(Activity c) {
+    public static void xiake(final Activity c) {
         try {
             //1.发“下课”推送命令
             String url = KWApplication.clientUrl +
@@ -333,7 +333,7 @@ public class Utils {
 
     private static String courseID;
 
-    public static void endClass(Activity c, String courseID) {
+    public static void endClass(final Activity c, String courseID) {
         Utils.courseID = courseID;
         try {
             ((BaseActivity) c).showPD();
@@ -401,7 +401,7 @@ public class Utils {
         }
     }
 
-    public static boolean check301(final Activity c, String result, String type) {
+    public static boolean check301(final Activity c, String result, final String type) {
         if (c == null) {
             return false;
         }
@@ -586,7 +586,7 @@ public class Utils {
         return false;
     }
 
-    public static void addVideoRecord(Activity c, String courseID, String fileUrl, String fileSuffix) {
+    public static void addVideoRecord(final Activity c, final String courseID, final String fileUrl, final String fileSuffix) {
         c.runOnUiThread(new Runnable() {
             @Override
             public void run() {

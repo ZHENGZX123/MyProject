@@ -132,7 +132,7 @@ public class JsAndroidInterface {
                         activity.pd.show();
                     }
                 });
-                int ret = new HttpDownload().downFile(downUrl, folder, fileName);//开始下载
+                final int ret = new HttpDownload().downFile(downUrl, folder, fileName);//开始下载
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -278,7 +278,7 @@ public class JsAndroidInterface {
         }
     }
 
-    public void uninstallPush(Context c) {
+    public void uninstallPush(final Context c) {
         try {
             String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");

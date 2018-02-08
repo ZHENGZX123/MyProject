@@ -304,7 +304,7 @@ public class Course0Activity extends ScreenSharingActivity {
         }
     }
 
-    private void sendTuipingcommand(int status) {
+    private void sendTuipingcommand(final int status) {
         showPD();
         ZbusHost.tuiping(this, status, new OnListener() {
 
@@ -472,7 +472,7 @@ public class Course0Activity extends ScreenSharingActivity {
     private TextView selectCount;
     private LinearLayout questionLL;
 
-    private void selectQuestion(int type) {
+    private void selectQuestion(final int type) {
         Log.d("test", "course.questions = " + course.questions);
         if (course.questions == null || course.questions.size() == 0) {
             toast("该课程暂无题目");
@@ -489,12 +489,12 @@ public class Course0Activity extends ScreenSharingActivity {
         Button kaishidati = (Button) dialog.findViewById(R.id.kaishidati);
         Button close = (Button) dialog.findViewById(R.id.close);
         CheckBox timeEnable = (CheckBox) dialog.findViewById(R.id.timeEnable);
-        ImageButton plus = (ImageButton) dialog.findViewById(R.id.plus);
-        TextView settime = (TextView) dialog.findViewById(R.id.settime);
-        ImageButton minus = (ImageButton) dialog.findViewById(R.id.minus);
+        final ImageButton plus = (ImageButton) dialog.findViewById(R.id.plus);
+        final TextView settime = (TextView) dialog.findViewById(R.id.settime);
+        final ImageButton minus = (ImageButton) dialog.findViewById(R.id.minus);
         RelativeLayout selectallRL = (RelativeLayout) dialog.findViewById(R.id.selectallRL);
         selectCount = (TextView) dialog.findViewById(R.id.selectCount);
-        CheckBox selectAll = (CheckBox) dialog.findViewById(R.id.selectAll);
+        final CheckBox selectAll = (CheckBox) dialog.findViewById(R.id.selectAll);
 
         setSelectCount();
 
@@ -549,7 +549,7 @@ public class Course0Activity extends ScreenSharingActivity {
 
         questionLL = (LinearLayout) dialog.findViewById(R.id.questionLL);
         LayoutInflater inflater = LayoutInflater.from(this);
-        for (Question s : course.questions) {
+        for (final Question s : course.questions) {
             LinearLayout rowView = (LinearLayout) inflater.inflate(R.layout.item_question, null);
             LinearLayout imgLL = (LinearLayout) rowView.findViewById(R.id.imgLL);
             TextView content = (TextView) rowView.findViewById(R.id.content);
@@ -569,7 +569,7 @@ public class Course0Activity extends ScreenSharingActivity {
             if (!TextUtils.isEmpty(s.img)) {
                 String imgs[] = s.img.split(",");
                 for (int i = 0; i < imgs.length; i++) {
-                    String imageUrl = imgs[i];
+                    final String imageUrl = imgs[i];
                     ImageView iv = new ImageView(Course0Activity.this);
                     iv.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -657,11 +657,11 @@ public class Course0Activity extends ScreenSharingActivity {
 
     private String qiangdaStudentIMEI;
 
-    public void qiangdaOneStudent(String studentIMEI) {
+    public void qiangdaOneStudent(final String studentIMEI) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Student s = getStudentByIMEI(studentIMEI);
+                final Student s = getStudentByIMEI(studentIMEI);
                 if (s == null) {
                     Log.d("test", "神秘学生，不可能");
                     return;
@@ -673,7 +673,7 @@ public class Course0Activity extends ScreenSharingActivity {
                     ZbusHost.qiangdaResult(Course0Activity.this, s, 0, qiangdaStudentName, null);
                     return;
                 }
-                Question q = selectQuestions.get(0);
+                final Question q = selectQuestions.get(0);
                 qiangdaStudentIMEI = studentIMEI;
                 //给他发送抢答成功
                 ZbusHost.qiangdaResult(Course0Activity.this, s, 1, qiangdaStudentIMEI, new OnListener() {
@@ -736,10 +736,10 @@ public class Course0Activity extends ScreenSharingActivity {
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_choudaqi);
         dialog.show();
-        TextView name = (TextView) dialog.findViewById(R.id.name);
+        final TextView name = (TextView) dialog.findViewById(R.id.name);
         name.setText(students.get(0).name);
         Button close = (Button) dialog.findViewById(R.id.close);
-        Button start = (Button) dialog.findViewById(R.id.start);
+        final Button start = (Button) dialog.findViewById(R.id.start);
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -753,15 +753,15 @@ public class Course0Activity extends ScreenSharingActivity {
                 new Thread() {
                     @Override
                     public void run() {
-                        int rand = 25 + new Random().nextInt(25);
+                        final int rand = 25 + new Random().nextInt(25);
                         for (int i = 0; i < rand; i++) {
                             try {
                                 sleep(100);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            Student s = students.get(i % students.size());
-                            int finalI = i;
+                            final Student s = students.get(i % students.size());
+                            final int finalI = i;
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -781,7 +781,7 @@ public class Course0Activity extends ScreenSharingActivity {
         });
     }
 
-    private void sendQiangdaCommand(Student s, Question q) {
+    private void sendQiangdaCommand(final Student s, Question q) {
         showPD();
         ZbusHost.question(this, s, q, 3, questionTime, new OnListener() {
 
@@ -806,7 +806,7 @@ public class Course0Activity extends ScreenSharingActivity {
     }
 
 
-    private void sendChoudaCommand(Student s, Question q) {
+    private void sendChoudaCommand(final Student s, Question q) {
         showPD();
         ZbusHost.question(this, s, q, 2, questionTime, new OnListener() {
 
@@ -958,7 +958,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 return;
             }
             for (int i = 0; i < count; i++) {
-                AttachInfoVo info = infos.get(i);
+                final AttachInfoVo info = infos.get(i);
                 LinearLayout layout_doc = (LinearLayout) inflater.inflate(R.layout.layout_doc, null);
                 ImageView icon = (ImageView) layout_doc.findViewById(R.id.icon);
                 //TODO icon
@@ -990,7 +990,7 @@ public class Course0Activity extends ScreenSharingActivity {
             }
             String imgs[] = teachingContentVo.img.split(",");
             for (int i = 0; i < imgs.length; i++) {
-                String imageUrl = imgs[i];
+                final String imageUrl = imgs[i];
                 ImageView iv = new ImageView(Course0Activity.this);
                 iv.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -1065,7 +1065,7 @@ public class Course0Activity extends ScreenSharingActivity {
         }.start();
     }
 
-    public void downloadAndOpenFile2(String url, String fileName) {
+    public void downloadAndOpenFile2(final String url, final String fileName) {
         //1.下载文件
         //2.打开播放
         final String folder = DOWNFILEPATH;
@@ -1103,7 +1103,7 @@ public class Course0Activity extends ScreenSharingActivity {
         mp.start();
     }
 
-    public void downloadAndOpenFile(String url, String fileName) {
+    public void downloadAndOpenFile(final String url, final String fileName) {
         //1.下载文件
         //2.打开播放
 
@@ -1131,7 +1131,7 @@ public class Course0Activity extends ScreenSharingActivity {
         }.start();
     }
 
-    private void openFileByX5(String filePath) {
+    private void openFileByX5(final String filePath) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -1301,7 +1301,7 @@ public class Course0Activity extends ScreenSharingActivity {
         }
     }
 
-    public void questiOneStudent(String studentIMEI, String question) {
+    public void questiOneStudent(String studentIMEI, final String question) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
