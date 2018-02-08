@@ -116,7 +116,7 @@ public class TongjiActivity extends BaseActivity {
             group.setText("已掌握");
             group1.setText("已掌握");
             group2.setText("未掌握");
-            group3.setText("已响应");
+            group3.setText("未响应");
             bottomRL.setVisibility(View.GONE);
             hint.setText("知识点统计：");
             content.setText(item.results.get(0).knowledgeName);
