@@ -313,7 +313,7 @@ public class ResultActivity extends BaseActivity {
             String url = KWApplication.clientUrl + "/device/teacher/course/student/result";
             Log.d("test", "question url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             String param = null;
             if (type == TYPE_QUESTION_CEPING) {

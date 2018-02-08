@@ -20,6 +20,14 @@
 
     <!--下面是学生答案 -->
     <TextView
+        android:id="@+id/title2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="点名答"
+        android:textColor="#6699ff" />
+
+    <TextView
         android:id="@+id/content2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

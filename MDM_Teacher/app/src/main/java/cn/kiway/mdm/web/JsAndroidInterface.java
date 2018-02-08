@@ -90,7 +90,7 @@ public class JsAndroidInterface {
     @JavascriptInterface
     public void chooseFile(String token) {//选择文件
         accessToken = token;
-        activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
+        activity.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
         new LFilePicker()
                 .withActivity(activity)
                 .withTitle(activity.getString(R.string.filepath))
@@ -166,7 +166,7 @@ public class JsAndroidInterface {
             String teacherName = o.optString("realName");
             String teacherAvatar = o.optString("avatar");
             String userId = o.optString("userId");
-            activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
+            activity.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
             activity.getSharedPreferences("kiway", 0).edit().putString("userId", userId).commit();
             activity.getSharedPreferences("kiway", 0).edit().putString("classId", classId).commit();
             activity.getSharedPreferences("kiway", 0).edit().putString("className", className).commit();
@@ -186,7 +186,7 @@ public class JsAndroidInterface {
     public void prepareFile(String token, String type) {//选择文件-备课专用，同chooseFile，上传完成后拷贝文件到FilePath
         Log.d("test", "prepareFile is called");
         accessToken = token;
-        activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
+        activity.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
         String[] filters;
         if (type.equals("1")) {
             filters = new String[]{".jpg", ".jpeg", ".png", ".JPG", ".JPEG", ".PNG"};
@@ -225,7 +225,7 @@ public class JsAndroidInterface {
             JSONObject o = new JSONObject(info);
             String token = o.optString("token");
             String userId = o.optString("userId");
-            activity.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
+            activity.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
             activity.getSharedPreferences("kiway", 0).edit().putString("userId", userId).commit();
             String imei = Utils.getIMEI(this.activity);
             installationPush(this.activity, userId, imei);
@@ -242,7 +242,7 @@ public class JsAndroidInterface {
 
     public void installationPush(final Context c, final String userId, final String imei) {
         try {
-            String xtoken = c.getSharedPreferences("kiway", 0).getString("accessToken", "");
+            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
             if (TextUtils.isEmpty(xtoken)) {
                 return;
             }
@@ -280,7 +280,7 @@ public class JsAndroidInterface {
 
     public void uninstallPush(Context c) {
         try {
-            String xtoken = c.getSharedPreferences("kiway", 0).getString("accessToken", "");
+            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
             if (TextUtils.isEmpty(xtoken)) {
                 return;

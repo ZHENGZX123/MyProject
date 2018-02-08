@@ -201,7 +201,7 @@ public class StudentGridActivity extends BaseActivity {
                     try {
                         File file = new File(getIntent().getStringExtra("filePath"));
                         Logger.log("::::::::" + file.getName());
-                        String accessToken = getSharedPreferences("kiway", 0).getString("accessToken", "");
+                        String accessToken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
                         final String ret = UploadUtil.uploadFile(file, clientUrl + "/common/file?x-auth-token=" +
                                 accessToken, file.getName());
                         Log.d("test", "upload ret = " + ret);
@@ -249,7 +249,7 @@ public class StudentGridActivity extends BaseActivity {
             @Override
             public void run() {
                 AsyncHttpClient client = new AsyncHttpClient();
-                client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
+                client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                 client.setTimeout(10000);
                 RequestParams param = new RequestParams();
                 param.put("url", uploadurl);
@@ -296,7 +296,7 @@ public class StudentGridActivity extends BaseActivity {
             hideRetry();
             String url = clientUrl + "/device/teacher/class/students";
             AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             client.get(this, url, null, new TextHttpResponseHandler() {
                 @Override
@@ -347,7 +347,6 @@ public class StudentGridActivity extends BaseActivity {
     }
 
     int id = 0;
-
     private void sendTestCommand() {
         new Thread() {
             @Override
@@ -759,7 +758,7 @@ public class StudentGridActivity extends BaseActivity {
             String url = clientUrl + "/device/teacher/course/student/knowledge/result";
             Log.d("test", "url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             JSONArray array = new JSONArray();
             for (Student s : students) {
@@ -822,7 +821,6 @@ public class StudentGridActivity extends BaseActivity {
         mHandler.removeCallbacksAndMessages(null);
     }
 
-    //TODO 回头做这个
     public void onelineOneStudent(String studentIMEI) {
         runOnUiThread(new Runnable() {
             @Override
