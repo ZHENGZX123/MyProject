@@ -28,7 +28,6 @@ public class Student implements Serializable {
     public int known = 2;//0没明白，1是明白，未回复是2
     public boolean selected;
     public boolean locked;//锁定
-
     public boolean submited;//是否提交答案
     public boolean collected;//是否已经批改
 }
