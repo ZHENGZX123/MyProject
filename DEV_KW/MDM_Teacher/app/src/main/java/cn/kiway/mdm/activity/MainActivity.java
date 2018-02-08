@@ -126,6 +126,8 @@ public class MainActivity extends BaseActivity {
     //初始化zbus
     public void initZbus() {
         Log.d("test", "initZbus");
+
+
         new Thread() {
             @Override
             public void run() {
@@ -136,7 +138,7 @@ public class MainActivity extends BaseActivity {
                     }
                     Broker broker = new Broker(ZbusHost.zbusHost + ":" + ZbusHost.zbusPost);
                     Producer p = new Producer(broker);
-                    ZbusUtils.init(broker,p);
+                    ZbusUtils.init(broker, p);
                     String topic = "kiway_push_" + userId;
                     Log.d("test", "topic = " + topic);
                     ZbusUtils.consumeMsg(topic, new ZbusMessageHandler());
@@ -146,7 +148,6 @@ public class MainActivity extends BaseActivity {
             }
         }.start();
     }
-
 
 
     public void initView() {
@@ -231,7 +232,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode!=RESULT_OK)
+        if (resultCode != RESULT_OK)
             return;
         if (requestCode == QRSCAN) {
             if (data == null) {
@@ -660,6 +661,6 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbindService(connection);
-        ZbusUtils.close();
+        //ZbusUtils.close();
     }
 }
