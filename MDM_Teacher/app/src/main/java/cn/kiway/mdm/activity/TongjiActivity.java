@@ -78,6 +78,17 @@ public class TongjiActivity extends BaseActivity {
         } else if (type == 2) {
             indexTV.setText((current + 1) + "/" + item.questions.size());
             Question q = item.questions.get(current);
+            if (q.type == Question.TYPE_SINGLE) {
+                content.setText("单选题");
+            } else if (q.type == Question.TYPE_MULTI) {
+                content.setText("多选题");
+            } else if (q.type == Question.TYPE_EMPTY) {
+                content.setText("填空题");
+            } else if (q.type == Question.TYPE_JUDGE) {
+                content.setText("判断题");
+            } else if (q.type == Question.TYPE_ESSAY) {
+                content.setText("问答题");
+            }
             for (UserExaminationResultVo vo : q.userExaminationResultVos) {
                 if (vo.status == 0) {
                     p2++;
@@ -127,7 +138,6 @@ public class TongjiActivity extends BaseActivity {
             group2.setText("回答错误");
             group3.setText("未作答");
             hint.setText("题目类型：");
-            content.setText("选择题");
             titleName.setText("测评统计结果");
         }
 
@@ -159,7 +169,7 @@ public class TongjiActivity extends BaseActivity {
         people2.setText(p2 + "人");
         people3.setText(p3 + "人");
 
-        rate.setText("" + (rate1 * 100));
+        rate.setText((rate1 * 100) + "%");
     }
 
     public void clickPrev(View v) {

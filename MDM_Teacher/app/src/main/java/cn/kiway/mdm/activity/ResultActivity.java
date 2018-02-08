@@ -153,18 +153,21 @@ public class ResultActivity extends BaseActivity {
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            Log.d("test", "questionTime = " + questionTime);
             if (msg.what == 0) {
                 questionTime++;
+                mHandler.sendEmptyMessageDelayed(msg.what, 1000);
             } else if (msg.what == 1) {
                 if (questionTime > 0) {
                     questionTime--;
+                    mHandler.sendEmptyMessageDelayed(msg.what, 1000);
                 } else {
                     timeup = true;
+                    mHandler.removeCallbacksAndMessages(null);
                     stop(null);
                 }
             }
             time.setText(Utils.secToTime(questionTime));
-            mHandler.sendEmptyMessageDelayed(msg.what, 1000);
         }
     };
 
@@ -301,8 +304,8 @@ public class ResultActivity extends BaseActivity {
 
     public void stop(View view) {
         toast("时间到，停止作答");
-        timeup = true;
         questionTime = 0;
+        timeup = true;
         mHandler.removeCallbacksAndMessages(null);
         stopBtn.setBackgroundResource(R.drawable.endbutton_false);
         sendTimeupCommand();
