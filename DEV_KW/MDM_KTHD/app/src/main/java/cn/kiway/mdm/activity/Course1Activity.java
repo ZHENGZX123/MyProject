@@ -325,8 +325,9 @@ public class Course1Activity extends BaseActivity {
             TextView content2 = (TextView) layout_question345.findViewById(R.id.content2);
             LinearLayout imgLL2 = (LinearLayout) layout_question345.findViewById(R.id.imgLL2);
 
-            String studentName = item.questions.get(0).userExaminationResultVo.name;
-            int status = item.questions.get(0).userExaminationResultVo.status;
+            Question q = item.questions.get(0);
+            String studentName = q.userExaminationResultVo.name;
+            int status = q.userExaminationResultVo.status;
             String judgeMent = "";
             if (status == 0) {
                 judgeMent = "回答错误";
@@ -342,26 +343,33 @@ public class Course1Activity extends BaseActivity {
             } else if (item.type == 5) {
                 title2.setText("抽答结果：" + studentName + " " + judgeMent);
             }
-            content2.setText(s.userExaminationResultVo.content);
-            if (!TextUtils.isEmpty(s.img)) {
-                String imgs[] = s.img.split(",");
-                for (int i = 0; i < imgs.length; i++) {
-                    final String imageUrl = imgs[i];
-                    ImageView iv = new ImageView(Course1Activity.this);
-                    iv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            showBigImage(Course1Activity.this, new String[]{imageUrl}, 0);
-                        }
-                    });
-                    ImageLoader.getInstance().displayImage(imgs[i], iv, App.getLoaderOptions
-                            ());
-                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams
-                            (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    lp.setMargins(10, 10, 10, 10);
-                    imgLL2.addView(iv, lp);
+            if (q.type == Question.TYPE_ESSAY) {
+                content2.setVisibility(View.GONE);
+                String img = s.userExaminationResultVo.content;
+                if (!TextUtils.isEmpty(img)) {
+                    String imgs[] = img.split(",");
+                    for (int i = 0; i < imgs.length; i++) {
+                        final String imageUrl = imgs[i];
+                        ImageView iv = new ImageView(Course1Activity.this);
+                        iv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showBigImage(Course1Activity.this, new String[]{imageUrl}, 0);
+                            }
+                        });
+                        ImageLoader.getInstance().displayImage(imgs[i], iv, App.getLoaderOptions
+                                ());
+                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams
+                                (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        lp.setMargins(10, 10, 10, 10);
+                        imgLL2.addView(iv, lp);
+                    }
                 }
+            } else {
+                content2.setVisibility(View.VISIBLE);
+                content2.setText(s.userExaminationResultVo.content);
             }
+
 
             holder.type345RL.addView(layout_question345);
         }
