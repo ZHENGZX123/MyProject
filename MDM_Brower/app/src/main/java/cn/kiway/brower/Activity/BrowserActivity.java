@@ -52,6 +52,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.android.kiway.entity.Network;
+
 import org.askerov.dynamicgrid.DynamicGridView;
 
 import java.util.ArrayList;
@@ -86,7 +88,6 @@ import cn.kiway.brower.View.NinjaWebView;
 import cn.kiway.brower.View.RecordAdapter;
 import cn.kiway.brower.View.SwipeToBoundListener;
 import cn.kiway.brower.View.SwitcherPanel;
-import cn.kiway.brower.enitiy.Network;
 import cn.kiway.brower.utils.HttpUtil;
 
 public class BrowserActivity extends Activity implements BrowserController {
@@ -217,6 +218,11 @@ public class BrowserActivity extends Activity implements BrowserController {
             all_network = (ArrayList<Network>) intent.getSerializableExtra("all_network");
             getSharedPreferences("kiway", 0).edit().putString("x-auth-token", intent.getStringExtra("x-auth-token"))
                     .commit();
+            Log.e("BrowerActivity:::::", "enable_type====" + enable_type);
+            Log.e("BrowerActivity:::::", "all_network====" + all_network);
+            Log.e("BrowerActivity:::::", "x-auth-token====" + intent.getStringExtra("x-auth-token"));
+        } else {
+            Log.e("BrowerActivity:::::", "没有传值");
         }
     }
 

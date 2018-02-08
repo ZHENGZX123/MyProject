@@ -1,4 +1,4 @@
-package cn.kiway.brower.enitiy;
+package com.android.kiway.entity;
 
 import java.io.Serializable;
 
