@@ -84,6 +84,7 @@ import com.android.kiway.activity.SettingActivity;
 import com.android.kiway.activity.SystemSetupActivity;
 import com.android.kiway.activity.WebViewActivity;
 import com.android.kiway.entity.AppCharge;
+import com.android.kiway.utils.AppListUtils;
 import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.MyDBHelper;
 import com.android.kiway.utils.Utils;
@@ -2520,16 +2521,16 @@ public class Launcher extends MainActivity
             return;
         }
         if (packageName.contains("com.android.browser") || packageName.contains("cn.kiway.browser")) {//浏览器
-            startActivity(new Intent(this, WebViewActivity.class));
-            return;
-        }
-        if (packageName.contains("com.android.browser") || packageName.contains("cn.kiway.browser")) {
-            Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage("cn.kiway.brower");
-            in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//重启APP
-            in.putExtra("enable_type", Utils.getEnable_Network(this));
-            in.putExtra("all_network", new MyDBHelper(this).getAllNetworks(Utils.getEnable_Network(this)));
-            in.putExtra("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-            startActivity(in);
+            if (AppListUtils.isAppInstalled(this, "cn.kiway.browser")) {
+                Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage("cn.kiway.brower");
+                in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//重启APP
+                in.putExtra("enable_type", Utils.getEnable_Network(this));
+                in.putExtra("all_network", new MyDBHelper(this).getAllNetworks(Utils.getEnable_Network(this)));
+                in.putExtra("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+                startActivity(in);
+            } else {
+                startActivity(new Intent(this, WebViewActivity.class));
+            }
             return;
         }
         if (packageName.contains("com.android.camera2")) {
@@ -2669,13 +2670,18 @@ public class Launcher extends MainActivity
             return;
         }
 
-        if (intent.getComponent().getPackageName().contains("com.android.browser")||intent.getComponent().getPackageName().contains("cn.kiway.brower")) {
-            Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage("cn.kiway.brower");
-            in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//重启APP
-            in.putExtra("enable_type", Utils.getEnable_Network(this));
-            in.putExtra("all_network", new MyDBHelper(this).getAllNetworks(Utils.getEnable_Network(this)));
-            in.putExtra("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-            startActivity(in);
+        if (intent.getComponent().getPackageName().contains("com.android.browser") || intent.getComponent()
+                .getPackageName().contains("cn.kiway.browser")) {
+            if (AppListUtils.isAppInstalled(this, "cn.kiway.browser")) {
+                Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage("cn.kiway.brower");
+                in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//重启APP
+                in.putExtra("enable_type", Utils.getEnable_Network(this));
+                in.putExtra("all_network", new MyDBHelper(this).getAllNetworks(Utils.getEnable_Network(this)));
+                in.putExtra("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+                startActivity(in);
+            } else {
+                startActivity(new Intent(this, WebViewActivity.class));
+            }
             return;
         }
         if (intent.getComponent().getPackageName().contains("com.android.camera2")) {
