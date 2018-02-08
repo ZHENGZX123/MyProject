@@ -267,7 +267,7 @@ public class Utils {
                     "&platform=Android";
             Log.d("test", "shangke url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             client.post(c, url, null, new TextHttpResponseHandler() {
                 @Override
@@ -309,7 +309,7 @@ public class Utils {
             String url = KWApplication.clientUrl +
                     "/device/push/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
             AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             client.post(c, url, null, new TextHttpResponseHandler() {
                 @Override
@@ -340,7 +340,7 @@ public class Utils {
             //1.发“下课”推送命令
             String url = KWApplication.clientUrl + "/device/teacher/course/" + courseID + "/attend";
             AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             client.post(c, url, null, new TextHttpResponseHandler() {
                 @Override
@@ -373,7 +373,7 @@ public class Utils {
                     "/device/teacher/course/" + courseID + "/courseOperation";
             Log.d("test", "courseOperation url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             RequestParams param = new RequestParams();
             param.put("courseId", courseID);
@@ -432,7 +432,7 @@ public class Utils {
                         JSONObject o = new JSONObject(ret);
                         //relogin 其他参数存不存都可以
                         String token = o.getJSONObject("data").getString("token");
-                        c.getSharedPreferences("kiway", 0).edit().putString("accessToken", token).commit();
+                        c.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
                         if (type.equals("shangke")) {
                             shangke(c, wifiIp);
                         } else if (type.equals("xiake")) {
@@ -594,7 +594,7 @@ public class Utils {
                     String url = KWApplication.clientUrl + "/device/teacher/course/" + courseID + "/video";
                     Log.d("test", "addVideoRecord url = " + url);
                     AsyncHttpClient client = new AsyncHttpClient();
-                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("accessToken", ""));
+                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                     client.setTimeout(10000);
                     RequestParams param = new RequestParams();
                     param.put("url", fileUrl);

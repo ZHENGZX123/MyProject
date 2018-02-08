@@ -146,7 +146,7 @@ public class Course0Activity extends ScreenSharingActivity {
             showPD();
             String url = clientUrl + "/device/teacher/course/" + course.id;
             AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             client.get(this, url, null, new TextHttpResponseHandler() {
                 @Override
@@ -1051,7 +1051,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 try {
                     for (String s : recordFiles) {
                         File file = new File(s);
-                        String accessToken = getSharedPreferences("kiway", 0).getString("accessToken", "");
+                        String accessToken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
                         final String ret = UploadUtil.uploadFile(file, clientUrl + "/common/file?x-auth-token=" +
                                 accessToken, file.getName());
                         JSONObject obj = new JSONObject(ret);

@@ -90,7 +90,7 @@ public class CourseListActivity extends BaseActivity {
         try {
             String url = KWApplication.clientUrl + "/device/teacher/course/attend?currentPage=1&pageSize=1024";
             AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("accessToken", ""));
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             client.get(this, url, null, new TextHttpResponseHandler() {
                 @Override
