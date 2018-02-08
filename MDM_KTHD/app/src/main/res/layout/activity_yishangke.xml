@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="#000000"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:orientation="vertical">
 
     <include layout="@layout/layout_title2"></include>
 
@@ -12,16 +12,17 @@
         android:id="@+id/list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="#e5e5e5"
-        android:dividerHeight="1px"
+        android:divider="#00000000"
+        android:dividerHeight="0px"
         android:listSelector="@drawable/course_list_selector"
         android:scrollbars="none"></com.itheima.pulltorefreshlib.PullToRefreshListView>
+
     <ImageView
         android:id="@+id/no_data"
         android:layout_width="200dp"
-        android:src="@drawable/no_data"
+        android:layout_height="200dp"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
-        android:visibility="gone"
-        android:layout_height="200dp"/>
+        android:src="@drawable/no_data"
+        android:visibility="gone" />
 </LinearLayout>

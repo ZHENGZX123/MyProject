@@ -64,18 +64,8 @@ public class MainActivity extends ScreenSharingActivity {
         instantce = this;
         setContentView(R.layout.activity_main);
         getAppData();
-        initView1();
-        Utils.login(this, new Utils.ReLogin() {
-            @Override
-            public void onSuccess() {
-                Logger.log("onSuccesss");
-            }
-
-            @Override
-            public void onFailure() {
-                Logger.log("onSuccesssFailuer");
-            }
-        });
+        initView();
+        mHandler.sendEmptyMessage(5);
     }
 
 
@@ -86,8 +76,9 @@ public class MainActivity extends ScreenSharingActivity {
         App.instance.connectService(App.instance.mClientCallback);
     }
 
-
-    void initView1() {
+    @Override
+    public void initView() {
+        super.initView();
         className = (TextView) findViewById(R.id.className);
         studentName = (TextView) findViewById(R.id.studentName);
         studentName.setText(getSharedPreferences("kiwaykthd", 0).getString("studentName", ""));
@@ -205,6 +196,19 @@ public class MainActivity extends ScreenSharingActivity {
                 intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
                 startActivity(intent);
                 finish();
+            } else if (msg.what == 5) {
+                Utils.login(MainActivity.this, new Utils.ReLogin() {
+                    @Override
+                    public void onSuccess() {
+                        Logger.log("onSuccesss");
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        Logger.log("onSuccesssFailuer");
+                    }
+                });
+                mHandler.sendEmptyMessageDelayed(5, 10 * 60 * 1000);
             }
         }
     };
@@ -609,5 +613,11 @@ public class MainActivity extends ScreenSharingActivity {
                 stopCapture();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
     }
 }
