@@ -365,16 +365,18 @@ public class QuestionActivity extends BaseActivity {
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
                 questionTime++;
+                mHandler.sendEmptyMessageDelayed(msg.what, 1000);
             } else if (msg.what == 1) {
                 if (questionTime > 0) {
                     questionTime--;
+                    mHandler.sendEmptyMessageDelayed(msg.what, 1000);
                 } else {
-                    timeup = true;
                     questionTimeup(true);
+                    timeup = true;
+                    mHandler.removeCallbacksAndMessages(null);
                 }
             }
             time.setText("时间：" + Utils.secToTime(questionTime));
-            mHandler.sendEmptyMessageDelayed(msg.what, 1000);
         }
     };
 
@@ -383,6 +385,7 @@ public class QuestionActivity extends BaseActivity {
             @Override
             public void run() {
                 timeup = true;
+                mHandler.removeCallbacksAndMessages(null);
                 if (show) {
                     toast("答题时间到，还没有提交答案的同学请点击提交");
                 }
