@@ -461,7 +461,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             mLocationClient.stop();
         }
 
-        ZbusUtils.close();
+        //ZbusUtils.close();
     }
 
 
