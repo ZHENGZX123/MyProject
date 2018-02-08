@@ -239,18 +239,27 @@ public class FenxiActivity extends BaseActivity {
             switch (fenxi.getType()) {
                 case 0:
                     holder.type.setText("知识点");
+                    holder.status.setVisibility(View.VISIBLE);
                     break;
                 case 1:
                     holder.type.setText("点名答");
+                    holder.status.setVisibility(View.VISIBLE);
                     break;
                 case 2:
                     holder.type.setText("抢答");
+                    holder.status.setVisibility(View.VISIBLE);
                     break;
                 case 3:
                     holder.type.setText("随机抽签");
+                    holder.status.setVisibility(View.VISIBLE);
                     break;
                 case 4:
                     holder.type.setText("测评");
+                    holder.status.setVisibility(View.GONE);
+                    break;
+                default:
+                    holder.type.setText("未知");
+                    holder.status.setVisibility(View.GONE);
                     break;
             }
             if (fenxi.type == 0) {
@@ -278,11 +287,7 @@ public class FenxiActivity extends BaseActivity {
                         break;
                 }
             }
-            if (tag==2){
-                holder.status.setVisibility(View.GONE);
-            }else {
-                holder.status.setVisibility(View.VISIBLE);
-            }
+
             return convertView;
         }
 
