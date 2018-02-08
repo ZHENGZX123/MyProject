@@ -278,6 +278,11 @@ public class FenxiActivity extends BaseActivity {
                         break;
                 }
             }
+            if (tag==2){
+                holder.status.setVisibility(View.GONE);
+            }else {
+                holder.status.setVisibility(View.VISIBLE);
+            }
             return convertView;
         }
 
