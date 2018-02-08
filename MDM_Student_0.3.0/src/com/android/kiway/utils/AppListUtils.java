@@ -14,6 +14,14 @@ import java.util.List;
 public class AppListUtils {
 
     public static ArrayList<String> preinstallAPP = new ArrayList<>();
+    public static ArrayList<String> preunstallApp=new ArrayList<>();
+    static {
+        preunstallApp.clear();
+        preunstallApp.add("cn.kiway.brower");
+    }
+    public static String getUnAppListData() {
+        return preunstallApp.toString();
+    }
 
     static {
         preinstallAPP.clear();
