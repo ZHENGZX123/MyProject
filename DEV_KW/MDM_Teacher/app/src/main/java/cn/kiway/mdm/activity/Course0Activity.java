@@ -29,7 +29,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -373,12 +372,7 @@ public class Course0Activity extends ScreenSharingActivity {
 
 
     public void sendFile(String filePath) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(Course0Activity.this, getString(R.string.chooseStudent), Toast.LENGTH_SHORT).show();
-            }
-        });
+        toast(R.string.chooseStudent);
         //2.再选择学生
         startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_WENJIAN).putExtra("filePath",
                 filePath));
