@@ -413,7 +413,7 @@ public class ZbusHost {
 
     private static void doSendMsg(Context c, String title, String userId, String msg, ArrayList<Student> students) throws
             Exception {
-        //topic : 上报的 deviceId#userId
+        //topic : 老师的deviceId#userId
         String topic = Utils.getIMEI(c) + "#" + userId;
         String url = zbusHost + ":" + zbusPost;
         PushMessageVo pushMessageVo = new PushMessageVo();
@@ -431,7 +431,7 @@ public class ZbusHost {
         pushMessageVo.setPushType("zbus");
 
         Log.d("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
-        ZbusUtils.sendMsg(topic, url, pushMessageVo);
+        ZbusUtils.sendMsg(topic, pushMessageVo);
     }
 
 
