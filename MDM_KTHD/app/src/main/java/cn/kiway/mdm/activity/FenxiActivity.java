@@ -72,7 +72,7 @@ public class FenxiActivity extends BaseActivity {
             client.setTimeout(10000);
             RequestParams param = new RequestParams();
             Log.d("test", "param = " + param.toString());
-            String url = getMyClassAnalysis + tag;//截图资料;
+            String url = getMyClassAnalysis + tag;
             Logger.log(url);
             client.get(this, url, param, new
                     TextHttpResponseHandler() {
