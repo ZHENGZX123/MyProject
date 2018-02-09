@@ -62,7 +62,6 @@ public class FenxiActivity extends BaseActivity {
         getDataFromServer(0);
     }
 
-
     private void getDataFromServer(final int tag) {
         this.tag = tag;
         try {
@@ -141,7 +140,7 @@ public class FenxiActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 //知识点没有详情。
                 Fenxi fenxi = fenxis.get(position - 1);
-                if (fenxi.getType() == 0) {
+                if (fenxi.type == 0) {
                     toast("知识点没有详情");
                     return;
                 }
@@ -203,11 +202,18 @@ public class FenxiActivity extends BaseActivity {
         for (int i = 0; i < array.length(); i++) {
             Fenxi fenxi = new Fenxi();
             JSONObject item = array.optJSONObject(i);
-            fenxi.setContent(item.optString("content"));
-            fenxi.setId(item.optString("id"));
-            fenxi.setStatus(item.optInt("status"));
-            fenxi.setTime(item.optString("createDate"));
-            fenxi.setType(item.optInt("type"));
+            fenxi.content = item.optString("content");
+            fenxi.id = item.optString("id");
+            fenxi.type = item.optInt("type");
+            fenxi.status = item.optInt("status");
+            fenxi.createDate = item.optString("createDate");
+
+            fenxi.questionType = item.optInt("questionType");
+            fenxi.questionContent = item.optString("questionContent");
+            fenxi.questionImg = item.optString("questionImg");
+            fenxi.questionOptions = item.optString("questionOptions");
+            fenxi.answerContent = item.optString("answerContent");
+            fenxi.answerImg = item.optString("answerImg");
             fenxis.add(fenxi);
         }
 
@@ -238,9 +244,9 @@ public class FenxiActivity extends BaseActivity {
             }
             Fenxi fenxi = fenxis.get(position);
             //知识点没有详情
-            holder.content.setText(fenxi.getContent());
-            holder.time.setText(Utils.getDateField(Long.parseLong(fenxi.getTime()), 9));
-            switch (fenxi.getType()) {
+            holder.content.setText(fenxi.content);
+            holder.time.setText(Utils.getDateField(Long.parseLong(fenxi.createDate), 9));
+            switch (fenxi.type) {
                 case 0:
                     holder.type.setText("知识点");
                     holder.status.setVisibility(View.VISIBLE);
@@ -267,7 +273,7 @@ public class FenxiActivity extends BaseActivity {
                     break;
             }
             if (fenxi.type == 0) {
-                switch (fenxi.getStatus()) {
+                switch (fenxi.status) {
                     case 0:
                         holder.status.setBackground(getDrawable(R.drawable.u4620));
                         break;
@@ -279,7 +285,7 @@ public class FenxiActivity extends BaseActivity {
                         break;
                 }
             } else {
-                switch (fenxi.getStatus()) {
+                switch (fenxi.status) {
                     case 0:
                         holder.status.setBackground(getDrawable(R.drawable.u4632));
                         break;
@@ -291,7 +297,6 @@ public class FenxiActivity extends BaseActivity {
                         break;
                 }
             }
-
             return convertView;
         }
 
