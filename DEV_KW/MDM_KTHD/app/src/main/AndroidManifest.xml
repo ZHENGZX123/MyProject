@@ -57,19 +57,19 @@
             android:name="cn.kiway.mdm.activity.FileListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensor"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <activity
             android:name="cn.kiway.mdm.activity.YiShangKeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensor"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <activity
             android:name="cn.kiway.mdm.activity.NotifyMsgActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensor"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
 
         <activity
@@ -89,25 +89,24 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="landscape"
-
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <activity
             android:name="cn.kiway.mdm.activity.UserInfoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensor"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <activity
             android:name="cn.kiway.mdm.activity.FenxiActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensor"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <activity
             android:name="cn.kiway.mdm.activity.FenxiDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensor"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
     </application>
 

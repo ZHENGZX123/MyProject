@@ -7,8 +7,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
 
         <ImageView
             android:id="@+id/clock"
@@ -51,7 +51,7 @@
             android:layout_alignTop="@+id/ball"
             android:layout_marginTop="5dp"
             android:layout_toRightOf="@+id/ball"
-            android:background="#cccccc" />
+            android:background="#6699ff" />
 
         <RelativeLayout
             android:id="@+id/contentRL"
@@ -67,7 +67,7 @@
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="5dp"
                 android:text="课程标题"
-                android:textColor="#6699ff"
+                android:textColor="#cccccc"
                 android:textSize="18sp" />
 
             <TextView
@@ -78,8 +78,8 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="5dp"
-                android:textColor="#6699ff"
-                android:text="知识点1：\n知识点2：" />
+                android:text="知识点1：\n知识点2："
+                android:textColor="#cccccc" />
 
         </RelativeLayout>
 
@@ -106,10 +106,12 @@
 
         <ImageView
             android:id="@+id/yishangke"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:background="@drawable/yishangke" />
+            android:layout_width="90dp"
+            android:layout_height="45dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="200dp"
+            android:background="@drawable/yishangke"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
