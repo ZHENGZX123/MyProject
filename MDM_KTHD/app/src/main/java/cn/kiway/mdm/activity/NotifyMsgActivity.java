@@ -72,7 +72,7 @@ public class NotifyMsgActivity extends BaseActivity {
             holder.sendName.setText(array.optJSONObject(position).optString("sendname")+ "\n" + Utils.getDateField(Long
                     .parseLong(array.optJSONObject(position).optString("time")), 9));
             holder.message.setText(array.optJSONObject(position).optString("message"));
-            holder.title.setText(array.optJSONObject(position).optString("title") );
+            holder.title.setText(array.optJSONObject(position).optString("title"));
             return convertView;
         }
 
