@@ -462,7 +462,7 @@ public class Course0Activity extends ScreenSharingActivity {
         selectQuestion(TYPE_QUESTION_CEPING);
     }
 
-    private int questionTime;
+    private int questionTime = 120;
     private TextView selectCount;
     private LinearLayout questionLL;
 
@@ -490,7 +490,7 @@ public class Course0Activity extends ScreenSharingActivity {
         selectCount = (TextView) dialog.findViewById(R.id.selectCount);
         final CheckBox selectAll = (CheckBox) dialog.findViewById(R.id.selectAll);
 
-        setSelectCount();
+        calculateSelectCount();
 
         if (type == TYPE_QUESTION_CEPING) {
             selectallRL.setVisibility(View.VISIBLE);
@@ -553,10 +553,35 @@ public class Course0Activity extends ScreenSharingActivity {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     s.selected = isChecked;
-                    if (setSelectCount()) {
+                    if (type != TYPE_QUESTION_CEPING) {
+                        //discheck others
+                        if (isChecked) {
+                            disCheckOthers(course.questions, s, questionLL, select);
+                        }
+                    }
+
+                    //calculate
+                    if (calculateSelectCount()) {
                         selectAll.setChecked(true);
                     } else {
                         selectAll.setChecked(false);
+                    }
+                }
+
+                private void disCheckOthers(ArrayList<Question> questions, Question s, LinearLayout questionLL, CheckBox select) {
+                    for (Question q : questions) {
+                        if (q != s) {
+                            q.selected = false;
+                        }
+                    }
+
+                    int count = questionLL.getChildCount();
+                    for (int i = 0; i < count; i++) {
+                        LinearLayout rowView = (LinearLayout) questionLL.getChildAt(i);
+                        CheckBox c = (CheckBox) rowView.findViewById(R.id.select);
+                        if (c != select) {
+                            c.setChecked(false);
+                        }
                     }
                 }
             });
@@ -594,11 +619,6 @@ public class Course0Activity extends ScreenSharingActivity {
                         toast("请选择一个问题");
                         return;
                     }
-                    //先暂时这么干。。。
-                    if (type != TYPE_QUESTION_CEPING && selectQuestions.size() > 1) {
-                        toast("只能选择一个问题");
-                        return;
-                    }
                     dialog.dismiss();
                     if (type == TYPE_QUESTION_DIANMINGDA) {
                         //点名答要手动选人
@@ -628,7 +648,7 @@ public class Course0Activity extends ScreenSharingActivity {
                             @Override
                             public void onSuccess() {
                                 startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type",
-                                        type).putExtra("students", students).putExtra("questionTime", questionTime)
+                                        TYPE_QUESTION_CEPING).putExtra("students", students).putExtra("questionTime", questionTime)
                                         .putExtra("questions", selectQuestions));
                             }
 
@@ -667,7 +687,6 @@ public class Course0Activity extends ScreenSharingActivity {
                     ZbusHost.qiangdaResult(Course0Activity.this, s, 0, qiangdaStudentName, null);
                     return;
                 }
-                final Question q = selectQuestions.get(0);
                 qiangdaStudentIMEI = studentIMEI;
                 //给他发送抢答成功
                 ZbusHost.qiangdaResult(Course0Activity.this, s, 1, qiangdaStudentIMEI, new OnListener() {
@@ -683,7 +702,7 @@ public class Course0Activity extends ScreenSharingActivity {
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
-                                sendQiangdaCommand(s, q);
+                                sendQiangdaCommand(s);
                             }
                         }.start();
                     }
@@ -712,10 +731,10 @@ public class Course0Activity extends ScreenSharingActivity {
             CheckBox select = (CheckBox) questionLL.getChildAt(i).findViewById(R.id.select);
             select.setChecked(isChecked);
         }
-        setSelectCount();
+        calculateSelectCount();
     }
 
-    private boolean setSelectCount() {
+    private boolean calculateSelectCount() {
         int count = 0;
         for (Question q : course.questions) {
             if (q.selected) {
@@ -763,8 +782,7 @@ public class Course0Activity extends ScreenSharingActivity {
                                     if (finalI == rand - 1) {
                                         dialog.dismiss();
                                         toast("随机到的学生是：" + s.name);
-                                        Question q = selectQuestions.get(0);
-                                        sendChoudaCommand(s, q);
+                                        sendChoudaCommand(s);
                                     }
                                 }
                             });
@@ -775,8 +793,9 @@ public class Course0Activity extends ScreenSharingActivity {
         });
     }
 
-    private void sendQiangdaCommand(final Student s, Question q) {
+    private void sendQiangdaCommand(final Student s) {
         showPD();
+        Question q = selectQuestions.get(0);
         ZbusHost.question(this, s, q, 3, questionTime, new OnListener() {
 
             @Override
@@ -799,9 +818,9 @@ public class Course0Activity extends ScreenSharingActivity {
         });
     }
 
-
-    private void sendChoudaCommand(final Student s, Question q) {
+    private void sendChoudaCommand(final Student s) {
         showPD();
+        Question q = selectQuestions.get(0);
         ZbusHost.question(this, s, q, 2, questionTime, new OnListener() {
 
             @Override
@@ -811,10 +830,10 @@ public class Course0Activity extends ScreenSharingActivity {
                 //点名答
                 ArrayList<Student> selectStudents = new ArrayList<>();
                 selectStudents.add(s);
+
                 startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type",
-                        TYPE_QUESTION_DIANMINGDA).putExtra("students", selectStudents).putExtra("questionTime",
-                        getIntent().getIntExtra("questionTime", 0)).putExtra("questions", getIntent()
-                        .getSerializableExtra("questions")));
+                        TYPE_QUESTION_SUIJICHOUDA).putExtra("students", selectStudents).putExtra("questionTime",
+                        getIntent().getIntExtra("questionTime", 0)).putExtra("questions", selectQuestions));
             }
 
             @Override
