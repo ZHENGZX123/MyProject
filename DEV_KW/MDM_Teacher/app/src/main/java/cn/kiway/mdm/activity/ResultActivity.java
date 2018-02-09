@@ -161,7 +161,9 @@ public class ResultActivity extends BaseActivity {
             }
         }
         unSubmitCount.setText("剩余" + unSubmit + "人未作答");
-        unSubmitName.setText(temp.substring(0, temp.length() - 1));
+        if (temp.length() > 0) {
+            unSubmitName.setText(temp.substring(0, temp.length() - 1));
+        }
     }
 
 
