@@ -141,6 +141,10 @@ public class FenxiActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 //知识点没有详情。
                 Fenxi fenxi = fenxis.get(position - 1);
+                if (fenxi.getType() == 0) {
+                    toast("知识点没有详情");
+                    return;
+                }
                 startActivity(new Intent(FenxiActivity.this, FenxiDetailActivity.class).putExtra("fenxi", fenxi));
             }
         });
@@ -255,11 +259,11 @@ public class FenxiActivity extends BaseActivity {
                     break;
                 case 4:
                     holder.type.setText("测评");
-                    holder.status.setVisibility(View.GONE);
+                    holder.status.setVisibility(View.INVISIBLE);
                     break;
                 default:
                     holder.type.setText("未知");
-                    holder.status.setVisibility(View.GONE);
+                    holder.status.setVisibility(View.INVISIBLE);
                     break;
             }
             if (fenxi.type == 0) {
