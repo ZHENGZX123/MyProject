@@ -949,7 +949,15 @@ public class Course0Activity extends ScreenSharingActivity {
             holder.endBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    doEndClass();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Course0Activity.this, AlertDialog.THEME_HOLO_LIGHT);
+                    AlertDialog dialog = builder.setTitle("提示").setMessage("是否结束本课程")
+                            .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface arg0, int arg1) {
+                                    doEndClass();
+                                }
+                            }).setPositiveButton(android.R.string.cancel, null).create();
+                    dialog.show();
                 }
             });
 
