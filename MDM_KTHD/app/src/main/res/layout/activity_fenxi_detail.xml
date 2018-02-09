@@ -63,8 +63,7 @@
                         android:onClick="showAnswer"
                         android:padding="10dp"
                         android:text="显示答案"
-                        android:textColor="#ffffff"
-                        android:visibility="gone" />
+                        android:textColor="#ffffff" />
 
                     <LinearLayout
                         android:id="@+id/ll_answer"
@@ -234,7 +233,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
-
                             android:gravity="center_horizontal"
                             android:text="回答错误"
                             android:textColor="#000000"

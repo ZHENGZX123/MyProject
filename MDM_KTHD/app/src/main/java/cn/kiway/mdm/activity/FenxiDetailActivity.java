@@ -4,9 +4,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,7 +24,10 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import cn.kiway.mdm.App;
+import cn.kiway.mdm.model.Choice;
 import cn.kiway.mdm.model.Fenxi;
 import cn.kiway.mdm.model.Question;
 import cn.kiway.mdm.utils.Logger;
@@ -46,8 +53,12 @@ public class FenxiDetailActivity extends BaseActivity {
 
     private ImageView answerIV;
     private GridView answerGV;
+    private MyAdapter adapter;
+    private ArrayList<Choice> choices = new ArrayList<>();
 
     private Button prev, next;
+    private ImageButton right;
+    private ImageButton wrong;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,8 +81,15 @@ public class FenxiDetailActivity extends BaseActivity {
         imgLL2 = (LinearLayout) findViewById(R.id.imgLL2);
 
         answerGV = (GridView) findViewById(R.id.answerGV);
+        adapter = new MyAdapter();
+        answerGV.setAdapter(adapter);
+
         answerTV = (TextView) findViewById(R.id.answerTV);
         answerIV = (ImageView) findViewById(R.id.answerIV);
+
+        right = (ImageButton) findViewById(R.id.right);
+        wrong = (ImageButton) findViewById(R.id.wrong);
+
         prev = (Button) findViewById(R.id.prev);
         next = (Button) findViewById(R.id.next);
 
@@ -110,7 +128,7 @@ public class FenxiDetailActivity extends BaseActivity {
                                 JSONObject data = new JSONObject(ret);
                                 if (data.optInt("statusCode") == 201) {
                                 } else if (data.optInt("statusCode") == 200) {
-                                    initData(data.optJSONObject("data"));
+                                    refresh(data.optJSONObject("data"));
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -149,34 +167,36 @@ public class FenxiDetailActivity extends BaseActivity {
         }
     }
 
-    public void initData(JSONObject data) {
-        int type = data.optInt("questionType");
-        if (type == Question.TYPE_SINGLE) {
+    public void refresh(JSONObject data) {
+
+        int questionType = data.optInt("questionType");
+        if (questionType == Question.TYPE_SINGLE) {
             qusetionType.setText("单选题");
             answerGV.setVisibility(View.VISIBLE);
             answerTV.setVisibility(View.GONE);
             answerIV.setVisibility(View.GONE);
-        } else if (type == Question.TYPE_MULTI) {
+        } else if (questionType == Question.TYPE_MULTI) {
             qusetionType.setText("多选题");
             answerGV.setVisibility(View.VISIBLE);
             answerTV.setVisibility(View.GONE);
             answerIV.setVisibility(View.GONE);
-        } else if (type == TYPE_EMPTY) {
+        } else if (questionType == TYPE_EMPTY) {
             qusetionType.setText("填空题");
             answerGV.setVisibility(View.GONE);
             answerTV.setVisibility(View.VISIBLE);
             answerIV.setVisibility(View.GONE);
-        } else if (type == Question.TYPE_JUDGE) {
+        } else if (questionType == Question.TYPE_JUDGE) {
             qusetionType.setText("判断题");
             answerGV.setVisibility(View.VISIBLE);
             answerTV.setVisibility(View.GONE);
             answerIV.setVisibility(View.GONE);
-        } else if (type == Question.TYPE_ESSAY) {
+        } else if (questionType == Question.TYPE_ESSAY) {
             qusetionType.setText("问答题");
             answerGV.setVisibility(View.GONE);
             answerTV.setVisibility(View.GONE);
             answerIV.setVisibility(View.VISIBLE);
         }
+        //问题本身
         content.setText(data.optString("questionContent"));
         imgLL.removeAllViews();
         String img = data.optString("questionImg");
@@ -197,7 +217,7 @@ public class FenxiDetailActivity extends BaseActivity {
                 imgLL.addView(iv, lp);
             }
         }
-
+        //问题的答案
         content2.setText(data.optString("answerContent"));
         imgLL2.removeAllViews();
         img = data.optString(data.optString("answerImg"));
@@ -218,6 +238,57 @@ public class FenxiDetailActivity extends BaseActivity {
                 imgLL2.addView(iv, lp);
             }
         }
+
+        //学生的答案
+        String studentAnswer = data.optString("content");
+        String questionOptions = data.optString("questionOptions");
+        if (questionType == Question.TYPE_SINGLE || questionType == Question.TYPE_MULTI) {
+            choices.clear();
+            String choose[] = questionOptions.replace("\"", "").replace("[", "").replace("]", "").split(",");
+            for (String temp : choose) {
+                if (studentAnswer.contains(temp)) {
+                    choices.add(new Choice(temp, true));
+                } else {
+                    choices.add(new Choice(temp, false));
+                }
+            }
+            adapter.notifyDataSetChanged();
+        } else if (questionType == Question.TYPE_EMPTY) {
+            answerGV.setVisibility(View.GONE);
+            answerTV.setVisibility(View.VISIBLE);
+            answerIV.setVisibility(View.GONE);
+            answerTV.setText(studentAnswer);
+        } else if (questionType == Question.TYPE_JUDGE) {
+            answerGV.setVisibility(View.VISIBLE);
+            answerTV.setVisibility(View.GONE);
+            answerIV.setVisibility(View.GONE);
+            choices.clear();
+            if (studentAnswer.contains("对")) {
+                choices.add(new Choice("对", true));
+                choices.add(new Choice("错", false));
+            } else if (studentAnswer.contains("错")) {
+                choices.add(new Choice("对", false));
+                choices.add(new Choice("错", true));
+            } else {
+                choices.add(new Choice("对", false));
+                choices.add(new Choice("错", false));
+            }
+            adapter.notifyDataSetChanged();
+        } else if (questionType == Question.TYPE_ESSAY) {
+            answerGV.setVisibility(View.GONE);
+            answerTV.setVisibility(View.GONE);
+            answerIV.setVisibility(View.VISIBLE);
+            ImageLoader.getInstance().displayImage(studentAnswer, answerIV, App.getLoaderOptions());
+        }
+
+        int status = data.optInt("status");
+        if (status == 0) {
+            right.setBackgroundResource(R.drawable.right1);
+            wrong.setBackgroundResource(R.drawable.wrong2);
+        } else if (status == 1) {
+            right.setBackgroundResource(R.drawable.right2);
+            wrong.setBackgroundResource(R.drawable.wrong1);
+        }
     }
 
     public void showAnswer(View view) {
@@ -234,5 +305,65 @@ public class FenxiDetailActivity extends BaseActivity {
 
     public void next(View view) {
 
+    }
+
+
+    private class MyAdapter extends BaseAdapter {
+
+        private final LayoutInflater inflater;
+
+        public MyAdapter() {
+            inflater = LayoutInflater.from(FenxiDetailActivity.this);
+        }
+
+        @Override
+        public boolean isEnabled(int position) {
+            return false;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View rowView = convertView;
+            ViewHolder holder;
+            if (rowView == null) {
+                rowView = inflater.inflate(R.layout.item_answer, null);
+                holder = new ViewHolder();
+
+                holder.choose = (TextView) rowView.findViewById(R.id.choose);
+
+                rowView.setTag(holder);
+            } else {
+                holder = (ViewHolder) rowView.getTag();
+            }
+
+            Choice c = choices.get(position);
+            holder.choose.setText(c.content);
+            if (c.selected) {
+                holder.choose.setBackgroundResource(R.drawable.green);
+            } else {
+                holder.choose.setBackgroundResource(R.drawable.gray);
+            }
+
+            return rowView;
+        }
+
+        public class ViewHolder {
+            public TextView choose;
+        }
+
+        @Override
+        public int getCount() {
+            return choices.size();
+        }
+
+        @Override
+        public Choice getItem(int arg0) {
+            return choices.get(arg0);
+        }
+
+        @Override
+        public long getItemId(int arg0) {
+            return arg0;
+        }
     }
 }
