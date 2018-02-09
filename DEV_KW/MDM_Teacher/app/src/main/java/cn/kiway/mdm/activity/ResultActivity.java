@@ -140,7 +140,23 @@ public class ResultActivity extends BaseActivity {
                 startActivityForResult(new Intent(ResultActivity.this, ResultDetailActivity.class).putExtra("studentIndex", position), 8888);
             }
         });
+
+        refreshUI();
     }
+
+    private void refreshUI() {
+        int unSubmit = 0;
+        String temp = "";
+        for (Student s : students) {
+            if (!s.submited) {
+                unSubmit++;
+                temp += s.name + "、";
+            }
+        }
+        unSubmitCount.setText("剩余" + unSubmit + "人未作答");
+        unSubmitName.setText(temp.substring(0, temp.length() - 1));
+    }
+
 
     private void initData() {
         if (questionTime == 0) {
@@ -226,6 +242,8 @@ public class ResultActivity extends BaseActivity {
                         hint.setText("答题结束");
                     }
                 }
+
+                refreshUI();
             }
         });
     }
