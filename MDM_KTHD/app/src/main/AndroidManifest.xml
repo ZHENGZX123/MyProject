@@ -76,7 +76,7 @@
             android:name="cn.kiway.mdm.activity.Course1Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensor"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <activity
             android:name="cn.kiway.mdm.activity.TongjiActivity"

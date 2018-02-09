@@ -2,20 +2,25 @@ package cn.kiway.mdm.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.kiway.mdm.App;
 import cn.kiway.mdm.model.Fenxi;
 import cn.kiway.mdm.model.Question;
 import cn.kiway.mdm.utils.Logger;
@@ -34,10 +39,15 @@ import static cn.kiway.mdm.utils.HttpUtil.getAnalysisDetial;
  */
 
 public class FenxiDetailActivity extends BaseActivity {
-    Fenxi fenxi;
-    TextView titleName, qusetionType, content, answerTV;
-    ImageView status, answerIV;
+    private Fenxi fenxi;
+    private TextView titleName, qusetionType, content, answerTV, content2;
+    private LinearLayout imgLL, imgLL2;
+    private LinearLayout ll_answer;
+
+    private ImageView answerIV;
     private GridView answerGV;
+
+    private Button prev, next;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,45 +63,32 @@ public class FenxiDetailActivity extends BaseActivity {
         super.initView();
         titleName = (TextView) findViewById(R.id.titleName);
         qusetionType = (TextView) findViewById(R.id.type);
-        status = (ImageView) findViewById(R.id.status);
         content = (TextView) findViewById(R.id.content);
+        imgLL = (LinearLayout) findViewById(R.id.imgLL);
+        ll_answer = (LinearLayout) findViewById(R.id.ll_answer);
+        content2 = (TextView) findViewById(R.id.content2);
+        imgLL2 = (LinearLayout) findViewById(R.id.imgLL2);
+
         answerGV = (GridView) findViewById(R.id.answerGV);
         answerTV = (TextView) findViewById(R.id.answerTV);
         answerIV = (ImageView) findViewById(R.id.answerIV);
-        if (fenxi.getType() == TYPE_QUESTION_DIANMINGDA) {
-            titleName.setText("点名答");
-        } else if (fenxi.getType() == TYPE_QUESTION_QIANGDA) {
-            titleName.setText("抢答");
-        } else if (fenxi.getType() == TYPE_QUESTION_SUIJICHOUDA) {
-            titleName.setText("抽答");
-        } else if (fenxi.getType() == TYPE_QUESTION_CEPING) {
-            titleName.setText("测评");
-        }
+        prev = (Button) findViewById(R.id.prev);
+        next = (Button) findViewById(R.id.next);
 
-        if (fenxi.type == 0) {
-            switch (fenxi.getStatus()) {
-                case 0:
-                    status.setBackground(getDrawable(R.drawable.u4620));
-                    break;
-                case 1:
-                    status.setBackground(getDrawable(R.drawable.u4622));
-                    break;
-                case 2:
-                    status.setBackground(getDrawable(R.drawable.u4624));
-                    break;
-            }
-        } else {
-            switch (fenxi.getStatus()) {
-                case 0:
-                    status.setBackground(getDrawable(R.drawable.u4632));
-                    break;
-                case 1:
-                    status.setBackground(getDrawable(R.drawable.u4618));
-                    break;
-                case 2:
-                    status.setBackground(getDrawable(R.drawable.u4624));
-                    break;
-            }
+        if (fenxi.type == TYPE_QUESTION_DIANMINGDA) {
+            titleName.setText("点名答");
+            prev.setVisibility(View.GONE);
+            next.setVisibility(View.GONE);
+        } else if (fenxi.type == TYPE_QUESTION_QIANGDA) {
+            titleName.setText("抢答");
+            prev.setVisibility(View.GONE);
+            next.setVisibility(View.GONE);
+        } else if (fenxi.type == TYPE_QUESTION_SUIJICHOUDA) {
+            titleName.setText("抽答");
+            prev.setVisibility(View.GONE);
+            next.setVisibility(View.GONE);
+        } else if (fenxi.type == TYPE_QUESTION_CEPING) {
+            titleName.setText("测评");
         }
     }
 
@@ -102,7 +99,7 @@ public class FenxiDetailActivity extends BaseActivity {
             client.setTimeout(10000);
             RequestParams param = new RequestParams();
             Log.d("test", "param = " + param.toString());
-            String url = getAnalysisDetial + fenxi.getId();//截图资料;
+            String url = getAnalysisDetial + fenxi.id;
             Logger.log(url);
             client.get(this, url, param, new
                     TextHttpResponseHandler() {
@@ -181,5 +178,61 @@ public class FenxiDetailActivity extends BaseActivity {
             answerIV.setVisibility(View.VISIBLE);
         }
         content.setText(data.optString("questionContent"));
+        imgLL.removeAllViews();
+        String img = data.optString("questionImg");
+        if (!TextUtils.isEmpty(img)) {
+            String imgs[] = img.split(",");
+            for (int i = 0; i < imgs.length; i++) {
+                final String imageUrl = imgs[i];
+                ImageView iv = new ImageView(this);
+                iv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Utils.showBigImage(FenxiDetailActivity.this, new String[]{imageUrl}, 0);
+                    }
+                });
+                ImageLoader.getInstance().displayImage(imgs[i], iv, App.getLoaderOptions());
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                lp.setMargins(10, 10, 10, 10);
+                imgLL.addView(iv, lp);
+            }
+        }
+
+        content2.setText(data.optString("answerContent"));
+        imgLL2.removeAllViews();
+        img = data.optString(data.optString("answerImg"));
+        if (!TextUtils.isEmpty(img)) {
+            String imgs[] = img.split(",");
+            for (int i = 0; i < imgs.length; i++) {
+                final String imageUrl = imgs[i];
+                ImageView iv = new ImageView(this);
+                iv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Utils.showBigImage(FenxiDetailActivity.this, new String[]{imageUrl}, 0);
+                    }
+                });
+                ImageLoader.getInstance().displayImage(imgs[i], iv, App.getLoaderOptions());
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                lp.setMargins(10, 10, 10, 10);
+                imgLL2.addView(iv, lp);
+            }
+        }
+    }
+
+    public void showAnswer(View view) {
+        if (ll_answer.isShown()) {
+            ll_answer.setVisibility(View.GONE);
+        } else {
+            ll_answer.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void prev(View view) {
+
+    }
+
+    public void next(View view) {
+
     }
 }
