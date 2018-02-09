@@ -81,8 +81,8 @@ public class ResultDetailActivity extends BaseActivity {
         next = (Button) findViewById(R.id.next);
         type = (TextView) findViewById(R.id.type);
         content = (TextView) findViewById(R.id.content);
-        content2 = (TextView) findViewById(R.id.content2);
         imgLL = (LinearLayout) findViewById(R.id.imgLL);
+        content2 = (TextView) findViewById(R.id.content2);
         imgLL2 = (LinearLayout) findViewById(R.id.imgLL2);
         ll_answer = (LinearLayout) findViewById(R.id.ll_answer);
         right = (ImageButton) findViewById(R.id.right);

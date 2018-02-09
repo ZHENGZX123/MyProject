@@ -118,17 +118,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
+                        android:checked="true"
                         android:text="倒计时"
                         android:textColor="#333333" />
-
 
                     <ImageButton
                         android:id="@+id/plus"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginLeft="20dp"
-                        android:background="@drawable/plus"
-                        android:visibility="gone" />
+                        android:background="@drawable/plus" />
 
                     <TextView
                         android:id="@+id/settime"
@@ -137,15 +136,13 @@
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
                         android:text="02:00"
-                        android:textColor="#000000"
-                        android:visibility="gone" />
+                        android:textColor="#000000" />
 
                     <ImageButton
                         android:id="@+id/minus"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:background="@drawable/minus"
-                        android:visibility="gone" />
+                        android:background="@drawable/minus" />
                 </LinearLayout>
 
                 <Button
