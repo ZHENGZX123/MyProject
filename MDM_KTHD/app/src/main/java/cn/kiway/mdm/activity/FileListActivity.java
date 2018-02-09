@@ -23,6 +23,7 @@ import com.itheima.pulltorefreshlib.PullToRefreshListView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -32,6 +33,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 
+import cn.kiway.mdm.App;
 import cn.kiway.mdm.model.FileModel;
 import cn.kiway.mdm.utils.FileUtils;
 import cn.kiway.mdm.utils.HttpDownload;
@@ -285,8 +287,11 @@ public class FileListActivity extends BaseActivity {
                 holder.type.setBackgroundResource(R.drawable.doc);
             } else if (suffix.endsWith("ppt") || suffix.endsWith("pptx")) {
                 holder.type.setBackgroundResource(R.drawable.ppt);
+            } else if (suffix.endsWith("png") || suffix.endsWith("jpg") || suffix.endsWith("jpeg")) {
+                ImageLoader.getInstance().displayImage(fm.getUrl(), holder.type, App.getLoaderOptions());
             } else {
                 holder.type.setBackgroundResource(R.drawable.png);
+
             }
             return convertView;
         }
