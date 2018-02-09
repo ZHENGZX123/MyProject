@@ -272,7 +272,7 @@ public class App extends KiwayApplication {
             @Override
             public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
                 Logger.log("::::::::::::onFailure" + ret);
-                if (!ret.equals("")) {
+                if (ret!=null&&!ret.equals("")) {
                     try {
                         JSONObject data = new JSONObject(ret);
                         if (data.optInt("statusCode") != 200) {
