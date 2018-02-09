@@ -676,7 +676,11 @@ public class QuestionActivity extends BaseActivity {
             return;
         }
         if (!collected) {
-            toast("老师还没有批改，不能退出本次问答/测评");
+            if (timeup) {
+                finish();
+            } else {
+                toast("老师还没有批改，不能退出本次问答/测评");
+            }
             return;
         }
         finish();
