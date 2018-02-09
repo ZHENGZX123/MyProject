@@ -109,18 +109,22 @@ public class ResultActivity extends BaseActivity {
 
         if (type == TYPE_QUESTION_DIANMINGDA) {
             titleName.setText("点名答");
+            unSubmitCount.setVisibility(View.GONE);
             unSubmitLL.setVisibility(View.GONE);
             hint.setText("答题进行中......");
         } else if (type == TYPE_QUESTION_QIANGDA) {
             titleName.setText("抢答");
+            unSubmitCount.setVisibility(View.GONE);
             unSubmitLL.setVisibility(View.GONE);
             hint.setText("答题进行中......");
         } else if (type == TYPE_QUESTION_SUIJICHOUDA) {
             titleName.setText("抽答");
+            unSubmitCount.setVisibility(View.GONE);
             unSubmitLL.setVisibility(View.GONE);
             hint.setText("答题进行中......");
         } else if (type == TYPE_QUESTION_CEPING) {
             titleName.setText("测评");
+            unSubmitCount.setVisibility(View.VISIBLE);
             unSubmitLL.setVisibility(View.VISIBLE);
             hint.setText("测评进行中......");
         }
@@ -145,6 +149,9 @@ public class ResultActivity extends BaseActivity {
     }
 
     private void refreshUI() {
+        if (unSubmitLL.getVisibility() == View.GONE) {
+            return;
+        }
         int unSubmit = 0;
         String temp = "";
         for (Student s : students) {
