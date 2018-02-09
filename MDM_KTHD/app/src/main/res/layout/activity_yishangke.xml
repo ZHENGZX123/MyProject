@@ -7,7 +7,6 @@
 
     <include layout="@layout/layout_title2"></include>
 
-
     <com.itheima.pulltorefreshlib.PullToRefreshListView
         android:id="@+id/list_view"
         android:layout_width="match_parent"

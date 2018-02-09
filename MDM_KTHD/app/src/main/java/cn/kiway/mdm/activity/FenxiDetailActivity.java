@@ -35,9 +35,10 @@ import static cn.kiway.mdm.utils.HttpUtil.getAnalysisDetial;
 
 public class FenxiDetailActivity extends BaseActivity {
     Fenxi fenxi;
-    TextView titleName, qusetionType,content,answerTV;
-    ImageView status,answerIV;
+    TextView titleName, qusetionType, content, answerTV;
+    ImageView status, answerIV;
     private GridView answerGV;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,11 +53,11 @@ public class FenxiDetailActivity extends BaseActivity {
         super.initView();
         titleName = (TextView) findViewById(R.id.titleName);
         qusetionType = (TextView) findViewById(R.id.type);
-        status= (ImageView) findViewById(R.id.status);
-        content= (TextView) findViewById(R.id.content);
-        answerGV= (GridView) findViewById(R.id.answerGV);
-        answerTV= (TextView) findViewById(R.id.answerTV);
-        answerIV= (ImageView) findViewById(R.id.answerIV);
+        status = (ImageView) findViewById(R.id.status);
+        content = (TextView) findViewById(R.id.content);
+        answerGV = (GridView) findViewById(R.id.answerGV);
+        answerTV = (TextView) findViewById(R.id.answerTV);
+        answerIV = (ImageView) findViewById(R.id.answerIV);
         if (fenxi.getType() == TYPE_QUESTION_DIANMINGDA) {
             titleName.setText("点名答");
         } else if (fenxi.getType() == TYPE_QUESTION_QIANGDA) {
@@ -97,7 +98,7 @@ public class FenxiDetailActivity extends BaseActivity {
     public void loadData() {
         try {
             AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token",  getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             RequestParams param = new RequestParams();
             Log.d("test", "param = " + param.toString());
@@ -123,7 +124,7 @@ public class FenxiDetailActivity extends BaseActivity {
                         public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
                             Log.d("test", "calls onFailure = " + ret);
                             Logger.log("::::::::::::onFailure" + ret);
-                            if (!ret.equals("")) {
+                            if (ret != null && !ret.equals("")) {
                                 try {
                                     JSONObject data = new JSONObject(ret);
                                     if (data.optInt("statusCode") != 200) {
