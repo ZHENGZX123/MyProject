@@ -8,6 +8,7 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
@@ -180,7 +181,7 @@ public class App extends KiwayApplication {
         @Override
         public void accpterMessage(String msg, String token) throws RemoteException {
             Log.d("test", "accpterMessage msg = " + msg + "");
-            
+
             getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
             try {
                 JSONObject o = new JSONObject(msg);
@@ -253,7 +254,6 @@ public class App extends KiwayApplication {
     };
 
     public void uploadUserFile(final String url, final int type, final String name, final String size) {
-
         AsyncHttpClient client = new AsyncHttpClient();
         client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
         client.setTimeout(10000);
@@ -272,7 +272,7 @@ public class App extends KiwayApplication {
             @Override
             public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
                 Logger.log("::::::::::::onFailure" + ret);
-                if (ret!=null&&!ret.equals("")) {
+                if (ret != null && !ret.equals("")) {
                     try {
                         JSONObject data = new JSONObject(ret);
                         if (data.optInt("statusCode") != 200) {
@@ -284,13 +284,14 @@ public class App extends KiwayApplication {
 
                                 @Override
                                 public void onFailure() {
-
                                 }
                             });
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                } else {
+                    Toast.makeText(App.this, "请求失败，请稍后再试", Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -64,7 +64,6 @@ public class FenxiActivity extends BaseActivity {
 
 
     private void getDataFromServer(final int tag) {
-        // initData(type);
         this.tag = tag;
         try {
             AsyncHttpClient client = new AsyncHttpClient();
@@ -105,7 +104,7 @@ public class FenxiActivity extends BaseActivity {
                         public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
                             Log.d("test", "calls onFailure = " + ret);
                             Logger.log("::::::::::::onFailure" + ret);
-                            if (ret!=null&&!ret.equals("")) {
+                            if (ret != null && !ret.equals("")) {
                                 try {
                                     JSONObject data = new JSONObject(ret);
                                     if (data.optInt("statusCode") != 200) {
@@ -125,6 +124,7 @@ public class FenxiActivity extends BaseActivity {
                                     e.printStackTrace();
                                 }
                             } else {
+                                toast("请求失败，请稍后再试");
                                 listView.onRefreshComplete();
                             }
                         }
