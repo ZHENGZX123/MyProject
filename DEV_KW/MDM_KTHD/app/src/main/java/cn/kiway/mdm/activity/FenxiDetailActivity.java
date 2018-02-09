@@ -143,6 +143,7 @@ public class FenxiDetailActivity extends BaseActivity {
                                     e.printStackTrace();
                                 }
                             } else {
+                                toast("请求失败，请稍后再试");
                             }
                         }
                     });
