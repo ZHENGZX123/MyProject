@@ -105,7 +105,7 @@ public class FenxiActivity extends BaseActivity {
                         public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
                             Log.d("test", "calls onFailure = " + ret);
                             Logger.log("::::::::::::onFailure" + ret);
-                            if (!ret.equals("")) {
+                            if (ret!=null&!ret.equals("")) {
                                 try {
                                     JSONObject data = new JSONObject(ret);
                                     if (data.optInt("statusCode") != 200) {
