@@ -338,9 +338,13 @@ public class Course0Activity extends ScreenSharingActivity {
     }
 
     private void endTuiping() {
+        if (mRtcEngine == null) {
+            return;
+        }
         toast("结束推屏");
         mRtcEngine.leaveChannel();
         stopCapture();
+        deInitModules();
     }
 
     public void chaping(View view) {
@@ -930,10 +934,8 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder.ball.setVisibility(View.VISIBLE);
                 holder.line.setVisibility(View.VISIBLE);
                 holder.line2.setVisibility(View.VISIBLE);
-
                 //add content1
                 addContent1(holder);
-
             } else if (s.type == TYPE_END) {
                 holder.type0RL.setVisibility(View.GONE);
                 holder.type1RL.setVisibility(View.GONE);
@@ -956,6 +958,8 @@ public class Course0Activity extends ScreenSharingActivity {
                                 public void onClick(DialogInterface arg0, int arg1) {
                                     //1.停止推屏
                                     if (tuiping) {
+                                        tuiping = false;
+                                        tuipingIV.setBackgroundResource(R.drawable.screen_control1);
                                         endTuiping();
                                     }
                                     //2.停止录制

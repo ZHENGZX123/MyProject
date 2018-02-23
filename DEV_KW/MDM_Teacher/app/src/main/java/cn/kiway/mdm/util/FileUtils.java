@@ -259,7 +259,7 @@ public class FileUtils {
     }
 
     public static void saveFile(String str) {
-        String filePath = "/mnt/sdcard/kiway_mdm_teacher/imei.txt";
+        String filePath = KWApplication.ROOT + "imei.txt";
         try {
             File file = new File(filePath);
             if (!file.exists()) {
@@ -274,6 +274,7 @@ public class FileUtils {
             e.printStackTrace();
         }
     }
+
     public static String GetFileSize(File file) {
         String size = "";
         if (file.exists() && file.isFile()) {
