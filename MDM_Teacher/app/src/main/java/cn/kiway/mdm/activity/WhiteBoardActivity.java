@@ -80,7 +80,7 @@ public class WhiteBoardActivity extends BaseActivity {
         settings.setLoadWithOverviewMode(true);
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new WebChromeClient());
-        wv.addJavascriptInterface(new JsAndroidInterface2(), "wx");
+        wv.addJavascriptInterface(new JsAndroidInterface2(this), "wx");
     }
 
     @Override

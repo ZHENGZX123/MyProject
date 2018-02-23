@@ -236,13 +236,17 @@ public class Utils {
     }
 
     public static boolean saveBitmap(Bitmap bm, String picName) {
-        File f = new File("/mnt/sdcard/", picName);
+        String folder = KWApplication.ROOT + "snapshot/";
+        if (!new File(folder).exists()) {
+            new File(folder).mkdirs();
+        }
+        File f = new File(folder, picName);
         if (f.exists()) {
             f.delete();
         }
         try {
             FileOutputStream out = new FileOutputStream(f);
-            bm.compress(Bitmap.CompressFormat.PNG, 90, out);
+            bm.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
             out.close();
             return true;
@@ -253,9 +257,6 @@ public class Utils {
         }
         return false;
     }
-
-    private static String wifiIp;
-
 
     private static String courseID;
 
