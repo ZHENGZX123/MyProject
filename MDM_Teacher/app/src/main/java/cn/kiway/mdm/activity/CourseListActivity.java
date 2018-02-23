@@ -142,7 +142,6 @@ public class CourseListActivity extends BaseActivity {
         }
     }
 
-
     private class MyAdapter extends BaseAdapter {
 
         private final LayoutInflater inflater;

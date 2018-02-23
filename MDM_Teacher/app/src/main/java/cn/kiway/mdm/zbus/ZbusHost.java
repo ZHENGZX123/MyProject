@@ -16,6 +16,7 @@ import cn.kiway.mdm.activity.ResultActivity;
 import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
+import cn.kiway.mdm.util.Constant;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.zbus.utils.ZbusUtils;
 import cn.kiway.zbus.vo.PushMessageVo;
@@ -27,11 +28,6 @@ import static cn.kiway.mdm.KWApplication.students;
  */
 
 public class ZbusHost {
-    public static String zbusHost = "192.168.8.161";
-    public static String zbusPost = "15556";//15555
-
-    public static final String APPID = "f2ec1fb69b27c7ab5260d2eb7cd95dea";
-    public static final String APPKEY = "9a9b01f8ab910e12422bcc0e88d95dff2f95f582";
 
     public static void tongji(final Activity c, final KnowledgePoint kp, final OnListener onListener) {
         new Thread() {
@@ -415,12 +411,12 @@ public class ZbusHost {
             Exception {
         //topic : 老师的deviceId#userId
         String topic = Utils.getIMEI(c) + "#" + userId;
-        String url = zbusHost + ":" + zbusPost;
+        String url = Constant.zbusHost + ":" + Constant.zbusPost;
         PushMessageVo pushMessageVo = new PushMessageVo();
         pushMessageVo.setDescription(title);
         pushMessageVo.setTitle(title);
         pushMessageVo.setMessage(msg);
-        pushMessageVo.setAppId(APPID);
+        pushMessageVo.setAppId(Constant.APPID);
         pushMessageVo.setModule("student");
         Set<String> userIds = new HashSet<>();
         for (Student s : students) {

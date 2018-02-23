@@ -35,7 +35,7 @@ import static cn.kiway.mdm.KWApplication.clientUrl;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMING;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.FileUtils.EnFILEPATH;
-import static cn.kiway.mdm.zbus.ZbusHost.APPID;
+import static cn.kiway.mdm.util.Constant.APPID;
 
 /**
  * Created by Administrator on 2017/11/9.

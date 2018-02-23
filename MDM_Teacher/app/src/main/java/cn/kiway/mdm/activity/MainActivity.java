@@ -56,7 +56,6 @@ import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.web.JsAndroidInterface;
 import cn.kiway.mdm.web.MyWebViewClient;
-import cn.kiway.mdm.zbus.ZbusHost;
 import cn.kiway.mdm.zbus.ZbusMessageHandler;
 import cn.kiway.zbus.utils.ZbusUtils;
 import io.zbus.mq.Broker;
@@ -126,8 +125,6 @@ public class MainActivity extends BaseActivity {
     //初始化zbus
     public void initZbus() {
         Log.d("test", "initZbus");
-
-
         new Thread() {
             @Override
             public void run() {
@@ -136,7 +133,7 @@ public class MainActivity extends BaseActivity {
                     if (TextUtils.isEmpty(userId)) {
                         return;
                     }
-                    Broker broker = new Broker(ZbusHost.zbusHost + ":" + ZbusHost.zbusPost);
+                    Broker broker = new Broker(cn.kiway.mdm.util.Constant.zbusHost + ":" + cn.kiway.mdm.util.Constant.zbusPost);
                     Producer p = new Producer(broker);
                     ZbusUtils.init(broker, p);
                     String topic = "kiway_push_" + userId;
@@ -256,7 +253,6 @@ public class MainActivity extends BaseActivity {
                 return;
             List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
             String filePath = list.get(0);
-            // uploadFile(filePath, true);
             if (Utils.isImage(filePath)) {
                 //需要裁剪的图片路径
                 Uri sourceUri = Uri.fromFile(new File(filePath));
