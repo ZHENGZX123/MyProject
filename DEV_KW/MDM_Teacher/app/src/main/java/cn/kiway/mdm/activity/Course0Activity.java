@@ -176,7 +176,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", "course onFailure = " + s);
-                    if (!check301(Course0Activity.this, s, "coursedetail")) {
+                    if (!check301(Course0Activity.this, s, "coursedetail0")) {
                         toast("请求失败，请稍后再试");
                         hidePD();
                         finish();
@@ -1058,7 +1058,6 @@ public class Course0Activity extends ScreenSharingActivity {
     }
 
     private void doEndClass() {
-        //Utils.xiake(Course0Activity.this);
         ZbusHost.xiake(Course0Activity.this, null);
         Utils.endClass(Course0Activity.this, course.id);
         //后台上传录制视频

@@ -42,8 +42,6 @@ import cn.kiway.mdm.activity.StudentGridActivity;
 import cn.kiway.mdm.teacher.R;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMING;
-
 /**
  * Created by Administrator on 2017/7/5.
  */
@@ -258,78 +256,6 @@ public class Utils {
 
     private static String wifiIp;
 
-    public static void shangke(final Activity c, String wifiIp) {
-        Utils.wifiIp = wifiIp;
-        try {
-            //1.发“上课”推送命令
-            ((BaseActivity) c).showPD();
-            String url = KWApplication.clientUrl + "/device/push/teacher/attendClass?flag=1&ip=" + wifiIp +
-                    "&platform=Android";
-            Log.d("test", "shangke url = " + url);
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-            client.setTimeout(10000);
-            client.post(c, url, null, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "shangke onSuccess = " + ret);
-                    try {
-                        ((BaseActivity) c).hidePD();
-                        int statusCode = new JSONObject(ret).optInt("statusCode");
-                        if (statusCode == 200) {
-                            c.startActivity(new Intent(c, StudentGridActivity.class).putExtra("type", TYPE_DIANMING));
-                        } else {
-                            String errorMsg = new JSONObject(ret).optString("errorMsg");
-                            toast(c, errorMsg);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "shangke onFailure = " + s);
-                    if (!check301(c, s, "shangke")) {
-                        ((BaseActivity) c).hidePD();
-                        toast(c, "请求失败，请稍后再试");
-                    }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            toast(c, "请求失败，请稍后再试");
-            ((BaseActivity) c).hidePD();
-        }
-    }
-
-    public static void xiake(final Activity c) {
-        try {
-            //1.发“下课”推送命令
-            String url = KWApplication.clientUrl +
-                    "/device/push/teacher/attendClass?flag=2&ip=0.0.0.0&platform=Android";
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-            client.setTimeout(10000);
-            client.post(c, url, null, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", " onSuccess = " + ret);
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", " onFailure = " + s);
-                    if (!check301(c, s, "xiake")) {
-                        toast(c, "请求失败，请稍后再试");
-                    }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            toast(c, "请求失败，请稍后再试");
-        }
-    }
 
     private static String courseID;
 
@@ -433,19 +359,13 @@ public class Utils {
                         //relogin 其他参数存不存都可以
                         String token = o.getJSONObject("data").getString("token");
                         c.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
-                        if (type.equals("shangke")) {
-                            shangke(c, wifiIp);
-                        } else if (type.equals("xiake")) {
-                            xiake(c);
-                        } else if (type.equals("endclass")) {
+                        if (type.equals("endclass")) {
                             endClass(c, courseID);
                         } else if (type.equals("students")) {
                             ((StudentGridActivity) c).initData();
-                        } else if (type.equals("sign")) {
-                            ((StudentGridActivity) c).doStartSign();
                         } else if (type.equals("courselist")) {
                             ((CourseListActivity) c).initData();
-                        } else if (type.equals("coursedetail")) {
+                        } else if (type.equals("coursedetail0")) {
                             ((Course0Activity) c).initData();
                         } else if (type.equals("coursedetail1")) {
                             ((Course1Activity) c).initData();
