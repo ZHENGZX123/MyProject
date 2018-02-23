@@ -398,6 +398,7 @@ public class StudentGridActivity extends BaseActivity {
             public void onSuccess() {
                 if (chaping == 1) {
                     String roomName = s.imei;
+                    Log.d("test", "roomName = " + roomName);
                     startPlayer(roomName);
                 }
             }
