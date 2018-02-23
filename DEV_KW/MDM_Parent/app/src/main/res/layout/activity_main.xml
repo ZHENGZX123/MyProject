@@ -26,11 +26,11 @@
 
         </RelativeLayout>
 
-        <cn.kiway.mdm.view.X5WebView
+        <com.tencent.smtt.sdk.WebView
             android:id="@+id/wv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/rl_nonet"></cn.kiway.mdm.view.X5WebView>
+            android:layout_below="@id/rl_nonet"></com.tencent.smtt.sdk.WebView>
 
         <LinearLayout
             android:id="@+id/layout_welcome"
