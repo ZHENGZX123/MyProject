@@ -1,12 +1,9 @@
 package io.agora.openlive.ui;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceView;
-import android.view.View;
-import android.view.WindowManager;
 
 import java.util.HashMap;
 
@@ -116,7 +113,7 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
         Log.d("test", "onUserOffline , uid = " + uid + " , reason = " + reason);
         doRemoveRemoteUi(uid);
         //zhengkang fix here1226
-        finish();
+        //finish();
     }
 
     @Override
@@ -153,26 +150,5 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
             }
         }
     }
-
-    protected void hideBottomUIMenu() {
-        //隐藏虚拟按键，并且全屏
-        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
-            View v = this.getWindow().getDecorView();
-            v.setSystemUiVisibility(View.GONE);
-        } else if (Build.VERSION.SDK_INT >= 19) {
-            //for new api versions.
-            View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE;
-            decorView.setSystemUiVisibility(uiOptions);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }
-    }
-
-
 
 }

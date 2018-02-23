@@ -120,25 +120,25 @@ public abstract class BaseActivity extends Activity {
         }
 
         if (Manifest.permission.CAMERA.equals(permission)) {
-            AGApplication.initWorkerThread(this);
+            AGApplication.initWorkerThread(getApplicationContext());
         }
         return true;
     }
 
     protected RtcEngine rtcEngine() {
-        return AGApplication.getWorkerThread(this).getRtcEngine();
+        return AGApplication.getWorkerThread(getApplicationContext()).getRtcEngine();
     }
 
     protected final WorkerThread worker() {
-        return AGApplication.getWorkerThread(this);
+        return AGApplication.getWorkerThread(getApplicationContext());
     }
 
     protected final EngineConfig config() {
-        return AGApplication.getWorkerThread(this).getEngineConfig();
+        return AGApplication.getWorkerThread(getApplicationContext()).getEngineConfig();
     }
 
     protected final MyEngineEventHandler event() {
-        return AGApplication.getWorkerThread(this).eventHandler();
+        return AGApplication.getWorkerThread(getApplicationContext()).eventHandler();
     }
 
     public final void showLongToast(final String msg) {
@@ -167,7 +167,7 @@ public abstract class BaseActivity extends Activity {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, ConstantApp.PERMISSION_REQ_ID_WRITE_EXTERNAL_STORAGE);
-                    AGApplication.initWorkerThread(this);
+                    AGApplication.initWorkerThread(getApplicationContext());
                 } else {
                     finish();
                 }
