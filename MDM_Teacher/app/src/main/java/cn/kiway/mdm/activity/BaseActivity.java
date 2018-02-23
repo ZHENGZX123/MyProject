@@ -155,7 +155,7 @@ public class BaseActivity extends Activity {
     }
 
     public void startPlayer(String roomName) {
-        //1.开始播放教师推屏
+        //1.开始播放学生推屏
         Intent i = new Intent(BaseActivity.this, LiveRoomActivity.class);
         i.putExtra(ConstantApp.ACTION_KEY_CROLE, Constants.CLIENT_ROLE_AUDIENCE);
         i.putExtra(ConstantApp.ACTION_KEY_ROOM_NAME, roomName);

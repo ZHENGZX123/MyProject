@@ -440,7 +440,7 @@ public class Utils {
     }
 
     public static String getIMEI(Context c) {
-        String imei = FileUtils.readSDCardFile("/mnt/sdcard/kiway_mdm_student/imei.txt", c);
+        String imei = FileUtils.readSDCardFile(KWApplication.ROOT + "/imei.txt", c);
         if (TextUtils.isEmpty(imei)) {
             TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
             imei = tm.getDeviceId();

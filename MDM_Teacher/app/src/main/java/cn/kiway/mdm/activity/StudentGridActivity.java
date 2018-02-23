@@ -502,7 +502,11 @@ public class StudentGridActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final Student s = students.get(position);
                 if (type == TYPE_DIANMING) {
-                    toast(s.name + (s.come ? "到了" : "没到"));
+                    if (dianmingAlready) {
+                        toast(s.name + (s.come ? "到了" : "没到"));
+                    } else {
+                        toast(s.name + (s.come ? "在线" : "不在线"));
+                    }
                 } else if (type == TYPE_DIANMINGDA) {
                     sendDianmingdaCommand(s);
                 } else if (type == TYPE_WENJIAN) {
@@ -576,11 +580,10 @@ public class StudentGridActivity extends BaseActivity {
 
             final Student s = students.get(position);
             holder.name.setText(s.name);
-            //TODO avatar
             if (type == TYPE_DIANMING) {
                 if (s.online) {
                     if (s.come) {
-                        holder.icon.setImageResource(R.drawable.ic_launcher);
+                        holder.icon.setImageResource(R.drawable.icon4);
                     } else {
                         holder.icon.setImageResource(R.drawable.icon2);
                     }
