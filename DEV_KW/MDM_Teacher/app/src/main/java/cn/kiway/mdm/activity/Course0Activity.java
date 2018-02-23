@@ -515,8 +515,8 @@ public class Course0Activity extends ScreenSharingActivity {
                 } else {
                     questionTime = 0;
                     plus.setVisibility(View.GONE);
-                    plus.setVisibility(View.GONE);
-                    plus.setVisibility(View.GONE);
+                    settime.setVisibility(View.GONE);
+                    minus.setVisibility(View.GONE);
                 }
             }
         });
