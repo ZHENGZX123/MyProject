@@ -53,7 +53,7 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
     }
 
     @Override
-    protected void deInitUIandEvent() {
+    public void deInitUIandEvent() {
         doLeaveChannel();
         event().removeEventHandler(this);
 
@@ -116,7 +116,7 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
         Log.d("test", "onUserOffline , uid = " + uid + " , reason = " + reason);
         doRemoveRemoteUi(uid);
         //zhengkang fix here1226
-        finish();
+        //finish();
     }
 
     @Override
