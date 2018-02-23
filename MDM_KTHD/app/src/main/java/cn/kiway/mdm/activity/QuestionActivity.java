@@ -372,8 +372,6 @@ public class QuestionActivity extends BaseActivity {
                     mHandler.sendEmptyMessageDelayed(msg.what, 1000);
                 } else {
                     questionTimeup(true);
-                    timeup = true;
-                    mHandler.removeCallbacksAndMessages(null);
                 }
             }
             time.setText("时间：" + Utils.secToTime(questionTime));
@@ -387,7 +385,7 @@ public class QuestionActivity extends BaseActivity {
                 timeup = true;
                 mHandler.removeCallbacksAndMessages(null);
                 if (show) {
-                    toast("答题时间到，还没有提交答案的同学请点击提交");
+                    toast("答题时间结束");
                 }
             }
         });
@@ -671,16 +669,12 @@ public class QuestionActivity extends BaseActivity {
 
     @Override
     public void clickBack(View view) {
-        if (!submited) {
+        if (!timeup && !submited) {
             toast("你尚未提交答案，不能退出本次问答/测评");
             return;
         }
-        if (!collected) {
-            if (timeup) {
-                finish();
-            } else {
-                toast("老师还没有批改，不能退出本次问答/测评");
-            }
+        if (!timeup && !collected) {
+            toast("老师还没有批改，不能退出本次问答/测评");
             return;
         }
         finish();

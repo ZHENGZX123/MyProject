@@ -325,10 +325,10 @@ public class MainActivity extends ScreenSharingActivity {
     private StudentQuestionAdapter questionAdapter;
 
     public void clickAsk(View view) {
-//        if (!app.isAttenClass) {
-//            toast("只有上课期间才可以提问");
-//            return;
-//        }
+        if (!app.isAttenClass) {
+            toast("只有上课期间才可以提问");
+            return;
+        }
 
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_ask);
