@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="开维互动学生端"
-            android:textColor="#ffffff"/>
+            android:textColor="#ffffff" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -25,7 +25,7 @@
             android:layout_marginRight="20dp"
             android:background="@drawable/ic_account_balance"
             android:onClick="logout"
-           />
+            android:visibility="gone" />
 
     </RelativeLayout>
 
@@ -56,21 +56,23 @@
                 <ImageView
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/analyze"/>
+                    android:src="@drawable/analyze" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
                     android:gravity="center"
                     android:text=" 课堂分析"
                     android:textColor="#ffffff"
-                    android:layout_marginLeft="10dp"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
 
             </LinearLayout>
+
             <View
                 android:layout_width="1px"
-                android:layout_height="10dp"/>
+                android:layout_height="10dp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -84,7 +86,7 @@
                 <ImageView
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:src="@drawable/icon1"/>
+                    android:src="@drawable/icon1" />
 
                 <TextView
                     android:id="@+id/className"
@@ -92,7 +94,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="三年2班"
-                    android:textColor="#ffffff"/>
+                    android:textColor="#ffffff" />
 
                 <TextView
                     android:id="@+id/studentName"
@@ -101,7 +103,7 @@
                     android:layout_marginTop="5dp"
                     android:text="周杰伦"
                     android:textColor="#ffffff"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
 
             </LinearLayout>
         </LinearLayout>
@@ -125,7 +127,7 @@
                 <ImageView
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/u843"/>
+                    android:src="@drawable/u843" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -134,13 +136,13 @@
                     android:gravity="center"
                     android:text="已上课程"
                     android:textColor="#ffffff"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="1px"
-                android:layout_height="10dp"/>
+                android:layout_height="10dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -154,7 +156,7 @@
                 <ImageView
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/u4106"/>
+                    android:src="@drawable/u4106" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -163,7 +165,7 @@
                     android:gravity="center"
                     android:text=" 我的文件"
                     android:textColor="#ffffff"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -191,14 +193,14 @@
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/snapshot"/>
+                android:src="@drawable/snapshot" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="截图"
-                android:textColor="#6699ff"/>
+                android:textColor="#6699ff" />
         </LinearLayout>
 
         <LinearLayout
@@ -213,14 +215,14 @@
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/ask"/>
+                android:src="@drawable/ask" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="提问器"
-                android:textColor="#6699ff"/>
+                android:textColor="#6699ff" />
         </LinearLayout>
     </LinearLayout>
 
