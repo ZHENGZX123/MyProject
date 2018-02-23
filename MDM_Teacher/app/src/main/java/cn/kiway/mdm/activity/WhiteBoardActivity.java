@@ -38,8 +38,7 @@ public class WhiteBoardActivity extends BaseActivity {
     private void load() {
         String url = "file://" + KWApplication.ROOT + KWApplication.HTML2;
         Log.d("test", "url = " + url);
-//        wv.loadUrl(url);
-        wv.loadUrl("file:///mnt/sdcard/whiteboard_teacher/index.html");
+        wv.loadUrl(url);
     }
 
     private void initData() {

@@ -66,10 +66,7 @@ public class Course1Activity extends BaseActivity {
     public void initView() {
         super.initView();
         toolsRL.setVisibility(View.GONE);
-        videoBtn.setVisibility(View.VISIBLE);
-
         titleName.setText(course.name);
-
         lv = (ListView) findViewById(R.id.lv);
         adapter = new CourseAdapter();
         lv.setAdapter(adapter);
@@ -130,6 +127,11 @@ public class Course1Activity extends BaseActivity {
                                 JSONArray valueObj = data.getJSONArray(key);
                                 videos = new GsonBuilder().create().fromJson(valueObj.toString(), new TypeToken<ArrayList<Video>>() {
                                 }.getType());
+                                if (videos.size() == 0) {
+                                    videoBtn.setVisibility(View.GONE);
+                                } else {
+                                    videoBtn.setVisibility(View.VISIBLE);
+                                }
                             }
                         }
                         adapter.notifyDataSetChanged();
