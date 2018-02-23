@@ -10,7 +10,6 @@ import android.os.Binder;
 import android.os.Environment;
 import android.os.HandlerThread;
 import android.os.IBinder;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -119,16 +118,13 @@ public class RecordService extends Service {
     public String getsaveDirectory() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             String rootDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "ScreenRecord" + "/";
-
             File file = new File(rootDir);
             if (!file.exists()) {
                 if (!file.mkdirs()) {
                     return null;
                 }
             }
-
-            Toast.makeText(getApplicationContext(), rootDir, Toast.LENGTH_SHORT).show();
-
+            //Toast.makeText(getApplicationContext(), rootDir, Toast.LENGTH_SHORT).show();
             return rootDir;
         } else {
             return null;

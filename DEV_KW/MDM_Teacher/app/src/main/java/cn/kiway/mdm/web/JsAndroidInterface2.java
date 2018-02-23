@@ -6,6 +6,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
+import cn.kiway.mdm.activity.WhiteBoardActivity;
 import cn.kiway.mdm.util.Utils;
 
 /**
@@ -14,13 +15,16 @@ import cn.kiway.mdm.util.Utils;
 
 public class JsAndroidInterface2 {
 
-    public JsAndroidInterface2() {
+    private WhiteBoardActivity activity;
+
+    public JsAndroidInterface2(WhiteBoardActivity activity) {
+        this.activity = activity;
     }
 
     @JavascriptInterface
     public String setBackgroundImage() {
         Log.d("test", "setBackgroundImage is called");
-        return "/mnt/sdcard/test.jpg";
+        return "";
     }
 
     @JavascriptInterface
@@ -30,8 +34,9 @@ public class JsAndroidInterface2 {
         try {
             byte[] bitmapArray = Base64.decode(param.split(",")[1], Base64.DEFAULT);
             bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
-            String filepath = System.currentTimeMillis() + ".png";
-            Utils.saveBitmap(bitmap, filepath);
+            String filename = System.currentTimeMillis() + ".png";
+            Utils.saveBitmap(bitmap, filename);
+            activity.toast("截图保存成功");
         } catch (Exception e) {
             e.printStackTrace();
         }

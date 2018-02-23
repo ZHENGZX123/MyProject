@@ -954,6 +954,15 @@ public class Course0Activity extends ScreenSharingActivity {
                             .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface arg0, int arg1) {
+                                    //1.停止推屏
+                                    if (tuiping) {
+                                        endTuiping();
+                                    }
+                                    //2.停止录制
+                                    if (recording) {
+                                        stopRecord();
+                                    }
+                                    //3.结束课程、上传视频
                                     doEndClass();
                                 }
                             }).setPositiveButton(android.R.string.cancel, null).create();
@@ -1060,11 +1069,6 @@ public class Course0Activity extends ScreenSharingActivity {
     private void doEndClass() {
         ZbusHost.xiake(Course0Activity.this, null);
         Utils.endClass(Course0Activity.this, course.id);
-        //后台上传录制视频
-        if (!recording) {
-            return;
-        }
-        stopRecord();
         new Thread() {
             @Override
             public void run() {
