@@ -609,8 +609,12 @@ public class MainActivity extends ScreenSharingActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (mRtcEngine == null) {
+                    return;
+                }
                 mRtcEngine.leaveChannel();
                 stopCapture();
+                deInitModules();
             }
         });
     }
