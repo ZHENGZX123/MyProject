@@ -61,7 +61,6 @@ import cn.kiway.mdm.util.FileUtils;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.NetworkUtil;
 import cn.kiway.mdm.util.Utils;
-import cn.kiway.mdm.view.X5WebView;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static cn.kiway.mdm.WXApplication.url;
@@ -73,11 +72,10 @@ public class MainActivity extends BaseActivity {
 
     private boolean isSuccess = false;
     private boolean isJump = false;
-    private boolean checking = false;
     private Dialog dialog_download;
     protected ProgressDialog pd;
     private int lastProgress;
-    private X5WebView wv;
+    private WebView wv;
     private LinearLayout layout_welcome;
     public static MainActivity instance;
     private long time;
@@ -98,28 +96,13 @@ public class MainActivity extends BaseActivity {
 
     private void initView() {
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
-        wv = (X5WebView) findViewById(R.id.wv);
+        wv = (WebView) findViewById(R.id.wv);
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("test", "onresume checking = " + checking);
-        new Thread() {
-            @Override
-            public void run() {
-                while (checking) {
-                    Log.d("test", "checking loop...");
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                Log.d("test", "checking loop end");
-            }
-        }.start();
     }
 
 
@@ -472,7 +455,6 @@ public class MainActivity extends BaseActivity {
 
     //下面是版本更新相关
     public void checkNewVersion() {
-        checking = true;
         new Thread() {
             @Override
             public void run() {
@@ -820,7 +802,6 @@ public class MainActivity extends BaseActivity {
                     load();
                 }
                 //更新完成完成
-                checking = false;
             }
         });
     }
