@@ -174,6 +174,7 @@ public class App extends KiwayApplication {
         @Override
         public void goOutClass() throws RemoteException {
             //下课
+            isAttenClass = false;
             mHandler.removeMessages(MSG_TIME_OUT);
             mHandler.sendEmptyMessage(MSG_HOME_TURE);
         }
@@ -181,7 +182,7 @@ public class App extends KiwayApplication {
         @Override
         public void accpterMessage(String msg, String token) throws RemoteException {
             Log.d("test", "accpterMessage msg = " + msg + "");
-
+            isAttenClass = true;
             getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
             try {
                 JSONObject o = new JSONObject(msg);
@@ -250,6 +251,7 @@ public class App extends KiwayApplication {
         @Override
         public void attendClass(String msg) throws RemoteException {
             //上课
+            isAttenClass = true;
         }
     };
 
