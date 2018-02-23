@@ -153,10 +153,13 @@ public class ScreenSharingActivity extends BaseActivity {
         }
     }
 
-    private void deInitModules() {
-        RtcEngine.destroy();
+    public void deInitModules() {
+        try {
+            RtcEngine.destroy();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mRtcEngine = null;
-
         if (mScreenCapture != null) {
             mScreenCapture.release();
             mScreenCapture = null;

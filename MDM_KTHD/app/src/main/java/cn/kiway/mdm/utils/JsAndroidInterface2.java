@@ -31,7 +31,7 @@ public class JsAndroidInterface2 {
     @JavascriptInterface
     public String setBackgroundImage() {
         Log.d("test", "setBackgroundImage is called");
-        return "";///mnt/sdcard/test.jpg
+        return "";
     }
 
     @JavascriptInterface
