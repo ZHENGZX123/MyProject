@@ -284,7 +284,8 @@ public class StudentGridActivity extends BaseActivity {
 
     public void initData() {
         //zhengkang add 0202, 如果已经有学生，就不用重复获取了，节省流量，不过状态可能会有点其他问题
-        for (Student s : students) {
+        for (Student s : KWApplication.students) {
+            s.known = 2;
             s.selected = false;
             s.locked = false;
         }
@@ -294,6 +295,7 @@ public class StudentGridActivity extends BaseActivity {
             onSuccess();
             return;
         }
+        //-----------0202-----------------
 
         try {
             showPD();
