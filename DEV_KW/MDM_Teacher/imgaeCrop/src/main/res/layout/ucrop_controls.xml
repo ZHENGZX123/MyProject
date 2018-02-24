@@ -73,6 +73,15 @@
                 android:src="@drawable/ucrop_ic_rotate"/>
 
         </FrameLayout>
+        <FrameLayout
+            android:id="@+id/state_rotate1"
+            style="@style/ucrop_WrapperIconState">
 
+            <ImageView
+                android:id="@+id/image_view_state_rotate1"
+                style="@style/ucrop_ImageViewWidgetIcon"
+                android:src="@drawable/ic_crop_free"/>
+
+        </FrameLayout>
     </LinearLayout>
 </merge>
