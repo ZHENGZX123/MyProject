@@ -17,7 +17,7 @@ public class AppListUtils {
     public static ArrayList<String> preunstallApp=new ArrayList<>();
     static {
         preunstallApp.clear();
-        preunstallApp.add("cn.kiway.brower");
+        preunstallApp.add("cn.kiway.browser");
     }
     public static String getUnAppListData() {
         return preunstallApp.toString();
