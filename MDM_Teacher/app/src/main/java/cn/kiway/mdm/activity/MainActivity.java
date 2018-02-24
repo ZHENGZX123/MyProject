@@ -86,6 +86,7 @@ public class MainActivity extends BaseActivity {
     public static MainActivity instance;
     private long time;
     private JsAndroidInterface jsInterface;
+    public static final int MSG_NETWORK = 7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -409,17 +410,12 @@ public class MainActivity extends BaseActivity {
 
     public Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
-            if (msg.what == 1) {
-//                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
-//                int arg1 = msg.arg1;
-//                if (arg1 == 0) {
-//                    rl_nonet.setVisibility(View.VISIBLE);
-//                    //无网络
-//                    Log.d("test", "无网络");
-//                } else {
-//                    rl_nonet.setVisibility(View.GONE);
-//                    //有网络
-//                }
+            if (msg.what == MSG_NETWORK) {
+                if (msg.arg1 == 1) {
+                    initZbus();
+                } else {
+                    //ZbusUtils.close();
+                }
                 return;
             }
             if (isJump) {
@@ -427,19 +423,15 @@ public class MainActivity extends BaseActivity {
             }
             isSuccess = true;
             if (msg.what == 2) {
-
                 String ret = (String) msg.obj;
                 try {
                     //1.apk更新
                     Log.d("test", "新版本返回值" + ret);
                     String apkVersion = new JSONObject(ret).getString("apkCode");
                     String apkUrl = new JSONObject(ret).getString("apkUrl");
-
                     String zipCode = new JSONObject(ret).getString("zipCode");
                     String zipUrl = new JSONObject(ret).getString("zipUrl");
-
                     if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
-//                        showUpdateConfirmDialog(apkUrl);
                         downloadSilently(apkUrl, apkVersion);
                         jump(false);
                     } else {
