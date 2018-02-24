@@ -344,7 +344,6 @@ public class Course0Activity extends ScreenSharingActivity {
         toast("结束推屏");
         mRtcEngine.leaveChannel();
         stopCapture();
-        deInitModules();
     }
 
     public void chaping(View view) {
