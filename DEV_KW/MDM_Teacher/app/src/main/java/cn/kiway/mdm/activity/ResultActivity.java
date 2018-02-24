@@ -178,7 +178,6 @@ public class ResultActivity extends BaseActivity {
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Log.d("test", "questionTime = " + questionTime);
             if (msg.what == 0) {
                 questionTime++;
                 mHandler.sendEmptyMessageDelayed(msg.what, 1000);
@@ -532,5 +531,22 @@ public class ResultActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         mHandler.removeCallbacksAndMessages(null);
+    }
+
+    public void qiangdaOneStudent(final String studentIMEI) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final Student s = getStudentByIMEI(studentIMEI);
+                if (s == null) {
+                    Log.d("test", "神秘学生，不可能");
+                    return;
+                }
+                Log.d("test", "已经有其他人抢到了，点了也没有用");
+                //给他们发送抢答失败消息
+                String qiangdaStudentName = students.get(0).name;
+                ZbusHost.qiangdaResult(ResultActivity.this, s, 0, qiangdaStudentName, null);
+            }
+        });
     }
 }

@@ -80,11 +80,13 @@ public class ZbusMessageHandler implements MessageHandler {
     }
 
     private void qiangda(String studentIMEI) {
-        if (!(KWApplication.currentActivity instanceof Course0Activity)) {
+        if (KWApplication.currentActivity instanceof Course0Activity) {
+            ((Course0Activity) KWApplication.currentActivity).qiangdaOneStudent(studentIMEI);
+        } else if (KWApplication.currentActivity instanceof ResultActivity) {
+            ((ResultActivity) KWApplication.currentActivity).qiangdaOneStudent(studentIMEI);
+        } else {
             Log.d("test", "不是当前页面，信息可能已过期");
-            return;
         }
-        ((Course0Activity) KWApplication.currentActivity).qiangdaOneStudent(studentIMEI);
     }
 
     private void tongji(String studentIMEI, int known) {
