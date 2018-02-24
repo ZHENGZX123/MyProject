@@ -344,7 +344,7 @@ public class Course0Activity extends ScreenSharingActivity {
         toast("结束推屏");
         mRtcEngine.leaveChannel();
         stopCapture();
-        //deInitModules();
+        deInitModules();
     }
 
     public void chaping(View view) {
@@ -363,9 +363,6 @@ public class Course0Activity extends ScreenSharingActivity {
 
     public void wenjian(View view) {
         //1.先选择一个文件
-        // String selectFilePath = "/mnt/sdcard/1514424119655.png";
-        // sendFile(selectFilePath);
-
         new LFilePicker()
                 .withActivity(this)
                 .withTitle(getString(R.string.filepath3))
@@ -373,7 +370,6 @@ public class Course0Activity extends ScreenSharingActivity {
                 .withMutilyMode(false)
                 .start();
     }
-
 
     public void sendFile(String filePath) {
         toast(R.string.chooseStudent);
