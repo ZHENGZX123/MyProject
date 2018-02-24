@@ -509,7 +509,6 @@ public class ResultActivity extends BaseActivity {
         });
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -518,14 +517,6 @@ public class ResultActivity extends BaseActivity {
         }
     }
 
-    private Student getStudentByIMEI(String imei) {
-        for (Student s : students) {
-            if (s.imei.equals(imei)) {
-                return s;
-            }
-        }
-        return null;
-    }
 
     @Override
     protected void onDestroy() {
@@ -537,7 +528,7 @@ public class ResultActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                final Student s = getStudentByIMEI(studentIMEI);
+                final Student s = getStudentByIMEIFromClass(studentIMEI);
                 if (s == null) {
                     Log.d("test", "神秘学生，不可能");
                     return;
@@ -548,5 +539,14 @@ public class ResultActivity extends BaseActivity {
                 ZbusHost.qiangdaResult(ResultActivity.this, s, 0, qiangdaStudentName, null);
             }
         });
+    }
+
+    private Student getStudentByIMEIFromClass(String imei) {
+        for (Student s : KWApplication.students) {
+            if (s.imei.equals(imei)) {
+                return s;
+            }
+        }
+        return null;
     }
 }
