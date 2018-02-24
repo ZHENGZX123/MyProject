@@ -208,10 +208,8 @@ public class App extends KiwayApplication {
                     String qiangdaStudentName = o.optString("qiangdaStudentName");
                     ((BaseActivity) currentActivity).onQiangdaResult(result, qiangdaStudentName);
                 } else if (command.equals("wenjian")) {
-                    ((BaseActivity) currentActivity).downloadFile(o);
                     //1.显示文件
-                    //2.上传到易敏的接口
-                    uploadUserFile(o.optString("url"), 2, o.optString("fileName"), o.optString("size"));
+                    ((BaseActivity) currentActivity).downloadFile(o);
                 } else if (command.equals("collection")) {
                     if (!(currentActivity instanceof QuestionActivity)) {
                         Log.d("test", "学生把答题页面关闭了，不应该。。。");
