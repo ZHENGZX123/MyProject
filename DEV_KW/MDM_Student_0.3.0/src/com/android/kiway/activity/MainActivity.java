@@ -85,14 +85,11 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private static final int MSG_GET_COMMAND = 4;
     private static final int MSG_CHECK_NEWVERSION = 5;
     private static final int MSG_CHECK_SHUTDOWN = 6;
-
-    //private Button button5;
-    // private Button button4;
+    public static final int MSG_NETWORK = 7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ///setContentView(R.layout.activity_main);
         Log.d("test", "Main onCreate");
         instance = this;
 
@@ -222,7 +219,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
     }
 
-    private Handler mHandler = new Handler() {
+    public Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -278,6 +275,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 break;
                 case MSG_CHECK_SHUTDOWN: {
                     Utils.checkShutDown(MainActivity.this);
+                }
+                break;
+                case MSG_NETWORK: {
+                    if (msg.arg1 == 1) {
+                        initZbus();
+                    } else if (msg.arg1 == 0) {
+                        //ZbusUtils.close();
+                    }
                 }
                 break;
             }
@@ -460,7 +465,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         if (mLocationClient != null) {
             mLocationClient.stop();
         }
-
         //ZbusUtils.close();
     }
 

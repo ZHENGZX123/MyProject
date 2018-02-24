@@ -313,6 +313,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
 
+        <receiver android:name="com.android.kiway.broadcast.NetChangeReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
 
         <receiver
             android:name="com.android.kiway.broadcast.SampleDeviceReceiver"
