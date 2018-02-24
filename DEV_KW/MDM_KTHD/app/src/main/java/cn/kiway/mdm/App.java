@@ -177,6 +177,13 @@ public class App extends KiwayApplication {
             isAttenClass = false;
             mHandler.removeMessages(MSG_TIME_OUT);
             mHandler.sendEmptyMessage(MSG_HOME_TURE);
+            if (currentActivity != null)
+                currentActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(currentActivity, "已经下课啦", Toast.LENGTH_SHORT).show();
+                    }
+                });
         }
 
         @Override
@@ -252,6 +259,13 @@ public class App extends KiwayApplication {
         public void attendClass(String msg) throws RemoteException {
             //上课
             isAttenClass = true;
+            if (currentActivity != null)
+                currentActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(currentActivity, "开始上课啦", Toast.LENGTH_SHORT).show();
+                    }
+                });
         }
     };
 

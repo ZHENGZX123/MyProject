@@ -275,6 +275,7 @@ public class MainActivity extends ScreenSharingActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (app.isAttenClass) {
+            toast("目前正在上课中，无法退出");
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -485,7 +486,8 @@ public class MainActivity extends ScreenSharingActivity {
             public void run() {
                 //1.上传录制文件
                 String token = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-                String result = UploadUtil.uploadFile(recordFile.getAbsolutePath(), App.clientUrl + "common/file?x-auth-token=" + token, recordFile.getName());
+                String result = UploadUtil.uploadFile(recordFile.getAbsolutePath(), App.clientUrl +
+                        "common/file?x-auth-token=" + token, recordFile.getName());
                 try {
                     String url = new JSONObject(result).getJSONObject("data").getString("url");
                     JSONObject o = new JSONObject();
