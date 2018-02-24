@@ -260,8 +260,6 @@ public class MainActivity extends BaseActivity {
                 //裁剪完毕的图片存放路径
                 Uri destinationUri = Uri.fromFile(new File(filePath.split("\\.")[0] + "1." + filePath.split("\\.")[1]));
                 UCrop.of(sourceUri, destinationUri) //定义路径
-                        .withAspectRatio(4, 3) //定义裁剪比例 4:3 ， 16:9
-                        .withMaxResultSize(500, 500) //定义裁剪图片宽高最大值
                         .start(this);
             } else {
                 uploadFile(filePath, true);
@@ -274,8 +272,6 @@ public class MainActivity extends BaseActivity {
             //裁剪完毕的图片存放路径
             Uri destinationUri = Uri.fromFile(new File(picPath.split("\\.")[0] + "1.png"));
             UCrop.of(sourceUri, destinationUri) //定义路径
-                    .withAspectRatio(4, 3) //定义裁剪比例 4:3 ， 16:9
-                    .withMaxResultSize(500, 500) //定义裁剪图片宽高最大值
                     .start(this);
         } else if (requestCode == UCrop.REQUEST_CROP) {
 
@@ -354,7 +350,7 @@ public class MainActivity extends BaseActivity {
                     public void run() {
                         try {
                             pd.dismiss();
-                            if (finalIsImage)//因为剪切会多一张图，所以不管上传成功失败都要删除
+                            if (finalIsImage && file.getName().endsWith("1.png"))//因为剪切会多一张图，所以不管上传成功失败都要删除
                                 file.delete();
                             if (TextUtils.isEmpty(ret)) {
                                 toast(getString(R.string.upload_fialt));
