@@ -115,8 +115,8 @@ public class BaseActivity extends Activity {
     //----------------------------------工具栏点击事件------------------------------
 
     public void gj(View view) {
-    }
 
+    }
 
     public void dm(View view) {
 

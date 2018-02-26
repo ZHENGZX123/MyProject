@@ -86,7 +86,7 @@ public class MainActivity extends BaseActivity {
     public static MainActivity instance;
     private long time;
     private JsAndroidInterface jsInterface;
-    public static final int MSG_NETWORK = 7;
+    public static final int MSG_NETWORK = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -632,6 +632,7 @@ public class MainActivity extends BaseActivity {
                 if (refresh) {
                     load();
                 }
+                isJump = true;
                 //更新完成完成
             }
         });
