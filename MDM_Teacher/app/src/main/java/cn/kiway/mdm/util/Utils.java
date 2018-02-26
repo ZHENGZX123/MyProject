@@ -42,6 +42,8 @@ import cn.kiway.mdm.activity.StudentGridActivity;
 import cn.kiway.mdm.teacher.R;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
+import static cn.kiway.mdm.activity.MainActivity.MSG_NETWORK;
+
 /**
  * Created by Administrator on 2017/7/5.
  */
@@ -76,11 +78,11 @@ public class Utils {
             boolean available = NetworkUtil.isNetworkAvailable(context);
             Message msg = new Message();
             if (available) {
-                msg.what = 1;
+                msg.what = MSG_NETWORK;
                 msg.arg1 = 1;
                 msg.arg2 = reConnect ? 1 : 0;
             } else {
-                msg.what = 1;
+                msg.what = MSG_NETWORK;
                 msg.arg1 = 0;
                 msg.arg2 = reConnect ? 1 : 0;
             }
