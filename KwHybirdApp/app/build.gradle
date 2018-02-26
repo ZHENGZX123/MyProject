@@ -1,0 +1,61 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        kiway {
+            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+            storePassword 'kiway123'
+            keyAlias 'kiway'
+            keyPassword 'kiway123'
+        }
+    }
+    useLibrary 'org.apache.http.legacy'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.1'
+    defaultConfig {
+        applicationId "cn.kiway.hybird"
+        minSdkVersion 18
+        targetSdkVersion 20
+        versionCode 200
+        versionName "2.0.0"
+        ndk { abiFilters "armeabi", "armeabi-v7a", "x86", "mips" }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.kiway
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.kiway
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    //http网络请求
+    compile files('libs/android-async-http-1.4.5.jar')
+    compile 'org.xutils:xutils:3.5.0'
+    //图片缓存压缩效果
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    compile project(':KwImagePicker')
+    compile files('libs/image_compress.jar')
+    //工具类
+    compile project(':KwUtils')
+    compile 'ly.count:sdk-android:14.12'
+    compile project(':KwZxing')
+    //推送
+    compile files('libs/MiPush_SDK_Client_3_2_2.jar')
+    compile files('libs/HwPush_SDK_V2705.jar')
+    compile files('libs/jpush-android-3.0.8.jar')
+    //x5
+    compile files('libs/tbs_sdk_thirdapp_v3.5.0.1004_43500_sharewithdownload_withoutGame_obfs_20170801_113025.jar')
+}

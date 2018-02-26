@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/KwHybirdFramework.iml" filepath="$PROJECT_DIR$/KwHybirdFramework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/KwImagePicker/KwImagePicker.iml" filepath="$PROJECT_DIR$/KwImagePicker/KwImagePicker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/KwPhotoView/KwPhotoView.iml" filepath="$PROJECT_DIR$/KwPhotoView/KwPhotoView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/KwUtils/KwUtils.iml" filepath="$PROJECT_DIR$/KwUtils/KwUtils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/KwZxing/KwZxing.iml" filepath="$PROJECT_DIR$/KwZxing/KwZxing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+    </modules>
+  </component>
+</project>
