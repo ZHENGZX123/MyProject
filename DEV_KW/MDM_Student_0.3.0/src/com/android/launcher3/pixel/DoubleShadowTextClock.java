@@ -1,11 +1,8 @@
 package com.android.launcher3.pixel;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.provider.CalendarContract;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextClock;
@@ -40,9 +37,10 @@ public class DoubleShadowTextClock extends TextClock {
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, CalendarContract.CONTENT_URI.buildUpon().appendPath("time").build()));
-                } catch (ActivityNotFoundException ex) { }
+                //zzx add 桌面时间点击事件
+//                try {
+//                    view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, CalendarContract.CONTENT_URI.buildUpon().appendPath("time").build()));
+//                } catch (ActivityNotFoundException ex) { }
             }
         });
     }
