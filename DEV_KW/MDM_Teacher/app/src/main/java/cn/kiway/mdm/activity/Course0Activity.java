@@ -32,7 +32,6 @@ import android.widget.TextView;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.leon.lfilepickerlibrary.LFilePicker;
 import com.leon.lfilepickerlibrary.utils.Constant;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -362,12 +361,13 @@ public class Course0Activity extends ScreenSharingActivity {
 
     public void wenjian(View view) {
         //1.先选择一个文件
-        new LFilePicker()
-                .withActivity(this)
-                .withTitle(getString(R.string.filepath3))
-                .withRequestCode(requsetFile2)
-                .withMutilyMode(false)
-                .start();
+//        new LFilePicker()
+//                .withActivity(this)
+//                .withTitle(getString(R.string.filepath3))
+//                .withRequestCode(requsetFile2)
+//                .withMutilyMode(false)
+//                .start();
+        startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_WENJIAN));
     }
 
     public void sendFile(String filePath) {

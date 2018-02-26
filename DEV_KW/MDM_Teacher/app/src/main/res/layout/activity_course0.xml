@@ -6,7 +6,9 @@
 
     <include
         android:id="@+id/titleRL"
-        layout="@layout/layout_title"></include>
+        layout="@layout/layout_title"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/x5FileLayout"></include>
 
 
     <LinearLayout

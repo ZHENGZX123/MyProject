@@ -486,7 +486,12 @@ public class Utils {
         String str = sdf.format(date);
         return str;
     }
-
+    public static String longToDate(long time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        java.util.Date date = new Date(time);
+        String str = sdf.format(date);
+        return str;
+    }
 
     public static String longToDate2(String time) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM.dd");
