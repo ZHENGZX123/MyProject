@@ -582,10 +582,9 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
     private void sendFile(int i) {
         if (fileModels.get(i).staute == 3) {
             if (fileModels.size() <= i + 1) {
-                sendFile(i + 1);
-            } else {
-                hidePD();
                 toast("发送文件成功");
+            } else {
+                sendFile(i + 1);
             }
             return;
         }
