@@ -367,12 +367,16 @@ public class MainActivity extends ScreenSharingActivity {
                         toast("内容不能为空");
                         return;
                     }
+                    if (contentStr.length() > 30) {
+                        toast("不能超过30个字符");
+                        return;
+                    }
                     //1.使用zbus发送
                     JSONObject o = new JSONObject();
                     o.put("type", 1);
                     o.put("content", contentStr);
                     o.put("time", System.currentTimeMillis());
-                    o.put("name", "学生");
+                    o.put("name", getSharedPreferences("kiwaykthd", 0).getString("studentName", ""));
                     o.put("avatar", "");
                     boolean ret = Utils.sendToServer("question_" + o.toString());
                     if (!ret) {
