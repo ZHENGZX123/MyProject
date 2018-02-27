@@ -43,6 +43,7 @@ import java.util.ArrayList;
 
 import cn.kiway.mdm.App;
 import cn.kiway.mdm.model.StudentQuestion;
+import cn.kiway.mdm.utils.Constant;
 import cn.kiway.mdm.utils.FileUtils;
 import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.NetworkUtil;
@@ -505,7 +506,7 @@ public class MainActivity extends ScreenSharingActivity {
             public void run() {
                 //1.上传录制文件
                 String token = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-                String result = UploadUtil.uploadFile(recordFile.getAbsolutePath(), App.clientUrl +
+                String result = UploadUtil.uploadFile(recordFile.getAbsolutePath(), Constant.clientUrl +
                         "common/file?x-auth-token=" + token, recordFile.getName());
                 try {
                     String url = new JSONObject(result).getJSONObject("data").getString("url");

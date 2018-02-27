@@ -43,7 +43,7 @@ import java.util.Locale;
 import cn.kiway.mdm.App;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static cn.kiway.mdm.App.clientUrl;
+import static cn.kiway.mdm.utils.Constant.clientUrl;
 
 /**
  * Created by Administrator on 2017/6/8.

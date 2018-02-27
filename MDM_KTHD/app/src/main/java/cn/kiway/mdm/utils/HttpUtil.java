@@ -1,6 +1,6 @@
 package cn.kiway.mdm.utils;
 
-import static cn.kiway.mdm.App.clientUrl;
+import static cn.kiway.mdm.utils.Constant.clientUrl;
 
 /**
  * Created by Administrator on 2018/1/23.
