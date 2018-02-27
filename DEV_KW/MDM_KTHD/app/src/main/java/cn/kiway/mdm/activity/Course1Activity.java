@@ -35,6 +35,7 @@ import cn.kiway.mdm.model.Course;
 import cn.kiway.mdm.model.KnowledgeCountResult;
 import cn.kiway.mdm.model.Question;
 import cn.kiway.mdm.model.Video;
+import cn.kiway.mdm.utils.Constant;
 import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
@@ -83,7 +84,7 @@ public class Course1Activity extends BaseActivity {
         //1.知识点详情
         try {
             showPD();
-            String url = App.clientUrl + "/device/teacher/course/" + course.id + "/attend";
+            String url = Constant.clientUrl + "/device/teacher/course/" + course.id + "/attend";
             Log.d("test", "url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));

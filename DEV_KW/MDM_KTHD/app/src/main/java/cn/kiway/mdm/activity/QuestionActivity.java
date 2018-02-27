@@ -45,6 +45,7 @@ import cn.kiway.mdm.App;
 import cn.kiway.mdm.model.AnswerVo;
 import cn.kiway.mdm.model.Choice;
 import cn.kiway.mdm.model.Question;
+import cn.kiway.mdm.utils.Constant;
 import cn.kiway.mdm.utils.JsAndroidInterface2;
 import cn.kiway.mdm.utils.MyWebViewClient;
 import cn.kiway.mdm.utils.UploadUtil;
@@ -528,7 +529,7 @@ public class QuestionActivity extends BaseActivity {
                                     public void onImage(String filepath) {
                                         Log.d("test", "onImage = " + filepath);
                                         String token = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-                                        String result = UploadUtil.uploadFile(filepath, App.clientUrl + "common/file?x-auth-token=" + token, new File(filepath).getName());
+                                        String result = UploadUtil.uploadFile(filepath, Constant.clientUrl + "common/file?x-auth-token=" + token, new File(filepath).getName());
                                         String url = null;
                                         try {
                                             url = new JSONObject(result).getJSONObject("data").getString("url");
