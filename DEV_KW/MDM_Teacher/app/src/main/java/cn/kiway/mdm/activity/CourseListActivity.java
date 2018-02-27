@@ -109,6 +109,10 @@ public class CourseListActivity extends BaseActivity {
                                 it.remove();
                             }
                         }
+                        if (courses.size() == 0) {
+                            toast("暂无课程，请先备课");
+                            return;
+                        }
                         //排序
                         Collections.sort(courses, new Comparator<Course>() {
                             @Override
