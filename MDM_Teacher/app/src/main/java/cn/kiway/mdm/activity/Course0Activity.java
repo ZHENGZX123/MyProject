@@ -392,6 +392,18 @@ public class Course0Activity extends ScreenSharingActivity {
         for (KnowledgePoint kp : course.knowledgePoints) {
             kp.selected = false;
         }
+        //过滤掉已经统计过的知识点
+        String tongjiKPS = getSharedPreferences("kiway", 0).getString("tongjiKPS", "");
+        ArrayList<KnowledgePoint> kps = new ArrayList<>();
+        for (KnowledgePoint kp : course.knowledgePoints) {
+            if (!tongjiKPS.contains(kp.id)) {
+                kps.add(kp);
+            }
+        }
+        if (kps.size() == 0) {
+            toast("所有知识点都已经统计过了");
+            return;
+        }
         //知识点统计，给全班发送统计命令。
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_tongji1);
@@ -401,7 +413,7 @@ public class Course0Activity extends ScreenSharingActivity {
         Button close = (Button) dialog.findViewById(R.id.close);
 
         ListView lv = (ListView) dialog.findViewById(R.id.lv);
-        TongjiAdapter tjAdapter = new TongjiAdapter();
+        TongjiAdapter tjAdapter = new TongjiAdapter(kps);
         lv.setAdapter(tjAdapter);
 
         tongji.setOnClickListener(new View.OnClickListener() {
@@ -1186,9 +1198,11 @@ public class Course0Activity extends ScreenSharingActivity {
     private class TongjiAdapter extends BaseAdapter {
 
         private final LayoutInflater inflater;
+        private ArrayList<KnowledgePoint> kps;
 
-        public TongjiAdapter() {
-            inflater = LayoutInflater.from(Course0Activity.this);
+        public TongjiAdapter(ArrayList<KnowledgePoint> kps) {
+            this.inflater = LayoutInflater.from(Course0Activity.this);
+            this.kps = kps;
         }
 
         @Override
@@ -1207,7 +1221,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 holder = (ViewHolder) rowView.getTag();
             }
 
-            final KnowledgePoint s = course.knowledgePoints.get(position);
+            final KnowledgePoint s = this.kps.get(position);
             holder.content.setText(s.content);
             holder.select.setChecked(s.selected);
             holder.select.setOnClickListener(new View.OnClickListener() {
@@ -1232,12 +1246,12 @@ public class Course0Activity extends ScreenSharingActivity {
 
         @Override
         public int getCount() {
-            return course.knowledgePoints.size();
+            return this.kps.size();
         }
 
         @Override
         public KnowledgePoint getItem(int arg0) {
-            return course.knowledgePoints.get(arg0);
+            return this.kps.get(arg0);
         }
 
         @Override
