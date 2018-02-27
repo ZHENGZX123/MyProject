@@ -16,8 +16,8 @@ android {
         applicationId "cn.kiway.mdm.parent"
         minSdkVersion 18
         targetSdkVersion 20
-        versionCode 16
-        versionName "0.1.6"
+        versionCode 1
+        versionName "0.0.1"
     }
     buildTypes {
         release {
