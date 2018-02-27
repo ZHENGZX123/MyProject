@@ -159,6 +159,7 @@ public class ZbusHost {
         }
     }
 
+    //其他问题专用
     public static void question(Activity c, Student s, Question q, int questionType, int questionTime, final OnListener onListener) {
         try {
             String title = null;
@@ -182,6 +183,10 @@ public class ZbusHost {
                     @Override
                     public void run() {
                         onListener.onSuccess();
+                        //记录提问过的问题
+                        String askedQuestions = c.getSharedPreferences("kiway", 0).getString("askedQuestions", "");
+                        askedQuestions += "_" + q.id;
+                        c.getSharedPreferences("kiway", 0).edit().putString("askedQuestions", askedQuestions).commit();
                     }
                 });
             }
@@ -211,6 +216,12 @@ public class ZbusHost {
                     @Override
                     public void run() {
                         onListener.onSuccess();
+                        for (Question q : questions) {
+                            //记录提问过的问题
+                            String askedQuestions = c.getSharedPreferences("kiway", 0).getString("askedQuestions", "");
+                            askedQuestions += "_" + q.id;
+                            c.getSharedPreferences("kiway", 0).edit().putString("askedQuestions", askedQuestions).commit();
+                        }
                     }
                 });
             }

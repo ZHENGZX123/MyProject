@@ -486,6 +486,18 @@ public class Course0Activity extends ScreenSharingActivity {
         for (Question q : course.questions) {
             q.selected = false;
         }
+        //过滤掉已经统计过的question
+        String askedQuestions = getSharedPreferences("kiway", 0).getString("askedQuestions", "");
+        ArrayList<Question> qs = new ArrayList<>();
+        for (Question q : course.questions) {
+            if (!askedQuestions.contains(q.id)) {
+                qs.add(q);
+            }
+        }
+        if (qs.size() == 0) {
+            toast("所有问题都已经问过了");
+            return;
+        }
 
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_select_question);
@@ -500,7 +512,7 @@ public class Course0Activity extends ScreenSharingActivity {
         selectCount = (TextView) dialog.findViewById(R.id.selectCount);
         final CheckBox selectAll = (CheckBox) dialog.findViewById(R.id.selectAll);
 
-        calculateSelectCount();
+        calculateSelectCount(qs);
 
         if (type == TYPE_QUESTION_CEPING) {
             selectallRL.setVisibility(View.VISIBLE);
@@ -510,7 +522,7 @@ public class Course0Activity extends ScreenSharingActivity {
         selectAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setAllItemSelected(selectAll.isChecked());
+                setAllItemSelected(selectAll.isChecked() , qs);
             }
         });
 
@@ -553,7 +565,7 @@ public class Course0Activity extends ScreenSharingActivity {
 
         questionLL = (LinearLayout) dialog.findViewById(R.id.questionLL);
         LayoutInflater inflater = LayoutInflater.from(this);
-        for (final Question s : course.questions) {
+        for (final Question s : qs) {
             LinearLayout rowView = (LinearLayout) inflater.inflate(R.layout.item_question, null);
             LinearLayout imgLL = (LinearLayout) rowView.findViewById(R.id.imgLL);
             TextView content = (TextView) rowView.findViewById(R.id.content);
@@ -566,12 +578,12 @@ public class Course0Activity extends ScreenSharingActivity {
                     if (type != TYPE_QUESTION_CEPING) {
                         //discheck others
                         if (isChecked) {
-                            disCheckOthers(course.questions, s, questionLL, select);
+                            disCheckOthers(qs, s, questionLL, select);
                         }
                     }
 
                     //calculate
-                    if (calculateSelectCount()) {
+                    if (calculateSelectCount(qs)) {
                         selectAll.setChecked(true);
                     } else {
                         selectAll.setChecked(false);
@@ -620,7 +632,7 @@ public class Course0Activity extends ScreenSharingActivity {
                 @Override
                 public void onClick(View v) {
                     selectQuestions = new ArrayList<>();
-                    for (Question q : course.questions) {
+                    for (Question q : qs) {
                         if (q.selected) {
                             selectQuestions.add(q);
                         }
@@ -735,24 +747,24 @@ public class Course0Activity extends ScreenSharingActivity {
         return null;
     }
 
-    private void setAllItemSelected(boolean isChecked) {
+    private void setAllItemSelected(boolean isChecked, ArrayList<Question> qs) {
         int childcount = questionLL.getChildCount();
         for (int i = 0; i < childcount; i++) {
             CheckBox select = (CheckBox) questionLL.getChildAt(i).findViewById(R.id.select);
             select.setChecked(isChecked);
         }
-        calculateSelectCount();
+        calculateSelectCount(qs);
     }
 
-    private boolean calculateSelectCount() {
+    private boolean calculateSelectCount(ArrayList<Question> qs) {
         int count = 0;
-        for (Question q : course.questions) {
+        for (Question q : qs) {
             if (q.selected) {
                 count++;
             }
         }
-        selectCount.setText("选题（" + count + "/" + course.questions.size() + "）");
-        return count == course.questions.size();
+        selectCount.setText("选题（" + count + "/" + qs.size() + "）");
+        return count == qs.size();
     }
 
     private void showChoudaqiDialog() {
