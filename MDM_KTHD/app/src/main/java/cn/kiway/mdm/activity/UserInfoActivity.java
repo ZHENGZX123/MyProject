@@ -32,6 +32,7 @@ import studentsession.kiway.cn.mdm_studentsession.R;
 
 import static cn.kiway.mdm.activity.QuestionActivity.SELECT_PHOTO;
 import static cn.kiway.mdm.utils.HttpUtil.uploadFile;
+import static studentsession.kiway.cn.mdm_studentsession.R.id.userPic;
 
 /**
  * Created by Administrator on 2017/12/15.
@@ -54,6 +55,9 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         versionCode = (TextView) findViewById(R.id.versionCode);
         pic = (ImageView) findViewById(R.id.pic);
         pic.setOnClickListener(this);
+        if (!getSharedPreferences("kiway", 0).getString("userUrl", "").equals(""))
+            ImageLoader.getInstance().displayImage(getSharedPreferences("kiway", 0).getString("userUrl", ""),
+                    pic, App.getLoaderOptions());
         account.setText("学号：" + getSharedPreferences("kiwaykthd", 0).getString("studentNumber", ""));
         userName.setText("姓名:" + getSharedPreferences("kiwaykthd", 0).getString("studentName", ""));
         versionCode.setText(Utils.getCurrentVersion(this));
