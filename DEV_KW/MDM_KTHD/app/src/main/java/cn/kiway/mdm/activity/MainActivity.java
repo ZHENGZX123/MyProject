@@ -93,6 +93,13 @@ public class MainActivity extends ScreenSharingActivity {
         className.setText(getSharedPreferences("kiwaykthd", 0).getString("className", ""));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!getSharedPreferences("kiway", 0).getString("userUrl", "").equals(""))
+            ImageLoader.getInstance().displayImage(getSharedPreferences("kiway", 0).getString("userUrl", ""),
+                    userPic, App.getLoaderOptions());
+    }
 
     public void onInfo(View view) {//个人信息
         startActivity(new Intent(this, UserInfoActivity.class));
