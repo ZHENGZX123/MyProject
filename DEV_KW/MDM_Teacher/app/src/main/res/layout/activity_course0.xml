@@ -39,12 +39,12 @@
 
     <ImageButton
         android:id="@+id/rk"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_below="@+id/titleRL"
-        android:background="@drawable/rk"
+        android:layout_margin="10dp"
+        android:background="@drawable/rk1"
         android:onClick="rk" />
-
 
     <FrameLayout
         android:id="@+id/x5FileLayout"
