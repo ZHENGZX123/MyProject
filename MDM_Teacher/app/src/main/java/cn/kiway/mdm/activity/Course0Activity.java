@@ -90,6 +90,7 @@ public class Course0Activity extends ScreenSharingActivity {
     private FrameLayout x5FileLayout;
     private TbsReaderView readerView;
     private ImageView tuipingIV;
+    private ImageButton rkBtn;
     private ListView lv;
     private CourseAdapter adapter;
     private ArrayList<KnowledgePoint> knowledgePoints = new ArrayList<>();
@@ -134,7 +135,7 @@ public class Course0Activity extends ScreenSharingActivity {
         lv.setAdapter(adapter);
 
         tuipingIV = (ImageView) findViewById(R.id.tuipingIV);
-
+        rkBtn = (ImageButton) findViewById(R.id.rk);
     }
 
     public void initData() {
@@ -204,6 +205,7 @@ public class Course0Activity extends ScreenSharingActivity {
             KWApplication.recordService.startRecord();
             recording = true;
             recordFiles.add(KWApplication.recordService.output);
+            rkBtn.setBackgroundResource(R.drawable.rk2);
         } else if (requestCode == UCrop.REQUEST_CROP) {
             final Uri resultUri = UCrop.getOutput(data);
             if (resultUri != null)
@@ -522,7 +524,7 @@ public class Course0Activity extends ScreenSharingActivity {
         selectAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setAllItemSelected(selectAll.isChecked() , qs);
+                setAllItemSelected(selectAll.isChecked(), qs);
             }
         });
 
@@ -878,6 +880,7 @@ public class Course0Activity extends ScreenSharingActivity {
     public void stopRecord() {
         toast("结束录制本地视频");
         recording = false;
+        rkBtn.setBackgroundResource(R.drawable.rk1);
         if (KWApplication.recordService.isRunning()) {
             KWApplication.recordService.stopRecord();
         }

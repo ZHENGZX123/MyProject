@@ -898,17 +898,12 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void sk(View view) {
-//        if (!dianmingAlready) {
-//            toast("请先点名");
-//            return;
-//        }
+        if (!dianmingAlready) {
+            toast("请先点名");
+            return;
+        }
         startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class));
         finish();
-    }
-
-    @Override
-    public void rk(View view) {
-
     }
 
     private void doEndSign() {
