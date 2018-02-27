@@ -38,6 +38,7 @@ import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdmaidl.KiwayApplication;
 
 import static cn.kiway.mdm.utils.HttpUtil.uploadUserFile;
+import static cn.kiway.mdm.utils.HttpUtil.uploadUserInfo;
 
 /**
  * Created by Administrator on 2017/12/4.
@@ -267,6 +268,51 @@ public class App extends KiwayApplication {
         }
     };
 
+    //修改用户头像 ,名字
+    public void uploadUserInfo(final String urlPath, final String name) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+        client.setTimeout(10000);
+        RequestParams param = new RequestParams();
+        if (urlPath != null && !urlPath.equals(""))
+            param.put("avatar", urlPath);
+        if (name != null && !name.equals(""))
+            param.put("name", name);
+        client.post(this, uploadUserInfo, param, new TextHttpResponseHandler() {
+            @Override
+            public void onSuccess(int code, Header[] headers, String ret) {
+                Log.d("test", "course onSuccess = " + ret);
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
+                Logger.log("::::::::::::onFailure" + ret);
+                if (ret != null && !ret.equals("")) {
+                    try {
+                        JSONObject data = new JSONObject(ret);
+                        if (data.optInt("statusCode") != 200) {
+                            Utils.login(App.this, new Utils.ReLogin() {
+                                @Override
+                                public void onSuccess() {
+                                    uploadUserInfo(urlPath, name);
+                                }
+
+                                @Override
+                                public void onFailure() {
+                                }
+                            });
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(App.this, "请求失败，请稍后再试", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
     public void uploadUserFile(final String url, final int type, final String name, final String size) {
         AsyncHttpClient client = new AsyncHttpClient();
         client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
@@ -310,5 +356,4 @@ public class App extends KiwayApplication {
             }
         });
     }
-
 }
