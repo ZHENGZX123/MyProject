@@ -13,10 +13,10 @@ import android.widget.Toast;
 
 import com.android.kiway.activity.BaseActivity;
 import com.android.kiway.aidlservice.RemoteAidlService;
-import com.android.kiway.windows.LockSreenService;
 import com.android.kiway.utils.HttpDownload;
 import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.Utils;
+import com.android.kiway.windows.LockSreenService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,10 +36,7 @@ import static com.android.kiway.utils.Utils.huaweiPush;
 
 public class KWApp extends Application {
 
-    public static final String serverUrl = "http://192.168.8.161:8083/";
-    public static final String clientUrl = "http://192.168.8.161:8085/";
-
-//    public static final String serverUrl = "http://www.yuertong.com:8083/";
+    //    public static final String serverUrl = "http://www.yuertong.com:8083/";
 //    public static final String clientUrl = "http://www.yuertong.com:8084/";
 
     public static final int MSG_TOAST = 0;//Toast

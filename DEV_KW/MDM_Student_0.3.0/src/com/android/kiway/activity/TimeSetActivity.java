@@ -36,7 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.android.kiway.KWApp.clientUrl;
+import static com.android.kiway.utils.Constant.clientUrl;
 
 /**
  * Created by Administrator on 2017/11/22.

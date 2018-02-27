@@ -28,8 +28,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.android.kiway.KWApp.clientUrl;
-import static com.android.kiway.KWApp.serverUrl;
+import static com.android.kiway.utils.Constant.clientUrl;
+import static com.android.kiway.utils.Constant.serverUrl;
 
 /**
  * Created by Administrator on 2018/1/10.
@@ -38,11 +38,7 @@ import static com.android.kiway.KWApp.serverUrl;
 public class HttpUtil {
 
 
-    public static final String APPID = "f2ec1fb69b27c7ab5260d2eb7cd95dea";
-    public static final String APPKEY = "9a9b01f8ab910e12422bcc0e88d95dff2f95f582";
 
-//    public static final String APPID = "a4fbf8428d903d1b7f4466dbdddf9f04";
-//    public static final String APPKEY = "d67f10fa6b95e82f50cd52acbdac2fc25c585408";
 
 
     private static boolean is301 = false;
@@ -459,7 +455,7 @@ public class HttpUtil {
             client.setTimeout(10000);
             Log.d("test", "huaweitoken = " + token);
             JSONObject param = new JSONObject();
-            param.put("appId", APPID);
+            param.put("appId", Constant.APPID);
             param.put("type", "huawei");
             param.put("deviceId", imei);
             param.put("userId", token);
@@ -667,7 +663,7 @@ public class HttpUtil {
                     client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
                     client.setTimeout(10000);
                     RequestParams param = new RequestParams();
-                    param.put("appId", APPID);
+                    param.put("appId", Constant.APPID);
                     param.put("appKey", key);
                     param.put("secretKey", packageName);
                     Log.d("test", "oauth params = " + param.toString());

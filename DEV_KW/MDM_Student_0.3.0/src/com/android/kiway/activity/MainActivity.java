@@ -28,11 +28,11 @@ import com.android.kiway.dialog.CheckPassword;
 import com.android.kiway.dialog.ShowMessageDailog;
 import com.android.kiway.entity.TimeSet;
 import com.android.kiway.utils.CommandUtil;
+import com.android.kiway.utils.Constant;
 import com.android.kiway.utils.DESUtil;
 import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.MyDBHelper;
 import com.android.kiway.utils.Utils;
-import com.android.kiway.zbus.ZbusHost;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -57,10 +57,10 @@ import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
 import io.zbus.mq.Producer;
 
-import static com.android.kiway.KWApp.clientUrl;
+import static com.android.kiway.utils.Constant.clientUrl;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
-import static com.android.kiway.utils.HttpUtil.APPID;
-import static com.android.kiway.utils.HttpUtil.APPKEY;
+import static com.android.kiway.utils.Constant.APPID;
+import static com.android.kiway.utils.Constant.APPKEY;
 import static com.android.kiway.utils.Utils.huaweiPush;
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener {
@@ -143,7 +143,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     if (TextUtils.isEmpty(token)) {
                         return;
                     }
-                    Broker broker = new Broker(ZbusHost.zbusHost + ":" + ZbusHost.zbusPost);
+                    Broker broker = new Broker(Constant.zbusHost + ":" + Constant.zbusPost);
                     Producer p = new Producer(broker);
                     ZbusUtils.init(broker, p);
                     String topic = "kiway_push_" + token;
