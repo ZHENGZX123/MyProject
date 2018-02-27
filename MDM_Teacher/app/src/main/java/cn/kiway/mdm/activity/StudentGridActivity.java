@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.leon.lfilepickerlibrary.utils.Constant;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
@@ -47,6 +49,7 @@ import cn.kiway.mdm.util.FileUtils;
 import cn.kiway.mdm.util.Logger;
 import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
+import cn.kiway.mdm.view.makeramen.RoundedImageView;
 import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
 
@@ -775,8 +778,9 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                 holder = new ViewHolder();
 
                 holder.name = (TextView) rowView.findViewById(R.id.name);
-                holder.icon = (ImageView) rowView.findViewById(R.id.icon);
+                holder.icon = (RoundedImageView) rowView.findViewById(R.id.icon);
                 holder.lock = (ImageView) rowView.findViewById(R.id.lock);
+                holder.cover = (ImageView) rowView.findViewById(R.id.cover);
 
                 rowView.setTag(holder);
             } else {
@@ -785,30 +789,40 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
 
             final Student s = students.get(position);
             holder.name.setText(s.name);
+            if (TextUtils.isEmpty(s.avatar)) {
+                s.avatar = "drawable://" + R.drawable.icon1;
+            }
+            ImageLoader.getInstance().displayImage(s.avatar, holder.icon, KWApplication.getLoaderOptions());
+
             if (type == TYPE_DIANMING) {
                 if (s.online) {
                     if (s.come) {
-                        holder.icon.setImageResource(R.drawable.icon4);
+                        holder.cover.setVisibility(View.VISIBLE);
+                        holder.cover.setImageResource(R.drawable.icon4);
                     } else {
-                        holder.icon.setImageResource(R.drawable.icon2);
+                        holder.cover.setVisibility(View.VISIBLE);
+                        holder.cover.setImageResource(R.drawable.icon2);
                     }
                 } else {
-                    holder.icon.setImageResource(R.drawable.icon1);
+                    holder.cover.setVisibility(View.GONE);
                 }
             } else if (type == TYPE_DIANMINGDA || type == TYPE_WENJIAN) {
                 if (s.selected) {
-                    holder.icon.setImageResource(R.drawable.icon2);
+                    holder.cover.setVisibility(View.VISIBLE);
+                    holder.cover.setImageResource(R.drawable.icon2);
                 } else {
-                    holder.icon.setImageResource(R.drawable.icon1);
+                    holder.cover.setVisibility(View.GONE);
                 }
             } else if (type == TYPE_TONGJI) {
                 //0没明白，1是明白，未回复是2
                 if (s.known == 2) {
-                    holder.icon.setImageResource(R.drawable.icon1);
+                    holder.cover.setVisibility(View.GONE);
                 } else if (s.known == 1) {
-                    holder.icon.setImageResource(R.drawable.icon2);
+                    holder.cover.setVisibility(View.VISIBLE);
+                    holder.cover.setImageResource(R.drawable.icon2);
                 } else if (s.known == 0) {
-                    holder.icon.setImageResource(R.drawable.icon3);
+                    holder.cover.setVisibility(View.VISIBLE);
+                    holder.cover.setImageResource(R.drawable.icon3);
                 }
             } else if (type == TYPE_SUOPING) {
                 if (s.locked) {
@@ -823,8 +837,9 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
 
         public class ViewHolder {
             public TextView name;
-            public ImageView icon;
+            public RoundedImageView icon;
             public ImageView lock;
+            public ImageView cover;
         }
 
         @Override
