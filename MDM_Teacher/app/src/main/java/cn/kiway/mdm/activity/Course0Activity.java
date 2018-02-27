@@ -134,8 +134,7 @@ public class Course0Activity extends ScreenSharingActivity {
         lv.setAdapter(adapter);
 
         tuipingIV = (ImageView) findViewById(R.id.tuipingIV);
-        hideTool(1);
-        hideTool(2);
+
     }
 
     public void initData() {
