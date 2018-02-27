@@ -31,7 +31,7 @@ import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.util.WifiUtils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static cn.kiway.mdm.KWApplication.clientUrl;
+import static cn.kiway.mdm.util.Constant.clientUrl;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMING;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.FileUtils.EnFILEPATH;

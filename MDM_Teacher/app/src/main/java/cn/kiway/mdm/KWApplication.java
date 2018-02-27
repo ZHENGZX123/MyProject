@@ -31,8 +31,6 @@ import cn.kiway.mdm.service.RecordService;
 
 public class KWApplication extends Application {
 
-    public static String serverUrl = "http://192.168.8.161:8084";
-    public static String clientUrl = "http://192.168.8.161:8085";
 
     public static String ROOT = "/mnt/sdcard/kiway_mdm_teacher/";
     public static String HTML = "mdm_teacher/dist/index.html";

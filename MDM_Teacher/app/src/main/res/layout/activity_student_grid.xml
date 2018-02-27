@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg"
-                tools:context="cn.kiway.mdm.activity.StudentGridActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    tools:context="cn.kiway.mdm.activity.StudentGridActivity">
 
     <include
         android:id="@+id/titleRL"
@@ -31,8 +31,7 @@
             android:layout_weight="1"
             android:horizontalSpacing="10dp"
             android:numColumns="8"
-            android:verticalSpacing="15dp"
-            ></GridView>
+            android:verticalSpacing="15dp"></GridView>
 
         <include
             android:id="@+id/sendFile"

@@ -28,10 +28,10 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.entity.Course;
 import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.Constant;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.zbus.ZbusHost;
 
@@ -88,7 +88,7 @@ public class CourseListActivity extends BaseActivity {
         //TODO后台不排序的话，分页没法做啊。
         showPD();
         try {
-            String url = KWApplication.clientUrl + "/device/teacher/course/attend?currentPage=1&pageSize=1024";
+            String url = Constant.clientUrl + "/device/teacher/course/attend?currentPage=1&pageSize=1024";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);

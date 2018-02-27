@@ -34,6 +34,7 @@ import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.Constant;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
@@ -339,7 +340,7 @@ public class ResultActivity extends BaseActivity {
 
     public void uploadResult() {
         try {
-            String url = KWApplication.clientUrl + "/device/teacher/course/student/result";
+            String url = Constant.clientUrl + "/device/teacher/course/student/result";
             Log.d("test", "question url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));

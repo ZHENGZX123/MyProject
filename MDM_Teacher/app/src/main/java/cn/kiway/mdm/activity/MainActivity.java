@@ -63,7 +63,7 @@ import io.zbus.mq.Producer;
 import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
 
-import static cn.kiway.mdm.KWApplication.clientUrl;
+import static cn.kiway.mdm.util.Constant.clientUrl;
 import static cn.kiway.mdm.util.ResultMessage.QRSCAN;
 import static cn.kiway.mdm.util.Utils.getCurrentVersion;
 import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
@@ -386,7 +386,7 @@ public class MainActivity extends BaseActivity {
                 try {
                     sleep(1500);
                     checkTimeout();
-                    HttpGet httpRequest = new HttpGet(KWApplication.clientUrl + "/static/download/version/zip_teacher" +
+                    HttpGet httpRequest = new HttpGet(cn.kiway.mdm.util.Constant.clientUrl + "/static/download/version/zip_teacher" +
                             ".json");
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
