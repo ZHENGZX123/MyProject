@@ -20,8 +20,8 @@ apply plugin: 'com.google.protobuf'
 android {
     signingConfigs {
         kiway {
-      //  storeFile file('F:/android_signature/kiway.key')
-          storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+        storeFile file('F:/android_signature/kiway.key')
+//            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
             storePassword 'kiway123'
             keyAlias 'kiway'
             keyPassword 'kiway123'
@@ -77,7 +77,12 @@ android {
             res.srcDirs = ['tests/res']
             manifest.srcFile "tests/AndroidManifest-common.xml"
         }
-
+        lintOptions {
+            checkReleaseBuilds false
+            // Or, if you prefer, you can continue to check for errors in release builds,
+            // but continue the build even when errors are found:
+            abortOnError false
+        }
         aosp {
             manifest.srcFile "AndroidManifest.xml"
         }

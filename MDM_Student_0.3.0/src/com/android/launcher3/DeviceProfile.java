@@ -495,7 +495,7 @@ public class DeviceProfile {
      * the hotseat is on the bottom row.
      */
     public boolean isVerticalBarLayout() {
-        return isLandscape && transposeLayoutWithOrientation;
+        return false;
     }
 
     boolean shouldFadeAdjacentWorkspaceScreens() {
