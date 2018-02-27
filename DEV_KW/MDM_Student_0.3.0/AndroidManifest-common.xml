@@ -173,7 +173,7 @@
             android:name="com.android.kiway.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <activity
             android:name="com.android.kiway.activity.FileListActivity"
