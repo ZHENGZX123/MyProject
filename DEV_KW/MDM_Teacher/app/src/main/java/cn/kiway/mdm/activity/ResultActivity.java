@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
@@ -36,6 +38,7 @@ import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Constant;
 import cn.kiway.mdm.util.Utils;
+import cn.kiway.mdm.view.makeramen.RoundedImageView;
 import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
 
@@ -281,8 +284,9 @@ public class ResultActivity extends BaseActivity {
                 holder = new ViewHolder();
 
                 holder.name = (TextView) rowView.findViewById(R.id.name);
-                holder.icon = (ImageView) rowView.findViewById(R.id.icon);
+                holder.icon = (RoundedImageView) rowView.findViewById(R.id.icon);
                 holder.collected = (ImageView) rowView.findViewById(R.id.collected);
+                holder.cover = (ImageView) rowView.findViewById(R.id.cover);
 
                 rowView.setTag(holder);
             } else {
@@ -291,12 +295,17 @@ public class ResultActivity extends BaseActivity {
 
             final Student s = students.get(position);
             holder.name.setText(s.name);
+            if (TextUtils.isEmpty(s.avatar)) {
+                s.avatar = "drawable://" + R.drawable.icon1;
+            }
+            ImageLoader.getInstance().displayImage(s.avatar, holder.icon, KWApplication.getLoaderOptions());
 
             //绿色表示已答题提交，灰色表示还未作答的
             if (s.submited) {
-                holder.icon.setImageResource(R.drawable.icon2);
+                holder.cover.setVisibility(View.VISIBLE);
+                holder.cover.setImageResource(R.drawable.icon2);
             } else {
-                holder.icon.setImageResource(R.drawable.icon1);
+                holder.cover.setVisibility(View.GONE);
             }
             if (s.collected) {
                 holder.collected.setVisibility(View.VISIBLE);
@@ -309,8 +318,9 @@ public class ResultActivity extends BaseActivity {
 
         public class ViewHolder {
             public TextView name;
-            public ImageView icon;
+            public RoundedImageView icon;
             public ImageView collected;
+            public ImageView cover;
         }
 
         @Override
