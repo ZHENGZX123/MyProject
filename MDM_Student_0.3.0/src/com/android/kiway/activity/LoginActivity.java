@@ -22,7 +22,7 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import org.apache.http.Header;
 import org.json.JSONObject;
 
-import static com.android.kiway.KWApp.clientUrl;
+import static com.android.kiway.utils.Constant.clientUrl;
 import static com.android.kiway.utils.Utils.huaweiPush;
 
 /**

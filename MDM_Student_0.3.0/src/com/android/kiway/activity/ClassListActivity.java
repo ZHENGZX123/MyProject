@@ -26,7 +26,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.android.kiway.KWApp.serverUrl;
+import static com.android.kiway.utils.Constant.serverUrl;
 
 /**
  * Created by Administrator on 2017/10/17.

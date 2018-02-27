@@ -26,7 +26,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.android.kiway.KWApp.clientUrl;
+import static com.android.kiway.utils.Constant.clientUrl;
 import static com.android.kiway.utils.HttpUtil.check301;
 
 /**

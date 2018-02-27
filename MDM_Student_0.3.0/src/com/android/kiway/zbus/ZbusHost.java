@@ -3,6 +3,7 @@ package com.android.kiway.zbus;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.kiway.utils.Constant;
 import com.android.kiway.utils.Utils;
 
 import org.json.JSONObject;
@@ -13,16 +14,13 @@ import java.util.Set;
 import cn.kiway.zbus.utils.ZbusUtils;
 import cn.kiway.zbus.vo.PushMessageVo;
 
-import static com.android.kiway.utils.HttpUtil.APPID;
+import static com.android.kiway.utils.Constant.APPID;
 
 /**
  * Created by Administrator on 2018/1/2.
  */
 
 public class ZbusHost {
-    public static String zbusHost = "192.168.8.161";
-    public static String zbusPost = "15556";//15555
-    public static String teacherUserId = "";
 
 
     public static boolean doSendMsg(Context c, String cmd) {
@@ -39,7 +37,7 @@ public class ZbusHost {
             //final String topic, String message, final String url, final PushMessageVo vo
             //topic : 上报的 deviceId#userId
             String topic = Utils.getIMEI(c) + "#" + token;
-            String url = zbusHost + ":" + zbusPost;
+            String url = Constant.zbusHost + ":" + Constant.zbusPost;
             PushMessageVo pushMessageVo = new PushMessageVo();
             pushMessageVo.setTitle(title);
             pushMessageVo.setDescription(desc);
@@ -47,7 +45,7 @@ public class ZbusHost {
             pushMessageVo.setAppId(APPID);
             pushMessageVo.setModule("student");
             Set<String> userIds = new HashSet<>();
-            userIds.add(teacherUserId);
+            userIds.add(Constant.teacherUserId);
             pushMessageVo.setUserId(userIds);//老师的userid
             pushMessageVo.setSenderId(token);//学生的token
             pushMessageVo.setPushType("zbus");

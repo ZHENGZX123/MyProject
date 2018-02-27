@@ -30,10 +30,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.android.kiway.KWApp.clientUrl;
-import static com.android.kiway.utils.AppReceiverIn.INSTALL_SUCCESS;
-import static com.android.kiway.utils.AppReceiverIn.PACKAGENAME;
-import static com.android.kiway.utils.AppReceiverIn.REMOVE_SUCCESS;
+import static com.android.kiway.utils.Constant.clientUrl;
 import static com.android.kiway.utils.FileACache.ListFileName;
 
 

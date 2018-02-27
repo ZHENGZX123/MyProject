@@ -28,7 +28,7 @@ import java.util.List;
 
 import cn.kiway.mdmsdk.MDMHelper;
 
-import static com.android.kiway.KWApp.clientUrl;
+import static com.android.kiway.utils.Constant.clientUrl;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.DISMISS;
 
 /**
