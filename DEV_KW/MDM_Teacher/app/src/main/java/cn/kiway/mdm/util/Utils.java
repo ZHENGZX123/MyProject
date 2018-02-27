@@ -267,7 +267,7 @@ public class Utils {
         try {
             ((BaseActivity) c).showPD();
             //1.发“下课”推送命令
-            String url = KWApplication.clientUrl + "/device/teacher/course/" + courseID + "/attend";
+            String url = Constant.clientUrl + "/device/teacher/course/" + courseID + "/attend";
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
@@ -298,7 +298,7 @@ public class Utils {
     //保存课程操作行为
     public static void courseOperation(Activity c, String courseID, int type, String someID) {
         try {
-            String url = KWApplication.clientUrl +
+            String url = Constant.clientUrl +
                     "/device/teacher/course/" + courseID + "/courseOperation";
             Log.d("test", "courseOperation url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
@@ -345,7 +345,7 @@ public class Utils {
             Log.d("test", "301 happen");
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            String url = KWApplication.clientUrl + "/device/teacher/login";
+            String url = Constant.clientUrl + "/device/teacher/login";
             Log.d("test", "relogin url = " + url);
             RequestParams param = new RequestParams();
             param.put("userName", c.getSharedPreferences("kiway", 0).getString("username", ""));
@@ -519,7 +519,7 @@ public class Utils {
             @Override
             public void run() {
                 try {
-                    String url = KWApplication.clientUrl + "/device/teacher/course/" + courseID + "/video";
+                    String url = Constant.clientUrl + "/device/teacher/course/" + courseID + "/video";
                     Log.d("test", "addVideoRecord url = " + url);
                     AsyncHttpClient client = new AsyncHttpClient();
                     client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));

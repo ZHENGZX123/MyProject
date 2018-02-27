@@ -50,9 +50,9 @@ import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
 
-import static cn.kiway.mdm.KWApplication.clientUrl;
 import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_DIANMINGDA;
 import static cn.kiway.mdm.teacher.R.id.count;
+import static cn.kiway.mdm.util.Constant.clientUrl;
 import static cn.kiway.mdm.util.Utils.check301;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile2;
 

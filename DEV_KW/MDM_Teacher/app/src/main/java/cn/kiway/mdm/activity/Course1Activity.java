@@ -35,6 +35,7 @@ import cn.kiway.mdm.entity.KnowledgeCountResult;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Video;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.Constant;
 
 import static cn.kiway.mdm.util.Utils.check301;
 import static cn.kiway.mdm.util.Utils.showBigImage;
@@ -76,7 +77,7 @@ public class Course1Activity extends BaseActivity {
         //1.知识点详情
         try {
             showPD();
-            String url = KWApplication.clientUrl + "/device/teacher/course/" + course.id + "/attend";
+            String url = Constant.clientUrl + "/device/teacher/course/" + course.id + "/attend";
             Log.d("test", "url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
