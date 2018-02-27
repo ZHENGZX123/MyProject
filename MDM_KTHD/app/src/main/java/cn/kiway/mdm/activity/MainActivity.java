@@ -22,9 +22,12 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -56,6 +59,7 @@ public class MainActivity extends ScreenSharingActivity {
     public static MainActivity instantce;
     private Dialog dialog_download;
     TextView className, studentName;
+    ImageView userPic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +85,10 @@ public class MainActivity extends ScreenSharingActivity {
         super.initView();
         className = (TextView) findViewById(R.id.className);
         studentName = (TextView) findViewById(R.id.studentName);
+        userPic = (ImageView) findViewById(R.id.userPic);
+        if (!getSharedPreferences("kiway", 0).getString("userUrl", "").equals(""))
+            ImageLoader.getInstance().displayImage(getSharedPreferences("kiway", 0).getString("userUrl", ""),
+                    userPic, App.getLoaderOptions());
         studentName.setText(getSharedPreferences("kiwaykthd", 0).getString("studentName", ""));
         className.setText(getSharedPreferences("kiwaykthd", 0).getString("className", ""));
     }

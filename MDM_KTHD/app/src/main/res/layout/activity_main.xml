@@ -84,6 +84,7 @@
                 android:text="个人信息">
 
                 <ImageView
+                    android:id="@+id/userPic"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:src="@drawable/icon1" />
