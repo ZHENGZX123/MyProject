@@ -759,6 +759,7 @@ public class MainActivity extends BaseActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     MLog.d("test", "exception = " + e.toString());
+                    httpRequestCallback(tagname, "");
                 }
             }
         });
@@ -799,6 +800,12 @@ public class MainActivity extends BaseActivity {
         if (kill.getVisibility() == View.VISIBLE) {
             return;
         }
+        if (TextUtils.isEmpty(ret)) {
+            return;
+        }
+        if (ret.startsWith("<html>")) {
+            return;
+        }
         MLog.d("test", "saveDB");
         String request = url + param + method;
         HTTPCache cache = new MyDBHelper(this).getHttpCacheByRequest(request);
@@ -816,23 +823,19 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void httpRequestCallback(final String tagname, String result) {
-        if (result == null) {
-            JSONObject o = new JSONObject();
-            try {
-                o.put("data", "");
-                o.put("errorMsg", "请求失败，请检查网络稍后再试");
-                o.put("statusCode", 503);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            result = o.toString();
-        }
-        final String finalResult = result;
+    private void httpRequestCallback(final String tagname, final String result) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 try {
+                    String finalResult = "";
+                    if (TextUtils.isEmpty(result)) {
+                        finalResult = get503String();
+                    } else if (result.startsWith("<html>")) {
+                        finalResult = get503String();
+                    } else {
+                        finalResult = result;
+                    }
                     String r = finalResult.replace("null", "\"\"").replace("\"\"\"\"", "\"\"");
                     MLog.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + r);
                     wv.loadUrl("javascript:" + tagname + "(" + r + ")");
@@ -841,6 +844,14 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private String get503String() throws JSONException {
+        JSONObject o = new JSONObject();
+        o.put("data", "");
+        o.put("errorMsg", "请求失败，请检查网络稍后再试");
+        o.put("statusCode", 503);
+        return o.toString();
     }
 
     //录音
@@ -931,7 +942,6 @@ public class MainActivity extends BaseActivity {
             wv.loadUrl("javascript:scanQRCallback('" + result + "')");
         }
     }
-
 
     public Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
