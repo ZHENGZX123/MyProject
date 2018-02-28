@@ -26,6 +26,10 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.leon.lfilepickerlibrary.utils.Constant;
+import com.lzy.imagepicker.ImagePicker;
+import com.lzy.imagepicker.bean.ImageItem;
+import com.lzy.imagepicker.ui.ImagePreviewActivity;
+import com.nanchen.compresshelper.CompressHelper;
 import com.yalantis.ucrop.UCrop;
 
 import net.lingala.zip4j.core.ZipFile;
@@ -43,6 +47,7 @@ import org.xutils.x;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.mdm.KWApplication;
@@ -65,6 +70,7 @@ import top.zibin.luban.OnCompressListener;
 
 import static cn.kiway.mdm.util.Constant.clientUrl;
 import static cn.kiway.mdm.util.ResultMessage.QRSCAN;
+import static cn.kiway.mdm.util.ResultMessage.SELECT_PHOTO;
 import static cn.kiway.mdm.util.Utils.getCurrentVersion;
 import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
 import static cn.kiway.mdm.web.JsAndroidInterface.accessToken;
@@ -274,7 +280,6 @@ public class MainActivity extends BaseActivity {
             UCrop.of(sourceUri, destinationUri) //定义路径
                     .start(this);
         } else if (requestCode == UCrop.REQUEST_CROP) {
-
             final Uri resultUri = UCrop.getOutput(data);
             //压缩图片
             Luban.with(this).load(resultUri.getPath()).ignoreBy(100).setTargetDir(getPath()).setCompressListener(new OnCompressListener() {
@@ -318,6 +323,22 @@ public class MainActivity extends BaseActivity {
                     Toast.makeText(MainActivity.this, getString(R.string.caijianshibai), Toast.LENGTH_SHORT).show();
                 }
             });
+        } else if (requestCode == SELECT_PHOTO && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
+            if (data == null) {
+                return;
+            }
+            boolean isOrig = data.getBooleanExtra(ImagePreviewActivity.ISORIGIN, false);
+            ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+            if (!isOrig) {
+                Log.d("test", "压缩前大小" + new File(images.get(0).path).length());
+                File newFile = CompressHelper.getDefault(this).compressToFile(new File(images.get(0).path));
+                images.get(0).path = newFile.getAbsolutePath();
+                images.get(0).size = newFile.length();
+                Log.d("test", "压缩后大小" + images.get(0).size);
+            }
+            String path = images.get(0).path;
+            Log.d("test", "path = " + path);
+            wv.loadUrl("javascript:selectPhotoCallback('file://" + path + "')");
         }
     }
 
