@@ -48,7 +48,7 @@ public class CountlyUtil {
             Map.Entry entry = (Map.Entry) iterator.next();
             String key = (String) entry.getKey();
             int count = (Integer) entry.getValue();
-            Log.d("countly", key + " , " + count);
+            MLog.d("countly", key + " , " + count);
             totalcount += count;
         }
         //3.攒够50条，发出去
