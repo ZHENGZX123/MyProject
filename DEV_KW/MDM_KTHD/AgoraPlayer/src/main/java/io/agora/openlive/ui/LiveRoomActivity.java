@@ -14,6 +14,8 @@ import io.agora.rtc.Constants;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
 
+import static io.agora.openlive.AGApplication.deInitWorkerThread;
+
 public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
     public static LiveRoomActivity instance;
 
@@ -53,8 +55,8 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
     public void deInitUIandEvent() {
         doLeaveChannel();
         event().removeEventHandler(this);
-
         mUidsList.clear();
+        deInitWorkerThread();
     }
 
     private void doLeaveChannel() {
@@ -80,7 +82,7 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
                 if (config().mUid == uid) {
                     rtcEngine().setupLocalVideo(new VideoCanvas(surfaceV, VideoCanvas.RENDER_MODE_HIDDEN, uid));
                 } else {
-                    rtcEngine().setupRemoteVideo(new VideoCanvas(surfaceV, VideoCanvas.RENDER_MODE_HIDDEN, uid));
+                    rtcEngine().setupRemoteVideo(new VideoCanvas(surfaceV, VideoCanvas.RENDER_MODE_FIT, uid));
                 }
 
                 switchToDefaultVideoView();
