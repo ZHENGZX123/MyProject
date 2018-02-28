@@ -5,12 +5,15 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.teacher.R;
@@ -51,6 +54,12 @@ public class BaseActivity extends Activity {
         titleName = (TextView) findViewById(R.id.titleName);
         teacherName = (TextView) findViewById(R.id.teacherName);
         teacherIcon = (ImageView) findViewById(R.id.teacherIcon);
+
+        String url = getSharedPreferences("kiway", 0).getString("teacherAvatar", "");
+        if (teacherIcon != null && !TextUtils.isEmpty(url)) {
+            ImageLoader.getInstance().displayImage(url, teacherIcon, KWApplication.getLoaderOptions());
+        }
+
         videoBtn = (ImageButton) findViewById(R.id.video);
         toolsRL = (RelativeLayout) findViewById(R.id.toolsRL);
 
