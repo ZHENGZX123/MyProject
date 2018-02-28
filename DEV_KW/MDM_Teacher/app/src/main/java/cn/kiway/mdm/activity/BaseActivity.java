@@ -17,6 +17,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.view.makeramen.RoundedImageView;
 import io.agora.openlive.model.ConstantApp;
 import io.agora.openlive.ui.LiveRoomActivity;
 import io.agora.rtc.Constants;
@@ -28,7 +29,7 @@ import io.agora.rtc.Constants;
 public class BaseActivity extends Activity {
 
     public TextView teacherName;
-    public ImageView teacherIcon;
+    public RoundedImageView teacherIcon;
     public TextView titleName;
     public ImageButton videoBtn;
 
@@ -53,7 +54,7 @@ public class BaseActivity extends Activity {
     public void initView() {
         titleName = (TextView) findViewById(R.id.titleName);
         teacherName = (TextView) findViewById(R.id.teacherName);
-        teacherIcon = (ImageView) findViewById(R.id.teacherIcon);
+        teacherIcon = (RoundedImageView) findViewById(R.id.teacherIcon);
 
         String url = getSharedPreferences("kiway", 0).getString("teacherAvatar", "");
         if (teacherIcon != null && !TextUtils.isEmpty(url)) {

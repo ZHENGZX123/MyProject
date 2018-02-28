@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/titleRL"
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:background="#6699ff">
 
-    <ImageView
+    <cn.kiway.mdm.view.makeramen.RoundedImageView
         android:id="@+id/teacherIcon"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
-        android:background="@drawable/icon1" />
+        android:background="@drawable/icon1"
+        app:corner_radius="22.5dp" />
 
     <TextView
         android:id="@+id/teacherName"
