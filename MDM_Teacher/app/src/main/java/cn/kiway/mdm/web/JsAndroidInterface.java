@@ -14,6 +14,10 @@ import com.leon.lfilepickerlibrary.LFilePicker;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.lzy.imagepicker.ImagePicker;
+import com.lzy.imagepicker.loader.GlideImageLoader;
+import com.lzy.imagepicker.ui.ImageGridActivity;
+import com.lzy.imagepicker.view.CropImageView;
 
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
@@ -31,11 +35,12 @@ import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.util.WifiUtils;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static cn.kiway.mdm.util.Constant.clientUrl;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMING;
+import static cn.kiway.mdm.util.Constant.APPID;
+import static cn.kiway.mdm.util.Constant.clientUrl;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.FileUtils.EnFILEPATH;
-import static cn.kiway.mdm.util.Constant.APPID;
+import static cn.kiway.mdm.util.ResultMessage.SELECT_PHOTO;
 
 /**
  * Created by Administrator on 2017/11/9.
@@ -200,6 +205,22 @@ public class JsAndroidInterface {
                 .withMutilyMode(false)
                 .withFileFilter(filters)
                 .start();
+    }
+
+    @JavascriptInterface
+    public void selectPhoto() {
+        ImagePicker imagePicker = ImagePicker.getInstance();
+        imagePicker.setImageLoader(new GlideImageLoader());// 图片加载器
+        imagePicker.setSelectLimit(1);// 设置可以选择几张
+        imagePicker.setMultiMode(false);// 是否为多选
+        imagePicker.setCrop(true);// 是否剪裁
+        imagePicker.setFocusWidth(1000);// 需要剪裁的宽
+        imagePicker.setFocusHeight(1000);// 需要剪裁的高
+        imagePicker.setStyle(CropImageView.Style.RECTANGLE);// 方形
+        imagePicker.setShowCamera(true);// 是否显示摄像
+
+        Intent intent = new Intent(this.activity, ImageGridActivity.class);
+        this.activity.startActivityForResult(intent, SELECT_PHOTO);
     }
 
     @JavascriptInterface
