@@ -236,8 +236,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != RESULT_OK)
-            return;
         if (requestCode == QRSCAN) {
             if (data == null) {
                 return;
@@ -271,15 +269,12 @@ public class MainActivity extends BaseActivity {
                 uploadFile(filePath, true);
             }
         } else if (requestCode == REQUEST_ORIGINAL) {
-            if (resultCode != RESULT_OK)
-                return;
             //需要裁剪的图片路径
             Uri sourceUri = Uri.fromFile(new File(picPath));
             //裁剪完毕的图片存放路径
             Uri destinationUri = Uri.fromFile(new File(picPath.split("\\.")[0] + "1.png"));
-            UCrop.of(sourceUri, destinationUri) //定义路径
-                    .start(this);
-        } else if (requestCode == UCrop.REQUEST_CROP) {
+            UCrop.of(sourceUri, destinationUri).start(this);
+        } else if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK) {
             final Uri resultUri = UCrop.getOutput(data);
             //压缩图片
             Luban.with(this).load(resultUri.getPath()).ignoreBy(100).setTargetDir(getPath()).setCompressListener(new OnCompressListener() {
@@ -314,7 +309,7 @@ public class MainActivity extends BaseActivity {
                     });
                 }
             }).launch();    //启动压缩
-        } else if (resultCode == UCrop.RESULT_ERROR) {   //出错时进入该分支
+        } else if (requestCode == UCrop.REQUEST_CROP && resultCode == UCrop.RESULT_ERROR) {   //出错时进入该分支
             final Throwable cropError = UCrop.getError(data);
             Logger.log("cropError:::::" + cropError.toString());
             runOnUiThread(new Runnable() {
