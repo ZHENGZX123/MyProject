@@ -333,7 +333,9 @@ public class MainActivity extends BaseActivity {
             }
             String path = images.get(0).path;
             Log.d("test", "path = " + path);
-            wv.loadUrl("javascript:selectPhotoCallback('file://" + path + "')");
+
+            uploadFile(path, false);
+            //wv.loadUrl("javascript:selectPhotoCallback('file://" + path + "')");
         }
     }
 
