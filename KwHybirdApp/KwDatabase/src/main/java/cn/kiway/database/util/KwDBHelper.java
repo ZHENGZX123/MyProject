@@ -1,4 +1,4 @@
-package cn.kiway.kwdatabase.util;
+package cn.kiway.database.util;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,8 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
 
-import cn.kiway.kwdatabase.entity.HTTPCache;
-import cn.kiway.kwdatabase.entity.KV;
+import cn.kiway.database.entity.HTTPCache;
+import cn.kiway.database.entity.KV;
+
 
 public class KwDBHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "sdk.db";

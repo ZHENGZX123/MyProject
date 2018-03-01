@@ -1,12 +1,12 @@
-package cn.kiway.kwdatabase.util;
+package cn.kiway.database.util;
 
 import android.content.Context;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.kiway.kwdatabase.entity.HTTPCache;
-import cn.kiway.kwdatabase.entity.KV;
+import cn.kiway.database.entity.HTTPCache;
+import cn.kiway.database.entity.KV;
 
 
 /**
