@@ -149,7 +149,7 @@ public class WelcomeActivity extends Activity {
             @Override
             public void run() {
                 Log.d("test", "updatePackage downloadUrl = " + downloadUrl);
-                final int ret = new HttpDownload().downFile(downloadUrl, Configue.ROOT, Configue.ZIP);
+                final int ret = new HttpDownload().downFile(downloadUrl, Configue.ROOT, Configue.ZIP_Name);
                 Log.d("test", "下载新包 ret = " + ret);
                 runOnUiThread(new Runnable() {
                     @Override
@@ -159,17 +159,17 @@ public class WelcomeActivity extends Activity {
                             return;
                         }
                         Log.d("test", "删除旧包");
-                        if (new File(Configue.ROOT + "xtzy_teacher").exists()) {
-                            FileUtils.delFolder(Configue.ROOT + "xtzy_teacher");
+                        if (new File(Configue.ROOT + Configue.ZIP).exists()) {
+                            FileUtils.delFolder(Configue.ROOT + Configue.ZIP);
                         }
                         try {
                             Log.d("test", "解压新包");
-                            new ZipFile(Configue.ROOT + Configue.ZIP).extractAll(Configue.ROOT);
+                            new ZipFile(Configue.ROOT + Configue.ZIP_Name).extractAll(Configue.ROOT);
                         } catch (ZipException e) {
                             e.printStackTrace();
                         }
                         //解压完毕，删掉zip文件
-                        new File(Configue.ROOT + Configue.ZIP).delete();
+                        new File(Configue.ROOT + Configue.ZIP_Name).delete();
                         Log.d("test", "解压完毕");
                         getSharedPreferences("kiway", 0).edit().putString("version_package", outer_package).commit();
                         jump();
@@ -196,15 +196,15 @@ public class WelcomeActivity extends Activity {
                 new File(Configue.ROOT).mkdirs();
             }
             //拷贝
-            FileUtils.copyRawToSdcard(this, R.raw.xtzy_teacher, Configue.ZIP);
+            FileUtils.copyRawToSdcard(this, R.raw.xtzy_teacher, Configue.ZIP_Name);
             //解压
             try {
-                new ZipFile(Configue.ROOT + Configue.ZIP).extractAll(Configue.ROOT);
+                new ZipFile(Configue.ROOT + Configue.ZIP_Name).extractAll(Configue.ROOT);
             } catch (ZipException e) {
                 e.printStackTrace();
             }
             //解压完毕，删掉zip文件
-            new File(Configue.ROOT + Configue.ZIP).delete();
+            new File(Configue.ROOT + Configue.ZIP_Name).delete();
             getSharedPreferences("kiway", 0).edit().putString("version_package", Configue.currentPackageVersion).commit();
         }
     }

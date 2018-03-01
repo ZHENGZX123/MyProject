@@ -62,6 +62,8 @@ import cn.kiway.utils.NetworkUtil;
 import cn.kiway.utils.UploadUtil;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
+import static cn.kiway.utils.Configue.ZIP;
+
 
 public class MainActivity extends BaseActivity {
 
@@ -102,7 +104,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void downloadSilently(final String apkUrl, String version) {
-        final String savedFilePath = "/mnt/sdcard/cache/xtzy_teacher_" + version + ".apk";
+        final String savedFilePath = "/mnt/sdcard/cache/" + ZIP + "_" + version + ".apk";
         if (new File(savedFilePath).exists()) {
             MLog.d("test", "该文件已经下载好了");
             askforInstall(savedFilePath);
