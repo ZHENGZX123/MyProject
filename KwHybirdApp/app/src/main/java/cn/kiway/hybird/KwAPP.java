@@ -19,12 +19,9 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.tencent.smtt.sdk.QbSdk;
 import com.xiaomi.mipush.sdk.MiPushClient;
-
 import org.xutils.x;
-
 import java.io.File;
 import java.util.List;
-
 import cn.jpush.android.api.JPushInterface;
 import cn.kiway.hybird.activity.WelcomeActivity;
 import cn.kiway.hybird.util.Utils;
