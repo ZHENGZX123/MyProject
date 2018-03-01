@@ -1,8 +1,8 @@
-package cn.kiway.homework.activity;
+package cn.kiway.hybird.activity;
 
 import android.os.Bundle;
 
-import cn.kiway.homework.teacher.R;
+import cn.kiway.hybird.teacher.R;
 
 
 public class NoNetActivity extends BaseActivity {

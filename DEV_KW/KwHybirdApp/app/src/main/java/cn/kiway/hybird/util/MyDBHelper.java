@@ -201,7 +201,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cn.kiway.homework.util;
+package cn.kiway.hybird.util;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -211,8 +211,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
 
-import cn.kiway.homework.entity.HTTPCache;
-import cn.kiway.homework.entity.KV;
+import cn.kiway.hybird.entity.HTTPCache;
+import cn.kiway.hybird.entity.KV;
 
 public class MyDBHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "sdk.db";

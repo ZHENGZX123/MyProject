@@ -1,4 +1,4 @@
-package cn.kiway.homework;
+package cn.kiway.hybird;
 
 import android.app.ActivityManager;
 import android.app.Application;
@@ -26,12 +26,12 @@ import java.io.File;
 import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
-import cn.kiway.homework.util.CountlyUtil;
-import cn.kiway.homework.util.Utils;
+import cn.kiway.hybird.util.CountlyUtil;
+import cn.kiway.hybird.util.Utils;
 import ly.count.android.api.Countly;
 
-import static cn.kiway.homework.util.Utils.SYS_MIUI;
-import static cn.kiway.homework.util.Utils.SYS_OTHER;
+import static cn.kiway.hybird.util.Utils.SYS_MIUI;
+import static cn.kiway.hybird.util.Utils.SYS_OTHER;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -53,7 +53,7 @@ public class KwAPP extends Application {
         }
     }
 
-    public static String ROOT; //"/mnt/sdcard/kiway_teacher/";
+    public static String ROOT;
     public static String HTML = "xtzy_teacher/dist/index.html";
     public static String ZIP = "xtzy_teacher.zip";
 

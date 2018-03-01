@@ -1,4 +1,4 @@
-package cn.kiway.homework.broadcast;
+package cn.kiway.hybird.broadcast;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -9,9 +9,9 @@ import android.util.Log;
 
 import com.huawei.android.pushagent.api.PushEventReceiver;
 
-import cn.kiway.homework.activity.MainActivity;
-import cn.kiway.homework.util.MLog;
-import cn.kiway.homework.util.MyDBHelper;
+import cn.kiway.hybird.activity.MainActivity;
+import cn.kiway.hybird.util.MLog;
+import cn.kiway.hybird.util.MyDBHelper;
 
 /*
  * 接收Push所有消息的广播接收器

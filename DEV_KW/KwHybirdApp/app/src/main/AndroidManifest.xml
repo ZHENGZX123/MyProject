@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="cn.kiway.homework.teacher">
+    package="cn.kiway.hybird.teacher">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -20,9 +20,9 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <permission
-        android:name="cn.kiway.homework.teacher.permission.MIPUSH_RECEIVE"
+        android:name="cn.kiway.hybird.teacher.permission.MIPUSH_RECEIVE"
         android:protectionLevel="signature" />
-    <uses-permission android:name="cn.kiway.homework.teacher.permission.MIPUSH_RECEIVE" />
+    <uses-permission android:name="cn.kiway.hybird.teacher.permission.MIPUSH_RECEIVE" />
 
     <!-- 华为推送 -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -33,11 +33,11 @@
 
     <!-- jpush Required -->
     <permission
-        android:name="cn.kiway.homework.teacher.permission.JPUSH_MESSAGE"
+        android:name="cn.kiway.hybird.teacher.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
 
     <!-- Required  一些系统要求的权限，如访问网络等-->
-    <uses-permission android:name="cn.kiway.homework.teacher.permission.JPUSH_MESSAGE" />
+    <uses-permission android:name="cn.kiway.hybird.teacher.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -66,7 +66,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
 
     <application
-        android:name="cn.kiway.homework.KwAPP"
+        android:name="cn.kiway.hybird.KwAPP"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -74,7 +74,7 @@
         android:theme="@android:style/Theme.NoTitleBar"
         tools:replace="android:allowBackup,android:icon,android:label,android:name">
         <activity
-            android:name="cn.kiway.homework.activity.WelcomeActivity"
+            android:name="cn.kiway.hybird.activity.WelcomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
@@ -85,15 +85,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="cn.kiway.homework.activity.MainActivity"
+            android:name="cn.kiway.hybird.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name="cn.kiway.homework.activity.NoNetActivity"
+            android:name="cn.kiway.hybird.activity.NoNetActivity"
             android:screenOrientation="portrait"></activity>
 
-        <receiver android:name="cn.kiway.homework.broadcast.NetChangeReceiver">
+        <receiver android:name="cn.kiway.hybird.broadcast.NetChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
@@ -138,7 +138,7 @@
         </receiver>
 
         <receiver
-            android:name="cn.kiway.homework.broadcast.XiaomiMessageReceiver"
+            android:name="cn.kiway.hybird.broadcast.XiaomiMessageReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE" />
@@ -154,7 +154,7 @@
 
         <!-- 华为推送 -->
         <!-- 第三方相关 :接收Push消息（注册、Push消息、Push连接状态、标签，LBS上报结果）广播 -->
-        <receiver android:name="cn.kiway.homework.broadcast.HuaweiMessageReceiver">
+        <receiver android:name="cn.kiway.hybird.broadcast.HuaweiMessageReceiver">
             <intent-filter>
                 <!-- 必须,用于接收token-->
                 <action android:name="com.huawei.android.push.intent.REGISTRATION" />
@@ -259,7 +259,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.DaemonService" />
-                <category android:name="cn.kiway.homework.teacher" />
+                <category android:name="cn.kiway.hybird.teacher" />
             </intent-filter>
         </service>
 
@@ -269,7 +269,7 @@
             android:enabled="true">
             <intent-filter android:priority="1000">
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
-                <category android:name="cn.kiway.homework.teacher" />
+                <category android:name="cn.kiway.hybird.teacher" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.USER_PRESENT" />
@@ -294,7 +294,7 @@
                 <action android:name="cn.jpush.android.ui.PushActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="cn.kiway.homework.teacher" />
+                <category android:name="cn.kiway.hybird.teacher" />
             </intent-filter>
         </activity>
         <!-- SDK核心功能-->
@@ -305,7 +305,7 @@
             android:theme="@style/MyDialogStyle">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="cn.kiway.homework.teacher" />
+                <category android:name="cn.kiway.hybird.teacher" />
             </intent-filter>
         </activity>
 
@@ -322,17 +322,17 @@
         <!-- 新的tag/alias接口结果返回需要开发者配置一个自定的广播 -->
         <!-- 该广播需要继承JPush提供的JPushMessageReceiver类, 并如下新增一个 Intent-Filter -->
         <receiver
-            android:name="cn.kiway.homework.broadcast.MyJPushMessageReceiver"
+            android:name="cn.kiway.hybird.broadcast.MyJPushMessageReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
-                <category android:name="cn.kiway.homework.teacher" />
+                <category android:name="cn.kiway.hybird.teacher" />
             </intent-filter>
         </receiver>
 
         <!-- User defined. 用户自定义的广播接收器-->
         <receiver
-            android:name="cn.kiway.homework.broadcast.JPushMessageReceiver"
+            android:name="cn.kiway.hybird.broadcast.JPushMessageReceiver"
             android:enabled="true">
             <intent-filter>
                 <!--Required 用户注册SDK的intent-->
@@ -345,7 +345,7 @@
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
                 <!-- 接收网络变化 连接/断开 since 1.6.3 -->
                 <action android:name="cn.jpush.android.intent.CONNECTION" />
-                <category android:name="cn.kiway.homework.teacher" />
+                <category android:name="cn.kiway.hybird.teacher" />
             </intent-filter>
         </receiver>
 

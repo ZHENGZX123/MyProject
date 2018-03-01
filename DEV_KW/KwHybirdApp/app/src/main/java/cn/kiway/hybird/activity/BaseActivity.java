@@ -1,4 +1,4 @@
-package cn.kiway.homework.activity;
+package cn.kiway.hybird.activity;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -32,17 +32,17 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
-import cn.kiway.homework.KwAPP;
-import cn.kiway.homework.entity.KV;
-import cn.kiway.homework.util.FileUtils;
-import cn.kiway.homework.util.HttpDownload;
-import cn.kiway.homework.util.MLog;
-import cn.kiway.homework.util.MyDBHelper;
-import cn.kiway.homework.util.Utils;
+import cn.kiway.hybird.KwAPP;
+import cn.kiway.hybird.entity.KV;
+import cn.kiway.hybird.util.FileUtils;
+import cn.kiway.hybird.util.HttpDownload;
+import cn.kiway.hybird.util.MLog;
+import cn.kiway.hybird.util.MyDBHelper;
+import cn.kiway.hybird.util.Utils;
 import ly.count.android.api.Countly;
 
-import static cn.kiway.homework.util.Utils.SYS_EMUI;
-import static cn.kiway.homework.util.Utils.SYS_MIUI;
+import static cn.kiway.hybird.util.Utils.SYS_EMUI;
+import static cn.kiway.hybird.util.Utils.SYS_MIUI;
 
 /**
  * Created by Administrator on 2017/7/5.

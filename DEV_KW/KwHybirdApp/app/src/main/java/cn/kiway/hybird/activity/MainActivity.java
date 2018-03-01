@@ -1,4 +1,4 @@
-package cn.kiway.homework.activity;
+package cn.kiway.hybird.activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -48,24 +48,24 @@ import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-import cn.kiway.homework.KwAPP;
-import cn.kiway.homework.entity.HTTPCache;
-import cn.kiway.homework.teacher.R;
-import cn.kiway.homework.util.BadgeUtil;
-import cn.kiway.homework.util.CountlyUtil;
-import cn.kiway.homework.util.MLog;
-import cn.kiway.homework.util.MyDBHelper;
-import cn.kiway.homework.util.NetworkUtil;
-import cn.kiway.homework.util.ResourceUtil;
-import cn.kiway.homework.util.UploadUtil;
-import cn.kiway.homework.util.Utils;
-import cn.kiway.homework.view.X5WebView;
+import cn.kiway.hybird.KwAPP;
+import cn.kiway.hybird.entity.HTTPCache;
+import cn.kiway.hybird.teacher.R;
+import cn.kiway.hybird.util.BadgeUtil;
+import cn.kiway.hybird.util.CountlyUtil;
+import cn.kiway.hybird.util.MLog;
+import cn.kiway.hybird.util.MyDBHelper;
+import cn.kiway.hybird.util.NetworkUtil;
+import cn.kiway.hybird.util.ResourceUtil;
+import cn.kiway.hybird.util.UploadUtil;
+import cn.kiway.hybird.util.Utils;
+import cn.kiway.hybird.view.X5WebView;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static cn.kiway.homework.KwAPP.ceshiUrl;
-import static cn.kiway.homework.KwAPP.url;
-import static cn.kiway.homework.KwAPP.zhengshiUrl;
-import static cn.kiway.homework.util.Utils.getCurrentVersion;
+import static cn.kiway.hybird.KwAPP.ceshiUrl;
+import static cn.kiway.hybird.KwAPP.url;
+import static cn.kiway.hybird.KwAPP.zhengshiUrl;
+import static cn.kiway.hybird.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
@@ -799,6 +799,12 @@ public class MainActivity extends BaseActivity {
         if (kill.getVisibility() == View.VISIBLE) {
             return;
         }
+        if (TextUtils.isEmpty(ret)) {
+            return;
+        }
+        if (ret.startsWith("<html>")) {
+            return;
+        }
         MLog.d("test", "saveDB");
         String request = url + param + method;
         HTTPCache cache = new MyDBHelper(this).getHttpCacheByRequest(request);
@@ -816,23 +822,19 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void httpRequestCallback(final String tagname, String result) {
-        if (result == null) {
-            JSONObject o = new JSONObject();
-            try {
-                o.put("data", "");
-                o.put("errorMsg", "请求失败，请检查网络稍后再试");
-                o.put("statusCode", 503);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            result = o.toString();
-        }
-        final String finalResult = result;
+    private void httpRequestCallback(final String tagname, final String result) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 try {
+                    String finalResult = "";
+                    if (TextUtils.isEmpty(result)) {
+                        finalResult = get503String();
+                    } else if (result.startsWith("<html>")) {
+                        finalResult = get503String();
+                    } else {
+                        finalResult = result;
+                    }
                     String r = finalResult.replace("null", "\"\"").replace("\"\"\"\"", "\"\"");
                     MLog.d("test", "httpRequestCallback , tagname = " + tagname + " , result = " + r);
                     wv.loadUrl("javascript:" + tagname + "(" + r + ")");
@@ -841,6 +843,14 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private String get503String() throws JSONException {
+        JSONObject o = new JSONObject();
+        o.put("data", "");
+        o.put("errorMsg", "请求失败，请检查网络稍后再试");
+        o.put("statusCode", 503);
+        return o.toString();
     }
 
     //录音
