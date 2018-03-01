@@ -21,24 +21,35 @@ public class Configue {
     //4.手动生成压缩包，放在raw文件夹下。压缩包的目录结构是xtzy_teacher\dist\...
 
     //5.配置正式版和测试版Host地址，配置该版本是正式还是测试
-
     public static final String zhengshiUrl = "http://xtzy.xtclass.com";//正式地址
     public static final String ceshiUrl = "http://cszy.xtclass.com:8389";//测试地址8390
-    public static String url;
+    public static String host;
     public static boolean isTest = false;
 
     static {
         if (isTest) {
-            url = Configue.ceshiUrl;
+            host = Configue.ceshiUrl;
         } else {
-            url = Configue.zhengshiUrl;
+            host = Configue.zhengshiUrl;
         }
     }
 
-    //6.设置ROOT地址，即zip包解压地址和项目其他资源缓存地址。该步骤已不需要，ROOT固定是内置存储目录。以前是外部路径"/mnt/sdcard/kiway_teacher/"
+    //6.配置项目使用到的httpUrl路径，由于大部分业务在前端，所以平台仅有几个
+    public static final String url_upgrade = "/download/version/zip_ls.json";//易错
+    public static final String url_install = "/push/installation";
+    public static final String url_uninstall = "/push/uninstall";
+    public static final String url_getbooks = "/teacher/book?access_token=%s";
+    public static final String url_downloadBooks = "/resource/book/%s?access_token=%s";
+    public static final String url_upload = "/common/file?access_token=%s";
+
+    //7.设置ROOT地址，即zip包解压地址和项目其他资源缓存地址。该步骤已不需要，ROOT固定是内置存储目录。以前是外部路径"/mnt/sdcard/kiway_teacher/"
     public static String ROOT;
-    //7.配置countly
-    public static final String countlyUrl = "/countly";
+    public static String ZIP = "xtzy_teacher.zip";
+    public static String HTML = "xtzy_teacher/dist/index.html";
+
+
+    //8.配置countly
+    public static final String url_countly = "/countly";
     public static final String countlyAPPKEY = "e3a6f65596ea867c2f739c12d5120d5d76353b5e";
 
     //14.配置其他参数
