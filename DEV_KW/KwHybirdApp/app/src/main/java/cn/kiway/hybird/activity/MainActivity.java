@@ -557,7 +557,7 @@ public class MainActivity extends BaseActivity {
         @JavascriptInterface
         public void httpRequest(String url, String param, final String method, String time, String tagname, String related, String event) {
             if (!Configue.isTest) {
-                url = url.replace(Configue.ceshiUrl, Configue.zhengshiUrl);
+                url = url.replace(Configue.ceshiHost, Configue.zhengshiHost);
             }
             try {
                 Integer.parseInt(time);
