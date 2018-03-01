@@ -185,7 +185,7 @@ public class BaseActivity extends Activity {
             param.put("userId", userId);
             Log.d("push", "param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            client.post(this, Configue.url + "/push/installation", stringEntity, "application/json", new TextHttpResponseHandler() {
+            client.post(this, Configue.host + Configue.url_install, stringEntity, "application/json", new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("push", "installationPush onSuccess = " + ret);
@@ -235,7 +235,7 @@ public class BaseActivity extends Activity {
             param.put("userId", userId);
             Log.d("push", "uninstall param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            client.post(this, Configue.url + "/push/uninstall", stringEntity, "application/json", new TextHttpResponseHandler() {
+            client.post(this, Configue.host + Configue.url_uninstall, stringEntity, "application/json", new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("push", "uninstall onSuccess = " + ret);
@@ -277,7 +277,7 @@ public class BaseActivity extends Activity {
         client.setTimeout(10000);
         String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
         client.addHeader("X-Auth-Token", token);
-        String url = Configue.url + "/teacher/book?access_token=" + token;
+        String url = Configue.host + String.format(Configue.url_getbooks, token);
         client.get(this, url, new TextHttpResponseHandler() {
             @Override
             public void onSuccess(int code, Header[] headers, String ret) {
@@ -309,7 +309,7 @@ public class BaseActivity extends Activity {
                         }
                         //1.下载
                         String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
-                        String downloadurl = Configue.url + "/resource/book/" + id + "?access_token=" + token;
+                        String downloadurl = Configue.host + String.format(Configue.url_downloadBooks, id, token);
                         MLog.d("test", "downloadurl = " + downloadurl);
                         int ret = new HttpDownload().downFile(downloadurl, "/mnt/sdcard/books/", id + ".zip");
                         MLog.d("test", "下载结果 ret = " + ret);

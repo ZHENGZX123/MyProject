@@ -26,7 +26,7 @@ public class ResourceUtil {
             return null;
         }
         //1.搜索题库，如果没有，返回null
-        //TODO url==>key
+        //TODO host==>key
         String key = url.replace("", "");
         KV a = new KwDBHelper(c).getKVByK(key);
         if (a == null) {
