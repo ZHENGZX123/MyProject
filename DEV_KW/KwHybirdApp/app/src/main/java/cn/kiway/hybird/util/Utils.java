@@ -17,9 +17,9 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
+import cn.kiway.http.NetworkUtil;
 import cn.kiway.hybird.activity.MainActivity;
 import cn.kiway.utils.MLog;
-import cn.kiway.utils.NetworkUtil;
 
 /**
  * Created by Administrator on 2017/7/5.
