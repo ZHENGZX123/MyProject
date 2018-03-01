@@ -34,8 +34,6 @@ import static cn.kiway.hybird.util.Utils.getCurrentVersion;
 
 public class WelcomeActivity extends Activity {
 
-    private static final String currentPackageVersion = "0.0.1";
-
     private boolean isSuccess = false;
     private boolean isJump = false;
 
@@ -121,7 +119,7 @@ public class WelcomeActivity extends Activity {
                     } else {
                         //如果APK没有最新版本，比较包的版本。如果内置包的版本号比较高，直接替换
                         String currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
-                        if (currentPackage.compareTo(currentPackageVersion) < 0) {
+                        if (currentPackage.compareTo(Configue.currentPackageVersion) < 0) {
                             Log.d("test", "内置包的版本大，替换新包");
                             getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
                             checkIsFirst();
@@ -209,7 +207,7 @@ public class WelcomeActivity extends Activity {
             }
             //解压完毕，删掉zip文件
             new File(Configue.ROOT + Configue.ZIP).delete();
-            getSharedPreferences("kiway", 0).edit().putString("version_package", currentPackageVersion).commit();
+            getSharedPreferences("kiway", 0).edit().putString("version_package", Configue.currentPackageVersion).commit();
         }
     }
 
