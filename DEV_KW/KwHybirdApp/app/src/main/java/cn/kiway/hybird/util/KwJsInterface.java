@@ -162,8 +162,8 @@ public class KwJsInterface {
                     public void run() {
                         try {
                             JSONObject obj = new JSONObject(ret);
-                            String url = Configue.host + obj.getJSONObject("data").getString("host");
-                            obj.getJSONObject("data").put("host", url);
+                            String url = Configue.host + obj.getJSONObject("data").getString("url");
+                            obj.getJSONObject("data").put("url", url);
                             MLog.d("test", "obj = " + obj.toString());
                             wv.loadUrl("javascript:fileUploadCallback(" + obj.toString() + ")");
                         } catch (JSONException e) {
@@ -286,7 +286,7 @@ public class KwJsInterface {
             MLog.d("test", "参数错误");
             return;
         }
-        MLog.d("test", "httpRequest host = " + url + " , param = " + param + " , method = " + method + " , time = " + time + " , tagname = " + tagname + " , related = " + related + ", event = " + event);
+        MLog.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , time = " + time + " , tagname = " + tagname + " , related = " + related + ", event = " + event);
         CountlyUtil.getInstance().addEvent(event);
 
         if (time.equals("0")) {
@@ -314,7 +314,6 @@ public class KwJsInterface {
 
     public static final int SNAPSHOT = 9999;
     public static final int SELECT_PHOTO = 8888;
-    public static final int SAOMAWANG = 7777;
     public static final int QRSCAN = 6666;
 
     private MediaRecorder mediaRecorder;

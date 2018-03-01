@@ -33,7 +33,6 @@ import cn.kiway.utils.Configue;
 import cn.kiway.utils.MLog;
 
 import static cn.kiway.hybird.util.KwJsInterface.QRSCAN;
-import static cn.kiway.hybird.util.KwJsInterface.SAOMAWANG;
 import static cn.kiway.hybird.util.KwJsInterface.SELECT_PHOTO;
 import static cn.kiway.hybird.util.KwJsInterface.SNAPSHOT;
 import static cn.kiway.hybird.util.KwJsInterface.snapshotFile;
@@ -104,7 +103,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                MLog.d("test", "onPageFinished host = " + url);
+                MLog.d("test", "onPageFinished url = " + url);
             }
 
             @Override
@@ -115,19 +114,19 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-                MLog.d("test", "shouldInterceptRequest host = " + url);
-                //if ((host.startsWith("http") || host.startsWith("https"))
-                //&& (host.endsWith("jpg") || host.endsWith("JPG") || host.endsWith("jpeg") || host.endsWith("JPEG") || host.endsWith("png") || host.endsWith("PNG"))) {
-                //InputStream is = getStreamByUrl(host);
+                MLog.d("test", "shouldInterceptRequest url = " + url);
+                //if ((url.startsWith("http") || url.startsWith("https"))
+                //&& (url.endsWith("jpg") || url.endsWith("JPG") || url.endsWith("jpeg") || url.endsWith("JPEG") || url.endsWith("png") || url.endsWith("PNG"))) {
+                //InputStream is = getStreamByUrl(url);
                 //if (is == null) {
-                //return super.shouldInterceptRequest(view, host);
+                //return super.shouldInterceptRequest(view, url);
                 //}
-                //return new WebResourceResponse(getMimeType(host), "utf-8", is);
+                //return new WebResourceResponse(getMimeType(url), "utf-8", is);
                 //}
                 //des解密用
-                //else if (host.endsWith("js") || host.endsWith("css") || host.endsWith("html")) {
-                //InputStream is = getStreamByUrl2(host.replace("file://", ""));
-                //return new WebResourceResponse(getMimeType(host), "utf-8", is);
+                //else if (url.endsWith("js") || url.endsWith("css") || url.endsWith("html")) {
+                //InputStream is = getStreamByUrl2(url.replace("file://", ""));
+                //return new WebResourceResponse(getMimeType(url), "utf-8", is);
                 //}
                 return super.shouldInterceptRequest(view, url);
             }
@@ -178,7 +177,7 @@ public class MainActivity extends BaseActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             String url = wv.getUrl();
-            MLog.d("test", "host = " + url);
+            MLog.d("test", "url = " + url);
             for (String p : Configue.pages) {
                 if (url.endsWith(p)) {
                     doFinish();
@@ -236,12 +235,6 @@ public class MainActivity extends BaseActivity {
             String path = images.get(0).path;
             MLog.d("test", "path = " + path);
             wv.loadUrl("javascript:selectPhotoCallback('file://" + path + "')");
-        } else if (requestCode == SAOMAWANG) {
-            if (data == null) {
-                return;
-            }
-            int responseCode = data.getIntExtra("RESULT_OK", -1);
-            MLog.d("test", "responseCode = " + responseCode);
         } else if (requestCode == QRSCAN) {
             if (data == null) {
                 return;
