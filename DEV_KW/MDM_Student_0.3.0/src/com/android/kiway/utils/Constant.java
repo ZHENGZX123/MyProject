@@ -16,7 +16,7 @@ public class Constant {
     //public static final String APPID = "a4fbf8428d903d1b7f4466dbdddf9f04";
     //public static final String APPKEY = "d67f10fa6b95e82f50cd52acbdac2fc25c585408";
 
-    public static final String zbusHost = "192.168.8.161";//"192.168.8.161"; mdm.kiway.cn
+    public static final String zbusHost = "mdm.kiway.cn";//"192.168.8.161"; mdm.kiway.cn
     public static final String zbusPost = "15556";
     public static String teacherUserId = "";
 
