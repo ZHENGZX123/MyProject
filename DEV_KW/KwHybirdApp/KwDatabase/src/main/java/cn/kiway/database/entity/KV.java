@@ -1,4 +1,4 @@
-package cn.kiway.kwdatabase.entity;
+package cn.kiway.database.entity;
 
 /**
  * Created by Administrator on 2017/7/14.
