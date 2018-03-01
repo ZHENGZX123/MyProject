@@ -52,6 +52,7 @@ import cn.kiway.hybird.KwAPP;
 import cn.kiway.hybird.entity.HTTPCache;
 import cn.kiway.hybird.teacher.R;
 import cn.kiway.hybird.util.BadgeUtil;
+import cn.kiway.hybird.util.Configue;
 import cn.kiway.hybird.util.CountlyUtil;
 import cn.kiway.hybird.util.MLog;
 import cn.kiway.hybird.util.MyDBHelper;
@@ -62,9 +63,9 @@ import cn.kiway.hybird.util.Utils;
 import cn.kiway.hybird.view.X5WebView;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static cn.kiway.hybird.KwAPP.ceshiUrl;
-import static cn.kiway.hybird.KwAPP.url;
-import static cn.kiway.hybird.KwAPP.zhengshiUrl;
+import static cn.kiway.hybird.util.Configue.ceshiUrl;
+import static cn.kiway.hybird.util.Configue.url;
+import static cn.kiway.hybird.util.Configue.zhengshiUrl;
 import static cn.kiway.hybird.util.Utils.getCurrentVersion;
 
 
@@ -280,7 +281,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void load() {
-        wv.loadUrl("file://" + KwAPP.ROOT + KwAPP.HTML);
+        wv.loadUrl("file://" + Configue.ROOT + KwAPP.HTML);
     }
 
     private void initData() {
@@ -510,7 +511,7 @@ public class MainActivity extends BaseActivity {
                         public void run() {
                             try {
                                 JSONObject obj = new JSONObject(ret);
-                                String url = KwAPP.url + obj.getJSONObject("data").getString("url");
+                                String url = Configue.url + obj.getJSONObject("data").getString("url");
                                 obj.getJSONObject("data").put("url", url);
                                 MLog.d("test", "obj = " + obj.toString());
                                 wv.loadUrl("javascript:fileUploadCallback(" + obj.toString() + ")");
@@ -620,12 +621,12 @@ public class MainActivity extends BaseActivity {
         @JavascriptInterface
         public String isTest() {
             MLog.d("test", "isTest is called");
-            return KwAPP.isTest ? "1" : "0";
+            return Configue.isTest ? "1" : "0";
         }
 
         @JavascriptInterface
         public void httpRequest(String url, String param, final String method, String time, String tagname, String related, String event) {
-            if (!KwAPP.isTest) {
+            if (!Configue.isTest) {
                 url = url.replace(ceshiUrl, zhengshiUrl);
             }
             try {

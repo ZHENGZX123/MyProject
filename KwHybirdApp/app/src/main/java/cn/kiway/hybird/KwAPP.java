@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
+import cn.kiway.hybird.util.Configue;
 import cn.kiway.hybird.util.CountlyUtil;
 import cn.kiway.hybird.util.Utils;
 import ly.count.android.api.Countly;
@@ -39,51 +40,25 @@ import static cn.kiway.hybird.util.Utils.SYS_OTHER;
 
 public class KwAPP extends Application {
 
-    public static String url;
-    public static final String zhengshiUrl = "http://xtzy.xtclass.com";//正式地址
-    public static final String ceshiUrl = "http://cszy.xtclass.com:8389";//测试地址8390
-
-    public static boolean isTest = false;
-
-    static {
-        if (isTest) {
-            url = ceshiUrl;
-        } else {
-            url = zhengshiUrl;
-        }
-    }
-
-    public static String ROOT;
     public static String HTML = "xtzy_teacher/dist/index.html";
     public static String ZIP = "xtzy_teacher.zip";
-
-    public static String BOOKS = "/mnt/sdcard/books/";
-
-    //小米推送用
-    // user your appid the key.
-    private static final String APP_ID = "2882303761517595244";
-    // user your appid the key.
-    private static final String APP_KEY = "5101759558244";
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        //ROOT = "/mnt/sdcard/kiway_teacher/";
-        ROOT = this.getFilesDir().toString() + "/";
-        Log.d("test", "ROOT = " + ROOT);
-
-        initImageCache();
+        Configue.ROOT = this.getFilesDir().toString() + "/";
+        Log.d("test", "ROOT = " + Configue.ROOT);
 
         //小米推送
         // 注册push服务，注册成功后会向DemoMessageReceiver发送广播
         // 可以从DemoMessageReceiver的onCommandResult方法中MiPushCommandMessage对象参数中获取注册信息
         if (Utils.getSystem().equals(SYS_MIUI) && shouldInit()) {
-            MiPushClient.registerPush(this, APP_ID, APP_KEY);
+            MiPushClient.registerPush(this, Configue.APP_ID, Configue.APP_KEY);
         }
 
         //countly
-        Countly.sharedInstance().init(this, url + "/countly", "e3a6f65596ea867c2f739c12d5120d5d76353b5e");
+        Countly.sharedInstance().init(this, Configue.url + "/countly", "e3a6f65596ea867c2f739c12d5120d5d76353b5e");
         CountlyUtil.getInstance().init(this);
 
         //jpush
@@ -97,6 +72,9 @@ public class KwAPP extends Application {
 
         //x5
         initTBS();
+
+        //imageCache
+        initImageCache();
     }
 
     /**
