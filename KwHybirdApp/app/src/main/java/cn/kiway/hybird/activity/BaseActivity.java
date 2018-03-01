@@ -44,6 +44,8 @@ import ly.count.android.api.Countly;
 
 import static cn.kiway.hybird.util.Utils.SYS_EMUI;
 import static cn.kiway.hybird.util.Utils.SYS_MIUI;
+import static cn.kiway.utils.Configue.KwAppId;
+import static cn.kiway.utils.Configue.KwModule;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -178,10 +180,10 @@ public class BaseActivity extends Activity {
                     break;
             }
             JSONObject param = new JSONObject();
-            param.put("appId", "c77b6c47dbcee47d7ffbc9461da0c82a");
+            param.put("appId", KwAppId);
             param.put("deviceId", deviceId);
             param.put("type", type);
-            param.put("module", "teacher");
+            param.put("module", KwModule);
             param.put("userId", userId);
             Log.d("push", "param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
@@ -228,10 +230,10 @@ public class BaseActivity extends Activity {
                     break;
             }
             JSONObject param = new JSONObject();
-            param.put("appId", "c77b6c47dbcee47d7ffbc9461da0c82a");
+            param.put("appId", KwAppId);
             param.put("deviceId", deviceId);
             param.put("type", type);
-            param.put("module", "teacher");
+            param.put("module", KwModule);
             param.put("userId", userId);
             Log.d("push", "uninstall param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
