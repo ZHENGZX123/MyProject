@@ -27,7 +27,6 @@ import cn.kiway.database.util.KwDBHelper;
 import cn.kiway.hybird.teacher.R;
 import cn.kiway.hybird.util.JsAndroidInterface;
 import cn.kiway.hybird.util.Utils;
-import cn.kiway.hybird.view.X5WebView;
 import cn.kiway.sharedpref.SPUtil;
 import cn.kiway.utils.BadgeUtil;
 import cn.kiway.utils.Configue;
@@ -42,7 +41,7 @@ import static cn.kiway.hybird.util.JsAndroidInterface.snapshotFile;
 
 public class MainActivity extends BaseActivity {
 
-    private X5WebView wv;
+    private WebView wv;
     private Button kill;
     public static MainActivity instance;
     private long time;
@@ -61,7 +60,7 @@ public class MainActivity extends BaseActivity {
 
 
     private void initView() {
-        wv = (X5WebView) findViewById(R.id.wv);
+        wv = (WebView) findViewById(R.id.wv);
         kill = (Button) findViewById(R.id.kill);
     }
 
