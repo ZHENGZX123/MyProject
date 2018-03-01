@@ -34,6 +34,7 @@ import javax.crypto.spec.DESKeySpec;
 
 import cn.kiway.hybird.KwAPP;
 import cn.kiway.hybird.entity.KV;
+import cn.kiway.hybird.util.Configue;
 import cn.kiway.hybird.util.FileUtils;
 import cn.kiway.hybird.util.HttpDownload;
 import cn.kiway.hybird.util.MLog;
@@ -188,7 +189,7 @@ public class BaseActivity extends Activity {
             param.put("userId", userId);
             Log.d("push", "param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            client.post(this, KwAPP.url + "/push/installation", stringEntity, "application/json", new TextHttpResponseHandler() {
+            client.post(this, Configue.url + "/push/installation", stringEntity, "application/json", new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("push", "installationPush onSuccess = " + ret);
@@ -238,7 +239,7 @@ public class BaseActivity extends Activity {
             param.put("userId", userId);
             Log.d("push", "uninstall param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            client.post(this, KwAPP.url + "/push/uninstall", stringEntity, "application/json", new TextHttpResponseHandler() {
+            client.post(this, Configue.url + "/push/uninstall", stringEntity, "application/json", new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("push", "uninstall onSuccess = " + ret);
@@ -280,7 +281,7 @@ public class BaseActivity extends Activity {
         client.setTimeout(10000);
         String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
         client.addHeader("X-Auth-Token", token);
-        String url = KwAPP.url + "/teacher/book?access_token=" + token;
+        String url = Configue.url + "/teacher/book?access_token=" + token;
         client.get(this, url, new TextHttpResponseHandler() {
             @Override
             public void onSuccess(int code, Header[] headers, String ret) {
@@ -307,20 +308,20 @@ public class BaseActivity extends Activity {
                         String id = o.getString("id");
                         MLog.d("test", "id = " + id);
                         //0.检查本地是否存在
-                        if (new File(KwAPP.BOOKS + id + ".zip").exists()) {
+                        if (new File(Configue.BOOKS + id + ".zip").exists()) {
                             continue;
                         }
                         //1.下载
                         String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
-                        String downloadurl = KwAPP.url + "/resource/book/" + id + "?access_token=" + token;
+                        String downloadurl = Configue.url + "/resource/book/" + id + "?access_token=" + token;
                         MLog.d("test", "downloadurl = " + downloadurl);
                         int ret = new HttpDownload().downFile(downloadurl, "/mnt/sdcard/books/", id + ".zip");
                         MLog.d("test", "下载结果 ret = " + ret);
                         if (ret == 0) {
                             //2.解压
-                            new ZipFile(KwAPP.BOOKS + id + ".zip").extractAll(KwAPP.BOOKS + id);
+                            new ZipFile(Configue.BOOKS + id + ".zip").extractAll(Configue.BOOKS + id);
                             //3.读取data.json文件
-                            String filepath = KwAPP.BOOKS + id + "/data.json";
+                            String filepath = Configue.BOOKS + id + "/data.json";
                             String content = FileUtils.readSDCardFile(filepath, getApplicationContext());
                             MLog.d("test", "content = " + content);
                             JSONObject all = new JSONObject(content);

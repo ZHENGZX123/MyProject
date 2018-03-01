@@ -7,11 +7,8 @@ import android.util.Log;
  */
 
 public class MLog {
-
-    private static final boolean DEBUG = true;
-
     public static void d(String tag, String value) {
-        if (DEBUG) {
+        if (Configue.DEBUG) {
             Log.d(tag, value);
         }
     }

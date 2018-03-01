@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import cn.kiway.hybird.KwAPP;
-
 /**
  * Created by Android on 2016/4/20.
  */
@@ -193,7 +191,7 @@ public class FileUtils {
 
     public static void copyRawToSdcard(Context c, int id, String name) {
         InputStream inStream = c.getResources().openRawResource(id);//R.raw.tab0
-        File file = new File(KwAPP.ROOT + name);
+        File file = new File(Configue.ROOT + name);
 //        File file = new File(c.getFilesDir() + name);
         FileOutputStream fileOutputStream = null;//存入SDCard
         try {
