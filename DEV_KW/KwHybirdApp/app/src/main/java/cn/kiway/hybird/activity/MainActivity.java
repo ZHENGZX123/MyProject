@@ -38,6 +38,7 @@ import cn.kiway.hybird.teacher.R;
 import cn.kiway.hybird.util.JsAndroidInterface;
 import cn.kiway.hybird.util.Utils;
 import cn.kiway.hybird.view.X5WebView;
+import cn.kiway.sharedpref.SPUtil;
 import cn.kiway.utils.BadgeUtil;
 import cn.kiway.utils.Configue;
 import cn.kiway.utils.MLog;
@@ -185,12 +186,12 @@ public class MainActivity extends BaseActivity {
     }
 
     private synchronized void checkNotification() {
-        final String event = getSharedPreferences("kiway", 0).getString("event", "");
+        final String event = SPUtil.instance().getValue("event", "");
         MLog.d("test", "取了一个event = " + event);
         if (TextUtils.isEmpty(event)) {
             return;
         }
-        getSharedPreferences("kiway", 0).edit().putString("event", "").commit();
+        SPUtil.instance().setValue("event", "");
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -309,7 +310,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void clickSetToken(View view) {
-        //getSharedPreferences("kiway", 0).edit().putString("accessToken", "123456").commit();
+        //SPUtil.instance().setValue("accessToken", "123456")
         new KwDBHelper(this).deleteAllHttpCache();
     }
 

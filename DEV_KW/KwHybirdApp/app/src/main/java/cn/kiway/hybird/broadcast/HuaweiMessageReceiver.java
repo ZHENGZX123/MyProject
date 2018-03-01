@@ -11,6 +11,7 @@ import com.huawei.android.pushagent.api.PushEventReceiver;
 
 import cn.kiway.database.util.KwDBHelper;
 import cn.kiway.hybird.activity.MainActivity;
+import cn.kiway.sharedpref.SPUtil;
 import cn.kiway.utils.MLog;
 
 /*
@@ -29,7 +30,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
                 .getSystemService(Context.TELEPHONY_SERVICE);
         Log.d("huawei", "imei = " + tm.getDeviceId());
 
-        context.getSharedPreferences("kiway", 0).edit().putString("huaweitoken", token).commit();
+        SPUtil.instance().setValue("huaweitoken", token);
     }
 
 
@@ -55,7 +56,7 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             String content = "收到通知附加消息： " + extras.getString(BOUND_KEY.pushMsgKey);
             Log.d("huawei", content);
             MLog.d("test", "存了一个event");
-            context.getSharedPreferences("kiway", 0).edit().putString("event", content.replace("[", "").replace("]", "")).commit();
+            SPUtil.instance().setValue("event", content.replace("[", "").replace("]", ""));
 
             //没有接收消息的event，只好暂时放这里了 TODO
             new KwDBHelper(context).deleteHttpCache("getTeacherInMsg");

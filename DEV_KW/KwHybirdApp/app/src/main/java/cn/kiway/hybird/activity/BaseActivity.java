@@ -36,6 +36,7 @@ import cn.kiway.database.entity.KV;
 import cn.kiway.database.util.KwDBHelper;
 import cn.kiway.hybird.KwAPP;
 import cn.kiway.hybird.util.Utils;
+import cn.kiway.sharedpref.SPUtil;
 import cn.kiway.utils.Configue;
 import cn.kiway.utils.FileUtils;
 import cn.kiway.utils.HttpDownload;
@@ -157,11 +158,11 @@ public class BaseActivity extends Activity {
         try {
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            String accessToken = getSharedPreferences("kiway", 0).getString("accessToken", "");
-            String userId = getSharedPreferences("kiway", 0).getString("userId", "");
-            String xiaomitoken = getSharedPreferences("kiway", 0).getString("xiaomitoken", "");
-            String huaweitoken = getSharedPreferences("kiway", 0).getString("huaweitoken", "");
-            String othertoken = getSharedPreferences("kiway", 0).getString("othertoken", "");
+            String accessToken = SPUtil.instance().getValue("accessToken", "");
+            String userId = SPUtil.instance().getValue("userId", "");
+            String xiaomitoken = SPUtil.instance().getValue("xiaomitoken", "");
+            String huaweitoken = SPUtil.instance().getValue("huaweitoken", "");
+            String othertoken = SPUtil.instance().getValue("othertoken", "");
             client.addHeader("X-Auth-Token", accessToken);
             MLog.d("test", "xiaomitoken = " + xiaomitoken);
             MLog.d("test", "huaweitoken = " + huaweitoken);
@@ -207,11 +208,11 @@ public class BaseActivity extends Activity {
         try {
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            String accessToken = getSharedPreferences("kiway", 0).getString("accessToken", "");
-            String userId = getSharedPreferences("kiway", 0).getString("userId", "");
-            String xiaomitoken = getSharedPreferences("kiway", 0).getString("xiaomitoken", "");
-            String huaweitoken = getSharedPreferences("kiway", 0).getString("huaweitoken", "");
-            String othertoken = getSharedPreferences("kiway", 0).getString("othertoken", "");
+            String accessToken = SPUtil.instance().getValue("accessToken", "");
+            String userId = SPUtil.instance().getValue("userId", "");
+            String xiaomitoken = SPUtil.instance().getValue("xiaomitoken", "");
+            String huaweitoken = SPUtil.instance().getValue("huaweitoken", "");
+            String othertoken = SPUtil.instance().getValue("othertoken", "");
             client.addHeader("X-Auth-Token", accessToken);
             MLog.d("test", "xiaomitoken = " + xiaomitoken);
             MLog.d("test", "huaweitoken = " + huaweitoken);
@@ -241,23 +242,23 @@ public class BaseActivity extends Activity {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("push", "uninstall onSuccess = " + ret);
-                    getSharedPreferences("kiway", 0).edit().putString("accessToken", "").commit();
-                    getSharedPreferences("kiway", 0).edit().putString("userId", "").commit();
+                    SPUtil.instance().setValue("accessToken", "");
+                    SPUtil.instance().setValue("userId", "");
                     new KwDBHelper(getApplicationContext()).deleteAllHttpCache();
                 }
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("push", "uninstall onFailure = " + s);
-                    getSharedPreferences("kiway", 0).edit().putString("accessToken", "").commit();
-                    getSharedPreferences("kiway", 0).edit().putString("userId", "").commit();
+                    SPUtil.instance().setValue("accessToken", "");
+                    SPUtil.instance().setValue("userId", "");
                     new KwDBHelper(getApplicationContext()).deleteAllHttpCache();
                 }
             });
         } catch (Exception e) {
             Log.d("push", "e = " + e.toString());
-            getSharedPreferences("kiway", 0).edit().putString("accessToken", "").commit();
-            getSharedPreferences("kiway", 0).edit().putString("userId", "").commit();
+            SPUtil.instance().setValue("accessToken", "");
+            SPUtil.instance().setValue("userId", "");
             new KwDBHelper(getApplicationContext()).deleteAllHttpCache();
         }
     }
@@ -277,7 +278,7 @@ public class BaseActivity extends Activity {
     public void getBooks() {
         AsyncHttpClient client = new AsyncHttpClient();
         client.setTimeout(10000);
-        String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
+        String token = SPUtil.instance().getValue("accessToken", "");
         client.addHeader("X-Auth-Token", token);
         String url = Configue.host + String.format(Configue.url_getbooks, token);
         client.get(this, url, new TextHttpResponseHandler() {
@@ -310,7 +311,7 @@ public class BaseActivity extends Activity {
                             continue;
                         }
                         //1.下载
-                        String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
+                        String token = SPUtil.instance().getValue("accessToken", "");
                         String downloadurl = Configue.host + String.format(Configue.url_downloadBooks, id, token);
                         MLog.d("test", "downloadurl = " + downloadurl);
                         int ret = new HttpDownload().downFile(downloadurl, "/mnt/sdcard/books/", id + ".zip");

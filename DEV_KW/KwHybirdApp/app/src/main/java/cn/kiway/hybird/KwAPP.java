@@ -19,13 +19,17 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.tencent.smtt.sdk.QbSdk;
 import com.xiaomi.mipush.sdk.MiPushClient;
+
 import org.xutils.x;
+
 import java.io.File;
 import java.util.List;
+
 import cn.jpush.android.api.JPushInterface;
 import cn.kiway.hybird.activity.WelcomeActivity;
 import cn.kiway.hybird.util.Utils;
 import cn.kiway.countly.CountlyUtil;
+import cn.kiway.sharedpref.SPUtil;
 import cn.kiway.utils.BadgeUtil;
 import cn.kiway.utils.Configue;
 import ly.count.android.api.Countly;
@@ -62,18 +66,16 @@ public class KwAPP extends Application {
             JPushInterface.setDebugMode(false);
             JPushInterface.init(this);
         }
-
         //xutils
         x.Ext.init(this);
-
         //x5
         initTBS();
-
         //imageCache
         initImageCache();
-
         //badge
-        BadgeUtil.lancherActivityClassName = WelcomeActivity.class.getName();
+        BadgeUtil.init(WelcomeActivity.class.getName());
+        //sputil
+        SPUtil.instance().init(this, "kiway");
     }
 
     /**
