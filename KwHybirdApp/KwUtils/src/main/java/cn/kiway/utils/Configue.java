@@ -57,7 +57,7 @@ public class Configue {
     public static final String url_countly = "/countly";
     public static final String countlyAPPKEY = "e3a6f65596ea867c2f739c12d5120d5d76353b5e";
 
-    //10.APK升级和包升级配置：修改build.gradle和currentPackageVersion。重要！
+    //10.APK升级和包升级配置：修改build.gradle和currentPackageVersion。重要！！！
     public static final String currentPackageVersion = "0.0.1";
 
     //11.配置其他参数
