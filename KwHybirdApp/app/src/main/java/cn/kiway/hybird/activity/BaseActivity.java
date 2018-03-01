@@ -1,7 +1,13 @@
 package cn.kiway.hybird.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
@@ -17,6 +23,8 @@ import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,10 +40,12 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
+import cn.kiway.countly.CountlyUtil;
 import cn.kiway.database.entity.KV;
 import cn.kiway.database.util.KwDBHelper;
 import cn.kiway.http.FileUtils;
 import cn.kiway.http.HttpDownload;
+import cn.kiway.http.NetworkUtil;
 import cn.kiway.hybird.KwAPP;
 import cn.kiway.hybird.util.Utils;
 import cn.kiway.sharedpref.SPUtil;
@@ -47,6 +57,7 @@ import static cn.kiway.hybird.util.Utils.SYS_EMUI;
 import static cn.kiway.hybird.util.Utils.SYS_MIUI;
 import static cn.kiway.utils.Configue.KwAppId;
 import static cn.kiway.utils.Configue.KwModule;
+import static cn.kiway.utils.Configue.ZIP;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -344,6 +355,98 @@ public class BaseActivity extends Activity {
                 }
             }
         }.start();
+    }
+
+    private Dialog dialog_download;
+
+    public void checkNewAPK() {
+        //apkUrl , apkVersion
+        String apkUrl = getIntent().getStringExtra("apkUrl");
+        String apkVersion = getIntent().getStringExtra("apkVersion");
+        if (TextUtils.isEmpty(apkUrl)) {
+            return;
+        }
+        if (TextUtils.isEmpty(apkVersion)) {
+            return;
+        }
+        if (Utils.getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
+            downloadSilently(apkUrl, apkVersion);
+        }
+    }
+
+    private void downloadSilently(final String apkUrl, String version) {
+        final String savedFilePath = "/mnt/sdcard/cache/" + ZIP + "_" + version + ".apk";
+        if (new File(savedFilePath).exists()) {
+            MLog.d("test", "该文件已经下载好了");
+            askforInstall(savedFilePath);
+            return;
+        }
+        int isWifi = NetworkUtil.isWifi(this);
+        if (isWifi == 1) {
+            startDownloadAPK(apkUrl, savedFilePath);
+        } else if (isWifi == 0) {
+            MLog.d("test", "不是wifi...");
+            //提示4G
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+            dialog_download = builder.setMessage("有新的版本需要更新，您当前的网络是4G，确定使用流量下载新的APK吗？").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface arg0, int arg1) {
+                    toast("后台下载APK文件");
+                    dialog_download.dismiss();
+                    startDownloadAPK(apkUrl, savedFilePath);
+                }
+            }).setPositiveButton(android.R.string.cancel, null).create();
+            dialog_download.show();
+        }
+    }
+
+    private void startDownloadAPK(String apkUrl, final String savedFilePath) {
+        RequestParams params = new RequestParams(apkUrl);
+        params.setSaveFilePath(savedFilePath);
+        params.setAutoRename(false);
+        params.setAutoResume(true);
+        x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
+            @Override
+            public void onSuccess(File result) {
+                //成功后弹出对话框询问，是否安装
+                askforInstall(savedFilePath);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
+    }
+
+    private void askforInstall(final String savedFilePath) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+        dialog_download = builder.setMessage("发现新的版本，是否更新？本次更新不消耗流量。").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                dialog_download.dismiss();
+                CountlyUtil.getInstance().addEvent("升级APP");
+                Intent intent = new Intent();
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setAction(android.content.Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
+                startActivity(intent);
+                finish();
+            }
+        }).setPositiveButton(android.R.string.cancel, null).create();
+        dialog_download.show();
     }
 
 

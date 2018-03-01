@@ -178,8 +178,6 @@ public class WelcomeActivity extends Activity {
                 });
             }
         }.start();
-
-
     }
 
     protected void checkIsFirst() {
