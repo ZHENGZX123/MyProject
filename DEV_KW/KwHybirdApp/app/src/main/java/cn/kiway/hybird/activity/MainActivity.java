@@ -62,8 +62,6 @@ import cn.kiway.utils.NetworkUtil;
 import cn.kiway.utils.UploadUtil;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static cn.kiway.hybird.util.Utils.getCurrentVersion;
-
 
 public class MainActivity extends BaseActivity {
 
@@ -71,9 +69,8 @@ public class MainActivity extends BaseActivity {
     protected ProgressDialog pd;
     private X5WebView wv;
     private RelativeLayout root;
-    public static MainActivity instance;
     private Button kill;
-    private String user = "";
+    public static MainActivity instance;
     private long time;
 
     @Override
@@ -99,7 +96,7 @@ public class MainActivity extends BaseActivity {
         if (TextUtils.isEmpty(apkVersion)) {
             return;
         }
-        if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
+        if (Utils.getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
             downloadSilently(apkUrl, apkVersion);
         }
     }
@@ -463,14 +460,7 @@ public class MainActivity extends BaseActivity {
         }
 
         @JavascriptInterface
-        public String getUser() {
-            MLog.d("test", "getUser is called , user = " + user);
-            return user;
-        }
-
-        @JavascriptInterface
         public String getVersionCode() {
-            //return getCurrentVersion(MainActivity.this);
             MLog.d("test", "getVersionCode");
             return getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
         }

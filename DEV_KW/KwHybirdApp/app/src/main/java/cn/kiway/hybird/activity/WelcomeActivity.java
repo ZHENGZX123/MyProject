@@ -19,13 +19,12 @@ import org.json.JSONObject;
 
 import java.io.File;
 
-import cn.kiway.hybird.teacher.R;
 import cn.kiway.countly.CountlyUtil;
+import cn.kiway.hybird.teacher.R;
+import cn.kiway.hybird.util.Utils;
 import cn.kiway.utils.Configue;
 import cn.kiway.utils.FileUtils;
 import cn.kiway.utils.HttpDownload;
-
-import static cn.kiway.hybird.util.Utils.getCurrentVersion;
 
 
 /**
@@ -113,8 +112,7 @@ public class WelcomeActivity extends Activity {
                     String zipCode = new JSONObject(ret).getString("zipCode");
                     String zipUrl = new JSONObject(ret).getString("zipUrl");
 
-                    if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
-
+                    if (Utils.getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
                         jump();
                     } else {
                         //如果APK没有最新版本，比较包的版本。如果内置包的版本号比较高，直接替换
