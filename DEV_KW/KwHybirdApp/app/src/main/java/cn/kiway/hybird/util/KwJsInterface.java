@@ -45,11 +45,11 @@ import uk.co.senab.photoview.sample.ViewPagerActivity;
  * Created by Administrator on 2018/3/1.
  */
 
-public class JsAndroidInterface {
+public class KwJsInterface {
     private MainActivity act;
     private WebView wv;
 
-    public JsAndroidInterface(MainActivity act, WebView wv) {
+    public KwJsInterface(MainActivity act, WebView wv) {
         this.act = act;
         this.wv = wv;
     }
@@ -60,7 +60,7 @@ public class JsAndroidInterface {
         if (TextUtils.isEmpty(key)) {
             return;
         }
-        //加密
+        //TODO 加密
         SPUtil.instance().setValue(key, value);
     }
 
@@ -70,7 +70,7 @@ public class JsAndroidInterface {
         if (TextUtils.isEmpty(key)) {
             return "";
         }
-        //解密
+        //TODO 解密
         String ret = SPUtil.instance().getValue(key, "");
         MLog.d("test", "ret = " + ret);
         return ret;
