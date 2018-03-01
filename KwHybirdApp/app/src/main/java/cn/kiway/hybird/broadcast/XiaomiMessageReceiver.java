@@ -14,7 +14,7 @@ import java.util.List;
 
 import cn.kiway.hybird.activity.MainActivity;
 import cn.kiway.hybird.teacher.R;
-import cn.kiway.hybird.util.KwDBHelper;
+import cn.kiway.kwdatabase.util.KwDBHelper;
 import cn.kiway.utils.BadgeUtil;
 import cn.kiway.utils.MLog;
 

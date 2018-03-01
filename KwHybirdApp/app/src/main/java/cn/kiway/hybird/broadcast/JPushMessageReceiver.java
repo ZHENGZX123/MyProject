@@ -14,7 +14,7 @@ import java.util.Iterator;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.kiway.hybird.activity.MainActivity;
-import cn.kiway.hybird.util.KwDBHelper;
+import cn.kiway.kwdatabase.util.KwDBHelper;
 import cn.kiway.utils.BadgeUtil;
 import cn.kiway.utils.MLog;
 
