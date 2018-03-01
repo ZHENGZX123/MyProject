@@ -51,22 +51,20 @@ import java.util.ArrayList;
 import cn.kiway.hybird.KwAPP;
 import cn.kiway.hybird.entity.HTTPCache;
 import cn.kiway.hybird.teacher.R;
-import cn.kiway.hybird.util.BadgeUtil;
-import cn.kiway.hybird.util.Configue;
-import cn.kiway.hybird.util.MLog;
-import cn.kiway.hybird.util.MyDBHelper;
-import cn.kiway.hybird.util.NetworkUtil;
+import cn.kiway.hybird.util.KwDBHelper;
 import cn.kiway.hybird.util.ResourceUtil;
-import cn.kiway.hybird.util.UploadUtil;
 import cn.kiway.hybird.util.Utils;
 import cn.kiway.hybird.view.X5WebView;
 import cn.kiway.kwcountly.CountlyUtil;
+import cn.kiway.utils.BadgeUtil;
+import cn.kiway.utils.Configue;
+import cn.kiway.utils.MLog;
+import cn.kiway.utils.NetworkUtil;
+import cn.kiway.utils.UploadUtil;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
-import static cn.kiway.hybird.util.Configue.ceshiUrl;
-import static cn.kiway.hybird.util.Configue.url;
-import static cn.kiway.hybird.util.Configue.zhengshiUrl;
 import static cn.kiway.hybird.util.Utils.getCurrentVersion;
+import static cn.kiway.utils.Configue.url;
 
 
 public class MainActivity extends BaseActivity {
@@ -78,27 +76,16 @@ public class MainActivity extends BaseActivity {
     public static MainActivity instance;
     private Button kill;
     private String user = "";
-    private String username;
-    private String password;
-    private String tab;
     private long time;
-    private boolean fromCreate = true;
-    private String mPage;
-    private int mAction = -1;
-    private String mNewName;
-    private String mMac;
-    private int mStatus;//0断开 1连接
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         instance = this;
-        fromCreate = true;
         initView();
         Utils.checkNetWork(this, false);
         initData();
-        //checkIsPad(getIntent());
         huaweiPush();
         load();
         checkNewAPK();
@@ -191,53 +178,6 @@ public class MainActivity extends BaseActivity {
         dialog_download.show();
     }
 
-    /*private void checkIsPad(Intent intent) {
-        username = intent.getStringExtra("username");
-        password = intent.getStringExtra("password");
-        tab = intent.getStringExtra("tab");
-        MLog.d("test", "checkIsPad is called " + "username = " + username + " , password = " + password);
-        if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
-            //手机
-            user = "";
-            load();
-        } else {
-            //平板
-            //强制
-            int width = DensityUtil.getScreenWidth() * 5 / 4;
-            int height = DensityUtil.getScreenWidth();
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, height);
-            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            root.setLayoutParams(lp);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            user = username + "," + password + "," + tab;
-
-            if (fromCreate) {
-                //1.如果是第一次进来，要重新登录
-                getSharedPreferences("kiway", 0).edit().putString("username", "").commit();
-                getSharedPreferences("kiway", 0).edit().putString("password", "").commit();
-                getSharedPreferences("kiway", 0).edit().putString("tab", "").commit();
-                fromCreate = false;
-            }
-            String lastUsername = getSharedPreferences("kiway", 0).getString("username", "");
-            String lastPassword = getSharedPreferences("kiway", 0).getString("password", "");
-            String lastTab = getSharedPreferences("kiway", 0).getString("tab", "");
-            if (username.equals(lastUsername) && password.equals(lastPassword) && tab.equals(lastTab)) {
-                MLog.d("test", "同样的用户，不用再次登录。");
-                return;
-            }
-            if (username.equals(lastUsername) && password.equals(lastPassword)) {
-                MLog.d("test", "load局部，不重刷");
-                wv.loadUrl("javascript:loadTab(" + tab + ")");
-                getSharedPreferences("kiway", 0).edit().putString("tab", tab).commit();
-                return;
-            }
-            new MyDBHelper(this).deleteAllHttpCache();
-            load();
-            getSharedPreferences("kiway", 0).edit().putString("username", username).commit();
-            getSharedPreferences("kiway", 0).edit().putString("password", password).commit();
-            getSharedPreferences("kiway", 0).edit().putString("tab", tab).commit();
-        }
-    }*/
 
     private void initView() {
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
@@ -627,7 +567,7 @@ public class MainActivity extends BaseActivity {
         @JavascriptInterface
         public void httpRequest(String url, String param, final String method, String time, String tagname, String related, String event) {
             if (!Configue.isTest) {
-                url = url.replace(ceshiUrl, zhengshiUrl);
+                url = url.replace(Configue.ceshiUrl, Configue.zhengshiUrl);
             }
             try {
                 Integer.parseInt(time);
@@ -651,7 +591,7 @@ public class MainActivity extends BaseActivity {
             } else {
                 //2.取缓存
                 String request = url + param + method;
-                HTTPCache cache1 = new MyDBHelper(MainActivity.this).getHttpCacheByRequest(request, Integer.parseInt(time));
+                HTTPCache cache1 = new KwDBHelper(MainActivity.this).getHttpCacheByRequest(request, Integer.parseInt(time));
                 if (cache1 == null) {
                     MLog.d("test", "没有缓存");
                     //3.如果是查询题目的话，还要再查一下资源包
@@ -687,7 +627,7 @@ public class MainActivity extends BaseActivity {
                                 MLog.d("test", "post onSuccess = " + ret);
                                 httpRequestCallback(tagname, ret);
                                 //如果是post，related不为空，查找一下相关的缓存，并清除掉
-                                new MyDBHelper(getApplicationContext()).deleteHttpCache(related);
+                                new KwDBHelper(getApplicationContext()).deleteHttpCache(related);
                             }
 
                             @Override
@@ -707,7 +647,7 @@ public class MainActivity extends BaseActivity {
                                 MLog.d("test", "put onSuccess = " + ret);
                                 httpRequestCallback(tagname, ret);
                                 //如果是post，related不为空，查找一下相关的缓存，并清除掉
-                                new MyDBHelper(getApplicationContext()).deleteHttpCache(related);
+                                new KwDBHelper(getApplicationContext()).deleteHttpCache(related);
                             }
 
                             @Override
@@ -732,7 +672,7 @@ public class MainActivity extends BaseActivity {
                                 MLog.d("test", "get onFailure = " + ret);
                                 //如果是get，把缓存回它
                                 String request = url + param + method;
-                                HTTPCache cache = new MyDBHelper(getApplicationContext()).getHttpCacheByRequest(request, Integer.parseInt(time));
+                                HTTPCache cache = new KwDBHelper(getApplicationContext()).getHttpCacheByRequest(request, Integer.parseInt(time));
                                 if (cache != null) {
                                     httpRequestCallback(cache.tagname, cache.response);
                                 } else {
@@ -747,7 +687,7 @@ public class MainActivity extends BaseActivity {
                                 MLog.d("test", "get onSuccess = " + ret);
                                 httpRequestCallback(tagname, ret);
                                 //如果是post，related不为空，查找一下相关的缓存，并清除掉
-                                new MyDBHelper(getApplicationContext()).deleteHttpCache(related);
+                                new KwDBHelper(getApplicationContext()).deleteHttpCache(related);
                             }
 
                             @Override
@@ -793,7 +733,7 @@ public class MainActivity extends BaseActivity {
 
     public void clickSetToken(View view) {
         //getSharedPreferences("kiway", 0).edit().putString("accessToken", "123456").commit();
-        new MyDBHelper(this).deleteAllHttpCache();
+        new KwDBHelper(this).deleteAllHttpCache();
     }
 
     private void saveDB(String url, String param, String method, String ret, String tagname) {
@@ -808,18 +748,18 @@ public class MainActivity extends BaseActivity {
         }
         MLog.d("test", "saveDB");
         String request = url + param + method;
-        HTTPCache cache = new MyDBHelper(this).getHttpCacheByRequest(request);
+        HTTPCache cache = new KwDBHelper(this).getHttpCacheByRequest(request);
         if (cache == null) {
             cache = new HTTPCache();
             cache.request = request;
             cache.response = ret;
             cache.requesttime = "" + System.currentTimeMillis();
             cache.tagname = tagname;
-            new MyDBHelper(this).addHTTPCache(cache);
+            new KwDBHelper(this).addHTTPCache(cache);
         } else {
             cache.response = ret;
             cache.requesttime = "" + System.currentTimeMillis();
-            new MyDBHelper(this).updateHTTPCache(cache);
+            new KwDBHelper(this).updateHTTPCache(cache);
         }
     }
 

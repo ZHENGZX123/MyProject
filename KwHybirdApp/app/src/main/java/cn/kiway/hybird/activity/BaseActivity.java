@@ -34,12 +34,12 @@ import javax.crypto.spec.DESKeySpec;
 
 import cn.kiway.hybird.KwAPP;
 import cn.kiway.hybird.entity.KV;
-import cn.kiway.hybird.util.Configue;
-import cn.kiway.hybird.util.FileUtils;
-import cn.kiway.hybird.util.HttpDownload;
-import cn.kiway.hybird.util.MLog;
-import cn.kiway.hybird.util.MyDBHelper;
+import cn.kiway.hybird.util.KwDBHelper;
 import cn.kiway.hybird.util.Utils;
+import cn.kiway.utils.Configue;
+import cn.kiway.utils.FileUtils;
+import cn.kiway.utils.HttpDownload;
+import cn.kiway.utils.MLog;
 import ly.count.android.api.Countly;
 
 import static cn.kiway.hybird.util.Utils.SYS_EMUI;
@@ -65,9 +65,7 @@ public class BaseActivity extends Activity {
 
             @Override
             public void run() {
-
-                Toast.makeText(BaseActivity.this, txt, Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(BaseActivity.this, txt, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -77,9 +75,7 @@ public class BaseActivity extends Activity {
 
             @Override
             public void run() {
-
-                Toast.makeText(BaseActivity.this, txt, Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(BaseActivity.this, txt, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -245,7 +241,7 @@ public class BaseActivity extends Activity {
                     Log.d("push", "uninstall onSuccess = " + ret);
                     getSharedPreferences("kiway", 0).edit().putString("accessToken", "").commit();
                     getSharedPreferences("kiway", 0).edit().putString("userId", "").commit();
-                    new MyDBHelper(getApplicationContext()).deleteAllHttpCache();
+                    new KwDBHelper(getApplicationContext()).deleteAllHttpCache();
                 }
 
                 @Override
@@ -253,14 +249,14 @@ public class BaseActivity extends Activity {
                     Log.d("push", "uninstall onFailure = " + s);
                     getSharedPreferences("kiway", 0).edit().putString("accessToken", "").commit();
                     getSharedPreferences("kiway", 0).edit().putString("userId", "").commit();
-                    new MyDBHelper(getApplicationContext()).deleteAllHttpCache();
+                    new KwDBHelper(getApplicationContext()).deleteAllHttpCache();
                 }
             });
         } catch (Exception e) {
             Log.d("push", "e = " + e.toString());
             getSharedPreferences("kiway", 0).edit().putString("accessToken", "").commit();
             getSharedPreferences("kiway", 0).edit().putString("userId", "").commit();
-            new MyDBHelper(getApplicationContext()).deleteAllHttpCache();
+            new KwDBHelper(getApplicationContext()).deleteAllHttpCache();
         }
     }
 
@@ -335,7 +331,7 @@ public class BaseActivity extends Activity {
                                 KV a = new KV();
                                 a.k = key;
                                 a.v = value;
-                                new MyDBHelper(getApplicationContext()).addKV(a);
+                                new KwDBHelper(getApplicationContext()).addKV(a);
                             }
                             MLog.d("test", "book" + id + "插入sql完毕");
                         }

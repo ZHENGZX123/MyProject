@@ -26,9 +26,11 @@ import java.io.File;
 import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
-import cn.kiway.hybird.util.Configue;
+import cn.kiway.hybird.activity.WelcomeActivity;
 import cn.kiway.hybird.util.Utils;
 import cn.kiway.kwcountly.CountlyUtil;
+import cn.kiway.utils.BadgeUtil;
+import cn.kiway.utils.Configue;
 import ly.count.android.api.Countly;
 
 import static cn.kiway.hybird.util.Utils.SYS_MIUI;
@@ -75,6 +77,9 @@ public class KwAPP extends Application {
 
         //imageCache
         initImageCache();
+
+        //badge
+        BadgeUtil.lancherActivityClassName = WelcomeActivity.class.getName();
     }
 
     /**

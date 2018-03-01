@@ -209,12 +209,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
-import android.util.Log;
 
 import cn.kiway.hybird.entity.HTTPCache;
 import cn.kiway.hybird.entity.KV;
+import cn.kiway.utils.MLog;
 
-public class MyDBHelper extends SQLiteOpenHelper {
+public class KwDBHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "sdk.db";
 
     private static final String TABLE_HTTPCACHE = "HTTPCache";
@@ -230,7 +230,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
     private SQLiteDatabase db;
 
-    public MyDBHelper(Context c) {
+    public KwDBHelper(Context c) {
         super(c, DB_NAME, null, 10);
     }
 
