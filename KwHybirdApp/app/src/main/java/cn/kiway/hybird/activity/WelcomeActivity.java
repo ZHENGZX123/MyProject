@@ -20,12 +20,12 @@ import org.json.JSONObject;
 import java.io.File;
 
 import cn.kiway.countly.CountlyUtil;
+import cn.kiway.http.FileUtils;
+import cn.kiway.http.HttpDownload;
 import cn.kiway.hybird.teacher.R;
 import cn.kiway.hybird.util.Utils;
 import cn.kiway.sharedpref.SPUtil;
 import cn.kiway.utils.Configue;
-import cn.kiway.utils.FileUtils;
-import cn.kiway.utils.HttpDownload;
 
 
 /**

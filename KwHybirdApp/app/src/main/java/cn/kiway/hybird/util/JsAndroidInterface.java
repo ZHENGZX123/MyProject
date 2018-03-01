@@ -32,13 +32,13 @@ import cn.kiway.countly.CountlyUtil;
 import cn.kiway.database.entity.HTTPCache;
 import cn.kiway.database.util.KwDBHelper;
 import cn.kiway.database.util.ResourceUtil;
+import cn.kiway.http.UploadUtil;
 import cn.kiway.hybird.activity.MainActivity;
 import cn.kiway.hybird.teacher.R;
 import cn.kiway.hybird.view.X5WebView;
 import cn.kiway.sharedpref.SPUtil;
 import cn.kiway.utils.Configue;
 import cn.kiway.utils.MLog;
-import cn.kiway.utils.UploadUtil;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 /**
