@@ -18,5 +18,6 @@ android {
 dependencies {
     compile 'com.android.support:support-v4:18.+'
     compile files('libs/glide-3.6.1.jar')
+    compile files('libs/image_compress.jar')
     compile project(':KwPhotoView')
 }
