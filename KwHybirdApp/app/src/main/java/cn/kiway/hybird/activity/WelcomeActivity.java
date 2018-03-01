@@ -22,6 +22,7 @@ import java.io.File;
 import cn.kiway.countly.CountlyUtil;
 import cn.kiway.hybird.teacher.R;
 import cn.kiway.hybird.util.Utils;
+import cn.kiway.sharedpref.SPUtil;
 import cn.kiway.utils.Configue;
 import cn.kiway.utils.FileUtils;
 import cn.kiway.utils.HttpDownload;
@@ -116,14 +117,14 @@ public class WelcomeActivity extends Activity {
                         jump();
                     } else {
                         //如果APK没有最新版本，比较包的版本。如果内置包的版本号比较高，直接替换
-                        String currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
+                        String currentPackage = SPUtil.instance().getValue("version_package", "0.0.1");
                         if (currentPackage.compareTo(Configue.currentPackageVersion) < 0) {
                             Log.d("test", "内置包的版本大，替换新包");
-                            getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
+                            SPUtil.instance().setValue("isFirst", true);
                             checkIsFirst();
                         }
                         //替换完内置包之后，比较内置包和外包，如果版本号还是小了，更新外包
-                        currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
+                        currentPackage = SPUtil.instance().getValue("version_package", "0.0.1");
                         String outer_package = zipCode;
                         if (currentPackage.compareTo(outer_package) < 0) {
                             //提示有新的包，下载新的包
@@ -171,7 +172,7 @@ public class WelcomeActivity extends Activity {
                         //解压完毕，删掉zip文件
                         new File(Configue.ROOT + Configue.ZIP_Name).delete();
                         Log.d("test", "解压完毕");
-                        getSharedPreferences("kiway", 0).edit().putString("version_package", outer_package).commit();
+                        SPUtil.instance().setValue("version_package", outer_package);
                         jump();
                     }
                 });
@@ -184,11 +185,11 @@ public class WelcomeActivity extends Activity {
     protected void checkIsFirst() {
         if (!checkFileComplete()) {
             Log.d("test", "文件不完整");
-            getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
+            SPUtil.instance().setValue("isFirst", true);
         }
-        if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
+        if (SPUtil.instance().getValue("isFirst", true)) {
             CountlyUtil.getInstance().addEvent("安装APP");
-            getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", false).commit();
+            SPUtil.instance().setValue("isFirst", false);
             if (new File(Configue.ROOT).exists()) {
                 FileUtils.delFolder(Configue.ROOT);
             }
@@ -205,7 +206,7 @@ public class WelcomeActivity extends Activity {
             }
             //解压完毕，删掉zip文件
             new File(Configue.ROOT + Configue.ZIP_Name).delete();
-            getSharedPreferences("kiway", 0).edit().putString("version_package", Configue.currentPackageVersion).commit();
+            SPUtil.instance().setValue("version_package", Configue.currentPackageVersion);
         }
     }
 

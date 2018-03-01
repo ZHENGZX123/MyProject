@@ -15,6 +15,7 @@ import java.util.List;
 import cn.kiway.database.util.KwDBHelper;
 import cn.kiway.hybird.activity.MainActivity;
 import cn.kiway.hybird.teacher.R;
+import cn.kiway.sharedpref.SPUtil;
 import cn.kiway.utils.BadgeUtil;
 import cn.kiway.utils.MLog;
 
@@ -69,7 +70,7 @@ public class XiaomiMessageReceiver extends PushMessageReceiver {
         Log.v(TAG, "onNotificationMessageClicked is called. " + message.toString());
         String value = message.getExtra().get("extras");
         MLog.d("test", "value = " + value);
-        context.getSharedPreferences("kiway", 0).edit().putString("event", value).commit();
+        SPUtil.instance().setValue("event", value);
         context.startActivity(new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
@@ -169,7 +170,7 @@ public class XiaomiMessageReceiver extends PushMessageReceiver {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
                 token = cmdArg1;
                 MLog.d("test", "regId = " + token);
-                context.getSharedPreferences("kiway", 0).edit().putString("xiaomitoken", token).commit();
+                SPUtil.instance().setValue("xiaomitoken", token);
                 log = context.getString(R.string.register_success);
             } else {
                 log = context.getString(R.string.register_fail);

@@ -37,7 +37,7 @@ public class X5WebView extends WebView {
 
         this.setWebViewClient(client);
         // this.setWebChromeClient(chromeClient);
-        // WebStorage webStorage = WebStorage.getInstance();
+        // WebStorage webStorage = WebStorage.instance();
         initWebViewSettings();
         this.getView().setClickable(true);
     }

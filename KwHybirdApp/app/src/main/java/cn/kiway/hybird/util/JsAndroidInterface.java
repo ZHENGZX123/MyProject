@@ -35,6 +35,7 @@ import cn.kiway.database.util.ResourceUtil;
 import cn.kiway.hybird.activity.MainActivity;
 import cn.kiway.hybird.teacher.R;
 import cn.kiway.hybird.view.X5WebView;
+import cn.kiway.sharedpref.SPUtil;
 import cn.kiway.utils.Configue;
 import cn.kiway.utils.MLog;
 import cn.kiway.utils.UploadUtil;
@@ -60,7 +61,7 @@ public class JsAndroidInterface {
             return;
         }
         //加密
-        act.getSharedPreferences("kiway", 0).edit().putString(key, value).commit();
+        SPUtil.instance().setValue(key, value);
     }
 
     @JavascriptInterface
@@ -70,7 +71,7 @@ public class JsAndroidInterface {
             return "";
         }
         //解密
-        String ret = act.getSharedPreferences("kiway", 0).getString(key, "");
+        String ret = SPUtil.instance().getValue(key, "");
         MLog.d("test", "ret = " + ret);
         return ret;
     }
@@ -94,9 +95,9 @@ public class JsAndroidInterface {
             String accessToken = new JSONObject(param).optString("accessToken");
             String userId = new JSONObject(param).optString("userId");
             String schoolName = new JSONObject(param).optString("schoolName");
-            act.getSharedPreferences("kiway", 0).edit().putString("accessToken", accessToken).commit();
-            act.getSharedPreferences("kiway", 0).edit().putString("userId", userId).commit();
-            act.getSharedPreferences("kiway", 0).edit().putString("schoolName", schoolName).commit();
+            SPUtil.instance().setValue("accessToken", accessToken);
+            SPUtil.instance().setValue("userId", userId);
+            SPUtil.instance().setValue("schoolName", schoolName);
             act.installationPush();
             //getBooks();
         } catch (Exception e) {
@@ -147,7 +148,7 @@ public class JsAndroidInterface {
         new Thread() {
             @Override
             public void run() {
-                String token = act.getSharedPreferences("kiway", 0).getString("accessToken", "");
+                String token = SPUtil.instance().getValue("accessToken", "");
                 MLog.d("test", "取出token=" + token);
                 File file = new File(finalFilepath);
                 final String ret = UploadUtil.uploadFile(file, Configue.host + String.format(Configue.url_upload, token), file.getName());
@@ -177,7 +178,7 @@ public class JsAndroidInterface {
     @JavascriptInterface
     public String getVersionCode() {
         MLog.d("test", "getVersionCode");
-        return act.getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
+        return SPUtil.instance().getValue("version_package", "0.0.1");
     }
 
     @JavascriptInterface
@@ -328,7 +329,7 @@ public class JsAndroidInterface {
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
                     client.setTimeout(10000);
-                    String token = act.getSharedPreferences("kiway", 0).getString("accessToken", "");
+                    String token = SPUtil.instance().getValue("accessToken", "");
                     client.addHeader("X-Auth-Token", token);
                     if (method.equalsIgnoreCase("POST")) {
                         StringEntity stringEntity = new StringEntity(param, "utf-8");
