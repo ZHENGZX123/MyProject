@@ -1,1 +1,1 @@
-include ':app', ':KwPhotoView', ':KwImagePicker', ':KwZxing', ':KwUtils', ':KwCountly'
+include ':app', ':KwPhotoView', ':KwImagePicker', ':KwZxing', ':KwUtils', ':KwCountly', ':KwDatabase'
