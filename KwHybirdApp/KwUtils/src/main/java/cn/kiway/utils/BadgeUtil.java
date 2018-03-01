@@ -42,7 +42,7 @@ public class BadgeUtil {
         }
     }
 
-    public static String lancherActivityClassName;
+    private static String lancherActivityClassName;
 
     private static void sendToXiaoMi(Context context, String number) {
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -104,4 +104,7 @@ public class BadgeUtil {
         Log.d("AppUtils", "Samsumg isSendOk" + number);
     }
 
+    public static void init(String name) {
+        lancherActivityClassName = name;
+    }
 }
