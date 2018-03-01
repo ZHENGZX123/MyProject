@@ -65,23 +65,6 @@ public class MainActivity extends BaseActivity {
         kill = (Button) findViewById(R.id.kill);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        BadgeUtil.sendBadgeNumber(getApplicationContext(), "0");
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                checkNotification();
-            }
-        }.start();
-    }
-
     private synchronized void checkNotification() {
         final String event = SPUtil.instance().getValue("event", "");
         MLog.d("test", "取了一个event = " + event);
@@ -176,13 +159,32 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        BadgeUtil.sendBadgeNumber(getApplicationContext(), "0");
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                checkNotification();
+            }
+        }.start();
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             String url = wv.getUrl();
             MLog.d("test", "host = " + url);
-            if (url.endsWith("login") || url.endsWith("exam") || url.endsWith("mine") || url.endsWith("message") || url.endsWith("index")) {
-                doFinish();
-                return true;
+            for (String p : Configue.pages) {
+                if (url.endsWith(p)) {
+                    doFinish();
+                    return true;
+                }
             }
             if (wv.canGoBack()) {
                 wv.goBack();
