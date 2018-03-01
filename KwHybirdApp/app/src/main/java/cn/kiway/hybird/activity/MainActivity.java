@@ -25,18 +25,18 @@ import java.util.ArrayList;
 
 import cn.kiway.database.util.KwDBHelper;
 import cn.kiway.hybird.teacher.R;
-import cn.kiway.hybird.util.JsAndroidInterface;
+import cn.kiway.hybird.util.KwJsInterface;
 import cn.kiway.hybird.util.Utils;
 import cn.kiway.sharedpref.SPUtil;
 import cn.kiway.utils.BadgeUtil;
 import cn.kiway.utils.Configue;
 import cn.kiway.utils.MLog;
 
-import static cn.kiway.hybird.util.JsAndroidInterface.QRSCAN;
-import static cn.kiway.hybird.util.JsAndroidInterface.SAOMAWANG;
-import static cn.kiway.hybird.util.JsAndroidInterface.SELECT_PHOTO;
-import static cn.kiway.hybird.util.JsAndroidInterface.SNAPSHOT;
-import static cn.kiway.hybird.util.JsAndroidInterface.snapshotFile;
+import static cn.kiway.hybird.util.KwJsInterface.QRSCAN;
+import static cn.kiway.hybird.util.KwJsInterface.SAOMAWANG;
+import static cn.kiway.hybird.util.KwJsInterface.SELECT_PHOTO;
+import static cn.kiway.hybird.util.KwJsInterface.SNAPSHOT;
+import static cn.kiway.hybird.util.KwJsInterface.snapshotFile;
 
 
 public class MainActivity extends BaseActivity {
@@ -53,32 +53,15 @@ public class MainActivity extends BaseActivity {
         instance = this;
         initView();
         initData();
-        Utils.checkNetWork(this, false);
         huaweiPush();
         checkNewAPK();
+        Utils.checkNetWork(this, false);
     }
 
 
     private void initView() {
         wv = (WebView) findViewById(R.id.wv);
         kill = (Button) findViewById(R.id.kill);
-    }
-
-    private synchronized void checkNotification() {
-        final String event = SPUtil.instance().getValue("event", "");
-        MLog.d("test", "取了一个event = " + event);
-        if (TextUtils.isEmpty(event)) {
-            return;
-        }
-        SPUtil.instance().setValue("event", "");
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                //告诉前端做动作。
-                MLog.d("test", "notificationCallback");
-                wv.loadUrl("javascript:notificationCallback('" + event + "')");
-            }
-        });
     }
 
     private void initData() {
@@ -152,7 +135,7 @@ public class MainActivity extends BaseActivity {
 
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new com.tencent.smtt.sdk.WebChromeClient());
-        wv.addJavascriptInterface(new JsAndroidInterface(this, wv), "wx");
+        wv.addJavascriptInterface(new KwJsInterface(this, wv), "wx");
 
         wv.loadUrl("file://" + Configue.ROOT + Configue.HTML);
     }
@@ -172,6 +155,23 @@ public class MainActivity extends BaseActivity {
                 checkNotification();
             }
         }.start();
+    }
+
+    private synchronized void checkNotification() {
+        final String event = SPUtil.instance().getValue("event", "");
+        MLog.d("test", "取了一个event = " + event);
+        if (TextUtils.isEmpty(event)) {
+            return;
+        }
+        SPUtil.instance().setValue("event", "");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //告诉前端做动作。
+                MLog.d("test", "notificationCallback");
+                wv.loadUrl("javascript:notificationCallback('" + event + "')");
+            }
+        });
     }
 
     @Override
@@ -260,11 +260,9 @@ public class MainActivity extends BaseActivity {
                 int arg2 = msg.arg2;
                 if (arg1 == 0) {
                     rl_nonet.setVisibility(View.VISIBLE);
-                    //无网络
                     MLog.d("test", "无网络");
                 } else {
                     rl_nonet.setVisibility(View.GONE);
-                    //有网络
                     MLog.d("test", "有网络");
                     if (arg2 == 1) {
                         wv.loadUrl("javascript:reConnect()");
