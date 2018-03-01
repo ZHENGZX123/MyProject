@@ -56,7 +56,6 @@ public class MainActivity extends BaseActivity {
     private Dialog dialog_download;
     protected ProgressDialog pd;
     private X5WebView wv;
-    private RelativeLayout root;
     private Button kill;
     public static MainActivity instance;
     private long time;
@@ -164,7 +163,6 @@ public class MainActivity extends BaseActivity {
 
     private void initView() {
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
-        root = (RelativeLayout) findViewById(R.id.root);
         wv = (X5WebView) findViewById(R.id.wv);
         kill = (Button) findViewById(R.id.kill);
     }
@@ -236,11 +234,11 @@ public class MainActivity extends BaseActivity {
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
         //智慧课堂平板项目好像不维护了
-//        if (Utils.isTabletDevice(this)) {
-//            settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.LARGER);
-//        } else {
-//            settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.NORMAL);
-//        }
+        //if (Utils.isTabletDevice(this)) {
+        //settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.LARGER);
+        //} else {
+        //settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.NORMAL);
+        //}
 
         wv.setWebViewClient(new WebViewClient() {
 
