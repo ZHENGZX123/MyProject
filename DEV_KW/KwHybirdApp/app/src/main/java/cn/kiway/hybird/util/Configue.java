@@ -10,12 +10,12 @@ public class Configue {
     //1.修改build.gradle的包名，即applicationId
     //2.修改应用的名称和图标，分别在strings.xml和res目录ic_launcher.png
     //3.如果用到推送，配置appkey，目前包括小米、华为、极光
-    //小米推送用APPID APPKEY
-    // user your appid the key.
+    //3.1小米推送用APPID APPKEY
     public static final String APP_ID = "2882303761517595244";
-    // user your appid the key.
     public static final String APP_KEY = "5101759558244";
-
+    //3.2华为推送
+    
+    //3.3极光推送
 
     //4.手动生成压缩包，放在raw文件夹下。压缩包的目录结构是xtzy_teacher\dist\...
 
