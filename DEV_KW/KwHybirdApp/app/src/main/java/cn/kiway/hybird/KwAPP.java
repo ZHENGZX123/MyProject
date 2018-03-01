@@ -27,8 +27,8 @@ import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.kiway.hybird.util.Configue;
-import cn.kiway.hybird.util.CountlyUtil;
 import cn.kiway.hybird.util.Utils;
+import cn.kiway.kwcountly.CountlyUtil;
 import ly.count.android.api.Countly;
 
 import static cn.kiway.hybird.util.Utils.SYS_MIUI;
@@ -58,7 +58,7 @@ public class KwAPP extends Application {
         }
 
         //countly
-        Countly.sharedInstance().init(this, Configue.url + "/countly", "e3a6f65596ea867c2f739c12d5120d5d76353b5e");
+        Countly.sharedInstance().init(this, Configue.url + Configue.countlyUrl, Configue.countlyAPPKEY);
         CountlyUtil.getInstance().init(this);
 
         //jpush

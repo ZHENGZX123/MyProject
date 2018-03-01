@@ -14,7 +14,7 @@ public class Configue {
     public static final String APP_ID = "2882303761517595244";
     public static final String APP_KEY = "5101759558244";
     //3.2华为推送
-    
+
     //3.3极光推送
 
     //4.手动生成压缩包，放在raw文件夹下。压缩包的目录结构是xtzy_teacher\dist\...
@@ -36,14 +36,16 @@ public class Configue {
 
     //6.设置ROOT地址，即zip包解压地址和项目其他资源缓存地址。该步骤已不需要，ROOT固定是内置存储目录
     public static String ROOT;//"/mnt/sdcard/kiway_teacher/"
-    //7.
-
+    //7.配置countly
+    public static final String countlyUrl = "/countly";
+    public static final String countlyAPPKEY = "e3a6f65596ea867c2f739c12d5120d5d76353b5e";
 
     //14.配置其他参数
     public static String BOOKS = "/mnt/sdcard/books/";
 
     //15.关闭MLog的DEBUG开关
     public static final boolean DEBUG = true;
-    //16.配置APK使用的签名文件（固定不变，在build.gradle文件）和混淆规则（固定不变，在proguard-rules.pro文件），release项目
-    //17.APK加壳，目前使用的是360加壳技术
+    //16.配置build.gradle的dependencies-classpath是2.2.3还是2.3.3
+    //17.配置APK使用的签名文件（固定不变，在build.gradle文件）和混淆规则（固定不变，在proguard-rules.pro文件），release生成apk文件
+    //18.APK加壳，目前使用的是360加壳技术
 }

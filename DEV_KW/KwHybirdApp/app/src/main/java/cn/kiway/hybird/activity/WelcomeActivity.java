@@ -22,9 +22,9 @@ import java.io.File;
 import cn.kiway.hybird.KwAPP;
 import cn.kiway.hybird.teacher.R;
 import cn.kiway.hybird.util.Configue;
-import cn.kiway.hybird.util.CountlyUtil;
 import cn.kiway.hybird.util.FileUtils;
 import cn.kiway.hybird.util.HttpDownload;
+import cn.kiway.kwcountly.CountlyUtil;
 
 import static cn.kiway.hybird.util.Configue.url;
 import static cn.kiway.hybird.util.Utils.getCurrentVersion;
