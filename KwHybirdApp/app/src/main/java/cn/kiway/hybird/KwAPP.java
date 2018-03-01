@@ -28,7 +28,7 @@ import java.util.List;
 import cn.jpush.android.api.JPushInterface;
 import cn.kiway.hybird.activity.WelcomeActivity;
 import cn.kiway.hybird.util.Utils;
-import cn.kiway.kwcountly.CountlyUtil;
+import cn.kiway.countly.CountlyUtil;
 import cn.kiway.utils.BadgeUtil;
 import cn.kiway.utils.Configue;
 import ly.count.android.api.Countly;

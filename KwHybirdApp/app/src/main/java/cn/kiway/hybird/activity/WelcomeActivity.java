@@ -20,7 +20,7 @@ import org.json.JSONObject;
 import java.io.File;
 
 import cn.kiway.hybird.teacher.R;
-import cn.kiway.kwcountly.CountlyUtil;
+import cn.kiway.countly.CountlyUtil;
 import cn.kiway.utils.Configue;
 import cn.kiway.utils.FileUtils;
 import cn.kiway.utils.HttpDownload;
