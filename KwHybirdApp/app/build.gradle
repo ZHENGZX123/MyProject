@@ -51,6 +51,7 @@ dependencies {
     compile project(':KwCountly')
     compile project(':KwDatabase')
     compile project(':KwZxing')
+    compile project(':KwSharedPref')
     compile project(':KwUtils')
     //推送
     compile files('libs/MiPush_SDK_Client_3_2_2.jar')
