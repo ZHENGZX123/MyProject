@@ -50,20 +50,22 @@ public class Configue {
     public static String ZIP_Name = "xtzy_teacher.zip";
     public static String HTML = ZIP + "/dist/index.html";
 
+    //8.配置安卓物理返回键操作
+    public static final String[] pages = new String[]{"login", "index", "message", "exam", "mine"};
 
-    //8.配置countly
+    //9.配置countly
     public static final String url_countly = "/countly";
     public static final String countlyAPPKEY = "e3a6f65596ea867c2f739c12d5120d5d76353b5e";
 
-    //9.APK升级和包升级配置：修改build.gradle和currentPackageVersion。重要！
+    //10.APK升级和包升级配置：修改build.gradle和currentPackageVersion。重要！
     public static final String currentPackageVersion = "0.0.1";
 
-    //10.配置其他参数
+    //11.配置其他参数
     public static final String BOOKS = "/mnt/sdcard/books/";
 
-    //11.关闭MLog的DEBUG开关
+    //12.关闭MLog的DEBUG开关
     public static final boolean DEBUG = true;
-    //12.配置build.gradle的dependencies-classpath是2.2.3（build）还是2.3.3（release）
-    //13.配置APK使用的签名文件（固定不变，在build.gradle文件）和混淆规则（固定不变，在proguard-rules.pro文件），release生成apk文件
-    //14.APK加壳，目前使用的是360加壳技术
+    //13.配置build.gradle的dependencies-classpath是2.2.3（build）还是2.3.3（release）
+    //14.配置APK使用的签名文件（固定不变，在build.gradle文件）和混淆规则（固定不变，在proguard-rules.pro文件），release生成apk文件
+    //15.APK加壳，目前使用的是360加壳技术
 }
