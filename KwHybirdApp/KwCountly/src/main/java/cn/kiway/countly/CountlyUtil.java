@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import cn.kiway.sharedpref.SPUtil;
 import ly.count.android.api.Countly;
 
 /**
@@ -59,7 +60,7 @@ public class CountlyUtil {
 
     public static synchronized void sendAll() {
         HashMap<String, String> seg = new HashMap<>();
-        seg.put("school", context.getSharedPreferences("kiway", 0).getString("schoolName", "测试学校"));
+        seg.put("school", SPUtil.instance().getValue("schoolName", "测试学校"));
         Iterator iterator = events.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
