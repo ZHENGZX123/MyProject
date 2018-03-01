@@ -19,6 +19,7 @@ import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.loader.GlideImageLoader;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.view.CropImageView;
+import com.tencent.smtt.sdk.WebView;
 
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
@@ -35,7 +36,6 @@ import cn.kiway.database.util.ResourceUtil;
 import cn.kiway.http.UploadUtil;
 import cn.kiway.hybird.activity.MainActivity;
 import cn.kiway.hybird.teacher.R;
-import cn.kiway.hybird.view.X5WebView;
 import cn.kiway.sharedpref.SPUtil;
 import cn.kiway.utils.Configue;
 import cn.kiway.utils.MLog;
@@ -47,9 +47,9 @@ import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 public class JsAndroidInterface {
     private MainActivity act;
-    private X5WebView wv;
+    private WebView wv;
 
-    public JsAndroidInterface(MainActivity act, X5WebView wv) {
+    public JsAndroidInterface(MainActivity act, WebView wv) {
         this.act = act;
         this.wv = wv;
     }
