@@ -10,7 +10,7 @@ import android.util.Log;
 import com.huawei.android.pushagent.api.PushEventReceiver;
 
 import cn.kiway.hybird.activity.MainActivity;
-import cn.kiway.hybird.util.KwDBHelper;
+import cn.kiway.kwdatabase.util.KwDBHelper;
 import cn.kiway.utils.MLog;
 
 /*
