@@ -1,4 +1,4 @@
-package cn.kiway.kwcountly;
+package cn.kiway.countly;
 
 import android.content.Context;
 import android.util.Log;
