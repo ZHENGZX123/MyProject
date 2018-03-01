@@ -79,7 +79,6 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/assets" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/blame" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/org.xutils/xutils/3.5.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-safeguard" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
@@ -96,15 +95,14 @@
     <orderEntry type="jdk" jdkName="Android API 25 Platform (1)" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="MiPush_SDK_Client_3_2_2" level="project" />
-    <orderEntry type="library" exported="" name="xutils-3.5.0" level="project" />
     <orderEntry type="library" exported="" name="jcore-android-1.1.6" level="project" />
-    <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />
     <orderEntry type="library" exported="" name="jpush-android-3.0.8" level="project" />
     <orderEntry type="library" exported="" name="HwPush_SDK_V2705" level="project" />
     <orderEntry type="library" exported="" name="tbs_sdk_thirdapp_v3.5.0.1004_43500_sharewithdownload_withoutGame_obfs_20170801_113025" level="project" />
     <orderEntry type="module" module-name="KwImageCache" exported="" />
     <orderEntry type="module" module-name="KwDatabase" exported="" />
     <orderEntry type="module" module-name="KwUtils" exported="" />
+    <orderEntry type="module" module-name="KwHttp" exported="" />
     <orderEntry type="module" module-name="KwImagePicker" exported="" />
     <orderEntry type="module" module-name="KwZxing" exported="" />
     <orderEntry type="module" module-name="KwCountly" exported="" />
@@ -121,6 +119,8 @@
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.5" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-26.0.0-alpha1" level="project" />
     <orderEntry type="library" exported="" name="zip4j_1.3.1" level="project" />
+    <orderEntry type="library" exported="" name="xutils-3.5.0" level="project" />
+    <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />
     <orderEntry type="library" exported="" name="support-v4-18.0.0" level="project" />
     <orderEntry type="library" exported="" name="glide-3.6.1" level="project" />
     <orderEntry type="library" exported="" name="image_compress" level="project" />
