@@ -53,7 +53,6 @@ import cn.kiway.hybird.entity.HTTPCache;
 import cn.kiway.hybird.teacher.R;
 import cn.kiway.hybird.util.BadgeUtil;
 import cn.kiway.hybird.util.Configue;
-import cn.kiway.hybird.util.CountlyUtil;
 import cn.kiway.hybird.util.MLog;
 import cn.kiway.hybird.util.MyDBHelper;
 import cn.kiway.hybird.util.NetworkUtil;
@@ -61,6 +60,7 @@ import cn.kiway.hybird.util.ResourceUtil;
 import cn.kiway.hybird.util.UploadUtil;
 import cn.kiway.hybird.util.Utils;
 import cn.kiway.hybird.view.X5WebView;
+import cn.kiway.kwcountly.CountlyUtil;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static cn.kiway.hybird.util.Configue.ceshiUrl;
