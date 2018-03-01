@@ -64,9 +64,9 @@ public class Utils {
                     || prop.getProperty(KEY_EMUI_CONFIG_HW_SYS_VERSION, null) != null) {
                 SYS = SYS_EMUI;//华为
             }
-//            else if (getMeizuFlymeOSFlag().toLowerCase().contains("flyme")) {
-//                SYS = SYS_FLYME;//魅族
-//            }
+            //else if (getMeizuFlymeOSFlag().toLowerCase().contains("flyme")) {
+            //SYS = SYS_FLYME;//魅族
+            //}
         } catch (IOException e) {
             e.printStackTrace();
         }
