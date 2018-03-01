@@ -1,4 +1,4 @@
-package cn.kiway.homework.util;
+package cn.kiway.hybird.util;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
-import cn.kiway.homework.activity.MainActivity;
+import cn.kiway.hybird.activity.MainActivity;
 
 /**
  * Created by Administrator on 2017/7/5.

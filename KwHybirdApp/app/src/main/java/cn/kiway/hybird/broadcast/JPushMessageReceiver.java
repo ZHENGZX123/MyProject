@@ -1,4 +1,4 @@
-package cn.kiway.homework.broadcast;
+package cn.kiway.hybird.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,10 +13,10 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 import cn.jpush.android.api.JPushInterface;
-import cn.kiway.homework.activity.MainActivity;
-import cn.kiway.homework.util.BadgeUtil;
-import cn.kiway.homework.util.MLog;
-import cn.kiway.homework.util.MyDBHelper;
+import cn.kiway.hybird.activity.MainActivity;
+import cn.kiway.hybird.util.BadgeUtil;
+import cn.kiway.hybird.util.MLog;
+import cn.kiway.hybird.util.MyDBHelper;
 
 /**
  * 自定义接收器

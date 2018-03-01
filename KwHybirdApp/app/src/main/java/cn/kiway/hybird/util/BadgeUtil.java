@@ -1,4 +1,4 @@
-package cn.kiway.homework.util;
+package cn.kiway.hybird.util;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -11,8 +11,8 @@ import android.util.Log;
 
 import java.lang.reflect.Field;
 
-import cn.kiway.homework.activity.MainActivity;
-import cn.kiway.homework.teacher.R;
+import cn.kiway.hybird.activity.MainActivity;
+import cn.kiway.hybird.teacher.R;
 
 /**
  * Created by Administrator on 2017/8/16.

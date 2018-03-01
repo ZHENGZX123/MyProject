@@ -1,4 +1,4 @@
-package cn.kiway.homework.entity;
+package cn.kiway.hybird.entity;
 
 /**
  * Created by Administrator on 2017/7/14.

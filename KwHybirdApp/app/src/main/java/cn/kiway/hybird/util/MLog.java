@@ -1,4 +1,4 @@
-package cn.kiway.homework.util;
+package cn.kiway.hybird.util;
 
 import android.util.Log;
 
@@ -8,7 +8,7 @@ import android.util.Log;
 
 public class MLog {
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     public static void d(String tag, String value) {
         if (DEBUG) {

@@ -1,12 +1,12 @@
-package cn.kiway.homework.util;
+package cn.kiway.hybird.util;
 
 import android.content.Context;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.kiway.homework.entity.HTTPCache;
-import cn.kiway.homework.entity.KV;
+import cn.kiway.hybird.entity.HTTPCache;
+import cn.kiway.hybird.entity.KV;
 
 /**
  * Created by Administrator on 2017/7/6.

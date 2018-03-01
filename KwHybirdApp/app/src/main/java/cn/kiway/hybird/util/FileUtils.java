@@ -1,4 +1,4 @@
-package cn.kiway.homework.util;
+package cn.kiway.hybird.util;
 
 import android.content.Context;
 import android.os.Environment;
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import cn.kiway.homework.KwAPP;
+import cn.kiway.hybird.KwAPP;
 
 /**
  * Created by Android on 2016/4/20.

@@ -1,4 +1,4 @@
-package cn.kiway.homework.activity;
+package cn.kiway.hybird.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.TextView;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -18,14 +19,14 @@ import org.json.JSONObject;
 
 import java.io.File;
 
-import cn.kiway.homework.KwAPP;
-import cn.kiway.homework.teacher.R;
-import cn.kiway.homework.util.CountlyUtil;
-import cn.kiway.homework.util.FileUtils;
-import cn.kiway.homework.util.HttpDownload;
+import cn.kiway.hybird.KwAPP;
+import cn.kiway.hybird.teacher.R;
+import cn.kiway.hybird.util.CountlyUtil;
+import cn.kiway.hybird.util.FileUtils;
+import cn.kiway.hybird.util.HttpDownload;
 
-import static cn.kiway.homework.KwAPP.url;
-import static cn.kiway.homework.util.Utils.getCurrentVersion;
+import static cn.kiway.hybird.KwAPP.url;
+import static cn.kiway.hybird.util.Utils.getCurrentVersion;
 
 
 /**
@@ -50,7 +51,8 @@ public class WelcomeActivity extends Activity {
     }
 
     private void initView() {
-
+        TextView name = (TextView) findViewById(R.id.name);
+        name.setText(getString(R.string.app_name));
     }
 
     //下面是版本更新相关
