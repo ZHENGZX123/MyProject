@@ -10,8 +10,8 @@ import android.util.Log;
 import com.huawei.android.pushagent.api.PushEventReceiver;
 
 import cn.kiway.hybird.activity.MainActivity;
-import cn.kiway.hybird.util.MLog;
-import cn.kiway.hybird.util.MyDBHelper;
+import cn.kiway.hybird.util.KwDBHelper;
+import cn.kiway.utils.MLog;
 
 /*
  * 接收Push所有消息的广播接收器
@@ -58,9 +58,9 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
             context.getSharedPreferences("kiway", 0).edit().putString("event", content.replace("[", "").replace("]", "")).commit();
 
             //没有接收消息的event，只好暂时放这里了 TODO
-            new MyDBHelper(context).deleteHttpCache("getTeacherInMsg");
-            new MyDBHelper(context).deleteHttpCache("getHomework");
-            new MyDBHelper(context).deleteHttpCache("getStudentList");
+            new KwDBHelper(context).deleteHttpCache("getTeacherInMsg");
+            new KwDBHelper(context).deleteHttpCache("getHomework");
+            new KwDBHelper(context).deleteHttpCache("getStudentList");
             //华为必须重新打开页面，因为event竟然比onresume还慢
             Intent i = new Intent(context, MainActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);

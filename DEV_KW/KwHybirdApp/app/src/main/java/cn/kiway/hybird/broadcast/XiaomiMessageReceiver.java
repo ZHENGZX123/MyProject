@@ -14,9 +14,9 @@ import java.util.List;
 
 import cn.kiway.hybird.activity.MainActivity;
 import cn.kiway.hybird.teacher.R;
-import cn.kiway.hybird.util.BadgeUtil;
-import cn.kiway.hybird.util.MLog;
-import cn.kiway.hybird.util.MyDBHelper;
+import cn.kiway.hybird.util.KwDBHelper;
+import cn.kiway.utils.BadgeUtil;
+import cn.kiway.utils.MLog;
 
 
 /**
@@ -77,9 +77,9 @@ public class XiaomiMessageReceiver extends PushMessageReceiver {
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
         Log.v(TAG, "onNotificationMessageArrived is called. " + message.toString());
         //TODO 接到通知的时候就应该清掉了,但是怎么刷新页面呢。
-        new MyDBHelper(context).deleteHttpCache("getTeacherInMsg");
-        new MyDBHelper(context).deleteHttpCache("getHomework");
-        new MyDBHelper(context).deleteHttpCache("getStudentList");
+        new KwDBHelper(context).deleteHttpCache("getTeacherInMsg");
+        new KwDBHelper(context).deleteHttpCache("getHomework");
+        new KwDBHelper(context).deleteHttpCache("getStudentList");
         BadgeUtil.sendBadgeNumber(context , "1");
         if (MainActivity.instance == null) {
             return;

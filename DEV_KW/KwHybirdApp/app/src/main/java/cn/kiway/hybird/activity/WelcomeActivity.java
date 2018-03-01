@@ -21,13 +21,13 @@ import java.io.File;
 
 import cn.kiway.hybird.KwAPP;
 import cn.kiway.hybird.teacher.R;
-import cn.kiway.hybird.util.Configue;
-import cn.kiway.hybird.util.FileUtils;
-import cn.kiway.hybird.util.HttpDownload;
 import cn.kiway.kwcountly.CountlyUtil;
+import cn.kiway.utils.Configue;
+import cn.kiway.utils.FileUtils;
+import cn.kiway.utils.HttpDownload;
 
-import static cn.kiway.hybird.util.Configue.url;
 import static cn.kiway.hybird.util.Utils.getCurrentVersion;
+import static cn.kiway.utils.Configue.url;
 
 
 /**
