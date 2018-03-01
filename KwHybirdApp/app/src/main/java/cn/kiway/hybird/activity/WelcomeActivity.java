@@ -19,7 +19,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 
-import cn.kiway.hybird.KwAPP;
 import cn.kiway.hybird.teacher.R;
 import cn.kiway.kwcountly.CountlyUtil;
 import cn.kiway.utils.Configue;
@@ -27,7 +26,6 @@ import cn.kiway.utils.FileUtils;
 import cn.kiway.utils.HttpDownload;
 
 import static cn.kiway.hybird.util.Utils.getCurrentVersion;
-import static cn.kiway.utils.Configue.url;
 
 
 /**
@@ -58,7 +56,7 @@ public class WelcomeActivity extends Activity {
 
     //下面是版本更新相关
     public void checkNewVersion() {
-        final String checkUrl = url + "/download/version/zip_ls.json";
+        final String checkUrl = Configue.host + Configue.url_upgrade;
         new Thread() {
             @Override
             public void run() {
@@ -155,7 +153,7 @@ public class WelcomeActivity extends Activity {
             @Override
             public void run() {
                 Log.d("test", "updatePackage downloadUrl = " + downloadUrl);
-                final int ret = new HttpDownload().downFile(downloadUrl, Configue.ROOT, KwAPP.ZIP);
+                final int ret = new HttpDownload().downFile(downloadUrl, Configue.ROOT, Configue.ZIP);
                 Log.d("test", "下载新包 ret = " + ret);
                 runOnUiThread(new Runnable() {
                     @Override
@@ -170,12 +168,12 @@ public class WelcomeActivity extends Activity {
                         }
                         try {
                             Log.d("test", "解压新包");
-                            new ZipFile(Configue.ROOT + KwAPP.ZIP).extractAll(Configue.ROOT);
+                            new ZipFile(Configue.ROOT + Configue.ZIP).extractAll(Configue.ROOT);
                         } catch (ZipException e) {
                             e.printStackTrace();
                         }
                         //解压完毕，删掉zip文件
-                        new File(Configue.ROOT + KwAPP.ZIP).delete();
+                        new File(Configue.ROOT + Configue.ZIP).delete();
                         Log.d("test", "解压完毕");
                         getSharedPreferences("kiway", 0).edit().putString("version_package", outer_package).commit();
                         jump();
@@ -202,21 +200,21 @@ public class WelcomeActivity extends Activity {
                 new File(Configue.ROOT).mkdirs();
             }
             //拷贝
-            FileUtils.copyRawToSdcard(this, R.raw.xtzy_teacher, KwAPP.ZIP);
+            FileUtils.copyRawToSdcard(this, R.raw.xtzy_teacher, Configue.ZIP);
             //解压
             try {
-                new ZipFile(Configue.ROOT + KwAPP.ZIP).extractAll(Configue.ROOT);
+                new ZipFile(Configue.ROOT + Configue.ZIP).extractAll(Configue.ROOT);
             } catch (ZipException e) {
                 e.printStackTrace();
             }
             //解压完毕，删掉zip文件
-            new File(Configue.ROOT + KwAPP.ZIP).delete();
+            new File(Configue.ROOT + Configue.ZIP).delete();
             getSharedPreferences("kiway", 0).edit().putString("version_package", currentPackageVersion).commit();
         }
     }
 
     private boolean checkFileComplete() {
-        if (!new File(Configue.ROOT + KwAPP.HTML).exists()) {
+        if (!new File(Configue.ROOT + Configue.HTML).exists()) {
             return false;
         }
         return true;

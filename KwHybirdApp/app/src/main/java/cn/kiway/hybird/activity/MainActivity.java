@@ -48,7 +48,6 @@ import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-import cn.kiway.hybird.KwAPP;
 import cn.kiway.hybird.entity.HTTPCache;
 import cn.kiway.hybird.teacher.R;
 import cn.kiway.hybird.util.KwDBHelper;
@@ -64,7 +63,6 @@ import cn.kiway.utils.UploadUtil;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static cn.kiway.hybird.util.Utils.getCurrentVersion;
-import static cn.kiway.utils.Configue.url;
 
 
 public class MainActivity extends BaseActivity {
@@ -221,7 +219,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void load() {
-        wv.loadUrl("file://" + Configue.ROOT + KwAPP.HTML);
+        wv.loadUrl("file://" + Configue.ROOT + Configue.HTML);
     }
 
     private void initData() {
@@ -264,7 +262,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                MLog.d("test", "onPageFinished url = " + url);
+                MLog.d("test", "onPageFinished host = " + url);
             }
 
             @Override
@@ -275,19 +273,19 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-                MLog.d("test", "shouldInterceptRequest url = " + url);
-//                if ((url.startsWith("http") || url.startsWith("https"))
-//                        && (url.endsWith("jpg") || url.endsWith("JPG") || url.endsWith("jpeg") || url.endsWith("JPEG") || url.endsWith("png") || url.endsWith("PNG"))) {
-//                    InputStream is = getStreamByUrl(url);
+                MLog.d("test", "shouldInterceptRequest host = " + url);
+//                if ((host.startsWith("http") || host.startsWith("https"))
+//                        && (host.endsWith("jpg") || host.endsWith("JPG") || host.endsWith("jpeg") || host.endsWith("JPEG") || host.endsWith("png") || host.endsWith("PNG"))) {
+//                    InputStream is = getStreamByUrl(host);
 //                    if (is == null) {
-//                        return super.shouldInterceptRequest(view, url);
+//                        return super.shouldInterceptRequest(view, host);
 //                    }
-//                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
+//                    return new WebResourceResponse(getMimeType(host), "utf-8", is);
 //                }
                 //des解密用
-//                else if (url.endsWith("js") || url.endsWith("css") || url.endsWith("html")) {
-//                    InputStream is = getStreamByUrl2(url.replace("file://", ""));
-//                    return new WebResourceResponse(getMimeType(url), "utf-8", is);
+//                else if (host.endsWith("js") || host.endsWith("css") || host.endsWith("html")) {
+//                    InputStream is = getStreamByUrl2(host.replace("file://", ""));
+//                    return new WebResourceResponse(getMimeType(host), "utf-8", is);
 //                }
                 return super.shouldInterceptRequest(view, url);
             }
@@ -302,7 +300,7 @@ public class MainActivity extends BaseActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             String url = wv.getUrl();
-            MLog.d("test", "url = " + url);
+            MLog.d("test", "host = " + url);
             if (url.endsWith("login") || url.endsWith("exam") || url.endsWith("mine") || url.endsWith("message") || url.endsWith("index")) {
                 doFinish();
                 return true;
@@ -440,7 +438,7 @@ public class MainActivity extends BaseActivity {
                     String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
                     MLog.d("test", "取出token=" + token);
                     File file = new File(finalFilepath);
-                    final String ret = UploadUtil.uploadFile(file, url + "/common/file?access_token=" + token, file.getName());
+                    final String ret = UploadUtil.uploadFile(file, Configue.host + String.format(Configue.url_upload, token), file.getName());
                     MLog.d("test", "upload ret = " + ret);
                     if (TextUtils.isEmpty(ret)) {
                         toast("上传图片失败，请稍后再试");
@@ -451,8 +449,8 @@ public class MainActivity extends BaseActivity {
                         public void run() {
                             try {
                                 JSONObject obj = new JSONObject(ret);
-                                String url = Configue.url + obj.getJSONObject("data").getString("url");
-                                obj.getJSONObject("data").put("url", url);
+                                String url = Configue.host + obj.getJSONObject("data").getString("host");
+                                obj.getJSONObject("data").put("host", url);
                                 MLog.d("test", "obj = " + obj.toString());
                                 wv.loadUrl("javascript:fileUploadCallback(" + obj.toString() + ")");
                             } catch (JSONException e) {
@@ -582,7 +580,7 @@ public class MainActivity extends BaseActivity {
                 MLog.d("test", "参数错误");
                 return;
             }
-            MLog.d("test", "httpRequest url = " + url + " , param = " + param + " , method = " + method + " , time = " + time + " , tagname = " + tagname + " , related = " + related + ", event = " + event);
+            MLog.d("test", "httpRequest host = " + url + " , param = " + param + " , method = " + method + " , time = " + time + " , tagname = " + tagname + " , related = " + related + ", event = " + event);
             CountlyUtil.getInstance().addEvent(event);
 
             if (time.equals("0")) {

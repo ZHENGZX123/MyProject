@@ -210,7 +210,7 @@ package cn.kiway.hybird.entity;
 public class HTTPCache {
 
     public String id;
-    public String request;//url + header + param
+    public String request;//host + header + param
     public String response;//return data
     public String requesttime;
     public String tagname;

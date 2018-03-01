@@ -42,9 +42,6 @@ import static cn.kiway.hybird.util.Utils.SYS_OTHER;
 
 public class KwAPP extends Application {
 
-    public static String HTML = "xtzy_teacher/dist/index.html";
-    public static String ZIP = "xtzy_teacher.zip";
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -60,7 +57,7 @@ public class KwAPP extends Application {
         }
 
         //countly
-        Countly.sharedInstance().init(this, Configue.url + Configue.countlyUrl, Configue.countlyAPPKEY);
+        Countly.sharedInstance().init(this, Configue.host + Configue.url_countly, Configue.countlyAPPKEY);
         CountlyUtil.getInstance().init(this);
 
         //jpush
