@@ -44,10 +44,10 @@ dependencies {
     //http网络请求
     compile files('libs/android-async-http-1.4.5.jar')
     compile 'org.xutils:xutils:3.5.0'
-    //图片缓存压缩效果
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    //图片缓存
+    compile project(':KwImageCache')
+    //图片选择器
     compile project(':KwImagePicker')
-    compile files('libs/image_compress.jar')
     //工具类
     compile project(':KwCountly')
     compile project(':KwDatabase')
