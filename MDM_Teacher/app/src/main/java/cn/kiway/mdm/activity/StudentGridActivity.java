@@ -497,7 +497,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                     if (dianmingAlready) {
                         toast(s.name + (s.come ? "到了" : "没到"));
                     } else {
-                        toast(s.name + (s.come ? "在线" : "不在线"));
+                        toast(s.name + (s.online ? "在线" : "不在线"));
                     }
                 } else if (type == TYPE_DIANMINGDA) {
                     sendDianmingdaCommand(s);
