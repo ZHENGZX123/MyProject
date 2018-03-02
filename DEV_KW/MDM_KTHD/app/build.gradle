@@ -56,11 +56,9 @@ configurations.all {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.github.jetradarmobile:android-snowfall:1.1.6'
     compile 'org.xutils:xutils:3.5.0'
     compile project(':mdmaidl')
     compile files('libs/android-async-http-1.4.5.jar')
-    compile project(':AgoraPlayer')
     sourceCompatibility = '1.7'
     targetCompatibility = '1.7'
     compile 'com.android.support:multidex:1.0.0'
@@ -68,6 +66,7 @@ dependencies {
     compile files('libs/image_compress.jar')
     compile files('libs/gson-2.8.0.jar')
     compile project(':AgoraPusher')
+    compile project(':AgoraPlayer')
     compile project(':qsvideoplayer')
     compile 'com.github.open-android:PullToRefresh:v1.0'
 }
