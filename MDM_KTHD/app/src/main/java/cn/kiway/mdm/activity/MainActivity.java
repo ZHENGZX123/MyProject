@@ -73,7 +73,6 @@ public class MainActivity extends ScreenSharingActivity {
         mHandler.sendEmptyMessage(5);
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
