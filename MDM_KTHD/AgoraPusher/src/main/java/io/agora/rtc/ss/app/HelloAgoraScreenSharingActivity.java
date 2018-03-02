@@ -113,22 +113,26 @@ public class HelloAgoraScreenSharingActivity extends Activity {
                 mRtcEngine = RtcEngine.create(getApplicationContext(), getString(R.string.agora_app_id), new IRtcEngineEventHandler() {
                     @Override
                     public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
-                        Log.d(LOG_TAG, "onJoinChannelSuccess " + channel + " " + elapsed);
+                        Log.d("test", "onJoinChannelSuccess " + channel + " " + elapsed);
                     }
 
                     @Override
                     public void onWarning(int warn) {
-                        Log.d(LOG_TAG, "onWarning " + warn);
+
                     }
 
                     @Override
                     public void onError(int err) {
-                        Log.d(LOG_TAG, "onError " + err);
+
                     }
 
                     @Override
                     public void onAudioRouteChanged(int routing) {
-                        Log.d(LOG_TAG, "onAudioRouteChanged " + routing);
+
+                    }
+                    @Override
+                    public void onLeaveChannel(RtcStats stats) {
+                        Log.d("test", "push onLeaveChannel");
                     }
                 });
             } catch (Exception e) {
@@ -211,7 +215,7 @@ public class HelloAgoraScreenSharingActivity extends Activity {
             initModules();
             startCapture();
 
-            String channel = "kiway";
+            String channel = "testkiway";
 
             TextView tv = (TextView) findViewById(R.id.channel_name_info);
             tv.setText(getString(R.string.label_channel_info, channel));
