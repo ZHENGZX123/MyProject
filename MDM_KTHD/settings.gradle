@@ -1,1 +1,1 @@
-include ':app', ':mdmaidl', ':AgoraPlayer', ':libvideoprp', ':ImagePicker', ':photoview', ':AgoraPusher', ':ijkplayerlibrary', ':superplayerlibrary'
+include ':app', ':mdmaidl', ':AgoraPlayer', ':libvideoprp', ':ImagePicker', ':photoview', ':AgoraPusher', ':qsvideoplayer'
