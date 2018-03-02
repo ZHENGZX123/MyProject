@@ -247,7 +247,6 @@ public class BaseActivity extends Activity {
         if (LiveRoomActivity.instance == null) {
             return;
         }
-        LiveRoomActivity.instance.deInitUIandEvent();
         LiveRoomActivity.instance.finish();
     }
 }

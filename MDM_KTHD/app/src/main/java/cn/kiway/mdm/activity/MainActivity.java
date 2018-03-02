@@ -636,6 +636,7 @@ public class MainActivity extends ScreenSharingActivity {
                 }
                 mRtcEngine.leaveChannel();
                 stopCapture();
+                deInitModules();
             }
         });
     }
