@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "F:\\kiway_xm\\MDM_Teacher\\qsvideoplayer\\build\\intermediates\\res\\merged\\debug\\layout\\jc_dialog_volume.xml",
+        "source": "F:\\kiway_xm\\MDM_Teacher\\qsvideoplayer\\src\\main\\res\\layout\\jc_dialog_volume.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Teacher\\qsvideoplayer\\build\\intermediates\\res\\merged\\debug\\layout\\video_view.xml",
+        "source": "F:\\kiway_xm\\MDM_Teacher\\qsvideoplayer\\src\\main\\res\\layout\\video_view.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Teacher\\qsvideoplayer\\build\\intermediates\\res\\merged\\debug\\layout\\jc_dialog_brightness.xml",
+        "source": "F:\\kiway_xm\\MDM_Teacher\\qsvideoplayer\\src\\main\\res\\layout\\jc_dialog_brightness.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Teacher\\qsvideoplayer\\build\\intermediates\\res\\merged\\debug\\layout\\jc_dialog_progress.xml",
+        "source": "F:\\kiway_xm\\MDM_Teacher\\qsvideoplayer\\src\\main\\res\\layout\\jc_dialog_progress.xml"
+    }
+]
