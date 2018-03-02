@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="F:\kiway_xm\MDM_Teacher\qsvideoplayer\libs"><file name="exo-2.0.4.jar" path="F:\kiway_xm\MDM_Teacher\qsvideoplayer\libs\exo-2.0.4.jar"/></source></dataSet><dataSet config="release"><source path="F:\kiway_xm\MDM_Teacher\qsvideoplayer\src\release\jniLibs"/></dataSet></merger>
