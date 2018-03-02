@@ -189,10 +189,21 @@
                     android:visibility="invisible" />
 
                 <RelativeLayout
-                    android:id="@+id/wvContainer"
+                    android:id="@+id/answerWV"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="invisible"></RelativeLayout>
+                    android:visibility="invisible">
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/quxiaobutton"
+                        android:onClick="showWV"
+                        android:padding="10dp"
+                        android:text="请点击打开答题板"
+                        android:textColor="#6699ff" />
+                </RelativeLayout>
 
                 <LinearLayout
                     android:id="@+id/ll_teacher_judge"
@@ -253,4 +264,12 @@
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/wvContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"></RelativeLayout>
+
 </RelativeLayout>
