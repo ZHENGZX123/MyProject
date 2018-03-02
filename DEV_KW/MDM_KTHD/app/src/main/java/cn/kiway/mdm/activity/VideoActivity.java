@@ -1,63 +1,62 @@
 package cn.kiway.mdm.activity;
 
 import android.os.Bundle;
-import android.util.Log;
 
-import com.superplayer.library.SuperPlayer;
+import org.song.videoplayer.DemoQSVideoView;
+import org.song.videoplayer.IVideoPlayer;
+import org.song.videoplayer.PlayListener;
+import org.song.videoplayer.media.IjkMedia;
+import org.song.videoplayer.rederview.IRenderView;
 
-import java.util.ArrayList;
-
-import cn.kiway.mdm.model.Video;
+import cn.kiway.mdm.utils.Logger;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
 
-public class VideoActivity extends BaseActivity implements SuperPlayer.OnNetChangeListener {
-
-    private SuperPlayer player;
-    private ArrayList<Video> videos;
-    private String title;
-    private int current = 0;
+public class VideoActivity extends BaseActivity {
+    DemoQSVideoView qsVideoView;
+    private String url, name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
-        player = (SuperPlayer) findViewById(R.id.view_super_player);
+        url = getIntent().getStringExtra("url");
+        name = getIntent().getStringExtra("name");
+        Logger.log(url);
+        qsVideoView = (DemoQSVideoView) findViewById(R.id.qsVideoView);
+        qsVideoView.release();
+        qsVideoView.setDecodeMedia(IjkMedia.class);//解码
+        qsVideoView.setAspectRatio(IRenderView.AR_ASPECT_FILL_PARENT);//视频填充
+        qsVideoView.setUp(url,name);
+        qsVideoView.getCoverImageView().setImageResource(R.mipmap.ic_launcher);//封面
+        //设置监听
+        qsVideoView.setPlayListener(new PlayListener() {
+            @Override
+            public void onStatus(int status) {//播放器的ui状态
+                if (status == IVideoPlayer.STATE_AUTO_COMPLETE)
+                    qsVideoView.quitWindowFullscreen();//播放完成退出全屏
+            }
 
-        videos = (ArrayList<Video>) getIntent().getSerializableExtra("videos");
-        title = getIntent().getStringExtra("title");
+            @Override//全屏/普通...
+            public void onMode(int mode) {
 
-        startPlay();
+            }
+
+            @Override//播放事件 初始化完成/缓冲/出错/...
+            public void onEvent(int what, Integer... extra) {
+
+            }
+
+        });
+        //进入全屏的模式 0横屏 1竖屏 2传感器自动横竖屏 3根据视频比例自动确定横竖屏      -1什么都不做
+        qsVideoView.enterFullMode = 3;
+        qsVideoView.play();
     }
 
-    private void startPlay() {
-        Video v = videos.get(current);
-        Log.d("test", "url = " + v.url);
-        player.setLive(false);//true：表示直播地址；false表示点播地址
-        player.setScaleType(SuperPlayer.SCALETYPE_FILLPARENT);
-        player.setTitle(title).play(v.url);//设置视频的titleName
-    }
-
-    /**
-     * 网络链接监听类
-     */
     @Override
-    public void onWifi() {
-        toast(R.string.network_wifi);
-    }
-
-    @Override
-    public void onMobile() {
-        toast(R.string.network_mobile);
-    }
-
-    @Override
-    public void onDisConnect() {
-        toast(R.string.network_dis);
-    }
-
-    @Override
-    public void onNoAvailable() {
-        toast(R.string.network_error);
+    public void onBackPressed() {
+        if (qsVideoView.onBackPressed())
+            return;
+        super.onBackPressed();
     }
 }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/white_val"
+              android:orientation="vertical"
+              android:padding="7dp">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:max="100"
+        android:maxHeight="5dp"
+        android:indeterminateDuration="1000"
+        android:progressDrawable="@drawable/progress"/>
+
+    <TextView
+        android:id="@+id/ok"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:lineSpacingExtra="5dp"
+        android:padding="7dp"
+        android:text="正在接收老师的文件，请勿操作"
+        android:textColor="@color/blue"
+        android:textSize="14sp"
+        />
+
+    <Button
+        android:id="@+id/sure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/blue_val"
+        android:padding="10dp"
+        android:text="打开文件"
+        android:visibility="gone"
+        android:textColor="@color/blue"
+        android:textSize="16sp"/>
+</LinearLayout>

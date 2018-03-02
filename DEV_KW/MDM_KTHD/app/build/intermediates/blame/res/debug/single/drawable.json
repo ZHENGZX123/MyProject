@@ -1,0 +1,530 @@
+[
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\quxiaobutton.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\quxiaobutton.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ic_ab_back_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_ic_ab_back_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\snapshot.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\snapshot.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\button1.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\button1.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\icon1.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\icon1.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\u843.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\u843.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\white_val.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\white_val.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\jc_click_pause_selector.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\qsvideoplayer\\build\\intermediates\\bundles\\default\\res\\drawable\\jc_click_pause_selector.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\yyg.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\yyg.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\no_data.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\no_data.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\xuejin.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\xuejin.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\jc_volume_progress_bg.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\qsvideoplayer\\build\\intermediates\\bundles\\default\\res\\drawable\\jc_volume_progress_bg.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_dialog_material_background.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_dialog_material_background.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\leftbutton.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\leftbutton.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\progress.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\progress.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\u1075.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\u1075.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\doc.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\doc.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\dialogtitle.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\dialogtitle.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\ball2.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\ball2.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_item_background_holo_dark.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_item_background_holo_dark.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_seekbar_thumb_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_seekbar_thumb_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\endbutton.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\endbutton.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_holo_dark.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_list_selector_holo_dark.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\chakan.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\chakan.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\logo.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\logo.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\u4645.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\u4645.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\rightbutton.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\rightbutton.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ic_go_search_api_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_ic_go_search_api_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\jc_progress.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\qsvideoplayer\\build\\intermediates\\bundles\\default\\res\\drawable\\jc_progress.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_cab_background_top_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_cab_background_top_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\icon2.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\icon2.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_seekbar_tick_mark_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_seekbar_tick_mark_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\clock.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\clock.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\right.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\right.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\icon4.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\icon4.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_spinner_textfield_background_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_spinner_textfield_background_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\circle.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\circle.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_holo_light.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_list_selector_holo_light.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\jc_seek_thumb_normal.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\qsvideoplayer\\build\\intermediates\\bundles\\default\\res\\drawable\\jc_seek_thumb_normal.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\left.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\left.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mainbutton3.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\mainbutton3.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\jc_click_play_selector.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\qsvideoplayer\\build\\intermediates\\bundles\\default\\res\\drawable\\jc_click_play_selector.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\jc_seek_thumb_pressed.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\qsvideoplayer\\build\\intermediates\\bundles\\default\\res\\drawable\\jc_seek_thumb_pressed.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\design_snackbar_background.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\40d63ed6bdb316038a2a58172d3935b662c53e42\\output\\res\\drawable\\design_snackbar_background.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\conbg.jpg",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\conbg.jpg"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mainbutton2.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\mainbutton2.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\jc_click_back_tiny_selector.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\qsvideoplayer\\build\\intermediates\\bundles\\default\\res\\drawable\\jc_click_back_tiny_selector.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\selector_item_checked.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\ImagePicker\\build\\intermediates\\bundles\\default\\res\\drawable\\selector_item_checked.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ic_search_api_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_ic_search_api_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\bg.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\bg.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ratingbar_indicator_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_ratingbar_indicator_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\login_val.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\login_val.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\jc_click_error_selector.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\qsvideoplayer\\build\\intermediates\\bundles\\default\\res\\drawable\\jc_click_error_selector.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\ic_navigate_before.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\ic_navigate_before.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\pdf.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\pdf.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\u4624.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\u4624.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\png.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\png.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\jc_dialog_progress_bg.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\qsvideoplayer\\build\\intermediates\\bundles\\default\\res\\drawable\\jc_dialog_progress_bg.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\u4643.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\u4643.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ratingbar_small_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_ratingbar_small_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\design_fab_background.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\40d63ed6bdb316038a2a58172d3935b662c53e42\\output\\res\\drawable\\design_fab_background.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\indicator_bg_top.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\8184dc70b973a912a8dec095a50e21bc466437ec\\output\\res\\drawable\\indicator_bg_top.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\u2232.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\u2232.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\u1088.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\u1088.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_check_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_btn_check_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\u4106.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\u4106.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\blue_val.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\blue_val.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_default_mtrl_shape.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_btn_default_mtrl_shape.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_switch_thumb_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_switch_thumb_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\counttext.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\counttext.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_background_transition_holo_light.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_list_selector_background_transition_holo_light.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\u2845.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\u2845.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\u4622.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\u4622.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\selector_grid_camera_bg.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\ImagePicker\\build\\intermediates\\bundles\\default\\res\\drawable\\selector_grid_camera_bg.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_seekbar_track_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_seekbar_track_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_cab_background_internal_bg.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_cab_background_internal_bg.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\jc_seek_thumb.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\qsvideoplayer\\build\\intermediates\\bundles\\default\\res\\drawable\\jc_seek_thumb.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_radio_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_btn_radio_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\icon6.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\icon6.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\notification_bg_low.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\notification_bg_low.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\rounded_bg.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\AgoraPlayer\\build\\intermediates\\bundles\\default\\res\\drawable\\rounded_bg.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_text_cursor_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_text_cursor_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\analyze.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\analyze.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\ball.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\ball.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ratingbar_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_ratingbar_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\login.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\login.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\notification_tile_bg.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\notification_tile_bg.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mainbutton5.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\mainbutton5.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\indicator_bg_bottom.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\8184dc70b973a912a8dec095a50e21bc466437ec\\output\\res\\drawable\\indicator_bg_bottom.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ic_voice_search_api_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_ic_voice_search_api_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\u4620.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\u4620.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_background_transition_holo_dark.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_list_selector_background_transition_holo_dark.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\jc_dialog_progress.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\qsvideoplayer\\build\\intermediates\\bundles\\default\\res\\drawable\\jc_dialog_progress.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\icon5.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\icon5.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\ask.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\ask.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\u4618.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\u4618.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\wheel_val.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\wheel_val.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\jc_seek_progress.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\qsvideoplayer\\build\\intermediates\\bundles\\default\\res\\drawable\\jc_seek_progress.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\icon.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\icon.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\bottom_backgroud.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\qsvideoplayer\\build\\intermediates\\bundles\\default\\res\\drawable\\bottom_backgroud.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\ic_chevron_right.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\ic_chevron_right.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\u1568.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\u1568.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_item_background_holo_light.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_item_background_holo_light.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ic_clear_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_ic_clear_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\selector_top_ok.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\ImagePicker\\build\\intermediates\\bundles\\default\\res\\drawable\\selector_top_ok.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\notification_icon_background.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\notification_icon_background.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ic_menu_overflow_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_ic_menu_overflow_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\icon3.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\icon3.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\u4641.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\u4641.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\course_list_selector.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\course_list_selector.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\edittext.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\edittext.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\u4647.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\u4647.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mic.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\mic.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\selector_back_press.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\ImagePicker\\build\\intermediates\\bundles\\default\\res\\drawable\\selector_back_press.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_vector_test.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_vector_test.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_tab_indicator_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_tab_indicator_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\video.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\video.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\top_backgroud.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\qsvideoplayer\\build\\intermediates\\bundles\\default\\res\\drawable\\top_backgroud.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\u4632.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\u4632.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\navigation_empty_icon.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\40d63ed6bdb316038a2a58172d3935b662c53e42\\output\\res\\drawable\\navigation_empty_icon.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\connect_val.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\connect_val.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\button2.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\button2.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\loginbutton_val.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\loginbutton_val.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\notification_bg.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\notification_bg.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ic_arrow_drop_right_black_24dp.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_ic_arrow_drop_right_black_24dp.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_borderless_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_btn_borderless_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\radiobutton_select.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\radiobutton_select.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mainbutton4.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\mainbutton4.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\jc_loading.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\qsvideoplayer\\build\\intermediates\\bundles\\default\\res\\drawable\\jc_loading.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mainbutton1.xml",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\mainbutton1.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_textfield_search_material.xml",
+        "source": "C:\\Users\\Administrator\\.android\\build-cache\\501825aee275ac185686672d47a85a5295ad52f9\\output\\res\\drawable\\abc_textfield_search_material.xml"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_KTHD\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\ppt.png",
+        "source": "F:\\kiway_xm\\MDM_KTHD\\app\\src\\main\\res\\drawable\\ppt.png"
+    }
+]
