@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="org.song.videoplayer"
+    android:versionCode="7"
+    android:versionName="2.2.2" >
+
+    <uses-sdk
+        android:minSdkVersion="9"
+        android:targetSdkVersion="25"
+        tools:overrideLibrary="com.example.ijkplayer_x86_64,      tv.danmaku.ijk.media.player_arm64,tv.danmaku.ijk.media.player_x86_64" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true" >
+    </application>
+
+</manifest>
