@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -137,6 +138,8 @@ public class Course1Activity extends BaseActivity {
                                 }.getType());
                             }
                         }
+                        //add zhengkang 0227 倒序排列
+                        Collections.reverse(items);
                         adapter.notifyDataSetChanged();
                     } catch (Exception e) {
                         e.printStackTrace();

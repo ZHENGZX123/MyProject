@@ -22,7 +22,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -49,6 +48,7 @@ import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.NetworkUtil;
 import cn.kiway.mdm.utils.UploadUtil;
 import cn.kiway.mdm.utils.Utils;
+import cn.kiway.mdm.view.RoundedImageView;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
 import static cn.kiway.mdm.utils.HttpUtil.uploadFile;
@@ -60,7 +60,7 @@ public class MainActivity extends ScreenSharingActivity {
     public static MainActivity instantce;
     private Dialog dialog_download;
     TextView className, studentName;
-    ImageView userPic;
+    RoundedImageView userPic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +85,7 @@ public class MainActivity extends ScreenSharingActivity {
         super.initView();
         className = (TextView) findViewById(R.id.className);
         studentName = (TextView) findViewById(R.id.studentName);
-        userPic = (ImageView) findViewById(R.id.userPic);
+        userPic = (RoundedImageView) findViewById(R.id.userPic);
         if (!getSharedPreferences("kiway", 0).getString("userUrl", "").equals(""))
             ImageLoader.getInstance().displayImage(getSharedPreferences("kiway", 0).getString("userUrl", ""),
                     userPic, App.getLoaderOptions());
@@ -103,7 +103,6 @@ public class MainActivity extends ScreenSharingActivity {
 
     public void onInfo(View view) {//个人信息
         startActivity(new Intent(this, UserInfoActivity.class));
-        // startPlayer();
     }
 
     public void onFile(View view) {//查看文件
