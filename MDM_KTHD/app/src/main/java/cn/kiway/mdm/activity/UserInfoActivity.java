@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lzy.imagepicker.ImagePicker;
@@ -28,11 +27,11 @@ import cn.kiway.mdm.App;
 import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.UploadUtil;
 import cn.kiway.mdm.utils.Utils;
+import cn.kiway.mdm.view.RoundedImageView;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
 import static cn.kiway.mdm.activity.QuestionActivity.SELECT_PHOTO;
 import static cn.kiway.mdm.utils.HttpUtil.uploadFile;
-import static studentsession.kiway.cn.mdm_studentsession.R.id.userPic;
 
 /**
  * Created by Administrator on 2017/12/15.
@@ -40,7 +39,7 @@ import static studentsession.kiway.cn.mdm_studentsession.R.id.userPic;
 
 public class UserInfoActivity extends BaseActivity implements View.OnClickListener {
     TextView account, userName, versionCode;
-    ImageView pic;
+    RoundedImageView pic;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,7 +52,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         account = (TextView) findViewById(R.id.account);
         userName = (TextView) findViewById(R.id.userName);
         versionCode = (TextView) findViewById(R.id.versionCode);
-        pic = (ImageView) findViewById(R.id.pic);
+        pic = (RoundedImageView) findViewById(R.id.pic);
         pic.setOnClickListener(this);
         if (!getSharedPreferences("kiway", 0).getString("userUrl", "").equals(""))
             ImageLoader.getInstance().displayImage(getSharedPreferences("kiway", 0).getString("userUrl", ""),
@@ -128,12 +127,12 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            App.instance.uploadUserInfo(url,null);
+                            App.instance.uploadUserInfo(url, null);
                         }
                     });
 
                     ImageLoader.getInstance().displayImage(url, pic, App.getLoaderOptions());
-                    getSharedPreferences("kiway", 0).edit().putString("userUrl",url).commit();
+                    getSharedPreferences("kiway", 0).edit().putString("userUrl", url).commit();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
