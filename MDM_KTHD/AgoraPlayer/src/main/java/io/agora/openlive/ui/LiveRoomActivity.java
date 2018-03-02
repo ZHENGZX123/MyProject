@@ -52,7 +52,8 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
     }
 
     @Override
-    public void deInitUIandEvent() {
+    protected void deInitUIandEvent() {
+        Log.d("test", "deInitUIandEvent");
         doLeaveChannel();
         event().removeEventHandler(this);
         mUidsList.clear();
@@ -92,6 +93,7 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
 
     @Override
     public void onJoinChannelSuccess(final String channel, final int uid, final int elapsed) {
+        Log.d("test", "onJoinChannelSuccess");
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -120,6 +122,7 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
 
     @Override
     public void onUserJoined(int uid, int elapsed) {
+        Log.d("test", "onUserJoined , uid = " + uid + " , elapsed = " + elapsed);
         doRenderRemoteUi(uid);
     }
 
