@@ -85,6 +85,7 @@ public class QuestionActivity extends BaseActivity {
     private LinearLayout ll_answer;
     private GridView answerGV;
     private EditText answerET;
+    private RelativeLayout answerWV;
     private RelativeLayout wvContainer;
     private MyAdapter adapter;
     private ArrayList<Choice> choices = new ArrayList<>();
@@ -134,6 +135,7 @@ public class QuestionActivity extends BaseActivity {
         ll_teacher_judge = (LinearLayout) findViewById(R.id.ll_teacher_judge);
         answerGV = (GridView) findViewById(R.id.answerGV);
         answerET = (EditText) findViewById(R.id.answerET);
+        answerWV = (RelativeLayout) findViewById(R.id.answerWV);
         wvContainer = (RelativeLayout) findViewById(R.id.wvContainer);
         adapter = new MyAdapter();
         answerGV.setAdapter(adapter);
@@ -215,7 +217,6 @@ public class QuestionActivity extends BaseActivity {
         wv.addJavascriptInterface(js, "wx");
         jsList.add(js);
     }
-
 
     private void initListener() {
     }
@@ -315,7 +316,7 @@ public class QuestionActivity extends BaseActivity {
         if (q.type == Question.TYPE_SINGLE || q.type == Question.TYPE_MULTI) {
             answerGV.setVisibility(View.VISIBLE);
             answerET.setVisibility(View.INVISIBLE);
-            wvContainer.setVisibility(View.INVISIBLE);
+            answerWV.setVisibility(View.INVISIBLE);
             choices.clear();
             String choose[] = q.options.replace("\"", "").replace("[", "").replace("]", "").split(",");
             for (String temp : choose) {
@@ -329,12 +330,12 @@ public class QuestionActivity extends BaseActivity {
         } else if (q.type == TYPE_EMPTY) {
             answerGV.setVisibility(View.INVISIBLE);
             answerET.setVisibility(View.VISIBLE);
-            wvContainer.setVisibility(View.INVISIBLE);
+            answerWV.setVisibility(View.INVISIBLE);
             answerET.setText(studentAnswer);
         } else if (q.type == Question.TYPE_JUDGE) {
             answerGV.setVisibility(View.VISIBLE);
             answerET.setVisibility(View.INVISIBLE);
-            wvContainer.setVisibility(View.INVISIBLE);
+            answerWV.setVisibility(View.INVISIBLE);
             choices.clear();
             if (studentAnswer.contains("对")) {
                 choices.add(new Choice("对", true));
@@ -350,14 +351,7 @@ public class QuestionActivity extends BaseActivity {
         } else if (q.type == Question.TYPE_ESSAY) {
             answerGV.setVisibility(View.INVISIBLE);
             answerET.setVisibility(View.INVISIBLE);
-            wvContainer.setVisibility(View.VISIBLE);
-
-            int count = wvContainer.getChildCount();
-            for (int i = 0; i < count; i++) {
-                wvContainer.getChildAt(i).setVisibility(View.INVISIBLE);
-            }
-            currentWV = (WebView) wvContainer.getChildAt(q.wbIndex);
-            currentWV.setVisibility(View.VISIBLE);
+            answerWV.setVisibility(View.VISIBLE);
         }
     }
 
@@ -670,6 +664,10 @@ public class QuestionActivity extends BaseActivity {
 
     @Override
     public void clickBack(View view) {
+        if (wvContainer.getVisibility() == View.VISIBLE) {
+            wvContainer.setVisibility(View.INVISIBLE);
+            return;
+        }
         if (!timeup && !submited) {
             toast("你尚未提交答案，不能退出本次问答/测评");
             return;
@@ -707,10 +705,19 @@ public class QuestionActivity extends BaseActivity {
                 }
             }
         });
-
-
     }
 
+
+    public void showWV(View view) {
+        wvContainer.setVisibility(View.VISIBLE);
+        int count = wvContainer.getChildCount();
+        for (int i = 0; i < count; i++) {
+            wvContainer.getChildAt(i).setVisibility(View.INVISIBLE);
+        }
+        Question q = questions.get(current);
+        currentWV = (WebView) wvContainer.getChildAt(q.wbIndex);
+        currentWV.setVisibility(View.VISIBLE);
+    }
 
     @Override
     protected void onDestroy() {
