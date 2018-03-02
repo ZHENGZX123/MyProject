@@ -603,8 +603,8 @@ public class HttpUtil {
                                 new MyDBHelper(c).deleteCall(null);
                                 for (Call n : calls) {
                                     new MyDBHelper(c).addCall(n);
-                                }
-                                //TODO 这里要调用一下华为的方法
+                                    }
+                                    //TODO 这里要调用一下华为的方法
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
