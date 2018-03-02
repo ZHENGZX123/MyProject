@@ -10,7 +10,6 @@ import android.widget.Toast;
 import com.android.kiway.KWApp;
 import com.android.kiway.broadcast.SampleDeviceReceiver;
 import com.android.kiway.dialog.NotifyShowDailog;
-import com.android.kiway.dialog.ShowMessageDailog;
 import com.android.kiway.utils.NetworkUtil;
 import com.android.kiway.utils.Utils;
 
@@ -29,7 +28,6 @@ import java.util.List;
 import cn.kiway.mdmsdk.MDMHelper;
 
 import static com.android.kiway.utils.Constant.clientUrl;
-import static com.android.kiway.dialog.ShowMessageDailog.MessageId.DISMISS;
 
 /**
  * Created by Administrator on 2017/6/9.
@@ -238,43 +236,6 @@ public class BaseActivity extends com.android.launcher3.BaseActivity {
     }
 
 
-    public ShowMessageDailog showMessageDailog;
 
-
-    public void showMessage(final String message) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                showMessageDailog = new ShowMessageDailog(BaseActivity.this);
-                showMessageDailog.setShowMessage(message, DISMISS);
-                showMessageDailog.show();
-            }
-        });
-    }
-
-
-//    public void startScreen() {
-//        FxService.setCanSendImage(true);
-//        startIntent();
-//    }
-//
-//    public void stopScreen() {
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                FxService.setCanSendImage(false);
-//                stopService(new Intent(getApplicationContext(), FxService.class));
-//                Toast.makeText(BaseActivity.this, "停止共享屏幕了", Toast.LENGTH_SHORT)
-//                        .show();
-//            }
-//        });
-//    }
-//
-//    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-//    private void startIntent() {
-//        Intent intent = new Intent(getApplicationContext(), FxService.class);
-//        startService(intent);
-//        Logger.log("start service Service1");
-//    }
 
 }

@@ -9,6 +9,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +22,6 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.android.kiway.KWApp;
 import com.android.kiway.dialog.CheckPassword;
@@ -57,10 +57,11 @@ import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
 import io.zbus.mq.Producer;
 
-import static com.android.kiway.utils.Constant.clientUrl;
+import static com.android.kiway.dialog.ShowMessageDailog.MessageId.SCREEN;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 import static com.android.kiway.utils.Constant.APPID;
 import static com.android.kiway.utils.Constant.APPKEY;
+import static com.android.kiway.utils.Constant.clientUrl;
 import static com.android.kiway.utils.Utils.huaweiPush;
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener {
@@ -76,7 +77,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     public static final int LOGOUT = 999;
     public static final int USAGE_STATS = 1101;
-    public static final int SCREEN = 1102;
+    public static final int ALERT_WINDOW = 1102;
     public static final int LOCK = 1103;
 
     private static final int MSG_CHECK_SETTING = 1;
@@ -131,6 +132,18 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         getAppCanUseData();
         //23.zbus
         initZbus();
+        //24.悬浮窗
+        checkAlertWindow();
+    }
+
+    //判断权限
+    private void checkAlertWindow() {
+        if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(this)) {
+            ShowMessageDailog showMessageDailog = new ShowMessageDailog(this);
+            showMessageDailog.setShowMessage("请您到设置页面设置悬浮窗打开权限", SCREEN);
+            showMessageDailog.setCancelable(false);
+            showMessageDailog.show();
+        }
     }
 
     public void initZbus() {
@@ -342,7 +355,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private void setUsageStats() {
         if ((!Build.MODEL.equals("rk3288") || !Build.MODEL.equals("rk3288")) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !hasPermission
                 ()) {
-            showMessageDailog = new ShowMessageDailog(this);
+            ShowMessageDailog showMessageDailog = new ShowMessageDailog(this);
             showMessageDailog.setShowMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开", YUXUNFANWENJLU);
             showMessageDailog.setCancelable(false);
             showMessageDailog.show();
@@ -431,22 +444,18 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         } else if (requestCode == USAGE_STATS) {
             if (!hasPermission()) {
                 toast("请务必设置权限");
-                //若用户未开启权限，则引导用户开启“Apps with usage access”权限
-                startActivityForResult(
-                        new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
-                        USAGE_STATS);
+                startActivityForResult(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS), USAGE_STATS);
             }
-        } else if (requestCode == SCREEN) {
-            if (Build.VERSION.SDK_INT >= 23) {
-                if (!Settings.canDrawOverlays(this)) {
-                    // SYSTEM_ALERT_WINDOW permission not granted...
-                    Toast.makeText(MainActivity.this, "not granted", Toast.LENGTH_SHORT);
-                }
+        } else if (requestCode == ALERT_WINDOW) {
+            if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(this)) {
+                toast("请务必设置权限");
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, ALERT_WINDOW);
             }
         } else if (requestCode == LOCK) {
             //设置手势密码回来
         }
-
     }
 
     @Override
@@ -499,6 +508,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 }
             }
         }
+
     }
 
 

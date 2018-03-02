@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
@@ -13,14 +14,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.kiway.KWApp;
-import com.android.launcher3.R;
-
 import com.android.kiway.activity.MainActivity;
 import com.android.kiway.utils.HttpUtil;
+import com.android.launcher3.R;
 
+import static com.android.kiway.activity.MainActivity.ALERT_WINDOW;
 import static com.android.kiway.activity.MainActivity.USAGE_STATS;
-import static com.android.kiway.dialog.ShowMessageDailog.MessageId.DISMISS;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.PARENT_BIND;
+import static com.android.kiway.dialog.ShowMessageDailog.MessageId.SCREEN;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 
 /**
@@ -40,19 +41,12 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
         public static final int DISMISS = 0;//消失
         public static final int YUXUNFANWENJLU = DISMISS + 1;//允许访问记录
         public static final int PARENT_BIND = YUXUNFANWENJLU + 1;
+        public static final int SCREEN = PARENT_BIND + 1;
     }
 
     public ShowMessageDailog(Context context) {
         super(context, R.style.LoadingDialog);
         this.context = context;
-    }
-
-
-    public void setShowMessage(String message) {
-        this.message = message;
-        this.messageId = DISMISS;
-        if (textView != null)
-            textView.setText(message);
     }
 
     String token;
@@ -94,12 +88,15 @@ public class ShowMessageDailog extends Dialog implements View.OnClickListener, D
                     case PARENT_BIND:
                         HttpUtil.doBind(KWApp.instance.currentActivity, 1, token);
                         break;
+                    case SCREEN:
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                        intent.setData(Uri.parse("package:" + this.context.getPackageName()));
+                        ((MainActivity) context).startActivityForResult(intent, ALERT_WINDOW);
+                        break;
                 }
                 break;
             case R.id.ok2:
                 switch (messageId) {
-                    case YUXUNFANWENJLU:
-                        break;
                     case PARENT_BIND:
                         HttpUtil.doBind(KWApp.instance.currentActivity, 2, token);
                         break;
