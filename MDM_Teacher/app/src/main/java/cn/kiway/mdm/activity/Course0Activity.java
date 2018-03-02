@@ -106,7 +106,7 @@ public class Course0Activity extends ScreenSharingActivity {
 
     //录课
     private boolean recording = false;
-    private ArrayList<String> recordFiles = new ArrayList<>();
+
 
     //学生提问
     private Dialog studentAskDialog;
@@ -204,7 +204,10 @@ public class Course0Activity extends ScreenSharingActivity {
             KWApplication.recordService.setMediaProject(mediaProjection);
             KWApplication.recordService.startRecord();
             recording = true;
-            recordFiles.add(KWApplication.recordService.output);
+
+            String temp = KWApplication.recordService.output;
+            String recordFiles = getSharedPreferences("kiway", 0).getString(course.id + "_record", "");
+            getSharedPreferences("kiway", 0).edit().putString(course.id + "_record", recordFiles + "===" + temp).commit();
             rkBtn.setBackgroundResource(R.drawable.rk2);
         } else if (requestCode == UCrop.REQUEST_CROP) {
             final Uri resultUri = UCrop.getOutput(data);
@@ -1097,7 +1100,12 @@ public class Course0Activity extends ScreenSharingActivity {
             @Override
             public void run() {
                 try {
+                    String recordFiles[] = getSharedPreferences("kiway", 0).getString(course.id + "_record", "").split("===");
                     for (String s : recordFiles) {
+                        Log.d("test", "s = " + s);
+                        if (TextUtils.isEmpty(s)) {
+                            continue;
+                        }
                         File file = new File(s);
                         String accessToken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
                         final String ret = UploadUtil.uploadFile(file, clientUrl + "/common/file?x-auth-token=" +

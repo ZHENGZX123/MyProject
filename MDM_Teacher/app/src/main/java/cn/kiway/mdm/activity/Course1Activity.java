@@ -86,7 +86,7 @@ public class Course1Activity extends BaseActivity {
             client.get(this, url, null, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "course onSuccess = " + ret);
+                    Log.d("test", "attend course onSuccess = " + ret);
                     hidePD();
                     items.clear();
                     try {
@@ -395,9 +395,6 @@ public class Course1Activity extends BaseActivity {
             toast("该课程没有录课");
             return;
         }
-        //暂时先播放第1个，回头处理
-        //最好边播放边下载
-        String url = videos.get(0).url;
-        startActivity(new Intent(this, VideoActivity.class).putExtra("url", url).putExtra("name", course.name));
+        startActivity(new Intent(this, VideoActivity.class).putExtra("videos", videos).putExtra("title", course.name));
     }
 }
