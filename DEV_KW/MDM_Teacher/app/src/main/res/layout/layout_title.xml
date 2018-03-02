@@ -6,7 +6,7 @@
     android:layout_height="50dp"
     android:background="#6699ff">
 
-    <cn.kiway.mdm.view.makeramen.RoundedImageView
+    <cn.kiway.mdm.view.RoundedImageView
         android:id="@+id/teacherIcon"
         android:layout_width="45dp"
         android:layout_height="45dp"

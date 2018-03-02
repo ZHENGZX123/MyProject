@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +16,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.teacher.R;
-import cn.kiway.mdm.view.makeramen.RoundedImageView;
+import cn.kiway.mdm.view.RoundedImageView;
 import io.agora.openlive.model.ConstantApp;
 import io.agora.openlive.ui.LiveRoomActivity;
 import io.agora.rtc.Constants;

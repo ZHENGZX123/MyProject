@@ -38,7 +38,7 @@ import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Constant;
 import cn.kiway.mdm.util.Utils;
-import cn.kiway.mdm.view.makeramen.RoundedImageView;
+import cn.kiway.mdm.view.RoundedImageView;
 import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
 

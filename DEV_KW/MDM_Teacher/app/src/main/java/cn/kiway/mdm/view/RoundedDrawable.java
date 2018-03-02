@@ -1,4 +1,4 @@
-package cn.kiway.mdm.view.makeramen;
+package cn.kiway.mdm.view;
 
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
