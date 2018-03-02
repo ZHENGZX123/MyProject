@@ -1,6 +1,7 @@
 package io.agora.openlive.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
@@ -73,7 +74,7 @@ public class MyEngineEventHandler {
 
         @Override
         public void onLeaveChannel(RtcStats stats) {
-
+            Log.d("test", "pull onLeaveChannel ");
         }
 
         @Override

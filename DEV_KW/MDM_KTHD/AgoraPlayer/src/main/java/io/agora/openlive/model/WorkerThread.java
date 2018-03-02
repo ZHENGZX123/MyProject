@@ -157,12 +157,12 @@ public class WorkerThread extends Thread {
             mWorkerHandler.sendMessage(envelop);
             return;
         }
-
         ensureRtcEngineReadyLock();
-        mRtcEngine.joinChannel(null, channel, "OpenLive", uid);
+
+        int joinret = mRtcEngine.joinChannel(null, channel, "", uid);//0 -7
+        Log.d("test", " pull joinret = " + joinret);
 
         mEngineConfig.mChannel = channel;
-
         enablePreProcessor();
     }
 
@@ -176,7 +176,8 @@ public class WorkerThread extends Thread {
         }
 
         if (mRtcEngine != null) {
-            mRtcEngine.leaveChannel();
+            int leaveret = mRtcEngine.leaveChannel();
+            Log.d("test", " pull leaveret = " + leaveret);
         }
 
         disablePreProcessor();
