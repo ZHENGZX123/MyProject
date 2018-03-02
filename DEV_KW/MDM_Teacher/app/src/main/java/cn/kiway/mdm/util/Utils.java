@@ -194,7 +194,7 @@ public class Utils {
         View decorview = c.getWindow().getDecorView();
         decorview.setDrawingCacheEnabled(true);
         Bmp = decorview.getDrawingCache();
-        String SavePath = "/mnt/sdcard/kiway_mdm_teacher/jieping/";
+        String SavePath = "/mnt/sdcard/kiway_mdm_teacher/snapshot/";
         //3.保存Bitmap
         try {
             File path = new File(SavePath);
@@ -213,7 +213,7 @@ public class Utils {
                 Bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
                 fos.flush();
                 fos.close();
-                Toast.makeText(c, "截屏文件已保存至kiway_mdm_teacher/jieping/目录下", Toast.LENGTH_LONG).show();
+                Toast.makeText(c, "截屏文件已保存至kiway_mdm_teacher/snapshot/", Toast.LENGTH_LONG).show();
                 return filepath;
             }
             return "";
@@ -486,6 +486,7 @@ public class Utils {
         String str = sdf.format(date);
         return str;
     }
+
     public static String longToDate(long time) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         java.util.Date date = new Date(time);
