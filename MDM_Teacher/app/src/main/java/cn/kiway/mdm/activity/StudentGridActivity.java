@@ -49,7 +49,7 @@ import cn.kiway.mdm.util.FileUtils;
 import cn.kiway.mdm.util.Logger;
 import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
-import cn.kiway.mdm.view.makeramen.RoundedImageView;
+import cn.kiway.mdm.view.RoundedImageView;
 import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
 
