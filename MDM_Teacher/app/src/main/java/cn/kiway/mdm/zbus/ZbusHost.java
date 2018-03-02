@@ -183,7 +183,7 @@ public class ZbusHost {
                     @Override
                     public void run() {
                         onListener.onSuccess();
-                        //记录提问过的问题
+                        //TODO 记录提问过的问题，不能放在这里。
                         String askedQuestions = c.getSharedPreferences("kiway", 0).getString("askedQuestions", "");
                         askedQuestions += "_" + q.id;
                         c.getSharedPreferences("kiway", 0).edit().putString("askedQuestions", askedQuestions).commit();
