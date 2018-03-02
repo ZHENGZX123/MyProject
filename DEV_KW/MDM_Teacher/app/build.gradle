@@ -65,7 +65,7 @@ dependencies {
     compile files('libs/fastjson-1.2.24.jar')
     compile files('libs/push-server-zbus-1.0.0.jar')
     compile project(':AgoraPusher')
-    compile project(':superplayerlibrary')
+    compile project(':qsvideoplayer')
     compile files('libs/zbus-0.11.3.jar')
     compile project(':ImageCrop')
     compile project(':ImagePicker')
