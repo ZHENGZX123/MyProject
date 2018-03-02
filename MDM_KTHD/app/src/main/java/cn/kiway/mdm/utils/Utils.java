@@ -308,6 +308,10 @@ public class Utils {
                     sdf = new SimpleDateFormat("HH", Locale.getDefault());
                     s = sdf.format(date);
                     break;
+                case 12:
+                    sdf = new SimpleDateFormat("MM.dd", Locale.getDefault());
+                    s = sdf.format(date);
+                    break;
             }
 
         } catch (Exception e) {
@@ -438,7 +442,7 @@ public class Utils {
                 Log.d("test", "login onSuccess = " + ret);
                 try {
                     JSONObject o = new JSONObject(ret);
-                    Logger.log("login::::::"+ret);
+                    Logger.log("login::::::" + ret);
                     int StatusCode = o.optInt("statusCode");
                     String token = o.getJSONObject("data").optString("token");
                     context.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();

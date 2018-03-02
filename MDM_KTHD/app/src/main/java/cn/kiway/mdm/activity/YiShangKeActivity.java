@@ -211,7 +211,7 @@ public class YiShangKeActivity extends BaseActivity {
                 convertView.findViewById(R.id.clock).setVisibility(View.GONE);
             }
             ZzxCourse course = allCourses.get(position);
-            holder.date1.setText(Utils.getDateField(Long.parseLong(course.getCreateDate()), 5));
+            holder.date1.setText(Utils.getDateField(Long.parseLong(course.getCreateDate()), 12));
             holder.date2.setText(Utils.getDateField(Long.parseLong(course.getCreateDate()), 0));
             holder.title.setText(course.getName());
             holder.content.setText(course.getknowledgeContent());
