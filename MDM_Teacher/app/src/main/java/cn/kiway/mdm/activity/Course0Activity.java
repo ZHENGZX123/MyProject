@@ -234,7 +234,7 @@ public class Course0Activity extends ScreenSharingActivity {
                     .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
-                            endTuiping();
+                            sendTuipingcommand(0);
                         }
                     }).setPositiveButton(android.R.string.cancel, null).create();
             dialog.show();
@@ -979,9 +979,7 @@ public class Course0Activity extends ScreenSharingActivity {
                                 public void onClick(DialogInterface arg0, int arg1) {
                                     //1.停止推屏
                                     if (tuiping) {
-                                        tuiping = false;
-                                        tuipingIV.setBackgroundResource(R.drawable.screen_control1);
-                                        endTuiping();
+                                        sendTuipingcommand(0);
                                     }
                                     //2.停止录制
                                     if (recording) {

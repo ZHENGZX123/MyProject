@@ -82,7 +82,7 @@ import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.3.5";
+    private static final String currentPackageVersion = "0.0.1";
     private boolean isSuccess = false;
     private boolean isJump = false;
     private Dialog dialog_download;
@@ -404,8 +404,7 @@ public class MainActivity extends BaseActivity {
                 try {
                     sleep(1500);
                     checkTimeout();
-                    HttpGet httpRequest = new HttpGet(cn.kiway.mdm.util.Constant.clientUrl + "/static/download/version/zip_teacher" +
-                            ".json");
+                    HttpGet httpRequest = new HttpGet(cn.kiway.mdm.util.Constant.clientUrl + "/static/download/version/zip_teacher.json");
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
