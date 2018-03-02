@@ -1,7 +1,6 @@
 package cn.kiway.mdm;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
@@ -32,7 +31,6 @@ import cn.kiway.aidl.ClientCallback;
 import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.QuestionActivity;
-import cn.kiway.mdm.activity.ScreenActivity;
 import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.Utils;
 import studentsession.kiway.cn.mdmaidl.KiwayApplication;
@@ -138,17 +136,7 @@ public class App extends KiwayApplication {
         @Override
         public void handleMessage(final Message msg) {
             super.handleMessage(msg);
-            if (msg.what == MSG_LOCKONCLASS) {//锁屏
-                if (currentActivity != null && currentActivity instanceof ScreenActivity) {
-                    return;
-                }
-                startActivity(new Intent(getApplicationContext(), ScreenActivity.class).addFlags(Intent
-                        .FLAG_ACTIVITY_NEW_TASK));
-            } else if (msg.what == MSG_UNLOCK) {//解锁
-                if (currentActivity != null && currentActivity instanceof ScreenActivity) {
-                    currentActivity.finish();
-                }
-            } else if (msg.what == MSG_HOME_DIS) {//禁用home
+            if (msg.what == MSG_HOME_DIS) {//禁用home
                 try {
                     if (mRemoteInterface != null)
                         mRemoteInterface.setHomeButtonDisabled(true);
