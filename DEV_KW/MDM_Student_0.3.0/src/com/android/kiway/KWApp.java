@@ -36,9 +36,6 @@ import static com.android.kiway.utils.Utils.huaweiPush;
 
 public class KWApp extends Application {
 
-    //    public static final String serverUrl = "http://www.yuertong.com:8083/";
-//    public static final String clientUrl = "http://www.yuertong.com:8084/";
-
     public static final int MSG_TOAST = 0;//Toast
     public static final int MSG_INSTALL = 1;//注册华为
     public static final int MSG_LOCK = 2;//锁屏
