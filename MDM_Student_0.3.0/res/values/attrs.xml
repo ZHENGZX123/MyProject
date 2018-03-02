@@ -33,7 +33,7 @@
         <attr name="customShadows" format="boolean" />
         <attr name="centerVertically" format="boolean" />
     </declare-styleable>
-
+    <attr name="workspaceTextColor" format="color" />
     <!-- PagedView specific attributes. These attributes are used to customize
          a PagedView view in XML files. -->
     <declare-styleable name="PagedView">

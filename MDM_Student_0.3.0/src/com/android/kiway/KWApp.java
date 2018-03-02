@@ -171,15 +171,31 @@ public class KWApp extends Application {
             } else if (msg.what == MSG_OPEN_FILE) {
                 Utils.openFile(getApplicationContext(), msg.obj.toString());
             } else if (msg.what == MSG_PORTRAIT) {
-                getSharedPreferences("kiway", 0).edit().putInt("oriantation", 0).commit();
-                if (currentActivity != null && currentActivity instanceof BaseActivity) {
-                    ((BaseActivity) currentActivity).setScreenOrientation();
-                }
+               // getSharedPreferences("kiway", 0).edit().putInt("oriantation", 0).commit();
+//                if (currentActivity != null && currentActivity instanceof BaseActivity) {
+//                    ((BaseActivity) currentActivity).setScreenOrientation();
+//                }
+               if (currentActivity != null && currentActivity instanceof BaseActivity) {
+                   currentActivity. runOnUiThread(new Runnable() {
+                       @Override
+                       public void run() {
+                           Toast.makeText(currentActivity, "该版本不支持横竖屏切换", Toast.LENGTH_SHORT)
+                                   .show();
+                       }
+                   });;}
             } else if (msg.what == MSG_LANDSCAPE) {
-                getSharedPreferences("kiway", 0).edit().putInt("oriantation", 1).commit();
+               // getSharedPreferences("kiway", 0).edit().putInt("oriantation", 1).commit();
+//                if (currentActivity != null && currentActivity instanceof BaseActivity) {
+//                    ((BaseActivity) currentActivity).setScreenOrientation();
+//                }
                 if (currentActivity != null && currentActivity instanceof BaseActivity) {
-                    ((BaseActivity) currentActivity).setScreenOrientation();
-                }
+                    currentActivity. runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(currentActivity, "该版本不支持横竖屏切换", Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    });;}
             } else if (msg.what == MSG_UNINSTALL) {
                 //卸载某个包
                 MDMHelper.getAdapter().uninstallPackage(msg.obj.toString());
@@ -199,7 +215,8 @@ public class KWApp extends Application {
                         return;
                     }
                     isAttendClass = true;
-
+                    MDMHelper.getAdapter().setBackButtonDisabled(true);
+                    MDMHelper.getAdapter().setHomeButtonDisabled(true);
                     Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
                     in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//重启APP
                     if (in != null) {
@@ -217,6 +234,8 @@ public class KWApp extends Application {
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
                 RemoteAidlService.goOutClass();
                 isAttendClass = false;
+                MDMHelper.getAdapter().setBackButtonDisabled(false);
+                MDMHelper.getAdapter().setHomeButtonDisabled(false);
             } else if (msg.what == MSG_MESSAGE) {
                 RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
             } else if (msg.what == MSG_PUSH_FILE_I) {

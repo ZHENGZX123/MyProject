@@ -2673,7 +2673,7 @@ public class Launcher extends MainActivity
         if (intent.getComponent().getPackageName().contains("com.android.browser") || intent.getComponent()
                 .getPackageName().contains("cn.kiway.browser")) {
             if (AppListUtils.isAppInstalled(this, "cn.kiway.browser")) {
-                Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage("cn.kiway.brower");
+                Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage("cn.kiway.browser");
                 in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//重启APP
                 in.putExtra("enable_type", Utils.getEnable_Network(this));
                 in.putExtra("all_network", new MyDBHelper(this).getAllNetworks(Utils.getEnable_Network(this)));

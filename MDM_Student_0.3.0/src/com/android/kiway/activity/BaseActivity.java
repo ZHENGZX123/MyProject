@@ -2,7 +2,6 @@ package com.android.kiway.activity;
 
 import android.app.ProgressDialog;
 import android.content.ComponentName;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -27,6 +26,7 @@ import java.util.List;
 
 import cn.kiway.mdmsdk.MDMHelper;
 
+import static com.android.kiway.dialog.ShowMessageDailog.MessageId.DISMISS;
 import static com.android.kiway.utils.Constant.clientUrl;
 
 /**
@@ -52,12 +52,13 @@ public class BaseActivity extends com.android.launcher3.BaseActivity {
     }
 
     public void setScreenOrientation() {
-        int oriantation = getSharedPreferences("kiway", 0).getInt("oriantation", 0);//0竖屏1横屏
-        if (oriantation == 0) {
-            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        } else {
-            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
+//        int oriantation = getSharedPreferences("kiway", 0).getInt("oriantation", 0);//0竖屏1横屏
+//        if (oriantation == 0) {
+//            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//        } else {
+//            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//        }
+
     }
 
     @Override
@@ -94,6 +95,8 @@ public class BaseActivity extends com.android.launcher3.BaseActivity {
         List<String> packages = new ArrayList<>();
         packages.add("cn.kiway.mdm");
         packages.add("cn.kiway.session");
+        packages.add("cn.kiway.browser");
+        packages.add("cn.kiway.marketplace");
         MDMHelper.getAdapter().addDisallowedUninstallPackages(packages);
         //保持APP持续运行
         //MDMHelper.getAdapter().addPersistentApp(packages);

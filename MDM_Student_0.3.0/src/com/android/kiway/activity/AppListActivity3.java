@@ -177,6 +177,7 @@ public class AppListActivity3 extends BaseActivity {
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
                     JSONObject data = new JSONObject(ret);
+                    Logger.log(":::::::::"+data);
                     if (data.optInt("statusCode") == 200) {
                         JSONArray array = data.optJSONArray("data");
                         ArrayList<InStallAllApp> appsd = new ArrayList<>();
