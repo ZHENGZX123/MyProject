@@ -505,10 +505,11 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                     }
                     sendDianmingdaCommand(s);
                 } else if (type == TYPE_WENJIAN) {
-                    if (!s.online) {
-                        toast("该学生不在线");
-                        return;
-                    }
+                    //0305 注意：老游说，不在线也可以发文件
+                    //if (!s.online) {
+                    //    toast("该学生不在线");
+                    //    return;
+                    //}
                     //选中的
                     s.selected = !s.selected;
                     adapter.notifyDataSetChanged();

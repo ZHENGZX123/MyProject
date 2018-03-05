@@ -42,6 +42,7 @@ import com.yalantis.ucrop.UCrop;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.song.videoplayer.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -367,12 +368,6 @@ public class Course0Activity extends ScreenSharingActivity {
 
     public void wenjian(View view) {
         //1.先选择一个文件
-//        new LFilePicker()
-//                .withActivity(this)
-//                .withTitle(getString(R.string.filepath3))
-//                .withRequestCode(requsetFile2)
-//                .withMutilyMode(false)
-//                .start();
         startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_WENJIAN));
     }
 
@@ -393,6 +388,7 @@ public class Course0Activity extends ScreenSharingActivity {
         try {
             showPD();
             String url = clientUrl + "/device/teacher/course/" + course.id + "/knowledges";
+            Log.d("test", "knowledges url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
@@ -414,6 +410,10 @@ public class Course0Activity extends ScreenSharingActivity {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", "knowledges onFailure = " + s);
+                    if (!check301(Course0Activity.this, s, "knowledges")) {
+                        toast("请求失败，请稍后再试");
+                        hidePD();
+                    }
                 }
             });
         } catch (Exception e) {
@@ -489,45 +489,79 @@ public class Course0Activity extends ScreenSharingActivity {
 
     public void dianmingda(View view) {
         //点名答，需要获取学生列表。
-        //1.先选题目
-        //2.再选学生
-        selectQuestion(TYPE_QUESTION_DIANMINGDA);
+        question(TYPE_QUESTION_DIANMINGDA);
     }
 
     public void qiangda(View view) {
         //抢答，给全班发送抢答命令。
-        selectQuestion(TYPE_QUESTION_QIANGDA);
+        question(TYPE_QUESTION_QIANGDA);
     }
 
     public void suijichouda(View view) {
         //随机抽答，随机找几个发命令。
-        selectQuestion(TYPE_QUESTION_SUIJICHOUDA);
+        question(TYPE_QUESTION_SUIJICHOUDA);
     }
 
     public void ceping(View view) {
         //测评，给全班发测评命令
-        selectQuestion(TYPE_QUESTION_CEPING);
+        question(TYPE_QUESTION_CEPING);
     }
 
     private int questionTime = 120;
     private TextView selectCount;
     private LinearLayout questionLL;
 
-    private void selectQuestion(final int type) {
+    public void question(final int type) {
+        Utils.questionType = type;
+        //1.网络请求获得知识点
+        try {
+            showPD();
+            String url = clientUrl + "/device/teacher/course/" + course.id + "/questions?type=" + type;
+            Log.d("test", "question url = " + url);
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+            client.setTimeout(10000);
+            client.get(this, url, null, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "questions onSuccess = " + ret);
+                    hidePD();
+                    try {
+                        JSONArray data = new JSONObject(ret).getJSONArray("data");
+                        course.questions = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Question>>() {
+                        }.getType());
+                        showQuestionDialog(type);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "questions onFailure = " + s);
+                    if (!check301(Course0Activity.this, s, "questions")) {
+                        toast("请求失败，请稍后再试");
+                        hidePD();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            toast("请求失败，请稍后再试");
+            hidePD();
+        }
+    }
+
+    private void showQuestionDialog(int type) {
         Log.d("test", "course.questions = " + course.questions);
         if (course.questions == null || course.questions.size() == 0) {
             toast("该课程暂无题目");
             return;
         }
-        //reset select
-        for (Question q : course.questions) {
-            q.selected = false;
-        }
         //过滤掉已经统计过的question
-        String askedQuestions = getSharedPreferences("kiway", 0).getString("askedQuestions", "");
         ArrayList<Question> qs = new ArrayList<>();
         for (Question q : course.questions) {
-            if (!askedQuestions.contains(q.id)) {
+            if (!q.status) {
                 qs.add(q);
             }
         }

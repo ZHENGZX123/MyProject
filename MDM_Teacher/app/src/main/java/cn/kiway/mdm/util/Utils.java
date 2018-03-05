@@ -330,6 +330,8 @@ public class Utils {
         }
     }
 
+    public static int questionType;
+
     public static boolean check301(final Activity c, String result, final String type) {
         if (c == null) {
             return false;
@@ -378,6 +380,10 @@ public class Utils {
                             ((ResultActivity) c).uploadResult();
                         } else if (type.equals("filepush")) {
                             ((StudentGridActivity) c).uploadUserfile();
+                        } else if (type.equals("knowledges")) {
+                            ((Course0Activity) c).tongji(null);
+                        } else if (type.equals("questions")) {
+                            ((Course0Activity) c).question(questionType);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
