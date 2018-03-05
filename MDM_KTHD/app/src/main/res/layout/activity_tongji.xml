@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:don="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
@@ -20,7 +21,9 @@
             android:id="@+id/hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="20dp"
             android:text="知识点统计："
             android:textColor="#000000"
             android:textSize="20sp" />
@@ -29,7 +32,7 @@
             android:id="@+id/content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_alignTop="@+id/hint"
             android:layout_toRightOf="@+id/hint"
             android:text="content"
             android:textColor="#6699ff"
@@ -40,7 +43,6 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/hint"
-            android:layout_marginBottom="20dp"
             android:background="#aaaaaa" />
 
         <RelativeLayout
@@ -48,42 +50,25 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/line">
 
-            <RelativeLayout
-                android:id="@+id/circleRL"
+            <com.don.pieviewlibrary.PercentPieView
+                android:id="@+id/pp"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="50dp"
-                android:background="@drawable/circle">
-
-                <TextView
-                    android:id="@+id/rate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="0.0%"
-                    android:textColor="#6699ff"
-                    android:textSize="24sp" />
-
-                <TextView
-                    android:id="@+id/group"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/rate"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="5dp"
-                    android:text="已掌握"
-                    android:textColor="#aaaaaa" />
-            </RelativeLayout>
+                android:background="@drawable/circle"
+                don:centerTextColor="#000000"
+                don:centerTextSize="0sp"
+                don:circleWidth="60dp"
+                don:dataTextSize="10sp"></com.don.pieviewlibrary.PercentPieView>
 
             <LinearLayout
-                android:id="@+id/chartLL"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="50dp"
                 android:layout_marginRight="50dp"
-                android:layout_toRightOf="@+id/circleRL"
+                android:layout_toRightOf="@+id/pp"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:weightSum="3">
