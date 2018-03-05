@@ -170,7 +170,7 @@ public class TongjiActivity extends BaseActivity {
         people2.setText(p2 + "人");
         people3.setText(p3 + "人");
 
-        rate.setText((rate1 * 100) + "%");
+        rate.setText(String.format("%.2f", rate1 * 100) + "%");
     }
 
     public void clickPrev(View v) {

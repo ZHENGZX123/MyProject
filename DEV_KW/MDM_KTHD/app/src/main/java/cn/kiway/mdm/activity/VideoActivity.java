@@ -8,33 +8,40 @@ import org.song.videoplayer.PlayListener;
 import org.song.videoplayer.media.IjkMedia;
 import org.song.videoplayer.rederview.IRenderView;
 
-import cn.kiway.mdm.utils.Logger;
+import java.util.ArrayList;
+
+import cn.kiway.mdm.model.Video;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
 
 public class VideoActivity extends BaseActivity {
     DemoQSVideoView qsVideoView;
-    private String url, name;
+    private String name;
+    private ArrayList<Video> videos = new ArrayList<>();
+    int position = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
-        url = getIntent().getStringExtra("url");
+        videos = (ArrayList<Video>) getIntent().getSerializableExtra("videos");
         name = getIntent().getStringExtra("name");
-        Logger.log(url);
         qsVideoView = (DemoQSVideoView) findViewById(R.id.qsVideoView);
-        qsVideoView.release();
         qsVideoView.setDecodeMedia(IjkMedia.class);//解码
         qsVideoView.setAspectRatio(IRenderView.AR_ASPECT_FILL_PARENT);//视频填充
-        qsVideoView.setUp(url,name);
         qsVideoView.getCoverImageView().setImageResource(R.mipmap.ic_launcher);//封面
         //设置监听
         qsVideoView.setPlayListener(new PlayListener() {
             @Override
             public void onStatus(int status) {//播放器的ui状态
-                if (status == IVideoPlayer.STATE_AUTO_COMPLETE)
-                    qsVideoView.quitWindowFullscreen();//播放完成退出全屏
+                if (status == IVideoPlayer.STATE_AUTO_COMPLETE) {
+                    if (position + 1 < videos.size()) {
+                        position++;
+                        playVideo(name, videos.get(position).url);
+                    }else {
+                        finish();
+                    }
+                }
             }
 
             @Override//全屏/普通...
@@ -50,6 +57,12 @@ public class VideoActivity extends BaseActivity {
         });
         //进入全屏的模式 0横屏 1竖屏 2传感器自动横竖屏 3根据视频比例自动确定横竖屏      -1什么都不做
         qsVideoView.enterFullMode = 3;
+        playVideo(name, videos.get(position).url);
+    }
+
+    protected void playVideo(String name, String videoUrl) {
+        qsVideoView.release();
+        qsVideoView.setUp(videoUrl, name);
         qsVideoView.play();
     }
 

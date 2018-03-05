@@ -411,6 +411,6 @@ public class Course1Activity extends BaseActivity {
             toast("该课程没有录课");
             return;
         }
-        startActivity(new Intent(this, VideoActivity.class).putExtra("videos", videos).putExtra("title", course.name));
+        startActivity(new Intent(this, VideoActivity.class).putExtra("videos", videos).putExtra("name", course.name));
     }
 }

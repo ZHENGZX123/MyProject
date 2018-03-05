@@ -125,8 +125,6 @@ public class App extends KiwayApplication {
     public static final int MSG_CONNECT = 0x000;//上课连接
     public static final int MSG_XIAKE = MSG_CONNECT + 1;//下课
 
-    public static final int MSG_LOCKONCLASS = MSG_CONNECT + 2;//上课锁屏
-    public static final int MSG_UNLOCK = MSG_CONNECT + 3;//解锁
     public static final int MSG_HOME_DIS = MSG_CONNECT + 4;//禁用home
     public static final int MSG_HOME_TURE = MSG_CONNECT + 5;//开启home
     public static final int MSG_TIME_OUT = MSG_CONNECT + 6;//上课超时判断
