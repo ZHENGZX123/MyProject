@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.service.RecordService;
+import cn.kiway.mdm.util.CrashHandler;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -54,6 +55,9 @@ public class KWApplication extends Application {
         startService(new Intent(this, RecordService.class));
         //init
         initImageCache();
+        //crash
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(getApplicationContext());
     }
 
     /**

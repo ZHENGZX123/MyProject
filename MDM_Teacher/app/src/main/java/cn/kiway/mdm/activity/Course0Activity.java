@@ -36,13 +36,12 @@ import com.leon.lfilepickerlibrary.utils.Constant;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.soundcloud.android.crop.Crop;
 import com.tencent.smtt.sdk.TbsReaderView;
-import com.yalantis.ucrop.UCrop;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.song.videoplayer.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -211,8 +210,8 @@ public class Course0Activity extends ScreenSharingActivity {
             String recordFiles = getSharedPreferences("kiway", 0).getString(course.id + "_record", "");
             getSharedPreferences("kiway", 0).edit().putString(course.id + "_record", recordFiles + "===" + temp).commit();
             rkBtn.setBackgroundResource(R.drawable.rk2);
-        } else if (requestCode == UCrop.REQUEST_CROP) {
-            final Uri resultUri = UCrop.getOutput(data);
+        } else if (requestCode == Crop.REQUEST_CROP) {
+            final Uri resultUri = Crop.getOutput(data);
             if (resultUri != null)
                 sendFile(resultUri.getPath());
         } else if (requestCode == REQUEST_ORIGINAL) {
@@ -287,9 +286,7 @@ public class Course0Activity extends ScreenSharingActivity {
         Uri sourceUri = Uri.fromFile(new File(filePath));
         //裁剪完毕的图片存放路径
         Uri destinationUri = Uri.fromFile(new File(filePath.split("\\.")[0] + "1." + filePath.split("\\.")[1]));
-        UCrop.of(sourceUri, destinationUri) //定义路径
-                .withAspectRatio(4, 3) //定义裁剪比例 4:3 ， 16:9
-                .withMaxResultSize(500, 500) //定义裁剪图片宽高最大值
+        Crop.of(sourceUri, destinationUri) //定义路径
                 .start(this);
     }
 
