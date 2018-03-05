@@ -30,6 +30,7 @@ import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImagePreviewActivity;
 import com.nanchen.compresshelper.CompressHelper;
+import com.soundcloud.android.crop.Crop;
 import com.yalantis.ucrop.UCrop;
 
 import net.lingala.zip4j.core.ZipFile;
@@ -263,8 +264,9 @@ public class MainActivity extends BaseActivity {
                 Uri sourceUri = Uri.fromFile(new File(filePath));
                 //裁剪完毕的图片存放路径
                 Uri destinationUri = Uri.fromFile(new File(filePath.split("\\.")[0] + "1." + filePath.split("\\.")[1]));
-                UCrop.of(sourceUri, destinationUri) //定义路径
-                        .start(this);
+//                UCrop.of(sourceUri, destinationUri) //定义路径
+//                        .start(this);
+                Crop.of(sourceUri, destinationUri).start(this);
             } else {
                 uploadFile(filePath, true);
             }
@@ -273,7 +275,8 @@ public class MainActivity extends BaseActivity {
             Uri sourceUri = Uri.fromFile(new File(picPath));
             //裁剪完毕的图片存放路径
             Uri destinationUri = Uri.fromFile(new File(picPath.split("\\.")[0] + "1.png"));
-            UCrop.of(sourceUri, destinationUri).start(this);
+            //UCrop.of(sourceUri, destinationUri).start(this);
+            Crop.of(sourceUri, destinationUri).start(this);
         } else if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK) {
             final Uri resultUri = UCrop.getOutput(data);
             //压缩图片

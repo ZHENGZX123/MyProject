@@ -67,8 +67,8 @@ dependencies {
     compile files('libs/zbus-0.11.3.jar')
     compile project(':AgoraPusher')
     compile project(':qsvideoplayer')
-    compile project(':ImageCrop')
     compile project(':ImagePicker')
     compile files('libs/image_compress.jar')
     compile 'com.zhijieeeeee:pieviewlibrary:2.0.3'
+    compile 'com.soundcloud.android:android-crop:1.0.1@aar'
 }

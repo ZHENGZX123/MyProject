@@ -595,13 +595,18 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                 //  showPD();
                 isFileDel = false;
                 fileAdapter.notifyDataSetChanged();
-                sendFile(0);
+                if (fileModels.size() > 0) {
+                    sendFile(0);
+                } else {
+                    toast("");
+                }
                 break;
         }
     }
 
 
     private void sendFile(int i) {
+
         if (fileModels.get(i).staute == 3) {
             if (fileModels.size() <= i + 1) {
                 toast("发送文件成功");
