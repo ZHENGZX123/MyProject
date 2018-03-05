@@ -69,4 +69,5 @@ dependencies {
     compile project(':AgoraPlayer')
     compile project(':qsvideoplayer')
     compile 'com.github.open-android:PullToRefresh:v1.0'
+    compile 'com.zhijieeeeee:pieviewlibrary:2.0.3'
 }
