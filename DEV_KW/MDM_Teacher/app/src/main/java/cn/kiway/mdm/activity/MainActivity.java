@@ -145,7 +145,7 @@ public class MainActivity extends BaseActivity {
                     ZbusUtils.init(broker, p);
                     String topic = "kiway_push_" + userId;
                     Log.d("test", "topic = " + topic);
-                    ZbusUtils.consumeMsg(topic, new ZbusMessageHandler());
+                    ZbusUtils.consumeMsgs(topic, new ZbusMessageHandler(),cn.kiway.mdm.util.Constant.zbusHost + ":" + cn.kiway.mdm.util.Constant.zbusPost);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -500,14 +500,14 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                     }
                 } else if (type == TYPE_DIANMINGDA) {
                     if (!s.online) {
-                        toast("该学生不在线");
+                        toast("该学生不在线，暂无法操作该功能");
                         return;
                     }
                     sendDianmingdaCommand(s);
                 } else if (type == TYPE_WENJIAN) {
                     //0305 注意：老游说，不在线也可以发文件
                     //if (!s.online) {
-                    //    toast("该学生不在线");
+                    //    toast("该学生不在线，暂无法操作该功能");
                     //    return;
                     //}
                     //选中的
@@ -525,7 +525,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                     }
                 } else if (type == TYPE_CHAPING) {
                     if (!s.online) {
-                        toast("该学生不在线");
+                        toast("该学生不在线，暂无法操作该功能");
                         return;
                     }
                     toast("查看" + s.name + "的屏幕");
@@ -533,7 +533,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                     sendChapingCommand(s, 1);
                 } else if (type == TYPE_SUOPING) {
                     if (!s.online) {
-                        toast("该学生不在线");
+                        toast("该学生不在线，暂无法操作该功能");
                         return;
                     }
                     String message;
