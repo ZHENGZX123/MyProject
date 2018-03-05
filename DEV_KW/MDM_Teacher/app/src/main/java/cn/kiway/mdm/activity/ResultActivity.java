@@ -296,7 +296,7 @@ public class ResultActivity extends BaseActivity {
             final Student s = students.get(position);
             holder.name.setText(s.name);
             if (TextUtils.isEmpty(s.avatar)) {
-                s.avatar = "drawable://" + R.drawable.icon1;
+                s.avatar = "drawable://" + R.drawable.icon;
             }
             ImageLoader.getInstance().displayImage(s.avatar, holder.icon, KWApplication.getLoaderOptions());
 
