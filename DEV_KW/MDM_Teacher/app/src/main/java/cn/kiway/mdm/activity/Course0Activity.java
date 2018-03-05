@@ -40,6 +40,7 @@ import com.tencent.smtt.sdk.TbsReaderView;
 import com.yalantis.ucrop.UCrop;
 
 import org.apache.http.Header;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -63,7 +64,6 @@ import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
 
-import static cn.kiway.mdm.util.Constant.clientUrl;
 import static cn.kiway.mdm.KWApplication.students;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_CHAPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
@@ -73,6 +73,7 @@ import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_WENJIAN;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_DOC;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
+import static cn.kiway.mdm.util.Constant.clientUrl;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
 import static cn.kiway.mdm.util.Utils.check301;
@@ -388,21 +389,51 @@ public class Course0Activity extends ScreenSharingActivity {
 
     //-------------------------tools2----------------------
     public void tongji(View view) {
+        //1.网络请求获得知识点
+        try {
+            showPD();
+            String url = clientUrl + "/device/teacher/course/" + course.id + "/knowledges";
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+            client.setTimeout(10000);
+            client.get(this, url, null, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "knowledges onSuccess = " + ret);
+                    hidePD();
+                    try {
+                        JSONArray data = new JSONObject(ret).getJSONArray("data");
+                        course.knowledgePoints = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<KnowledgePoint>>() {
+                        }.getType());
+                        showTongjiDialog();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "knowledges onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            toast("请求失败，请稍后再试");
+            hidePD();
+        }
+    }
+
+    private void showTongjiDialog() {
         Log.d("test", "course.knowledgePoints = " + course.knowledgePoints);
         //统计type=1的知识点的个数
         if (course.knowledgePoints == null || course.knowledgePoints.size() == 0) {
             toast("该课程暂无知识点");
             return;
         }
-        //reset select
-        for (KnowledgePoint kp : course.knowledgePoints) {
-            kp.selected = false;
-        }
         //过滤掉已经统计过的知识点
-        String tongjiKPS = getSharedPreferences("kiway", 0).getString("tongjiKPS", "");
         ArrayList<KnowledgePoint> kps = new ArrayList<>();
         for (KnowledgePoint kp : course.knowledgePoints) {
-            if (!tongjiKPS.contains(kp.id)) {
+            if (!kp.status) {
                 kps.add(kp);
             }
         }
