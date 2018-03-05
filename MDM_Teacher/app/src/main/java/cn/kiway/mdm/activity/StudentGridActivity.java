@@ -364,11 +364,6 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
 
             @Override
             public void onSuccess() {
-                //1.记录已经统计过的知识点
-                String tongjiKPS = getSharedPreferences("kiway", 0).getString("tongjiKPS", "");
-                tongjiKPS += "_" + selectKPs.get(0).id;
-                getSharedPreferences("kiway", 0).edit().putString("tongjiKPS", tongjiKPS).commit();
-                //2.显示对话框
                 showTongjidialog();
             }
 

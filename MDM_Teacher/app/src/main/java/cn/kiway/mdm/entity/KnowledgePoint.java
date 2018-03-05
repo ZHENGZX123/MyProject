@@ -17,6 +17,7 @@ public class KnowledgePoint implements Serializable {
     public String content;
     public String createDate;
     public TeachingContentVo teachingContentVo;
+    public boolean status;
 
     public int type;//我自己用的。。。
     public boolean selected;//我自己用的。。。
