@@ -1007,17 +1007,11 @@ public class Utils {
         return null;
     }
 
-    private static AlertDialog bindDialog;
-
     public static void showBindDialog(final Activity m, JSONObject data) {
         if (m == null) {
             return;
         }
         String token = data.optString("token");
-
-        if (bindDialog != null && bindDialog.isShowing()) {
-            return;
-        }
         ShowMessageDailog dailog = new ShowMessageDailog(m);
         dailog.setToken(token);
         dailog.setShowMessage("家长要绑定这个帐号，是否同意？", PARENT_BIND);
