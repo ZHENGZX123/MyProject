@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.android.kiway.activity.BaseActivity;
 import com.android.kiway.aidlservice.RemoteAidlService;
+import com.android.kiway.utils.CrashHandler;
 import com.android.kiway.utils.HttpDownload;
 import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.Utils;
@@ -247,7 +248,7 @@ public class KWApp extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        //CrashHandler.getInstance().init(this);
+        CrashHandler.getInstance().init(this);
         huaweiPush(this);
         //xutils
         x.Ext.init(this);

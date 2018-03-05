@@ -161,7 +161,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     ZbusUtils.init(broker, p);
                     String topic = "kiway_push_" + token;
                     Log.d("test", "topic = " + topic);
-                    ZbusUtils.consumeMsg(topic, new MessageHandler() {
+                    ZbusUtils.consumeMsgs(topic, new MessageHandler() {
 
                         @Override
                         public void handle(io.zbus.mq.Message message, MqClient mqClient) throws IOException {
@@ -174,7 +174,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                                 e.printStackTrace();
                             }
                         }
-                    });
+                    }, Constant.zbusHost + ":" + Constant.zbusPost);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
