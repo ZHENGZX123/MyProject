@@ -37,7 +37,7 @@
         <activity
             android:name="cn.kiway.mdm.activity.VideoActivity"
             android:screenOrientation="landscape" />
-
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
         <receiver android:name="cn.kiway.mdm.broadcast.NetChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
