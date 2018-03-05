@@ -181,7 +181,6 @@ public class JsAndroidInterface {
             activity.getSharedPreferences("kiway", 0).edit().putString("teacherAvatar", teacherAvatar).commit();
 
             this.activity.startActivity(new Intent(this.activity, StudentGridActivity.class).putExtra("type", TYPE_DIANMING));
-            //Utils.shangke(this.activity, wifiIp);
         } catch (JSONException e) {
             e.printStackTrace();
         }

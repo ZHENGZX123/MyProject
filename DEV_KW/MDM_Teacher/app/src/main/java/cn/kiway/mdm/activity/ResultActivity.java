@@ -231,6 +231,8 @@ public class ResultActivity extends BaseActivity {
                                 }
                                 s.collected = true;
                             }
+
+
                         } catch (Exception e) {
                             Log.d("test", "学生提交的和本次问题对应不上。。。有问题");
                             e.printStackTrace();
@@ -245,6 +247,7 @@ public class ResultActivity extends BaseActivity {
                     allSubmit = allSubmit & s.submited;
                 }
                 if (allSubmit) {
+                    //1.timeup
                     timeup = true;
                     mHandler.removeCallbacksAndMessages(null);
                     stopBtn.setBackgroundResource(R.drawable.endbutton_false);
@@ -253,6 +256,8 @@ public class ResultActivity extends BaseActivity {
                     } else {
                         hint.setText("答题结束");
                     }
+
+                    //2.
                 }
 
                 refreshUI();
