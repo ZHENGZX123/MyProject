@@ -1,11 +1,13 @@
 package cn.kiway.mdm.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.don.pieviewlibrary.PercentPieView;
 
 import org.xutils.common.util.DensityUtil;
 
@@ -26,7 +28,6 @@ public class TongjiActivity extends BaseActivity {
     private TextView hint;
     private TextView content;
 
-    private TextView rate;
     private TextView people1;
     private TextView people2;
     private TextView people3;
@@ -35,18 +36,20 @@ public class TongjiActivity extends BaseActivity {
     private View color2;
     private View color3;
 
-    private TextView group;
     private TextView group1;
     private TextView group2;
     private TextView group3;
 
     private TextView indexTV;
-    private LinearLayout chartLL;
     private RelativeLayout bottomRL;
+    private PercentPieView pp;
 
     private AttendItem item;
 
     private int current = 0;//当前显示项
+
+    private String[] name;
+    private int[] color;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -106,25 +109,23 @@ public class TongjiActivity extends BaseActivity {
     public void initView() {
         super.initView();
 
-        rate = (TextView) findViewById(R.id.rate);
         people1 = (TextView) findViewById(R.id.people1);
         people2 = (TextView) findViewById(R.id.people2);
         people3 = (TextView) findViewById(R.id.people3);
 
-        group = (TextView) findViewById(R.id.group);
+
         group1 = (TextView) findViewById(R.id.group1);
         group2 = (TextView) findViewById(R.id.group2);
         group3 = (TextView) findViewById(R.id.group3);
 
         indexTV = (TextView) findViewById(R.id.indexTV);
         bottomRL = (RelativeLayout) findViewById(R.id.bottomRL);
-        chartLL = (LinearLayout) findViewById(R.id.chartLL);
 
         hint = (TextView) findViewById(R.id.hint);
         content = (TextView) findViewById(R.id.content);
+        pp = (PercentPieView) findViewById(R.id.pp);
 
         if (type == 1) {
-            group.setText("已掌握");
             group1.setText("已掌握");
             group2.setText("未掌握");
             group3.setText("未响应");
@@ -132,18 +133,21 @@ public class TongjiActivity extends BaseActivity {
             hint.setText("知识点统计：");
             content.setText(item.results.get(0).knowledgeName);
             titleName.setText("知识点统计结果");
+            name = new String[]{"已掌握", "未掌握", "未响应"};
         } else if (type == 2) {
-            group.setText("正确率");
             group1.setText("回答正确");
             group2.setText("回答错误");
             group3.setText("未作答");
             hint.setText("题目类型：");
             titleName.setText("测评统计结果");
+            name = new String[]{"回答正确", "回答错误", "未作答"};
         }
 
         color1 = findViewById(R.id.color1);
         color2 = findViewById(R.id.color2);
         color3 = findViewById(R.id.color3);
+
+        color = new int[]{Color.parseColor("#009261"), Color.parseColor("#ff3333"), Color.parseColor("#999999")};
     }
 
     private void setChartData(int p1, int p2, int p3) {
@@ -169,7 +173,8 @@ public class TongjiActivity extends BaseActivity {
         people2.setText(p2 + "人");
         people3.setText(p3 + "人");
 
-        rate.setText(String.format("%.2f", rate1 * 100) + "%");
+        int[] data = new int[]{p1, p2, p3};
+        pp.setData(data, name , color);
     }
 
     public void clickPrev(View v) {
