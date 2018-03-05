@@ -31,7 +31,6 @@ import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImagePreviewActivity;
 import com.nanchen.compresshelper.CompressHelper;
 import com.soundcloud.android.crop.Crop;
-import com.yalantis.ucrop.UCrop;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -277,8 +276,8 @@ public class MainActivity extends BaseActivity {
             Uri destinationUri = Uri.fromFile(new File(picPath.split("\\.")[0] + "1.png"));
             //UCrop.of(sourceUri, destinationUri).start(this);
             Crop.of(sourceUri, destinationUri).start(this);
-        } else if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK) {
-            final Uri resultUri = UCrop.getOutput(data);
+        } else if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK) {
+            final Uri resultUri = Crop.getOutput(data);
             //压缩图片
             Luban.with(this).load(resultUri.getPath()).ignoreBy(100).setTargetDir(getPath()).setCompressListener(new OnCompressListener() {
                 @Override
@@ -312,8 +311,8 @@ public class MainActivity extends BaseActivity {
                     });
                 }
             }).launch();    //启动压缩
-        } else if (requestCode == UCrop.REQUEST_CROP && resultCode == UCrop.RESULT_ERROR) {   //出错时进入该分支
-            final Throwable cropError = UCrop.getError(data);
+        } else if (requestCode == Crop.REQUEST_CROP && resultCode == Crop.RESULT_ERROR) {   //出错时进入该分支
+            final Throwable cropError = Crop.getError(data);
             Logger.log("cropError:::::" + cropError.toString());
             runOnUiThread(new Runnable() {
                 @Override
