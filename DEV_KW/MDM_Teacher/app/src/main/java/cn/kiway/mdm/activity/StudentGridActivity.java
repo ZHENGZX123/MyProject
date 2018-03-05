@@ -171,7 +171,9 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
             all.setText("全选");
         }
         for (Student s : students) {
-            s.selected = selectAll;
+            if (s.online) {
+                s.selected = selectAll;
+            }
         }
         adapter.notifyDataSetChanged();
     }
@@ -431,7 +433,9 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                 //2.刷新界面
                 lockAll = !lockAll;
                 for (Student s : students) {
-                    s.locked = lockAll;
+                    if (s.online) {
+                        s.locked = lockAll;
+                    }
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -500,8 +504,16 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                         toast(s.name + (s.online ? "在线" : "不在线"));
                     }
                 } else if (type == TYPE_DIANMINGDA) {
+                    if (!s.online) {
+                        toast("该学生不在线");
+                        return;
+                    }
                     sendDianmingdaCommand(s);
                 } else if (type == TYPE_WENJIAN) {
+                    if (!s.online) {
+                        toast("该学生不在线");
+                        return;
+                    }
                     //选中的
                     s.selected = !s.selected;
                     adapter.notifyDataSetChanged();
@@ -516,10 +528,18 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                         all.setText("全选");
                     }
                 } else if (type == TYPE_CHAPING) {
+                    if (!s.online) {
+                        toast("该学生不在线");
+                        return;
+                    }
                     toast("查看" + s.name + "的屏幕");
                     chapingStudent = s;
                     sendChapingCommand(s, 1);
                 } else if (type == TYPE_SUOPING) {
+                    if (!s.online) {
+                        toast("该学生不在线");
+                        return;
+                    }
                     String message;
                     if (s.locked) {
                         message = "是否解锁" + s.name + "的屏幕";
@@ -794,24 +814,24 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
             }
             ImageLoader.getInstance().displayImage(s.avatar, holder.icon, KWApplication.getLoaderOptions());
 
-            if (type == TYPE_DIANMING) {
+            if (type != TYPE_TONGJI) {
                 if (s.online) {
-                    if (s.come) {
-                        holder.cover.setVisibility(View.VISIBLE);
-                        holder.cover.setImageResource(R.drawable.icon4);
-                    } else {
-                        holder.cover.setVisibility(View.VISIBLE);
-                        holder.cover.setImageResource(R.drawable.icon2);
-                    }
-                } else {
-                    holder.cover.setVisibility(View.GONE);
-                }
-            } else if (type == TYPE_DIANMINGDA || type == TYPE_WENJIAN) {
-                if (s.selected) {
                     holder.cover.setVisibility(View.VISIBLE);
                     holder.cover.setImageResource(R.drawable.icon2);
                 } else {
                     holder.cover.setVisibility(View.GONE);
+                }
+            }
+
+            if (type == TYPE_DIANMING) {
+                if (s.come) {
+                    holder.cover.setVisibility(View.VISIBLE);
+                    holder.cover.setImageResource(R.drawable.icon4);
+                }
+            } else if (type == TYPE_DIANMINGDA || type == TYPE_WENJIAN) {
+                if (s.selected) {
+                    holder.cover.setVisibility(View.VISIBLE);
+                    holder.cover.setImageResource(R.drawable.icon4);
                 }
             } else if (type == TYPE_TONGJI) {
                 //0没明白，1是明白，未回复是2
