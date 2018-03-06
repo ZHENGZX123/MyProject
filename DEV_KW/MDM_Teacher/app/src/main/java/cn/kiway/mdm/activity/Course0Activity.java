@@ -718,8 +718,18 @@ public class Course0Activity extends ScreenSharingActivity {
                         //随机抽答，弹出抽取框
                         showChoudaqiDialog();
                     } else if (type == TYPE_QUESTION_QIANGDA) {
+                        ArrayList<Student> students = new ArrayList<>();
+                        for (Student s : KWApplication.students) {
+                            if (s.online) {
+                                students.add(s);
+                            }
+                        }
+                        if (students.size() == 0) {
+                            toast("学生们都不在线");
+                            return;
+                        }
                         qiangdaStudentIMEI = "";
-                        ZbusHost.qiangda(Course0Activity.this, new OnListener() {
+                        ZbusHost.qiangda(Course0Activity.this, students, new OnListener() {
 
                             @Override
                             public void onSuccess() {
@@ -731,7 +741,17 @@ public class Course0Activity extends ScreenSharingActivity {
                                 toast("发送抢答命令失败");
                             }
                         });
-                    } else {
+                    } else if (type == TYPE_QUESTION_CEPING) {
+                        ArrayList<Student> students = new ArrayList<>();
+                        for (Student s : KWApplication.students) {
+                            if (s.online) {
+                                students.add(s);
+                            }
+                        }
+                        if (students.size() == 0) {
+                            toast("学生们都不在线");
+                            return;
+                        }
                         //测评是全班的，发送测评命令
                         ZbusHost.questions(Course0Activity.this, selectQuestions, questionTime, new OnListener() {
                             @Override
@@ -861,6 +881,16 @@ public class Course0Activity extends ScreenSharingActivity {
                                 sleep(100);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
+                            }
+                            ArrayList<Student> students = new ArrayList<>();
+                            for (Student s : KWApplication.students) {
+                                if (s.online) {
+                                    students.add(s);
+                                }
+                            }
+                            if (students.size() == 0) {
+                                toast("学生们都不在线");
+                                return;
                             }
                             final Student s = students.get(i % students.size());
                             final int finalI = i;

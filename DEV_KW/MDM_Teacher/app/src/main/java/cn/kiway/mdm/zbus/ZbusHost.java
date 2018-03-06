@@ -132,11 +132,12 @@ public class ZbusHost {
         }
     }
 
-    public static void qiangda(Activity c, final OnListener onListener) {
+    public static void qiangda(Activity c, ArrayList<Student> students, final OnListener onListener) {
         try {
             String title = "抢答";
             String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
             String msg = new JSONObject().put("data", new JSONObject().put("command", "qiangda").put("teacherUserId", userId)).toString();
+
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
                 c.runOnUiThread(new Runnable() {

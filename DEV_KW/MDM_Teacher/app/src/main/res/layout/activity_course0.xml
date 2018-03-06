@@ -305,7 +305,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="18dp"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/u1568" />
+                android:background="@drawable/u1591" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -383,7 +383,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="18dp"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/u1568" />
+                android:background="@drawable/u1591" />
 
             <TextView
                 android:layout_width="wrap_content"
