@@ -11,7 +11,7 @@ public class Logger {
     public static String isLogTag = "scoket";
 
     public static void log(Object object) {
-        if (isLog)
+        if (isLog&&object!=null)
             Log.e(isLogTag, object.toString());
     }
 }

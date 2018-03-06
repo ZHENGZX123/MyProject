@@ -54,7 +54,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="10dp"
                 android:text="测评结果"
-                android:textColor="#ffffff" />
+                android:textColor="#6699ff" />
 
         </LinearLayout>
     </LinearLayout>

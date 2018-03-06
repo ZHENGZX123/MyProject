@@ -398,7 +398,7 @@ public class Course1Activity extends BaseActivity {
             for (Question q : item.questions) {
                 TextView tv = new TextView(Course1Activity.this);
                 tv.setText("问题：" + q.content);
-                tv.setTextColor(Color.parseColor("#ffffff"));
+                tv.setTextColor(Color.parseColor("#6699ff"));
                 questionLL.addView(tv);
             }
             LinearLayout ceping = (LinearLayout) layout_question6.findViewById(R.id.ceping);
