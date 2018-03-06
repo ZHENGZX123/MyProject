@@ -33,13 +33,6 @@ public class BaseActivity extends Activity {
     public ImageButton videoBtn;
 
     public RelativeLayout toolsRL;
-    public ImageButton gj;
-    public ImageButton dm;
-    public ImageButton sk;
-    public ImageButton wdq;
-    public ImageButton cp;
-
-    public ImageButton rk;
     public ProgressDialog pd;
     private RelativeLayout retryRL;
 
@@ -62,13 +55,6 @@ public class BaseActivity extends Activity {
 
         videoBtn = (ImageButton) findViewById(R.id.video);
         toolsRL = (RelativeLayout) findViewById(R.id.toolsRL);
-
-        gj = (ImageButton) findViewById(R.id.gj);
-        dm = (ImageButton) findViewById(R.id.dm);
-        sk = (ImageButton) findViewById(R.id.sk);
-        wdq = (ImageButton) findViewById(R.id.wdq);
-        cp = (ImageButton) findViewById(R.id.cp);
-        rk = (ImageButton) findViewById(R.id.rk);
 
         retryRL = (RelativeLayout) findViewById(R.id.retryRL);
     }
@@ -121,31 +107,6 @@ public class BaseActivity extends Activity {
         });
     }
 
-    //----------------------------------工具栏点击事件------------------------------
-
-    public void gj(View view) {
-
-    }
-
-    public void dm(View view) {
-
-    }
-
-    public void sk(View view) {
-
-    }
-
-    public void wdq(View view) {
-
-    }
-
-    public void cp(View view) {
-
-    }
-
-    public void rk(View view) {
-
-    }
 
     public void clickBack(View view) {
         finish();
@@ -178,23 +139,4 @@ public class BaseActivity extends Activity {
         LiveRoomActivity.instance.finish();
     }
 
-    public void hideTool(int index) {
-        switch (index) {
-            case 1:
-                dm.setVisibility(View.GONE);
-                break;
-            case 2:
-                sk.setVisibility(View.GONE);
-                break;
-            case 3:
-                wdq.setVisibility(View.GONE);
-                break;
-            case 4:
-                cp.setVisibility(View.GONE);
-                break;
-            case 5:
-                rk.setVisibility(View.GONE);
-                break;
-        }
-    }
 }

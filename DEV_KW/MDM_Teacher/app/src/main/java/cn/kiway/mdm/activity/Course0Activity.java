@@ -91,7 +91,6 @@ public class Course0Activity extends ScreenSharingActivity {
     private FrameLayout x5FileLayout;
     private TbsReaderView readerView;
     private ImageView tuipingIV;
-    private ImageButton rkBtn;
     private ListView lv;
     private CourseAdapter adapter;
     private ArrayList<KnowledgePoint> knowledgePoints = new ArrayList<>();
@@ -107,7 +106,7 @@ public class Course0Activity extends ScreenSharingActivity {
 
     //录课
     private boolean recording = false;
-
+    public ImageView rk;
 
     //学生提问
     private Dialog studentAskDialog;
@@ -136,7 +135,7 @@ public class Course0Activity extends ScreenSharingActivity {
         lv.setAdapter(adapter);
 
         tuipingIV = (ImageView) findViewById(R.id.tuipingIV);
-        rkBtn = (ImageButton) findViewById(R.id.rk);
+        rk = (ImageView) findViewById(R.id.rk);
     }
 
     public void initData() {
@@ -209,7 +208,7 @@ public class Course0Activity extends ScreenSharingActivity {
             String temp = KWApplication.recordService.output;
             String recordFiles = getSharedPreferences("kiway", 0).getString(course.id + "_record", "");
             getSharedPreferences("kiway", 0).edit().putString(course.id + "_record", recordFiles + "===" + temp).commit();
-            rkBtn.setBackgroundResource(R.drawable.rk2);
+            rk.setBackgroundResource(R.drawable.rk2);
         } else if (requestCode == Crop.REQUEST_CROP) {
             final Uri resultUri = Crop.getOutput(data);
             if (resultUri != null)
@@ -946,13 +945,12 @@ public class Course0Activity extends ScreenSharingActivity {
     public void stopRecord() {
         toast("结束录制本地视频");
         recording = false;
-        rkBtn.setBackgroundResource(R.drawable.rk1);
+        rk.setBackgroundResource(R.drawable.rk1);
         if (KWApplication.recordService.isRunning()) {
             KWApplication.recordService.stopRecord();
         }
     }
 
-    @Override
     public void rk(View view) {
         if (recording) {
             stopRecord();
@@ -960,7 +958,6 @@ public class Course0Activity extends ScreenSharingActivity {
             startRecord();
         }
     }
-
     //------------------------内容列表相关-------------------------------------------------
 
     private class CourseAdapter extends BaseAdapter {

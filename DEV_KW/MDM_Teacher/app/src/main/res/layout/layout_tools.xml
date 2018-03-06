@@ -46,32 +46,6 @@
             android:background="@drawable/sk"
             android:onClick="sk" />
 
-        <ImageButton
-            android:id="@+id/wdq"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/wdq"
-            android:onClick="wdq" />
-
-        <ImageButton
-            android:id="@+id/cp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/cp"
-            android:onClick="cp" />
-
-        <ImageButton
-            android:id="@+id/rk"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/rk1"
-            android:onClick="rk" />
     </LinearLayout>
 
 
