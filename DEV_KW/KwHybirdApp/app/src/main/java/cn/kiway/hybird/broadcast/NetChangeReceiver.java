@@ -10,7 +10,7 @@ import android.telephony.TelephonyManager;
 import java.text.DecimalFormat;
 
 import cn.kiway.hybird.util.Utils;
-import cn.kiway.utils.MLog;
+import cn.kiway.log.MLog;
 
 public class NetChangeReceiver extends BroadcastReceiver {
 

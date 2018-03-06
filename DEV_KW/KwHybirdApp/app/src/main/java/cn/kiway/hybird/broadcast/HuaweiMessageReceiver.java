@@ -11,8 +11,8 @@ import com.huawei.android.pushagent.api.PushEventReceiver;
 
 import cn.kiway.database.util.KwDBHelper;
 import cn.kiway.hybird.activity.MainActivity;
+import cn.kiway.log.MLog;
 import cn.kiway.sharedpref.SPUtil;
-import cn.kiway.utils.MLog;
 
 /*
  * 接收Push所有消息的广播接收器

@@ -19,7 +19,7 @@ import java.util.Properties;
 
 import cn.kiway.http.NetworkUtil;
 import cn.kiway.hybird.activity.MainActivity;
-import cn.kiway.utils.MLog;
+import cn.kiway.log.MLog;
 
 /**
  * Created by Administrator on 2017/7/5.
