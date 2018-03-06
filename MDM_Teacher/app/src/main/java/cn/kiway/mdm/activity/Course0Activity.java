@@ -1077,7 +1077,6 @@ public class Course0Activity extends ScreenSharingActivity {
                 final AttachInfoVo info = infos.get(i);
                 LinearLayout layout_doc = (LinearLayout) inflater.inflate(R.layout.layout_doc, null);
                 ImageView icon = (ImageView) layout_doc.findViewById(R.id.icon);
-                //TODO icon
                 TextView name = (TextView) layout_doc.findViewById(R.id.name);
                 name.setText(info.fileName);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -1097,7 +1096,7 @@ public class Course0Activity extends ScreenSharingActivity {
             holder.type0RL.removeAllViews();
             //teachingContentVo.content
             TextView tv = new TextView(Course0Activity.this);
-            tv.setTextColor(Color.WHITE);
+            tv.setTextColor(Color.parseColor("#444444"));
             tv.setText(teachingContentVo.content);
             holder.type0RL.addView(tv);
             //teachingContentVo.img

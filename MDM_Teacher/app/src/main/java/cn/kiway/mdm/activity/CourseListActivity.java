@@ -195,11 +195,11 @@ public class CourseListActivity extends BaseActivity {
                 holder.date1.setVisibility(View.GONE);
                 holder.date2.setVisibility(View.GONE);
             } else if (s.attendCourse == 1) {
-                holder.title1.setTextColor(Color.parseColor("#cccccc"));
-                holder.title2.setTextColor(Color.parseColor("#cccccc"));
+                holder.title1.setTextColor(Color.parseColor("#444444"));
+                holder.title2.setTextColor(Color.parseColor("#444444"));
                 holder.yishangke.setVisibility(View.VISIBLE);
                 holder.ball.setImageResource(R.drawable.ball1);
-                holder.line2.setBackgroundColor(Color.parseColor("#cccccc"));
+                holder.line2.setBackgroundColor(Color.parseColor("#444444"));
                 holder.date1.setVisibility(View.VISIBLE);
                 holder.date2.setVisibility(View.VISIBLE);
 
