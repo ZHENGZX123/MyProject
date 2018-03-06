@@ -10,7 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
 
-import cn.kiway.utils.MLog;
+import cn.kiway.log.MLog;
 
 /**
  * 上传工具类
