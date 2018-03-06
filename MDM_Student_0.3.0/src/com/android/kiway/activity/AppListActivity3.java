@@ -1,5 +1,8 @@
 package com.android.kiway.activity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -45,6 +48,7 @@ public class AppListActivity3 extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_list3);
+        findViewById(R.id.error).setVisibility(View.VISIBLE);
         lv = (ListView) findViewById(R.id.lv);
         allListData = new ArrayList(FileACache.loadListCache(this, ListFileName));
         adapter = new MyAdapter();
@@ -55,17 +59,17 @@ public class AppListActivity3 extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 InStallAllApp a = apps.get(position);
                 a.selected = !a.selected;
-               // Intent intent = new Intent();
-               // intent.putExtra(PACKAGENAME, a.packages);
+                // Intent intent = new Intent();
+                // intent.putExtra(PACKAGENAME, a.packages);
                 //intent.putExtra("boolean", true);
                 if (a.selected) {
                     new MyDBHelper(AppListActivity3.this).addCustonApp(a.packages);
-                 //   intent.setAction(INSTALL_SUCCESS);
+                    //   intent.setAction(INSTALL_SUCCESS);
                 } else {
                     new MyDBHelper(AppListActivity3.this).deleteAppInCuston(a.packages);
-                   // intent.setAction(REMOVE_SUCCESS);
+                    // intent.setAction(REMOVE_SUCCESS);
                 }
-               // sendOrderedBroadcast(intent, null);
+                // sendOrderedBroadcast(intent, null);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -84,6 +88,18 @@ public class AppListActivity3 extends BaseActivity {
 
     public void Before(View view) {
         finish();
+    }
+
+    public void reStart(View view) {
+//   ActivityManager manager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+//        manager.restartPackage("cn.kiway.mdm");
+
+        Intent intent = getBaseContext().getPackageManager()
+                .getLaunchIntentForPackage(getBaseContext().getPackageName());
+        PendingIntent restartIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager mgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 500, restartIntent); // 0.5秒钟后重启应用
+        System.exit(0);
     }
 
     private class MyAdapter extends BaseAdapter {
@@ -177,7 +193,7 @@ public class AppListActivity3 extends BaseActivity {
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
                     JSONObject data = new JSONObject(ret);
-                    Logger.log(":::::::::"+data);
+                    Logger.log(":::::::::" + data);
                     if (data.optInt("statusCode") == 200) {
                         JSONArray array = data.optJSONArray("data");
                         ArrayList<InStallAllApp> appsd = new ArrayList<>();
