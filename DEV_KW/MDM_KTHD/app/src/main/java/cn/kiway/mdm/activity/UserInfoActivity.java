@@ -2,6 +2,7 @@ package cn.kiway.mdm.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -40,6 +41,7 @@ import static cn.kiway.mdm.utils.HttpUtil.uploadFile;
 public class UserInfoActivity extends BaseActivity implements View.OnClickListener {
     TextView account, userName, versionCode;
     RoundedImageView pic;
+    private int positon = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,7 +62,23 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         account.setText("学号：" + getSharedPreferences("kiwaykthd", 0).getString("studentNumber", ""));
         userName.setText("姓名:" + getSharedPreferences("kiwaykthd", 0).getString("studentName", ""));
         versionCode.setText(Utils.getCurrentVersion(this));
+        versionCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                positon++;
+                if (positon > 5) {
+                    positon = 0;
+                    try {
+                        App.instance.mClientCallback.goOutClass();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                    toast("已解除上课状态");
+                }
+            }
+        });
     }
+
 
     public void Before(View view) {
         finish();
