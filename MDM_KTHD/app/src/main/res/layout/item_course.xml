@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#001100">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -24,7 +23,7 @@
             android:layout_below="@+id/clock"
             android:layout_marginLeft="69dp"
             android:layout_marginTop="-3dp"
-            android:background="#6699ff" />
+            android:background="#444444" />
 
         <TextView
             android:id="@+id/line"
@@ -33,7 +32,7 @@
             android:layout_alignBottom="@+id/contentRL"
             android:layout_alignTop="@+id/contentRL"
             android:layout_marginLeft="69dp"
-            android:background="#6699ff" />
+            android:background="#444444" />
 
         <ImageView
             android:id="@+id/ball"
@@ -51,7 +50,7 @@
             android:layout_alignTop="@+id/ball"
             android:layout_marginTop="5dp"
             android:layout_toRightOf="@+id/ball"
-            android:background="#6699ff" />
+            android:background="#444444" />
 
         <RelativeLayout
             android:id="@+id/contentRL"
@@ -67,7 +66,7 @@
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="5dp"
                 android:text="课程标题"
-                android:textColor="#cccccc"
+                android:textColor="#444444"
                 android:textSize="18sp" />
 
             <TextView
@@ -79,7 +78,7 @@
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="5dp"
                 android:text="知识点1：\n知识点2："
-                android:textColor="#cccccc" />
+                android:textColor="#444444" />
 
         </RelativeLayout>
 
@@ -91,7 +90,7 @@
             android:layout_below="@id/line0"
             android:layout_marginTop="5dp"
             android:text="12.13"
-            android:textColor="#cccccc"
+            android:textColor="#444444"
             android:textSize="18sp" />
 
         <TextView
@@ -101,7 +100,7 @@
             android:layout_alignRight="@+id/date1"
             android:layout_below="@id/date1"
             android:text="2017"
-            android:textColor="#cccccc"
+            android:textColor="#444444"
             android:textSize="12sp" />
 
         <ImageView

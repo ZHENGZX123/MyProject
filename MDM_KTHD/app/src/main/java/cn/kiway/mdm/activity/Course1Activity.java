@@ -141,6 +141,13 @@ public class Course1Activity extends BaseActivity {
                         //add zhengkang 0227 倒序排列
                         Collections.reverse(items);
                         adapter.notifyDataSetChanged();
+                        if (adapter.getCount()>0){
+                            lv.setVisibility(View.VISIBLE);
+                            findViewById(R.id.no_data).setVisibility(View.GONE);
+                        }else {
+                            lv.setVisibility(View.GONE);
+                            findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
