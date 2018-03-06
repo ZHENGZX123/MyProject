@@ -438,6 +438,7 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     public void onPackagesRemoved(UserHandle user, String... packages) {
+
         int op = PackageUpdatedTask.OP_REMOVE;
         enqueueModelUpdateTask(new PackageUpdatedTask(op, user, packages));
     }
@@ -445,6 +446,7 @@ public class LauncherModel extends BroadcastReceiver
     @Override
     public void onPackageAdded(String packageName, UserHandle user) {
         int op = PackageUpdatedTask.OP_ADD;
+
         enqueueModelUpdateTask(new PackageUpdatedTask(op, user, packageName));
     }
 
@@ -486,7 +488,6 @@ public class LauncherModel extends BroadcastReceiver
                                       UserHandle user) {
         enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, shortcuts, user, false));
     }
-
     /**
      * Call from the handler for ACTION_PACKAGE_ADDED, ACTION_PACKAGE_REMOVED and
      * ACTION_PACKAGE_CHANGED.
@@ -494,7 +495,6 @@ public class LauncherModel extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent) {
         if (DEBUG_RECEIVER) Log.d(TAG, "onReceive intent=" + intent);
-
         final String action = intent.getAction();
         if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
             // If we have changed locale we need to clear out the labels in all apps/workspace.
@@ -1799,7 +1799,7 @@ public class LauncherModel extends BroadcastReceiver
                     LauncherActivityInfo app = apps.get(i);
                     // This builds the icon bitmaps.
                     //// TODO: 2018/1/18   过滤所需的apk
-                    Log.e("AppListUtils", AppListUtils.getAppListData().toString());
+                    //Log.e("AppListUtils", AppListUtils.getAppListData().toString());
                     if (AppListUtils.getAppListData().toString().contains(app.getApplicationInfo().packageName) ||
                             new MyDBHelper(mContext).checkAppInCustom(app.getApplicationInfo().packageName)) {
 

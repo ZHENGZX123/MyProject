@@ -24,6 +24,7 @@ import android.graphics.Bitmap;
 import android.os.UserHandle;
 import android.util.Log;
 
+import com.android.kiway.utils.MyDBHelper;
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
@@ -121,6 +122,8 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                 }
                 for (int i = 0; i < N; i++) {
                     iconCache.removeIconsForPkg(packages[i], mUser);
+                    if (context!=null)
+                        new MyDBHelper(context).deleteAppInLauncher(packages[i]);
                 }
                 // Fall through
             }

@@ -37,5 +37,14 @@
         android:layout_weight="1"
         android:listSelector="@drawable/course_list_selector"
         android:scrollbars="none"></ListView>
-
+<TextView
+    android:id="@+id/error"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textColor="@color/_fd2424"
+    android:padding="10dp"
+    android:gravity="center"
+    android:visibility="gone"
+    android:onClick="reStart"
+    android:text="*设置完成后需重启应用生效,点此重启应用"/>
 </LinearLayout>
