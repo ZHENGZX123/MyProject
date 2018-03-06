@@ -82,25 +82,6 @@ public class KWApp extends Application {
                 startService(intent);
                 MDMHelper.getAdapter().setBackButtonDisabled(true);
                 MDMHelper.getAdapter().setHomeButtonDisabled(true);
-//                //0.锁屏
-//                if (isAttendClass) {
-//                    if (msg.obj == null)
-//                        msg.obj = "";
-//                    RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
-//                } else {
-//                    if (currentActivity != null && currentActivity instanceof ScreenMDMActivity) {
-//                        return;
-//                    }
-//                    MDMHelper.getAdapter().setBackButtonDisabled(true);
-//                    MDMHelper.getAdapter().setHomeButtonDisabled(true);
-//                    //强制锁屏
-//                    startActivity(new Intent(getApplicationContext(), ScreenMDMActivity.class).addFlags(Intent
-//                            .FLAG_ACTIVITY_NEW_TASK));
-//                }
-                //1.熄灭屏幕
-                //DevicePolicyManager mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context
-                // .DEVICE_POLICY_SERVICE);
-                //mDevicePolicyManager.lockNow();
                 //2.静音
                 mute();
             } else if (msg.what == MSG_LOCKONCLASS) {
@@ -115,33 +96,21 @@ public class KWApp extends Application {
                 stopService(intent);
                 MDMHelper.getAdapter().setBackButtonDisabled(false);
                 MDMHelper.getAdapter().setHomeButtonDisabled(false);
-//                //0.解除锁屏
-//                if (!isAttendClass) {
-//                    MDMHelper.getAdapter().setBackButtonDisabled(false);
-//                    MDMHelper.getAdapter().setHomeButtonDisabled(false);
-//                }
-//                if (msg.obj == null)
-//                    msg.obj = "";
-//                RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
-//                if (currentActivity != null && currentActivity instanceof ScreenMDMActivity) {
-//                    currentActivity.finish();
-//                }
-                //1.点亮屏幕
-                //PowerManager mPowerManager = ((PowerManager) getSystemService(POWER_SERVICE));
-                //PowerManager.WakeLock mScreenLock = mPowerManager.newWakeLock(
-                //        PowerManager.ACQUIRE_CAUSES_WAKEUP
-                // 该flag使能屏幕关闭时，也能点亮屏幕（通常的wakelock只能维持屏幕处于一直开启状态，如果灭屏时，是不会自动点亮的）
-                //                | PowerManager.SCREEN_DIM_WAKE_LOCK
-                //                | PowerManager.ON_AFTER_RELEASE, "screenOnWakeLock");
-                //mScreenLock.acquire();
-                //mScreenLock.release();
                 //2.恢复声音
                 unMute();
             } else if (msg.what == MSG_LAUNCH_APP) {
+                if (!getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+                    Log.d("test", "bug#1598解锁状态下，不接收管控命令");
+                    return;
+                }
                 //打开APP
                 temporary_app = true;
                 Utils.launchApp(getApplicationContext(), (JSONObject) msg.obj);
             } else if (msg.what == MSG_LAUNCH_MDM) {
+                if (!getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+                    Log.d("test", "bug#1598解锁状态下，不接收管控命令");
+                    return;
+                }
                 temporary_app = false;
                 if (isAttendClass) {
                     Intent in = getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
