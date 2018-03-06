@@ -3,7 +3,6 @@ package cn.kiway.hybird.util;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.media.MediaRecorder;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -36,9 +35,10 @@ import cn.kiway.database.util.ResourceUtil;
 import cn.kiway.http.UploadUtil;
 import cn.kiway.hybird.activity.MainActivity;
 import cn.kiway.hybird.teacher.R;
+import cn.kiway.log.MLog;
+import cn.kiway.record.RecordAudioUtil;
 import cn.kiway.sharedpref.SPUtil;
 import cn.kiway.utils.Configue;
-import cn.kiway.utils.MLog;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 /**
@@ -186,7 +186,10 @@ public class KwJsInterface {
         act.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                startRecord();
+                final RecordAudioUtil rau = new RecordAudioUtil();
+                rau.init(act);
+                rau.stopRecord();
+
                 final Dialog dialog = new Dialog(act, R.style.popupDialog);
                 dialog.setContentView(R.layout.dialog_voice);
                 dialog.setCancelable(false);
@@ -198,7 +201,10 @@ public class KwJsInterface {
 
                     @Override
                     public void onClick(View arg0) {
-                        stopRecord();
+                        String ret = rau.stopRecord();
+                        if (!TextUtils.isEmpty(ret)) {
+                            wv.loadUrl("javascript:recordCallback('file://" + ret + "')");
+                        }
                         dialog.dismiss();
                     }
                 });
@@ -316,9 +322,7 @@ public class KwJsInterface {
     public static final int SELECT_PHOTO = 8888;
     public static final int QRSCAN = 6666;
 
-    private MediaRecorder mediaRecorder;
-    private File recordFile;
-    private long start;
+
     public static String snapshotFile;
 
     private void doHttpRequest(final String url, final String param, final String method, final String tagname, final String time, final String related) {
@@ -501,47 +505,5 @@ public class KwJsInterface {
         return o.toString();
     }
 
-    //录音
-    private void startRecord() {
-        try {
-            // 判断，若当前文件已存在，则删除
-            String path = "/mnt/sdcard/voice/";
-            if (!new File(path).exists()) {
-                new File(path).mkdirs();
-            }
-            recordFile = new File(path + System.currentTimeMillis() + ".mp3");
-            mediaRecorder = new MediaRecorder();
-            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mediaRecorder.setAudioChannels(2);
-            mediaRecorder.setAudioSamplingRate(44100);
-            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);//输出格式
-            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);//编码格式
-            mediaRecorder.setAudioEncodingBitRate(16);
-            mediaRecorder.setOutputFile(recordFile.getAbsolutePath());
 
-            // 准备好开始录音
-            mediaRecorder.prepare();
-            mediaRecorder.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-            act.toast("录制声音失败，请检查SDcard");
-        }
-        start = System.currentTimeMillis();
-    }
-
-    private void stopRecord() {
-        if (recordFile == null) {
-            return;
-        }
-        if (mediaRecorder == null) {
-            return;
-        }
-        mediaRecorder.stop();
-        final int duration = (int) (System.currentTimeMillis() - start) / 1000;
-        if (duration < 1) {
-            act.toast("太短了");
-            return;
-        }
-        wv.loadUrl("javascript:recordCallback('file://" + recordFile.getAbsolutePath() + "')");
-    }
 }

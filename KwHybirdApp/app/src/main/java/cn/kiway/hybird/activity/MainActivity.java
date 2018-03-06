@@ -27,10 +27,10 @@ import cn.kiway.database.util.KwDBHelper;
 import cn.kiway.hybird.teacher.R;
 import cn.kiway.hybird.util.KwJsInterface;
 import cn.kiway.hybird.util.Utils;
+import cn.kiway.log.MLog;
 import cn.kiway.sharedpref.SPUtil;
 import cn.kiway.utils.BadgeUtil;
 import cn.kiway.utils.Configue;
-import cn.kiway.utils.MLog;
 
 import static cn.kiway.hybird.util.KwJsInterface.QRSCAN;
 import static cn.kiway.hybird.util.KwJsInterface.SELECT_PHOTO;

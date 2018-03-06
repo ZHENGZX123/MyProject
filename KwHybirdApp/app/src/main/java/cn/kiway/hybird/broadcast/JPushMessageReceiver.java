@@ -15,9 +15,9 @@ import java.util.Iterator;
 import cn.jpush.android.api.JPushInterface;
 import cn.kiway.database.util.KwDBHelper;
 import cn.kiway.hybird.activity.MainActivity;
+import cn.kiway.log.MLog;
 import cn.kiway.sharedpref.SPUtil;
 import cn.kiway.utils.BadgeUtil;
-import cn.kiway.utils.MLog;
 
 /**
  * 自定义接收器

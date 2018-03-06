@@ -48,9 +48,9 @@ import cn.kiway.http.HttpDownload;
 import cn.kiway.http.NetworkUtil;
 import cn.kiway.hybird.KwAPP;
 import cn.kiway.hybird.util.Utils;
+import cn.kiway.log.MLog;
 import cn.kiway.sharedpref.SPUtil;
 import cn.kiway.utils.Configue;
-import cn.kiway.utils.MLog;
 import ly.count.android.api.Countly;
 
 import static cn.kiway.hybird.util.Utils.SYS_EMUI;
