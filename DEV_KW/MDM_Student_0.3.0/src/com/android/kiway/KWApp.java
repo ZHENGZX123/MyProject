@@ -169,7 +169,7 @@ public class KWApp extends Application {
                         return;
                     }
                     isAttendClass = true;
-                    MDMHelper.getAdapter().setBackButtonDisabled(true);
+                    MDMHelper.getAdapter().setTaskButtonDisabled(true);
                     MDMHelper.getAdapter().setHomeButtonDisabled(true);
                     Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
                     in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//重启APP
@@ -188,7 +188,7 @@ public class KWApp extends Application {
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
                 RemoteAidlService.goOutClass();
                 isAttendClass = false;
-                MDMHelper.getAdapter().setBackButtonDisabled(false);
+                MDMHelper.getAdapter().setTaskButtonDisabled(false);
                 MDMHelper.getAdapter().setHomeButtonDisabled(false);
             } else if (msg.what == MSG_MESSAGE) {
                 RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
