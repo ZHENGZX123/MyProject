@@ -98,6 +98,8 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
     FileAdapter fileAdapter;
     ListView fileListView;
     TextView remove;
+    private ImageButton dm;
+    private ImageButton sk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +121,9 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
         adapter = new MyAdapter();
         gv.setAdapter(adapter);
 
+        dm = (ImageButton) findViewById(R.id.dm);
+        sk = (ImageButton) findViewById(R.id.sk);
+
 
         ok = (Button) findViewById(R.id.ok);
         all = (Button) findViewById(R.id.all);
@@ -135,9 +140,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
         findViewById(R.id.send).setOnClickListener(this);
 
         if (type == TYPE_DIANMING) {
-            hideTool(3);
-            hideTool(4);
-            hideTool(5);
+
         } else if (type == TYPE_DIANMINGDA) {
             ok.setVisibility(View.GONE);
             toolsRL.setVisibility(View.GONE);
@@ -158,6 +161,16 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
             ok.setVisibility(View.GONE);
             toolsRL.setVisibility(View.GONE);
             leftView.setVisibility(View.GONE);
+        }
+    }
+
+    public void gj(View view) {
+        if (dm.getVisibility() == View.VISIBLE) {
+            dm.setVisibility(View.GONE);
+            sk.setVisibility(View.GONE);
+        } else {
+            dm.setVisibility(View.VISIBLE);
+            sk.setVisibility(View.VISIBLE);
         }
     }
 
@@ -887,7 +900,6 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
     private TextView time_dianming;
     private int totalcount_dianming = 300;
 
-    @Override
     public void dm(View view) {
         //reset
         for (Student s : students) {
@@ -917,7 +929,6 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
         });
     }
 
-    @Override
     public void sk(View view) {
         if (!dianmingAlready) {
             toast("请先点名");
