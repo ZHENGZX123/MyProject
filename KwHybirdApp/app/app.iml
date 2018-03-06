@@ -79,6 +79,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/assets" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/blame" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/KwHybirdApp/KwWebview/unspecified/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-safeguard" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
@@ -99,13 +100,13 @@
     <orderEntry type="library" exported="" name="jpush-android-3.0.8" level="project" />
     <orderEntry type="library" exported="" name="HwPush_SDK_V2705" level="project" />
     <orderEntry type="module" module-name="KwSharedPref" exported="" />
+    <orderEntry type="library" exported="" name="KwWebView-unspecified" level="project" />
     <orderEntry type="module" module-name="KwImageCache" exported="" />
     <orderEntry type="module" module-name="KwDatabase" exported="" />
     <orderEntry type="module" module-name="KwUtils" exported="" />
     <orderEntry type="module" module-name="KwHttp" exported="" />
     <orderEntry type="module" module-name="KwImagePicker" exported="" />
     <orderEntry type="module" module-name="KwZxing" exported="" />
-    <orderEntry type="module" module-name="KwWebview" exported="" />
     <orderEntry type="module" module-name="KwCountly" exported="" />
     <orderEntry type="library" exported="" name="org.apache.http.legacy-android-25" level="project" />
     <orderEntry type="library" exported="" name="support-core-ui-26.0.0-alpha1" level="project" />
@@ -125,7 +126,6 @@
     <orderEntry type="library" exported="" name="support-v4-18.0.0" level="project" />
     <orderEntry type="library" exported="" name="glide-3.6.1" level="project" />
     <orderEntry type="library" exported="" name="image_compress" level="project" />
-    <orderEntry type="library" exported="" name="tbs_sdk_thirdapp_v3.5.0.1004_43500_sharewithdownload_withoutGame_obfs_20170801_113025" level="project" />
     <orderEntry type="library" exported="" name="sdk-android-14.12" level="project" />
   </component>
 </module>
