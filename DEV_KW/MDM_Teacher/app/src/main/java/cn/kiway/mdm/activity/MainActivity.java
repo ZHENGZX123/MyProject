@@ -23,6 +23,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.leon.lfilepickerlibrary.utils.Constant;
@@ -32,13 +33,6 @@ import com.lzy.imagepicker.ui.ImagePreviewActivity;
 import com.nanchen.compresshelper.CompressHelper;
 import com.soundcloud.android.crop.Crop;
 
-import net.lingala.zip4j.core.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.http.RequestParams;
@@ -53,8 +47,6 @@ import java.util.List;
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
-import cn.kiway.mdm.util.FileUtils;
-import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Logger;
 import cn.kiway.mdm.util.NetworkUtil;
 import cn.kiway.mdm.util.UploadUtil;
@@ -101,12 +93,26 @@ public class MainActivity extends BaseActivity {
         instance = this;
         initView();
         Utils.checkNetWork(this, false);
-        checkIsFirst();
         initData();
         load();
-        checkNewVersion();
         initZbus();
         initRecorder();
+        checkNewAPK();
+    }
+
+    private void checkNewAPK() {
+        //apkUrl , apkVersion
+        String apkUrl = getIntent().getStringExtra("apkUrl");
+        String apkVersion = getIntent().getStringExtra("apkVersion");
+        if (TextUtils.isEmpty(apkUrl)) {
+            return;
+        }
+        if (TextUtils.isEmpty(apkVersion)) {
+            return;
+        }
+        if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
+            downloadSilently(apkUrl, apkVersion);
+        }
     }
 
     private void initRecorder() {
@@ -145,7 +151,7 @@ public class MainActivity extends BaseActivity {
                     ZbusUtils.init(broker, p);
                     String topic = "kiway_push_" + userId;
                     Log.d("test", "topic = " + topic);
-                    ZbusUtils.consumeMsgs(topic, new ZbusMessageHandler(),cn.kiway.mdm.util.Constant.zbusHost + ":" + cn.kiway.mdm.util.Constant.zbusPost);
+                    ZbusUtils.consumeMsgs(topic, new ZbusMessageHandler(), cn.kiway.mdm.util.Constant.zbusHost + ":" + cn.kiway.mdm.util.Constant.zbusPost);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -161,10 +167,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void load() {
-        wv.clearCache(true);
-        String url = "file://" + KWApplication.ROOT + KWApplication.HTML;
-        Log.d("test", "url = " + url);
-        wv.loadUrl(url);
+        wv.loadUrl("file://" + KWApplication.ROOT + KWApplication.HTML);
     }
 
     private void initData() {
@@ -263,8 +266,6 @@ public class MainActivity extends BaseActivity {
                 Uri sourceUri = Uri.fromFile(new File(filePath));
                 //裁剪完毕的图片存放路径
                 Uri destinationUri = Uri.fromFile(new File(filePath.split("\\.")[0] + "1." + filePath.split("\\.")[1]));
-//                UCrop.of(sourceUri, destinationUri) //定义路径
-//                        .start(this);
                 Crop.of(sourceUri, destinationUri).start(this);
             } else {
                 uploadFile(filePath, true);
@@ -398,87 +399,25 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
-    //下面是版本更新相关
-    public void checkNewVersion() {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    sleep(1500);
-                    checkTimeout();
-                    HttpGet httpRequest = new HttpGet(cn.kiway.mdm.util.Constant.clientUrl + "/static/download/version/zip_teacher.json");
-                    DefaultHttpClient client = new DefaultHttpClient();
-                    HttpResponse response = client.execute(httpRequest);
-                    String ret = EntityUtils.toString(response.getEntity());
-                    Log.d("test", "new version = " + ret);
-                    Message msg = new Message();
-                    msg.what = 2;
-                    msg.obj = ret;
-                    mHandler.sendMessage(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    mHandler.sendEmptyMessage(3);
-                }
-            }
-        }.start();
-    }
-
     public Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
-            if (msg.what == MSG_NETWORK) {
-                if (msg.arg1 == 1) {
-                    initZbus();
+            if (msg.what == 1) {
+                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
+                int arg1 = msg.arg1;
+                int arg2 = msg.arg2;
+                if (arg1 == 0) {
+                    rl_nonet.setVisibility(View.VISIBLE);
+                    //无网络
+                    Log.d("test", "无网络");
                 } else {
-                    //ZbusUtils.close();
-                }
-                return;
-            }
-            if (isJump) {
-                return;
-            }
-            isSuccess = true;
-            if (msg.what == 2) {
-                String ret = (String) msg.obj;
-                try {
-                    //1.apk更新
-                    Log.d("test", "新版本返回值" + ret);
-                    String apkVersion = new JSONObject(ret).getString("apkCode");
-                    String apkUrl = new JSONObject(ret).getString("apkUrl");
-                    String zipCode = new JSONObject(ret).getString("zipCode");
-                    String zipUrl = new JSONObject(ret).getString("zipUrl");
-                    if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
-                        downloadSilently(apkUrl, apkVersion);
-                        jump(false);
-                    } else {
-                        //如果APK没有最新版本，比较包的版本。如果内置包的版本号比较高，直接替换
-                        boolean flag = false;
-                        String currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
-                        if (currentPackage.compareTo(currentPackageVersion) < 0) {
-                            Log.d("test", "内置包的版本大，替换新包");
-                            getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
-                            checkIsFirst();
-                            flag = true;
-                        }
-                        //替换完内置包之后，比较内置包和外包，如果版本号还是小了，更新外包
-                        currentPackage = getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
-                        String outer_package = zipCode;
-                        if (currentPackage.compareTo(outer_package) < 0) {
-                            //提示有新的包，下载新的包
-                            Log.d("test", "下载新的H5包");
-                            updatePackage(outer_package, zipUrl);
-                        } else {
-                            Log.d("test", "H5包是最新的");
-                            jump(flag);
-                        }
+                    rl_nonet.setVisibility(View.GONE);
+                    //有网络
+                    Log.d("test", "有网络");
+                    if (arg2 == 1) {
+                        wv.loadUrl("javascript:reConnect()");
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    jump(false);
                 }
-            } else if (msg.what == 3) {
-                jump(false);
             } else if (msg.what == 4) {
-                pd.dismiss();
                 // 下载完成后安装
                 String savedFilePath = (String) msg.obj;
                 Intent intent = new Intent();
@@ -487,29 +426,38 @@ public class MainActivity extends BaseActivity {
                 intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
                 startActivity(intent);
                 finish();
-            } else if (msg.what == 5) {
-                pd.dismiss();
-                toast(R.string.downloadfailure);
-                jump(false);
-            } else if (msg.what == 6) {
-                pd.setProgress(msg.arg1);
             }
         }
     };
 
-
     private void downloadSilently(String apkUrl, String version) {
-        boolean isWifi = NetworkUtil.isWifi(this);
-        if (!isWifi) {
-            Log.d("test", "不是wifi...");
-            return;
-        }
         final String savedFilePath = "/mnt/sdcard/cache/mdm_teacher_" + version + ".apk";
         if (new File(savedFilePath).exists()) {
             Log.d("test", "该文件已经下载好了");
             askforInstall(savedFilePath);
             return;
         }
+        int isWifi = NetworkUtil.isWifi(this);
+        if (isWifi == 1) {
+            startDownloadAPK(apkUrl, savedFilePath);
+        } else if (isWifi == 0) {
+            Log.d("test", "不是wifi...");
+            //提示4G
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
+            dialog_download = builder.setMessage("有新的版本需要更新，您当前的网络是4G，确定使用流量下载新的APK吗？").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface arg0, int arg1) {
+                    toast("后台下载APK文件");
+                    dialog_download.dismiss();
+                    startDownloadAPK(apkUrl, savedFilePath);
+                }
+            }).setPositiveButton(android.R.string.cancel, null).create();
+            dialog_download.show();
+        }
+    }
+
+    private void startDownloadAPK(String apkUrl, final String savedFilePath) {
         RequestParams params = new RequestParams(apkUrl);
         params.setSaveFilePath(savedFilePath);
         params.setAutoRename(false);
@@ -523,138 +471,35 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
+
             }
 
             @Override
             public void onCancelled(CancelledException cex) {
+
             }
 
             @Override
             public void onFinished() {
+
             }
         });
     }
 
     private void askforInstall(final String savedFilePath) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
-        dialog_download = builder.setMessage(getString(R.string.new_version)).setNegativeButton(android.R.string.ok, new
-                DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        dialog_download.dismiss();
-                        Message msg = new Message();
-                        msg.what = 4;
-                        msg.obj = savedFilePath;
-                        mHandler.sendMessage(msg);
-                    }
-                }).setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+        dialog_download = builder.setMessage("发现新的版本，是否更新？本次更新不消耗流量。").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                jump(false);
+            public void onClick(DialogInterface arg0, int arg1) {
+                dialog_download.dismiss();
+                Message msg = new Message();
+                msg.what = 4;
+                msg.obj = savedFilePath;
+                mHandler.sendMessage(msg);
             }
-        }).create();
+        }).setPositiveButton(android.R.string.cancel, null).create();
         dialog_download.show();
-    }
-
-    private void updatePackage(final String outer_package, final String downloadUrl) {
-        new Thread() {
-            @Override
-            public void run() {
-                Log.d("test", "updatePackage downloadUrl = " + downloadUrl);
-                final int ret = new HttpDownload().downFile(downloadUrl, KWApplication.ROOT, KWApplication.ZIP);
-                Log.d("test", "下载新包 ret = " + ret);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (ret == -1) {
-                            jump(false);
-                            return;
-                        }
-                        Log.d("test", "删除旧包");
-                        if (new File(KWApplication.ROOT + "mdm_teacher").exists()) {
-                            FileUtils.delFolder(KWApplication.ROOT + "mdm_teacher");
-                        }
-                        try {
-                            Log.d("test", "解压新包");
-                            new ZipFile(KWApplication.ROOT + KWApplication.ZIP).extractAll(KWApplication.ROOT);
-                        } catch (ZipException e) {
-                            e.printStackTrace();
-                        }
-                        //解压完毕，删掉zip文件
-                        new File(KWApplication.ROOT + KWApplication.ZIP).delete();
-                        Log.d("test", "解压完毕");
-                        getSharedPreferences("kiway", 0).edit().putString("version_package", outer_package).commit();
-                        jump(true);
-                    }
-                });
-            }
-        }.start();
-
-
-    }
-
-    protected void checkTimeout() {
-        new Thread() {
-            public void run() {
-                try {
-                    sleep(3500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (isSuccess) {
-                    return;
-                }
-                jump(false);
-            }
-        }.start();
-    }
-
-    protected void checkIsFirst() {
-        if (!checkFileComplete()) {
-            Log.d("test", "文件不完整");
-            getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", true).commit();
-        }
-        if (getSharedPreferences("kiway", 0).getBoolean("isFirst", true)) {
-            getSharedPreferences("kiway", 0).edit().putBoolean("isFirst", false).commit();
-            if (new File(KWApplication.ROOT).exists()) {
-                FileUtils.delFolder(KWApplication.ROOT);
-            }
-            if (!new File(KWApplication.ROOT).exists()) {
-                new File(KWApplication.ROOT).mkdirs();
-            }
-            //拷贝
-            FileUtils.copyRawToSdcard(this, R.raw.mdm_teacher, KWApplication.ZIP);
-            //解压
-            try {
-                new ZipFile(KWApplication.ROOT + KWApplication.ZIP).extractAll(KWApplication.ROOT);
-            } catch (ZipException e) {
-                e.printStackTrace();
-            }
-            //解压完毕，删掉zip文件
-            new File(KWApplication.ROOT + KWApplication.ZIP).delete();
-            getSharedPreferences("kiway", 0).edit().putString("version_package", currentPackageVersion).commit();
-        }
-    }
-
-    private boolean checkFileComplete() {
-        if (!new File(KWApplication.ROOT + KWApplication.HTML).exists()) {
-            return false;
-        }
-        return true;
-    }
-
-    public void jump(final boolean refresh) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                layout_welcome.setVisibility(View.GONE);
-                if (refresh) {
-                    load();
-                }
-                isJump = true;
-                //更新完成完成
-            }
-        });
     }
 
     public void clickNetwork(View view) {
