@@ -259,19 +259,18 @@ public class BaseActivity extends Activity {
 
     public void startPlayer(String roomName) {
         //1.开始播放教师推屏
-        Intent i = new Intent(BaseActivity.this, LiveRoomActivity.class);
+        Intent i = new Intent(BaseActivity.this, KwLivingRoomActivity.class);
         i.putExtra(ConstantApp.ACTION_KEY_CROLE, Constants.CLIENT_ROLE_AUDIENCE);
         i.putExtra(ConstantApp.ACTION_KEY_ROOM_NAME, roomName);
         startActivity(i);
     }
 
     public void stopPlayer() {
-        if (LiveRoomActivity.instance == null) {
+        if (KwLivingRoomActivity.instance == null) {
             return;
         }
-        LiveRoomActivity.instance.finish();
+        KwLivingRoomActivity.instance.finish();
     }
-
 
     //--------------------------------------------------2.0新增--------------------------
     String fileName;
