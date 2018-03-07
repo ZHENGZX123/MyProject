@@ -4,26 +4,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -38,20 +25,15 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import cn.kiway.mdm.App;
-import cn.kiway.mdm.model.StudentQuestion;
-import cn.kiway.mdm.utils.Constant;
 import cn.kiway.mdm.utils.FileUtils;
 import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.NetworkUtil;
-import cn.kiway.mdm.utils.UploadUtil;
 import cn.kiway.mdm.utils.Utils;
 import cn.kiway.mdm.view.RoundedImageView;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
-import static cn.kiway.mdm.utils.HttpUtil.uploadFile;
 import static cn.kiway.mdm.utils.IContants.CHECK_VERSION_URL;
 import static cn.kiway.mdm.utils.Utils.getCurrentVersion;
 
@@ -185,8 +167,16 @@ public class MainActivity extends ScreenSharingActivity {
     public Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
-                App.instance.uploadUserFile(msg.obj.toString(), 1, fileName, FileUtils.GetFileSize(new File(App.ROOT
-                        + fileName)));
+                try {
+                    JSONObject data=new JSONObject(msg.obj.toString());
+                    String url=data.optString("url");
+                    String name=data.optString("name");
+                    App.instance.uploadUserFile(url, 1, name, FileUtils.GetFileSize(new File(App.ROOT
+                            + name)));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             } else if (msg.what == 2) {
                 String ret = (String) msg.obj;
                 try {
