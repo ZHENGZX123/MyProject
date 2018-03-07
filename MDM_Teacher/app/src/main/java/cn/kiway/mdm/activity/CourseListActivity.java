@@ -22,8 +22,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import cn.kiway.mdm.entity.Course;
@@ -135,18 +133,6 @@ public class CourseListActivity extends BaseActivity {
                             currentPage -= 1;
                         }
                         courses.addAll(temp);
-                        //排序
-                        Collections.sort(courses, new Comparator<Course>() {
-                            @Override
-                            public int compare(Course o1, Course o2) {
-                                int diff = o1.attendCourse - o2.attendCourse;
-                                if (diff != 0) {
-                                    return diff;
-                                }
-                                int diff2 = (int) (Long.parseLong(o2.createDate) - Long.parseLong(o1.createDate));
-                                return diff2;
-                            }
-                        });
                         adapter.notifyDataSetChanged();
                     } catch (Exception e) {
                         e.printStackTrace();

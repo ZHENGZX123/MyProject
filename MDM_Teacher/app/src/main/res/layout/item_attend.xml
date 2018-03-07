@@ -117,7 +117,7 @@
             android:layout_marginLeft="20dp"
             android:text="09.10"
             android:textColor="#6699ff"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
 
     </RelativeLayout>
