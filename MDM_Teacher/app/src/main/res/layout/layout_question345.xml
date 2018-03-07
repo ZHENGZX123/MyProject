@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="content"
-        android:textColor="#ffffff" />
+        android:textColor="#444444" />
 
     <LinearLayout
         android:id="@+id/imgLL"
@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="content"
-        android:textColor="#ffffff" />
+        android:textColor="#444444" />
 
     <LinearLayout
         android:id="@+id/imgLL2"
