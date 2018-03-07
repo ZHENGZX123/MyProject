@@ -32,30 +32,6 @@
             android:layout_height="match_parent"
             android:layout_below="@id/rl_nonet"></com.tencent.smtt.sdk.WebView>
 
-        <LinearLayout
-            android:id="@+id/layout_welcome"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#ffffff"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@mipmap/ic_launcher" />
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="MDM家长"
-                android:textColor="#000000"
-                android:textSize="25sp" />
-
-        </LinearLayout>
-
     </RelativeLayout>
 
 </RelativeLayout>

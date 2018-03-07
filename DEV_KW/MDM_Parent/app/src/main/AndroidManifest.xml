@@ -20,8 +20,10 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.NoTitleBar"
         tools:replace="android:allowBackup,android:icon,android:label,android:name">
+
+
         <activity
-            android:name="cn.kiway.mdm.activity.MainActivity"
+            android:name="cn.kiway.mdm.activity.WelcomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
@@ -31,6 +33,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="cn.kiway.mdm.activity.MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name="cn.kiway.mdm.activity.NoNetActivity"
             android:screenOrientation="portrait"></activity>
