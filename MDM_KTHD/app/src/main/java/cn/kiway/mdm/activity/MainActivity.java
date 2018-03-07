@@ -159,7 +159,6 @@ public class MainActivity extends ScreenSharingActivity {
         }
     }
 
-
     //下面是版本更新相关
     public void checkNewVersion() {
         new Thread() {

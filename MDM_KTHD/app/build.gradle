@@ -17,8 +17,8 @@ android {
         applicationId "cn.kiway.session"
         minSdkVersion 21
         targetSdkVersion 22
-        versionCode 2
-        versionName "0.0.2"
+        versionCode 4
+        versionName "0.0.4"
         jackOptions {
             enabled true
         }
@@ -31,10 +31,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.kiway
         }
         build {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.kiway
         }
     }
     compileOptions {
