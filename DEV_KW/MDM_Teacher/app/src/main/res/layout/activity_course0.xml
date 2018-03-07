@@ -397,4 +397,17 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/tiwen"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/titleRL"
+        android:layout_margin="10dp"
+        android:layout_toLeftOf="@+id/tools1RL"
+        android:background="@drawable/tiwen"
+        android:gravity="center"
+        android:onClick="tiwen"
+        android:text="0"
+        android:textColor="#000000" />
+
 </RelativeLayout>

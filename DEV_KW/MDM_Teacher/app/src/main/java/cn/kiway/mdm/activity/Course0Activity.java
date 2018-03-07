@@ -106,9 +106,10 @@ public class Course0Activity extends ScreenSharingActivity {
 
     //录课
     private boolean recording = false;
-    public ImageView rk;
+    private ImageView rk;
 
     //学生提问
+    private Button tiwen;
     private Dialog studentAskDialog;
     private ArrayList<StudentQuestion> studentQuestions = new ArrayList<>();
     private StudentQuestionAdapter sqAdapter;
@@ -136,6 +137,7 @@ public class Course0Activity extends ScreenSharingActivity {
 
         tuipingIV = (ImageView) findViewById(R.id.tuipingIV);
         rk = (ImageView) findViewById(R.id.rk);
+        tiwen = (Button) findViewById(R.id.tiwen);
     }
 
     public void initData() {
@@ -1479,7 +1481,9 @@ public class Course0Activity extends ScreenSharingActivity {
                     } else if (type == 2) {
                         studentQuestions.add(new StudentQuestion(2, "", duration, content, time, name, avatar));
                     }
+                    //刷新页面
                     sqAdapter.notifyDataSetChanged();
+                    tiwen.setText("" + studentQuestions.size());
 
                     close.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -1494,6 +1498,15 @@ public class Course0Activity extends ScreenSharingActivity {
                 }
             }
         });
+    }
+
+    public void tiwen(View view) {
+        if (studentQuestions.size() == 0) {
+            toast("当前没有学生提问");
+            return;
+        }
+
+        studentAskDialog.show();
     }
 
 }
