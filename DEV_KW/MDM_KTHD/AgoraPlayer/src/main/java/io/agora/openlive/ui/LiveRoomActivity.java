@@ -83,7 +83,7 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
                 if (config().mUid == uid) {
                     rtcEngine().setupLocalVideo(new VideoCanvas(surfaceV, VideoCanvas.RENDER_MODE_HIDDEN, uid));
                 } else {
-                    rtcEngine().setupRemoteVideo(new VideoCanvas(surfaceV, VideoCanvas.RENDER_MODE_FIT, uid));
+                    rtcEngine().setupRemoteVideo(new VideoCanvas(surfaceV, VideoCanvas.RENDER_MODE_HIDDEN, uid));
                 }
 
                 switchToDefaultVideoView();
