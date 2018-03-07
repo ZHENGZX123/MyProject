@@ -75,7 +75,6 @@ public class ZbusMessageHandler implements MessageHandler {
             Log.d("test", "不是当前页面，信息可能已过期");
             return;
         }
-
         ((StudentGridActivity) KWApplication.currentActivity).onelineOneStudent(studentIMEI);
     }
 
