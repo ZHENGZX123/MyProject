@@ -22,6 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import cn.kiway.mdm.entity.Course;
@@ -37,7 +39,7 @@ import cn.kiway.mdm.zbus.ZbusHost;
 public class CourseListActivity extends BaseActivity {
 
     private int currentPage = 1;
-    private int pageCount = 10;
+    private int pageCount = 1;
 
     private PullToRefreshLayout pullToRefreshLayout;
     private PullableListView lv;
@@ -133,6 +135,19 @@ public class CourseListActivity extends BaseActivity {
                             currentPage -= 1;
                         }
                         courses.addAll(temp);
+
+                        Collections.sort(courses, new Comparator<Course>() {
+                            @Override
+                            public int compare(Course o1, Course o2) {
+                                int diff = o1.attendCourse - o2.attendCourse;
+                                if (diff != 0) {
+                                    return diff;
+                                }
+                                int diff2 = (int) (Long.parseLong(o2.createDate) - Long.parseLong(o1.createDate));
+                                return diff2;
+                            }
+                        });
+
                         adapter.notifyDataSetChanged();
                     } catch (Exception e) {
                         e.printStackTrace();
