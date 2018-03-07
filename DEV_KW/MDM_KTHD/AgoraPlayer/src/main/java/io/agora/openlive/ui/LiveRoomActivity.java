@@ -17,7 +17,6 @@ import io.agora.rtc.video.VideoCanvas;
 import static io.agora.openlive.AGApplication.deInitWorkerThread;
 
 public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
-    public static LiveRoomActivity instance;
 
     private GridVideoViewContainer mGridVideoViewContainer;
 
@@ -27,7 +26,6 @@ public class LiveRoomActivity extends BaseActivity implements AGEventHandler {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_room);
-        instance = this;
     }
 
     @Override
