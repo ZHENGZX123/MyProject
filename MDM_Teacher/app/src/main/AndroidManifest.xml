@@ -21,7 +21,7 @@
         android:theme="@android:style/Theme.NoTitleBar"
         tools:replace="android:allowBackup,android:icon,android:label,android:name">
         <activity
-            android:name="cn.kiway.mdm.activity.MainActivity"
+            android:name="cn.kiway.mdm.activity.WelcomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
@@ -32,12 +32,18 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="cn.kiway.mdm.activity.MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
+        <activity
             android:name="cn.kiway.mdm.activity.NoNetActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="cn.kiway.mdm.activity.VideoActivity"
             android:screenOrientation="landscape" />
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+
         <receiver android:name="cn.kiway.mdm.broadcast.NetChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
