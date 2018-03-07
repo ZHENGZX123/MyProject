@@ -263,13 +263,15 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_toLeftOf="@+id/tools1RL"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@drawable/toolbutton"
             android:gravity="center"
             android:onClick="tongji">
@@ -278,7 +280,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginBottom="5dp"
-                android:layout_marginLeft="18dp"
+
                 android:layout_marginTop="5dp"
                 android:background="@drawable/u1568" />
 
@@ -286,15 +288,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="18dp"
+
                 android:text="统计"
                 android:textColor="#ffffff" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
+            android:layout_weight="1"
             android:background="@drawable/toolbutton"
             android:gravity="center"
             android:onClick="dianmingda">
@@ -303,7 +306,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginBottom="5dp"
-                android:layout_marginLeft="18dp"
+
                 android:layout_marginTop="5dp"
                 android:background="@drawable/u1591" />
 
@@ -311,16 +314,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="18dp"
+
                 android:text="点名答"
                 android:textColor="#ffffff" />
         </LinearLayout>
 
-
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
+            android:layout_weight="1"
             android:background="@drawable/toolbutton"
             android:gravity="center"
             android:onClick="qiangda">
@@ -329,7 +332,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginBottom="5dp"
-                android:layout_marginLeft="18dp"
+
                 android:layout_marginTop="5dp"
                 android:background="@drawable/u1591" />
 
@@ -337,16 +340,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="18dp"
+
                 android:text="抢答"
                 android:textColor="#ffffff" />
         </LinearLayout>
 
-
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
+            android:layout_weight="1"
             android:background="@drawable/toolbutton"
             android:gravity="center"
             android:onClick="suijichouda">
@@ -355,7 +358,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginBottom="5dp"
-                android:layout_marginLeft="18dp"
+
                 android:layout_marginTop="5dp"
                 android:background="@drawable/u1591" />
 
@@ -363,16 +366,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="18dp"
-                android:text="随机抽答"
+
+                android:text="抽答"
                 android:textColor="#ffffff" />
         </LinearLayout>
 
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
+            android:layout_weight="1"
             android:background="@drawable/toolbutton"
             android:gravity="center"
             android:onClick="ceping">
@@ -381,7 +385,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginBottom="5dp"
-                android:layout_marginLeft="18dp"
+
                 android:layout_marginTop="5dp"
                 android:background="@drawable/u1591" />
 
@@ -389,7 +393,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="18dp"
+
                 android:text="测评"
                 android:textColor="#ffffff" />
         </LinearLayout>
