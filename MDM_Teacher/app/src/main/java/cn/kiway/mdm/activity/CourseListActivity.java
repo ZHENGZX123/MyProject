@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.GsonBuilder;
@@ -33,12 +32,18 @@ import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Constant;
 import cn.kiway.mdm.util.Utils;
+import cn.kiway.mdm.view.refresh.PullToRefreshLayout;
+import cn.kiway.mdm.view.refresh.PullableListView;
 import cn.kiway.mdm.zbus.ZbusHost;
 
 
 public class CourseListActivity extends BaseActivity {
 
-    private ListView lv;
+    private int currentPage = 1;
+    private int pageCount = 10;
+
+    private PullToRefreshLayout pullToRefreshLayout;
+    private PullableListView lv;
     private MyAdapter adapter;
     private ArrayList<Course> courses = new ArrayList<>();
 
@@ -55,11 +60,30 @@ public class CourseListActivity extends BaseActivity {
         super.initView();
 
         toolsRL.setVisibility(View.GONE);
-
         titleName.setText("上课");
-        lv = (ListView) findViewById(R.id.courseLV);
+
+        pullToRefreshLayout = ((PullToRefreshLayout) findViewById(R.id.refresh_view));
+        pullToRefreshLayout.setOnRefreshListener(new MyListener());
+        lv = (PullableListView) findViewById(R.id.courseLV);
         adapter = new MyAdapter();
         lv.setAdapter(adapter);
+    }
+
+    public class MyListener implements PullToRefreshLayout.OnRefreshListener {
+
+        @Override
+        public void onRefresh(final PullToRefreshLayout pullToRefreshLayout) {
+            // 下拉刷新操作
+            currentPage = 1;
+            initData();
+        }
+
+        @Override
+        public void onLoadMore(final PullToRefreshLayout pullToRefreshLayout) {
+            // 加载操作
+            currentPage += 1;
+            initData();
+        }
     }
 
     private void iniListener() {
@@ -85,10 +109,9 @@ public class CourseListActivity extends BaseActivity {
     }
 
     public void initData() {
-        //TODO后台不排序的话，分页没法做啊。
         showPD();
         try {
-            String url = Constant.clientUrl + "/device/teacher/course/attend?currentPage=1&pageSize=10";
+            String url = Constant.clientUrl + "/device/teacher/course/attend?currentPage=" + currentPage + "&pageSize=" + pageCount;
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
@@ -97,9 +120,11 @@ public class CourseListActivity extends BaseActivity {
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
                     hidePD();
+                    pullToRefreshLayout.refreshFinish(PullToRefreshLayout.SUCCEED);
+                    pullToRefreshLayout.loadmoreFinish(PullToRefreshLayout.SUCCEED);
                     try {
                         JSONArray list = new JSONObject(ret).getJSONObject("data").getJSONArray("list");
-                        courses = new GsonBuilder().create().fromJson(list.toString(), new TypeToken<List<Course>>() {
+                        ArrayList<Course> temp = new GsonBuilder().create().fromJson(list.toString(), new TypeToken<List<Course>>() {
                         }.getType());
                         //过滤一下"草稿"
                         Iterator<Course> it = courses.iterator();
@@ -109,10 +134,15 @@ public class CourseListActivity extends BaseActivity {
                                 it.remove();
                             }
                         }
-                        if (courses.size() == 0) {
-                            toast("暂无课程，请先备课");
-                            return;
+                        if (currentPage == 1) {
+                            courses.clear();
                         }
+                        int count = temp.size();
+                        if (count == 0 && currentPage > 1) {
+                            toast("没有更多数据");
+                            currentPage -= 1;
+                        }
+                        courses.addAll(temp);
                         //排序
                         Collections.sort(courses, new Comparator<Course>() {
                             @Override
