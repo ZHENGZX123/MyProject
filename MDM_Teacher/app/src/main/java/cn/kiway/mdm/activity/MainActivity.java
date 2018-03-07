@@ -407,15 +407,10 @@ public class MainActivity extends BaseActivity {
                 int arg2 = msg.arg2;
                 if (arg1 == 0) {
                     rl_nonet.setVisibility(View.VISIBLE);
-                    //无网络
                     Log.d("test", "无网络");
                 } else {
                     rl_nonet.setVisibility(View.GONE);
-                    //有网络
                     Log.d("test", "有网络");
-                    if (arg2 == 1) {
-                        wv.loadUrl("javascript:reConnect()");
-                    }
                 }
             } else if (msg.what == 4) {
                 // 下载完成后安装
