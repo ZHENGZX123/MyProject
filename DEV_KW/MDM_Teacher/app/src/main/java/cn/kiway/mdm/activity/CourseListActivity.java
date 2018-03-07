@@ -24,7 +24,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import cn.kiway.mdm.entity.Course;
@@ -111,7 +110,7 @@ public class CourseListActivity extends BaseActivity {
     public void initData() {
         showPD();
         try {
-            String url = Constant.clientUrl + "/device/teacher/course/attend?currentPage=" + currentPage + "&pageSize=" + pageCount;
+            String url = Constant.clientUrl + "/device/teacher/course/attend?type=1&currentPage=" + currentPage + "&pageSize=" + pageCount;
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
@@ -126,14 +125,7 @@ public class CourseListActivity extends BaseActivity {
                         JSONArray list = new JSONObject(ret).getJSONObject("data").getJSONArray("list");
                         ArrayList<Course> temp = new GsonBuilder().create().fromJson(list.toString(), new TypeToken<List<Course>>() {
                         }.getType());
-                        //过滤一下"草稿"
-                        Iterator<Course> it = courses.iterator();
-                        while (it.hasNext()) {
-                            Course c = it.next();
-                            if (c.type == 2) {
-                                it.remove();
-                            }
-                        }
+
                         if (currentPage == 1) {
                             courses.clear();
                         }
