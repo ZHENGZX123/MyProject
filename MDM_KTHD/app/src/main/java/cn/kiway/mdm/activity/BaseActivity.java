@@ -49,7 +49,6 @@ import cn.kiway.mdm.utils.Logger;
 import cn.kiway.mdm.utils.UploadUtil;
 import cn.kiway.mdm.utils.Utils;
 import io.agora.openlive.model.ConstantApp;
-import io.agora.openlive.ui.LiveRoomActivity;
 import io.agora.rtc.Constants;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
@@ -281,7 +280,7 @@ public class BaseActivity extends Activity {
         getWindow().getDecorView().setDrawingCacheEnabled(true);
         Bitmap bitmap = getWindow().getDecorView().getDrawingCache();
         String time = System.currentTimeMillis() + "";
-        fileName = time + ".png";
+        this.fileName = time + ".png";
         Utils.saveBitmap(bitmap, fileName, App.ROOT);
         toast("请在我的文件里查看");
         new Thread() {
@@ -299,11 +298,11 @@ public class BaseActivity extends Activity {
                         return;
                     }
                     Logger.log("::::::::" + obj);
-                    String url = obj.optJSONObject("data").optString("url");
+                    //String url = obj.optJSONObject("data").optString("url");
 
                     Message message = new Message();
                     message.what = 1;
-                    message.obj = url;
+                    message.obj = obj.optJSONObject("data").toString();
                     MainActivity.instantce.mHandler.sendMessage(message);
 
                 } catch (JSONException e) {

@@ -174,6 +174,7 @@ public class FileListActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 final FileModel fm = files.get(i - 1);
                 final String filepath = downPath + fm.name;
+                Logger.log(":::::::::::::::"+filepath);
                 File f = new File(filepath);
                 if (!f.exists()) {
                     final ProgressDialog progressDialog = new ProgressDialog(FileListActivity.this);
