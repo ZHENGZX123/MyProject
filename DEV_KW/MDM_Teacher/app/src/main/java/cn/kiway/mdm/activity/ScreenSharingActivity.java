@@ -147,7 +147,7 @@ public class ScreenSharingActivity extends BaseActivity {
                 throw new RuntimeException("Can not work on device do not supporting texture" + mRtcEngine.isTextureEncodeSupported());
             }
 
-            mRtcEngine.setVideoProfile(Constants.VIDEO_PROFILE_480P, true);
+            mRtcEngine.setVideoProfile(Constants.VIDEO_PROFILE_720P, true);
 
             mRtcEngine.setClientRole(Constants.CLIENT_ROLE_BROADCASTER, null);
         }
