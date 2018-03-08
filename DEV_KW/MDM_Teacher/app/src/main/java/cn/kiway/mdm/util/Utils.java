@@ -308,7 +308,7 @@ public class Utils {
             param.put("courseId", courseID);
             if (type == 2) {
                 param.put("knowledgeId", someID);
-            } else if (type > 2) {
+            } else if (type > 2 && type < 7) {
                 param.put("examinationId", someID);
             }
             param.put("type", type);

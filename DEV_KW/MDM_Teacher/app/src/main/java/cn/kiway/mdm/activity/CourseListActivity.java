@@ -39,7 +39,7 @@ import cn.kiway.mdm.zbus.ZbusHost;
 public class CourseListActivity extends BaseActivity {
 
     private int currentPage = 1;
-    private int pageCount = 1;
+    private int pageCount = 10;
 
     private PullToRefreshLayout pullToRefreshLayout;
     private PullableListView lv;

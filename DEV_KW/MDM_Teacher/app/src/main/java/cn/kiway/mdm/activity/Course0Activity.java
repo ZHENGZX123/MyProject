@@ -1513,4 +1513,10 @@ public class Course0Activity extends ScreenSharingActivity {
         studentAskDialog.show();
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Utils.courseOperation(this, course.id, 7, "");
+    }
 }
