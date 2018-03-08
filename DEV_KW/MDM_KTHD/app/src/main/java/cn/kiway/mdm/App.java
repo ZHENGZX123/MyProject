@@ -179,7 +179,7 @@ public class App extends KiwayApplication {
             try {
                 JSONObject o = new JSONObject(msg);
                 String command = o.optString("command");
-                if (command.equals("question")) {//回答问题的
+                if (command.equals("question")) {//回答问题
                     ((BaseActivity) currentActivity).onQuestion(o);
                 } else if (command.equals("sign")) {//签到
                     ((BaseActivity) currentActivity).onSign();
@@ -193,7 +193,6 @@ public class App extends KiwayApplication {
                     String qiangdaStudentName = o.optString("qiangdaStudentName");
                     ((BaseActivity) currentActivity).onQiangdaResult(result, qiangdaStudentName);
                 } else if (command.equals("wenjian")) {
-                    //1.显示文件
                     ((BaseActivity) currentActivity).downloadFile(o);
                 } else if (command.equals("collection")) {
                     if (!(currentActivity instanceof QuestionActivity)) {

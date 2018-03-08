@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -274,17 +273,14 @@ public class MainActivity extends ScreenSharingActivity {
     }
 
     ////////////////以上是版本更新
-
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public void onBackPressed() {
         if (app.isAttenClass) {
             toast("目前正在上课中，无法退出");
-            return true;
+            return;
         }
-        return super.onKeyDown(keyCode, event);
+        super.onBackPressed();
     }
-
-
 
     public void startTuiping() {
         runOnUiThread(new Runnable() {
