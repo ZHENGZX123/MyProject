@@ -86,17 +86,17 @@ public class CommandUtil {
                 }
                 m.what = MSG_FLAGCOMMAND;
             } else if (command.equals("reboot")) {
+                String currentTime = data.optString("currentTime");
+                if (!Utils.checkCommandAvailable(currentTime)) {
+                    return false;
+                }
                 m.what = MSG_REBOOT;
-                String currentTime = data.optString("currentTime");
-                if (!Utils.checkCommandAvailable(currentTime)) {
-                    return false;
-                }
             } else if (command.equals("shutdown")) {
-                m.what = MSG_SHUTDOWN;
                 String currentTime = data.optString("currentTime");
                 if (!Utils.checkCommandAvailable(currentTime)) {
                     return false;
                 }
+                m.what = MSG_SHUTDOWN;
                 String operation = data.optString("operation");
                 String startTime = data.optString("startTime");
                 String endTime = data.optString("endTime");
@@ -139,10 +139,6 @@ public class CommandUtil {
                 context.getSharedPreferences("kiway", 0).edit().putLong("lock_time", 0).commit();
                 m.obj = data;
                 m.what = MSG_UNLOCK;
-            } else if (command.equals("temporary_mute")) {
-                m.what = MSG_MUTE;
-            } else if (command.equals("temporary_unMute")) {
-                m.what = MSG_UNMUTE;
             } else if (command.equals("wifi")) {
                 JSONArray content = data.optJSONArray("content");
                 ArrayList<Wifi> wifis = new GsonBuilder().create().fromJson(content.toString(), new
@@ -294,11 +290,31 @@ public class CommandUtil {
                     new MyDBHelper(context).addTime(timeSet);
                 }
             }
-            //下面是和课堂互动相关的命令。。。。。
-            else if (command.equals("shangke")) {
+            //下面是和课堂互动相关的命令，都要校验时间。
+            else if (command.equals("temporary_mute")) {
+                String currentTime = data.optString("currentTime");
+                if (!Utils.checkCommandAvailable(currentTime)) {
+                    return false;
+                }
+                m.what = MSG_MUTE;
+            } else if (command.equals("temporary_unMute")) {
+                String currentTime = data.optString("currentTime");
+                if (!Utils.checkCommandAvailable(currentTime)) {
+                    return false;
+                }
+                m.what = MSG_UNMUTE;
+            } else if (command.equals("shangke")) {
+                String currentTime = data.optString("currentTime");
+                if (!Utils.checkCommandAvailable(currentTime)) {
+                    return false;
+                }
                 m.what = MSG_ATTEND_CALSS;
                 m.obj = data;
             } else if (command.equals("xiake")) {
+                String currentTime = data.optString("currentTime");
+                if (!Utils.checkCommandAvailable(currentTime)) {
+                    return false;
+                }
                 m.what = MSG_GET_OUT_OF_CALASS;
                 m.obj = data;
             } else if (command.equals("send_msg")
@@ -314,11 +330,15 @@ public class CommandUtil {
                     || command.equals("tuiping")
                     || command.equals("chaping")
                     ) {
+                String currentTime = data.optString("currentTime");
+                if (!Utils.checkCommandAvailable(currentTime)) {
+                    return false;
+                }
                 m.what = MSG_MESSAGE;
                 m.obj = data;
             } else if (command.equals("test")) {
                 int id = data.optInt("id");
-                long sendTime = data.optLong("time");
+                long sendTime = data.optLong("currentTime");
                 long currentTime = System.currentTimeMillis();
                 Log.d("test", "id = " + id + " , delay = " + (currentTime - sendTime));
             }

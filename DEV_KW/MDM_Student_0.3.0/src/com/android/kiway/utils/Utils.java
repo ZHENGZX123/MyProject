@@ -1069,7 +1069,7 @@ public class Utils {
         long commandTime_l = dateToLong(commandTime);
         long currentTime = System.currentTimeMillis();
         if (currentTime > (commandTime_l + 10 * 60 * 1000)) {
-            Log.d("test", "checkCommandAvailable false!!!");
+            Log.d("test", "接收到一条10分钟之前的命令!!!");
             return false;
         }
         return true;
