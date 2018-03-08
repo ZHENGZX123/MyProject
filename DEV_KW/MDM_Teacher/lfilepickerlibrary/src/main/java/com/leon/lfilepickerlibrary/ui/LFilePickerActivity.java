@@ -1,6 +1,7 @@
 package com.leon.lfilepickerlibrary.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
@@ -8,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +25,14 @@ import com.leon.lfilepickerlibrary.model.ParamEntity;
 import com.leon.lfilepickerlibrary.utils.Constant;
 import com.leon.lfilepickerlibrary.utils.FileUtils;
 import com.leon.lfilepickerlibrary.widget.EmptyRecyclerView;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,6 +56,7 @@ public class LFilePickerActivity extends AppCompatActivity {
     private LFileFilter mFilter;
     private boolean mIsAllSelected = false;
     private Menu mMenu;
+    private String choosePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +64,7 @@ public class LFilePickerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lfile_picker);
         mParamEntity = (ParamEntity) getIntent().getExtras().getSerializable("param");
         initView();
+        initImageCache();
         setSupportActionBar(mToolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -61,6 +74,7 @@ public class LFilePickerActivity extends AppCompatActivity {
             return;
         }
         mPath = mParamEntity.getFilePath();
+        choosePath = mParamEntity.getFilePath();
         mTvPath.setText(mPath);
         mFilter = new LFileFilter(mParamEntity.getFileTypes());
         mListFiles = getFileList(mPath);
@@ -71,6 +85,15 @@ public class LFilePickerActivity extends AppCompatActivity {
         mRecylerView.setmEmptyView(mEmptyView);
         initListener();
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode==KeyEvent.KEYCODE_BACK){
+            backFile();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     /**
@@ -116,26 +139,7 @@ public class LFilePickerActivity extends AppCompatActivity {
         mTvBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String tempPath = new File(mPath).getParent();
-                if (tempPath == null) {
-                    return;
-                }
-                mPath = tempPath;
-                mListFiles = getFileList(mPath);
-                mPathAdapter.setmListData(mListFiles);
-                mPathAdapter.updateAllSelelcted(false);
-                mIsAllSelected = false;
-                updateMenuTitle();
-                mBtnAddBook.setText(getString(R.string.Selected));
-                mRecylerView.scrollToPosition(0);
-                setShowPath(mPath);
-                //清除添加集合中数据
-                mListNumbers.clear();
-                if (mParamEntity.getAddText() != null) {
-                    mBtnAddBook.setText(mParamEntity.getAddText());
-                } else {
-                    mBtnAddBook.setText(R.string.Selected);
-                }
+                backFile();
             }
         });
         mPathAdapter.setOnItemClickListener(new PathAdapter.OnItemClickListener() {
@@ -201,6 +205,32 @@ public class LFilePickerActivity extends AppCompatActivity {
         });
     }
 
+    public void backFile() {
+        String tempPath = new File(mPath).getParent();
+        if (tempPath == null) {
+            return;
+        }
+        if (choosePath.equals(mPath)) {
+            finish();
+            return;
+        }
+        mPath = tempPath;
+        mListFiles = getFileList(mPath);
+        mPathAdapter.setmListData(mListFiles);
+        mPathAdapter.updateAllSelelcted(false);
+        mIsAllSelected = false;
+        updateMenuTitle();
+        mBtnAddBook.setText(getString(R.string.Selected));
+        mRecylerView.scrollToPosition(0);
+        setShowPath(mPath);
+        //清除添加集合中数据
+        mListNumbers.clear();
+        if (mParamEntity.getAddText() != null) {
+            mBtnAddBook.setText(mParamEntity.getAddText());
+        } else {
+            mBtnAddBook.setText(R.string.Selected);
+        }
+    }
 
     /**
      * 点击进入目录
@@ -319,4 +349,47 @@ public class LFilePickerActivity extends AppCompatActivity {
 //        }
     }
 
+    private void initImageCache() {
+        DisplayMetrics displayMetrics = getApplicationContext().getResources()
+                .getDisplayMetrics();
+
+        //设置默认显示情况
+        DisplayImageOptions.Builder displayImageOptionsBuilder = new DisplayImageOptions.Builder();
+        // displayImageOptionsBuilder.showImageForEmptyUri(R.drawable.loading);
+        // // 空uri的情况
+        displayImageOptionsBuilder.cacheInMemory(false); // 缓存在内存
+        displayImageOptionsBuilder.cacheOnDisc(true); // 缓存在磁盘
+        displayImageOptionsBuilder.bitmapConfig(Bitmap.Config.ARGB_8888);
+        displayImageOptionsBuilder
+                .imageScaleType(ImageScaleType.NONE);
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
+                this)
+                .memoryCacheExtraOptions(displayMetrics.widthPixels,
+                        displayMetrics.heightPixels)
+                // maxwidth, max height，即保存的每个缓存文件的最大长宽
+                .threadPoolSize(10)
+                // 线程池内加载的数量
+                .threadPriority(Thread.NORM_PRIORITY - 1)
+                .denyCacheImageMultipleSizesInMemory()
+                .memoryCacheExtraOptions(200, 200)
+                .memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024))
+                // You can pass your own memory cache
+                // implementation/你可以通过自己的内存缓存实现
+                // .memoryCacheSize(2 * 1024 * 1024)
+                // .discCacheSize(50 * 1024 * 1024)
+                .discCacheFileNameGenerator(new Md5FileNameGenerator())
+                // 将保存的时候的URI名称用MD5 加密
+                .tasksProcessingOrder(QueueProcessingType.LIFO)
+                .discCacheFileCount(100)
+                // 缓存的文件数量
+                // .discCache(new UnlimitedDiscCache(cacheDir))
+                // 自定义缓存路径
+                .denyCacheImageMultipleSizesInMemory()
+                // .defaultDisplayImageOptions(DisplayImageOptions.createSimple())
+                .defaultDisplayImageOptions(displayImageOptionsBuilder.build())
+                .imageDownloader(
+                        new BaseImageDownloader(this, 5 * 1000, 30 * 1000)) // connectTimeout
+                /* .writeDebugLogs() */.build(); // Remove for release app
+        ImageLoader.getInstance().init(config);
+    }
 }

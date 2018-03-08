@@ -138,6 +138,12 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
         fileAdapter = new FileAdapter();
         fileListView = (ListView) findViewById(R.id.listView);
         fileListView.setAdapter(fileAdapter);
+        fileListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                FileUtils.openFile(StudentGridActivity.this, fileModels.get(i - 1).filePath);
+            }
+        });
         findViewById(R.id.f_back).setOnClickListener(this);
         findViewById(R.id.add).setOnClickListener(this);
         findViewById(R.id.remove).setOnClickListener(this);
@@ -660,7 +666,8 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                     } else {
                         message = "是否锁定" + s.name + "的屏幕";
                     }
-                    AlertDialog.Builder builder = new AlertDialog.Builder(StudentGridActivity.this, AlertDialog.THEME_HOLO_LIGHT);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(StudentGridActivity.this, AlertDialog
+                            .THEME_HOLO_LIGHT);
                     AlertDialog dialog = builder.setTitle("提示").setMessage(message)
                             .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
@@ -685,7 +692,8 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                     } else {
                         message = "是否静音" + s.name + "的平板";
                     }
-                    AlertDialog.Builder builder = new AlertDialog.Builder(StudentGridActivity.this, AlertDialog.THEME_HOLO_LIGHT);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(StudentGridActivity.this, AlertDialog
+                            .THEME_HOLO_LIGHT);
                     AlertDialog dialog = builder.setTitle("提示").setMessage(message)
                             .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
@@ -720,7 +728,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                         .withActivity(this)
                         .withTitle(getString(R.string.filepath3))
                         .withRequestCode(requsetFile2)
-                        .withMutilyMode(false)
+                        .withMutilyMode(true)
                         .start();
                 break;
             case R.id.remove:
@@ -823,20 +831,21 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
             return;
         if (requestCode == requsetFile2) {
             List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
-            if (fileModels.toString().contains(list.get(0))) {
-                toast("已选择该文件");
-                return;
+            for (int i = 0; i < list.size(); i++) {
+                if (!fileModels.toString().contains(list.get(i))) {
+                    File file = new File(list.get(i));
+                    FileModel fileModel = new FileModel();
+                    fileModel.name = file.getName();
+                    fileModel.filePath = file.getPath();
+                    fileModel.size = FileUtils.GetFileSize(file);
+                    fileModel.time = System.currentTimeMillis();
+                    fileModel.staute = 1;
+                    fileModels.add(fileModel);
+                }
             }
-            File file = new File(list.get(0));
-            FileModel fileModel = new FileModel();
-            fileModel.name = file.getName();
-            fileModel.filePath = file.getPath();
-            fileModel.size = FileUtils.GetFileSize(file);
-            fileModel.time = System.currentTimeMillis();
-            fileModel.staute = 1;
-            fileModels.add(fileModel);
             fileAdapter.notifyDataSetChanged();
         }
+
     }
 
     ArrayList<FileModel> fileModels = new ArrayList<>();
