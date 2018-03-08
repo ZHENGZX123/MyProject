@@ -2,11 +2,13 @@ package com.android.kiway;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
@@ -18,6 +20,7 @@ import com.android.kiway.utils.HttpDownload;
 import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.Utils;
 import com.android.kiway.windows.LockSreenService;
+import com.android.kiway.zbus.ZbusHost;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -174,18 +177,40 @@ public class KWApp extends Application {
                     MDMHelper.getAdapter().setTaskButtonDisabled(true);
                     MDMHelper.getAdapter().setHomeButtonDisabled(true);
                     Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
-                    in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//重启APP
-                    if (in != null) {
-                        in.putExtra("shangke", msg.obj.toString());
-                        in.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name", ""));
-                        in.putExtra("className", getSharedPreferences("kiway", 0).getString("className", ""));
-                        in.putExtra("studentNumber", getSharedPreferences("kiway", 0).getString("studentNumber", ""));
-                        in.putExtra("classId", getSharedPreferences("kiway", 0).getString("classId", ""));
-                        in.putExtra("schoolId", getSharedPreferences("kiway", 0).getString("schoolId", ""));
-                        in.putExtra("huaweiToken", getSharedPreferences("huawei", 0).getString("token", ""));
-                        RemoteAidlService.attendClass(msg.obj.toString());
-                        startActivity(in);
+                    in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    //1.打开APP
+                    in.putExtra("shangke", msg.obj.toString());
+                    in.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name", ""));
+                    in.putExtra("className", getSharedPreferences("kiway", 0).getString("className", ""));
+                    in.putExtra("studentNumber", getSharedPreferences("kiway", 0).getString("studentNumber", ""));
+                    in.putExtra("classId", getSharedPreferences("kiway", 0).getString("classId", ""));
+                    in.putExtra("schoolId", getSharedPreferences("kiway", 0).getString("schoolId", ""));
+                    in.putExtra("huaweiToken", getSharedPreferences("huawei", 0).getString("token", ""));
+                    RemoteAidlService.attendClass(msg.obj.toString());
+                    startActivity(in);
+
+                    //2.发送zbus命令
+                    //返回shagnke给教师端，当作online
+                    ZbusHost.doSendMsg(KWApp.instance, "shangke");
+
+                    //3.唤醒屏幕
+                    // 获取电源管理器对象
+                    PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                    boolean screenOn = pm.isScreenOn();
+                    if (!screenOn) {
+                        // 获取PowerManager.WakeLock对象,后面的参数|表示同时传入两个值,最后的是LogCat里用的Tag
+                        PowerManager.WakeLock wl = pm.newWakeLock(
+                                PowerManager.ACQUIRE_CAUSES_WAKEUP |
+                                        PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "bright");
+                        wl.acquire(10000); // 点亮屏幕
+                        wl.release(); // 释放
                     }
+                    // 屏幕解锁
+                    KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+                    KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("unLock");
+                    // 屏幕锁定
+                    keyguardLock.reenableKeyguard();
+                    keyguardLock.disableKeyguard(); // 解锁
                 }
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
                 RemoteAidlService.goOutClass();
