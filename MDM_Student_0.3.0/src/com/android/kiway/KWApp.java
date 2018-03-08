@@ -59,6 +59,10 @@ public class KWApp extends Application {
     public static final int MSG_MESSAGE = 18;//发送消息
     public static final int MSG_PUSH_FILE_I = 19;//局域网接收文件
 
+    public static final int MSG_MUTE = 20;//静音
+    public static final int MSG_UNMUTE = 21;//解除禁音
+
+
     public static KWApp instance;
     public static boolean temporary_app = false;
     public Activity currentActivity;
@@ -82,21 +86,19 @@ public class KWApp extends Application {
                 startService(intent);
                 MDMHelper.getAdapter().setBackButtonDisabled(true);
                 MDMHelper.getAdapter().setHomeButtonDisabled(true);
-                //2.静音
-                mute();
             } else if (msg.what == MSG_LOCKONCLASS) {
                 //0.锁屏
                 MDMHelper.getAdapter().setBackButtonDisabled(true);
                 MDMHelper.getAdapter().setHomeButtonDisabled(true);
-                //1.静音
-                mute();
             } else if (msg.what == MSG_UNLOCK) {
                 //zzx add
                 Intent intent = new Intent(KWApp.this, LockSreenService.class);
                 stopService(intent);
                 MDMHelper.getAdapter().setBackButtonDisabled(false);
                 MDMHelper.getAdapter().setHomeButtonDisabled(false);
-                //2.恢复声音
+            } else if (msg.what == MSG_MUTE) {
+                mute();
+            } else if (msg.what == MSG_UNMUTE) {
                 unMute();
             } else if (msg.what == MSG_LAUNCH_APP) {
                 if (!getSharedPreferences("kiway", 0).getBoolean("locked", false)) {

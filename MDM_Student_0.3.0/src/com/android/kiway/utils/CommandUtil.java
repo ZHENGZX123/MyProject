@@ -31,6 +31,7 @@ import static com.android.kiway.KWApp.MSG_LAUNCH_APP;
 import static com.android.kiway.KWApp.MSG_LAUNCH_MDM;
 import static com.android.kiway.KWApp.MSG_LOCK;
 import static com.android.kiway.KWApp.MSG_MESSAGE;
+import static com.android.kiway.KWApp.MSG_MUTE;
 import static com.android.kiway.KWApp.MSG_PARENT_BIND;
 import static com.android.kiway.KWApp.MSG_PORTRAIT;
 import static com.android.kiway.KWApp.MSG_PUSH_FILE;
@@ -39,6 +40,7 @@ import static com.android.kiway.KWApp.MSG_SHUTDOWN;
 import static com.android.kiway.KWApp.MSG_TOAST;
 import static com.android.kiway.KWApp.MSG_UNINSTALL;
 import static com.android.kiway.KWApp.MSG_UNLOCK;
+import static com.android.kiway.KWApp.MSG_UNMUTE;
 
 /**
  * Created by Administrator on 2018/1/23.
@@ -122,12 +124,12 @@ public class CommandUtil {
                 context.getSharedPreferences("kiway", 0).edit().putLong("app_time", 0).commit();
                 context.getSharedPreferences("kiway", 0).edit().putString("app_data", "").commit();
             } else if (command.equals("temporary_lockScreen")) {
-                m.what = MSG_LOCK;
-                m.obj = data;
                 String currentTime = data.optString("currentTime");
                 if (!Utils.checkCommandAvailable(currentTime)) {
                     return false;
                 }
+                m.what = MSG_LOCK;
+                m.obj = data;
                 context.getSharedPreferences("kiway", 0).edit().putLong("lock_time", Utils.dateToLong(currentTime))
                         .commit();
             } else if (command.equals("temporary_unlockScreen")) {
@@ -138,6 +140,10 @@ public class CommandUtil {
                 context.getSharedPreferences("kiway", 0).edit().putLong("lock_time", 0).commit();
                 m.obj = data;
                 m.what = MSG_UNLOCK;
+            } else if (command.equals("temporary_mute")) {
+                m.what = MSG_MUTE;
+            } else if (command.equals("temporary_unMute")) {
+                m.what = MSG_UNMUTE;
             } else if (command.equals("wifi")) {
                 JSONArray content = data.optJSONArray("content");
                 ArrayList<Wifi> wifis = new GsonBuilder().create().fromJson(content.toString(), new
