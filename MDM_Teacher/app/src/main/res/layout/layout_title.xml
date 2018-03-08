@@ -83,7 +83,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
-        android:background="@drawable/sys_lock"
+        android:background="@drawable/lock"
         android:onClick="clickLock"
         android:visibility="gone" />
 

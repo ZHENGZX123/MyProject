@@ -201,7 +201,7 @@
                     <ImageView
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:background="@drawable/sys_lock" />
+                        android:background="@drawable/lock" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -221,7 +221,7 @@
                     <ImageView
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:background="@drawable/sys_lock" />
+                        android:background="@drawable/mute1" />
 
                     <TextView
                         android:layout_width="wrap_content"

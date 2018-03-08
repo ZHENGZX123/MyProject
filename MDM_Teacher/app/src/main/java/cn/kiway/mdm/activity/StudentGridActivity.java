@@ -156,8 +156,14 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
             all.setVisibility(View.VISIBLE);
             toolsRL.setVisibility(View.GONE);
             leftView.setVisibility(View.GONE);
-        } else if (type == TYPE_SUOPING || type == TYPE_JINGYIN) {
+        } else if (type == TYPE_SUOPING) {
             lock.setVisibility(View.VISIBLE);
+            lock.setBackgroundResource(R.drawable.lock);
+            toolsRL.setVisibility(View.GONE);
+            leftView.setVisibility(View.GONE);
+        } else if (type == TYPE_JINGYIN) {
+            lock.setVisibility(View.VISIBLE);
+            lock.setBackgroundResource(R.drawable.mute1);
             toolsRL.setVisibility(View.GONE);
             leftView.setVisibility(View.GONE);
         } else if (type == TYPE_CHAPING) {
@@ -959,12 +965,14 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
             } else if (type == TYPE_SUOPING) {
                 if (s.locked) {
                     holder.lock.setVisibility(View.VISIBLE);
+                    holder.lock.setImageResource(R.drawable.lock);
                 } else {
                     holder.lock.setVisibility(View.GONE);
                 }
             } else if (type == TYPE_JINGYIN) {
                 if (s.muted) {
                     holder.lock.setVisibility(View.VISIBLE);
+                    holder.lock.setImageResource(R.drawable.mute1);
                 } else {
                     holder.lock.setVisibility(View.GONE);
                 }
