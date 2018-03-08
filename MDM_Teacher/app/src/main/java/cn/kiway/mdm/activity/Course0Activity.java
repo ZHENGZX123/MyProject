@@ -1474,9 +1474,6 @@ public class Course0Activity extends ScreenSharingActivity {
                         studentAskDialog = new Dialog(Course0Activity.this, R.style.popupDialog);
                         studentAskDialog.setContentView(R.layout.dialog_ask);
                     }
-                    if (!studentAskDialog.isShowing()) {
-                        studentAskDialog.show();
-                    }
 
                     Button close = (Button) studentAskDialog.findViewById(R.id.close);
                     ListView lv = (ListView) studentAskDialog.findViewById(R.id.lv);
