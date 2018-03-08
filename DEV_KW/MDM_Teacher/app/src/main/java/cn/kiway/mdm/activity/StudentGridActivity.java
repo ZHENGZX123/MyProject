@@ -141,7 +141,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
         fileListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                FileUtils.openFile(StudentGridActivity.this, fileModels.get(i - 1).filePath);
+                FileUtils.openFile(StudentGridActivity.this, fileModels.get(i).filePath);
             }
         });
         findViewById(R.id.f_back).setOnClickListener(this);
