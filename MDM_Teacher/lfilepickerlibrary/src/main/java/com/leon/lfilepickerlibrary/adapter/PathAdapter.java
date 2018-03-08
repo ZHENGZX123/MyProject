@@ -136,8 +136,15 @@ public class PathAdapter extends RecyclerView.Adapter<PathAdapter.PathViewHolder
                 imageView.setBackgroundResource(R.mipmap.file_style_green);
                 break;
             case Constant.ICON_STYLE_YELLOW:
-                 imageView.setBackgroundResource(0);
-                ImageLoader.getInstance().displayImage("file://" + filePath, imageView, getLoaderOptions());
+                if (filePath.endsWith(".BMP") || filePath.endsWith(".JPG") || filePath.endsWith(".JPEG") || filePath
+                        .endsWith(".PNG") || filePath.endsWith(".bmp") || filePath.endsWith(".jpg") || filePath
+                        .endsWith(".jpeg") || filePath
+                        .endsWith(".png")) {
+                    imageView.setBackgroundResource(0);
+                    ImageLoader.getInstance().displayImage("file://" + filePath, imageView, getLoaderOptions());
+                } else {
+                    imageView.setBackgroundResource(R.mipmap.file_style_yellow);
+                }
                 break;
         }
     }
