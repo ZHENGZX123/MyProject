@@ -34,6 +34,8 @@ public class ZbusMessageHandler implements MessageHandler {
 
             if (command.equals("shangke")) {
                 shangke(studentIMEI);
+            } else if (command.startsWith("chaxun")) {
+                chaxun(studentIMEI, command.split("_")[1], command.split("_")[2]);
             } else if (command.equals("sign")) {
                 sign(studentIMEI);
             } else if (command.equals("tongji_know")) {
@@ -51,6 +53,15 @@ public class ZbusMessageHandler implements MessageHandler {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void chaxun(String studentIMEI, String type, String status) {
+        if (!(KWApplication.currentActivity instanceof StudentGridActivity || KWApplication.currentActivity instanceof StudentGridActivity)) {
+            Log.d("test", "不是当前页面，信息可能已过期");
+            return;
+        }
+
+        ((StudentGridActivity) KWApplication.currentActivity).chaxunOneSubmit(studentIMEI, Integer.parseInt(type), Integer.parseInt(status));
     }
 
     private void question(String studentIMEI, String question) {

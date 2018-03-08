@@ -36,7 +36,7 @@ public class ZbusHost {
                 try {
                     String title = "知识点统计";
                     String userId = Utils.getIMEI(c);
-                    String msg = new JSONObject().put("data", new JSONObject().put("command", "tongji").put("teacherUserId", userId).put("knowledge", kp.content)).toString();
+                    String msg = new JSONObject().put("data", new JSONObject().put("command", "tongji").put("teacherUserId", userId).put("knowledge", kp.content).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
                     doSendMsg(c, title, userId, msg, students);
                     if (onListener != null) {
                         c.runOnUiThread(new Runnable() {
@@ -78,7 +78,7 @@ public class ZbusHost {
                 try {
                     String title = "推屏";
                     String userId = Utils.getIMEI(c);
-                    String msg = new JSONObject().put("data", new JSONObject().put("command", "tuiping").put("teacherUserId", userId).put("status", status)).toString();
+                    String msg = new JSONObject().put("data", new JSONObject().put("command", "tuiping").put("teacherUserId", userId).put("status", status).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
                     doSendMsg(c, title, userId, msg, students);
                     if (onListener != null) {
                         c.runOnUiThread(new Runnable() {
@@ -107,7 +107,7 @@ public class ZbusHost {
         try {
             String title = "抢答结果";
             String userId = Utils.getIMEI(c);
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "qiangdaResult").put("teacherUserId", userId).put("result", result).put("qiangdaStudentName", qiangdaStudentName)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "qiangdaResult").put("teacherUserId", userId).put("result", result).put("qiangdaStudentName", qiangdaStudentName).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
             ArrayList<Student> students = new ArrayList<>();
             students.add(s);
             doSendMsg(c, title, userId, msg, students);
@@ -136,7 +136,7 @@ public class ZbusHost {
         try {
             String title = "抢答";
             String userId = Utils.getIMEI(c);
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "qiangda").put("teacherUserId", userId)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "qiangda").put("teacherUserId", userId).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
 
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
@@ -175,7 +175,7 @@ public class ZbusHost {
             ArrayList<Question> questions = new ArrayList<>();
             questions.add(q);
             String questionStr = new Gson().toJson(questions);
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("teacherUserId", userId).put("questions", questionStr).put("questionType", questionType).put("questionTime", questionTime)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("teacherUserId", userId).put("questions", questionStr).put("questionType", questionType).put("questionTime", questionTime).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
             ArrayList<Student> students = new ArrayList<>();
             students.add(s);
             doSendMsg(c, title, userId, msg, students);
@@ -206,7 +206,7 @@ public class ZbusHost {
             String title = "测评";
             String userId = Utils.getIMEI(c);
             String questionStr = new Gson().toJson(questions);
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("teacherUserId", userId).put("questions", questionStr).put("questionType", 4).put("questionTime", questionTime)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("teacherUserId", userId).put("questions", questionStr).put("questionType", 4).put("questionTime", questionTime).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
                 c.runOnUiThread(new Runnable() {
@@ -234,7 +234,7 @@ public class ZbusHost {
         try {
             String title = "批改结果";
             String userId = Utils.getIMEI(c);
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "collection").put("teacherUserId", userId).put("collection", collection)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "collection").put("teacherUserId", userId).put("collection", collection).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
             ArrayList<Student> students = new ArrayList<>();
             students.add(s);
             doSendMsg(c, title, userId, msg, students);
@@ -263,7 +263,7 @@ public class ZbusHost {
         try {
             String title = "查屏";
             String userId = Utils.getIMEI(c);
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "chaping").put("teacherUserId", userId).put("chaping", chaping)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "chaping").put("teacherUserId", userId).put("chaping", chaping).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
             ArrayList<Student> students = new ArrayList<>();
             students.add(s);
             doSendMsg(c, title, userId, msg, students);
@@ -300,7 +300,7 @@ public class ZbusHost {
             } else {
                 commeand = "temporary_unlockScreen";
             }
-            String msg = new JSONObject().put("data", new JSONObject().put("command", commeand).put("currentTime", Utils.longToDate("" + System.currentTimeMillis()))).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", commeand).put("currentTime", Utils.longToDate("" + System.currentTimeMillis())).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
                 c.runOnUiThread(new Runnable() {
@@ -334,7 +334,7 @@ public class ZbusHost {
             } else {
                 commeand = "temporary_unMute";
             }
-            String msg = new JSONObject().put("data", new JSONObject().put("command", commeand).put("currentTime", Utils.longToDate("" + System.currentTimeMillis()))).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", commeand).put("currentTime", Utils.longToDate("" + System.currentTimeMillis())).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
                 c.runOnUiThread(new Runnable() {
@@ -364,7 +364,7 @@ public class ZbusHost {
                 try {
                     String title = "上课";
                     String userId = Utils.getIMEI(c);
-                    String msg = new JSONObject().put("data", new JSONObject().put("command", "shangke").put("ip", "").put("platform", "android").put("teacherUserId", userId)).toString();
+                    String msg = new JSONObject().put("data", new JSONObject().put("command", "shangke").put("ip", "").put("platform", "android").put("teacherUserId", userId).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
                     doSendMsg(c, title, userId, msg, students);
                     if (onListener != null) {
                         c.runOnUiThread(new Runnable() {
@@ -393,7 +393,7 @@ public class ZbusHost {
         try {
             String title = "下课";
             String userId = Utils.getIMEI(c);
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "xiake").put("ip", "").put("platform", "android").put("teacherUserId", userId)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "xiake").put("ip", "").put("platform", "android").put("teacherUserId", userId).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
                 c.runOnUiThread(new Runnable() {
@@ -420,7 +420,7 @@ public class ZbusHost {
         try {
             String title = "点名";
             String userId = Utils.getIMEI(c);
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "sign").put("teacherUserId", userId)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "sign").put("teacherUserId", userId).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
                 c.runOnUiThread(new Runnable() {
@@ -472,7 +472,7 @@ public class ZbusHost {
         try {
             String title = "文件";
             String userId = Utils.getIMEI(c);
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "wenjian").put("teacherUserId", userId).put("url", url).put("fileName", fileName).put("size", fileSize)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "wenjian").put("teacherUserId", userId).put("url", url).put("fileName", fileName).put("size", fileSize).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
                 c.runOnUiThread(new Runnable() {
@@ -499,7 +499,7 @@ public class ZbusHost {
         try {
             String title = "答题时间到";
             String userId = Utils.getIMEI(c);
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "questionTimeup").put("teacherUserId", userId)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "questionTimeup").put("teacherUserId", userId).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
                 c.runOnUiThread(new Runnable() {
@@ -526,7 +526,7 @@ public class ZbusHost {
         try {
             String title = "答题终止";
             String userId = Utils.getIMEI(c);
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "questionEnd").put("teacherUserId", userId)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "questionEnd").put("teacherUserId", userId).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
                 c.runOnUiThread(new Runnable() {
@@ -556,7 +556,34 @@ public class ZbusHost {
             String userId = Utils.getIMEI(c);
             long time = System.currentTimeMillis();
             String randomString = "" + time + time + time + time + time + time + time;
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "test").put("teacherUserId", userId).put("time", time).put("id", id).put("randomString", randomString)).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "test").put("teacherUserId", userId).put("time", time).put("id", id).put("randomString", randomString).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
+            doSendMsg(c, title, userId, msg, students);
+            if (onListener != null) {
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (onListener != null) {
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
+            }
+        }
+    }
+
+    public static void chaxun(Activity c, int type, final OnListener onListener) {
+        try {
+            String title = "查询";
+            String userId = Utils.getIMEI(c);
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "chaxun").put("type", type).put("teacherUserId", userId).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
                 c.runOnUiThread(new Runnable() {

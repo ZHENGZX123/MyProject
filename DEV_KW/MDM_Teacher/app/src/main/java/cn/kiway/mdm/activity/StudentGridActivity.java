@@ -55,6 +55,7 @@ import cn.kiway.mdm.zbus.ZbusHost;
 
 import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_DIANMINGDA;
 import static cn.kiway.mdm.teacher.R.id.count;
+import static cn.kiway.mdm.teacher.R.id.send;
 import static cn.kiway.mdm.util.Constant.clientUrl;
 import static cn.kiway.mdm.util.Constant.lockAll;
 import static cn.kiway.mdm.util.Constant.muteAll;
@@ -103,6 +104,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
     TextView remove;
     private ImageButton dm;
     private ImageButton sk;
+    private boolean chaxun;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +129,6 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
         dm = (ImageButton) findViewById(R.id.dm);
         sk = (ImageButton) findViewById(R.id.sk);
 
-
         ok = (Button) findViewById(R.id.ok);
         all = (Button) findViewById(R.id.all);
         lock = (ImageButton) findViewById(R.id.lock);
@@ -140,7 +141,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
         findViewById(R.id.f_back).setOnClickListener(this);
         findViewById(R.id.add).setOnClickListener(this);
         findViewById(R.id.remove).setOnClickListener(this);
-        findViewById(R.id.send).setOnClickListener(this);
+        findViewById(send).setOnClickListener(this);
 
         if (type == TYPE_DIANMING) {
 
@@ -171,6 +172,30 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
             toolsRL.setVisibility(View.GONE);
             leftView.setVisibility(View.GONE);
         }
+
+        //如果是suoping和jingyin，先当前查询一下状态
+        if (type == TYPE_SUOPING || type == TYPE_JINGYIN) {
+            chaxun = true;
+            pd.setMessage("正在查询学生平板状态，请稍候");
+            showPD();
+            sendChaxunCommand(type);
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    chaxun = false;
+                    hidePD();
+                }
+            }.start();
+        }
+    }
+
+    private void sendChaxunCommand(int type) {
+        ZbusHost.chaxun(StudentGridActivity.this, type, null);
     }
 
     public void gj(View view) {
@@ -708,7 +733,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                 }
                 fileAdapter.notifyDataSetChanged();
                 break;
-            case R.id.send:
+            case send:
                 //1.上传文件
                 //  showPD();
                 isFileDel = false;
@@ -815,6 +840,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
     }
 
     ArrayList<FileModel> fileModels = new ArrayList<>();
+
 
     private class FileAdapter extends BaseAdapter {
 
@@ -1196,6 +1222,29 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                 for (Student s : students) {
                     if (s.imei.equals(studentIMEI)) {
                         s.online = true;
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    public void chaxunOneSubmit(String studentIMEI, int type, int status) {
+        //3秒之内有效
+        if (!chaxun) {
+            Log.d("test", "3秒查询时间已经过了");
+            return;
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (Student s : students) {
+                    if (s.imei.equals(studentIMEI)) {
+                        if (type == TYPE_SUOPING) {
+                            s.locked = (status == 1);
+                        } else if (type == TYPE_JINGYIN) {
+                            s.muted = (status == 1);
+                        }
                     }
                 }
                 adapter.notifyDataSetChanged();
