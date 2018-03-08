@@ -159,7 +159,6 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
-
     public void initView() {
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
         wv = (WebView) findViewById(R.id.wv);
