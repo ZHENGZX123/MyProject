@@ -22,7 +22,6 @@ import static com.android.kiway.utils.Constant.APPID;
 
 public class ZbusHost {
 
-
     public static boolean doSendMsg(Context c, String cmd) {
         try {
             JSONObject obj = new JSONObject();
@@ -49,6 +48,7 @@ public class ZbusHost {
             pushMessageVo.setSenderId(token);//学生的token
             pushMessageVo.setPushType("zbus");
 
+            Log.d("test", "sendMSG " + msg.toString());
             ZbusUtils.sendMsg(topic, pushMessageVo);
 
             return true;

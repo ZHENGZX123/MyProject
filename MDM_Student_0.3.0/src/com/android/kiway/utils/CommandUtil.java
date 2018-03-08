@@ -13,7 +13,6 @@ import com.android.kiway.entity.Call;
 import com.android.kiway.entity.Network;
 import com.android.kiway.entity.TimeSet;
 import com.android.kiway.entity.Wifi;
-import com.android.kiway.zbus.ZbusHost;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
@@ -299,8 +298,6 @@ public class CommandUtil {
             else if (command.equals("shangke")) {
                 m.what = MSG_ATTEND_CALSS;
                 m.obj = data;
-                //返回shagnke给教师端，当作online
-                ZbusHost.doSendMsg(context, "shangke");
             } else if (command.equals("xiake")) {
                 m.what = MSG_GET_OUT_OF_CALASS;
                 m.obj = data;
