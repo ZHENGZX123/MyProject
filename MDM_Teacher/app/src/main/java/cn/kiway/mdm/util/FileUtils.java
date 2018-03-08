@@ -303,6 +303,7 @@ public class FileUtils {
         filePath = "file://" + filePath;
         if (filePath.split("\\.").length < 2) {
             Toast.makeText(context, "未知名文件，无法打开", Toast.LENGTH_SHORT).show();
+            return;
         }
         String type = filePath.split("\\.")[1].toLowerCase();
         String typeOpenFile = "*";
