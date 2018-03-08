@@ -364,6 +364,12 @@ public class Course0Activity extends ScreenSharingActivity {
         startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_SUOPING));
     }
 
+    public void jingyin(View view) {
+        //锁定学生屏幕，需要获取学生列表。
+        startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_SUOPING));
+    }
+
+
     public void wenjian(View view) {
         //1.先选择一个文件
         startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_WENJIAN));
