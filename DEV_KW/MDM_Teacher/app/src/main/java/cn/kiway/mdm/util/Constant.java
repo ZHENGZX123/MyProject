@@ -20,4 +20,5 @@ public class Constant {
 
 
     public static boolean lockAll = false;
+    public static boolean muteAll = false;
 }

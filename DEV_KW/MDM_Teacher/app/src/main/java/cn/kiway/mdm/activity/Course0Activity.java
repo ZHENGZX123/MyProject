@@ -67,6 +67,7 @@ import cn.kiway.mdm.zbus.ZbusHost;
 import static cn.kiway.mdm.KWApplication.students;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_CHAPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
+import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_JINGYIN;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_SUOPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_TONGJI;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_WENJIAN;
@@ -366,7 +367,7 @@ public class Course0Activity extends ScreenSharingActivity {
 
     public void jingyin(View view) {
         //锁定学生屏幕，需要获取学生列表。
-        startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_SUOPING));
+        startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_JINGYIN));
     }
 
 

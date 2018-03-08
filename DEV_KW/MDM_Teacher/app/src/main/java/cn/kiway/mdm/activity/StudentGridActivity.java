@@ -57,6 +57,7 @@ import static cn.kiway.mdm.activity.Course0Activity.TYPE_QUESTION_DIANMINGDA;
 import static cn.kiway.mdm.teacher.R.id.count;
 import static cn.kiway.mdm.util.Constant.clientUrl;
 import static cn.kiway.mdm.util.Constant.lockAll;
+import static cn.kiway.mdm.util.Constant.muteAll;
 import static cn.kiway.mdm.util.Utils.check301;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile2;
 
@@ -75,6 +76,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
     public static final int TYPE_WENJIAN = 4;
     public static final int TYPE_CHAPING = 5;
     public static final int TYPE_SUOPING = 6;
+    public static final int TYPE_JINGYIN = 7;
 
     private Button ok;
     private Button all;
@@ -154,7 +156,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
             all.setVisibility(View.VISIBLE);
             toolsRL.setVisibility(View.GONE);
             leftView.setVisibility(View.GONE);
-        } else if (type == TYPE_SUOPING) {
+        } else if (type == TYPE_SUOPING || type == TYPE_JINGYIN) {
             lock.setVisibility(View.VISIBLE);
             toolsRL.setVisibility(View.GONE);
             leftView.setVisibility(View.GONE);
@@ -195,25 +197,47 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
 
     public void clickLock(View v) {
         String message = "";
-        if (lockAll) {
-            message = "是否解锁全班学生的屏幕";
-        } else {
-            message = "是否锁定全班学生的屏幕";
-        }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
-        AlertDialog dialog = builder.setTitle("提示").setMessage(message)
-                .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        //发送命令
-                        if (lockAll) {
-                            sendSuopingCommand2(0);
-                        } else {
-                            sendSuopingCommand2(1);
+        if (type == TYPE_SUOPING) {
+            if (lockAll) {
+                message = "是否解锁全班学生的屏幕";
+            } else {
+                message = "是否锁定全班学生的屏幕";
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+            AlertDialog dialog = builder.setTitle("提示").setMessage(message)
+                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            //发送命令
+                            if (lockAll) {
+                                sendSuopingCommand2(0);
+                            } else {
+                                sendSuopingCommand2(1);
+                            }
                         }
-                    }
-                }).setPositiveButton(android.R.string.cancel, null).create();
-        dialog.show();
+                    }).setPositiveButton(android.R.string.cancel, null).create();
+            dialog.show();
+        } else if (type == TYPE_JINGYIN) {
+            if (muteAll) {
+                message = "是否解除全班学生的静音";
+            } else {
+                message = "是否静音全班学生的平板";
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+            AlertDialog dialog = builder.setTitle("提示").setMessage(message)
+                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            //发送命令
+                            if (muteAll) {
+                                sendJingyinCommand2(0);
+                            } else {
+                                sendJingyinCommand2(1);
+                            }
+                        }
+                    }).setPositiveButton(android.R.string.cancel, null).create();
+            dialog.show();
+        }
     }
 
     public void clickOK(View v) {
@@ -421,7 +445,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                 //3.修改lockAll变量
                 lockAll = true;
                 for (Student temp : students) {
-                    if (temp.online){
+                    if (temp.online) {
                         lockAll = lockAll & temp.locked;
                     }
                 }
@@ -452,6 +476,55 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onFailure() {
                 toast("发送锁屏命令失败");
+            }
+        });
+    }
+
+
+    private void sendJingyinCommand1(final Student s, int suoping) {
+        ArrayList<Student> selectStudents = new ArrayList<>();
+        selectStudents.add(s);
+        ZbusHost.jingyin(StudentGridActivity.this, selectStudents, suoping, new OnListener() {
+
+            @Override
+            public void onSuccess() {
+                //2.刷新界面
+                s.muted = !s.muted;
+                adapter.notifyDataSetChanged();
+                //3.修改lockAll变量
+                muteAll = true;
+                for (Student temp : students) {
+                    if (temp.online) {
+                        muteAll = muteAll & temp.muted;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure() {
+                toast("发送静音命令失败");
+            }
+        });
+    }
+
+    private void sendJingyinCommand2(int suoping) {
+        ZbusHost.jingyin(StudentGridActivity.this, students, suoping, new OnListener() {
+
+            @Override
+            public void onSuccess() {
+                //2.刷新界面
+                muteAll = !muteAll;
+                for (Student s : students) {
+                    if (s.online) {
+                        s.muted = muteAll;
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure() {
+                toast("发送静音命令失败");
             }
         });
     }
@@ -556,8 +629,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                     } else {
                         message = "是否锁定" + s.name + "的屏幕";
                     }
-                    AlertDialog.Builder builder = new AlertDialog.Builder(StudentGridActivity.this, AlertDialog
-                            .THEME_HOLO_LIGHT);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(StudentGridActivity.this, AlertDialog.THEME_HOLO_LIGHT);
                     AlertDialog dialog = builder.setTitle("提示").setMessage(message)
                             .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
@@ -567,6 +639,31 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                                         sendSuopingCommand1(s, 0);
                                     } else {
                                         sendSuopingCommand1(s, 1);
+                                    }
+                                }
+                            }).setPositiveButton(android.R.string.cancel, null).create();
+                    dialog.show();
+                } else if (type == TYPE_JINGYIN) {
+                    if (!s.online) {
+                        toast("该学生不在线，暂无法操作该功能");
+                        return;
+                    }
+                    String message;
+                    if (s.muted) {
+                        message = "是否解除" + s.name + "的静音";
+                    } else {
+                        message = "是否静音" + s.name + "的平板";
+                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(StudentGridActivity.this, AlertDialog.THEME_HOLO_LIGHT);
+                    AlertDialog dialog = builder.setTitle("提示").setMessage(message)
+                            .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface arg0, int arg1) {
+                                    //1.发送命令
+                                    if (s.muted) {
+                                        sendJingyinCommand1(s, 0);
+                                    } else {
+                                        sendJingyinCommand1(s, 1);
                                     }
                                 }
                             }).setPositiveButton(android.R.string.cancel, null).create();
@@ -861,6 +958,12 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                 }
             } else if (type == TYPE_SUOPING) {
                 if (s.locked) {
+                    holder.lock.setVisibility(View.VISIBLE);
+                } else {
+                    holder.lock.setVisibility(View.GONE);
+                }
+            } else if (type == TYPE_JINGYIN) {
+                if (s.muted) {
                     holder.lock.setVisibility(View.VISIBLE);
                 } else {
                     holder.lock.setVisibility(View.GONE);

@@ -323,6 +323,40 @@ public class ZbusHost {
         }
     }
 
+    public static void jingyin(Activity c, ArrayList<Student> students, int suoping, final OnListener onListener) {
+        try {
+            String title = "静音";
+            String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
+            // 这个要按照易敏的格式
+            String commeand = "";
+            if (suoping == 1) {
+                commeand = "temporary_mute";
+            } else {
+                commeand = "temporary_unMute";
+            }
+            String msg = new JSONObject().put("data", new JSONObject().put("command", commeand).put("currentTime", Utils.longToDate("" + System.currentTimeMillis()))).toString();
+            doSendMsg(c, title, userId, msg, students);
+            if (onListener != null) {
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (onListener != null) {
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
+            }
+        }
+    }
+
     public static void shangke(final Activity c, final OnListener onListener) {
         new Thread() {
             @Override
