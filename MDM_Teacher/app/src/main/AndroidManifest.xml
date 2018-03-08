@@ -80,10 +80,6 @@
         <activity
             android:name="cn.kiway.mdm.activity.WhiteBoardActivity"
             android:screenOrientation="landscape"></activity>
-        <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
 </manifest>
