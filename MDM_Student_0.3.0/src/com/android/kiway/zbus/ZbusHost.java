@@ -37,7 +37,6 @@ public class ZbusHost {
             //final String topic, String message, final String url, final PushMessageVo vo
             //topic : 上报的 deviceId#userId
             String topic = Utils.getIMEI(c) + "#" + token;
-            String url = Constant.zbusHost + ":" + Constant.zbusPost;
             PushMessageVo pushMessageVo = new PushMessageVo();
             pushMessageVo.setTitle(title);
             pushMessageVo.setDescription(desc);
