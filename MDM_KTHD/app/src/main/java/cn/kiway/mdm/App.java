@@ -227,9 +227,9 @@ public class App extends KiwayApplication {
                 } else if (command.equals("chaping")) {
                     int chaping = o.optInt("chaping");
                     if (chaping == 1) {
-                        ((MainActivity) currentActivity).startTuiping();
+                        MainActivity.instantce.startTuiping();
                     } else {
-                        ((MainActivity) currentActivity).endTuiping();
+                        MainActivity.instantce.endTuiping();
                     }
                 }
             } catch (Exception e) {
