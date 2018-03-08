@@ -1,8 +1,11 @@
 package cn.kiway.mdm.util;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -295,6 +298,48 @@ public class FileUtils {
             size = "0BT";
         }
         return size;
+    }
+    public static void openFile(Context context, String filePath) {
+        filePath = "file://" + filePath;
+        if (filePath.split("\\.").length < 2) {
+            Toast.makeText(context, "未知名文件，无法打开", Toast.LENGTH_SHORT).show();
+        }
+        String type = filePath.split("\\.")[1].toLowerCase();
+        String typeOpenFile = "*";
+        Logger.log("*****************" + filePath);
+        Logger.log("*****************" + type);
+        if (type.equals("pdf"))
+            typeOpenFile = "application/pdf";
+        else if (type.equals("ppt") || type.equals("pptx"))
+            typeOpenFile = "application/vnd.ms-powerpoint";
+        else if (type.equals("doc") || type.equals("docx") || type.equals("docm") || type.equals("dotx") || type
+                .equals("dotm"))
+            typeOpenFile = "application/msword";
+        else if (type.equals("xlsx") || type.equals("xlsm") || type.equals("xltx"))
+            typeOpenFile = "application/vnd.ms-excel";
+        else if (type.equals("mp3") || type.equals("amr") || type.equals("ogg") || type.equals("wav")) {
+            typeOpenFile = "audio/*";
+        } else if (type.equals("mp4") || type.equals("3gp") || type.equals("avi") || type.equals("rmvb") || type
+                .equals("mpg") | type.equals("rm") || type.equals("flv")) {
+            typeOpenFile = "video/*";
+        } else if (type.equals("jpeg") || type.equals("jpg") || type.equals("png") || type.equals("gif")) {
+            typeOpenFile = "image/*";
+        }
+        if (!typeOpenFile.equals("")) {
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setDataAndType(Uri.parse(filePath), typeOpenFile);
+                context.startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (typeOpenFile.equals("video/*") || typeOpenFile.equals("audio/*"))
+                    Toast.makeText(context, "手机没有安装相关的播放器，请下载安装", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(context, "手机没有安装相关的办公软件，请下载安装", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
 

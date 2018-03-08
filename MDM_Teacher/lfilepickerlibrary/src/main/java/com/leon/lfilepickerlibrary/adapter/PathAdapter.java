@@ -13,6 +13,9 @@ import android.widget.TextView;
 import com.leon.lfilepickerlibrary.R;
 import com.leon.lfilepickerlibrary.utils.Constant;
 import com.leon.lfilepickerlibrary.utils.FileUtils;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -64,9 +67,10 @@ public class PathAdapter extends RecyclerView.Adapter<PathAdapter.PathViewHolder
     public void onBindViewHolder(final PathViewHolder holder, final int position) {
         final File file = mListData.get(position);
         if (file.isFile()) {
-            updateFileIconStyle(holder.ivType);
+            updateFileIconStyle(holder.ivType, file.getPath());
             holder.tvName.setText(file.getName());
-            holder.tvDetail.setText(mContext.getString(R.string.FileSize) + " " + FileUtils.getReadableFileSize(file.length()));
+            holder.tvDetail.setText(mContext.getString(R.string.FileSize) + " " + FileUtils.getReadableFileSize(file
+                    .length()));
             holder.cbChoose.setVisibility(View.VISIBLE);
         } else {
             updateFloaderIconStyle(holder.ivType);
@@ -123,7 +127,7 @@ public class PathAdapter extends RecyclerView.Adapter<PathAdapter.PathViewHolder
         }
     }
 
-    private void updateFileIconStyle(ImageView imageView) {
+    private void updateFileIconStyle(ImageView imageView, String filePath) {
         switch (mIconStyle) {
             case Constant.ICON_STYLE_BLUE:
                 imageView.setBackgroundResource(R.mipmap.file_style_blue);
@@ -132,9 +136,20 @@ public class PathAdapter extends RecyclerView.Adapter<PathAdapter.PathViewHolder
                 imageView.setBackgroundResource(R.mipmap.file_style_green);
                 break;
             case Constant.ICON_STYLE_YELLOW:
-                imageView.setBackgroundResource(R.mipmap.file_style_yellow);
+                 imageView.setBackgroundResource(0);
+                ImageLoader.getInstance().displayImage("file://" + filePath, imageView, getLoaderOptions());
                 break;
         }
+    }
+
+    public static DisplayImageOptions getLoaderOptions() {
+        DisplayImageOptions.Builder displayImageOptionsBuilder = new DisplayImageOptions.Builder();
+        displayImageOptionsBuilder.cacheInMemory(false);
+        displayImageOptionsBuilder.cacheOnDisc(true);
+        displayImageOptionsBuilder.displayer(new SimpleBitmapDisplayer());
+        DisplayImageOptions defaultDisplayImageOptions = displayImageOptionsBuilder
+                .build();
+        return defaultDisplayImageOptions;
     }
 
     /**
