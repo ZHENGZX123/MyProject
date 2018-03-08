@@ -67,8 +67,10 @@ public class KWApp extends Application {
 
 
     public static KWApp instance;
-    public static boolean temporary_app = false;
     public Activity currentActivity;
+    public static boolean temporary_app = false;
+    public static boolean lockscreen = false;
+    public static boolean muted = false;
 
     private boolean isAttendClass;
     public Handler mHandler = new Handler() {
@@ -85,6 +87,7 @@ public class KWApp extends Application {
                 HttpUtil.installationPush(instance, token, imei);
             } else if (msg.what == MSG_LOCK) {
                 //zzx add
+                lockscreen = true;
                 Intent intent = new Intent(KWApp.this, LockSreenService.class);
                 startService(intent);
                 MDMHelper.getAdapter().setBackButtonDisabled(true);
@@ -95,13 +98,16 @@ public class KWApp extends Application {
                 MDMHelper.getAdapter().setHomeButtonDisabled(true);
             } else if (msg.what == MSG_UNLOCK) {
                 //zzx add
+                lockscreen = false;
                 Intent intent = new Intent(KWApp.this, LockSreenService.class);
                 stopService(intent);
                 MDMHelper.getAdapter().setBackButtonDisabled(false);
                 MDMHelper.getAdapter().setHomeButtonDisabled(false);
             } else if (msg.what == MSG_MUTE) {
+                muted = true;
                 mute();
             } else if (msg.what == MSG_UNMUTE) {
+                muted = false;
                 unMute();
             } else if (msg.what == MSG_LAUNCH_APP) {
                 if (!getSharedPreferences("kiway", 0).getBoolean("locked", false)) {

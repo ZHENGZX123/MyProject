@@ -13,6 +13,7 @@ import com.android.kiway.entity.Call;
 import com.android.kiway.entity.Network;
 import com.android.kiway.entity.TimeSet;
 import com.android.kiway.entity.Wifi;
+import com.android.kiway.zbus.ZbusHost;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
@@ -317,6 +318,19 @@ public class CommandUtil {
                 }
                 m.what = MSG_GET_OUT_OF_CALASS;
                 m.obj = data;
+            } else if (command.equals("chaxun")) {
+                String currentTime = data.optString("currentTime");
+                if (!Utils.checkCommandAvailable(currentTime)) {
+                    return false;
+                }
+                int type = data.optInt("type");
+                if (type == 6) {
+                    //锁屏
+                    ZbusHost.doSendMsg(KWApp.instance, "chaxun_" + type + "_" + (KWApp.lockscreen ? "1" : "0"));
+                } else if (type == 7) {
+                    //静音
+                    ZbusHost.doSendMsg(KWApp.instance, "chaxun_" + type + "_" + (KWApp.muted ? "1" : "0"));
+                }
             } else if (command.equals("send_msg")
                     || command.equals("question")
                     || command.equals("questionTimeup")
