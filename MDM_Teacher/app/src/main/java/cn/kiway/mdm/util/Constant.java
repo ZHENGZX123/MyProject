@@ -17,4 +17,7 @@ public class Constant {
 
     public static String serverUrl = "http://mdm.kiway.cn:8084";
     public static String clientUrl = "http://mdm.kiway.cn:8085";
+
+
+    public static boolean lockAll = false;
 }
