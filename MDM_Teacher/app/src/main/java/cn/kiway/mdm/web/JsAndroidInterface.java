@@ -275,7 +275,7 @@ public class JsAndroidInterface {
             param.put("appId", APPID);
             param.put("type", "huawei");
             param.put("deviceId", imei);
-            param.put("userId", userId);
+            param.put("userId", imei);//userId
             param.put("module", "student");
             Log.d("test", "installationPush param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
