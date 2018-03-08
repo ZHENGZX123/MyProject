@@ -142,7 +142,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    String userId = getSharedPreferences("kiway", 0).getString("userId", "");
+                    String userId = Utils.getIMEI(getApplicationContext());
                     if (TextUtils.isEmpty(userId)) {
                         return;
                     }
