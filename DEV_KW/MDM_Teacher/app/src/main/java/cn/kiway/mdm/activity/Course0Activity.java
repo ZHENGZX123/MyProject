@@ -977,6 +977,12 @@ public class Course0Activity extends ScreenSharingActivity {
     private MediaProjection mediaProjection;
 
     public void startRecord() {
+        //1.判断SD卡空间
+        if (Utils.getRemainingSDSize(this) < 1024 * 1024 * 500) {
+            toast("SD卡剩余空间不足500M，无法录制本地视频");
+            return;
+        }
+        //2.申请录制权限
         Intent captureIntent = projectionManager.createScreenCaptureIntent();
         startActivityForResult(captureIntent, RECORD_REQUEST_CODE);
     }

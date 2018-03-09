@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -518,5 +519,12 @@ public class Utils {
                 }
             }
         });
+    }
+
+    public static long getRemainingSDSize(Context c) {
+        File sdcard_filedir = Environment.getExternalStorageDirectory();//得到sdcard的目录作为一个文件对象
+        long usableSpace = sdcard_filedir.getUsableSpace();//获取文件目录对象剩余空间
+        Log.d("test", "usableSpace = " + usableSpace);
+        return usableSpace;
     }
 }
