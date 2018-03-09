@@ -64,7 +64,6 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public String getVersionCode() {
-        //return getCurrentVersion(MainActivity.this);
         Log.d("test", "getVersionCode");
         return this.activity.getSharedPreferences("kiway", 0).getString("version_package", "0.0.1");
     }

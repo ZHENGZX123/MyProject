@@ -14,6 +14,8 @@ import android.os.IBinder;
 import java.io.File;
 import java.io.IOException;
 
+import static cn.kiway.mdm.KWApplication.ROOT;
+
 
 public class RecordService extends Service {
     private MediaProjection mediaProjection;
@@ -100,14 +102,14 @@ public class RecordService extends Service {
         mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);//DEFAULT WEBM MPEG_4 THREE_GPP
-        output = getsaveDirectory() + System.currentTimeMillis() + ".mp4";
+        output = getSaveDirectory() + System.currentTimeMillis() + ".mp4";
         mediaRecorder.setOutputFile(output);
         mediaRecorder.setVideoSize(width, height);
         mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);//DEFAULT VP8 H264
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);//AMR_NB
         mediaRecorder.setVideoEncodingBitRate(5 * 1024 * 1024);
         mediaRecorder.setVideoFrameRate(12);//30
-        mediaRecorder.setMaxDuration(45 * 60 * 1000);//45分钟
+        mediaRecorder.setMaxDuration(45 * 60 * 1000);//最大录制45分钟
         try {
             mediaRecorder.prepare();
         } catch (IOException e) {
@@ -115,16 +117,15 @@ public class RecordService extends Service {
         }
     }
 
-    public String getsaveDirectory() {
+    public String getSaveDirectory() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            String rootDir = "/mnt/sdcard/kiway_mdm_teacher/ScreenRecord/";
+            String rootDir = ROOT + "ScreenRecord/";
             File file = new File(rootDir);
             if (!file.exists()) {
                 if (!file.mkdirs()) {
                     return null;
                 }
             }
-            //Toast.makeText(getApplicationContext(), rootDir, Toast.LENGTH_SHORT).show();
             return rootDir;
         } else {
             return null;
