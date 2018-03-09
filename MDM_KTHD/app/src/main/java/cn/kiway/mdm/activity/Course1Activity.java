@@ -79,7 +79,6 @@ public class Course1Activity extends BaseActivity {
         super.initView();
 
         videoBtn = (ImageButton) findViewById(R.id.video);
-        videoBtn.setVisibility(View.VISIBLE);
         titleName.setText(course.name);
 
         lv = (ListView) findViewById(R.id.lv);
@@ -144,6 +143,9 @@ public class Course1Activity extends BaseActivity {
                                 JSONArray valueObj = data.getJSONArray(key);
                                 videos = new GsonBuilder().create().fromJson(valueObj.toString(), new TypeToken<ArrayList<Video>>() {
                                 }.getType());
+                                if (videos.size() > 0) {
+                                    videoBtn.setVisibility(View.VISIBLE);
+                                }
                             }
                         }
                         //add zhengkang 0227 倒序排列
