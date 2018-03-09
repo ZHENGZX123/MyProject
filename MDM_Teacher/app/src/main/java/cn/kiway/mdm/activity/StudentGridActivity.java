@@ -159,6 +159,17 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
             toolsRL.setVisibility(View.GONE);
             leftView.setVisibility(View.GONE);
         } else if (type == TYPE_WENJIAN) {
+            if (getIntent().getStringExtra("filePath") != null && !getIntent().getStringExtra("filePath").equals("")) {
+                File file=new File(getIntent().getStringExtra("filePath"));
+                FileModel fileModel=new FileModel();
+                fileModel.name = file.getName();
+                fileModel.filePath = file.getPath();
+                fileModel.size = FileUtils.GetFileSize(file);
+                fileModel.time = System.currentTimeMillis();
+                fileModel.staute = 1;
+                fileModels.add(fileModel);
+                fileAdapter.notifyDataSetChanged();
+            }
             ok.setVisibility(View.VISIBLE);
             all.setVisibility(View.VISIBLE);
             toolsRL.setVisibility(View.GONE);
