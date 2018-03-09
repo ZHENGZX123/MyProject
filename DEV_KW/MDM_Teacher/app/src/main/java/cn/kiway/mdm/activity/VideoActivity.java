@@ -20,7 +20,6 @@ public class VideoActivity extends BaseActivity {
     DemoQSVideoView qsVideoView;
     private String name;
     private ArrayList<Video> videos = new ArrayList<>();
-    int position = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +36,7 @@ public class VideoActivity extends BaseActivity {
             @Override
             public void onStatus(int status) {//播放器的ui状态
                 if (status == IVideoPlayer.STATE_AUTO_COMPLETE) {
-                    if (position + 1 < videos.size()) {
-                        position++;
-                        playVideo(name, videos.get(position).url);
-                    } else {
-                        finish();
-                    }
+                    finish();
                 }
             }
 
@@ -59,7 +53,7 @@ public class VideoActivity extends BaseActivity {
         });
         //进入全屏的模式 0横屏 1竖屏 2传感器自动横竖屏 3根据视频比例自动确定横竖屏      -1什么都不做
         qsVideoView.enterFullMode = 3;
-        playVideo(name, videos.get(position).url);
+        playVideo(name, videos.get(0).url);
     }
 
     protected void playVideo(String name, String videoUrl) {
