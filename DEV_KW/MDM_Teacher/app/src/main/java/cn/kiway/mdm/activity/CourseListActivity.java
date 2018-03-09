@@ -53,6 +53,7 @@ public class CourseListActivity extends BaseActivity {
 
         initView();
         iniListener();
+        initData();
     }
 
     public void initView() {
@@ -92,7 +93,7 @@ public class CourseListActivity extends BaseActivity {
                 Course c = courses.get(position);
                 if (c.attendCourse == 0) {
                     //未上课
-                    startActivity(new Intent(CourseListActivity.this, Course0Activity.class).putExtra("course", c));
+                    startActivityForResult(new Intent(CourseListActivity.this, Course0Activity.class).putExtra("course", c), 999);
                 } else if (c.attendCourse == 1) {
                     //已上课
                     startActivity(new Intent(CourseListActivity.this, Course1Activity.class).putExtra("course", c));
@@ -102,9 +103,11 @@ public class CourseListActivity extends BaseActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        initData();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 999) {
+            initData();
+        }
     }
 
     public void initData() {
