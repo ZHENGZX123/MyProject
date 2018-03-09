@@ -91,7 +91,8 @@ public class MainActivity extends ScreenSharingActivity {
     }
 
     public void logout(View view) {
-
+        toast("测试用");
+        finish();
     }
 
     public void onMsg(View view) {//查看消息
@@ -167,9 +168,9 @@ public class MainActivity extends ScreenSharingActivity {
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
                 try {
-                    JSONObject data=new JSONObject(msg.obj.toString());
-                    String url=data.optString("url");
-                    String name=data.optString("name");
+                    JSONObject data = new JSONObject(msg.obj.toString());
+                    String url = data.optString("url");
+                    String name = data.optString("name");
                     App.instance.uploadUserFile(url, 1, name, FileUtils.GetFileSize(new File(App.ROOT
                             + name)));
                 } catch (JSONException e) {
