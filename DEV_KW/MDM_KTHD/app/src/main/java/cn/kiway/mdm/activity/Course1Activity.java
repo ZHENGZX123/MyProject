@@ -117,7 +117,7 @@ public class Course1Activity extends BaseActivity {
                                     item.results = new GsonBuilder().create().fromJson(array.toString(), new TypeToken<List<KnowledgeCountResult>>() {
                                     }.getType());
                                     item.title = "知识点：" + item.results.get(0).knowledgeName;
-                                } else {
+                                } else if (type > 2 && type < 7) {
                                     JSONArray valueObj = data.getJSONArray(key);
                                     item.questions = new GsonBuilder().create().fromJson(valueObj.toString(), new TypeToken<ArrayList<Question>>() {
                                     }.getType());
@@ -130,6 +130,8 @@ public class Course1Activity extends BaseActivity {
                                     } else if (type == 6) {
                                         item.title = "测评选题";
                                     }
+                                } else if (type == 7) {
+                                    item.title = " 下课";
                                 }
                                 items.add(item);
                             } else if (key.equals("courseVideos")) {
@@ -141,10 +143,10 @@ public class Course1Activity extends BaseActivity {
                         //add zhengkang 0227 倒序排列
                         Collections.reverse(items);
                         adapter.notifyDataSetChanged();
-                        if (adapter.getCount()>0){
+                        if (adapter.getCount() > 0) {
                             lv.setVisibility(View.VISIBLE);
                             findViewById(R.id.no_data).setVisibility(View.GONE);
-                        }else {
+                        } else {
                             lv.setVisibility(View.GONE);
                             findViewById(R.id.no_data).setVisibility(View.VISIBLE);
                         }
@@ -221,12 +223,12 @@ public class Course1Activity extends BaseActivity {
 
             final AttendItem item = items.get(position);
             int type = item.type;
-            if (type == 1) {
+            if (type == 1 || type == 7) {
                 holder.type1RL.setVisibility(View.VISIBLE);
                 holder.type2RL.setVisibility(View.GONE);
                 holder.type345RL.setVisibility(View.GONE);
                 holder.type6RL.setVisibility(View.GONE);
-                addContent1(holder, item);
+                addContent17(holder, item);
             } else if (type == 2) {
                 holder.type1RL.setVisibility(View.GONE);
                 holder.type2RL.setVisibility(View.VISIBLE);
@@ -279,9 +281,9 @@ public class Course1Activity extends BaseActivity {
             return arg0;
         }
 
-        private void addContent1(ViewHolder holder, AttendItem item) {
+        private void addContent17(ViewHolder holder, AttendItem item) {
             holder.type1RL.removeAllViews();
-            LinearLayout layout_question1 = (LinearLayout) inflater.inflate(R.layout.layout_question1, null);
+            LinearLayout layout_question1 = (LinearLayout) inflater.inflate(R.layout.layout_question17, null);
             TextView title = (TextView) layout_question1.findViewById(R.id.title);
             title.setText(item.title);
             holder.type1RL.addView(layout_question1);
