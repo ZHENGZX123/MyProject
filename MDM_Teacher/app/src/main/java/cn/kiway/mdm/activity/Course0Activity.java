@@ -1192,7 +1192,8 @@ public class Course0Activity extends ScreenSharingActivity {
 
     private void doEndClass() {
         ZbusHost.xiake(Course0Activity.this, null);
-        Utils.endClass(Course0Activity.this, course.id);
+        endClass(course.id);
+        //上传视频，要换个写法。。。
         new Thread() {
             @Override
             public void run() {
@@ -1216,6 +1217,40 @@ public class Course0Activity extends ScreenSharingActivity {
                 }
             }
         }.start();
+    }
+
+    public void endClass(String courseID) {
+        Utils.courseID = courseID;
+        try {
+            showPD();
+            //1.发“下课”推送命令
+            String url = clientUrl + "/device/teacher/course/" + courseID + "/attend";
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+            client.setTimeout(10000);
+            client.post(this, url, null, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "endClass onSuccess = " + ret);
+                    hidePD();
+                    setResult(999);
+                    finish();
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "endClass onFailure = " + s);
+                    if (!check301(Course0Activity.this, s, "endclass")) {
+                        toast("请求失败，请稍后再试");
+                        hidePD();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            toast("请求失败，请稍后再试");
+            hidePD();
+        }
     }
 
     public void downloadAndOpenFile2(final String url, final String fileName) {

@@ -260,41 +260,6 @@ public class Utils {
         return false;
     }
 
-    private static String courseID;
-
-    public static void endClass(final Activity c, String courseID) {
-        Utils.courseID = courseID;
-        try {
-            ((BaseActivity) c).showPD();
-            //1.发“下课”推送命令
-            String url = Constant.clientUrl + "/device/teacher/course/" + courseID + "/attend";
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-            client.setTimeout(10000);
-            client.post(c, url, null, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "endClass onSuccess = " + ret);
-                    ((BaseActivity) c).hidePD();
-                    ((BaseActivity) c).finish();
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "endClass onFailure = " + s);
-                    if (!check301(c, s, "endclass")) {
-                        toast(c, "请求失败，请稍后再试");
-                        ((BaseActivity) c).hidePD();
-                    }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            toast(c, "请求失败，请稍后再试");
-            ((BaseActivity) c).hidePD();
-        }
-    }
-
     //保存课程操作行为
     public static void courseOperation(Activity c, String courseID, int type, String someID) {
         try {
@@ -330,6 +295,7 @@ public class Utils {
         }
     }
 
+    public static String courseID;
     public static int questionType;
 
     public static boolean check301(final Activity c, String result, final String type) {
@@ -365,7 +331,7 @@ public class Utils {
                         String token = o.getJSONObject("data").getString("token");
                         c.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
                         if (type.equals("endclass")) {
-                            endClass(c, courseID);
+                            ((Course0Activity) c).endClass(courseID);
                         } else if (type.equals("students")) {
                             ((StudentGridActivity) c).initData();
                         } else if (type.equals("courselist")) {
