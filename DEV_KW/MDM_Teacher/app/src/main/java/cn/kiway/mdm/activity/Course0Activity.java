@@ -1074,20 +1074,20 @@ public class Course0Activity extends ScreenSharingActivity {
             holder.endBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //1.tuiping
+                    if (tuiping) {
+                        toast("当前正在推屏，请先结束");
+                        return;
+                    }
+                    if (recording) {
+                        toast("当前正在录屏，请先结束");
+                        return;
+                    }
                     AlertDialog.Builder builder = new AlertDialog.Builder(Course0Activity.this, AlertDialog.THEME_HOLO_LIGHT);
                     AlertDialog dialog = builder.setTitle("提示").setMessage("是否结束本课程")
                             .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface arg0, int arg1) {
-                                    //1.停止推屏
-                                    if (tuiping) {
-                                        sendTuipingcommand(0);
-                                    }
-                                    //2.停止录制
-                                    if (recording) {
-                                        stopRecord();
-                                    }
-                                    //3.结束课程、上传视频
                                     doEndClass();
                                 }
                             }).setPositiveButton(android.R.string.cancel, null).create();
