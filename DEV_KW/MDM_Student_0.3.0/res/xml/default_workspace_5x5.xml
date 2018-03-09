@@ -35,19 +35,19 @@
         launcher:x="1"
         launcher:y="-1">
     </favorite>
-
-    <!-- <favorite
-        launcher:className="cn.kiway.mdm.activity.MainActivity"
-        launcher:packageName="cn.kiway.session"
-        launcher:screen="0"
-        launcher:x="1"
-        launcher:y="-1">
-    </favorite>
+    <!--<favorite-->
+    <!--launcher:className="com.android.kiway.activity.EulaActivity"-->
+    <!--launcher:packageName="cn.kiway.mdm"-->
+    <!--launcher:screen="0"-->
+    <!--launcher:x="2"-->
+    <!--launcher:y="-1">-->
+    <!--</favorite>-->
+    <!--
    <favorite-->
-        <!--launcher:className="cn.kiway.mdm.activity.MainActivity"-->
-        <!--launcher:packageName="cn.kiway.browser"-->
-        <!--launcher:screen="0"-->
-        <!--launcher:x="1"-->
-        <!--launcher:y="-1">-->
+    <!--launcher:className="cn.kiway.mdm.activity.MainActivity"-->
+    <!--launcher:packageName="cn.kiway.browser"-->
+    <!--launcher:screen="0"-->
+    <!--launcher:x="1"-->
+    <!--launcher:y="-1">-->
     <!--</favorite>-->
 </favorites>
