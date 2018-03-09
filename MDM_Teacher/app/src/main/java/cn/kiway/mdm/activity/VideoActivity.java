@@ -1,6 +1,8 @@
 package cn.kiway.mdm.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 
 import org.song.videoplayer.DemoQSVideoView;
 import org.song.videoplayer.IVideoPlayer;
@@ -38,7 +40,7 @@ public class VideoActivity extends BaseActivity {
                     if (position + 1 < videos.size()) {
                         position++;
                         playVideo(name, videos.get(position).url);
-                    }else {
+                    } else {
                         finish();
                     }
                 }
@@ -61,6 +63,12 @@ public class VideoActivity extends BaseActivity {
     }
 
     protected void playVideo(String name, String videoUrl) {
+        Log.d("test", "playVideo videoUrl = " + videoUrl);
+        String localUrl = getSharedPreferences("kiway", 0).getString(videoUrl, "");
+        Log.d("test", "localUrl = " + localUrl);
+        if (!TextUtils.isEmpty(localUrl)) {
+            videoUrl = localUrl;
+        }
         qsVideoView.release();
         qsVideoView.setUp(videoUrl, name);
         qsVideoView.play();

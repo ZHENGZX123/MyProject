@@ -319,15 +319,11 @@ public class JsAndroidInterface {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "uninstallPush onSuccess = " + ret);
-                    //callback loadurl(xxxcalback)
-                    c.getSharedPreferences("kiway", 0).edit().clear().commit();
                 }
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", "uninstallPush onFailure = " + s);
-                    //callback
-
                 }
             });
         } catch (Exception e) {
