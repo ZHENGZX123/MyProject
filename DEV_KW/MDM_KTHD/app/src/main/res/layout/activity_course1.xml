@@ -26,16 +26,18 @@
             android:layout_weight="1"
             android:divider="#001100"
             android:dividerHeight="0dp"
-            android:listSelector="@drawable/course_list_selector"
+            android:listSelector="#00000000"
             android:scrollbars="none"></ListView>
+
         <ImageView
             android:id="@+id/no_data"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="50dp"
-            android:visibility="gone"
-            android:src="@drawable/no_data" />
+            android:src="@drawable/no_data"
+            android:visibility="gone" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"

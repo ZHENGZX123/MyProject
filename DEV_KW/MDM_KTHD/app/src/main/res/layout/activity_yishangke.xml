@@ -18,8 +18,9 @@
             android:layout_marginLeft="200dp"
             android:divider="#00000000"
             android:dividerHeight="0px"
-            android:listSelector="@drawable/course_list_selector"
+            android:listSelector="#00000000"
             android:scrollbars="none"></com.itheima.pulltorefreshlib.PullToRefreshListView>
+
 
         <ImageView
             android:id="@+id/no_data"
