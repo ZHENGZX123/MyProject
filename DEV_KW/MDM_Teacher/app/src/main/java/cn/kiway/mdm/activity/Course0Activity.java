@@ -1199,23 +1199,26 @@ public class Course0Activity extends ScreenSharingActivity {
     private void doEndClass() {
         ZbusHost.xiake(Course0Activity.this, null);
         endClass(course.id);
-        //上传视频，要换个写法。。。
+        //FIXME 上传视频，要换个写法。。。
         new Thread() {
             @Override
             public void run() {
                 try {
                     String recordFiles[] = getSharedPreferences("kiway", 0).getString(course.id + "_record", "").split("===");
                     for (String s : recordFiles) {
-                        Log.d("test", "s = " + s);
                         if (TextUtils.isEmpty(s)) {
                             continue;
                         }
+                        Log.d("test", "upload record file = " + s);
                         File file = new File(s);
                         String accessToken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
                         final String ret = UploadUtil.uploadFile(file, clientUrl + "/common/file?x-auth-token=" +
                                 accessToken, file.getName());
                         JSONObject obj = new JSONObject(ret);
                         String url = obj.optJSONObject("data").optString("url");
+
+                        //缓存本地-服务器对应关系
+                        getSharedPreferences("kiway", 0).edit().putString(url, s).commit();
                         Utils.addVideoRecord(Course0Activity.this, course.id, url, "mp4");
                     }
                 } catch (Exception e) {
