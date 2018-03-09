@@ -22,7 +22,6 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -74,13 +73,9 @@ import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.0.3";
-    private boolean isSuccess = false;
-    private boolean isJump = false;
     private Dialog dialog_download;
     public ProgressDialog pd;
     private WebView wv;
-    private LinearLayout layout_welcome;
     public static MainActivity instance;
     private long time;
     private JsAndroidInterface jsInterface;
@@ -162,7 +157,6 @@ public class MainActivity extends BaseActivity {
     public void initView() {
         pd = new ProgressDialog(this, ProgressDialog.THEME_HOLO_LIGHT);
         wv = (WebView) findViewById(R.id.wv);
-        layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
     }
 
     private void load() {
