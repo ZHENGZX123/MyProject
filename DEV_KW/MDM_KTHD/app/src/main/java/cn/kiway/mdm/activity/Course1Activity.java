@@ -1,14 +1,19 @@
 package cn.kiway.mdm.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +29,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.xutils.common.util.DensityUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -420,6 +426,98 @@ public class Course1Activity extends BaseActivity {
             toast("该课程没有录课");
             return;
         }
-        startActivity(new Intent(this, VideoActivity.class).putExtra("videos", videos).putExtra("name", course.name));
+        //如果有1个，直接播放
+        if (videos.size() == 1) {
+            startActivity(new Intent(this, VideoActivity.class).putExtra("videos", videos).putExtra("name", course.name));
+            return;
+        }
+        //如果有多个，弹出选择列表
+        showVideoListDialog();
+    }
+
+    private void showVideoListDialog() {
+        final Dialog dialog = new Dialog(this, R.style.popupDialog);
+        dialog.setContentView(R.layout.dialog_video);
+        dialog.show();
+        WindowManager m = getWindowManager();
+        Display d = m.getDefaultDisplay();
+        android.view.WindowManager.LayoutParams p = dialog.getWindow().getAttributes();
+        int temp = DensityUtil.dip2px(40 + 40 * videos.size());
+        p.height = temp;
+        if (temp > DensityUtil.dip2px(250)) {
+            p.height = DensityUtil.dip2px(250);
+        }
+        dialog.getWindow().setAttributes(p);
+
+        Button close = (Button) dialog.findViewById(R.id.close);
+        ListView lv = (ListView) dialog.findViewById(R.id.lv);
+        VideoListAdapter adapter = new VideoListAdapter();
+        lv.setAdapter(adapter);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Video v = videos.get(position);
+                ArrayList<Video> temp = new ArrayList<Video>();
+                temp.add(v);
+                startActivity(new Intent(Course1Activity.this, VideoActivity.class).putExtra("videos", temp).putExtra("name", course.name));
+            }
+        });
+    }
+
+
+    private class VideoListAdapter extends BaseAdapter {
+
+        private final LayoutInflater inflater;
+
+        public VideoListAdapter() {
+            this.inflater = LayoutInflater.from(Course1Activity.this);
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View rowView = convertView;
+            ViewHolder holder;
+            if (rowView == null) {
+                rowView = inflater.inflate(R.layout.item_video, null);
+                holder = new ViewHolder();
+
+                holder.title = (TextView) rowView.findViewById(R.id.title);
+
+                rowView.setTag(holder);
+            } else {
+                holder = (ViewHolder) rowView.getTag();
+            }
+
+            Video v = videos.get(position);
+            holder.title.setText("第" + (position + 1) + "部分");
+
+            return rowView;
+        }
+
+        public class ViewHolder {
+            public TextView title;
+        }
+
+        @Override
+        public int getCount() {
+            return videos.size();
+        }
+
+        @Override
+        public Video getItem(int arg0) {
+            return videos.get(arg0);
+        }
+
+        @Override
+        public long getItemId(int arg0) {
+            return arg0;
+        }
     }
 }
