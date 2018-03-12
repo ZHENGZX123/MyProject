@@ -1,9 +1,12 @@
 package com.android.kiway.activity;
 
 import android.app.AppOpsManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -48,7 +51,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import cn.kiway.mdmsdk.MDMHelper;
 import cn.kiway.zbus.utils.ZbusUtils;
@@ -134,6 +139,33 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         initZbus();
         //24.悬浮窗
         checkAlertWindow();
+
+
+        test();
+    }
+
+    private void test() {
+        Calendar beginCal = Calendar.getInstance();
+        beginCal.add(Calendar.HOUR_OF_DAY, -1);
+        Calendar endCal = Calendar.getInstance();
+        UsageStatsManager manager = (UsageStatsManager) getApplicationContext().getSystemService(USAGE_STATS_SERVICE);
+        List<UsageStats> stats = manager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, beginCal.getTimeInMillis(), endCal.getTimeInMillis());
+        StringBuilder sb = new StringBuilder();
+        for (UsageStats us : stats) {
+            try {
+                PackageManager pm = getApplicationContext().getPackageManager();
+                ApplicationInfo applicationInfo = pm.getApplicationInfo(us.getPackageName(), PackageManager.GET_META_DATA);
+                if ((applicationInfo.flags & applicationInfo.FLAG_SYSTEM) <= 0) {
+                    SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+                    String t = format.format(new Date(us.getLastTimeUsed()));
+                    sb.append(pm.getApplicationLabel(applicationInfo) + "\t" + t + "\t" + Utils.secToTime((int) (us.getTotalTimeInForeground() / 1000)) + "\n");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        Log.d("test", "xxxxxxxxxxx  " + sb.toString());
+
     }
 
     //判断权限
@@ -353,7 +385,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void setUsageStats() {
-        if ((!Build.MODEL.equals("rk3288") || !Build.MODEL.equals("rk3288")) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !hasPermission
+        if ((!Build.MODEL.equals("rk3288") || !Build.MODEL.equals("rk3368-P9")) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !hasPermission
                 ()) {
             ShowMessageDailog showMessageDailog = new ShowMessageDailog(this);
             showMessageDailog.setShowMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开", YUXUNFANWENJLU);

@@ -234,7 +234,9 @@ public class KWApp extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        //crash
         CrashHandler.getInstance().init(this);
+        //huawei
         huaweiPush(this);
         //xutils
         x.Ext.init(this);
