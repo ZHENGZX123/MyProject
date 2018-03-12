@@ -77,6 +77,25 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return uts;
     }
 
+    public ArrayList<UploadTask> getTasksByCourseID(String courseID) {
+        if (db == null)
+            db = getWritableDatabase();
+        ArrayList<UploadTask> uts = new ArrayList<>();
+        Cursor cur = db.query(TABLE_TASK, null, "courseID=?", new String[]{courseID + ""}, null, null, null);
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            UploadTask ut = new UploadTask();
+            ut.id = cur.getString(cur.getColumnIndex("id"));
+            ut.filepath = cur.getString(cur.getColumnIndex("filepath"));
+            ut.courseID = cur.getString(cur.getColumnIndex("courseID"));
+            ut.status = cur.getInt(cur.getColumnIndex("status"));
+            ut.url = cur.getString(cur.getColumnIndex("url"));
+            uts.add(ut);
+        }
+        cur.close();
+        db.close();
+        return uts;
+    }
+
     public void deleteTask() {
         if (db == null)
             db = getWritableDatabase();

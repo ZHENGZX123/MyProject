@@ -59,7 +59,6 @@ public class CourseListActivity extends BaseActivity {
     public void initView() {
         super.initView();
 
-        toolsRL.setVisibility(View.GONE);
         titleName.setText("上课");
 
         pullToRefreshLayout = ((PullToRefreshLayout) findViewById(R.id.refresh_view));

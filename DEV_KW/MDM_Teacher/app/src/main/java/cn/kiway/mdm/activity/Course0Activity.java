@@ -59,7 +59,6 @@ import cn.kiway.mdm.entity.StudentQuestion;
 import cn.kiway.mdm.entity.TeachingContentVo;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
-import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.UploadUtil2;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.zbus.OnListener;
@@ -1200,7 +1199,6 @@ public class Course0Activity extends ScreenSharingActivity {
     private void doEndClass() {
         ZbusHost.xiake(Course0Activity.this, null);
         endClass(course.id);
-
 
         String recordFiles[] = getSharedPreferences("kiway", 0).getString(course.id + "_record", "").split("===");
         for (String s : recordFiles) {

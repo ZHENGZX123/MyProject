@@ -40,9 +40,11 @@ import cn.kiway.mdm.entity.AttendItem;
 import cn.kiway.mdm.entity.Course;
 import cn.kiway.mdm.entity.KnowledgeCountResult;
 import cn.kiway.mdm.entity.Question;
+import cn.kiway.mdm.entity.UploadTask;
 import cn.kiway.mdm.entity.Video;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Constant;
+import cn.kiway.mdm.util.MyDBHelper;
 
 import static cn.kiway.mdm.util.Utils.check301;
 import static cn.kiway.mdm.util.Utils.showBigImage;
@@ -67,17 +69,23 @@ public class Course1Activity extends BaseActivity {
         course = (Course) getIntent().getSerializableExtra("course");
 
         initView();
-        initData();
     }
 
     @Override
     public void initView() {
         super.initView();
-        toolsRL.setVisibility(View.GONE);
         titleName.setText(course.name);
         lv = (ListView) findViewById(R.id.lv);
         adapter = new CourseAdapter();
         lv.setAdapter(adapter);
+
+        videoBtn.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        initData();
     }
 
     public void initData() {
@@ -135,11 +143,6 @@ public class Course1Activity extends BaseActivity {
                                 JSONArray valueObj = data.getJSONArray(key);
                                 videos = new GsonBuilder().create().fromJson(valueObj.toString(), new TypeToken<ArrayList<Video>>() {
                                 }.getType());
-                                if (videos.size() == 0) {
-                                    videoBtn.setVisibility(View.GONE);
-                                } else {
-                                    videoBtn.setVisibility(View.VISIBLE);
-                                }
                             }
                         }
                         //add zhengkang 0227 倒序排列
@@ -398,7 +401,13 @@ public class Course1Activity extends BaseActivity {
 
     public void clickVideo(View view) {
         if (videos.size() == 0) {
-            toast("该课程没有录课");
+            //1.检查数据库，有没有待上传的任务，如果有，跳到上传页面
+            ArrayList<UploadTask> tasks = new MyDBHelper(this).getTasksByCourseID(course.id);
+            if (tasks.size() > 0) {
+                toast("该课程的视频正在上传");
+            } else {
+                toast("该课程没有录制视频");
+            }
             return;
         }
         //如果有1个，直接播放
