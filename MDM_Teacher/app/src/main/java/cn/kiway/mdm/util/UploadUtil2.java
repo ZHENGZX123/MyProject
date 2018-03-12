@@ -35,15 +35,21 @@ public class UploadUtil2 {
             public void run() {
                 while (true) {
                     Log.d("test", "check upload task ...");
-                    //2.查找未完成的task，然后上传
-                    ArrayList<UploadTask> tasks = new MyDBHelper(c).getTasksByStatus(UploadTask.STATUS_START);
-                    Log.d("test", "未完成的tasks size = " + tasks.size());
-                    for (UploadTask ut : tasks) {
-                        Log.d("test", "ut = " + ut);
-                        doUpload(c, ut);
+                    //2.判断是不是wifi
+                    int isWifi = NetworkUtil.isWifi(c);
+                    if (isWifi == 1) {
+                        //3.查找未完成的task，然后上传
+                        ArrayList<UploadTask> tasks = new MyDBHelper(c).getTasksByStatus(UploadTask.STATUS_START);
+                        Log.d("test", "未完成的tasks size = " + tasks.size());
+                        for (UploadTask ut : tasks) {
+                            Log.d("test", "ut = " + ut);
+                            doUpload(c, ut);
+                        }
+                    } else {
+                        Log.d("test", "不是wifi");
                     }
                     try {
-                        sleep(10000);
+                        sleep(60000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
