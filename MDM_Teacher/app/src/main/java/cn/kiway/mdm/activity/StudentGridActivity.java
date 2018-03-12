@@ -1088,11 +1088,6 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
     }
 
     public void sk(View view) {
-        //0307游志华说的
-//        if (!dianmingAlready) {
-//            toast("请先点名");
-//            return;
-//        }
         startActivity(new Intent(StudentGridActivity.this, CourseListActivity.class));
         finish();
     }

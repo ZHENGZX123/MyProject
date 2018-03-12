@@ -40,6 +40,7 @@ import cn.kiway.mdm.activity.CourseListActivity;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ResultActivity;
 import cn.kiway.mdm.activity.StudentGridActivity;
+import cn.kiway.mdm.entity.UploadTask;
 import cn.kiway.mdm.teacher.R;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
@@ -488,37 +489,32 @@ public class Utils {
         return false;
     }
 
-    public static void addVideoRecord(final Activity c, final String courseID, final String fileUrl, final String fileSuffix) {
-        c.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String url = Constant.clientUrl + "/device/teacher/course/" + courseID + "/video";
-                    Log.d("test", "addVideoRecord url = " + url);
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
-                    client.setTimeout(10000);
-                    RequestParams param = new RequestParams();
-                    param.put("url", fileUrl);
-                    param.put("suffix", fileSuffix);
-                    Log.d("test", "addVideoRecord param = " + param.toString());
-                    client.post(c, url, param, new TextHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int code, Header[] headers, String ret) {
-                            Log.d("test", " onSuccess = " + ret);
-                        }
-
-                        @Override
-                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            Log.d("test", " onFailure = " + s);
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    toast(c, "请求失败，请稍后再试");
+    public static void addVideoRecord(final Context c, UploadTask ut, final String courseID, final String fileUrl, final String fileSuffix) {
+        try {
+            String url = Constant.clientUrl + "/device/teacher/course/" + courseID + "/video";
+            Log.d("test", "addVideoRecord url = " + url);
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("x-auth-token", c.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+            client.setTimeout(10000);
+            RequestParams param = new RequestParams();
+            param.put("url", fileUrl);
+            param.put("suffix", fileSuffix);
+            Log.d("test", "addVideoRecord param = " + param.toString());
+            client.post(c, url, param, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", " onSuccess = " + ret);
+                    new MyDBHelper(c).setTaskStatus(ut, UploadTask.STATUS_FINISH);
                 }
-            }
-        });
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", " onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static long getRemainingSDSize(Context c) {

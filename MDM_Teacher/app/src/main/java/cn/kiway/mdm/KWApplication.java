@@ -23,8 +23,11 @@ import org.xutils.x;
 import java.util.ArrayList;
 
 import cn.kiway.mdm.entity.Student;
+import cn.kiway.mdm.entity.UploadTask;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.util.CrashHandler;
+import cn.kiway.mdm.util.MyDBHelper;
+import cn.kiway.mdm.util.UploadUtil2;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -56,8 +59,9 @@ public class KWApplication extends Application {
         //init
         initImageCache();
         //crash
-        CrashHandler crashHandler = CrashHandler.getInstance();
-        crashHandler.init(getApplicationContext());
+        CrashHandler.getInstance().init(getApplicationContext());
+        //upload
+        UploadUtil2.startTask(this);
     }
 
     /**
