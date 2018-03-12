@@ -302,6 +302,8 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
         if (type == TYPE_WENJIAN) {
             findViewById(R.id.sendFile).setVisibility(View.VISIBLE);
             findViewById(R.id.studentGV).setVisibility(View.GONE);
+            findViewById(R.id.all).setVisibility(View.GONE);
+            findViewById(R.id.ok).setVisibility(View.GONE);
             isFileDel = false;
         }
     }
@@ -731,6 +733,8 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
             case R.id.f_back:
                 findViewById(R.id.sendFile).setVisibility(View.GONE);
                 findViewById(R.id.studentGV).setVisibility(View.VISIBLE);
+                findViewById(R.id.all).setVisibility(View.VISIBLE);
+                findViewById(R.id.ok).setVisibility(View.VISIBLE);
                 break;
             case R.id.add:
                 isFileDel = false;
