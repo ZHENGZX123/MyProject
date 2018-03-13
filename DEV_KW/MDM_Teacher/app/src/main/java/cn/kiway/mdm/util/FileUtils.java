@@ -1,12 +1,17 @@
 package cn.kiway.mdm.util;
 
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -299,6 +304,7 @@ public class FileUtils {
         }
         return size;
     }
+
     public static void openFile(Context context, String filePath) {
         filePath = "file://" + filePath;
         if (filePath.split("\\.").length < 2) {
@@ -340,6 +346,27 @@ public class FileUtils {
                 else
                     Toast.makeText(context, "手机没有安装相关的办公软件，请下载安装", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    public String getLauncherFilePath(Context context) {
+        File file = new File("/mnt/sdcard/mdm_teacher/launcher.png");//将要保存图片的路径
+        if (file.exists())
+            return file.getPath();
+        WallpaperManager wallpaperManager = WallpaperManager
+                .getInstance(context);
+        // 获取当前壁纸
+        Drawable wallpaperDrawable = wallpaperManager.getFastDrawable();
+        Bitmap bitmap = ((BitmapDrawable) wallpaperDrawable).getBitmap();
+        try {
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+            bos.flush();
+            bos.close();
+            return file.getPath();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
         }
     }
 }
