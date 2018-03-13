@@ -162,13 +162,15 @@ public class App extends KiwayApplication {
             isAttenClass = false;
             mHandler.removeMessages(MSG_TIME_OUT);
             mHandler.sendEmptyMessage(MSG_HOME_TURE);
-            if (currentActivity != null)
-                currentActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(currentActivity, "已经下课啦", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            if (MainActivity.instantce == null) {
+                return;
+            }
+            MainActivity.instantce.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MainActivity.instantce, "已经下课啦", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         @Override
@@ -239,15 +241,19 @@ public class App extends KiwayApplication {
 
         @Override
         public void attendClass(String msg) throws RemoteException {
+            Log.d("test", "attendClass is Called");
             //上课
             isAttenClass = true;
-            if (currentActivity != null)
-                currentActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(currentActivity, "开始上课啦", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            if (MainActivity.instantce == null) {
+                return;
+            }
+
+            MainActivity.instantce.mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    MainActivity.instantce.toast("开始上课啦");
+                }
+            }, 1000);
         }
     };
 
