@@ -52,7 +52,6 @@ import static cn.kiway.mdm.util.Utils.getCurrentVersion;
 
 
 public class MainActivity extends BaseActivity {
-    private static final String currentPackageVersion = "0.0.1";
 
     private WebView wv;
     public static MainActivity instance;
