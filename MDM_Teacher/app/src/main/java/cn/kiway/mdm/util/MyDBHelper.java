@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-
 import java.util.ArrayList;
 
 import cn.kiway.mdm.entity.UploadTask;
@@ -99,6 +98,24 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return uts;
     }
 
+    public UploadTask getTasksByUrl(String url) {
+        if (db == null)
+            db = getWritableDatabase();
+        UploadTask ut = new UploadTask();
+        Cursor cur = db.query(TABLE_TASK, null, "url=?", new String[]{url + ""}, null, null, null);
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            ut.id = cur.getString(cur.getColumnIndex("id"));
+            ut.filepath = cur.getString(cur.getColumnIndex("filepath"));
+            ut.courseID = cur.getString(cur.getColumnIndex("courseID"));
+            ut.status = cur.getInt(cur.getColumnIndex("status"));
+            ut.progress = cur.getInt(cur.getColumnIndex("progress"));
+            ut.url = cur.getString(cur.getColumnIndex("url"));
+        }
+        cur.close();
+        db.close();
+        return ut;
+    }
+
     public void deleteTask() {
         if (db == null)
             db = getWritableDatabase();
@@ -125,4 +142,16 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.update(TABLE_TASK, cv, "id=?", args);
         db.close();
     }
+
+    public void setTaskUrl(UploadTask ut, String url) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("url", url);
+        String[] args = {"" + ut.id};
+        db.update(TABLE_TASK, cv, "id=?", args);
+        db.close();
+    }
+
+
 }
