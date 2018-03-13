@@ -580,18 +580,24 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void sendShangkeCommand() {
-        ZbusHost.shangke(StudentGridActivity.this, new OnListener() {
-
-            @Override
-            public void onSuccess() {
-                //toast("发送上课命令成功");
+        for (int i = 0; i < 3; i++) {
+            String command = "shangke1";
+            if (i > 0) {
+                command = "shangke2";
             }
+            ZbusHost.shangke(StudentGridActivity.this, command, new OnListener() {
 
-            @Override
-            public void onFailure() {
-                toast("发送上课命令失败");
-            }
-        });
+                @Override
+                public void onSuccess() {
+                    //toast("发送上课命令成功");
+                }
+
+                @Override
+                public void onFailure() {
+                    toast("发送上课命令失败");
+                }
+            });
+        }
     }
 
     private void sendDianmingdaCommand(final Student s) {
@@ -642,7 +648,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                     }
                     sendDianmingdaCommand(s);
                 } else if (type == TYPE_WENJIAN) {
-                    //0305 注意：老游说，不在线也可以发文件
+                    //0305 老游说，不在线也可以发文件
                     //if (!s.online) {
                     //    toast("该学生不在线，暂无法操作该功能");
                     //    return;
@@ -1240,6 +1246,10 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
             public void run() {
                 for (Student s : students) {
                     if (s.imei.equals(studentIMEI)) {
+                        //如果已经点到过，就不要再次online了
+                        if (s.come) {
+                            return;
+                        }
                         s.online = true;
                     }
                 }

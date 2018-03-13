@@ -357,14 +357,14 @@ public class ZbusHost {
         }
     }
 
-    public static void shangke(final Activity c, final OnListener onListener) {
+    public static void shangke(final Activity c, String command, final OnListener onListener) {
         new Thread() {
             @Override
             public void run() {
                 try {
                     String title = "上课";
                     String userId = Utils.getIMEI(c);
-                    String msg = new JSONObject().put("data", new JSONObject().put("command", "shangke").put("ip", "").put("platform", "android").put("teacherUserId", userId).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
+                    String msg = new JSONObject().put("data", new JSONObject().put("command", command).put("ip", "").put("platform", "android").put("teacherUserId", userId).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
                     doSendMsg(c, title, userId, msg, students);
                     if (onListener != null) {
                         c.runOnUiThread(new Runnable() {
