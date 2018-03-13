@@ -337,7 +337,7 @@ public class Course0Activity extends ScreenSharingActivity {
         toast("开始推屏");
         initModules();
         startCapture();
-        String userId = getSharedPreferences("kiway", 0).getString("userId", "");
+        String userId = Utils.getIMEI(this);
         mRtcEngine.joinChannel(null, userId, "", 0);
     }
 

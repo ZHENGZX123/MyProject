@@ -19,12 +19,12 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_TASK = "Task";
     private static final String CREATE_TABLE_TASK = " create table  IF NOT EXISTS "
             + TABLE_TASK
-            + " (id integer primary key autoincrement,  filepath  text , courseID text,  status text , url text)";
+            + " (id integer primary key autoincrement,  filepath  text , courseID text,  status text , progress text , url text)";
 
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 6);
+        super(c, DB_NAME, null, 8);
     }
 
     @Override
@@ -48,6 +48,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         values.put("filepath", a.filepath);
         values.put("courseID", a.courseID);
         values.put("status", a.status);
+        values.put("progress", a.progress);
         values.put("url", a.url);
         db.insert(TABLE_TASK, null, values);
         db.close();
@@ -69,6 +70,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             ut.filepath = cur.getString(cur.getColumnIndex("filepath"));
             ut.courseID = cur.getString(cur.getColumnIndex("courseID"));
             ut.status = cur.getInt(cur.getColumnIndex("status"));
+            ut.progress = cur.getInt(cur.getColumnIndex("progress"));
             ut.url = cur.getString(cur.getColumnIndex("url"));
             uts.add(ut);
         }
@@ -88,6 +90,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             ut.filepath = cur.getString(cur.getColumnIndex("filepath"));
             ut.courseID = cur.getString(cur.getColumnIndex("courseID"));
             ut.status = cur.getInt(cur.getColumnIndex("status"));
+            ut.progress = cur.getInt(cur.getColumnIndex("progress"));
             ut.url = cur.getString(cur.getColumnIndex("url"));
             uts.add(ut);
         }
@@ -108,6 +111,16 @@ public class MyDBHelper extends SQLiteOpenHelper {
             db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("status", newStatus);
+        String[] args = {"" + ut.id};
+        db.update(TABLE_TASK, cv, "id=?", args);
+        db.close();
+    }
+
+    public void setTaskProgress(UploadTask ut, int newProgress) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("progress", newProgress);
         String[] args = {"" + ut.id};
         db.update(TABLE_TASK, cv, "id=?", args);
         db.close();

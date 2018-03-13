@@ -80,6 +80,12 @@
         <activity
             android:name="cn.kiway.mdm.activity.WhiteBoardActivity"
             android:screenOrientation="landscape"></activity>
+
+        <activity
+            android:name="cn.kiway.mdm.activity.UploaTaskActivity"
+            android:screenOrientation="landscape"></activity>
+
+
     </application>
 
 </manifest>
