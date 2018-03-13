@@ -85,10 +85,10 @@ public class UploadUtil2 {
                 try {
                     JSONObject obj = new JSONObject(result);
                     String url = obj.optJSONObject("data").optString("url");
-                    //FIXME 缓存本地-服务器对应关系
-                    //c.getSharedPreferences("kiway", 0).edit().putString(url, ut.filepath).commit();
+                    //缓存本地-服务器对应关系
+                    new MyDBHelper(c).setTaskUrl(ut , url);
                     //添加记录
-                    //Utils.addVideoRecord(c, ut, ut.courseID, url, "mp4");
+                    Utils.addVideoRecord(c, ut, ut.courseID, url, "mp4");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ public class BaseActivity extends Activity {
         super.onCreate(savedInstanceState);
         pd = new ProgressDialog(this);
         pd.setMessage("网络请求中");
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     public void initView() {

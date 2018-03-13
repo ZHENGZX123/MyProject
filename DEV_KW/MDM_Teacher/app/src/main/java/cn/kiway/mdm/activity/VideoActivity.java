@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import cn.kiway.mdm.entity.Video;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.MyDBHelper;
 
 
 public class VideoActivity extends BaseActivity {
@@ -58,7 +59,7 @@ public class VideoActivity extends BaseActivity {
 
     protected void playVideo(String name, String videoUrl) {
         Log.d("test", "playVideo videoUrl = " + videoUrl);
-        String localUrl = getSharedPreferences("kiway", 0).getString(videoUrl, "");
+        String localUrl = new MyDBHelper(this).getTasksByUrl(videoUrl).filepath;
         Log.d("test", "localUrl = " + localUrl);
         if (!TextUtils.isEmpty(localUrl)) {
             videoUrl = localUrl;
