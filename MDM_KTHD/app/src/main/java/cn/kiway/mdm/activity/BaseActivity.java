@@ -77,6 +77,8 @@ public class BaseActivity extends Activity {
 
         pd = new ProgressDialog(this);
         pd.setMessage("网络请求中");
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     public void initView() {
