@@ -126,7 +126,7 @@
     <string name="week_day_format">%1$s，%2$s 年</string>
     <string name="title_app_suggestions">应用推荐</string>
 
-    <string name="app_name">开维教育桌面</string>
+    <string name="app_name">教育桌面</string>
     <string name="state_not_actived">该应用未激活</string>
     <string name="accept_btn">同意</string>
     <string name="exit_btn">退出</string>
