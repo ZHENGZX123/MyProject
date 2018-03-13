@@ -69,7 +69,7 @@ public class ScreenSharingActivity extends BaseActivity {
                 vf.format = AgoraVideoFrame.FORMAT_TEXTURE_OES;
                 vf.timeStamp = frame.pts;
                 vf.stride = frame.mFormat.mWidth + 150; //减的话，高度拉伸； 加的话，高度往中间缩
-                vf.height = frame.mFormat.mHeight ;
+                vf.height = frame.mFormat.mHeight;
                 vf.textureID = frame.mTextureId;
                 vf.syncMode = true;
                 vf.eglContext14 = mScreenGLRender.getEGLContext();
