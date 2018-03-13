@@ -38,9 +38,6 @@ import static com.android.kiway.utils.Constant.serverUrl;
 public class HttpUtil {
 
 
-
-
-
     private static boolean is301 = false;
 
     public static void updateDefaultPwd(final Activity c, final String defaultPwd) {
@@ -61,6 +58,7 @@ public class HttpUtil {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "updateDefaultPwd onSuccess = " + ret);
+
                         }
 
                         @Override
@@ -603,8 +601,8 @@ public class HttpUtil {
                                 new MyDBHelper(c).deleteCall(null);
                                 for (Call n : calls) {
                                     new MyDBHelper(c).addCall(n);
-                                    }
-                                    //TODO 这里要调用一下华为的方法
+                                }
+                                //TODO 这里要调用一下华为的方法
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
