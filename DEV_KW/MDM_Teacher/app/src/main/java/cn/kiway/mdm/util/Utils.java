@@ -9,7 +9,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,14 +36,11 @@ import cn.kiway.mdm.activity.BaseActivity;
 import cn.kiway.mdm.activity.Course0Activity;
 import cn.kiway.mdm.activity.Course1Activity;
 import cn.kiway.mdm.activity.CourseListActivity;
-import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ResultActivity;
 import cn.kiway.mdm.activity.StudentGridActivity;
 import cn.kiway.mdm.entity.UploadTask;
 import cn.kiway.mdm.teacher.R;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
-
-import static cn.kiway.mdm.activity.MainActivity.MSG_NETWORK;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -72,26 +68,6 @@ public class Utils {
             e.printStackTrace();
         }
         return versionName;
-    }
-
-    public static void checkNetWork(Context context, boolean reConnect) {
-        //获取手机的连接服务管理器，这里是连接管理器类
-        try {
-            boolean available = NetworkUtil.isNetworkAvailable(context);
-            Message msg = new Message();
-            if (available) {
-                msg.what = MSG_NETWORK;
-                msg.arg1 = 1;
-                msg.arg2 = reConnect ? 1 : 0;
-            } else {
-                msg.what = MSG_NETWORK;
-                msg.arg1 = 0;
-                msg.arg2 = reConnect ? 1 : 0;
-            }
-            MainActivity.instance.mHandler.sendMessage(msg);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static boolean isAppInstalled(Context context, String packageName) {

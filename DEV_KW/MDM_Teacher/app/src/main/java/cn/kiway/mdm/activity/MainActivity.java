@@ -79,7 +79,8 @@ public class MainActivity extends BaseActivity {
     public static MainActivity instance;
     private long time;
     private JsAndroidInterface jsInterface;
-    public static final int MSG_NETWORK = 1;
+    public static final int MSG_NETWORK_OK = 1;
+    public static final int MSG_NETWORK_ERR = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,9 +130,6 @@ public class MainActivity extends BaseActivity {
         }
     };
 
-    Broker broker = new Broker(cn.kiway.mdm.util.Constant.zbusHost + ":" + cn.kiway.mdm.util.Constant.zbusPost);
-    Producer p = new Producer(broker);
-
     //初始化zbus
     public void initZbus() {
         Log.d("test", "initZbus");
@@ -143,6 +141,8 @@ public class MainActivity extends BaseActivity {
                     if (TextUtils.isEmpty(userId)) {
                         return;
                     }
+                    Broker broker = new Broker(cn.kiway.mdm.util.Constant.zbusHost + ":" + cn.kiway.mdm.util.Constant.zbusPost);
+                    Producer p = new Producer(broker);
                     ZbusUtils.init(broker, p);
                     String topic = "kiway_push_" + userId;
                     Log.d("test", "topic = " + topic);
@@ -394,18 +394,16 @@ public class MainActivity extends BaseActivity {
 
     public Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
-            if (msg.what == MSG_NETWORK) {
+            if (msg.what == MSG_NETWORK_OK) {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
-                int arg1 = msg.arg1;
-                if (arg1 == 0) {
-                    rl_nonet.setVisibility(View.VISIBLE);
-                    Log.d("test", "无网络");
-                    ZbusUtils.close();
-                } else {
-                    rl_nonet.setVisibility(View.GONE);
-                    Log.d("test", "有网络");
-                    initZbus();
-                }
+                rl_nonet.setVisibility(View.GONE);
+                Log.d("test", "有网络");
+                initZbus();
+            } else if (msg.what == MSG_NETWORK_ERR) {
+                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
+                rl_nonet.setVisibility(View.VISIBLE);
+                Log.d("test", "无网络");
+                ZbusUtils.close();
             } else if (msg.what == 4) {
                 // 下载完成后安装
                 String savedFilePath = (String) msg.obj;

@@ -25,13 +25,14 @@ public class NetChangeReceiver extends BroadcastReceiver {
             Log.d("test", "NetChangeBroadcast available = " + available);
 
             Message msg = new Message();
-            msg.what = MainActivity.MSG_NETWORK;
             if (available) {
-                msg.arg1 = 1;
+                msg.what = MainActivity.MSG_NETWORK_OK;
+                MainActivity.instance.mHandler.removeMessages(MainActivity.MSG_NETWORK_OK);
+                MainActivity.instance.mHandler.sendMessageDelayed(msg, 5000);
             } else {
-                msg.arg1 = 0;
+                msg.what = MainActivity.MSG_NETWORK_ERR;
+                MainActivity.instance.mHandler.sendMessage(msg);
             }
-            MainActivity.instance.mHandler.sendMessage(msg);
         } catch (Exception e) {
             e.printStackTrace();
         }
