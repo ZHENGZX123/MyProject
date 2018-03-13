@@ -68,7 +68,7 @@ public class ScreenSharingActivity extends BaseActivity {
                 AgoraVideoFrame vf = new AgoraVideoFrame();
                 vf.format = AgoraVideoFrame.FORMAT_TEXTURE_OES;
                 vf.timeStamp = frame.pts;
-                vf.stride = frame.mFormat.mWidth;
+                vf.stride = frame.mFormat.mWidth + 150;
                 vf.height = frame.mFormat.mHeight;
                 vf.textureID = frame.mTextureId;
                 vf.syncMode = true;
@@ -147,7 +147,7 @@ public class ScreenSharingActivity extends BaseActivity {
                 throw new RuntimeException("Can not work on device do not supporting texture" + mRtcEngine.isTextureEncodeSupported());
             }
 
-            mRtcEngine.setVideoProfile(Constants.VIDEO_PROFILE_480P, true);
+            mRtcEngine.setVideoProfile(Constants.VIDEO_PROFILE_720P, false);
 
             mRtcEngine.setClientRole(Constants.CLIENT_ROLE_BROADCASTER, null);
         }
