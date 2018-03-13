@@ -21,7 +21,7 @@ import cn.kiway.mdm.entity.UploadTask;
 public class UploadUtil2 {
 
     public static void addTask(Context c, String filepath, String courseID) {
-        new MyDBHelper(c).addTask(new UploadTask(filepath, courseID, UploadTask.STATUS_START, ""));
+        new MyDBHelper(c).addTask(new UploadTask(filepath, courseID, UploadTask.STATUS_START, 0, ""));
     }
 
     public static void startTask(Context c) {
@@ -29,6 +29,7 @@ public class UploadUtil2 {
         ArrayList<UploadTask> tasks = new MyDBHelper(c).getTasksByStatus(UploadTask.STATUS_UPLOADING);
         for (UploadTask ut : tasks) {
             new MyDBHelper(c).setTaskStatus(ut, UploadTask.STATUS_START);
+            new MyDBHelper(c).setTaskProgress(ut, 0);
         }
         new Thread() {
             @Override
@@ -79,7 +80,7 @@ public class UploadUtil2 {
                 try {
                     JSONObject obj = new JSONObject(result);
                     String url = obj.optJSONObject("data").optString("url");
-                    //缓存本地-服务器对应关系
+                    //FIXME 缓存本地-服务器对应关系
                     c.getSharedPreferences("kiway", 0).edit().putString(url, ut.filepath).commit();
                     //添加记录
                     Utils.addVideoRecord(c, ut, ut.courseID, url, "mp4");
@@ -92,6 +93,7 @@ public class UploadUtil2 {
             public void onError(Throwable ex, boolean isOnCallback) {
                 Log.d("test", "onError " + ex.toString());
                 new MyDBHelper(c).setTaskStatus(ut, UploadTask.STATUS_START);
+                new MyDBHelper(c).setTaskProgress(ut, 0);
             }
 
             @Override
@@ -118,8 +120,10 @@ public class UploadUtil2 {
 
             @Override
             public void onLoading(long total, long current, boolean isDownloading) {
-                Log.d("test", "onLoading total = " + total + " current = " + current + " isDownloading = " + isDownloading);
+                int percent = (int) (((float) current) / total * 100);
+                Log.d("test", "onLoading total = " + total + " current = " + current + " isDownloading = " + isDownloading + "percent = " + percent);
                 new MyDBHelper(c).setTaskStatus(ut, UploadTask.STATUS_UPLOADING);
+                new MyDBHelper(c).setTaskProgress(ut, percent);
             }
         });
     }

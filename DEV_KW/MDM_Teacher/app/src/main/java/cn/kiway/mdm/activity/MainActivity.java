@@ -87,7 +87,6 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         instance = this;
         initView();
-        Utils.checkNetWork(this, false);
         initData();
         load();
         initZbus();
@@ -130,6 +129,9 @@ public class MainActivity extends BaseActivity {
         }
     };
 
+    Broker broker = new Broker(cn.kiway.mdm.util.Constant.zbusHost + ":" + cn.kiway.mdm.util.Constant.zbusPost);
+    Producer p = new Producer(broker);
+
     //初始化zbus
     public void initZbus() {
         Log.d("test", "initZbus");
@@ -141,8 +143,6 @@ public class MainActivity extends BaseActivity {
                     if (TextUtils.isEmpty(userId)) {
                         return;
                     }
-                    Broker broker = new Broker(cn.kiway.mdm.util.Constant.zbusHost + ":" + cn.kiway.mdm.util.Constant.zbusPost);
-                    Producer p = new Producer(broker);
                     ZbusUtils.init(broker, p);
                     String topic = "kiway_push_" + userId;
                     Log.d("test", "topic = " + topic);
@@ -394,16 +394,17 @@ public class MainActivity extends BaseActivity {
 
     public Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
-            if (msg.what == 1) {
+            if (msg.what == MSG_NETWORK) {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 int arg1 = msg.arg1;
-                int arg2 = msg.arg2;
                 if (arg1 == 0) {
                     rl_nonet.setVisibility(View.VISIBLE);
                     Log.d("test", "无网络");
+                    ZbusUtils.close();
                 } else {
                     rl_nonet.setVisibility(View.GONE);
                     Log.d("test", "有网络");
+                    initZbus();
                 }
             } else if (msg.what == 4) {
                 // 下载完成后安装
@@ -498,6 +499,6 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbindService(connection);
-        //ZbusUtils.close();
+        ZbusUtils.close();
     }
 }

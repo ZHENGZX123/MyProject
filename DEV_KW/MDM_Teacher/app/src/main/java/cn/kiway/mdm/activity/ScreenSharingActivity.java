@@ -68,13 +68,12 @@ public class ScreenSharingActivity extends BaseActivity {
                 AgoraVideoFrame vf = new AgoraVideoFrame();
                 vf.format = AgoraVideoFrame.FORMAT_TEXTURE_OES;
                 vf.timeStamp = frame.pts;
-                vf.stride = frame.mFormat.mWidth;
-                vf.height = frame.mFormat.mHeight;
+                vf.stride = frame.mFormat.mWidth + 150; //减的话，高度拉伸； 加的话，高度往中间缩
+                vf.height = frame.mFormat.mHeight ;
                 vf.textureID = frame.mTextureId;
                 vf.syncMode = true;
                 vf.eglContext14 = mScreenGLRender.getEGLContext();
                 vf.transform = frame.mTexMatrix;
-
                 mRtcEngine.pushExternalVideoFrame(vf);
             }
         });
@@ -147,7 +146,7 @@ public class ScreenSharingActivity extends BaseActivity {
                 throw new RuntimeException("Can not work on device do not supporting texture" + mRtcEngine.isTextureEncodeSupported());
             }
 
-            mRtcEngine.setVideoProfile(Constants.VIDEO_PROFILE_720P, true);
+            mRtcEngine.setVideoProfile(Constants.VIDEO_PROFILE_720P, false);
 
             mRtcEngine.setClientRole(Constants.CLIENT_ROLE_BROADCASTER, null);
         }
