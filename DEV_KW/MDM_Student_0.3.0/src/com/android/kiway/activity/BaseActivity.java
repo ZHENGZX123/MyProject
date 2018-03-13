@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.android.kiway.KWApp;
@@ -42,7 +43,7 @@ public class BaseActivity extends com.android.launcher3.BaseActivity {
         super.onCreate(savedInstanceState);
         pd = new ProgressDialog(this);
         pd.setMessage("网络请求中");
-
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         //初始化MDM
         ComponentName mAdminName = new ComponentName(this, SampleDeviceReceiver.class);
         MDMHelper.getAdapter().init(this, mAdminName);

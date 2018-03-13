@@ -62,8 +62,6 @@ import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
 import io.zbus.mq.Producer;
 
-import static cn.kiway.zbus.utils.ZbusUtils.broker;
-import static cn.kiway.zbus.utils.ZbusUtils.p;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.SCREEN;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 import static com.android.kiway.utils.Constant.APPID;
@@ -93,7 +91,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private static final int MSG_GET_COMMAND = 4;
     private static final int MSG_CHECK_NEWVERSION = 5;
     private static final int MSG_CHECK_SHUTDOWN = 6;
-    public static final int MSG_NETWORK = 7;
+    public static final int MSG_NETWORK_OK = 7;
+    public static final int MSG_NETWORK_ERR = 8;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,9 +140,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         initZbus();
         //24.悬浮窗
         checkAlertWindow();
-
-
-        test();
+        //test();
     }
 
     private void test() {
@@ -180,8 +177,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
     }
 
-    Broker broker = new Broker(Constant.zbusHost + ":" + Constant.zbusPost);
-    Producer p = new Producer(broker);
 
     public void initZbus() {
         Log.d("test", "initZbus");
@@ -193,6 +188,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     if (TextUtils.isEmpty(token)) {
                         return;
                     }
+                    Broker broker = new Broker(Constant.zbusHost + ":" + Constant.zbusPost);
+                    Producer p = new Producer(broker);
                     ZbusUtils.init(broker, p);
                     String topic = "kiway_push_" + token;
                     Log.d("test", "topic = " + topic);
@@ -325,12 +322,12 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     Utils.checkShutDown(MainActivity.this);
                 }
                 break;
-                case MSG_NETWORK: {
-                    if (msg.arg1 == 1) {
-                        initZbus();
-                    } else if (msg.arg1 == 0) {
-                        ZbusUtils.close();
-                    }
+                case MSG_NETWORK_OK: {
+                    initZbus();
+                }
+                break;
+                case MSG_NETWORK_ERR: {
+                    ZbusUtils.close();
                 }
                 break;
             }
