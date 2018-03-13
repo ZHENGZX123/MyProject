@@ -48,7 +48,7 @@ public class UploaTaskActivity extends BaseActivity {
         super.initView();
         titleName.setText(course.name + "的上传任务");
 
-        lv = (ListView) findViewById(R.id.courseLV);
+        lv = (ListView) findViewById(R.id.lv);
         adapter = new MyAdapter();
         lv.setAdapter(adapter);
 
@@ -60,6 +60,7 @@ public class UploaTaskActivity extends BaseActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             tasks = new MyDBHelper(UploaTaskActivity.this).getTasksByCourseID(course.id);
+            adapter.notifyDataSetChanged();
             mHandler.sendEmptyMessageDelayed(0, 1000);
         }
     };

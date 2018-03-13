@@ -12,6 +12,8 @@
         android:id="@+id/lv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/titleRL"
+        android:background="#ffffff"
         android:divider="#001100"
         android:dividerHeight="1px"
         android:listSelector="#00000000"

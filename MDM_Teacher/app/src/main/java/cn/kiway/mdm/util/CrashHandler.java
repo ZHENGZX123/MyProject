@@ -91,6 +91,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         if (ex == null) {
             return false;
         }
+        Log.d("test", "全局异常 ex = " + ex.toString());
         //使用Toast来显示异常信息
 //        new Thread() {
 //            @Override
