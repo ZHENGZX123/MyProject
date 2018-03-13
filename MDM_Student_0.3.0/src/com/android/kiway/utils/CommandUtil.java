@@ -23,7 +23,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.android.kiway.KWApp.MSG_ATTEND_CALSS;
+import static com.android.kiway.KWApp.MSG_ATTEND_CALSS1;
+import static com.android.kiway.KWApp.MSG_ATTEND_CALSS2;
 import static com.android.kiway.KWApp.MSG_FLAGCOMMAND;
 import static com.android.kiway.KWApp.MSG_GET_OUT_OF_CALASS;
 import static com.android.kiway.KWApp.MSG_LANDSCAPE;
@@ -304,13 +305,19 @@ public class CommandUtil {
                     return false;
                 }
                 m.what = MSG_UNMUTE;
-            } else if (command.equals("shangke")) {
+            } else if (command.equals("shangke1")) {
                 String currentTime = data.optString("currentTime");
                 if (!Utils.checkCommandAvailable(currentTime)) {
                     return false;
                 }
-                m.what = MSG_ATTEND_CALSS;
+                m.what = MSG_ATTEND_CALSS1;
                 m.obj = data;
+            } else if (command.equals("shangke2")) {
+                String currentTime = data.optString("currentTime");
+                if (!Utils.checkCommandAvailable(currentTime)) {
+                    return false;
+                }
+                m.what = MSG_ATTEND_CALSS2;
             } else if (command.equals("xiake")) {
                 String currentTime = data.optString("currentTime");
                 if (!Utils.checkCommandAvailable(currentTime)) {

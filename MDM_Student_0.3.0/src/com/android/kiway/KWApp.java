@@ -56,7 +56,8 @@ public class KWApp extends Application {
     public static final int MSG_LANDSCAPE = 12;//竖屏
     public static final int MSG_UNINSTALL = 13;//卸载
     public static final int MSG_PARENT_BIND = 14;//绑定家长
-    public static final int MSG_ATTEND_CALSS = 15;//上课
+    public static final int MSG_ATTEND_CALSS1 = 15;//上课
+    public static final int MSG_ATTEND_CALSS2 = 155;//上课
     public static final int MSG_GET_OUT_OF_CALASS = 16;//下课
     public static final int MSG_SMS = 17;//短信
     public static final int MSG_MESSAGE = 18;//发送消息
@@ -173,7 +174,7 @@ public class KWApp extends Application {
                 if (KWApp.instance != null) {
                     Utils.showSMSDialog(KWApp.instance.currentActivity, (SmsMessage) msg.obj);
                 }
-            } else if (msg.what == MSG_ATTEND_CALSS) {
+            } else if (msg.what == MSG_ATTEND_CALSS1) {
                 if (KWApp.instance != null) {
                     if (!isAppInstalled(KWApp.instance, ZHIHUIKETANGPG)) {
                         Toast.makeText(KWApp.instance, "请安装课堂互动", Toast.LENGTH_SHORT).show();
@@ -218,10 +219,15 @@ public class KWApp extends Application {
                     keyguardLock.reenableKeyguard();
                     keyguardLock.disableKeyguard(); // 解锁
                 }
+            } else if (msg.what == MSG_ATTEND_CALSS2) {
+                if (KWApp.instance != null) {
+                    //返回shagnke给教师端，当作online
+                    ZbusHost.doSendMsg(KWApp.instance, "shangke");
+                }
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
                 RemoteAidlService.goOutClass();
                 isAttendClass = false;
-                MDMHelper.getAdapter().setTaskButtonDisabled(false);
+                //MDMHelper.getAdapter().setTaskButtonDisabled(false);
                 MDMHelper.getAdapter().setHomeButtonDisabled(false);
             } else if (msg.what == MSG_MESSAGE) {
                 RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());

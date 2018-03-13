@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.kiway.KWApp;
 import com.android.kiway.activity.MainActivity;
@@ -64,6 +65,7 @@ public class HttpUtil {
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "updateDefaultPwd onFailure = " + s);
+                            Toast.makeText(c, "密码保存到云服务器失败，请重新设置密码：设置-设置解锁方式-输入新密码。", Toast.LENGTH_SHORT).show();
                             check301(c, s);
                         }
                     });
