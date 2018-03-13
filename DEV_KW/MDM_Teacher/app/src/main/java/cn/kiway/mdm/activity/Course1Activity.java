@@ -404,8 +404,7 @@ public class Course1Activity extends BaseActivity {
             //1.检查数据库，有没有待上传的任务，如果有，跳到上传页面
             ArrayList<UploadTask> tasks = new MyDBHelper(this).getTasksByCourseID(course.id);
             if (tasks.size() > 0) {
-                toast("该课程的视频正在上传");
-                startActivity(new Intent(this , UploaTaskActivity.class));
+                startActivity(new Intent(this, UploaTaskActivity.class).putExtra("course", course));
             } else {
                 toast("该课程没有录制视频");
             }

@@ -25,22 +25,27 @@ public class UploadUtil2 {
     }
 
     public static void startTask(Context c) {
-        //1.开始之前先重置一遍 status 1=>0
-        ArrayList<UploadTask> tasks = new MyDBHelper(c).getTasksByStatus(UploadTask.STATUS_UPLOADING);
-        for (UploadTask ut : tasks) {
-            new MyDBHelper(c).setTaskStatus(ut, UploadTask.STATUS_START);
-            new MyDBHelper(c).setTaskProgress(ut, 0);
-        }
         new Thread() {
             @Override
             public void run() {
+                try {
+                    sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //1.开始之前先重置一遍 status 1=>0
+                ArrayList<UploadTask> tasks = new MyDBHelper(c).getTasksByStatus(UploadTask.STATUS_UPLOADING);
+                for (UploadTask ut : tasks) {
+                    new MyDBHelper(c).setTaskStatus(ut, UploadTask.STATUS_START);
+                    new MyDBHelper(c).setTaskProgress(ut, 0);
+                }
                 while (true) {
                     Log.d("test", "check upload task ...");
                     //2.判断是不是wifi
                     int isWifi = NetworkUtil.isWifi(c);
                     if (isWifi == 1) {
                         //3.查找未完成的task，然后上传
-                        ArrayList<UploadTask> tasks = new MyDBHelper(c).getTasksByStatus(UploadTask.STATUS_START);
+                        tasks = new MyDBHelper(c).getTasksByStatus(UploadTask.STATUS_START);
                         Log.d("test", "未完成的tasks size = " + tasks.size());
                         for (UploadTask ut : tasks) {
                             Log.d("test", "ut = " + ut);
@@ -81,9 +86,9 @@ public class UploadUtil2 {
                     JSONObject obj = new JSONObject(result);
                     String url = obj.optJSONObject("data").optString("url");
                     //FIXME 缓存本地-服务器对应关系
-                    c.getSharedPreferences("kiway", 0).edit().putString(url, ut.filepath).commit();
+                    //c.getSharedPreferences("kiway", 0).edit().putString(url, ut.filepath).commit();
                     //添加记录
-                    Utils.addVideoRecord(c, ut, ut.courseID, url, "mp4");
+                    //Utils.addVideoRecord(c, ut, ut.courseID, url, "mp4");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
