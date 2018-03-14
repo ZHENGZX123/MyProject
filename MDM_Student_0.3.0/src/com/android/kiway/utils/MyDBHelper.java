@@ -216,6 +216,7 @@ import com.android.kiway.entity.File;
 import com.android.kiway.entity.InStallAllApp;
 import com.android.kiway.entity.Network;
 import com.android.kiway.entity.SMS;
+import com.android.kiway.entity.Teacher;
 import com.android.kiway.entity.TimeSet;
 import com.android.kiway.entity.Wifi;
 
@@ -295,11 +296,17 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + TABLE_CUSTOM_APP
             + "   (id integer primary key autoincrement,packageName text)";
 
+    private static final String TABLE_TEACHER = "TABLE_TEACHER";
+
+    private static final String CREATE_TABLE_TEACHER = " create table IF NOT EXISTS "
+            + TABLE_TEACHER
+            + "   (id integer primary key autoincrement,teacherID text)";
+
 
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 17);
+        super(c, DB_NAME, null, 18);
     }
 
     @Override
@@ -336,6 +343,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CUSTOM_APP);
         db.execSQL(CREATE_TABLE_CUSTOM_APP);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TEACHER);
+        db.execSQL(CREATE_TABLE_TEACHER);
     }
 
     @Override
@@ -352,6 +362,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_INSTNALL_APP);
         db.execSQL(CREATE_TABLE_LAUNCHER_APP);
         db.execSQL(CREATE_TABLE_CUSTOM_APP);
+        db.execSQL(CREATE_TABLE_TEACHER);
     }
 
     //------------------------------------------Network----------------
@@ -1060,5 +1071,34 @@ public class MyDBHelper extends SQLiteOpenHelper {
             db = getWritableDatabase();
         db.delete(TABLE_CUSTOM_APP, "packageName=?", new String[]{packageName});
         db.close();
+    }
+
+    //-----------------------teacher-------------
+
+    public void addTeacher(Teacher teacher) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("teacherID", teacher.teacherID);
+        db.insert(TABLE_TEACHER, null, values);
+        db.close();
+    }
+
+    public ArrayList<Teacher> getAllTeachers() {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_TEACHER, null, null, null, null, null, null);
+        ArrayList<Teacher> teachers = new ArrayList<>();
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int id = cur.getInt(cur.getColumnIndex("id"));
+            String teacherID = cur.getString(cur.getColumnIndex("teacherID"));
+            Teacher a = new Teacher();
+            a.id = id;
+            a.teacherID = teacherID;
+            teachers.add(a);
+        }
+        cur.close();
+        db.close();
+        return teachers;
     }
 }
