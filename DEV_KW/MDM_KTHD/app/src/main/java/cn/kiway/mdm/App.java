@@ -247,11 +247,11 @@ public class App extends KiwayApplication {
             if (MainActivity.instantce == null) {
                 return;
             }
-
             MainActivity.instantce.mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     MainActivity.instantce.toast("开始上课啦");
+                    MainActivity.instantce.setIconGone();
                 }
             }, 1000);
         }
