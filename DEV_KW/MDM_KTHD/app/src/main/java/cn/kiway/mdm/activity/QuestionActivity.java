@@ -366,22 +366,25 @@ public class QuestionActivity extends BaseActivity {
                     questionTime--;
                     mHandler.sendEmptyMessageDelayed(msg.what, 1000);
                 } else {
-                    questionTimeup(true);
+                    questionTimeup(false);
                 }
             }
             time.setText("时间：" + Utils.secToTime(questionTime));
         }
     };
 
-    public void questionTimeup(final boolean show) {
+    public void questionTimeup(final boolean fromTeacher) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 timeup = true;
                 mHandler.removeCallbacksAndMessages(null);
-                if (show) {
+                if (fromTeacher) {
+                } else {
                     toast("答题时间结束");
                 }
+                ok.setVisibility(View.GONE);
+                forbid();
             }
         });
     }
@@ -576,12 +579,8 @@ public class QuestionActivity extends BaseActivity {
                     String answer = "answer_" + answerArray.toString();
                     boolean ret = Utils.sendToServer(answer);
                     if (ret) {
-                        //1.禁用webview
-                        int count = wvContainer.getChildCount();
-                        for (int i = 0; i < count; i++) {
-                            WebView wv = (WebView) wvContainer.getChildAt(i);
-                            wv.loadUrl("javascript:setWBEnable(0)");
-                        }
+                        //1.禁止答题
+                        forbid();
                         //2.修改UI
                         submited = true;
                         mHandler.removeCallbacksAndMessages(null);
@@ -612,6 +611,14 @@ public class QuestionActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private void forbid() {
+        findViewById(R.id.forbid).setVisibility(View.VISIBLE);
+    }
+
+    public void clickForbid(View view) {
+        toast("不能再作答了");
     }
 
     private int autoTeacherJudge(Question q) {
