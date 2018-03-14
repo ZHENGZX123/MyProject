@@ -140,7 +140,6 @@
             android:layout_weight="2"
             android:background="#f2f2f2">
 
-
             <TextView
                 android:id="@+id/hint"
                 android:layout_width="wrap_content"
@@ -262,6 +261,15 @@
                     </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>
+
+
+            <Button
+                android:id="@+id/forbid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#00000000"
+                android:onClick="clickForbid"
+                android:visibility="gone" />
         </RelativeLayout>
     </LinearLayout>
 

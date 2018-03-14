@@ -208,14 +208,14 @@ public class App extends KiwayApplication {
                         Log.d("test", "学生把答题页面关闭了，不应该。。。");
                         return;
                     }
-                    ((QuestionActivity) currentActivity).toast("老师结束了这次答题");
-                    ((QuestionActivity) currentActivity).questionTimeup(false);
+                    ((QuestionActivity) currentActivity).toast("老师结束了本次答题");
+                    ((QuestionActivity) currentActivity).questionTimeup(true);
                 } else if (command.equals("questionEnd")) {
                     if (!(currentActivity instanceof QuestionActivity)) {
                         Log.d("test", "学生把答题页面关闭了，不应该。。。");
                         return;
                     }
-                    ((QuestionActivity) currentActivity).toast("老师结束了这次答题");
+                    ((QuestionActivity) currentActivity).toast("老师结束了本次答题");
                     ((QuestionActivity) currentActivity).finish();
                 } else if (command.equals("tuiping")) {
                     int status = o.optInt("status");
