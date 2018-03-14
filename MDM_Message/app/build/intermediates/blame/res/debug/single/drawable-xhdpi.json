@@ -1,0 +1,30 @@
+[
+    {
+        "merged": "F:\\kiway_xm\\MDM_Message\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\refresh_succeed.png",
+        "source": "F:\\kiway_xm\\MDM_Message\\app\\src\\main\\res\\drawable-xhdpi\\refresh_succeed.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Message\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\pullup_icon_big.png",
+        "source": "F:\\kiway_xm\\MDM_Message\\app\\src\\main\\res\\drawable-xhdpi\\pullup_icon_big.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Message\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\refresh_failed.png",
+        "source": "F:\\kiway_xm\\MDM_Message\\app\\src\\main\\res\\drawable-xhdpi\\refresh_failed.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Message\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\pull_icon_big.png",
+        "source": "F:\\kiway_xm\\MDM_Message\\app\\src\\main\\res\\drawable-xhdpi\\pull_icon_big.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Message\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\loading.png",
+        "source": "F:\\kiway_xm\\MDM_Message\\app\\src\\main\\res\\drawable-xhdpi\\loading.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Message\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\no_data.png",
+        "source": "F:\\kiway_xm\\MDM_Message\\app\\src\\main\\res\\drawable-xhdpi\\no_data.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Message\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\refreshing.png",
+        "source": "F:\\kiway_xm\\MDM_Message\\app\\src\\main\\res\\drawable-xhdpi\\refreshing.png"
+    }
+]
