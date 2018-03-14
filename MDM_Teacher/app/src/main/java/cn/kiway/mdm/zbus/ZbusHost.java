@@ -178,7 +178,7 @@ public class ZbusHost {
             ArrayList<Question> questions = new ArrayList<>();
             questions.add(q);
             String questionStr = new Gson().toJson(questions);
-            String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("teacherUserId", userId).put("questions", questionStr).put("questionType", questionType).put("questionTime", 10).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "question").put("teacherUserId", userId).put("questions", questionStr).put("questionType", questionType).put("questionTime", questionTime).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
             ArrayList<Student> students = new ArrayList<>();
             students.add(s);
             doSendMsg(c, title, userId, msg, students);
