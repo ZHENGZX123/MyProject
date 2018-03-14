@@ -2705,6 +2705,7 @@ public class Launcher extends MainActivity
         intent.putExtra("classId", getSharedPreferences("kiway", 0).getString("classId", ""));
         intent.putExtra("schoolId", getSharedPreferences("kiway", 0).getString("schoolId", ""));
         intent.putExtra("huaweiToken", getSharedPreferences("huawei", 0).getString("token", ""));
+        intent.putExtra("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
         boolean success = startActivitySafely(v, intent, item);
         getUserEventDispatcher().logAppLaunch(v, intent); // TODO for discovered apps b/35802115
 
