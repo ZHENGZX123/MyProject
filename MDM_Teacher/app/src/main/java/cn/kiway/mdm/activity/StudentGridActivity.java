@@ -585,7 +585,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
             if (i > 0) {
                 command = "shangke2";
             }
-            ZbusHost.shangke(StudentGridActivity.this, command, new OnListener() {
+            ZbusHost.shangke(StudentGridActivity.this, command, KWApplication.students, new OnListener() {
 
                 @Override
                 public void onSuccess() {

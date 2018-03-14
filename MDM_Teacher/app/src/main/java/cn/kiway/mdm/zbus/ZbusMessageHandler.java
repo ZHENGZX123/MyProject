@@ -6,12 +6,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.activity.Course0Activity;
+import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.ResultActivity;
 import cn.kiway.mdm.activity.ResultDetailActivity;
 import cn.kiway.mdm.activity.StudentGridActivity;
+import cn.kiway.mdm.entity.Student;
 import io.zbus.mq.Message;
 import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
@@ -21,6 +24,7 @@ import io.zbus.mq.MqClient;
  */
 
 public class ZbusMessageHandler implements MessageHandler {
+
     @Override
     public void handle(Message message, MqClient mqClient) throws IOException {
         String temp = message.getBodyString();
@@ -32,7 +36,9 @@ public class ZbusMessageHandler implements MessageHandler {
             String command = o.optString("command");
             String studentIMEI = o.optString("studentIMEI");
 
-            if (command.equals("shangke")) {
+            if (command.equals("hello")) {
+                hello(studentIMEI);
+            } else if (command.equals("shangke")) {
                 shangke(studentIMEI);
             } else if (command.startsWith("chaxun")) {
                 chaxun(studentIMEI, command.split("_")[1], command.split("_")[2]);
@@ -81,7 +87,26 @@ public class ZbusMessageHandler implements MessageHandler {
         ((ResultActivity) KWApplication.currentActivity).getOneSubmit(studentIMEI, answer);
     }
 
+    private void hello(String studentIMEI) {
+        if (MainActivity.instance == null) {
+            return;
+        }
+        for (Student s : KWApplication.students) {
+            if (s.imei.equals(studentIMEI)) {
+                ArrayList<Student> temp = new ArrayList<>();
+                temp.add(s);
+                ZbusHost.shangke(MainActivity.instance, "shangke1", temp, null);
+                return;
+            }
+        }
+    }
+
     private void shangke(String studentIMEI) {
+        for (Student s : KWApplication.students) {
+            if (s.imei.equals(studentIMEI)) {
+                s.online = true;
+            }
+        }
         if (!(KWApplication.currentActivity instanceof StudentGridActivity)) {
             Log.d("test", "不是当前页面，信息可能已过期");
             return;
