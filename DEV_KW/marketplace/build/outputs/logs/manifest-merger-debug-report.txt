@@ -1,0 +1,100 @@
+-- Merging decision tree log ---
+manifest
+ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:1:1-34:12
+	package
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:2:11-41
+		INJECTED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:1:11-69
+	android:versionCode
+		INJECTED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml
+application
+ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:4:5-32:19
+MERGED from [com.android.support:design:23.3.0] C:\Users\Administrator\.android\build-cache\73bc52876acc6a4513df2d54d6640aa1375b842d\output\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:appcompat-v7:23.3.0] C:\Users\Administrator\.android\build-cache\a95b23b410f3cade4a96375fd6622aab418e18e4\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:animated-vector-drawable:23.3.0] C:\Users\Administrator\.android\build-cache\ee46092b4b19c28bac5aa96dbfc335549aecc150\output\AndroidManifest.xml:7:5-20
+MERGED from [com.android.support:support-vector-drawable:23.3.0] C:\Users\Administrator\.android\build-cache\2c5499e69e6594009bf8828433ef5ba4f53b7bb9\output\AndroidManifest.xml:7:5-20
+MERGED from [com.android.support:support-v4:23.3.0] C:\Users\Administrator\.android\build-cache\e0041111e3f9f12ab5f571b0125337762dac40dc\output\AndroidManifest.xml:22:5-20
+	android:label
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:7:9-41
+	android:supportsRtl
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:8:9-35
+	android:allowBackup
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:6:9-35
+	android:icon
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:9:9-43
+	android:theme
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:10:9-40
+	android:name
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:5:9-28
+activity#cn.kiway.marketplace.activity.MarkePlaceActivity
+ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:11:9-16:20
+	android:screenOrientation
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:14:13-49
+	android:launchMode
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:13:13-44
+	android:name
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:12:13-56
+activity#cn.kiway.marketplace.activity.MarkePlaceViewActivity
+ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:17:9-26:20
+	android:screenOrientation
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:20:13-49
+	android:launchMode
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:19:13-44
+	android:name
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:18:13-80
+intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
+ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:21:13-25:29
+action#android.intent.action.MAIN
+ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:22:17-68
+	android:name
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:22:25-66
+category#android.intent.category.LAUNCHER
+ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:24:17-76
+	android:name
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:24:27-74
+activity#cn.kiway.marketplace.activity.DownloadActivity
+ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:27:9-31:62
+	android:screenOrientation
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:30:13-49
+	android:launchMode
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:29:13-44
+	android:theme
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:31:13-50
+	android:name
+		ADDED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml:28:13-54
+uses-sdk
+INJECTED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml reason: use-sdk injection requested
+MERGED from [com.androidev:download:1.1.0] C:\Users\Administrator\.android\build-cache\124fb472ef20342908041fb312cdc2d27ddf967d\output\AndroidManifest.xml:7:5-9:41
+MERGED from [com.android.support:design:23.3.0] C:\Users\Administrator\.android\build-cache\73bc52876acc6a4513df2d54d6640aa1375b842d\output\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:recyclerview-v7:23.3.0] C:\Users\Administrator\.android\build-cache\635f6e6062c74d11749b63b451c52d039b3112ac\output\AndroidManifest.xml:20:5-43
+MERGED from [com.zhy:okhttputils:2.6.2] C:\Users\Administrator\.android\build-cache\fec815c3043e37cabb32225ffadf6a926af392d2\output\AndroidManifest.xml:7:5-9:41
+MERGED from [com.android.support:appcompat-v7:23.3.0] C:\Users\Administrator\.android\build-cache\a95b23b410f3cade4a96375fd6622aab418e18e4\output\AndroidManifest.xml:21:5-23:78
+MERGED from [com.android.support:animated-vector-drawable:23.3.0] C:\Users\Administrator\.android\build-cache\ee46092b4b19c28bac5aa96dbfc335549aecc150\output\AndroidManifest.xml:5:5-44
+MERGED from [com.android.support:support-vector-drawable:23.3.0] C:\Users\Administrator\.android\build-cache\2c5499e69e6594009bf8828433ef5ba4f53b7bb9\output\AndroidManifest.xml:5:5-43
+MERGED from [com.android.support:support-v4:23.3.0] C:\Users\Administrator\.android\build-cache\e0041111e3f9f12ab5f571b0125337762dac40dc\output\AndroidManifest.xml:20:5-43
+	tools:overrideLibrary
+		ADDED from [com.android.support:appcompat-v7:23.3.0] C:\Users\Administrator\.android\build-cache\a95b23b410f3cade4a96375fd6622aab418e18e4\output\AndroidManifest.xml:23:9-75
+	android:targetSdkVersion
+		INJECTED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml
+		INJECTED from F:\kiway_xm\MDM_Marketplace\marketplace\src\main\AndroidManifest.xml
+uses-permission#android.permission.INTERNET
+ADDED from [com.androidev:download:1.1.0] C:\Users\Administrator\.android\build-cache\124fb472ef20342908041fb312cdc2d27ddf967d\output\AndroidManifest.xml:11:5-67
+	android:name
+		ADDED from [com.androidev:download:1.1.0] C:\Users\Administrator\.android\build-cache\124fb472ef20342908041fb312cdc2d27ddf967d\output\AndroidManifest.xml:11:22-64
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from [com.androidev:download:1.1.0] C:\Users\Administrator\.android\build-cache\124fb472ef20342908041fb312cdc2d27ddf967d\output\AndroidManifest.xml:12:5-81
+	android:name
+		ADDED from [com.androidev:download:1.1.0] C:\Users\Administrator\.android\build-cache\124fb472ef20342908041fb312cdc2d27ddf967d\output\AndroidManifest.xml:12:22-78
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [com.androidev:download:1.1.0] C:\Users\Administrator\.android\build-cache\124fb472ef20342908041fb312cdc2d27ddf967d\output\AndroidManifest.xml:13:5-79
+	android:name
+		ADDED from [com.androidev:download:1.1.0] C:\Users\Administrator\.android\build-cache\124fb472ef20342908041fb312cdc2d27ddf967d\output\AndroidManifest.xml:13:22-76
