@@ -57,7 +57,7 @@ public class MainActivity extends ScreenSharingActivity {
         getAppData();
         initView();
         mHandler.sendEmptyMessage(5);
-
+l
         //创建观察类对象
         mRotationObserver = new RotationObserver(new Handler());
         setRotationStatus(getContentResolver(), 1);
@@ -100,7 +100,7 @@ public class MainActivity extends ScreenSharingActivity {
         startActivity(new Intent(this, FileListActivity.class));
     }
 
-    public void logout(View view) {
+    public void attend(View view) {
         toast("测试用");
         finish();
     }
