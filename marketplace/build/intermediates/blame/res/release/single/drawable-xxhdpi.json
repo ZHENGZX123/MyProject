@@ -1,0 +1,58 @@
+[
+    {
+        "merged": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\icon_download.png",
+        "source": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\src\\main\\res\\drawable-xxhdpi\\icon_download.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\list_icon_select.png",
+        "source": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\src\\main\\res\\drawable-xxhdpi\\list_icon_select.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\list_icon_download.png",
+        "source": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\src\\main\\res\\drawable-xxhdpi\\list_icon_download.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\list_icon_pause.png",
+        "source": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\src\\main\\res\\drawable-xxhdpi\\list_icon_pause.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\format_unknown.png",
+        "source": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\src\\main\\res\\drawable-xxhdpi\\format_unknown.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\list_icon_manager.png",
+        "source": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\src\\main\\res\\drawable-xxhdpi\\list_icon_manager.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\ic_launcher.png",
+        "source": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\src\\main\\res\\drawable-xxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\format_vedio.png",
+        "source": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\src\\main\\res\\drawable-xxhdpi\\format_vedio.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\format_music.png",
+        "source": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\src\\main\\res\\drawable-xxhdpi\\format_music.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\list_icon_more.png",
+        "source": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\src\\main\\res\\drawable-xxhdpi\\list_icon_more.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\format_apk.png",
+        "source": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\src\\main\\res\\drawable-xxhdpi\\format_apk.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\list_icon_delete.png",
+        "source": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\src\\main\\res\\drawable-xxhdpi\\list_icon_delete.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\format_zip.png",
+        "source": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\src\\main\\res\\drawable-xxhdpi\\format_zip.png"
+    },
+    {
+        "merged": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi\\list_icon_close.png",
+        "source": "F:\\kiway_xm\\MDM_Marketplace\\marketplace\\src\\main\\res\\drawable-xxhdpi\\list_icon_close.png"
+    }
+]
