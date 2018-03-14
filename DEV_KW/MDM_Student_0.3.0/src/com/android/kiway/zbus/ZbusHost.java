@@ -3,11 +3,14 @@ package com.android.kiway.zbus;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.kiway.entity.Teacher;
 import com.android.kiway.utils.Constant;
+import com.android.kiway.utils.MyDBHelper;
 import com.android.kiway.utils.Utils;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,12 +31,11 @@ public class ZbusHost {
             obj.put("studentIMEI", Utils.getIMEI(c));
             obj.put("command", cmd);
 
-            String title = "title";
-            String desc = "desc";
+            String title = "标题";
+            String desc = "描述";
             String msg = obj.toString();
 
             String token = c.getSharedPreferences("huawei", 0).getString("token", "");
-            //final String topic, String message, final String url, final PushMessageVo vo
             //topic : 上报的 deviceId#userId
             String topic = Utils.getIMEI(c) + "#" + token;
             PushMessageVo pushMessageVo = new PushMessageVo();
@@ -43,7 +45,7 @@ public class ZbusHost {
             pushMessageVo.setAppId(APPID);
             pushMessageVo.setModule("student");
             Set<String> userIds = new HashSet<>();
-            userIds.add(Constant.teacherUserId);
+            userIds.add(Constant.currentTeacher);
             pushMessageVo.setUserId(userIds);//老师的userid
             pushMessageVo.setSenderId(token);//学生的token
             pushMessageVo.setPushType("zbus");
@@ -55,6 +57,51 @@ public class ZbusHost {
         } catch (Exception e) {
             e.printStackTrace();
             Log.d("test", "doSendMsg e = " + e.toString());
+        }
+
+        return false;
+    }
+
+    public static boolean doSendMsg2(Context c, String cmd) {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("studentIMEI", Utils.getIMEI(c));
+            obj.put("command", cmd);
+
+            String title = "标题";
+            String desc = "描述";
+            String msg = obj.toString();
+
+            String token = c.getSharedPreferences("huawei", 0).getString("token", "");
+            //topic : 上报的 deviceId#userId
+            String topic = Utils.getIMEI(c) + "#" + token;
+            PushMessageVo pushMessageVo = new PushMessageVo();
+            pushMessageVo.setTitle(title);
+            pushMessageVo.setDescription(desc);
+            pushMessageVo.setMessage(msg);
+            pushMessageVo.setAppId(APPID);
+            pushMessageVo.setModule("student");
+
+            //给教过自己的老师，都发一下
+            ArrayList<Teacher> teachers = new MyDBHelper(c).getAllTeachers();
+            if (teachers.size() == 0) {
+                return true;
+            }
+            Set<String> userIds = new HashSet<>();
+            for (Teacher t : teachers) {
+                userIds.add(t.teacherID);
+            }
+            pushMessageVo.setUserId(userIds);//老师的userid
+            pushMessageVo.setSenderId(token);//学生的token
+            pushMessageVo.setPushType("zbus");
+
+            Log.d("test", "sendMSG2 " + msg.toString());
+            ZbusUtils.sendMsg(topic, pushMessageVo);
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("test", "doSendMsg2 e = " + e.toString());
         }
 
         return false;

@@ -55,7 +55,7 @@ public class RemoteAidlService extends Service {
         public void registClientCallback(ClientCallback callback) throws RemoteException {
             //向服务端注册回调
             clientCallback = callback;
-            Log.e(TAG, "Service registClientCallback()"+callback);
+            Log.e(TAG, "Service registClientCallback()" + callback);
         }
 
         @Override
@@ -96,7 +96,12 @@ public class RemoteAidlService extends Service {
         @Override
         public boolean callbackMessage(String msg) throws RemoteException {
             //课堂互动的相应消息
+
+            if (msg.equals("hello")) {
+                return ZbusHost.doSendMsg2(RemoteAidlService.this, msg);
+            }
             return ZbusHost.doSendMsg(RemoteAidlService.this, msg);
+
         }
     };
 

@@ -11,6 +11,7 @@ import com.android.kiway.activity.MainActivity;
 import com.android.kiway.entity.AppCharge;
 import com.android.kiway.entity.Call;
 import com.android.kiway.entity.Network;
+import com.android.kiway.entity.Teacher;
 import com.android.kiway.entity.TimeSet;
 import com.android.kiway.entity.Wifi;
 import com.android.kiway.zbus.ZbusHost;
@@ -42,6 +43,7 @@ import static com.android.kiway.KWApp.MSG_TOAST;
 import static com.android.kiway.KWApp.MSG_UNINSTALL;
 import static com.android.kiway.KWApp.MSG_UNLOCK;
 import static com.android.kiway.KWApp.MSG_UNMUTE;
+import static com.android.kiway.utils.Constant.currentTeacher;
 
 /**
  * Created by Administrator on 2018/1/23.
@@ -71,10 +73,20 @@ public class CommandUtil {
             String dataStr = new JSONObject(receive).getString("data");
             JSONObject data = new JSONObject(dataStr);
             String command = data.optString("command");
-            Constant.teacherUserId = data.optString("teacherUserId");
+            currentTeacher = data.optString("teacherUserId");
+
+            boolean existed = false;
+            ArrayList<Teacher> teachers = new MyDBHelper(context).getAllTeachers();
+            for (Teacher t : teachers) {
+                if (t.teacherID.equals(currentTeacher)) {
+                    existed = true;
+                }
+            }
+            if (!existed) {
+                new MyDBHelper(context).addTeacher(new Teacher(currentTeacher));
+            }
 
             Message m = new Message();
-
             if (command.equals("allowAppFunction")) {
                 //重置所有的值为0
                 Utils.resetFunctions(context, 0);

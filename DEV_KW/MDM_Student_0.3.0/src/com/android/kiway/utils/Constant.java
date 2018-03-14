@@ -18,13 +18,9 @@ public class Constant {
 
     public static final String zbusHost = "mdm.kiway.cn";//"192.168.8.161"; mdm.kiway.cn
     public static final String zbusPost = "15556";
-    public static String teacherUserId = "";
+    public static String currentTeacher = "";
 
     public static final String serverUrl = "http://mdm.kiway.cn:8083/";
     public static final String clientUrl = "http://mdm.kiway.cn:8085/";
-    //    public static final String serverUrl = "http://192.168.8.161:8083/";
-    //    public static final String clientUrl = "http://192.168.8.161:8085/";
-    //    public static final String serverUrl = "http://www.yuertong.com:8083/";
-    //    public static final String clientUrl = "http://www.yuertong.com:8084/";
 
 }
