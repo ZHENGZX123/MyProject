@@ -21,6 +21,7 @@ import cn.kiway.mdm.view.RoundedImageView;
 import io.agora.openlive.model.ConstantApp;
 import io.agora.openlive.ui.LiveRoomActivity;
 import io.agora.rtc.Constants;
+import ly.count.android.api.Countly;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -43,6 +44,19 @@ public class BaseActivity extends Activity {
         pd = new ProgressDialog(this);
         pd.setMessage("网络请求中");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        KWApplication.currentActivity = this;
+        Countly.sharedInstance().onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Countly.sharedInstance().onStop();
     }
 
     public void initView() {
@@ -77,14 +91,6 @@ public class BaseActivity extends Activity {
                 pd.dismiss();
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        KWApplication.currentActivity = this;
-
     }
 
     public void toast(final String txt) {
