@@ -79,6 +79,7 @@ public class CommandUtil {
             ArrayList<Teacher> teachers = new MyDBHelper(context).getAllTeachers();
             for (Teacher t : teachers) {
                 if (t.teacherID.equals(currentTeacher)) {
+                    Log.d("test", "该老师已添加过了");
                     existed = true;
                 }
             }
