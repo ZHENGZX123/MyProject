@@ -14,6 +14,7 @@ import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,8 +46,9 @@ public class MainActivity extends ScreenSharingActivity {
 
     public static MainActivity instantce;
     private Dialog dialog_download;
-    TextView className, studentName;
-    RoundedImageView userPic;
+    private TextView className, studentName;
+    private RoundedImageView userPic;
+    private ImageView connect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +59,6 @@ public class MainActivity extends ScreenSharingActivity {
         getAppData();
         initView();
         mHandler.sendEmptyMessage(5);
-l
         //创建观察类对象
         mRotationObserver = new RotationObserver(new Handler());
         setRotationStatus(getContentResolver(), 1);
@@ -66,7 +67,7 @@ l
     @Override
     protected void onStart() {
         super.onStart();
-        Log.e("KTHD main", "onStart()");
+        Log.d("test", "KTHD main onStart()");
         App.instance.connectService(App.instance.mClientCallback);
     }
 
@@ -76,6 +77,8 @@ l
         className = (TextView) findViewById(R.id.className);
         studentName = (TextView) findViewById(R.id.studentName);
         userPic = (RoundedImageView) findViewById(R.id.userPic);
+        connect = (ImageView) findViewById(R.id.connect);
+
         if (!getSharedPreferences("kiway", 0).getString("userUrl", "").equals(""))
             ImageLoader.getInstance().displayImage(getSharedPreferences("kiway", 0).getString("userUrl", ""),
                     userPic, App.getLoaderOptions());
@@ -101,8 +104,17 @@ l
     }
 
     public void attend(View view) {
-        toast("测试用");
-        finish();
+        //1.弹框提示，是否要连接上课
+        //2.给所有保存过的老师发"hello"，老师端接收到之后发送"shangke1"
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
+        dialog_download = builder.setTitle("提示").setMessage("是否主动连接老师上课").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                Utils.sendToServer("hello");
+            }
+        }).setPositiveButton(android.R.string.cancel, null).create();
+        builder.show();
     }
 
     public void onMsg(View view) {//查看消息
@@ -349,6 +361,10 @@ l
 
 
     private RotationObserver mRotationObserver;
+
+    public void setIconGone() {
+        connect.setVisibility(View.GONE);
+    }
 
     //观察屏幕旋转设置变化，类似于注册动态广播监听变化机制
     private class RotationObserver extends ContentObserver {

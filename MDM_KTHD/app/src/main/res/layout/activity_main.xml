@@ -19,19 +19,18 @@
             android:textColor="#ffffff" />
 
         <ImageView
+            android:id="@+id/connect"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
-            android:src="@drawable/ic_attend"
+            android:background="@drawable/ic_attend"
             android:onClick="attend" />
-        <!--android:background="@drawable/ic_account_balance"-->
 
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/connect_c"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
