@@ -361,7 +361,7 @@ public class ZbusHost {
         }
     }
 
-    public static void shangke(final Activity c, String command, final OnListener onListener) {
+    public static void shangke(final Activity c, String command, ArrayList<Student> students, final OnListener onListener) {
         Countly.sharedInstance().recordEvent("上课");
         new Thread() {
             @Override
