@@ -46,7 +46,8 @@
             android:id="@+id/lv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="#00000000"></cn.kiway.message.views.refresh.PullableListView>
+            android:dividerHeight="1px"
+            android:divider="#e5e5e5"></cn.kiway.message.views.refresh.PullableListView>
 
         <include layout="@layout/load_more" />
     </cn.kiway.message.views.refresh.PullToRefreshLayout>
