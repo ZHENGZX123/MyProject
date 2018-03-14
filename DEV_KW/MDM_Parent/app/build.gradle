@@ -44,4 +44,6 @@ dependencies {
     compile project(':zxing')
     compile 'org.xutils:xutils:3.5.0'
     compile files('libs/tbs_sdk_thirdapp_v3.5.0.1004_43500_sharewithdownload_withoutGame_obfs_20170801_113025.jar')
+    compile 'ly.count:sdk-android:14.12'
+    compile files('libs/gt_sdk_3.1.0.jar')
 }

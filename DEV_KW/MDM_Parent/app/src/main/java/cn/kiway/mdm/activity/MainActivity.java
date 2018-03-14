@@ -46,6 +46,7 @@ import cn.kiway.mdm.parent.R;
 import cn.kiway.mdm.util.MyWebViewClient;
 import cn.kiway.mdm.util.NetworkUtil;
 import cn.kiway.mdm.util.Utils;
+import ly.count.android.api.Countly;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static cn.kiway.mdm.util.Utils.getCurrentVersion;
@@ -307,6 +308,11 @@ public class MainActivity extends BaseActivity {
             } else {
                 MainActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
+        }
+
+        @JavascriptInterface
+        public void record(String key) {
+            Countly.sharedInstance().recordEvent(key);
         }
     }
 
