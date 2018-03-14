@@ -19,6 +19,11 @@ public class Constant {
     public static String clientUrl = "http://mdm.kiway.cn:8085";
 
 
+    //    public static String countlyUrl = "http://mdm.kiway.cn:8085/countly";
+    public static String countlyUrl = "http://192.168.8.161:8085/countly";
+    public static String countlyAppKey = "8f701fda6a9e17ae0997930f26926deb4774332a";
+
+
     public static boolean lockAll = false;
     public static boolean muteAll = false;
 }

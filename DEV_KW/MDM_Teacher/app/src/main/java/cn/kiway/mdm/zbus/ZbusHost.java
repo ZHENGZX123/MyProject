@@ -20,6 +20,7 @@ import cn.kiway.mdm.util.Constant;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.zbus.utils.ZbusUtils;
 import cn.kiway.zbus.vo.PushMessageVo;
+import ly.count.android.api.Countly;
 
 import static cn.kiway.mdm.KWApplication.students;
 
@@ -30,6 +31,7 @@ import static cn.kiway.mdm.KWApplication.students;
 public class ZbusHost {
 
     public static void tongji(final Activity c, final KnowledgePoint kp, final OnListener onListener) {
+        Countly.sharedInstance().recordEvent("统计知识点");
         new Thread() {
             @Override
             public void run() {
@@ -162,6 +164,7 @@ public class ZbusHost {
 
     //其他问题专用
     public static void question(Activity c, Student s, Question q, int questionType, int questionTime, final OnListener onListener) {
+        Countly.sharedInstance().recordEvent("提问");
         try {
             String title = null;
             if (questionType == 1) {
@@ -202,6 +205,7 @@ public class ZbusHost {
 
     //测评专用
     public static void questions(Activity c, ArrayList<Question> questions, int questionTime, final OnListener onListener) {
+        Countly.sharedInstance().recordEvent("提问");
         try {
             String title = "测评";
             String userId = Utils.getIMEI(c);
@@ -358,6 +362,7 @@ public class ZbusHost {
     }
 
     public static void shangke(final Activity c, String command, final OnListener onListener) {
+        Countly.sharedInstance().recordEvent("上课");
         new Thread() {
             @Override
             public void run() {
@@ -390,6 +395,7 @@ public class ZbusHost {
     }
 
     public static void xiake(Activity c, final OnListener onListener) {
+        Countly.sharedInstance().recordEvent("下课");
         try {
             String title = "下课";
             String userId = Utils.getIMEI(c);
@@ -417,6 +423,7 @@ public class ZbusHost {
     }
 
     public static void sign(Activity c, final OnListener onListener) {
+        Countly.sharedInstance().recordEvent("点名");
         try {
             String title = "点名";
             String userId = Utils.getIMEI(c);

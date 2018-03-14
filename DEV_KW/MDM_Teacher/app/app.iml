@@ -100,6 +100,7 @@
     <orderEntry type="library" exported="" name="transition-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="ijkplayer-armv7a-0.7.7.1" level="project" />
     <orderEntry type="library" exported="" name="design-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="sdk-android-14.12" level="project" />
     <orderEntry type="library" exported="" name="support-core-ui-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="zip4j_1.3.1" level="project" />
     <orderEntry type="library" exported="" name="android-crop-1.0.1" level="project" />
@@ -111,6 +112,7 @@
     <orderEntry type="library" exported="" name="push-server-zbus-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="fastjson-1.2.24" level="project" />
     <orderEntry type="library" exported="" name="hutool-all-3.2.3" level="project" />
+    <orderEntry type="library" exported="" name="gt_sdk_3.1.0" level="project" />
     <orderEntry type="library" exported="" name="tbs_sdk_thirdapp_v3.5.0.1004_43500_sharewithdownload_withoutGame_obfs_20170801_113025" level="project" />
     <orderEntry type="library" exported="" name="libvideoprp-unspecified" level="project" />
     <orderEntry type="library" exported="" name="ijkplayer-java-0.7.7.1" level="project" />

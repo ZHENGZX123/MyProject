@@ -17,17 +17,20 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.tencent.smtt.sdk.QbSdk;
+import com.tencent.wstt.gt.controller.GTRController;
 
 import org.xutils.x;
 
 import java.util.ArrayList;
 
 import cn.kiway.mdm.entity.Student;
-import cn.kiway.mdm.entity.UploadTask;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.util.CrashHandler;
-import cn.kiway.mdm.util.MyDBHelper;
 import cn.kiway.mdm.util.UploadUtil2;
+import ly.count.android.api.Countly;
+
+import static cn.kiway.mdm.util.Constant.countlyAppKey;
+import static cn.kiway.mdm.util.Constant.countlyUrl;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -62,6 +65,10 @@ public class KWApplication extends Application {
         CrashHandler.getInstance().init(getApplicationContext());
         //upload
         UploadUtil2.startTask(this);
+        //countly
+        Countly.sharedInstance().init(this, countlyUrl, countlyAppKey);
+        //GT
+        GTRController.init(this);
     }
 
     /**

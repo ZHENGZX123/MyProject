@@ -33,6 +33,7 @@ import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.util.WifiUtils;
+import ly.count.android.api.Countly;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMING;
@@ -155,8 +156,16 @@ public class JsAndroidInterface {
     //---------------------------------2.0版本新增的接口--------------------------------------
 
     @JavascriptInterface
+    public void beike() {
+        Log.d("test", "beike is called");
+        Countly.sharedInstance().recordEvent("备课");
+    }
+
+    @JavascriptInterface
     public void shangke(String info) {
         KWApplication.students.clear();
+
+        Countly.sharedInstance().recordEvent("上课");
 
         Log.d("test", "shangke info = " + info);
         try {
@@ -251,12 +260,15 @@ public class JsAndroidInterface {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        Countly.sharedInstance().recordEvent("登录");
     }
 
     @JavascriptInterface
     public void logout() {
         Log.d("test", "logout is called");
         uninstallPush(this.activity);
+        Countly.sharedInstance().recordEvent("注销登录");
     }
 
     public void installationPush(final Context c, final String userId, final String imei) {

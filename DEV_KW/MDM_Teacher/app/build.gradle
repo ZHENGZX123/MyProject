@@ -71,4 +71,6 @@ dependencies {
     compile files('libs/image_compress.jar')
     compile 'com.zhijieeeeee:pieviewlibrary:2.0.3'
     compile 'com.soundcloud.android:android-crop:1.0.1@aar'
+    compile 'ly.count:sdk-android:14.12'
+    compile files('libs/gt_sdk_3.1.0.jar')
 }
