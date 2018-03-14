@@ -2,15 +2,20 @@ package cn.kiway.mdm.activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -52,6 +57,10 @@ public class MainActivity extends ScreenSharingActivity {
         getAppData();
         initView();
         mHandler.sendEmptyMessage(5);
+
+        //创建观察类对象
+        mRotationObserver = new RotationObserver(new Handler());
+        setRotationStatus(getContentResolver(), 1);
     }
 
     @Override
@@ -76,6 +85,7 @@ public class MainActivity extends ScreenSharingActivity {
 
     @Override
     protected void onResume() {
+        mRotationObserver.startObserver();
         super.onResume();
         if (!getSharedPreferences("kiway", 0).getString("userUrl", "").equals(""))
             ImageLoader.getInstance().displayImage(getSharedPreferences("kiway", 0).getString("userUrl", ""),
@@ -311,6 +321,60 @@ public class MainActivity extends ScreenSharingActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mRotationObserver.stopObserver();
         mHandler.removeCallbacksAndMessages(null);
+    }
+
+    //得到屏幕旋转的状态
+    private int getRotationStatus(Context context) {
+        int status = 0;
+        try {
+            status = android.provider.Settings.System.getInt(context.getContentResolver(),
+                    android.provider.Settings.System.ACCELEROMETER_ROTATION);
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+        Log.d("test", "rotation status = " + status);
+        return status;
+    }
+
+    private void setRotationStatus(ContentResolver resolver, int status) {
+        //得到uri
+        Uri uri = android.provider.Settings.System.getUriFor("accelerometer_rotation");
+        //沟通设置status的值改变屏幕旋转设置
+        android.provider.Settings.System.putInt(resolver, "accelerometer_rotation", status);
+        //通知改变
+        resolver.notifyChange(uri, null);
+    }
+
+
+    private RotationObserver mRotationObserver;
+
+    //观察屏幕旋转设置变化，类似于注册动态广播监听变化机制
+    private class RotationObserver extends ContentObserver {
+        ContentResolver mResolver;
+
+        public RotationObserver(Handler handler) {
+            super(handler);
+            mResolver = getContentResolver();
+        }
+
+        //屏幕旋转设置改变时调用
+        @Override
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+            Toast.makeText(MainActivity.this, "旋转屏幕设置有变化",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        public void startObserver() {
+            mResolver.registerContentObserver(Settings.System
+                            .getUriFor(Settings.System.ACCELEROMETER_ROTATION), false,
+                    this);
+        }
+
+        public void stopObserver() {
+            mResolver.unregisterContentObserver(this);
+        }
     }
 }
