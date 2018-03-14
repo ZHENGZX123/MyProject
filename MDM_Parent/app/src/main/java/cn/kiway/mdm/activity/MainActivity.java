@@ -312,6 +312,7 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public void record(String key) {
+            Log.d("test", "record key = " + key);
             Countly.sharedInstance().recordEvent(key);
         }
     }
