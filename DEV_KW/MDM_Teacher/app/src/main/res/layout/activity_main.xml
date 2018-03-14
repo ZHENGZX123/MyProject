@@ -31,6 +31,7 @@
             android:id="@+id/wv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@null"
             android:layout_below="@id/rl_nonet"></WebView>
 
     </RelativeLayout>
