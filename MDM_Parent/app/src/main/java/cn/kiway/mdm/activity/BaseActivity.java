@@ -22,12 +22,25 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 import cn.kiway.mdm.WXApplication;
+import ly.count.android.api.Countly;
 
 /**
  * Created by Administrator on 2017/7/5.
  */
 
 public class BaseActivity extends Activity {
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Countly.sharedInstance().onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Countly.sharedInstance().onStop();
+    }
 
     public void toast(final String txt) {
         Log.d("test", "toast is called");
