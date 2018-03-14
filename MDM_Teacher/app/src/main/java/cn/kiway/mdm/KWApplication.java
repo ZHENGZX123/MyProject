@@ -17,7 +17,6 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.tencent.smtt.sdk.QbSdk;
-import com.tencent.wstt.gt.controller.GTRController;
 
 import org.xutils.x;
 
@@ -67,8 +66,6 @@ public class KWApplication extends Application {
         UploadUtil2.startTask(this);
         //countly
         Countly.sharedInstance().init(this, countlyUrl, countlyAppKey);
-        //GT
-        GTRController.init(this);
     }
 
     /**
