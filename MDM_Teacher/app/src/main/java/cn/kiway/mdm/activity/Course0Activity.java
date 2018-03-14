@@ -578,6 +578,8 @@ public class Course0Activity extends ScreenSharingActivity {
         final Dialog dialog = new Dialog(this, R.style.popupDialog);
         dialog.setContentView(R.layout.dialog_select_question);
         dialog.show();
+        questionTime = 120;//reset questionTime
+
         Button kaishidati = (Button) dialog.findViewById(R.id.kaishidati);
         Button close = (Button) dialog.findViewById(R.id.close);
         CheckBox timeEnable = (CheckBox) dialog.findViewById(R.id.timeEnable);
@@ -961,7 +963,7 @@ public class Course0Activity extends ScreenSharingActivity {
 
                 startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type",
                         TYPE_QUESTION_SUIJICHOUDA).putExtra("students", selectStudents).putExtra("questionTime",
-                        getIntent().getIntExtra("questionTime", 0)).putExtra("questions", selectQuestions));
+                        questionTime).putExtra("questions", selectQuestions));
             }
 
             @Override
