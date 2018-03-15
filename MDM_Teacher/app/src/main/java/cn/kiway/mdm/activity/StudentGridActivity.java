@@ -764,7 +764,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                 if (fileModels.size() > 0) {
                     sendFile(0);
                 } else {
-                    toast("");
+                    toast("请先添加要发送的文件");
                 }
                 break;
         }

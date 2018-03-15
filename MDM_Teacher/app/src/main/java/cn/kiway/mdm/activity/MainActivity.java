@@ -38,7 +38,6 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -47,7 +46,6 @@ import java.util.List;
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
-import cn.kiway.mdm.util.FileUtils;
 import cn.kiway.mdm.util.Logger;
 import cn.kiway.mdm.util.NetworkUtil;
 import cn.kiway.mdm.util.UploadUtil;
@@ -98,18 +96,6 @@ public class MainActivity extends BaseActivity {
         initZbus();
         initRecorder();
         checkNewAPK();
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                try {
-                    FileUtils.getLauncherFilePath(MainActivity.this);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-
     }
 
     private void checkNewAPK() {
@@ -503,15 +489,15 @@ public class MainActivity extends BaseActivity {
         dialog_download = builder.setMessage("发现新的版本，是否更新？本次更新不消耗流量。").setNegativeButton(android.R.string.ok, new
                 DialogInterface.OnClickListener() {
 
-            @Override
-            public void onClick(DialogInterface arg0, int arg1) {
-                dialog_download.dismiss();
-                Message msg = new Message();
-                msg.what = 4;
-                msg.obj = savedFilePath;
-                mHandler.sendMessage(msg);
-            }
-        }).setPositiveButton(android.R.string.cancel, null).create();
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        dialog_download.dismiss();
+                        Message msg = new Message();
+                        msg.what = 4;
+                        msg.obj = savedFilePath;
+                        mHandler.sendMessage(msg);
+                    }
+                }).setPositiveButton(android.R.string.cancel, null).create();
         dialog_download.show();
     }
 
