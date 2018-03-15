@@ -554,6 +554,18 @@ public class ZbusHost {
         }
     }
 
+    //心跳
+    public static void heartbeat(Context c, String command) {
+        try {
+            String title = "心跳";
+            String userId = Utils.getIMEI(c);
+            String msg = new JSONObject().put("data", new JSONObject().put("command", command).put("teacherUserId", userId).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
+            doSendMsg(c, title, userId, msg, students);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     //测试用
     public static void test(Activity c, int id, final OnListener onListener) {
         try {

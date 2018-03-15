@@ -54,6 +54,7 @@ import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.web.JsAndroidInterface;
 import cn.kiway.mdm.web.MyWebViewClient;
+import cn.kiway.mdm.zbus.ZbusHost;
 import cn.kiway.mdm.zbus.ZbusMessageHandler;
 import cn.kiway.zbus.utils.ZbusUtils;
 import io.zbus.mq.Broker;
@@ -83,6 +84,8 @@ public class MainActivity extends BaseActivity {
     private JsAndroidInterface jsInterface;
     public static final int MSG_NETWORK_OK = 1;
     public static final int MSG_NETWORK_ERR = 2;
+    public static final int MSG_HEARTBEAT = 3;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -415,11 +418,16 @@ public class MainActivity extends BaseActivity {
                 rl_nonet.setVisibility(View.GONE);
                 Log.d("test", "有网络");
                 initZbus();
+                sendEmptyMessageDelayed(MSG_HEARTBEAT, 1000);
             } else if (msg.what == MSG_NETWORK_ERR) {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 rl_nonet.setVisibility(View.VISIBLE);
                 Log.d("test", "无网络");
                 ZbusUtils.close();
+            } else if (msg.what == MSG_HEARTBEAT) {
+                for (int i = 0; i < 3; i++) {
+                    ZbusHost.heartbeat(getApplicationContext(), "heartbeat1");
+                }
             } else if (msg.what == 4) {
                 // 下载完成后安装
                 String savedFilePath = (String) msg.obj;
