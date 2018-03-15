@@ -76,6 +76,7 @@ public class SettingActivity extends BaseActivity {
         String studentNumber = getSharedPreferences("kiway", 0).getString("studentNumber", "");
         String name = getSharedPreferences("kiway", 0).getString("name", "");
         String token = getSharedPreferences("huawei", 0).getString("token", "");
+        String accessToken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
         try {
             JSONObject content = new JSONObject();
             content.put("schoolId", schoolId);
@@ -84,6 +85,7 @@ public class SettingActivity extends BaseActivity {
             content.put("name", name);
             content.put("imei", Utils.getIMEI(this));
             content.put("token", token);
+            content.put("accessToken", accessToken);
             Bitmap b = Utils.createQRImage(content.toString(), 400, 400);
             codeIV.setImageBitmap(b);
             codeRL.setVisibility(View.VISIBLE);
@@ -97,7 +99,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     public void Password(View view) {
-       // startActivity(new Intent(this, PassWordActivity.class));
+        // startActivity(new Intent(this, PassWordActivity.class));
         startActivity(new Intent(this, SettingPasswordActivity.class));
     }
 
