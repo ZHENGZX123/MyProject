@@ -34,9 +34,6 @@ public class Question implements Serializable {
     public ArrayList<String> studentAnswers = new ArrayList<String>();
     public ArrayList<Integer> teacherJudges = new ArrayList<Integer>();
 
-//    public String studentAnswer;
-//    public int teacherJudge; // 未批改0  错误1  正确2
-
     @Override
     public String toString() {
         return "Question{" +
