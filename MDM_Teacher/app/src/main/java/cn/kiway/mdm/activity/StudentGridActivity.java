@@ -580,24 +580,18 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void sendShangkeCommand() {
-        for (int i = 0; i < 3; i++) {
-            String command = "shangke1";
-            if (i > 0) {
-                command = "shangke2";
+        ZbusHost.shangke(StudentGridActivity.this, "shangke", KWApplication.students, new OnListener() {
+
+            @Override
+            public void onSuccess() {
+                //toast("发送上课命令成功");
             }
-            ZbusHost.shangke(StudentGridActivity.this, command, KWApplication.students, new OnListener() {
 
-                @Override
-                public void onSuccess() {
-                    //toast("发送上课命令成功");
-                }
-
-                @Override
-                public void onFailure() {
-                    toast("发送上课命令失败");
-                }
-            });
-        }
+            @Override
+            public void onFailure() {
+                toast("发送上课命令失败");
+            }
+        });
     }
 
     private void sendDianmingdaCommand(final Student s) {

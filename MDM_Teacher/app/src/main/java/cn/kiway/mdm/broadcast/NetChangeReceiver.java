@@ -28,7 +28,7 @@ public class NetChangeReceiver extends BroadcastReceiver {
             if (available) {
                 msg.what = MainActivity.MSG_NETWORK_OK;
                 MainActivity.instance.mHandler.removeMessages(MainActivity.MSG_NETWORK_OK);
-                MainActivity.instance.mHandler.sendMessageDelayed(msg, 5000);
+                MainActivity.instance.mHandler.sendMessageDelayed(msg, 3000);
             } else {
                 msg.what = MainActivity.MSG_NETWORK_ERR;
                 MainActivity.instance.mHandler.sendMessage(msg);

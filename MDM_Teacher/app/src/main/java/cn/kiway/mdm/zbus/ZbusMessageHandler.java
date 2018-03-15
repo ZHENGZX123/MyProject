@@ -54,11 +54,19 @@ public class ZbusMessageHandler implements MessageHandler {
                 answer(studentIMEI, command.split("_")[1]);
             } else if (command.startsWith("question")) {
                 question(studentIMEI, command.split("_")[1]);
+            } else if (command.equals("heartbeat1")) {
+                heartbeat();
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void heartbeat() {
+        if (KWApplication.currentActivity == null) {
+            return;
+        }
+        ZbusHost.heartbeat(KWApplication.currentActivity, "heartbeat2");
     }
 
     private void chaxun(String studentIMEI, String type, String status) {
@@ -95,7 +103,7 @@ public class ZbusMessageHandler implements MessageHandler {
             if (s.imei.equals(studentIMEI)) {
                 ArrayList<Student> temp = new ArrayList<>();
                 temp.add(s);
-                ZbusHost.shangke(MainActivity.instance, "shangke1", temp, null);
+                ZbusHost.shangke(MainActivity.instance, "shangke", temp, null);
                 return;
             }
         }
