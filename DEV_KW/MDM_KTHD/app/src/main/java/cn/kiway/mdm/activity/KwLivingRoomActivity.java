@@ -51,9 +51,11 @@ public class KwLivingRoomActivity extends LiveRoomActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_room);
         instance = this;
+
     }
 
-    //--------------------------------------------------2.0新增--------------------------
+
+    //---------------------------2.0新增--------------------------
     String fileName;
 
     public void clickSnapshot(View view) {
