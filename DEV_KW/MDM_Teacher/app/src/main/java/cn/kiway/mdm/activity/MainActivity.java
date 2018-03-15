@@ -38,6 +38,7 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ import java.util.List;
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.util.FileUtils;
 import cn.kiway.mdm.util.Logger;
 import cn.kiway.mdm.util.NetworkUtil;
 import cn.kiway.mdm.util.UploadUtil;
@@ -93,6 +95,18 @@ public class MainActivity extends BaseActivity {
         initZbus();
         initRecorder();
         checkNewAPK();
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    FileUtils.getLauncherFilePath(MainActivity.this);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
     }
 
     private void checkNewAPK() {
@@ -146,7 +160,8 @@ public class MainActivity extends BaseActivity {
                     ZbusUtils.init(broker, p);
                     String topic = "kiway_push_" + userId;
                     Log.d("test", "topic = " + topic);
-                    ZbusUtils.consumeMsgs(topic, new ZbusMessageHandler(), cn.kiway.mdm.util.Constant.zbusHost + ":" + cn.kiway.mdm.util.Constant.zbusPost);
+                    ZbusUtils.consumeMsgs(topic, new ZbusMessageHandler(), cn.kiway.mdm.util.Constant.zbusHost + ":"
+                            + cn.kiway.mdm.util.Constant.zbusPost);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -319,7 +334,8 @@ public class MainActivity extends BaseActivity {
                 return;
             }
             boolean isOrig = data.getBooleanExtra(ImagePreviewActivity.ISORIGIN, false);
-            ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+            ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker
+                    .EXTRA_RESULT_ITEMS);
             if (!isOrig) {
                 Log.d("test", "压缩前大小" + new File(images.get(0).path).length());
                 File newFile = CompressHelper.getDefault(this).compressToFile(new File(images.get(0).path));
@@ -431,7 +447,8 @@ public class MainActivity extends BaseActivity {
             Log.d("test", "不是wifi...");
             //提示4G
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
-            dialog_download = builder.setMessage("有新的版本需要更新，您当前的网络是4G，确定使用流量下载新的APK吗？").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            dialog_download = builder.setMessage("有新的版本需要更新，您当前的网络是4G，确定使用流量下载新的APK吗？").setNegativeButton(android.R
+                    .string.ok, new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface arg0, int arg1) {
@@ -475,7 +492,8 @@ public class MainActivity extends BaseActivity {
 
     private void askforInstall(final String savedFilePath) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
-        dialog_download = builder.setMessage("发现新的版本，是否更新？本次更新不消耗流量。").setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+        dialog_download = builder.setMessage("发现新的版本，是否更新？本次更新不消耗流量。").setNegativeButton(android.R.string.ok, new
+                DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface arg0, int arg1) {

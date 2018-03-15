@@ -1,5 +1,6 @@
 package cn.kiway.mdm.util;
 
+import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +12,6 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -349,25 +349,26 @@ public class FileUtils {
         }
     }
 
-    public String getLauncherFilePath(Context context) {
-        File file = new File("/mnt/sdcard/mdm_teacher/launcher.png");//将要保存图片的路径
-        if (file.exists())
-            return file.getPath();
+    public static String getLauncherFilePath(Context context) throws IOException {
+        File file = new File("/mnt/sdcard/kiway_mdm_teacher/launcher.png");//将要保存图片的路径
+//        if (file.exists())
+//            return file.getPath();
+        file.createNewFile();
         WallpaperManager wallpaperManager = WallpaperManager
                 .getInstance(context);
-        // 获取当前壁纸
-        Drawable wallpaperDrawable = wallpaperManager.getFastDrawable();
-        Bitmap bitmap = ((BitmapDrawable) wallpaperDrawable).getBitmap();
-        try {
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
-            bos.flush();
-            bos.close();
-            return file.getPath();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
+        WallpaperInfo wallInfo = wallpaperManager.getWallpaperInfo();
+        if (wallInfo != null) {
+            Logger.log("::::动态壁纸");
+        } else {
+            Logger.log("::::静态壁纸");
+            Drawable wallpaperDrawable = wallpaperManager.getFastDrawable();
+            Bitmap bitmap = ((BitmapDrawable) wallpaperDrawable).getBitmap();
+            FileOutputStream fos = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            fos.flush();
+            fos.close();
         }
+        return file.getPath();
     }
 }
 
