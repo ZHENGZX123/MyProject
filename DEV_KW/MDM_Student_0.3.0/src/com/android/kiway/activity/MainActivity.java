@@ -36,6 +36,7 @@ import com.android.kiway.utils.DESUtil;
 import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.MyDBHelper;
 import com.android.kiway.utils.Utils;
+import com.android.kiway.zbus.ZbusHost;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -93,6 +94,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     private static final int MSG_CHECK_SHUTDOWN = 6;
     public static final int MSG_NETWORK_OK = 7;
     public static final int MSG_NETWORK_ERR = 8;
+    public static final int MSG_HEARTBEAT = 9;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -324,10 +326,17 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 break;
                 case MSG_NETWORK_OK: {
                     initZbus();
+                    sendEmptyMessageDelayed(MSG_HEARTBEAT, 1000);
                 }
                 break;
                 case MSG_NETWORK_ERR: {
                     ZbusUtils.close();
+                }
+                break;
+                case MSG_HEARTBEAT: {
+                    for (int i = 0; i < 3; i++) {
+                        ZbusHost.doSendMsg(getApplicationContext(), "heartbeat1");
+                    }
                 }
                 break;
             }
