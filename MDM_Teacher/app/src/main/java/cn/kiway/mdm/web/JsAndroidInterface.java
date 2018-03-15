@@ -162,11 +162,15 @@ public class JsAndroidInterface {
     }
 
     @JavascriptInterface
+    public void app() {
+        Log.d("test", "app is called");
+        Countly.sharedInstance().recordEvent("APP应用");
+    }
+
+    @JavascriptInterface
     public void shangke(String info) {
         KWApplication.students.clear();
-
         Countly.sharedInstance().recordEvent("上课");
-
         Log.d("test", "shangke info = " + info);
         try {
             JSONObject o = new JSONObject(info);
