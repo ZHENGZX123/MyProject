@@ -19,7 +19,7 @@
         android:layout_alignBottom="@+id/ll"
         android:layout_below="@+id/gj"
         android:layout_marginLeft="10dp"
-        android:background="#33ffffff"></View>
+        android:background="#556699ff"></View>
 
     <LinearLayout
         android:id="@+id/ll"
