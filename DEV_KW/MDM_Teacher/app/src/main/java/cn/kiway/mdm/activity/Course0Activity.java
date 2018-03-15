@@ -63,6 +63,7 @@ import cn.kiway.mdm.util.UploadUtil2;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
+import ly.count.android.api.Countly;
 
 import static cn.kiway.mdm.KWApplication.students;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_CHAPING;
@@ -264,6 +265,7 @@ public class Course0Activity extends ScreenSharingActivity {
     //-------------------------tools1----------------------
 
     public void jieping(View view) {
+        Countly.sharedInstance().recordEvent("截屏");
         String filePath = Utils.GetandSaveCurrentImage(this);
         if (!filePath.equals("")) {
             if (Utils.isImage(filePath)) {
@@ -272,10 +274,10 @@ public class Course0Activity extends ScreenSharingActivity {
         }
     }
 
-    String picPath;
+    private String picPath;
 
     public void paizhao(View view) {
-        //众人通是拍照后，放在画布上。
+        Countly.sharedInstance().recordEvent("拍照");
         picPath = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Uri uri = Uri.fromFile(new File(picPath));
@@ -293,6 +295,7 @@ public class Course0Activity extends ScreenSharingActivity {
     }
 
     public void huabi(View view) {
+        Countly.sharedInstance().recordEvent("画笔");
         startActivity(new Intent(this, WhiteBoardActivity.class));
     }
 
@@ -998,7 +1001,8 @@ public class Course0Activity extends ScreenSharingActivity {
         }
     }
 
-    public void rk(View view) {
+    public void luke(View view) {
+        Countly.sharedInstance().recordEvent("录课");
         if (recording) {
             stopRecord();
         } else {
