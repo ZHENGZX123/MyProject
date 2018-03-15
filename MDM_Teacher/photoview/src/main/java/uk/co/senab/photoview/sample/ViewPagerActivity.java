@@ -17,6 +17,7 @@ package uk.co.senab.photoview.sample;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
@@ -56,6 +57,7 @@ public class ViewPagerActivity extends Activity {
         @Override
         public View instantiateItem(ViewGroup container, int position) {
             PhotoView photoView = new PhotoView(container.getContext());
+            photoView.setBackgroundColor(Color.WHITE);
 //            photoView.setImageResource(sDrawables[position]);
 
             ImageLoader.getInstance().displayImage(sDrawables[position], photoView, getLoaderOptions());
