@@ -226,13 +226,14 @@ public class ResultActivity extends BaseActivity {
                                 }
                             }
                             if (auto) {
+                                toast("接收到" + s.name + "提交的答案，已自动批改");
                                 for (Question q : questions) {
                                     q.teacherJudges.set(studentIndex, autoTeacherJudge(q, studentIndex));
                                 }
                                 s.collected = true;
+                            } else {
+                                toast("接收到" + s.name + "提交的答案，需要老师手动批改");
                             }
-
-
                         } catch (Exception e) {
                             Log.d("test", "学生提交的和本次问题对应不上。。。有问题");
                             e.printStackTrace();
@@ -256,10 +257,7 @@ public class ResultActivity extends BaseActivity {
                     } else {
                         hint.setText("答题结束");
                     }
-
-                    //2.
                 }
-
                 refreshUI();
             }
         });
