@@ -105,7 +105,6 @@
     <orderEntry type="jdk" jdkName="Android API 25 Platform (1)" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="support-annotations-25.0.1" level="project" />
-    <orderEntry type="library" exported="" name="gt_sdk_3.1.0" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.5" level="project" />
     <orderEntry type="library" exported="" name="tbs_sdk_thirdapp_v3.5.0.1004_43500_sharewithdownload_withoutGame_obfs_20170801_113025" level="project" />
     <orderEntry type="library" exported="" name="sdk-android-14.12" level="project" />
