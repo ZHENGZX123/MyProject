@@ -93,6 +93,7 @@ public class MainActivity extends ScreenSharingActivity {
         if (!getSharedPreferences("kiway", 0).getString("userUrl", "").equals(""))
             ImageLoader.getInstance().displayImage(getSharedPreferences("kiway", 0).getString("userUrl", ""),
                     userPic, App.getLoaderOptions());
+        checkConnect();
     }
 
     public void onInfo(View view) {//个人信息
@@ -362,8 +363,12 @@ public class MainActivity extends ScreenSharingActivity {
 
     private RotationObserver mRotationObserver;
 
-    public void setIconGone() {
-        connect.setVisibility(View.GONE);
+    public void checkConnect() {
+        if (app.isAttenClass) {
+            connect.setVisibility(View.GONE);
+        } else {
+            connect.setVisibility(View.VISIBLE);
+        }
     }
 
     //观察屏幕旋转设置变化，类似于注册动态广播监听变化机制
