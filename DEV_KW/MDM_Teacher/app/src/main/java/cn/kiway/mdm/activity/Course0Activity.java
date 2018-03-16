@@ -242,6 +242,11 @@ public class Course0Activity extends ScreenSharingActivity {
             readerView.onStop();
             readerView = null;
             x5FileLayout.removeAllViews();
+
+            huabiView.setVisibility(View.GONE);
+            huabiView.clear();
+            huabiIV.setBackgroundResource(R.drawable.u1750);
+            
             x5RL.setVisibility(View.GONE);
             return;
         }
