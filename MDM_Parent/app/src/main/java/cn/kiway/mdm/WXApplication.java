@@ -13,7 +13,6 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.tencent.smtt.sdk.QbSdk;
-import com.tencent.wstt.gt.controller.GTRController;
 
 import org.xutils.x;
 
@@ -47,8 +46,6 @@ public class WXApplication extends Application {
         initTBS();
         //countly
         Countly.sharedInstance().init(this, countlyUrl, countlyAppKey);
-        //gt
-        GTRController.init(this);
     }
 
     /**
