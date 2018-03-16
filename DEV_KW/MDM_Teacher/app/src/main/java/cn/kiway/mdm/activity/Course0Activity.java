@@ -61,6 +61,7 @@ import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.UploadUtil2;
 import cn.kiway.mdm.util.Utils;
+import cn.kiway.mdm.view.PaletteView;
 import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
 import ly.count.android.api.Countly;
@@ -90,6 +91,7 @@ import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile2;
 //未上课
 public class Course0Activity extends ScreenSharingActivity {
 
+    private RelativeLayout x5RL;
     private FrameLayout x5FileLayout;
     private TbsReaderView readerView;
     private ImageView tuipingIV;
@@ -116,6 +118,10 @@ public class Course0Activity extends ScreenSharingActivity {
     private ArrayList<StudentQuestion> studentQuestions = new ArrayList<>();
     private StudentQuestionAdapter sqAdapter;
 
+    //画笔
+    private ImageView huabiIV;
+    private PaletteView huabiView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,6 +138,7 @@ public class Course0Activity extends ScreenSharingActivity {
     public void initView() {
         super.initView();
         titleName.setText(course.name);
+        x5RL = (RelativeLayout) findViewById(R.id.x5RL);
         x5FileLayout = (FrameLayout) findViewById(R.id.x5FileLayout);
         lv = (ListView) findViewById(R.id.KnowledgePointLV);
         adapter = new CourseAdapter();
@@ -140,6 +147,9 @@ public class Course0Activity extends ScreenSharingActivity {
         tuipingIV = (ImageView) findViewById(R.id.tuipingIV);
         rk = (ImageView) findViewById(R.id.rk);
         tiwen = (Button) findViewById(R.id.tiwen);
+
+        huabiView = (PaletteView) findViewById(R.id.huabiView);
+        huabiIV = (ImageView) findViewById(R.id.huabiIV);
     }
 
     public void initData() {
@@ -228,11 +238,11 @@ public class Course0Activity extends ScreenSharingActivity {
 
     @Override
     public void onBackPressed() {
-        if (x5FileLayout.isShown()) {
+        if (x5RL.isShown()) {
             readerView.onStop();
             readerView = null;
             x5FileLayout.removeAllViews();
-            x5FileLayout.setVisibility(View.GONE);
+            x5RL.setVisibility(View.GONE);
             return;
         }
         if (tuiping) {
@@ -294,9 +304,22 @@ public class Course0Activity extends ScreenSharingActivity {
                 .start(this);
     }
 
-    public void huabi(View view) {
-        Countly.sharedInstance().recordEvent("画笔");
+    public void huaban(View view) {
+        Countly.sharedInstance().recordEvent("画板");
         startActivity(new Intent(this, WhiteBoardActivity.class));
+    }
+
+    public void huabi(View view) {
+        if (huabiView.getVisibility() == View.VISIBLE) {
+            huabiView.setVisibility(View.GONE);
+            huabiView.clear();
+            huabiIV.setBackgroundResource(R.drawable.u1750);
+            toast("画笔功能关闭");
+        } else {
+            huabiIV.setBackgroundResource(R.drawable.u1751);
+            huabiView.setVisibility(View.VISIBLE);
+            toast("画笔功能开启");
+        }
     }
 
     private boolean tuiping;
@@ -1321,7 +1344,7 @@ public class Course0Activity extends ScreenSharingActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                x5FileLayout.setVisibility(View.VISIBLE);
+                x5RL.setVisibility(View.VISIBLE);
                 readerView = new TbsReaderView(Course0Activity.this, new TbsReaderView.ReaderCallback() {
                     @Override
                     public void onCallBackAction(Integer integer, Object o, Object o1) {
