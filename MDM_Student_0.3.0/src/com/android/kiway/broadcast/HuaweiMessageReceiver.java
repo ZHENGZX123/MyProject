@@ -36,6 +36,23 @@ public class HuaweiMessageReceiver extends PushEventReceiver {
         }
     }
 
+    /**
+     * 连接状态的回调方法
+     *
+     * @param context
+     * @param pushState
+     */
+    @Override
+    public void onPushState(Context context, boolean pushState) {
+        try {
+            String content = "---------The current push status： " + (pushState ? "Connected" :
+                    "Disconnected");
+            Log.d("huawei", content);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public boolean onPushMsg(Context context, byte[] msg, Bundle bundle) {
         String receive = null;
