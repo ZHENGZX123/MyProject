@@ -494,4 +494,14 @@ public class RecordAction {
 
         return list;
     }
+    public static void addGridView(Context context,String title, String url, String filename) {
+        RecordAction action = new RecordAction(context);
+        action.open(true);
+        if (!action.checkGridItem(url)) {
+            int ordinal = action.listGrid().size();
+            GridItem item = new GridItem(title, url, filename, ordinal);
+            action.addGridItem(item);
+        }
+        action.close();
+    }
 }

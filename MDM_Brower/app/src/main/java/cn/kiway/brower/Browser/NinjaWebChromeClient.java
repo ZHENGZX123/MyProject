@@ -28,6 +28,7 @@ public class NinjaWebChromeClient extends WebChromeClient {
     @Override
     public void onProgressChanged(WebView view, int progress) {
         super.onProgressChanged(view, progress);
+        if (ninjaWebView!=null)
         ninjaWebView.update(progress);
     }
 

@@ -360,6 +360,7 @@ public class NinjaWebView extends WebView implements AlbumController {
                 action.open(true);
                 action.addHistory(new Record(getTitle(), getUrl(), System.currentTimeMillis()));
                 action.close();
+                if (browserController!=null)
                 browserController.updateAutoComplete();
             }
         }

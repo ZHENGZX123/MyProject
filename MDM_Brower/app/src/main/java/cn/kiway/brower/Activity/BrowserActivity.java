@@ -162,7 +162,6 @@ public class BrowserActivity extends Activity implements BrowserController {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getAppData();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(
                     getString(R.string.app_name),
@@ -191,40 +190,32 @@ public class BrowserActivity extends Activity implements BrowserController {
                 inputBox.clearFocus();
             }
         });
-
         dimen156dp = getResources().getDimensionPixelSize(R.dimen.layout_width_156dp);
         dimen144dp = getResources().getDimensionPixelSize(R.dimen.layout_width_144dp);
         dimen117dp = getResources().getDimensionPixelSize(R.dimen.layout_height_117dp);
         dimen108dp = getResources().getDimensionPixelSize(R.dimen.layout_height_108dp);
         dimen48dp = getResources().getDimensionPixelOffset(R.dimen.layout_height_48dp);
-
         initSwitcherView();
         initOmnibox();
         initSearchPanel();
         relayoutOK = (Button) findViewById(R.id.main_relayout_ok);
         contentFrame = (FrameLayout) findViewById(R.id.main_content);
-
         new AdBlock(this); // For AdBlock cold boot
         dispatchIntent(getIntent());
+    }
+
+    public void updateGridView() {
+        NinjaRelativeLayout layout = (NinjaRelativeLayout) getLayoutInflater().inflate(R.layout.home, null, false);
+        layout.setBrowserController(this);
+        layout.setFlag(BrowserUnit.FLAG_HOME);
+        layout.setAlbumCover(ViewUnit.capture(layout, dimen144dp, dimen108dp, false, Bitmap.Config.RGB_565));
+        layout.setAlbumTitle(getString(R.string.album_title_home));
+        initHomeGrid(layout, true);
     }
 
     public static int enable_type;
     public static ArrayList<Network> all_network = new ArrayList<Network>();
 
-    protected void getAppData() {
-        Intent intent = getIntent();
-        if (intent != null) {
-            enable_type = intent.getIntExtra("enable_type", -1);
-            all_network = (ArrayList<Network>) intent.getSerializableExtra("all_network");
-            getSharedPreferences("kiway", 0).edit().putString("x-auth-token", intent.getStringExtra("x-auth-token"))
-                    .commit();
-            Log.e("BrowerActivity:::::", "enable_type====" + enable_type);
-            Log.e("BrowerActivity:::::", "all_network====" + all_network);
-            Log.e("BrowerActivity:::::", "x-auth-token====" + intent.getStringExtra("x-auth-token"));
-        } else {
-            Log.e("BrowerActivity:::::", "没有传值");
-        }
-    }
 
     public static boolean checkUrlEnable(String url) {
         Log.d("test", "enable_type = " + enable_type);
@@ -606,7 +597,6 @@ public class BrowserActivity extends Activity implements BrowserController {
         action.open(false);
         final List<GridItem> gridList = action.listGrid();
         action.close();
-
         DynamicGridView gridView = (DynamicGridView) layout.findViewById(R.id.home_grid);
         TextView aboutBlank = (TextView) layout.findViewById(R.id.home_about_blank);
         gridView.setEmptyView(aboutBlank);
@@ -1623,6 +1613,7 @@ public class BrowserActivity extends Activity implements BrowserController {
                     anim.setDuration(mediumAnimTime);
                     anim.start();
                 } else if (s.equals(array[1])) { // Add to home
+                    //// TODO: 2018/3/15
                     NinjaWebView ninjaWebView = (NinjaWebView) currentAlbumController;
                     RecordAction action = new RecordAction(BrowserActivity.this);
                     action.open(true);
@@ -1636,7 +1627,6 @@ public class BrowserActivity extends Activity implements BrowserController {
                         String filename = System.currentTimeMillis() + BrowserUnit.SUFFIX_PNG;
                         int ordinal = action.listGrid().size();
                         GridItem item = new GridItem(title, url, filename, ordinal);
-
                         if (BrowserUnit.bitmap2File(BrowserActivity.this, bitmap, filename) && action.addGridItem
                                 (item)) {
                             NinjaToast.show(BrowserActivity.this, R.string.toast_add_to_home_successful);

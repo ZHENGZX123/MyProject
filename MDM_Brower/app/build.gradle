@@ -5,7 +5,7 @@ android {
     buildToolsVersion "27.0.3"
 
     defaultConfig {
-        applicationId "cn.kiway.brower"
+        applicationId "cn.kiway.browser"
         minSdkVersion 16
         targetSdkVersion 16
     }
@@ -16,9 +16,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
 }
 
 dependencies {
     compile 'com.android.support:support-v4:22.2.1'
     compile files('libs/android-async-http-1.4.5.jar')
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 }
