@@ -12,8 +12,8 @@ public class Constant {
     public static String zbusHost = "mdm.kiway.cn";//"192.168.8.161"; mdm.kiway.cn
     public static String zbusPost = "15556";
 
-    //    public static String serverUrl = "http://192.168.8.161:8084";
-    //    public static String clientUrl = "http://192.168.8.161:8085";
+//        public static String serverUrl = "http://192.168.8.161:8084";
+//        public static String clientUrl = "http://192.168.8.161:8085";
 
     public static String serverUrl = "http://mdm.kiway.cn:8084";
     public static String clientUrl = "http://mdm.kiway.cn:8085";
