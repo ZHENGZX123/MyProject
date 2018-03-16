@@ -251,7 +251,7 @@ public class App extends KiwayApplication {
                 @Override
                 public void run() {
                     MainActivity.instantce.toast("开始上课啦");
-                    MainActivity.instantce.setIconGone();
+                    MainActivity.instantce.checkConnect();
                 }
             }, 1000);
         }
