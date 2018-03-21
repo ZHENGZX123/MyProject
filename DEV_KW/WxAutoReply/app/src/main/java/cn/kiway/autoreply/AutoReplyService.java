@@ -57,6 +57,7 @@ public class AutoReplyService extends AccessibilityService {
 
     boolean hasAction = false;
     boolean locked = false;
+    boolean background = false;
     private String retContent;
     private Handler handler = new Handler();
     private boolean stop;
@@ -131,6 +132,10 @@ public class AutoReplyService extends AccessibilityService {
                             continue;
                         }
                         locked = false;
+                        Log.d("maptrix", "the screen is unlocked");
+                        background = true;
+                        Log.d("maptrix", "is mm in background");
+
                         //只打印用
                         String senderName = null;
                         String sendContent = null;
