@@ -31,6 +31,9 @@ import java.util.Set;
 import cn.kiway.zbus.utils.ZbusUtils;
 import cn.kiway.zbus.vo.PushMessageVo;
 import io.zbus.mq.Broker;
+import io.zbus.mq.Message;
+import io.zbus.mq.MessageHandler;
+import io.zbus.mq.MqClient;
 import io.zbus.mq.Producer;
 
 public class AutoReplyService extends AccessibilityService {
@@ -148,24 +151,20 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("maptrix", "return2");
                     return;
                 }
-                if (fill()) {
-                    send();
-                } else {
-                    Log.d("test", "try again 5 second later");
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (fill()) {
-                                send();
-                            }
-                        }
-                    }, 5000);
-                }
+
+                //发送文字回复
+                sendTxt();
 
                 back2Home();
                 release();
                 hasAction = false;
                 break;
+        }
+    }
+
+    private void sendTxt() {
+        if (fill()) {
+            send();
         }
     }
 
@@ -300,8 +299,13 @@ public class AutoReplyService extends AccessibilityService {
                     ZbusUtils.init(broker, p);
                     String topic = "kiway_wx_" + userId;
                     Log.d("test", "topic = " + topic);
-                    ZbusUtils.consumeMsgs(topic, new ZbusMessageHandler(), Constant.zbusHost + ":"
-                            + Constant.zbusPost);
+                    ZbusUtils.consumeMsgs(topic, new MessageHandler() {
+                        @Override
+                        public void handle(Message message, MqClient mqClient) throws IOException {
+                            String temp = message.getBodyString();
+                            Log.d("test", "zbus receive = " + temp);
+                        }
+                    }, Constant.zbusHost + ":" + Constant.zbusPost);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
