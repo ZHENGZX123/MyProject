@@ -1,4 +1,4 @@
-package com.ileja.autoreply;
+package cn.kiway.autoreply;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
