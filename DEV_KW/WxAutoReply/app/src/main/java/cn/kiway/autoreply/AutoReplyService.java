@@ -24,10 +24,19 @@ import org.apache.http.Header;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import cn.kiway.zbus.utils.ZbusUtils;
+import cn.kiway.zbus.vo.PushMessageVo;
+import io.zbus.mq.Broker;
+import io.zbus.mq.Producer;
 
 public class AutoReplyService extends AccessibilityService {
-    private final static String MM_PNAME = "com.tencent.mm";
+
+    public static AutoReplyService instance;
+
     boolean hasAction = false;
     boolean locked = false;
     boolean background = false;
@@ -42,6 +51,8 @@ public class AutoReplyService extends AccessibilityService {
     public void onCreate() {
         super.onCreate();
         Log.d("maptrix", "service oncreate");
+
+        instance = this;
 
         new Thread() {
             @Override
@@ -73,6 +84,31 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }
                     });
+                }
+            }
+        }.start();
+    }
+
+    //初始化zbus
+    public void initZbus() {
+        Log.d("test", "initZbus");
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String userId = Utils.getIMEI(getApplicationContext());
+                    if (TextUtils.isEmpty(userId)) {
+                        return;
+                    }
+                    Broker broker = new Broker(Constant.zbusHost + ":" + Constant.zbusPost);
+                    Producer p = new Producer(broker);
+                    ZbusUtils.init(broker, p);
+                    String topic = "kiway_wx_" + userId;
+                    Log.d("test", "topic = " + topic);
+                    ZbusUtils.consumeMsgs(topic, new ZbusMessageHandler(), Constant.zbusHost + ":"
+                            + Constant.zbusPost);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }.start();
@@ -325,5 +361,31 @@ public class AutoReplyService extends AccessibilityService {
                 handleResult();
             }
         });
+    }
+
+
+    private void doSendMsg(String msg) throws Exception {
+        //topic : 老师的deviceId#userId
+        String userId = Utils.getIMEI(getApplicationContext());
+
+        String topic = Utils.getIMEI(this) + "#" + userId;
+        String url = Constant.zbusHost + ":" + Constant.zbusPost;
+        PushMessageVo pushMessageVo = new PushMessageVo();
+        pushMessageVo.setDescription("desc");
+        pushMessageVo.setTitle("title");
+        pushMessageVo.setMessage(msg);
+        pushMessageVo.setAppId(Constant.APPID);
+        pushMessageVo.setModule("student");
+        Set<String> userIds = new HashSet<>();
+//        for (Student s : students) {
+//            userIds.add(s.token);
+//        }
+        pushMessageVo.setUserId(userIds);//学生token
+        pushMessageVo.setSenderId(userId);//老师的userId
+        pushMessageVo.setPushType("zbus");
+
+        Log.d("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
+        ZbusUtils.sendMsg(topic, pushMessageVo);
+
     }
 }
