@@ -137,7 +137,6 @@ public class CourseListActivity extends BaseActivity {
                             currentPage -= 1;
                         }
                         courses.addAll(temp);
-
                         Collections.sort(courses, new Comparator<Course>() {
                             @Override
                             public int compare(Course o1, Course o2) {

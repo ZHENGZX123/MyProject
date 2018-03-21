@@ -29,7 +29,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.activity.BaseActivity;
@@ -40,6 +42,7 @@ import cn.kiway.mdm.activity.ResultActivity;
 import cn.kiway.mdm.activity.StudentGridActivity;
 import cn.kiway.mdm.entity.UploadTask;
 import cn.kiway.mdm.teacher.R;
+import cn.kiway.mdm.view.popup.PopModel;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 /**
@@ -498,5 +501,64 @@ public class Utils {
         long usableSpace = sdcard_filedir.getUsableSpace();//获取文件目录对象剩余空间
         Log.d("test", "usableSpace = " + usableSpace);
         return usableSpace;
+    }
+    public static List<PopModel> getPopList(){
+        /** 初始化数据源 **/
+        final List<PopModel> list = new ArrayList<>();
+
+        PopModel feedPopModel = new PopModel();
+        feedPopModel.setDrawableId(R.drawable.p_u1742);
+        feedPopModel.setItemDesc("截屏");
+        list.add(feedPopModel);
+
+        PopModel messagePopMode = new PopModel();
+        messagePopMode.setDrawableId(R.drawable.p_u1744);
+        messagePopMode.setItemDesc("拍照");
+        list.add(messagePopMode);
+
+        PopModel luke = new PopModel();
+        luke.setDrawableId(R.drawable.p_rk1);
+        luke.setItemDesc("录课");
+        list.add(luke);
+
+        PopModel tuiping = new PopModel();
+        tuiping.setDrawableId(R.drawable.p_screen_control1);
+        tuiping.setItemDesc("推屏");
+        list.add(tuiping);
+
+        PopModel huibi = new PopModel();
+        huibi.setDrawableId(R.drawable.p_u1750);
+        huibi.setItemDesc("画笔");
+        list.add(huibi);
+
+        PopModel chaping = new PopModel();
+        chaping.setDrawableId(R.drawable.p_linkage);
+        chaping.setItemDesc("查屏");
+        list.add(chaping);
+
+        PopModel suoping = new PopModel();
+        suoping.setDrawableId(R.drawable.p_lock);
+        suoping.setItemDesc("锁屏");
+        list.add(suoping);
+
+        PopModel jingying = new PopModel();
+        jingying.setDrawableId(R.drawable.p_mute1);
+        jingying.setItemDesc("静音");
+        list.add(jingying);
+
+        PopModel wenjian = new PopModel();
+        wenjian.setDrawableId(R.drawable.p_send_msg);
+        wenjian.setItemDesc("文件");
+        list.add(wenjian);
+
+        PopModel shezhi = new PopModel();
+        shezhi.setDrawableId(R.drawable.p_setting);
+        shezhi.setItemDesc("设置");
+        list.add(shezhi);
+
+        return list;
+    }
+    public static int dp2px(Context context, float value) {
+        return (int) (context.getResources().getDisplayMetrics().density * value + 0.5);
     }
 }

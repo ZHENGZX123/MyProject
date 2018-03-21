@@ -11,7 +11,6 @@ import cn.kiway.mdm.util.NetworkUtil;
 
 public class NetChangeReceiver extends BroadcastReceiver {
 
-
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("test", "NetChangeBroadcast onReceive");
@@ -23,7 +22,6 @@ public class NetChangeReceiver extends BroadcastReceiver {
         try {
             boolean available = NetworkUtil.isNetworkAvailable(context);
             Log.d("test", "NetChangeBroadcast available = " + available);
-
             Message msg = new Message();
             if (available) {
                 msg.what = MainActivity.MSG_NETWORK_OK;
@@ -37,5 +35,4 @@ public class NetChangeReceiver extends BroadcastReceiver {
             e.printStackTrace();
         }
     }
-
 }

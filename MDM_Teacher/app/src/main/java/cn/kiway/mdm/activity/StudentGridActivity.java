@@ -148,9 +148,9 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
         findViewById(R.id.add).setOnClickListener(this);
         findViewById(R.id.remove).setOnClickListener(this);
         findViewById(send).setOnClickListener(this);
-
+        findViewById(R.id.popup).setOnClickListener(this);
         if (type == TYPE_DIANMING) {
-
+            findViewById(R.id.popup).setVisibility(View.VISIBLE);
         } else if (type == TYPE_DIANMINGDA) {
             ok.setVisibility(View.GONE);
             toolsRL.setVisibility(View.GONE);
@@ -766,6 +766,9 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                 } else {
                     toast("请先添加要发送的文件");
                 }
+                break;
+            case R.id.popup:
+                showMenuPop((ImageView) findViewById(R.id.popup));
                 break;
         }
     }

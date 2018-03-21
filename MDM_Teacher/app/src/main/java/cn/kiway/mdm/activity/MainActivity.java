@@ -60,7 +60,9 @@ import io.zbus.mq.Producer;
 import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
 
+import static cn.kiway.mdm.service.RecordService.recording;
 import static cn.kiway.mdm.util.Constant.clientUrl;
+import static cn.kiway.mdm.util.Constant.tuiping;
 import static cn.kiway.mdm.util.ResultMessage.QRSCAN;
 import static cn.kiway.mdm.util.ResultMessage.SELECT_PHOTO;
 import static cn.kiway.mdm.util.Utils.getCurrentVersion;
@@ -510,5 +512,34 @@ public class MainActivity extends BaseActivity {
         super.onDestroy();
         unbindService(connection);
         ZbusUtils.close();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (tuiping) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+            AlertDialog dialog = builder.setTitle("提示").setMessage("屏幕推送中，是否关闭")
+                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            sendTuipingcommand(0);
+                        }
+                    }).setPositiveButton(android.R.string.cancel, null).create();
+            dialog.show();
+            return;
+        }
+        if (recording) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+            AlertDialog dialog = builder.setTitle("提示").setMessage("本地录课中，是否关闭")
+                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            b_stopRecord();
+                        }
+                    }).setPositiveButton(android.R.string.cancel, null).create();
+            dialog.show();
+            return;
+        }
+        super.onBackPressed();
     }
 }

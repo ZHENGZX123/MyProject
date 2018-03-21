@@ -1,6 +1,7 @@
 package cn.kiway.mdm.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,7 +28,7 @@ import io.agora.rtc.ss.app.WhiteboardActivity2;
 import io.agora.rtc.ss.capture.ScreenCapture;
 import io.agora.rtc.video.AgoraVideoFrame;
 
-public class ScreenSharingActivity extends BaseActivity {
+public class ScreenSharingActivity extends Activity {
 
     private static final String LOG_TAG = "AgoraScreenSharing";
 
