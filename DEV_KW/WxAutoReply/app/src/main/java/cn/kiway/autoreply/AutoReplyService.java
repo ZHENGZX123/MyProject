@@ -41,7 +41,7 @@ public class AutoReplyService extends AccessibilityService {
     @Override
     public void onCreate() {
         super.onCreate();
-        android.util.Log.d("maptrix", "service oncreate");
+        Log.d("maptrix", "service oncreate");
 
         new Thread() {
             @Override
@@ -65,7 +65,7 @@ public class AutoReplyService extends AccessibilityService {
                             try {
                                 Log.d("test", "send ...");
                                 hasAction = true;
-                                retContent = "回复：" + System.currentTimeMillis();
+                                retContent = "自动回复：" + System.currentTimeMillis();
                                 name = "浪翻云";
                                 intents.remove(0).send();
                             } catch (PendingIntent.CanceledException e) {
@@ -87,10 +87,10 @@ public class AutoReplyService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
         int eventType = event.getEventType();
-        android.util.Log.d("maptrix", "get event = " + eventType);
+        Log.d("maptrix", "get event = " + eventType);
         switch (eventType) {
             case AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED:// 通知栏事件
-                android.util.Log.d("maptrix", "get notification event");
+                Log.d("maptrix", "get notification event");
                 List<CharSequence> texts = event.getText();
                 if (texts.isEmpty()) {
                     return;
@@ -102,9 +102,9 @@ public class AutoReplyService extends AccessibilityService {
                             continue;
                         }
                         locked = false;
-                        android.util.Log.d("maptrix", "the screen is unlocked");
+                        Log.d("maptrix", "the screen is unlocked");
                         background = true;
-                        android.util.Log.d("maptrix", "is mm in background");
+                        Log.d("maptrix", "is mm in background");
 
                         Log.d("test", "add ...");
 
@@ -115,14 +115,14 @@ public class AutoReplyService extends AccessibilityService {
 
                 break;
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
-                android.util.Log.d("maptrix", "get type window down event");
+                Log.d("maptrix", "get type window down event");
                 if (!hasAction) {
-                    android.util.Log.d("maptrix", "return1");
+                    Log.d("maptrix", "return1");
                     return;
                 }
                 String className = event.getClassName().toString();
                 if (!className.equals("com.tencent.mm.ui.LauncherUI")) {
-                    android.util.Log.d("maptrix", "return2");
+                    Log.d("maptrix", "return2");
                     return;
                 }
                 if (fill()) {
@@ -132,8 +132,8 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("test", "fill failure");
 
                     //1.如果在首页，找到联系人，点一下。
-//        rootNode = getRootInActiveWindow();
-//        findContact3(rootNode, name);
+                    //rootNode = getRootInActiveWindow();
+                    //findContact3(rootNode, name);
                     //findContact1();
 
                     //2.run script
@@ -205,7 +205,7 @@ public class AutoReplyService extends AccessibilityService {
      */
     private void launchWechat(AccessibilityEvent event) {
         hasAction = true;
-        android.util.Log.i("maptrix", "event.getParcelableData() = " + event.getParcelableData());
+        Log.d("maptrix", "event.getParcelableData() = " + event.getParcelableData());
         if (event.getParcelableData() != null
                 && event.getParcelableData() instanceof Notification) {
             Notification notification = (Notification) event
@@ -217,10 +217,9 @@ public class AutoReplyService extends AccessibilityService {
             name = cc[0].trim();
             scontent = cc[1].trim();
 
-            android.util.Log.i("maptrix", "sender name =" + name);
-            android.util.Log.i("maptrix", "sender content =" + scontent);
+            Log.d("maptrix", "sender name =" + name);
+            Log.d("maptrix", "sender content =" + scontent);
 
-            //MainActivity.instance.runMyUiautomator(null);
             //getReplayFromServer(notification, name, scontent);
         }
     }
@@ -230,88 +229,6 @@ public class AutoReplyService extends AccessibilityService {
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
         boolean find = findEditText(rootNode, retContent);
         return find;
-    }
-
-    private boolean findContact3(AccessibilityNodeInfo rootNode, String name) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "findContact3 classname = " + nodeInfo.getClassName());
-            if ("android.widget.ListView".equals(nodeInfo.getClassName())) {
-                Log.d("test", "listview child count = " + nodeInfo.getChildCount());
-                Log.d("test", "0 classname = " + nodeInfo.getChild(0).getClassName());
-                Log.d("test", "1 classname = " + nodeInfo.getChild(1).getClassName());
-
-                nodeInfo.getChild(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                return true;
-            }
-            if (findContact3(nodeInfo, name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findContact2(AccessibilityNodeInfo rootNode, String name) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "findContact2 classname = " + nodeInfo.getClassName());
-
-            if ("android.widget.TextView".equals(nodeInfo.getClassName())) {
-                CharSequence text = nodeInfo.getText();
-                if (text == null) {
-                    continue;
-                }
-                Log.d("test", "textview text = " + text.toString());
-                if (name.equals(text.toString())) {
-                    Log.d("test", "click...");
-                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    return true;
-                }
-            } else if ("android.widget.LinearLayout".equals(nodeInfo.getClassName())) {
-
-            }
-            if (findContact2(nodeInfo, name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void findContact1() {
-        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
-        if (nodeInfo != null) {
-            List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByText("浪翻云");
-            Log.d("test", "浪翻云个数 = " + list.size());
-            if (list != null && list.size() > 0) {
-                for (AccessibilityNodeInfo n : list) {
-                    Log.d("test", "xxxxxxxxxxxxxxxxxxxx n = " + n.getClassName());
-                    Log.d("test", "xxxxxxxxxxxxxxxxxxxx 1" + n.isClickable());
-                    Log.d("test", "xxxxxxxxxxxxxxxxxxxx 2" + n.isLongClickable());
-                    Log.d("test", "xxxxxxxxxxxxxxxxxxxx 3" + n.isSelected());
-                    Log.d("test", "xxxxxxxxxxxxxxxxxxxx 4" + n.isAccessibilityFocused());
-                    Log.d("test", "xxxxxxxxxxxxxxxxxxxx 5" + n.isCheckable());
-                    Log.d("test", "xxxxxxxxxxxxxxxxxxxx 6" + n.isEnabled());
-
-
-                    List<AccessibilityNodeInfo.AccessibilityAction> actions = n.getActionList();
-                    Log.d("test", "xxxxxxxxxxxxxxxxxx actions size = " + actions.size());
-                    for (AccessibilityNodeInfo.AccessibilityAction aa : actions) {
-                        Log.d("test", "xxxxxxxxxx aa = " + aa.getId() + " , " + aa.getLabel());
-                    }
-
-
-                    n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                }
-            }
-        }
     }
 
     private boolean findEditText(AccessibilityNodeInfo rootNode, String content) {
@@ -373,7 +290,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private void release() {
         if (locked && kl != null) {
-            android.util.Log.d("maptrix", "release the lock");
+            Log.d("maptrix", "release the lock");
             //得到键盘锁管理器对象
             kl.reenableKeyguard();
             locked = false;
