@@ -9,8 +9,12 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -18,14 +22,22 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
+import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import cn.kiway.zbus.utils.ZbusUtils;
@@ -36,18 +48,21 @@ import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
 import io.zbus.mq.Producer;
 
+import static cn.kiway.autoreply.Constant.APPID;
+import static cn.kiway.autoreply.Constant.clientUrl;
+
 public class AutoReplyService extends AccessibilityService {
 
     public static AutoReplyService instance;
 
     boolean hasAction = false;
     boolean locked = false;
-    boolean background = false;
     private String retContent;
-    private KeyguardManager.KeyguardLock kl;
     private Handler handler = new Handler();
-    public ArrayList<PendingIntent> intents = new ArrayList<>();
     private boolean stop;
+
+    //通知队列
+    public ArrayList<KwNotification> kns = new ArrayList<>();
 
     @Override
     public void onCreate() {
@@ -56,6 +71,7 @@ public class AutoReplyService extends AccessibilityService {
 
         stop = false;
         instance = this;
+        installationPush(this, Utils.getIMEI(this), Utils.getIMEI(this));
 
         new Thread() {
             @Override
@@ -66,8 +82,8 @@ public class AutoReplyService extends AccessibilityService {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    //Log.d("test", "loop ...");
-                    if (intents.size() == 0) {
+//                    Log.d("test", "loop ...");
+                    if (kns.size() == 0) {
                         continue;
                     }
                     if (hasAction) {
@@ -81,7 +97,7 @@ public class AutoReplyService extends AccessibilityService {
                             //1.测试回复
                             //retContent = "自动回复：" + System.currentTimeMillis();
                             //name = "客服一号";
-                            //intents.remove(0).send();
+                            //kns.remove(0).send();
 
                             //2.后台回复
                             getReplayFromServer();
@@ -115,27 +131,30 @@ public class AutoReplyService extends AccessibilityService {
                             continue;
                         }
                         locked = false;
-                        Log.d("maptrix", "the screen is unlocked");
-                        background = true;
-                        Log.d("maptrix", "is mm in background");
-
+                        //只打印用
+                        String senderName = null;
+                        String sendContent = null;
                         if (event.getParcelableData() != null
                                 && event.getParcelableData() instanceof Notification) {
                             Notification notification = (Notification) event
                                     .getParcelableData();
                             String ticker = notification.tickerText.toString();
                             String[] cc = ticker.split(":");
-                            String name = cc[0].trim();
-                            String scontent = cc[1].trim();
-
-                            Log.d("test", "sender name = " + name);
-                            Log.d("test", "sender content = " + scontent);
+                            senderName = cc[0].trim();
+                            sendContent = cc[1].trim();
+                            Log.d("test", "sender name = " + senderName);
+                            Log.d("test", "sender content = " + sendContent);
                         }
 
-                        Log.d("test", "add ...");
+//                        if (hasAction) {
+//                            Log.d("test", "当前事件还没有执行完。。。");
+//                            break;
+//                        }
 
+                        Log.d("test", "add ...");
                         PendingIntent intent = ((Notification) event.getParcelableData()).contentIntent;
-                        intents.add(intent);
+                        KwNotification kn = new KwNotification(senderName, sendContent, intent);
+                        kns.add(kn);
                     }
                 }
 
@@ -146,22 +165,70 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("maptrix", "return1");
                     return;
                 }
+
                 String className = event.getClassName().toString();
                 if (!className.equals("com.tencent.mm.ui.LauncherUI")) {
                     Log.d("maptrix", "return2");
                     return;
                 }
 
-                //发送文字回复
-                //sendTxt();
-                //发送图片回复
-                sendImage();
-
-//                back2Home();
-//                release();
-                hasAction = false;
+                int random = new Random().nextInt(2);
+                if (random == 0) {
+                    //1.发送文字回复
+                    sendTxt();
+                    back2Home();
+                    hasAction = false;
+                } else {
+                    //2.发送图片回复
+                    //2.1下载图片
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            Bitmap bmp = ImageLoader.getInstance().loadImageSync("https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=862704645,1557247143&fm=27&gp=0.jpg", KWApplication.getLoaderOptions());
+                            //2.2保存图片
+                            saveImage(getApplication(), bmp);
+                            //2.3发送图片
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    sendImage();
+                                }
+                            }, 1000);
+                        }
+                    }.start();
+                }
                 break;
         }
+    }
+
+    public void saveImage(Context context, Bitmap bmp) {
+        // 首先保存图片
+        File appDir = new File(Environment.getExternalStorageDirectory(), "DCIM");
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        String fileName = System.currentTimeMillis() + ".jpg";
+        File file = new File(appDir, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 其次把文件插入到系统图库
+        try {
+            MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                    file.getAbsolutePath(), fileName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // 最后通知图库更新
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file.getAbsolutePath())));
     }
 
     private void sendImage() {
@@ -184,6 +251,7 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
             if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
                 imageButtonCount++;
+                Log.d("test", "imageButtonCount = " + imageButtonCount);
             }
             if (imageButtonCount == 4) {
                 imageButtonCount = 0;
@@ -194,7 +262,7 @@ public class AutoReplyService extends AccessibilityService {
                         Log.d("test", "-------------------------------------------------");
                         findAlbumButton(getRootInActiveWindow());
                     }
-                }, 500);
+                }, 2000);
                 return true;
             }
             if (findPlusButton(nodeInfo)) {
@@ -224,7 +292,7 @@ public class AutoReplyService extends AccessibilityService {
                         Log.d("test", "-------------------------------------------------");
                         findFirstPicture(getRootInActiveWindow());
                     }
-                }, 2000);
+                }, 3000);
                 return true;
             }
             if (findAlbumButton(nodeInfo)) {
@@ -244,8 +312,16 @@ public class AutoReplyService extends AccessibilityService {
                 continue;
             }
             Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
-            if (nodeInfo.getClassName().equals("android.widget.CheckBox")) {
+            if (nodeInfo.getClassName().equals("android.widget.RelativeLayout")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                //这里checkbox点击不了，奇怪
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "----------------------------");
+                        findSendImageButton(getRootInActiveWindow());
+                    }
+                }, 3000);
                 return true;
             }
             if (findFirstPicture(nodeInfo)) {
@@ -255,6 +331,36 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
+    private boolean findSendImageButton(AccessibilityNodeInfo rootNode) {
+        Log.d("test", "findSendImageButton");
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText().equals("发送")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                Log.d("test", "text = " + nodeInfo.getText());
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        back2Home();
+                        hasAction = false;
+                    }
+                }, 3000);
+                return true;
+            }
+            if (findSendImageButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //---------------------------发送文字----------------
 
     private void sendTxt() {
         if (fill()) {
@@ -276,16 +382,6 @@ public class AutoReplyService extends AccessibilityService {
                 for (AccessibilityNodeInfo n : list) {
                     if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
                         n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    }
-                }
-            } else {
-                List<AccessibilityNodeInfo> liste = nodeInfo
-                        .findAccessibilityNodeInfosByText("Send");
-                if (liste != null && liste.size() > 0) {
-                    for (AccessibilityNodeInfo n : liste) {
-                        if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
-                            n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        }
                     }
                 }
             }
@@ -368,15 +464,6 @@ public class AutoReplyService extends AccessibilityService {
         return keyguardManager.inKeyguardRestrictedInputMode();
     }
 
-    private void release() {
-        if (locked && kl != null) {
-            Log.d("maptrix", "release the lock");
-            //得到键盘锁管理器对象
-            kl.reenableKeyguard();
-            locked = false;
-        }
-    }
-
     //初始化zbus
     public void initZbus() {
         Log.d("test", "initZbus");
@@ -391,13 +478,14 @@ public class AutoReplyService extends AccessibilityService {
                     Broker broker = new Broker(Constant.zbusHost + ":" + Constant.zbusPost);
                     Producer p = new Producer(broker);
                     ZbusUtils.init(broker, p);
-                    String topic = "kiway_wx_" + userId;
+                    String topic = "kiway_push_" + userId;
                     Log.d("test", "topic = " + topic);
                     ZbusUtils.consumeMsgs(topic, new MessageHandler() {
                         @Override
                         public void handle(Message message, MqClient mqClient) throws IOException {
                             String temp = message.getBodyString();
                             Log.d("test", "zbus receive = " + temp);
+                            handleResult(temp);
                         }
                     }, Constant.zbusHost + ":" + Constant.zbusPost);
                 } catch (Exception e) {
@@ -409,35 +497,42 @@ public class AutoReplyService extends AccessibilityService {
 
     private void getReplayFromServer() {
         Log.d("test", "getReplayFromServer");
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.setTimeout(10000);
-        String url = "http://202.104.136.9:8080/mdms/static/download/version/zip_student.json";
-        client.get(this, url, new TextHttpResponseHandler() {
-            @Override
-            public void onSuccess(int code, Header[] headers, String ret) {
-                Log.d("test", "onSuccess = " + ret);
-                handleResult("服务器回复：" + ret);
-            }
-
-            @Override
-            public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
-                Log.d("test", "onFailure = " + ret);
-                handleResult("服务器请求失败");
-            }
-
-            private void handleResult(String s) {
-                Log.d("test", "handleResult");
-                retContent = s;
-                try {
-                    intents.remove(0).send();
-                } catch (PendingIntent.CanceledException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        try {
+            String msg = new JSONObject().put("senderName", kns.get(0).senderName).put("senderContent", kns.get(0).senderContent).put("me", "客服一号").toString();
+            doSendMsg(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        AsyncHttpClient client = new AsyncHttpClient();
+//        client.setTimeout(10000);
+//        String url = "http://202.104.136.9:8080/mdms/static/download/version/zip_student.json";
+//        client.get(this, url, new TextHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int code, Header[] headers, String ret) {
+//                Log.d("test", "onSuccess = " + ret);
+//                handleResult("服务器回复：" + ret);
+//            }
+//
+//            @Override
+//            public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
+//                Log.d("test", "onFailure = " + ret);
+//                handleResult("服务器请求失败");
+//            }
+//
+//        });
     }
 
-    private void doSendMsg(String msg) throws Exception {
+    private void handleResult(String s) {
+        Log.d("test", "handleResult");
+        retContent = s;
+        try {
+            kns.remove(0).pi.send();
+        } catch (PendingIntent.CanceledException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void doSendMsg(String msg) throws Exception {
         //topic : 老师的deviceId#userId
         String userId = Utils.getIMEI(getApplicationContext());
 
@@ -447,12 +542,11 @@ public class AutoReplyService extends AccessibilityService {
         pushMessageVo.setDescription("desc");
         pushMessageVo.setTitle("title");
         pushMessageVo.setMessage(msg);
-        pushMessageVo.setAppId(Constant.APPID);
-        pushMessageVo.setModule("student");
+        pushMessageVo.setAppId(APPID);
+        pushMessageVo.setModule("wx_reply");
         Set<String> userIds = new HashSet<>();
-//        for (Student s : students) {
-//            userIds.add(s.token);
-//        }
+        userIds.add(Utils.getIMEI(getApplicationContext()));
+
         pushMessageVo.setUserId(userIds);//学生token
         pushMessageVo.setSenderId(userId);//老师的userId
         pushMessageVo.setPushType("zbus");
@@ -467,6 +561,73 @@ public class AutoReplyService extends AccessibilityService {
         super.onDestroy();
         stop = true;
         Log.d("maptrix", "service destroy");
+        uninstallPush(this);
         ZbusUtils.close();
+    }
+
+    public void installationPush(final Context c, final String userId, final String imei) {
+        try {
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            Log.d("test", "userId = " + userId);
+            JSONObject param = new JSONObject();
+            param.put("appId", APPID);
+            param.put("type", "huawei");
+            param.put("deviceId", imei);
+            param.put("userId", imei);//userId
+            param.put("module", "student");
+            Log.d("test", "installationPush param = " + param.toString());
+            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+            String url = clientUrl + "/push/installation";
+            Log.d("test", "installationPush = " + url);
+            client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "installationPush onSuccess = " + ret);
+                    initZbus();
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "installationPush onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
+        }
+    }
+
+    public void uninstallPush(final Context c) {
+        try {
+            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+            String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
+            if (TextUtils.isEmpty(xtoken)) {
+                return;
+            }
+            AsyncHttpClient client = new AsyncHttpClient();
+            Log.d("test", "xtoken = " + xtoken);
+            client.addHeader("x-auth-token", xtoken);
+            client.setTimeout(10000);
+            RequestParams param = new RequestParams();
+            param.put("type", "huawei");
+            param.put("imei", Utils.getIMEI(c));
+            param.put("token", userId);
+            Log.d("test", "param = " + param.toString());
+            String url = clientUrl + "/device/uninstall";
+            Log.d("test", "uninstallPush = " + url);
+            client.post(c, url, param, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "uninstallPush onSuccess = " + ret);
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "uninstallPush onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
+        }
     }
 }

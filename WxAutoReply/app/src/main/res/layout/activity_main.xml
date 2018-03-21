@@ -23,10 +23,18 @@
         android:text="客服一号" />
 
     <Button
+        android:id="@+id/star"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/name"
         android:onClick="start"
         android:text="点击开启服务" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/star"
+        android:onClick="test"
+        android:text="测试zbus" />
 
 </RelativeLayout>
