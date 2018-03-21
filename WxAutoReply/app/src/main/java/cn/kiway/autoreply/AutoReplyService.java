@@ -66,7 +66,7 @@ public class AutoReplyService extends AccessibilityService {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Log.d("test", "loop ...");
+                    //Log.d("test", "loop ...");
                     if (intents.size() == 0) {
                         continue;
                     }
@@ -166,11 +166,14 @@ public class AutoReplyService extends AccessibilityService {
 
     private void sendImage() {
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-        boolean find2 = findPlusButton(rootNode, retContent);
+        boolean find2 = findPlusButton(rootNode);
         Log.d("test", "find2 = " + find2);
     }
 
-    private boolean findPlusButton(AccessibilityNodeInfo rootNode, String content) {
+    int imageButtonCount = 0;
+
+    //找到最后一个按钮，就是加号，点击一下
+    private boolean findPlusButton(AccessibilityNodeInfo rootNode) {
         Log.d("test", "findPlusButton");
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -179,7 +182,73 @@ public class AutoReplyService extends AccessibilityService {
                 continue;
             }
             Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
-            if (findPlusButton(nodeInfo, content)) {
+            if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
+                imageButtonCount++;
+            }
+            if (imageButtonCount == 4) {
+                imageButtonCount = 0;
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        Log.d("test", "-------------------------------------------------");
+                        findAlbumButton(getRootInActiveWindow());
+                    }
+                }, 500);
+                return true;
+            }
+            if (findPlusButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //找到“相册”按钮，点击一下
+    private boolean findAlbumButton(AccessibilityNodeInfo rootNode) {
+        Log.d("test", "findAlbumButton");
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            if (nodeInfo.getClassName().equals("android.widget.GridView")) {
+                AccessibilityNodeInfo first = nodeInfo.getChild(0);
+                Log.d("test", "first child = " + first.getClassName());
+                first.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "-------------------------------------------------");
+                        findFirstPicture(getRootInActiveWindow());
+                    }
+                }, 2000);
+                return true;
+            }
+            if (findAlbumButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //找到第一张图片，点击一下勾勾。
+    private boolean findFirstPicture(AccessibilityNodeInfo rootNode) {
+        Log.d("test", "findFirstPicture");
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            if (nodeInfo.getClassName().equals("android.widget.CheckBox")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                return true;
+            }
+            if (findFirstPicture(nodeInfo)) {
                 return true;
             }
         }
