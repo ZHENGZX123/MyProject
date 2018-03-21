@@ -153,14 +153,39 @@ public class AutoReplyService extends AccessibilityService {
                 }
 
                 //发送文字回复
-                sendTxt();
+                //sendTxt();
+                //发送图片回复
+                sendImage();
 
-                back2Home();
-                release();
+//                back2Home();
+//                release();
                 hasAction = false;
                 break;
         }
     }
+
+    private void sendImage() {
+        AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+        boolean find2 = findPlusButton(rootNode, retContent);
+        Log.d("test", "find2 = " + find2);
+    }
+
+    private boolean findPlusButton(AccessibilityNodeInfo rootNode, String content) {
+        Log.d("test", "findPlusButton");
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            if (findPlusButton(nodeInfo, content)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     private void sendTxt() {
         if (fill()) {
