@@ -2,13 +2,10 @@ package cn.kiway.mdm.activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.media.projection.MediaProjection;
-import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -57,6 +54,7 @@ import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.entity.StudentQuestion;
 import cn.kiway.mdm.entity.TeachingContentVo;
+import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.UploadUtil2;
@@ -67,7 +65,6 @@ import cn.kiway.mdm.zbus.ZbusHost;
 import ly.count.android.api.Countly;
 
 import static cn.kiway.mdm.KWApplication.students;
-import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_CHAPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMINGDA;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_JINGYIN;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_SUOPING;
@@ -76,9 +73,10 @@ import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_WENJIAN;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE0;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_DOC;
 import static cn.kiway.mdm.entity.KnowledgePoint.TYPE_END;
+import static cn.kiway.mdm.service.RecordService.recording;
 import static cn.kiway.mdm.util.Constant.clientUrl;
+import static cn.kiway.mdm.util.Constant.tuiping;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
-import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
 import static cn.kiway.mdm.util.Utils.check301;
 import static cn.kiway.mdm.util.Utils.showBigImage;
 import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
@@ -89,7 +87,7 @@ import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile2;
  */
 
 //未上课
-public class Course0Activity extends ScreenSharingActivity {
+public class Course0Activity extends BaseActivity {
 
     private RelativeLayout x5RL;
     private FrameLayout x5FileLayout;
@@ -108,8 +106,7 @@ public class Course0Activity extends ScreenSharingActivity {
     //选择的题目
     private ArrayList<Question> selectQuestions;
 
-    //录课
-    private boolean recording = false;
+
     private ImageView rk;
 
     //学生提问
@@ -146,6 +143,10 @@ public class Course0Activity extends ScreenSharingActivity {
 
         tuipingIV = (ImageView) findViewById(R.id.tuipingIV);
         rk = (ImageView) findViewById(R.id.rk);
+        if (RecordService.recording)
+            rk.setBackgroundResource(R.drawable.rk2);
+        else
+            rk.setBackgroundResource(R.drawable.rk1);
         tiwen = (Button) findViewById(R.id.tiwen);
 
         huabiView = (PaletteView) findViewById(R.id.huabiView);
@@ -204,7 +205,7 @@ public class Course0Activity extends ScreenSharingActivity {
     }
 
     private void initRecord() {
-        projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+
     }
 
     @Override
@@ -212,18 +213,7 @@ public class Course0Activity extends ScreenSharingActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK)
             return;
-        if (requestCode == RECORD_REQUEST_CODE) {
-            toast("开始录制本地视频");
-            mediaProjection = projectionManager.getMediaProjection(resultCode, data);
-            KWApplication.recordService.setMediaProject(mediaProjection);
-            KWApplication.recordService.startRecord();
-            recording = true;
-
-            String temp = KWApplication.recordService.output;
-            String recordFiles = getSharedPreferences("kiway", 0).getString(course.id + "_record", "");
-            getSharedPreferences("kiway", 0).edit().putString(course.id + "_record", recordFiles + "===" + temp).commit();
-            rk.setBackgroundResource(R.drawable.rk2);
-        } else if (requestCode == Crop.REQUEST_CROP) {
+        if (requestCode == Crop.REQUEST_CROP) {
             final Uri resultUri = Crop.getOutput(data);
             if (resultUri != null)
                 sendFile(resultUri.getPath());
@@ -246,32 +236,8 @@ public class Course0Activity extends ScreenSharingActivity {
             huabiView.setVisibility(View.GONE);
             huabiView.clear();
             huabiIV.setBackgroundResource(R.drawable.u1750);
-            
+
             x5RL.setVisibility(View.GONE);
-            return;
-        }
-        if (tuiping) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
-            AlertDialog dialog = builder.setTitle("提示").setMessage("屏幕推送中，是否关闭")
-                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            sendTuipingcommand(0);
-                        }
-                    }).setPositiveButton(android.R.string.cancel, null).create();
-            dialog.show();
-            return;
-        }
-        if (recording) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
-            AlertDialog dialog = builder.setTitle("提示").setMessage("本地录课中，是否关闭")
-                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            stopRecord();
-                        }
-                    }).setPositiveButton(android.R.string.cancel, null).create();
-            dialog.show();
             return;
         }
         super.onBackPressed();
@@ -300,15 +266,6 @@ public class Course0Activity extends ScreenSharingActivity {
         startActivityForResult(intent, REQUEST_ORIGINAL);
     }
 
-    public void cropImage(String filePath) {
-        //需要裁剪的图片路径
-        Uri sourceUri = Uri.fromFile(new File(filePath));
-        //裁剪完毕的图片存放路径
-        Uri destinationUri = Uri.fromFile(new File(filePath.split("\\.")[0] + "1." + filePath.split("\\.")[1]));
-        Crop.of(sourceUri, destinationUri) //定义路径
-                .start(this);
-    }
-
     public void huaban(View view) {
         Countly.sharedInstance().recordEvent("画板");
         startActivity(new Intent(this, WhiteBoardActivity.class));
@@ -327,68 +284,15 @@ public class Course0Activity extends ScreenSharingActivity {
         }
     }
 
-    private boolean tuiping;
+
 
     public void tuiping(View view) {
-        //1.发送推屏命令
-        if (tuiping) {
-            sendTuipingcommand(0);
-        } else {
-            sendTuipingcommand(1);
-        }
+        b_tuiping();
     }
 
-    private void sendTuipingcommand(final int status) {
-        showPD();
-        ZbusHost.tuiping(this, status, new OnListener() {
-
-            @Override
-            public void onSuccess() {
-                hidePD();
-                if (status == 1) {
-                    tuiping = true;
-                    tuipingIV.setBackgroundResource(R.drawable.screen_control2);
-                    startTuiping();
-                } else {
-                    tuiping = false;
-                    tuipingIV.setBackgroundResource(R.drawable.screen_control1);
-                    endTuiping();
-                }
-            }
-
-            @Override
-            public void onFailure() {
-                hidePD();
-                toast("发送推屏命令失败");
-            }
-        });
-    }
-
-    private void startTuiping() {
-        toast("开始推屏");
-        initModules();
-        startCapture();
-        String userId = Utils.getIMEI(this);
-        mRtcEngine.joinChannel(null, userId, "", 0);
-    }
-
-    private void endTuiping() {
-        if (mRtcEngine == null) {
-            return;
-        }
-        toast("结束推屏");
-        mRtcEngine.leaveChannel();
-        stopCapture();
-        deInitModules();
-    }
 
     public void chaping(View view) {
-        if (tuiping) {
-            toast("请先停止推屏");
-            return;
-        }
-        //查看学生屏幕，需要获取学生列表。
-        startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_CHAPING));
+        b_chaping();
     }
 
     public void suoping(View view) {
@@ -435,8 +339,9 @@ public class Course0Activity extends ScreenSharingActivity {
                     hidePD();
                     try {
                         JSONArray data = new JSONObject(ret).getJSONArray("data");
-                        course.knowledgePoints = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<KnowledgePoint>>() {
-                        }.getType());
+                        course.knowledgePoints = new GsonBuilder().create().fromJson(data.toString(), new
+                                TypeToken<List<KnowledgePoint>>() {
+                                }.getType());
                         showTongjiDialog();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -564,8 +469,9 @@ public class Course0Activity extends ScreenSharingActivity {
                     hidePD();
                     try {
                         JSONArray data = new JSONObject(ret).getJSONArray("data");
-                        course.questions = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Question>>() {
-                        }.getType());
+                        course.questions = new GsonBuilder().create().fromJson(data.toString(), new
+                                TypeToken<List<Question>>() {
+                                }.getType());
                         showQuestionDialog(type);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -699,7 +605,8 @@ public class Course0Activity extends ScreenSharingActivity {
                     }
                 }
 
-                private void disCheckOthers(ArrayList<Question> questions, Question s, LinearLayout questionLL, CheckBox select) {
+                private void disCheckOthers(ArrayList<Question> questions, Question s, LinearLayout questionLL,
+                                            CheckBox select) {
                     for (Question q : questions) {
                         if (q != s) {
                             q.selected = false;
@@ -799,7 +706,8 @@ public class Course0Activity extends ScreenSharingActivity {
                             @Override
                             public void onSuccess() {
                                 startActivity(new Intent(Course0Activity.this, ResultActivity.class).putExtra("type",
-                                        TYPE_QUESTION_CEPING).putExtra("students", students).putExtra("questionTime", questionTime)
+                                        TYPE_QUESTION_CEPING).putExtra("students", students).putExtra("questionTime",
+                                        questionTime)
                                         .putExtra("questions", selectQuestions));
                             }
 
@@ -1006,27 +914,13 @@ public class Course0Activity extends ScreenSharingActivity {
     }
 
     //-------------------------------录屏相关-----------------------------
-    private MediaProjectionManager projectionManager;
-    private MediaProjection mediaProjection;
-
     public void startRecord() {
-        //1.判断SD卡空间
-        if (Utils.getRemainingSDSize(this) < 1024 * 1024 * 500) {
-            toast("SD卡剩余空间不足500M，无法录制本地视频");
-            return;
-        }
-        //2.申请录制权限
-        Intent captureIntent = projectionManager.createScreenCaptureIntent();
-        startActivityForResult(captureIntent, RECORD_REQUEST_CODE);
+        b_startRecord();
     }
 
     public void stopRecord() {
-        toast("结束录制本地视频");
-        recording = false;
+        b_stopRecord();
         rk.setBackgroundResource(R.drawable.rk1);
-        if (KWApplication.recordService.isRunning()) {
-            KWApplication.recordService.stopRecord();
-        }
     }
 
     public void luke(View view) {
@@ -1123,7 +1017,8 @@ public class Course0Activity extends ScreenSharingActivity {
                         toast("当前正在录屏，请先结束");
                         return;
                     }
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Course0Activity.this, AlertDialog.THEME_HOLO_LIGHT);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Course0Activity.this, AlertDialog
+                            .THEME_HOLO_LIGHT);
                     AlertDialog dialog = builder.setTitle("提示").setMessage("是否结束本课程")
                             .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
@@ -1574,6 +1469,15 @@ public class Course0Activity extends ScreenSharingActivity {
         studentAskDialog.show();
     }
 
+    public void recordScreenCall(String temp) {
+        String recordFiles = getSharedPreferences("kiway", 0).getString(course.id + "_record", "");
+        getSharedPreferences("kiway", 0).edit().putString(course.id + "_record", recordFiles + "===" + temp).commit();
+        rk.setBackgroundResource(R.drawable.rk2);
+    }
+
+    public void setTuipingIV(int id) {
+        tuipingIV.setBackgroundResource(id);
+    }
 
     @Override
     protected void onDestroy() {

@@ -24,7 +24,6 @@ import java.util.ArrayList;
 
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.service.RecordService;
-import cn.kiway.mdm.util.CrashHandler;
 import cn.kiway.mdm.util.UploadUtil2;
 import ly.count.android.api.Countly;
 
@@ -61,7 +60,7 @@ public class KWApplication extends Application {
         //init
         initImageCache();
         //crash
-        CrashHandler.getInstance().init(getApplicationContext());
+     //   CrashHandler.getInstance().init(getApplicationContext());
         //upload
         UploadUtil2.startTask(this);
         //countly

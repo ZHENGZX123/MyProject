@@ -67,8 +67,18 @@ public class Course1Activity extends BaseActivity {
         setContentView(R.layout.activity_course1);
 
         course = (Course) getIntent().getSerializableExtra("course");
-
+        findViewById(R.id.popup).setOnClickListener(this);
         initView();
+    }
+
+    @Override
+    public void onClick(View view) {
+        super.onClick(view);
+        switch (view.getId()){
+            case R.id.popup:
+                showMenuPop((ImageView)findViewById(R.id.popup));
+                break;
+        }
     }
 
     @Override
