@@ -44,18 +44,20 @@ public class AutoReplyService extends AccessibilityService {
     private KeyguardManager.KeyguardLock kl;
     private Handler handler = new Handler();
     public ArrayList<PendingIntent> intents = new ArrayList<>();
+    private boolean stop;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d("maptrix", "service oncreate");
 
+        stop = false;
         instance = this;
 
         new Thread() {
             @Override
             public void run() {
-                while (true) {
+                while (!stop) {
                     try {
                         sleep(1000);
                     } catch (InterruptedException e) {
@@ -365,5 +367,7 @@ public class AutoReplyService extends AccessibilityService {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        stop = true;
+        Log.d("maptrix", "service destroy");
     }
 }
