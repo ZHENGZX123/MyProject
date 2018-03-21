@@ -32,7 +32,7 @@ import static cn.kiway.mdm.util.Utils.getCurrentVersion;
 
 public class WelcomeActivity extends BaseActivity {
 
-    private static final String currentPackageVersion = "0.0.8";
+    private static final String currentPackageVersion = "0.0.9";
 
     private boolean isSuccess = false;
     private boolean isJump = false;
