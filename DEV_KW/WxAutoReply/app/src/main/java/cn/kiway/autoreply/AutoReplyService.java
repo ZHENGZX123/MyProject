@@ -40,8 +40,6 @@ public class AutoReplyService extends AccessibilityService {
     boolean hasAction = false;
     boolean locked = false;
     boolean background = false;
-    private String name;
-    private String scontent;
     private String retContent = "未知错误";
     private KeyguardManager.KeyguardLock kl;
     private Handler handler = new Handler();
@@ -59,7 +57,7 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 while (true) {
                     try {
-                        sleep(10000);
+                        sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -73,47 +71,21 @@ public class AutoReplyService extends AccessibilityService {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            try {
-                                Log.d("test", "send ...");
-                                hasAction = true;
-                                retContent = "自动回复：" + System.currentTimeMillis();
-                                name = "浪翻云";
-                                intents.remove(0).send();
-                            } catch (PendingIntent.CanceledException e) {
-                                e.printStackTrace();
-                            }
+                            Log.d("test", "send ...");
+                            hasAction = true;
+                            //1.测试回复
+                            //retContent = "自动回复：" + System.currentTimeMillis();
+                            //name = "客服一号";
+                            //intents.remove(0).send();
+
+                            //2.后台回复
+                            getReplayFromServer();
                         }
                     });
                 }
             }
         }.start();
     }
-
-    //初始化zbus
-    public void initZbus() {
-        Log.d("test", "initZbus");
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    String userId = Utils.getIMEI(getApplicationContext());
-                    if (TextUtils.isEmpty(userId)) {
-                        return;
-                    }
-                    Broker broker = new Broker(Constant.zbusHost + ":" + Constant.zbusPost);
-                    Producer p = new Producer(broker);
-                    ZbusUtils.init(broker, p);
-                    String topic = "kiway_wx_" + userId;
-                    Log.d("test", "topic = " + topic);
-                    ZbusUtils.consumeMsgs(topic, new ZbusMessageHandler(), Constant.zbusHost + ":"
-                            + Constant.zbusPost);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
-
 
     /**
      * 必须重写的方法，响应各种事件。
@@ -166,15 +138,6 @@ public class AutoReplyService extends AccessibilityService {
                     send();
                 } else {
                     Log.d("test", "fill failure");
-
-                    //1.如果在首页，找到联系人，点一下。
-                    //rootNode = getRootInActiveWindow();
-                    //findContact3(rootNode, name);
-                    //findContact1();
-
-                    //2.run script
-                    //MainActivity.instance.runMyUiautomator(null);
-
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -234,32 +197,6 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    /**
-     * 拉起微信界面
-     *
-     * @param event
-     */
-    private void launchWechat(AccessibilityEvent event) {
-        hasAction = true;
-        Log.d("maptrix", "event.getParcelableData() = " + event.getParcelableData());
-        if (event.getParcelableData() != null
-                && event.getParcelableData() instanceof Notification) {
-            Notification notification = (Notification) event
-                    .getParcelableData();
-
-
-            String content = notification.tickerText.toString();
-            String[] cc = content.split(":");
-            name = cc[0].trim();
-            scontent = cc[1].trim();
-
-            Log.d("maptrix", "sender name =" + name);
-            Log.d("maptrix", "sender content =" + scontent);
-
-            //getReplayFromServer(notification, name, scontent);
-        }
-    }
-
     @SuppressLint("NewApi")
     private boolean fill() {
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
@@ -273,9 +210,6 @@ public class AutoReplyService extends AccessibilityService {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
             if (nodeInfo == null) {
                 continue;
-            }
-            if ("com.tencent.mm.ui.mogic.WxViewPager".equals(nodeInfo.getClassName())) {
-                break;
             }
             if ("android.widget.EditText".equals(nodeInfo.getClassName())) {
                 Bundle arguments = new Bundle();
@@ -333,7 +267,32 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void getReplayFromServer(final Notification notification, final String name, final String content) {
+    //初始化zbus
+    public void initZbus() {
+        Log.d("test", "initZbus");
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String userId = Utils.getIMEI(getApplicationContext());
+                    if (TextUtils.isEmpty(userId)) {
+                        return;
+                    }
+                    Broker broker = new Broker(Constant.zbusHost + ":" + Constant.zbusPost);
+                    Producer p = new Producer(broker);
+                    ZbusUtils.init(broker, p);
+                    String topic = "kiway_wx_" + userId;
+                    Log.d("test", "topic = " + topic);
+                    ZbusUtils.consumeMsgs(topic, new ZbusMessageHandler(), Constant.zbusHost + ":"
+                            + Constant.zbusPost);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    private void getReplayFromServer() {
         AsyncHttpClient client = new AsyncHttpClient();
         client.setTimeout(10000);
         String url = "http://202.104.136.9:8080/mdms/static/download/version/zip_student.json";
@@ -341,28 +300,27 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void onSuccess(int code, Header[] headers, String ret) {
                 Log.d("test", "onSuccess = " + ret);
-                retContent = "回复：" + content;
+                retContent = "后台回复：" + ret;
+                handleResult();
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
+                Log.d("test", "onFailure = " + ret);
+                retContent = ret;
                 handleResult();
             }
 
             private void handleResult() {
-                PendingIntent pendingIntent = notification.contentIntent;
+                Log.d("test", "handleResult");
                 try {
-                    pendingIntent.send();
+                    intents.remove(0).send();
                 } catch (PendingIntent.CanceledException e) {
                     e.printStackTrace();
                 }
             }
-
-            @Override
-            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                Log.d("test", "onFailure = " + s);
-                retContent = s;
-                handleResult();
-            }
         });
     }
-
 
     private void doSendMsg(String msg) throws Exception {
         //topic : 老师的deviceId#userId
