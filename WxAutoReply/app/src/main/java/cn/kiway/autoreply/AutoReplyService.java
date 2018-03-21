@@ -373,5 +373,6 @@ public class AutoReplyService extends AccessibilityService {
         super.onDestroy();
         stop = true;
         Log.d("maptrix", "service destroy");
+        ZbusUtils.close();
     }
 }

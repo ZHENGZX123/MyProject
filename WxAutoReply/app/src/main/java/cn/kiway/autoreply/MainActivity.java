@@ -49,13 +49,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //ZbusUtils.close();
-    }
-
-
     public void installationPush(final Context c, final String userId, final String imei) {
         try {
             String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
