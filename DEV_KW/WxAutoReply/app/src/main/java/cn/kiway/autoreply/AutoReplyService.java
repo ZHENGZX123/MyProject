@@ -40,7 +40,7 @@ public class AutoReplyService extends AccessibilityService {
     boolean hasAction = false;
     boolean locked = false;
     boolean background = false;
-    private String retContent = "未知错误";
+    private String retContent;
     private KeyguardManager.KeyguardLock kl;
     private Handler handler = new Handler();
     public ArrayList<PendingIntent> intents = new ArrayList<>();
@@ -114,6 +114,19 @@ public class AutoReplyService extends AccessibilityService {
                         background = true;
                         Log.d("maptrix", "is mm in background");
 
+                        if (event.getParcelableData() != null
+                                && event.getParcelableData() instanceof Notification) {
+                            Notification notification = (Notification) event
+                                    .getParcelableData();
+                            String ticker = notification.tickerText.toString();
+                            String[] cc = ticker.split(":");
+                            String name = cc[0].trim();
+                            String scontent = cc[1].trim();
+
+                            Log.d("test", "sender name = " + name);
+                            Log.d("test", "sender content = " + scontent);
+                        }
+
                         Log.d("test", "add ...");
 
                         PendingIntent intent = ((Notification) event.getParcelableData()).contentIntent;
@@ -134,10 +147,9 @@ public class AutoReplyService extends AccessibilityService {
                     return;
                 }
                 if (fill()) {
-                    Log.d("test", "send is called");
                     send();
                 } else {
-                    Log.d("test", "fill failure");
+                    Log.d("test", "try again 5 second later");
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -160,6 +172,7 @@ public class AutoReplyService extends AccessibilityService {
      */
     @SuppressLint("NewApi")
     private void send() {
+        Log.d("test", "send is called");
         AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
         if (nodeInfo != null) {
             List<AccessibilityNodeInfo> list = nodeInfo
@@ -199,8 +212,10 @@ public class AutoReplyService extends AccessibilityService {
 
     @SuppressLint("NewApi")
     private boolean fill() {
+        Log.d("test", "fill is called");
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
         boolean find = findEditText(rootNode, retContent);
+        Log.d("test", "find = " + find);
         return find;
     }
 
@@ -293,6 +308,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void getReplayFromServer() {
+        Log.d("test", "getReplayFromServer");
         AsyncHttpClient client = new AsyncHttpClient();
         client.setTimeout(10000);
         String url = "http://202.104.136.9:8080/mdms/static/download/version/zip_student.json";
@@ -300,19 +316,18 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void onSuccess(int code, Header[] headers, String ret) {
                 Log.d("test", "onSuccess = " + ret);
-                retContent = "后台回复：" + ret;
-                handleResult();
+                handleResult("服务器回复：" + ret);
             }
 
             @Override
             public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
                 Log.d("test", "onFailure = " + ret);
-                retContent = ret;
-                handleResult();
+                handleResult("服务器请求失败");
             }
 
-            private void handleResult() {
+            private void handleResult(String s) {
                 Log.d("test", "handleResult");
+                retContent = s;
                 try {
                     intents.remove(0).send();
                 } catch (PendingIntent.CanceledException e) {
@@ -345,5 +360,10 @@ public class AutoReplyService extends AccessibilityService {
         Log.d("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
         ZbusUtils.sendMsg(topic, pushMessageVo);
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }
