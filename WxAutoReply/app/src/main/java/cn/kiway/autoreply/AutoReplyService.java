@@ -93,9 +93,11 @@ public class AutoReplyService extends AccessibilityService {
                         if (!(event.getParcelableData() instanceof Notification)) {
                             continue;
                         }
-                        Notification notification = (Notification) event
-                                .getParcelableData();
+                        Notification notification = (Notification) event.getParcelableData();
                         String ticker = notification.tickerText.toString();
+                        if (!ticker.contains(":")) {
+                            continue;
+                        }
                         String[] cc = ticker.split(":");
                         String sender = cc[0].trim();
                         String content = cc[1].trim();
