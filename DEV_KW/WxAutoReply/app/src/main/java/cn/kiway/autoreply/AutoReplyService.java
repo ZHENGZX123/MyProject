@@ -83,53 +83,53 @@ public class AutoReplyService extends AccessibilityService {
                     return;
                 }
                 for (CharSequence text : texts) {
+                    Log.d("test", "text = " + text);
                     String txt = text.toString();
-                    if (!TextUtils.isEmpty(txt)) {
-                        //只打印用
+                    if (TextUtils.isEmpty(txt)) {
+                        continue;
+                    }
+                    if (event.getParcelableData() == null) {
+                        continue;
+                    }
+                    if (!(event.getParcelableData() instanceof Notification)) {
+                        continue;
+                    }
+                    Notification notification = (Notification) event.getParcelableData();
+                    String ticker = notification.tickerText.toString();
+                    if (!ticker.contains(":")) {
+                        continue;
+                    }
+                    String[] cc = ticker.split(":");
+                    String sender = cc[0].trim();
+                    String content = cc[1].trim();
+                    Log.d("test", "sender name = " + sender);
+                    Log.d("test", "sender content = " + content);
 
-                        if (event.getParcelableData() == null) {
-                            continue;
-                        }
-                        if (!(event.getParcelableData() instanceof Notification)) {
-                            continue;
-                        }
-                        Notification notification = (Notification) event.getParcelableData();
-                        String ticker = notification.tickerText.toString();
-                        if (!ticker.contains(":")) {
-                            continue;
-                        }
-                        String[] cc = ticker.split(":");
-                        String sender = cc[0].trim();
-                        String content = cc[1].trim();
-                        Log.d("test", "sender name = " + sender);
-                        Log.d("test", "sender content = " + content);
+                    //1.预先加入map
+                    id++;
+                    PendingIntent intent = ((Notification) event.getParcelableData()).contentIntent;
+                    Action action = new Action();
+                    action.sender = sender;
+                    action.content = content;
+                    action.intent = intent;
+                    if (content.equals("[图片]")) {
+                        action.receiveType = TYPE_IMAGE;
+                    } else {
+                        action.receiveType = TYPE_TXT;
+                    }
+                    actions.put(id, action);
 
-                        //1.预先加入map
-                        id++;
-                        PendingIntent intent = ((Notification) event.getParcelableData()).contentIntent;
-                        Action action = new Action();
-                        action.sender = sender;
-                        action.content = content;
-                        action.intent = intent;
-                        if (content.equals("[图片]")) {
-                            action.receiveType = TYPE_IMAGE;
-                        } else {
-                            action.receiveType = TYPE_TXT;
-                        }
-                        actions.put(id, action);
-
-                        //2.获取答案
-                        if (action.receiveType == TYPE_TXT) {
-                            //文字的话直接走zbus
-                            sendMsgToServer(id, action);
-                        } else {
-                            //图片要先拉起微信,截图上传
-                            try {
-                                currentActionID = id;
-                                actions.get(currentActionID).intent.send();
-                            } catch (PendingIntent.CanceledException e) {
-                                e.printStackTrace();
-                            }
+                    //2.获取答案
+                    if (action.receiveType == TYPE_TXT) {
+                        //文字的话直接走zbus
+                        sendMsgToServer(id, action);
+                    } else {
+                        //图片要先拉起微信,截图上传
+                        try {
+                            currentActionID = id;
+                            actions.get(currentActionID).intent.send();
+                        } catch (PendingIntent.CanceledException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -364,6 +364,8 @@ public class AutoReplyService extends AccessibilityService {
         startActivity(home);
     }
 
+    private long time = 5000;
+
     //初始化zbus
     public void initZbus() {
         Log.d("test", "initZbus");
@@ -383,11 +385,12 @@ public class AutoReplyService extends AccessibilityService {
                     ZbusUtils.consumeMsgs(topic, new MessageHandler() {
                         @Override
                         public void handle(Message message, MqClient mqClient) {
-                            String temp = message.getBodyString();
-                            Log.d("test", "zbus receive = " + temp);
                             new Thread() {
                                 @Override
                                 public void run() {
+                                    String temp = message.getBodyString();
+                                    Log.d("test", "zbus receive = " + temp);
+
                                     if (currentActionID != -1) {
                                         Log.d("test", "当前有事件在处理，锁定");
                                         synchronized (o) {
