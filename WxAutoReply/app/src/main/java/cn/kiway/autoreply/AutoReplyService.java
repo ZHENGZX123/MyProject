@@ -106,7 +106,7 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("test", "sender content = " + content);
 
                     //1.预先加入map
-                    id++;
+                    id = System.currentTimeMillis();
                     PendingIntent intent = ((Notification) event.getParcelableData()).contentIntent;
                     Action action = new Action();
                     action.sender = sender;
@@ -449,43 +449,47 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    //synchronized注意
-    public synchronized void sendMsgToServer(long id, Action action) {
-        Log.d("test", "sendMsgToServer");
-        try {
-            String msg = new JSONObject()
-                    .put("id", id)
-                    .put("sender", action.sender)
-                    .put("content", action.content)
-                    .put("me", "客服一号")
-                    .put("time", System.currentTimeMillis())
-                    .put("receiveType", action.receiveType).toString();
+    public void sendMsgToServer(long id, Action action) {
+        new Thread() {
+            @Override
+            public void run() {
+                Log.d("test", "sendMsgToServer");
+                try {
+                    String msg = new JSONObject()
+                            .put("id", id)
+                            .put("sender", action.sender)
+                            .put("content", action.content)
+                            .put("me", "客服一号")
+                            .put("time", System.currentTimeMillis())
+                            .put("receiveType", action.receiveType).toString();
 
 
-            //topic : 老师的deviceId#userId
-            String userId = Utils.getIMEI(getApplicationContext());
+                    //topic : 老师的deviceId#userId
+                    String userId = Utils.getIMEI(getApplicationContext());
 
-            String topic = Utils.getIMEI(this) + "#" + userId;
-            String url = Constant.zbusHost + ":" + Constant.zbusPost;
-            PushMessageVo pushMessageVo = new PushMessageVo();
-            pushMessageVo.setDescription("desc");
-            pushMessageVo.setTitle("title");
-            pushMessageVo.setMessage(msg);
-            pushMessageVo.setAppId(APPID);
-            pushMessageVo.setModule("wx_reply");
-            Set<String> userIds = new HashSet<>();
-            userIds.add(Utils.getIMEI(getApplicationContext()));
+                    String topic = Utils.getIMEI(getApplicationContext()) + "#" + userId;
+                    String url = Constant.zbusHost + ":" + Constant.zbusPost;
+                    PushMessageVo pushMessageVo = new PushMessageVo();
+                    pushMessageVo.setDescription("desc");
+                    pushMessageVo.setTitle("title");
+                    pushMessageVo.setMessage(msg);
+                    pushMessageVo.setAppId(APPID);
+                    pushMessageVo.setModule("wx_reply");
+                    Set<String> userIds = new HashSet<>();
+                    userIds.add(Utils.getIMEI(getApplicationContext()));
 
-            pushMessageVo.setUserId(userIds);//学生token
-            pushMessageVo.setSenderId(userId);//老师的userId
-            pushMessageVo.setPushType("zbus");
+                    pushMessageVo.setUserId(userIds);//学生token
+                    pushMessageVo.setSenderId(userId);//老师的userId
+                    pushMessageVo.setPushType("zbus");
 
-            Log.d("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
-            ZbusUtils.sendMsg(topic, pushMessageVo);
+                    Log.d("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
+                    ZbusUtils.sendMsg(topic, pushMessageVo);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
 
