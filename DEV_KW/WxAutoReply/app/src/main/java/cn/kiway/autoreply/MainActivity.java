@@ -9,17 +9,20 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import static cn.kiway.autoreply.Action.TYPE_TEST;
+
 public class MainActivity extends Activity {
 
     private EditText name;
+    public static MainActivity instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        instance = this;
         name = (EditText) findViewById(R.id.name);
-
     }
 
     public void start(View view) {
@@ -38,7 +41,11 @@ public class MainActivity extends Activity {
     }
 
     public void test(View v) throws Exception {
-        AutoReplyService.instance.doSendMsg("hello" + System.currentTimeMillis());
+        Action a = new Action();
+        a.sender = "test";
+        a.content = "content";
+        a.receiveType = TYPE_TEST;
+        AutoReplyService.instance.sendMsgToServer(9999, a);
     }
 
     public void toast(final String txt) {

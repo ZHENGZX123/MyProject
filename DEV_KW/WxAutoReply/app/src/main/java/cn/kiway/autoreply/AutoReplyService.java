@@ -21,7 +21,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
@@ -43,7 +42,8 @@ import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
 import io.zbus.mq.Producer;
 
-import static cn.kiway.autoreply.Action.TYPE_IMG;
+import static cn.kiway.autoreply.Action.TYPE_IMAGE;
+import static cn.kiway.autoreply.Action.TYPE_TEST;
 import static cn.kiway.autoreply.Action.TYPE_TXT;
 import static cn.kiway.autoreply.Constant.APPID;
 import static cn.kiway.autoreply.Constant.clientUrl;
@@ -86,19 +86,21 @@ public class AutoReplyService extends AccessibilityService {
                     String txt = text.toString();
                     if (!TextUtils.isEmpty(txt)) {
                         //只打印用
-                        String sender = null;
-                        String content = null;
-                        if (event.getParcelableData() != null
-                                && event.getParcelableData() instanceof Notification) {
-                            Notification notification = (Notification) event
-                                    .getParcelableData();
-                            String ticker = notification.tickerText.toString();
-                            String[] cc = ticker.split(":");
-                            sender = cc[0].trim();
-                            content = cc[1].trim();
-                            Log.d("test", "sender name = " + sender);
-                            Log.d("test", "sender content = " + content);
+
+                        if (event.getParcelableData() == null) {
+                            continue;
                         }
+                        if (!(event.getParcelableData() instanceof Notification)) {
+                            continue;
+                        }
+                        Notification notification = (Notification) event
+                                .getParcelableData();
+                        String ticker = notification.tickerText.toString();
+                        String[] cc = ticker.split(":");
+                        String sender = cc[0].trim();
+                        String content = cc[1].trim();
+                        Log.d("test", "sender name = " + sender);
+                        Log.d("test", "sender content = " + content);
 
                         //1.预先加入map
                         id++;
@@ -108,14 +110,25 @@ public class AutoReplyService extends AccessibilityService {
                         action.content = content;
                         action.intent = intent;
                         if (content.equals("[图片]")) {
-                            action.type = TYPE_IMG;
+                            action.receiveType = TYPE_IMAGE;
                         } else {
-                            action.type = TYPE_TXT;
+                            action.receiveType = TYPE_TXT;
                         }
                         actions.put(id, action);
 
                         //2.获取答案
-                        getReplayFromServer(id, sender, content);
+                        if (action.receiveType == TYPE_TXT) {
+                            //文字的话直接走zbus
+                            sendMsgToServer(id, action);
+                        } else {
+                            //图片要先拉起微信,截图上传
+                            try {
+                                currentActionID = id;
+                                actions.get(currentActionID).intent.send();
+                            } catch (PendingIntent.CanceledException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
                 break;
@@ -135,31 +148,135 @@ public class AutoReplyService extends AccessibilityService {
                     return;
                 }
                 actioningFlag = true;
-                if (true) {
-                    //1.发送文字回复
+
+                int receiveType = actions.get(currentActionID).receiveType;
+                boolean uploaded = actions.get(currentActionID).uploaded;
+                //1.发送文字回复
+                if (receiveType == TYPE_TXT) {
                     sendTxt();
                     release();
-                } else {
-                    //2.发送图片回复
-                    //2.1下载图片
-                    new Thread() {
+                } else if (receiveType == TYPE_IMAGE && !uploaded) {
+                    // 找到最后一张图片，放大，截屏，上传，得到url后返回
+                    lastFrameLayout = null;
+                    Log.d("test", "----------------findLastImageMsg------------------");
+                    findLastImageMsg(getRootInActiveWindow());
+                    if (lastFrameLayout == null) {
+                        Log.d("test", "没有找到最后一张图片？郁闷。。。");
+                        release();
+                        return;
+                    }
+                    lastFrameLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+
+                    handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            Bitmap bmp = ImageLoader.getInstance().loadImageSync("https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=862704645,1557247143&fm=27&gp=0.jpg", KWApplication.getLoaderOptions());
-                            //2.2保存图片
-                            saveImage(getApplication(), bmp);
-                            //2.3发送图片
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    sendImage();
-                                }
-                            }, 1000);
+                            //1.截图
+//                            MainActivity.instance.getWindow().getDecorView().setDrawingCacheEnabled(true);
+//                            Bitmap bitmap = MainActivity.instance.getWindow().getDecorView().getDrawingCache();
+//                            String time = System.currentTimeMillis() + "";
+//                            String fileName = time + ".png";
+//                            Utils.saveBitmap(bitmap, fileName, KWApplication.ROOT);
+                            //2.找下载按钮
+                            Log.d("test", "-------------------findDownloadButton------------------");
+                            boolean find = findDownloadButton(getRootInActiveWindow());
+                            if (!find) {
+                                Log.d("test", "找不到下载按钮");
+                                release();
+                            }
                         }
-                    }.start();
+                    }, 1500);
+                } else if (receiveType == TYPE_IMAGE && uploaded) {
+                    sendTxt();
+                    release();
                 }
+
+                //2.发送图片回复
+                //2.1下载图片
+//                    new Thread() {
+//                        @Override
+//                        public void run() {
+//                            Bitmap bmp = ImageLoader.getInstance().loadImageSync("https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=862704645,1557247143&fm=27&gp=0.jpg", KWApplication.getLoaderOptions());
+//                            //2.2保存图片
+//                            saveImage(getApplication(), bmp);
+//                            //2.3发送图片
+//                            handler.postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    sendImage();
+//                                }
+//                            }, 1000);
+//                        }
+//                    }.start();
+
                 break;
         }
+    }
+
+    private boolean findDownloadButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            //Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            //Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.view.View")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+
+                File[] files = new File("/mnt/sdcard/tencent/MicroMsg/WeiXin/").listFiles();
+                File lastFile = files[files.length - 1];
+                Log.d("test", "lastFile = " + lastFile.getName());
+                //上传
+                new Thread() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "uploading...");
+                        try {
+                            sleep(5000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        long tempID = currentActionID;
+                        actions.get(currentActionID).uploaded = true;
+                        release();
+                        try {
+                            sleep(3000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        sendMsgToServer(tempID, actions.get(tempID));
+                    }
+                }.start();
+                return true;
+            }
+            if (findDownloadButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //找到最后的ImageView
+    private AccessibilityNodeInfo lastFrameLayout = null;
+
+    private boolean findLastImageMsg(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            //Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            //Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.FrameLayout")) {
+                lastFrameLayout = nodeInfo;
+            }
+            if (findLastImageMsg(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void release() {
@@ -282,6 +399,7 @@ public class AutoReplyService extends AccessibilityService {
                                     try {
                                         JSONObject o = new JSONObject(temp);
                                         long id = o.getLong("id");
+                                        int receiveType = o.getInt("receiveType");
                                         Action action = actions.get(id);
                                         if (action == null) {
                                             Log.d("test", "action null , error!!!");
@@ -294,13 +412,24 @@ public class AutoReplyService extends AccessibilityService {
                                         handler.post(new Runnable() {
                                             @Override
                                             public void run() {
-                                                try {
-                                                    actions.get(currentActionID).intent.send();
-                                                } catch (PendingIntent.CanceledException e) {
-                                                    e.printStackTrace();
+                                                if (receiveType == TYPE_TXT) {
+                                                    try {
+                                                        actions.get(currentActionID).intent.send();
+                                                    } catch (PendingIntent.CanceledException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                } else if (receiveType == TYPE_IMAGE) {
+                                                    try {
+                                                        actions.get(currentActionID).intent.send();
+                                                    } catch (PendingIntent.CanceledException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                } else if (receiveType == TYPE_TEST) {
+                                                    //do nothing
                                                 }
                                             }
                                         });
+
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -315,40 +444,45 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void getReplayFromServer(long id, String sender, String content) {
-        Log.d("test", "getReplayFromServer");
+    //synchronized注意
+    public synchronized void sendMsgToServer(long id, Action action) {
+        Log.d("test", "sendMsgToServer");
         try {
-            String msg = new JSONObject().put("id", id).put("sender", sender).put("content", content).put("me", "客服一号").put("time", System.currentTimeMillis()).toString();
-            doSendMsg(msg);
+            String msg = new JSONObject()
+                    .put("id", id)
+                    .put("sender", action.sender)
+                    .put("content", action.content)
+                    .put("me", "客服一号")
+                    .put("time", System.currentTimeMillis())
+                    .put("receiveType", action.receiveType).toString();
+
+
+            //topic : 老师的deviceId#userId
+            String userId = Utils.getIMEI(getApplicationContext());
+
+            String topic = Utils.getIMEI(this) + "#" + userId;
+            String url = Constant.zbusHost + ":" + Constant.zbusPost;
+            PushMessageVo pushMessageVo = new PushMessageVo();
+            pushMessageVo.setDescription("desc");
+            pushMessageVo.setTitle("title");
+            pushMessageVo.setMessage(msg);
+            pushMessageVo.setAppId(APPID);
+            pushMessageVo.setModule("wx_reply");
+            Set<String> userIds = new HashSet<>();
+            userIds.add(Utils.getIMEI(getApplicationContext()));
+
+            pushMessageVo.setUserId(userIds);//学生token
+            pushMessageVo.setSenderId(userId);//老师的userId
+            pushMessageVo.setPushType("zbus");
+
+            Log.d("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
+            ZbusUtils.sendMsg(topic, pushMessageVo);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
-    public void doSendMsg(String msg) throws Exception {
-        //topic : 老师的deviceId#userId
-        String userId = Utils.getIMEI(getApplicationContext());
-
-        String topic = Utils.getIMEI(this) + "#" + userId;
-        String url = Constant.zbusHost + ":" + Constant.zbusPost;
-        PushMessageVo pushMessageVo = new PushMessageVo();
-        pushMessageVo.setDescription("desc");
-        pushMessageVo.setTitle("title");
-        pushMessageVo.setMessage(msg);
-        pushMessageVo.setAppId(APPID);
-        pushMessageVo.setModule("wx_reply");
-        Set<String> userIds = new HashSet<>();
-        userIds.add(Utils.getIMEI(getApplicationContext()));
-
-        pushMessageVo.setUserId(userIds);//学生token
-        pushMessageVo.setSenderId(userId);//老师的userId
-        pushMessageVo.setPushType("zbus");
-
-        Log.d("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
-        ZbusUtils.sendMsg(topic, pushMessageVo);
-
-    }
 
     @Override
     public void onDestroy() {
@@ -457,9 +591,8 @@ public class AutoReplyService extends AccessibilityService {
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
         boolean find2 = findPlusButton(rootNode);
         Log.d("test", "find2 = " + find2);
-
         if (!find2) {
-            //这里要释放掉
+            Log.d("test", "找不到加号，release掉");
             release();
         }
     }
@@ -487,8 +620,11 @@ public class AutoReplyService extends AccessibilityService {
                     public void run() {
                         nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         Log.d("test", "---------------------findAlbumButton----------------------------");
-                        findAlbumButton(getRootInActiveWindow());
-                        //这里应该也要release
+                        boolean find = findAlbumButton(getRootInActiveWindow());
+                        if (!find) {
+                            Log.d("test", "找不到GridView，release掉");
+                            release();
+                        }
                     }
                 }, 2000);
                 return true;
@@ -518,7 +654,11 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         Log.d("test", "------------------------findFirstPicture-------------------------");
-                        findFirstPicture(getRootInActiveWindow());
+                        boolean find = findFirstPicture(getRootInActiveWindow());
+                        if (!find) {
+                            Log.d("test", "找不到第一张图片 relase");
+                            release();
+                        }
                     }
                 }, 3000);
                 return true;
@@ -547,7 +687,11 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         Log.d("test", "----------findSendImageButton------------------");
-                        findSendImageButton(getRootInActiveWindow());
+                        boolean find = findSendImageButton(getRootInActiveWindow());
+                        if (!find) {
+                            Log.d("test", "找不到发送按钮，relase");
+                            release();
+                        }
                     }
                 }, 3000);
                 return true;
