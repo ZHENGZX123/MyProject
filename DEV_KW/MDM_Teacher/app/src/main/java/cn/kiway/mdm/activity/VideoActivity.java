@@ -10,6 +10,7 @@ import org.song.videoplayer.PlayListener;
 import org.song.videoplayer.media.IjkMedia;
 import org.song.videoplayer.rederview.IRenderView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import cn.kiway.mdm.entity.Video;
@@ -61,7 +62,7 @@ public class VideoActivity extends BaseActivity {
         Log.d("test", "playVideo videoUrl = " + videoUrl);
         String localUrl = new MyDBHelper(this).getTasksByUrl(videoUrl).filepath;
         Log.d("test", "localUrl = " + localUrl);
-        if (!TextUtils.isEmpty(localUrl)) {
+        if (!TextUtils.isEmpty(localUrl) && !new File(localUrl).exists()) {
             videoUrl = localUrl;
         }
         qsVideoView.release();
