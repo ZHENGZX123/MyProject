@@ -1,7 +1,6 @@
 package cn.kiway.autoreply;
 
 import android.accessibilityservice.AccessibilityService;
-import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.ClipData;
@@ -31,8 +30,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,141 +43,97 @@ import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
 import io.zbus.mq.Producer;
 
+import static cn.kiway.autoreply.Action.TYPE_TXT;
 import static cn.kiway.autoreply.Constant.APPID;
 import static cn.kiway.autoreply.Constant.clientUrl;
 
 public class AutoReplyService extends AccessibilityService {
 
     public static AutoReplyService instance;
-
-    boolean hasAction = false;
-    boolean locked = false;
-    boolean background = false;
-    private String retContent;
     private Handler handler = new Handler();
-    private boolean stop;
+    private final Object o = new Object();
 
-    //通知队列
-    public ArrayList<KwNotification> kns = new ArrayList<>();
+    //递增的id
+    private long id;
+    //事件map
+    public HashMap<Long, Action> actions = new HashMap<>();
+    //当前执行的事件id
+    private long currentActionID = -1;
+    private boolean actioningFlag;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d("maptrix", "service oncreate");
 
-        stop = false;
         instance = this;
         installationPush(this, Utils.getIMEI(this), Utils.getIMEI(this));
-
-        new Thread() {
-            @Override
-            public void run() {
-                while (!stop) {
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    //Log.d("test", "loop ...");
-                    if (kns.size() == 0) {
-                        //Log.d("test", "size == 0");
-                        continue;
-                    }
-                    if (hasAction) {
-                        //Log.d("test", "hasAction continue");
-                        continue;
-                    }
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d("test", "start a action ...");
-                            hasAction = true;
-                            //1.测试回复
-                            //retContent = "自动回复：" + System.currentTimeMillis();
-                            //name = "客服一号";
-                            //kns.remove(0).send();
-                            //2.后台回复
-                            getReplayFromServer();
-                        }
-                    });
-                }
-            }
-        }.start();
     }
 
-    /**
-     * 必须重写的方法，响应各种事件。
-     *
-     * @param event
-     */
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
         int eventType = event.getEventType();
         Log.d("maptrix", "get event = " + eventType);
         switch (eventType) {
-            case AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED:// 通知栏事件
-                Log.d("maptrix", "get notification event");
+            case AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED:
+                Log.d("maptrix", "接收到通知");
                 List<CharSequence> texts = event.getText();
                 if (texts.isEmpty()) {
                     return;
                 }
                 for (CharSequence text : texts) {
-                    String content = text.toString();
-                    if (!TextUtils.isEmpty(content)) {
-                        if (isScreenLocked()) {
-                            continue;
-                        }
-                        locked = false;
-                        Log.d("maptrix", "the screen is unlocked");
-                        background = true;
-                        Log.d("maptrix", "is mm in background");
-
+                    String txt = text.toString();
+                    if (!TextUtils.isEmpty(txt)) {
                         //只打印用
-                        String senderName = null;
-                        String sendContent = null;
+                        String sender = null;
+                        String content = null;
                         if (event.getParcelableData() != null
                                 && event.getParcelableData() instanceof Notification) {
                             Notification notification = (Notification) event
                                     .getParcelableData();
                             String ticker = notification.tickerText.toString();
                             String[] cc = ticker.split(":");
-                            senderName = cc[0].trim();
-                            sendContent = cc[1].trim();
-                            Log.d("test", "sender name = " + senderName);
-                            Log.d("test", "sender content = " + sendContent);
+                            sender = cc[0].trim();
+                            content = cc[1].trim();
+                            Log.d("test", "sender name = " + sender);
+                            Log.d("test", "sender content = " + content);
                         }
 
-//                        if (hasAction) {
-//                            Log.d("test", "当前事件还没有执行完。。。这样的话同时只能处理一个。。。");
-//                            break;
-//                        }
-
-                        Log.d("test", "add ...");
+                        //1.预先加入map
+                        id++;
                         PendingIntent intent = ((Notification) event.getParcelableData()).contentIntent;
-                        KwNotification kn = new KwNotification(senderName, sendContent, intent);
-                        kns.add(kn);
+                        Action action = new Action();
+                        action.sender = sender;
+                        action.content = content;
+                        action.intent = intent;
+                        action.type = TYPE_TXT;
+                        actions.put(id, action);
+
+                        //2.获取答案
+                        getReplayFromServer(id, sender, content);
                     }
                 }
-
                 break;
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
-                Log.d("maptrix", "get type window down event");
-                if (!hasAction) {
-                    Log.d("maptrix", "return1");
+                Log.d("maptrix", "窗口状态变化");
+                if (currentActionID == -1) {
+                    Log.d("maptrix", "没有事件，return1");
                     return;
                 }
-
+                if (actioningFlag) {
+                    Log.d("maptrix", "事件进行中，return2");
+                    return;
+                }
                 String className = event.getClassName().toString();
                 if (!className.equals("com.tencent.mm.ui.LauncherUI")) {
-                    Log.d("maptrix", "return2");
+                    Log.d("maptrix", "return3");
                     return;
                 }
-
-                if (false) {
+                actioningFlag = true;
+                if (true) {
                     //1.发送文字回复
                     sendTxt();
-                    back2Home();
-                    hasAction = false;
+                    release();
                 } else {
                     //2.发送图片回复
                     //2.1下载图片
@@ -203,12 +157,28 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
+    private void release() {
+        back2Home();
+        currentActionID = -1;
+        actioningFlag = false;
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (o) {
+                    Log.d("test", "唤醒。。。");
+                    o.notify();
+                }
+            }
+        }, 1000);
+    }
+
     //---------------------------发送文字----------------
 
     private void sendTxt() {
         Log.d("test", "sendTxt is called");
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-        boolean find = findEditText(rootNode, retContent);
+        boolean find = findEditText(rootNode);
         Log.d("test", "find = " + find);
         if (find) {
             Log.d("test", "send is called");
@@ -227,7 +197,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private boolean findEditText(AccessibilityNodeInfo rootNode, String content) {
+    private boolean findEditText(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
@@ -243,13 +213,13 @@ public class AutoReplyService extends AccessibilityService {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY,
                         arguments);
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                ClipData clip = ClipData.newPlainText("label", content);
+                ClipData clip = ClipData.newPlainText("label", actions.get(currentActionID).reply);
                 ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 clipboardManager.setPrimaryClip(clip);
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
                 return true;
             }
-            if (findEditText(nodeInfo, content)) {
+            if (findEditText(nodeInfo)) {
                 return true;
             }
         }
@@ -271,16 +241,6 @@ public class AutoReplyService extends AccessibilityService {
         startActivity(home);
     }
 
-    /**
-     * 系统是否在锁屏状态
-     *
-     * @return
-     */
-    private boolean isScreenLocked() {
-        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-        return keyguardManager.inKeyguardRestrictedInputMode();
-    }
-
     //初始化zbus
     public void initZbus() {
         Log.d("test", "initZbus");
@@ -299,10 +259,51 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("test", "topic = " + topic);
                     ZbusUtils.consumeMsgs(topic, new MessageHandler() {
                         @Override
-                        public void handle(Message message, MqClient mqClient) throws IOException {
+                        public void handle(Message message, MqClient mqClient) {
                             String temp = message.getBodyString();
                             Log.d("test", "zbus receive = " + temp);
-                            handleResult(temp);
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    if (currentActionID != -1) {
+                                        Log.d("test", "当前有事件在处理，锁定");
+                                        synchronized (o) {
+                                            try {
+                                                o.wait();
+                                            } catch (InterruptedException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }
+                                    try {
+                                        JSONObject o = new JSONObject(temp);
+                                        long id = o.getLong("id");
+                                        String sender = o.getString("sender");
+                                        String content = o.getString("content");
+                                        Action action = actions.get(id);
+                                        if (action == null) {
+                                            Log.d("test", "action null , error!!!");
+                                            return;
+                                        }
+                                        Log.d("test", "开始处理action = " + id);
+                                        currentActionID = id;
+                                        action.reply = temp;//FIXME
+
+                                        handler.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    actions.get(currentActionID).intent.send();
+                                                } catch (PendingIntent.CanceledException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }.start();
                         }
                     }, Constant.zbusHost + ":" + Constant.zbusPost);
                 } catch (Exception e) {
@@ -312,42 +313,16 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void getReplayFromServer() {
+    private void getReplayFromServer(long id, String sender, String content) {
         Log.d("test", "getReplayFromServer");
         try {
-            String msg = new JSONObject().put("senderName", kns.get(0).senderName).put("senderContent", kns.get(0).senderContent).put("me", "客服一号").toString();
+            String msg = new JSONObject().put("id", id).put("sender", sender).put("content", content).put("me", "客服一号").put("time", System.currentTimeMillis()).toString();
             doSendMsg(msg);
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        AsyncHttpClient client = new AsyncHttpClient();
-//        client.setTimeout(10000);
-//        String url = "http://202.104.136.9:8080/mdms/static/download/version/zip_student.json";
-//        client.get(this, url, new TextHttpResponseHandler() {
-//            @Override
-//            public void onSuccess(int code, Header[] headers, String ret) {
-//                Log.d("test", "onSuccess = " + ret);
-//                handleResult("服务器回复：" + ret);
-//            }
-//
-//            @Override
-//            public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
-//                Log.d("test", "onFailure = " + ret);
-//                handleResult("服务器请求失败");
-//            }
-//
-//        });
     }
 
-    private void handleResult(String s) {
-        Log.d("test", "handleResult");
-        retContent = s;
-        try {
-            kns.remove(0).pi.send();
-        } catch (PendingIntent.CanceledException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void doSendMsg(String msg) throws Exception {
         //topic : 老师的deviceId#userId
@@ -376,7 +351,6 @@ public class AutoReplyService extends AccessibilityService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stop = true;
         Log.d("maptrix", "service destroy");
         uninstallPush(this);
         ZbusUtils.close();
@@ -463,12 +437,9 @@ public class AutoReplyService extends AccessibilityService {
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
         // 其次把文件插入到系统图库
         try {
             MediaStore.Images.Media.insertImage(context.getContentResolver(),
@@ -484,23 +455,28 @@ public class AutoReplyService extends AccessibilityService {
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
         boolean find2 = findPlusButton(rootNode);
         Log.d("test", "find2 = " + find2);
+
+        if (!find2) {
+            //这里要释放掉
+            release();
+        }
     }
 
     int imageButtonCount = 0;
 
     //找到最后一个按钮，就是加号，点击一下
     private boolean findPlusButton(AccessibilityNodeInfo rootNode) {
-        Log.d("test", "findPlusButton");
+        //Log.d("test", "findPlusButton");
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
             if (nodeInfo == null) {
                 continue;
             }
-            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            //Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
             if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
                 imageButtonCount++;
-                Log.d("test", "imageButtonCount = " + imageButtonCount);
+                //Log.d("test", "imageButtonCount = " + imageButtonCount);
             }
             if (imageButtonCount == 4) {
                 imageButtonCount = 0;
@@ -508,8 +484,9 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        Log.d("test", "-------------------------------------------------");
+                        Log.d("test", "---------------------findAlbumButton----------------------------");
                         findAlbumButton(getRootInActiveWindow());
+                        //这里应该也要release
                     }
                 }, 2000);
                 return true;
@@ -523,22 +500,22 @@ public class AutoReplyService extends AccessibilityService {
 
     //找到“相册”按钮，点击一下
     private boolean findAlbumButton(AccessibilityNodeInfo rootNode) {
-        Log.d("test", "findAlbumButton");
+        //Log.d("test", "findAlbumButton");
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
             if (nodeInfo == null) {
                 continue;
             }
-            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            //Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
             if (nodeInfo.getClassName().equals("android.widget.GridView")) {
                 AccessibilityNodeInfo first = nodeInfo.getChild(0);
-                Log.d("test", "first child = " + first.getClassName());
+                //Log.d("test", "first child = " + first.getClassName());
                 first.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d("test", "-------------------------------------------------");
+                        Log.d("test", "------------------------findFirstPicture-------------------------");
                         findFirstPicture(getRootInActiveWindow());
                     }
                 }, 3000);
@@ -553,21 +530,21 @@ public class AutoReplyService extends AccessibilityService {
 
     //找到第一张图片，点击一下勾勾。
     private boolean findFirstPicture(AccessibilityNodeInfo rootNode) {
-        Log.d("test", "findFirstPicture");
+        //Log.d("test", "findFirstPicture");
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
             if (nodeInfo == null) {
                 continue;
             }
-            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            //Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
             if (nodeInfo.getClassName().equals("android.widget.RelativeLayout")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 //这里checkbox点击不了，奇怪
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d("test", "----------------------------");
+                        Log.d("test", "----------findSendImageButton------------------");
                         findSendImageButton(getRootInActiveWindow());
                     }
                 }, 3000);
@@ -581,23 +558,21 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private boolean findSendImageButton(AccessibilityNodeInfo rootNode) {
-        Log.d("test", "findSendImageButton");
+        //Log.d("test", "findSendImageButton");
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
             if (nodeInfo == null) {
                 continue;
             }
-            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            //Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
             if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText().equals("发送")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                Log.d("test", "text = " + nodeInfo.getText());
-
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         back2Home();
-                        hasAction = false;
+                        release();
                     }
                 }, 3000);
                 return true;
