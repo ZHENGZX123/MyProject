@@ -1,15 +1,9 @@
 package cn.kiway.autoreply;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * Created by Administrator on 2018/3/21.
@@ -54,27 +48,5 @@ public class Utils {
             last = 10 - last;
         }
         return input + last;
-    }
-
-    public static boolean saveBitmap(Bitmap bm, String picName, String savePath) {
-        if (!new File(savePath).exists()) {
-            new File(savePath).mkdirs();
-        }
-        File f = new File(savePath, picName);
-        if (f.exists()) {
-            f.delete();
-        }
-        try {
-            FileOutputStream out = new FileOutputStream(f);
-            bm.compress(Bitmap.CompressFormat.PNG, 100, out);
-            out.flush();
-            out.close();
-            return true;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 }
