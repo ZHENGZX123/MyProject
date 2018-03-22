@@ -9,13 +9,15 @@ import android.app.PendingIntent;
 public class Action {
 
     public static final int TYPE_TXT = 0;
-    public static final int TYPE_IMG = 1;
+    public static final int TYPE_IMAGE = 1;
+    public static final int TYPE_TEST = 9999;
 
     public PendingIntent intent;
     public String sender;
     public String content;
     public String reply;
-    public int type;
+    public int receiveType;
+    public boolean uploaded;
 
     public String sendTime;
     public String replyTime;

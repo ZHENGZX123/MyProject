@@ -4,5 +4,7 @@
     android:accessibilityFlags="flagDefault"
     android:canRetrieveWindowContent="true"
     android:description="@string/accessibility_description"
-    android:notificationTimeout="100"
+    android:notificationTimeout="1000"
     android:packageNames="com.tencent.mm" />
+
+<!-- 两个同样类型的辅助事件发给辅助服务的最小时间间隔 -->
