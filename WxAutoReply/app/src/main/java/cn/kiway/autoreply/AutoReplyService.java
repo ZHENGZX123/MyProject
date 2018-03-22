@@ -43,6 +43,7 @@ import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
 import io.zbus.mq.Producer;
 
+import static cn.kiway.autoreply.Action.TYPE_IMG;
 import static cn.kiway.autoreply.Action.TYPE_TXT;
 import static cn.kiway.autoreply.Constant.APPID;
 import static cn.kiway.autoreply.Constant.clientUrl;
@@ -106,7 +107,11 @@ public class AutoReplyService extends AccessibilityService {
                         action.sender = sender;
                         action.content = content;
                         action.intent = intent;
-                        action.type = TYPE_TXT;
+                        if (content.equals("[图片]")) {
+                            action.type = TYPE_IMG;
+                        } else {
+                            action.type = TYPE_TXT;
+                        }
                         actions.put(id, action);
 
                         //2.获取答案
@@ -159,13 +164,12 @@ public class AutoReplyService extends AccessibilityService {
 
     private void release() {
         back2Home();
-        currentActionID = -1;
-        actioningFlag = false;
-
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 synchronized (o) {
+                    currentActionID = -1;
+                    actioningFlag = false;
                     Log.d("test", "唤醒。。。");
                     o.notify();
                 }
@@ -278,8 +282,6 @@ public class AutoReplyService extends AccessibilityService {
                                     try {
                                         JSONObject o = new JSONObject(temp);
                                         long id = o.getLong("id");
-                                        String sender = o.getString("sender");
-                                        String content = o.getString("content");
                                         Action action = actions.get(id);
                                         if (action == null) {
                                             Log.d("test", "action null , error!!!");
