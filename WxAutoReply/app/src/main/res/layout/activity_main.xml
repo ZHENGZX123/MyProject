@@ -12,21 +12,36 @@
         android:layout_margin="20dp"
         android:text="开维客服机器人"
         android:textColor="#000000"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
-    <EditText
-        android:id="@+id/name"
+    <LinearLayout
+        android:id="@+id/nameLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
-        android:hint="请输入当前微信昵称"
-        android:text="客服一号" />
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="用户名："
+            android:textColor="#000000" />
+
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入当前微信昵称"
+            android:text="客服一号" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/star"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/name"
+        android:layout_below="@+id/nameLL"
         android:onClick="start"
         android:text="点击开启服务" />
 
@@ -36,5 +51,14 @@
         android:layout_below="@+id/star"
         android:onClick="test"
         android:text="测试zbus" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20dp"
+        android:text="使用方法和注意事项：\n1、输入当前微信昵称。2、点击开启服务即可使用。、使用期间保持手机屏幕常亮，微信处于手机后台，不能人为操作。4、手机系统要7.0以下，最好使用安卓原生系统。"
+        android:textColor="#000000"
+        android:textSize="16sp" />
 
 </RelativeLayout>

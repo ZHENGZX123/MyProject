@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">开维客服机器人</string>
-    <string name="accessibility_description">开维客服机器人</string>
+    <string name="accessibility_description">1、点击“开维客服机器人”\n2、选择开启即可</string>
 </resources>

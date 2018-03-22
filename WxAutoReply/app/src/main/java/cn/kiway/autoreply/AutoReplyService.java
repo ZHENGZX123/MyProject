@@ -1,7 +1,6 @@
 package cn.kiway.autoreply;
 
 import android.accessibilityservice.AccessibilityService;
-import android.annotation.SuppressLint;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -17,7 +16,6 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -37,7 +35,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import cn.kiway.zbus.utils.ZbusUtils;
@@ -152,7 +149,7 @@ public class AutoReplyService extends AccessibilityService {
                         }
 
 //                        if (hasAction) {
-//                            Log.d("test", "当前事件还没有执行完。。。");
+//                            Log.d("test", "当前事件还没有执行完。。。这样的话同时只能处理一个。。。");
 //                            break;
 //                        }
 
@@ -176,9 +173,7 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("maptrix", "return2");
                     return;
                 }
-
-                int random = new Random().nextInt(2);
-                if (random == 0) {
+                if (true) {
                     //1.发送文字回复
                     sendTxt();
                     back2Home();
@@ -206,213 +201,28 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    public void saveImage(Context context, Bitmap bmp) {
-        // 首先保存图片
-        File appDir = new File(Environment.getExternalStorageDirectory(), "DCIM");
-        if (!appDir.exists()) {
-            appDir.mkdir();
-        }
-        String fileName = System.currentTimeMillis() + ".jpg";
-        File file = new File(appDir, fileName);
-        try {
-            FileOutputStream fos = new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // 其次把文件插入到系统图库
-        try {
-            MediaStore.Images.Media.insertImage(context.getContentResolver(),
-                    file.getAbsolutePath(), fileName, null);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        // 最后通知图库更新
-        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file.getAbsolutePath())));
-    }
-
-    private void sendImage() {
-        AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-        boolean find2 = findPlusButton(rootNode);
-        Log.d("test", "find2 = " + find2);
-    }
-
-    int imageButtonCount = 0;
-
-    //找到最后一个按钮，就是加号，点击一下
-    private boolean findPlusButton(AccessibilityNodeInfo rootNode) {
-        Log.d("test", "findPlusButton");
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
-            if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
-                imageButtonCount++;
-                Log.d("test", "imageButtonCount = " + imageButtonCount);
-            }
-            if (imageButtonCount == 4) {
-                imageButtonCount = 0;
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        Log.d("test", "-------------------------------------------------");
-                        findAlbumButton(getRootInActiveWindow());
-                    }
-                }, 2000);
-                return true;
-            }
-            if (findPlusButton(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //找到“相册”按钮，点击一下
-    private boolean findAlbumButton(AccessibilityNodeInfo rootNode) {
-        Log.d("test", "findAlbumButton");
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
-            if (nodeInfo.getClassName().equals("android.widget.GridView")) {
-                AccessibilityNodeInfo first = nodeInfo.getChild(0);
-                Log.d("test", "first child = " + first.getClassName());
-                first.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("test", "-------------------------------------------------");
-                        findFirstPicture(getRootInActiveWindow());
-                    }
-                }, 3000);
-                return true;
-            }
-            if (findAlbumButton(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //找到第一张图片，点击一下勾勾。
-    private boolean findFirstPicture(AccessibilityNodeInfo rootNode) {
-        Log.d("test", "findFirstPicture");
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
-            if (nodeInfo.getClassName().equals("android.widget.RelativeLayout")) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                //这里checkbox点击不了，奇怪
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("test", "----------------------------");
-                        findSendImageButton(getRootInActiveWindow());
-                    }
-                }, 3000);
-                return true;
-            }
-            if (findFirstPicture(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findSendImageButton(AccessibilityNodeInfo rootNode) {
-        Log.d("test", "findSendImageButton");
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText().equals("发送")) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                Log.d("test", "text = " + nodeInfo.getText());
-
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        back2Home();
-                        hasAction = false;
-                    }
-                }, 3000);
-                return true;
-            }
-            if (findSendImageButton(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     //---------------------------发送文字----------------
 
     private void sendTxt() {
-        if (fill()) {
-            send();
-        }
-    }
-
-    /**
-     * 寻找窗体中的“发送”按钮，并且点击。
-     */
-    @SuppressLint("NewApi")
-    private void send() {
-        Log.d("test", "send is called");
-        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
-        if (nodeInfo != null) {
-            List<AccessibilityNodeInfo> list = nodeInfo
-                    .findAccessibilityNodeInfosByText("发送");
-            if (list != null && list.size() > 0) {
-                for (AccessibilityNodeInfo n : list) {
-                    if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
-                        n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    }
-                }
-            }
-            //pressBackButton();
-        }
-    }
-
-    /**
-     * 模拟back按键
-     */
-    private void pressBackButton() {
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            runtime.exec("input keyevent " + KeyEvent.KEYCODE_BACK);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @SuppressLint("NewApi")
-    private boolean fill() {
-        Log.d("test", "fill is called");
+        Log.d("test", "sendTxt is called");
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
         boolean find = findEditText(rootNode, retContent);
         Log.d("test", "find = " + find);
-        return find;
+        if (find) {
+            Log.d("test", "send is called");
+            AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+            if (nodeInfo != null) {
+                List<AccessibilityNodeInfo> list = nodeInfo
+                        .findAccessibilityNodeInfosByText("发送");
+                if (list != null && list.size() > 0) {
+                    for (AccessibilityNodeInfo n : list) {
+                        if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
+                            n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private boolean findEditText(AccessibilityNodeInfo rootNode, String content) {
@@ -634,5 +444,166 @@ public class AutoReplyService extends AccessibilityService {
         } catch (Exception e) {
             Log.d("test", "e = " + e.toString());
         }
+    }
+
+    //---------------发送图片---------------------------------------
+
+    public void saveImage(Context context, Bitmap bmp) {
+        // 首先保存图片
+        File appDir = new File(Environment.getExternalStorageDirectory(), "DCIM");
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        String fileName = System.currentTimeMillis() + ".jpg";
+        File file = new File(appDir, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 其次把文件插入到系统图库
+        try {
+            MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                    file.getAbsolutePath(), fileName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // 最后通知图库更新
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file.getAbsolutePath())));
+    }
+
+    private void sendImage() {
+        AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+        boolean find2 = findPlusButton(rootNode);
+        Log.d("test", "find2 = " + find2);
+    }
+
+    int imageButtonCount = 0;
+
+    //找到最后一个按钮，就是加号，点击一下
+    private boolean findPlusButton(AccessibilityNodeInfo rootNode) {
+        Log.d("test", "findPlusButton");
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
+                imageButtonCount++;
+                Log.d("test", "imageButtonCount = " + imageButtonCount);
+            }
+            if (imageButtonCount == 4) {
+                imageButtonCount = 0;
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        Log.d("test", "-------------------------------------------------");
+                        findAlbumButton(getRootInActiveWindow());
+                    }
+                }, 2000);
+                return true;
+            }
+            if (findPlusButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //找到“相册”按钮，点击一下
+    private boolean findAlbumButton(AccessibilityNodeInfo rootNode) {
+        Log.d("test", "findAlbumButton");
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            if (nodeInfo.getClassName().equals("android.widget.GridView")) {
+                AccessibilityNodeInfo first = nodeInfo.getChild(0);
+                Log.d("test", "first child = " + first.getClassName());
+                first.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "-------------------------------------------------");
+                        findFirstPicture(getRootInActiveWindow());
+                    }
+                }, 3000);
+                return true;
+            }
+            if (findAlbumButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //找到第一张图片，点击一下勾勾。
+    private boolean findFirstPicture(AccessibilityNodeInfo rootNode) {
+        Log.d("test", "findFirstPicture");
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            if (nodeInfo.getClassName().equals("android.widget.RelativeLayout")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                //这里checkbox点击不了，奇怪
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "----------------------------");
+                        findSendImageButton(getRootInActiveWindow());
+                    }
+                }, 3000);
+                return true;
+            }
+            if (findFirstPicture(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findSendImageButton(AccessibilityNodeInfo rootNode) {
+        Log.d("test", "findSendImageButton");
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText().equals("发送")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                Log.d("test", "text = " + nodeInfo.getText());
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        back2Home();
+                        hasAction = false;
+                    }
+                }, 3000);
+                return true;
+            }
+            if (findSendImageButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
