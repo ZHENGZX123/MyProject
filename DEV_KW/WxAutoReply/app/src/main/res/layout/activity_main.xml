@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="20dp"
-        android:text="使用方法和注意事项：\n1、输入当前微信昵称。2、点击开启服务即可使用。、使用期间保持手机屏幕常亮，微信处于手机后台，不能人为操作。4、手机系统要7.0以下，最好使用安卓原生系统。"
+        android:text="使用方法和注意事项：\n1、输入当前微信昵称。2、点击开启服务即可使用。3、使用期间保持手机屏幕常亮，不能锁屏。4、保持微信处于手机后台，不能人为操作。5、客服机器人APP必须保持打开状态，保持手机wifi连接正常。6、手机系统要7.0以下，最好使用安卓原生系统。推荐手机LG Nexus5。"
         android:textColor="#000000"
         android:textSize="16sp" />
 

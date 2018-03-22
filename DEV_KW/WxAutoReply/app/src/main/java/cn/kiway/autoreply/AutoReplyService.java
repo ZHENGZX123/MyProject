@@ -80,23 +80,24 @@ public class AutoReplyService extends AccessibilityService {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-//                    Log.d("test", "loop ...");
+                    //Log.d("test", "loop ...");
                     if (kns.size() == 0) {
+                        //Log.d("test", "size == 0");
                         continue;
                     }
                     if (hasAction) {
+                        //Log.d("test", "hasAction continue");
                         continue;
                     }
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d("test", "send ...");
+                            Log.d("test", "start a action ...");
                             hasAction = true;
                             //1.测试回复
                             //retContent = "自动回复：" + System.currentTimeMillis();
                             //name = "客服一号";
                             //kns.remove(0).send();
-
                             //2.后台回复
                             getReplayFromServer();
                         }
@@ -173,7 +174,8 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("maptrix", "return2");
                     return;
                 }
-                if (true) {
+
+                if (false) {
                     //1.发送文字回复
                     sendTxt();
                     back2Home();
