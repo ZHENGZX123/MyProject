@@ -116,12 +116,18 @@ public class RecordService extends Service {
         }
         recording = false;
         running = false;
-        mediaRecorder.setOnErrorListener(null);
-        mediaRecorder.setPreviewDisplay(null);
-        mediaRecorder.stop();
-        mediaRecorder.reset();
-        virtualDisplay.release();
-        mediaProjection.stop();
+        try {
+            mediaRecorder.setOnErrorListener(null);
+            mediaRecorder.setPreviewDisplay(null);
+            mediaRecorder.stop();
+            mediaRecorder.reset();
+            virtualDisplay.release();
+            mediaProjection.stop();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
         return true;
     }
 
