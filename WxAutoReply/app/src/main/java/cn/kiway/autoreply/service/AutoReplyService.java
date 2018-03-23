@@ -23,7 +23,6 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
-import org.apache.http.entity.StringEntity;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -37,8 +36,8 @@ import java.util.Set;
 import cn.kiway.autoreply.entity.Action;
 import cn.kiway.autoreply.util.Constant;
 import cn.kiway.autoreply.util.Utils;
-import cn.kiway.zbus.utils.ZbusUtils;
-import cn.kiway.zbus.vo.PushMessageVo;
+import cn.kiway.wx.reply.utils.ZbusUtils;
+import cn.kiway.wx.reply.vo.PushMessageVo;
 import io.zbus.mq.Broker;
 import io.zbus.mq.Message;
 import io.zbus.mq.MessageHandler;
@@ -384,9 +383,9 @@ public class AutoReplyService extends AccessibilityService {
                     Broker broker = new Broker(Constant.zbusHost + ":" + Constant.zbusPost);
                     Producer p = new Producer(broker);
                     ZbusUtils.init(broker, p);
-                    String topic = "kiway_push_" + userId;
+                    String topic = "kiway_wx_reply_push_" + userId;
                     Log.d("test", "topic = " + topic);
-                    ZbusUtils.consumeMsgs(topic, new MessageHandler() {
+                    ZbusUtils.consumeMsg(topic, new MessageHandler() {
 
                         @Override
                         public void handle(Message message, MqClient mqClient) {
@@ -408,7 +407,8 @@ public class AutoReplyService extends AccessibilityService {
                                         }
                                     }
                                     try {
-                                        JSONObject o = new JSONObject(temp);
+                                        String msg = new JSONObject(temp).optString("message");
+                                        JSONObject o = new JSONObject(msg);
                                         long id = o.getLong("id");
                                         int receiveType = o.getInt("receiveType");
                                         Action action = actions.get(id);
@@ -492,8 +492,8 @@ public class AutoReplyService extends AccessibilityService {
     public void onDestroy() {
         super.onDestroy();
         Log.d("maptrix", "service destroy");
-        uninstallPush(this);
-        ZbusUtils.close();
+        //uninstallPush(this);
+        //ZbusUtils.close();
     }
 
     public void installationPush(final Context c, final String userId, final String imei) {
@@ -508,7 +508,7 @@ public class AutoReplyService extends AccessibilityService {
             client.addHeader("x-auth-token", xtoken);
 
             Log.d("test", "userId = " + userId);
-            JSONObject param = new JSONObject();
+            RequestParams param = new RequestParams();
             param.put("appId", APPID);
             param.put("type", "huawei");
             param.put("deviceId", imei);
@@ -517,10 +517,10 @@ public class AutoReplyService extends AccessibilityService {
             param.put("robotId", robotId);
 
             Log.d("test", "installationPush param = " + param.toString());
-            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            String url = clientUrl + "/push/installation";
+            //StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+            String url = clientUrl + "/installation";
             Log.d("test", "installationPush = " + url);
-            client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+            client.post(c, url, param, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "installationPush onSuccess = " + ret);
