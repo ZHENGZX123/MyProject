@@ -281,9 +281,7 @@ public class ScreenSharingActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        deInitModules();
     }
-
 
     public void whiteborad1(View view) {
         startActivity(new Intent(this, WhiteboardActivity1.class));
