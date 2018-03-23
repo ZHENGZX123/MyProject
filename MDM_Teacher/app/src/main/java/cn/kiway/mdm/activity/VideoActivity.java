@@ -7,7 +7,7 @@ import android.util.Log;
 import org.song.videoplayer.DemoQSVideoView;
 import org.song.videoplayer.IVideoPlayer;
 import org.song.videoplayer.PlayListener;
-import org.song.videoplayer.media.IjkMedia;
+import org.song.videoplayer.media.AndroidMedia;
 import org.song.videoplayer.rederview.IRenderView;
 
 import java.io.File;
@@ -30,7 +30,7 @@ public class VideoActivity extends BaseActivity {
         videos = (ArrayList<Video>) getIntent().getSerializableExtra("videos");
         name = getIntent().getStringExtra("name");
         qsVideoView = (DemoQSVideoView) findViewById(R.id.qsVideoView);
-        qsVideoView.setDecodeMedia(IjkMedia.class);//解码
+        qsVideoView.setDecodeMedia(AndroidMedia.class);//解码
         qsVideoView.setAspectRatio(IRenderView.AR_ASPECT_FILL_PARENT);//视频填充
         qsVideoView.getCoverImageView().setImageResource(R.mipmap.ic_launcher);//封面
         //设置监听
@@ -64,6 +64,9 @@ public class VideoActivity extends BaseActivity {
         Log.d("test", "localUrl = " + localUrl);
         if (!TextUtils.isEmpty(localUrl) && new File(localUrl).exists()) {
             videoUrl = localUrl;
+        }
+        if (videoUrl.startsWith("http")) {
+            videoUrl += "?type=show";
         }
         qsVideoView.release();
         Log.d("test", "videoUrl = " + videoUrl);

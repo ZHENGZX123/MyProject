@@ -41,7 +41,6 @@ import cn.kiway.mdm.activity.CourseListActivity;
 import cn.kiway.mdm.activity.ResultActivity;
 import cn.kiway.mdm.activity.StudentGridActivity;
 import cn.kiway.mdm.entity.UploadTask;
-import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.view.popup.PopModel;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
@@ -519,16 +518,16 @@ public class Utils {
         messagePopMode.setItemDesc("拍照");
         list.add(messagePopMode);
 
-        PopModel luke = new PopModel();
-        if (RecordService.recording) {
-            luke.setDrawableId(R.drawable.rk2);
-            luke.setItemDesc("结束录课");
-        } else {
-            luke.setDrawableId(R.drawable.p_rk1);
-            luke.setItemDesc("录课");
-        }
-
-        list.add(luke);
+//        PopModel luke = new PopModel();
+//        if (RecordService.recording) {
+//            luke.setDrawableId(R.drawable.rk2);
+//            luke.setItemDesc("结束录课");
+//        } else {
+//            luke.setDrawableId(R.drawable.p_rk1);
+//            luke.setItemDesc("录课");
+//        }
+//
+//        list.add(luke);
 
         PopModel tuiping = new PopModel();
         if (Constant.tuiping) {
