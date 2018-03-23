@@ -62,11 +62,11 @@ public class VideoActivity extends BaseActivity {
         Log.d("test", "playVideo videoUrl = " + videoUrl);
         String localUrl = new MyDBHelper(this).getTasksByUrl(videoUrl).filepath;
         Log.d("test", "localUrl = " + localUrl);
-        if (!TextUtils.isEmpty(localUrl) && !new File(localUrl).exists()) {
+        if (!TextUtils.isEmpty(localUrl) && new File(localUrl).exists()) {
             videoUrl = localUrl;
         }
-        Log.d("test", "videoUrl = " + videoUrl);
         qsVideoView.release();
+        Log.d("test", "videoUrl = " + videoUrl);
         qsVideoView.setUp(videoUrl, name);
         qsVideoView.play();
     }
