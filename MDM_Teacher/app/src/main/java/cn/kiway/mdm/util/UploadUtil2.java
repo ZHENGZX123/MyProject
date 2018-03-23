@@ -66,10 +66,11 @@ public class UploadUtil2 {
 
     private static void doUpload(Context c, UploadTask ut) {
         String accessToken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-        String url = "http://mdm.kiway.cn:8085/common/file?x-auth-token=" + accessToken;
+        String url = Constant.clientUrl + "/common/file?x-auth-token=" + accessToken;
         org.xutils.http.RequestParams params = new org.xutils.http.RequestParams(url);
         //params.addBodyParameter("upload", new File("/mnt/sdcard/15204167950531.jpg") );
         //params.addBodyParameter("filename", "15204167950531.jpg");
+        params.addBodyParameter("origin", "true");
 
         File file = new File(ut.filepath);
         List<KeyValue> list = new ArrayList<>();
@@ -86,7 +87,7 @@ public class UploadUtil2 {
                     JSONObject obj = new JSONObject(result);
                     String url = obj.optJSONObject("data").optString("url");
                     //缓存本地-服务器对应关系
-                    new MyDBHelper(c).setTaskUrl(ut , url);
+                    new MyDBHelper(c).setTaskUrl(ut, url);
                     //添加记录
                     Utils.addVideoRecord(c, ut, ut.courseID, url, "mp4");
                 } catch (Exception e) {

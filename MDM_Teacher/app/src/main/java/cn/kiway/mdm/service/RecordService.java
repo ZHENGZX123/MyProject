@@ -27,7 +27,6 @@ import cn.kiway.mdm.view.wm.menu.MenuItem;
 import cn.kiway.mdm.view.wm.utils.DensityUtil;
 
 import static cn.kiway.mdm.KWApplication.ROOT;
-import static cn.kiway.mdm.teacher.R.drawable.rk1;
 import static cn.kiway.mdm.view.wm.utils.BackGroudSeletor.getdrawble;
 
 
@@ -112,6 +111,7 @@ public class RecordService extends Service {
         if (!running) {
             return false;
         }
+        recording = false;
         running = false;
         mediaRecorder.setOnErrorListener(null);
         mediaRecorder.setPreviewDisplay(null);

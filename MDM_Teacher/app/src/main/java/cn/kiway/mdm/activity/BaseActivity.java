@@ -310,7 +310,6 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
     }
 
     public void b_stopRecord() {
-        RecordService.recording = false;
         if (KWApplication.recordService.isRunning()) {
             KWApplication.recordService.stopRecord();
         }
