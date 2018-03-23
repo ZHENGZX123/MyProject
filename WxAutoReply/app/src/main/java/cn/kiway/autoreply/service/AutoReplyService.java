@@ -445,6 +445,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     public synchronized void sendMsgToServer(long id, Action action) {
+        String name = getSharedPreferences("kiway", 0).getString("name", "");
         new Thread() {
             @Override
             public void run() {
@@ -454,10 +455,9 @@ public class AutoReplyService extends AccessibilityService {
                             .put("id", id)
                             .put("sender", action.sender)
                             .put("content", action.content)
-                            .put("me", "客服一号")
+                            .put("me", name)
                             .put("time", System.currentTimeMillis())
                             .put("receiveType", action.receiveType).toString();
-
 
                     //topic : 老师的deviceId#userId
                     String userId = Utils.getIMEI(getApplicationContext());
@@ -498,8 +498,15 @@ public class AutoReplyService extends AccessibilityService {
 
     public void installationPush(final Context c, final String userId, final String imei) {
         try {
+            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+            String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
+
+
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
+            Log.d("test", "xtoken = " + xtoken);
+            client.addHeader("x-auth-token", xtoken);
+
             Log.d("test", "userId = " + userId);
             JSONObject param = new JSONObject();
             param.put("appId", APPID);
@@ -507,6 +514,8 @@ public class AutoReplyService extends AccessibilityService {
             param.put("deviceId", imei);
             param.put("userId", imei);//userId
             param.put("module", "student");
+            param.put("robotId", robotId);
+
             Log.d("test", "installationPush param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
             String url = clientUrl + "/push/installation";

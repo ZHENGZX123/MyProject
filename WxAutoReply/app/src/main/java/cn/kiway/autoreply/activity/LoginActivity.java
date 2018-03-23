@@ -43,12 +43,6 @@ public class LoginActivity extends BaseActivity {
 
     public void login(View view) {
         //1.客户端校验
-        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-        finish();
-
-        if (true) {
-            return;
-        }
 
         final String username = usernameET.getText().toString().trim();
         if (TextUtils.isEmpty(username)) {
@@ -72,13 +66,13 @@ public class LoginActivity extends BaseActivity {
             showPD();
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            String url = clientUrl + "device/student/login";
+            String url = clientUrl + "/robot/login";
             Log.d("test", "url = " + url);
             RequestParams param = new RequestParams();
+            param.put("imei", imei);
+            param.put("userName", username);
+            param.put("password", password);
             param.put("name", name);
-            param.put("IMEI", imei);
-            param.put("platform", "Android");
-            param.put("operation", "login");
             Log.d("test", "param = " + param.toString());
             client.post(this, url, param, new TextHttpResponseHandler() {
 
@@ -92,14 +86,17 @@ public class LoginActivity extends BaseActivity {
                         int statusCode = o.optInt("statusCode");
                         errorMsg = o.optString("errorMsg");
                         String token = o.getJSONObject("data").getString("token");
+                        String robotId = o.getJSONObject("data").getString("robotId");
                         Log.d("test", "login get token = " + token);
                         if (statusCode == 200) {
                             toast("登录成功");
+
                             getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
                             getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
                             getSharedPreferences("kiway", 0).edit().putString("username", username).commit();
                             getSharedPreferences("kiway", 0).edit().putString("password", password).commit();
                             getSharedPreferences("kiway", 0).edit().putString("name", name).commit();
+                            getSharedPreferences("kiway", 0).edit().putString("robotId", robotId).commit();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         } else {
