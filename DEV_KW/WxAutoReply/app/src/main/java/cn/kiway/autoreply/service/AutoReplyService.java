@@ -35,6 +35,7 @@ import java.util.Set;
 
 import cn.kiway.autoreply.entity.Action;
 import cn.kiway.autoreply.util.Constant;
+import cn.kiway.autoreply.util.UploadUtil;
 import cn.kiway.autoreply.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
 import cn.kiway.wx.reply.vo.PushMessageVo;
@@ -236,21 +237,30 @@ public class AutoReplyService extends AccessibilityService {
                 new Thread() {
                     @Override
                     public void run() {
-                        Log.d("test", "uploading...");
-                        try {
-                            sleep(5000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        boolean exception = false;
                         long tempID = currentActionID;
-                        actions.get(currentActionID).uploaded = true;
+                        try {
+                            Log.d("test", "uploading...");
+                            String xToken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                            final String ret = UploadUtil.uploadFile(lastFile, clientUrl + "/common/file?x-auth-token=" + xToken, lastFile.getName());
+                            Log.d("test", "upload ret = " + ret);
+                            JSONObject obj = new JSONObject(ret);
+                            String url = obj.optJSONObject("data").optString("url");
+                            Log.d("test", "url = " + url);
+                            actions.get(currentActionID).uploaded = true;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            exception = true;
+                        }
                         release();
                         try {
                             sleep(3000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        sendMsgToServer(tempID, actions.get(tempID));
+                        if (!exception) {
+                            sendMsgToServer(tempID, actions.get(tempID));
+                        }
                     }
                 }.start();
                 return true;
@@ -418,7 +428,7 @@ public class AutoReplyService extends AccessibilityService {
                                         }
                                         Log.d("test", "开始处理action = " + id);
                                         currentActionID = id;
-                                        action.reply = temp;//FIXME
+                                        action.reply = msg;//FIXME
 
                                         handler.post(new Runnable() {
                                             @Override
@@ -426,7 +436,7 @@ public class AutoReplyService extends AccessibilityService {
                                                 if (receiveType == TYPE_TXT) {
                                                     launchWechat();
                                                 } else if (receiveType == TYPE_IMAGE || receiveType == TYPE_TEST) {
-                                                    //do nothing
+                                                    Log.d("test", "do nothing");
                                                 }
                                             }
                                         });
