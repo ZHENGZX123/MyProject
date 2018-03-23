@@ -19,11 +19,11 @@ public class Constant {
     public static String clientUrl = "http://mdm.kiway.cn:8085";
 
 
-    public static String countlyUrl = "http://mdm.kiway.cn:8085/countly";
+    public static String countlyUrl = clientUrl + "/countly";
     public static String countlyAppKey = "8f701fda6a9e17ae0997930f26926deb4774332a";
 
 
     public static boolean lockAll = false;//锁屏
     public static boolean muteAll = false;//静音
-    public static boolean tuiping=false;//推屏
+    public static boolean tuiping = false;//推屏
 }
