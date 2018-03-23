@@ -39,6 +39,11 @@ public class LoginActivity extends BaseActivity {
         usernameET = (EditText) findViewById(R.id.username);
         passwordET = (EditText) findViewById(R.id.password);
         nameET = (EditText) findViewById(R.id.name);
+
+        if (getSharedPreferences("kiway", 0).getBoolean("login", false)) {
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            finish();
+        }
     }
 
     public void login(View view) {

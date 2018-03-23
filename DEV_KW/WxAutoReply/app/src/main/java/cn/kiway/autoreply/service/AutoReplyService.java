@@ -427,13 +427,12 @@ public class AutoReplyService extends AccessibilityService {
                                             return;
                                         }
                                         Log.d("test", "开始处理action = " + id);
-                                        currentActionID = id;
-                                        action.reply = msg;//FIXME
-
                                         handler.post(new Runnable() {
                                             @Override
                                             public void run() {
                                                 if (receiveType == TYPE_TXT) {
+                                                    currentActionID = id;
+                                                    action.reply = msg;//FIXME
                                                     launchWechat();
                                                 } else if (receiveType == TYPE_IMAGE || receiveType == TYPE_TEST) {
                                                     Log.d("test", "do nothing");
