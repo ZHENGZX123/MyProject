@@ -44,6 +44,7 @@ public class LoginActivity extends BaseActivity {
     public void login(View view) {
         //1.客户端校验
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        finish();
 
         if (true) {
             return;

@@ -41,7 +41,9 @@ public class MainActivity extends BaseActivity {
     }
 
     public void logout(View view) {
-
+        getSharedPreferences("kiway", 0).edit().clear().commit();
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
     }
 
     public void test(View v) {
