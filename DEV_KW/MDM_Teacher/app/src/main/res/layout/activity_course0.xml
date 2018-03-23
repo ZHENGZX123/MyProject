@@ -343,32 +343,6 @@
             android:layout_weight="1"
             android:background="@drawable/toolbutton"
             android:gravity="center"
-            android:onClick="tongji">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginBottom="5dp"
-
-                android:layout_marginTop="5dp"
-                android:background="@drawable/u1568" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-
-                android:text="统计"
-                android:textColor="#ffffff" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
-            android:layout_weight="1"
-            android:background="@drawable/toolbutton"
-            android:gravity="center"
             android:onClick="dianmingda">
 
             <ImageView
@@ -467,6 +441,31 @@
                 android:textColor="#ffffff" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:layout_weight="1"
+            android:background="@drawable/toolbutton"
+            android:gravity="center"
+            android:onClick="tongji">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginBottom="5dp"
+
+                android:layout_marginTop="5dp"
+                android:background="@drawable/u1568" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+
+                android:text="统计"
+                android:textColor="#ffffff" />
+        </LinearLayout>
 
     </LinearLayout>
 

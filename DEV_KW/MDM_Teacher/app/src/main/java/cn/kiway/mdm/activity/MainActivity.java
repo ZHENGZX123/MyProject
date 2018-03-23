@@ -212,6 +212,30 @@ public class MainActivity extends BaseActivity {
                 wv.goBack();
                 return true;
             }
+            if (tuiping) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+                AlertDialog dialog = builder.setTitle("提示").setMessage("屏幕推送中，是否关闭")
+                        .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                sendTuipingcommand(0);
+                            }
+                        }).setPositiveButton(android.R.string.cancel, null).create();
+                dialog.show();
+                return true;
+            }
+            if (recording) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+                AlertDialog dialog = builder.setTitle("提示").setMessage("本地录课中，是否关闭")
+                        .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                b_stopRecord();
+                            }
+                        }).setPositiveButton(android.R.string.cancel, null).create();
+                dialog.show();
+                return true;
+            }
             doFinish();
             return true;
         }
@@ -514,32 +538,4 @@ public class MainActivity extends BaseActivity {
         ZbusUtils.close();
     }
 
-    @Override
-    public void onBackPressed() {
-        if (tuiping) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
-            AlertDialog dialog = builder.setTitle("提示").setMessage("屏幕推送中，是否关闭")
-                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            sendTuipingcommand(0);
-                        }
-                    }).setPositiveButton(android.R.string.cancel, null).create();
-            dialog.show();
-            return;
-        }
-        if (recording) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
-            AlertDialog dialog = builder.setTitle("提示").setMessage("本地录课中，是否关闭")
-                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            b_stopRecord();
-                        }
-                    }).setPositiveButton(android.R.string.cancel, null).create();
-            dialog.show();
-            return;
-        }
-        super.onBackPressed();
-    }
 }

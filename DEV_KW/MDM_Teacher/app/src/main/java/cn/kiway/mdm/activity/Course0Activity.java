@@ -128,6 +128,7 @@ public class Course0Activity extends BaseActivity {
         Utils.courseOperation(this, course.id, 1, "");
         initView();
         initData();
+
         initRecord();
     }
 
@@ -147,6 +148,12 @@ public class Course0Activity extends BaseActivity {
             rk.setBackgroundResource(R.drawable.rk2);
         else
             rk.setBackgroundResource(R.drawable.rk1);
+
+        if (tuiping)
+            tuipingIV.setBackgroundResource(R.drawable.screen_control2);
+        else
+            tuipingIV.setBackgroundResource(R.drawable.screen_control1);
+
         tiwen = (Button) findViewById(R.id.tiwen);
 
         huabiView = (PaletteView) findViewById(R.id.huabiView);
@@ -283,7 +290,6 @@ public class Course0Activity extends BaseActivity {
             toast("画笔功能开启");
         }
     }
-
 
 
     public void tuiping(View view) {
@@ -1479,7 +1485,7 @@ public class Course0Activity extends BaseActivity {
         tuipingIV.setBackgroundResource(id);
     }
 
-    public void setLuke(int id){
+    public void setLuke(int id) {
         rk.setBackgroundResource(id);
     }
 
