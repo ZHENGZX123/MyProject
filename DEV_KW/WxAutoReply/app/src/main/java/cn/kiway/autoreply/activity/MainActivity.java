@@ -38,7 +38,6 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         instance = this;
         star = (Button) findViewById(R.id.star);
-
         //监听AccessibilityService 变化
         accessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
     }
