@@ -95,7 +95,10 @@ public class RecordService extends Service {
         }
 
         initRecorder();
-        createVirtualDisplay();
+        boolean create = createVirtualDisplay();
+        if (!create) {
+            return false;
+        }
         mediaRecorder.start();
         running = true;
         return true;
@@ -122,13 +125,18 @@ public class RecordService extends Service {
         return true;
     }
 
-    private void createVirtualDisplay() {
-        virtualDisplay = mediaProjection.createVirtualDisplay("MainScreen", width, height, dpi,
-                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, mediaRecorder.getSurface(), null, null);
+    private boolean createVirtualDisplay() {
+        try {
+            virtualDisplay = mediaProjection.createVirtualDisplay("MainScreen", width, height, dpi,
+                    DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, mediaRecorder.getSurface(), null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     private void initRecorder() {
-
         mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);//DEFAULT WEBM MPEG_4 THREE_GPP

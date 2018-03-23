@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="cn.kiway.mdm.teacher">
-<uses-sdk tools:overrideLibrary="io.agora.rtc.ss.app"/>
+
+    <uses-sdk tools:overrideLibrary="io.agora.rtc.ss.app" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -108,11 +110,11 @@
         <!--分享相关-->
         <meta-data
             android:name="tencent_qq_appid"
-            android:value="@string/tencent_qq_appid"/>
+            android:value="@string/tencent_qq_appid" />
 
         <meta-data
             android:name="weixin_key"
-            android:value="@string/weixin_key"/>
+            android:value="@string/weixin_key" />
 
 
         <!-- 微信分享注册 -->
@@ -134,11 +136,13 @@
         <activity
             android:name="com.tencent.tauth.AuthActivity"
             android:launchMode="singleTask"
-            android:noHistory="true" >
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="tencent222222" />
                 <!-- 100380359 100381104 222222 -->
             </intent-filter>
@@ -148,16 +152,16 @@
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTask"
             android:screenOrientation="landscape"
-            tools:replace="android:screenOrientation"
-            android:theme="@style/ShareDialogTheme" />
+            android:theme="@style/ShareDialogTheme"
+            tools:replace="android:screenOrientation" />
 
         <activity
             android:name="com.xyzlf.share.library.ShareHandlerActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
-            tools:replace="android:screenOrientation"
-            android:theme="@android:style/Theme.Translucent">
+            android:theme="@android:style/Theme.Translucent"
+            tools:replace="android:screenOrientation">
             <intent-filter>
                 <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
 
