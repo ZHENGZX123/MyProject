@@ -16,7 +16,7 @@ import java.util.List;
 import cn.kiway.autoreply.R;
 import cn.kiway.autoreply.entity.Action;
 import cn.kiway.autoreply.service.AutoReplyService;
-import cn.kiway.zbus.utils.ZbusUtils;
+import cn.kiway.wx.reply.utils.ZbusUtils;
 
 import static cn.kiway.autoreply.entity.Action.TYPE_TEST;
 
