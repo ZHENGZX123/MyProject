@@ -135,12 +135,10 @@ public class RecordService extends Service {
         output = getSaveDirectory() + System.currentTimeMillis() + ".mp4";
         mediaRecorder.setOutputFile(output);
         mediaRecorder.setVideoSize(width, height);
-        // mediaRecorder.setVideoFrameRate(12);//30  zzx add  视频的帧率和视频大小是需要硬件支持的，如果设置的帧率和视频大小,如果硬件不支持就会出现错误。
+        mediaRecorder.setVideoFrameRate(12);//30  zzx add  视频的帧率和视频大小是需要硬件支持的，如果设置的帧率和视频大小,如果硬件不支持就会出现错误。
         mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);//DEFAULT VP8 H264
-        //mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);//AMR_NB
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);//AMR_NB
         mediaRecorder.setVideoEncodingBitRate(5 * 1024 * 1024);
-        // mediaRecorder.setVideoFrameRate(12);//30
         mediaRecorder.setMaxDuration(45 * 60 * 1000);//最大录制45分钟
         try {
             mediaRecorder.prepare();

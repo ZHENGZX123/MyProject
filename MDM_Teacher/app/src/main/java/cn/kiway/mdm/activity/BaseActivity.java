@@ -45,7 +45,6 @@ import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_CHAPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_JINGYIN;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_SUOPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_WENJIAN;
-import static cn.kiway.mdm.teacher.R.drawable.rk1;
 import static cn.kiway.mdm.util.Constant.tuiping;
 import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
 import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
@@ -65,15 +64,16 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
     public RelativeLayout toolsRL;
     public ProgressDialog pd;
     private RelativeLayout retryRL;
-   public DisplayMetrics displaysMetrics;
+    public DisplayMetrics displaysMetrics;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pd = new ProgressDialog(this);
         pd.setMessage("网络请求中");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-         displaysMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics( displaysMetrics );
+        displaysMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaysMetrics);
     }
 
     @Override
@@ -314,7 +314,6 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
         if (KWApplication.recordService.isRunning()) {
             KWApplication.recordService.stopRecord();
         }
-
     }
 
 
