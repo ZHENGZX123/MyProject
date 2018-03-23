@@ -15,10 +15,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_margin="20dp"
+            android:layout_margin="50dp"
             android:text="开维客服机器人"
             android:textColor="#000000"
-            android:textSize="20sp" />
+            android:textSize="30sp" />
 
         <LinearLayout
             android:id="@+id/infoLL1"
@@ -30,19 +30,22 @@
             android:layout_marginTop="20dp">
 
             <TextView
-                android:layout_width="80dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:gravity="center"
-                android:text="用户名："
-                android:textColor="#000000" />
+                android:text="用户名"
+                android:textColor="#000000"
+                android:textSize="16sp" />
 
             <EditText
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:hint="请输入用户名"
-                android:text="15986812191" />
+                android:text="15986812191"
+                android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -55,19 +58,23 @@
             android:layout_marginTop="20dp">
 
             <TextView
-                android:layout_width="80dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-                android:gravity="center"
-                android:text="密码："
-                android:textColor="#000000" />
+
+                android:text="密码"
+                android:textColor="#000000"
+                android:textSize="16sp" />
 
             <EditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:hint="请输入密码"
-                android:text="123456" />
+                android:text="123456"
+
+                android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -80,19 +87,21 @@
             android:layout_marginTop="20dp">
 
             <TextView
-                android:layout_width="80dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-                android:gravity="center"
-                android:text="昵称："
-                android:textColor="#000000" />
+                android:text="昵称"
+                android:textColor="#000000"
+                android:textSize="16sp" />
 
             <EditText
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:hint="请输入当前微信昵称"
-                android:text="客服一号" />
+                android:text="客服一号"
+                android:textSize="14sp" />
         </LinearLayout>
 
 
