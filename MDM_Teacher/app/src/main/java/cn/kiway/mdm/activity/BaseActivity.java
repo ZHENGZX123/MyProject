@@ -41,6 +41,7 @@ import io.agora.openlive.ui.LiveRoomActivity;
 import io.agora.rtc.Constants;
 import ly.count.android.api.Countly;
 
+import static cn.kiway.mdm.KWApplication.recordService;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_CHAPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_JINGYIN;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_SUOPING;
@@ -259,10 +260,14 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
                 new ShareCallBack().onShareCallback(channel, status);
             }
         } else if (requestCode == RECORD_REQUEST_CODE) {
-            toast("开始录制本地视频");
             mediaProjection = projectionManager.getMediaProjection(resultCode, data);
-            KWApplication.recordService.setMediaProject(mediaProjection);
-            KWApplication.recordService.startRecord();
+            recordService.setMediaProject(mediaProjection);
+            boolean start = KWApplication.recordService.startRecord();
+            if (!start) {
+                toast("该手机不支持录屏");
+                return;
+            }
+            toast("开始录制本地视频");
             RecordService.recording = true;
             String temp = KWApplication.recordService.output;
             if (BaseActivity.this instanceof Course0Activity) {
@@ -310,8 +315,8 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
     }
 
     public void b_stopRecord() {
-        if (KWApplication.recordService.isRunning()) {
-            KWApplication.recordService.stopRecord();
+        if (recordService.isRunning()) {
+            recordService.stopRecord();
         }
     }
 
