@@ -7,7 +7,7 @@
 
     <ListView
         android:id="@+id/pop_list"
-        android:layout_width="100dp"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:divider="@drawable/pop_divider_line"
         android:overScrollMode="never"

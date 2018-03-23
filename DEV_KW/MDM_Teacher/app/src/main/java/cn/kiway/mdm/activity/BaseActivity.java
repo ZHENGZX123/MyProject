@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -44,6 +45,7 @@ import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_CHAPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_JINGYIN;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_SUOPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_WENJIAN;
+import static cn.kiway.mdm.teacher.R.drawable.rk1;
 import static cn.kiway.mdm.util.Constant.tuiping;
 import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
 import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
@@ -63,14 +65,15 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
     public RelativeLayout toolsRL;
     public ProgressDialog pd;
     private RelativeLayout retryRL;
-
+   public DisplayMetrics displaysMetrics;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pd = new ProgressDialog(this);
         pd.setMessage("网络请求中");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
+         displaysMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics( displaysMetrics );
     }
 
     @Override
@@ -198,7 +201,10 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
                         startActivityForResult(intent, REQUEST_ORIGINAL);
                         break;
                     case 2://录课
-                        b_startRecord();
+                        if (RecordService.recording)
+                            b_stopRecord();
+                        else
+                            b_startRecord();
                         break;
                     case 3://推屏
                         b_tuiping();
@@ -262,6 +268,8 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
             if (BaseActivity.this instanceof Course0Activity) {
                 ((Course0Activity) BaseActivity.this).recordScreenCall(temp);
             }
+        } else if (requestCode == REQUEST_ORIGINAL) {
+            cropImage(picPath);
         }
     }
 
@@ -302,11 +310,11 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
     }
 
     public void b_stopRecord() {
-
         RecordService.recording = false;
         if (KWApplication.recordService.isRunning()) {
             KWApplication.recordService.stopRecord();
         }
+
     }
 
 

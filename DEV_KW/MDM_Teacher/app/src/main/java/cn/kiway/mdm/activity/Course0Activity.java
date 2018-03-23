@@ -920,7 +920,7 @@ public class Course0Activity extends BaseActivity {
 
     public void stopRecord() {
         b_stopRecord();
-        rk.setBackgroundResource(R.drawable.rk1);
+
     }
 
     public void luke(View view) {
@@ -1477,6 +1477,10 @@ public class Course0Activity extends BaseActivity {
 
     public void setTuipingIV(int id) {
         tuipingIV.setBackgroundResource(id);
+    }
+
+    public void setLuke(int id){
+        rk.setBackgroundResource(id);
     }
 
     @Override

@@ -41,6 +41,7 @@ import cn.kiway.mdm.activity.CourseListActivity;
 import cn.kiway.mdm.activity.ResultActivity;
 import cn.kiway.mdm.activity.StudentGridActivity;
 import cn.kiway.mdm.entity.UploadTask;
+import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.view.popup.PopModel;
 import uk.co.senab.photoview.sample.ViewPagerActivity;
@@ -468,7 +469,8 @@ public class Utils {
         return false;
     }
 
-    public static void addVideoRecord(final Context c, UploadTask ut, final String courseID, final String fileUrl, final String fileSuffix) {
+    public static void addVideoRecord(final Context c, UploadTask ut, final String courseID, final String fileUrl,
+                                      final String fileSuffix) {
         try {
             String url = Constant.clientUrl + "/device/teacher/course/" + courseID + "/video";
             Log.d("test", "addVideoRecord url = " + url);
@@ -502,7 +504,8 @@ public class Utils {
         Log.d("test", "usableSpace = " + usableSpace);
         return usableSpace;
     }
-    public static List<PopModel> getPopList(){
+
+    public static List<PopModel> getPopList() {
         /** 初始化数据源 **/
         final List<PopModel> list = new ArrayList<>();
 
@@ -517,13 +520,24 @@ public class Utils {
         list.add(messagePopMode);
 
         PopModel luke = new PopModel();
-        luke.setDrawableId(R.drawable.p_rk1);
-        luke.setItemDesc("录课");
+        if (RecordService.recording) {
+            luke.setDrawableId(R.drawable.rk2);
+            luke.setItemDesc("结束录课");
+        } else {
+            luke.setDrawableId(R.drawable.p_rk1);
+            luke.setItemDesc("录课");
+        }
+
         list.add(luke);
 
         PopModel tuiping = new PopModel();
-        tuiping.setDrawableId(R.drawable.p_screen_control1);
-        tuiping.setItemDesc("推屏");
+        if (Constant.tuiping) {
+            tuiping.setDrawableId(R.drawable.screen_control2);
+            tuiping.setItemDesc("结束推屏");
+        } else {
+            tuiping.setDrawableId(R.drawable.p_screen_control1);
+            tuiping.setItemDesc("推屏");
+        }
         list.add(tuiping);
 
         PopModel huibi = new PopModel();
@@ -558,6 +572,7 @@ public class Utils {
 
         return list;
     }
+
     public static int dp2px(Context context, float value) {
         return (int) (context.getResources().getDisplayMetrics().density * value + 0.5);
     }
