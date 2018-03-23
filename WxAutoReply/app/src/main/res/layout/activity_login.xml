@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_margin="50dp"
+            android:layout_margin="30dp"
             android:text="开维客服机器人"
             android:textColor="#000000"
             android:textSize="30sp" />
@@ -25,8 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/title"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_marginTop="20dp">
 
             <TextView
@@ -42,7 +42,7 @@
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                android:gravity="center"
                 android:hint="请输入用户名"
                 android:text="15986812191"
                 android:textSize="14sp" />
@@ -53,15 +53,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/infoLL1"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_marginTop="20dp">
 
             <TextView
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-
+                android:gravity="center"
                 android:text="密码"
                 android:textColor="#000000"
                 android:textSize="16sp" />
@@ -82,14 +82,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/infoLL2"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_marginTop="20dp">
 
             <TextView
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
+                android:gravity="center"
                 android:text="昵称"
                 android:textColor="#000000"
                 android:textSize="16sp" />
@@ -106,7 +107,6 @@
 
 
         <Button
-            android:id="@+id/star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/infoLL3"

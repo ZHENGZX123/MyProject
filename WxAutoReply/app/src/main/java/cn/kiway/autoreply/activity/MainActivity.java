@@ -1,11 +1,17 @@
 package cn.kiway.autoreply.activity;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
+import android.widget.Button;
+
+import java.util.List;
 
 import cn.kiway.autoreply.R;
 import cn.kiway.autoreply.entity.Action;
@@ -17,17 +23,40 @@ import static cn.kiway.autoreply.entity.Action.TYPE_TEST;
 public class MainActivity extends BaseActivity {
 
     public static MainActivity instance;
+    private Button star;
 
     public static final int MSG_NETWORK_OK = 1;
     public static final int MSG_NETWORK_ERR = 2;
     public static final int MSG_HEARTBEAT = 3;
 
+    //AccessibilityService 管理
+    private AccessibilityManager accessibilityManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         instance = this;
+        star = (Button) findViewById(R.id.star);
+
+        //监听AccessibilityService 变化
+        accessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateServiceStatus();
+    }
+
+    private boolean isServiceEnabled() {
+        List<AccessibilityServiceInfo> accessibilityServices = accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
+        for (AccessibilityServiceInfo info : accessibilityServices) {
+            if (info.getId().equals(getPackageName() + "/.service.AutoReplyService")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void start(View view) {
@@ -37,6 +66,7 @@ public class MainActivity extends BaseActivity {
             startActivity(accessibleIntent);
         } catch (Exception e) {
             e.printStackTrace();
+            toast("该手机不支持微信自动回复功能");
         }
     }
 
@@ -55,7 +85,6 @@ public class MainActivity extends BaseActivity {
             AutoReplyService.instance.sendMsgToServer(9999, a);
         }
     }
-
 
     public Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -77,4 +106,14 @@ public class MainActivity extends BaseActivity {
             }
         }
     };
+
+    private void updateServiceStatus() {
+        if (isServiceEnabled()) {
+            star.setText("服务已经开启");
+            star.setEnabled(false);
+        } else {
+            star.setText("点击开启服务");
+            star.setEnabled(true);
+        }
+    }
 }
