@@ -44,12 +44,14 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    public void test(View v) throws Exception {
+    public void test(View v) {
         Action a = new Action();
         a.sender = "test";
         a.content = "content";
         a.receiveType = TYPE_TEST;
-        AutoReplyService.instance.sendMsgToServer(9999, a);
+        if (AutoReplyService.instance != null) {
+            AutoReplyService.instance.sendMsgToServer(9999, a);
+        }
     }
 
 
@@ -59,21 +61,17 @@ public class MainActivity extends BaseActivity {
                 //RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 //rl_nonet.setVisibility(View.GONE);
                 Log.d("test", "有网络");
-                AutoReplyService.instance.initZbus();
-                sendEmptyMessageDelayed(MSG_HEARTBEAT, 1000);
+                if (AutoReplyService.instance != null) {
+                    AutoReplyService.instance.initZbus();
+                    sendEmptyMessageDelayed(MSG_HEARTBEAT, 1000);
+                }
             } else if (msg.what == MSG_NETWORK_ERR) {
                 //RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 //rl_nonet.setVisibility(View.VISIBLE);
                 Log.d("test", "无网络");
                 ZbusUtils.close();
             } else if (msg.what == MSG_HEARTBEAT) {
-                for (int i = 0; i < 3; i++) {
-                    Action a = new Action();
-                    a.sender = "test";
-                    a.content = "content";
-                    a.receiveType = TYPE_TEST;
-                    AutoReplyService.instance.sendMsgToServer(9999, a);
-                }
+                test(null);
             }
         }
     };
