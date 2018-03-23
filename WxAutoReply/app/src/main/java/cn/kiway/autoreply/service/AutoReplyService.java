@@ -128,12 +128,8 @@ public class AutoReplyService extends AccessibilityService {
                         sendMsgToServer(id, action);
                     } else {
                         //图片要先拉起微信,截图上传
-                        try {
-                            currentActionID = id;
-                            actions.get(currentActionID).intent.send();
-                        } catch (PendingIntent.CanceledException e) {
-                            e.printStackTrace();
-                        }
+                        currentActionID = id;
+                        launchWechat();
                     }
                 }
                 break;
@@ -211,6 +207,14 @@ public class AutoReplyService extends AccessibilityService {
 //                    }.start();
 
                 break;
+        }
+    }
+
+    private void launchWechat() {
+        try {
+            actions.get(currentActionID).intent.send();
+        } catch (PendingIntent.CanceledException e) {
+            e.printStackTrace();
         }
     }
 
@@ -420,11 +424,7 @@ public class AutoReplyService extends AccessibilityService {
                                             @Override
                                             public void run() {
                                                 if (receiveType == TYPE_TXT) {
-                                                    try {
-                                                        actions.get(currentActionID).intent.send();
-                                                    } catch (PendingIntent.CanceledException e) {
-                                                        e.printStackTrace();
-                                                    }
+                                                    launchWechat();
                                                 } else if (receiveType == TYPE_IMAGE || receiveType == TYPE_TEST) {
                                                     //do nothing
                                                 }
