@@ -104,7 +104,7 @@ public class RecordService extends Service {
 
     public boolean stopRecord() {
         if (KWApplication.currentActivity != null && KWApplication.currentActivity instanceof Course0Activity) {
-            ((Course0Activity) KWApplication.currentActivity).setLuke(rk1);
+            ((Course0Activity) KWApplication.currentActivity).setLuke(R.drawable.rk1);
         }
         Toast.makeText(this, "结束录制本地视频", Toast.LENGTH_SHORT).show();
         if (mFloatballManager != null)
