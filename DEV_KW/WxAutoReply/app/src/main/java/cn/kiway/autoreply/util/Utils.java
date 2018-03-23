@@ -1,9 +1,11 @@
-package cn.kiway.autoreply;
+package cn.kiway.autoreply.util;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
+
+import cn.kiway.autoreply.KWApplication;
 
 /**
  * Created by Administrator on 2018/3/21.

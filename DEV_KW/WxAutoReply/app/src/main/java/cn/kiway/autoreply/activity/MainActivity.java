@@ -1,4 +1,4 @@
-package cn.kiway.autoreply;
+package cn.kiway.autoreply.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,7 +7,11 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Toast;
 
-import static cn.kiway.autoreply.Action.TYPE_TEST;
+import cn.kiway.autoreply.service.AutoReplyService;
+import cn.kiway.autoreply.R;
+import cn.kiway.autoreply.entity.Action;
+
+import static cn.kiway.autoreply.entity.Action.TYPE_TEST;
 
 public class MainActivity extends Activity {
 
@@ -33,7 +37,6 @@ public class MainActivity extends Activity {
     public void logout(View view) {
 
     }
-
 
     public void test(View v) throws Exception {
         Action a = new Action();
