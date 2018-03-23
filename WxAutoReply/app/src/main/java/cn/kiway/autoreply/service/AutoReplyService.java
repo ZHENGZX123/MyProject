@@ -1,4 +1,4 @@
-package cn.kiway.autoreply;
+package cn.kiway.autoreply.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Notification;
@@ -34,6 +34,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import cn.kiway.autoreply.entity.Action;
+import cn.kiway.autoreply.util.Constant;
+import cn.kiway.autoreply.util.Utils;
 import cn.kiway.zbus.utils.ZbusUtils;
 import cn.kiway.zbus.vo.PushMessageVo;
 import io.zbus.mq.Broker;
@@ -42,11 +45,11 @@ import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
 import io.zbus.mq.Producer;
 
-import static cn.kiway.autoreply.Action.TYPE_IMAGE;
-import static cn.kiway.autoreply.Action.TYPE_TEST;
-import static cn.kiway.autoreply.Action.TYPE_TXT;
-import static cn.kiway.autoreply.Constant.APPID;
-import static cn.kiway.autoreply.Constant.clientUrl;
+import static cn.kiway.autoreply.entity.Action.TYPE_IMAGE;
+import static cn.kiway.autoreply.entity.Action.TYPE_TEST;
+import static cn.kiway.autoreply.entity.Action.TYPE_TXT;
+import static cn.kiway.autoreply.util.Constant.APPID;
+import static cn.kiway.autoreply.util.Constant.clientUrl;
 
 public class AutoReplyService extends AccessibilityService {
 
@@ -416,18 +419,17 @@ public class AutoReplyService extends AccessibilityService {
                                         handler.post(new Runnable() {
                                             @Override
                                             public void run() {
-                                                if (receiveType == TYPE_TXT || receiveType == TYPE_IMAGE) {
+                                                if (receiveType == TYPE_TXT) {
                                                     try {
                                                         actions.get(currentActionID).intent.send();
                                                     } catch (PendingIntent.CanceledException e) {
                                                         e.printStackTrace();
                                                     }
-                                                } else if (receiveType == TYPE_TEST) {
+                                                } else if (receiveType == TYPE_IMAGE || receiveType == TYPE_TEST) {
                                                     //do nothing
                                                 }
                                             }
                                         });
-
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }

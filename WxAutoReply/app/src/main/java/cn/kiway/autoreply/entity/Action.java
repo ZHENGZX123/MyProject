@@ -1,4 +1,4 @@
-package cn.kiway.autoreply;
+package cn.kiway.autoreply.entity;
 
 import android.app.PendingIntent;
 
