@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 
 import cn.kiway.mdm.KWApplication;
+import cn.kiway.mdm.activity.Course0Activity;
 import cn.kiway.mdm.activity.LukeCameraActivity;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.view.wm.FloatBallManager;
@@ -26,6 +27,7 @@ import cn.kiway.mdm.view.wm.menu.MenuItem;
 import cn.kiway.mdm.view.wm.utils.DensityUtil;
 
 import static cn.kiway.mdm.KWApplication.ROOT;
+import static cn.kiway.mdm.teacher.R.drawable.rk1;
 import static cn.kiway.mdm.view.wm.utils.BackGroudSeletor.getdrawble;
 
 
@@ -101,7 +103,10 @@ public class RecordService extends Service {
     }
 
     public boolean stopRecord() {
-        Toast.makeText(this,"结束录制本地视频",Toast.LENGTH_SHORT).show();
+        if (KWApplication.currentActivity != null && KWApplication.currentActivity instanceof Course0Activity) {
+            ((Course0Activity) KWApplication.currentActivity).setLuke(rk1);
+        }
+        Toast.makeText(this, "结束录制本地视频", Toast.LENGTH_SHORT).show();
         if (mFloatballManager != null)
             mFloatballManager.hide();
         if (!running) {
@@ -123,17 +128,19 @@ public class RecordService extends Service {
     }
 
     private void initRecorder() {
+
         mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);//DEFAULT WEBM MPEG_4 THREE_GPP
         output = getSaveDirectory() + System.currentTimeMillis() + ".mp4";
         mediaRecorder.setOutputFile(output);
         mediaRecorder.setVideoSize(width, height);
+        // mediaRecorder.setVideoFrameRate(12);//30  zzx add  视频的帧率和视频大小是需要硬件支持的，如果设置的帧率和视频大小,如果硬件不支持就会出现错误。
         mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);//DEFAULT VP8 H264
         //mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);//AMR_NB
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);//AMR_NB
         mediaRecorder.setVideoEncodingBitRate(5 * 1024 * 1024);
-        mediaRecorder.setVideoFrameRate(12);//30
+        // mediaRecorder.setVideoFrameRate(12);//30
         mediaRecorder.setMaxDuration(45 * 60 * 1000);//最大录制45分钟
         try {
             mediaRecorder.prepare();
@@ -178,7 +185,7 @@ public class RecordService extends Service {
         //3 生成floatballManager
         mFloatballManager = new FloatBallManager(this, ballCfg, menuCfg);
         addFloatMenuItem();
-       // mFloatballManager.show();
+        // mFloatballManager.show();
     }
 
     public static boolean isCamera = false;
@@ -197,7 +204,7 @@ public class RecordService extends Service {
                             .FLAG_ACTIVITY_NEW_TASK));
             }
         };
-        MenuItem stopRecord=new MenuItem(getdrawble(R.drawable.stop, this)) {
+        MenuItem stopRecord = new MenuItem(getdrawble(R.drawable.stop, this)) {
             @Override
             public void action() {
                 if (KWApplication.currentActivity instanceof LukeCameraActivity) {

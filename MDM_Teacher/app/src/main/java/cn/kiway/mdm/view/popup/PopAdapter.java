@@ -67,6 +67,11 @@ class PopAdapter extends BaseAdapter {
                 viewHolder.imageView.setVisibility(View.GONE);
             }
             viewHolder.textView.setText(popModel.getItemDesc());
+            if (popModel.getItemDesc().equals("结束推屏") || popModel.getItemDesc().equals("结束录课")) {
+                viewHolder.textView.setTextColor(parent.getContext().getResources().getColor(R.color._3fcc8a));
+            } else {
+                viewHolder.textView.setTextColor(parent.getContext().getResources().getColor(R.color.pop_color_454a4d));
+            }
         }
         return convertView;
     }
