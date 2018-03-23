@@ -65,6 +65,7 @@ public class VideoActivity extends BaseActivity {
         if (!TextUtils.isEmpty(localUrl) && !new File(localUrl).exists()) {
             videoUrl = localUrl;
         }
+        Log.d("test", "videoUrl = " + videoUrl);
         qsVideoView.release();
         qsVideoView.setUp(videoUrl, name);
         qsVideoView.play();

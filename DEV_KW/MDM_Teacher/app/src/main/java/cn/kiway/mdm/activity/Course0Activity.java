@@ -1141,6 +1141,14 @@ public class Course0Activity extends BaseActivity {
                 continue;
             }
             Log.d("test", "upload record file = " + s);
+            if (!new File(s).exists()) {
+                toast("录制视频不存在");
+                continue;
+            }
+            if (new File(s).length() < 2 * 1024 * 1024) {
+                toast("录制文件太小");
+                continue;
+            }
             //添加到上传任务队列
             UploadUtil2.addTask(this, s, course.id);
         }
