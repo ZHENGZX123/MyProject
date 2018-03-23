@@ -68,7 +68,6 @@ import static com.android.kiway.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJL
 import static com.android.kiway.utils.Constant.APPID;
 import static com.android.kiway.utils.Constant.APPKEY;
 import static com.android.kiway.utils.Constant.clientUrl;
-import static com.android.kiway.utils.Utils.huaweiPush;
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener {
 
@@ -95,6 +94,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     public static final int MSG_NETWORK_OK = 7;
     public static final int MSG_NETWORK_ERR = 8;
     public static final int MSG_HEARTBEAT = 9;
+    public static final int MSG_HUAWEI_PUSH = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +111,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //6.检查命令
         checkCommand();
         //7.注册华为
-        huaweiPush(this);
+        huaweiPush();
         //8.允许使用访问记录
         setUsageStats();
         //9.上报APP列表
@@ -143,6 +143,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //24.悬浮窗
         checkAlertWindow();
         //test();
+    }
+
+    private void huaweiPush() {
+        mHandler.sendEmptyMessage(MSG_HUAWEI_PUSH);
     }
 
     private void test() {
@@ -337,6 +341,12 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     for (int i = 0; i < 3; i++) {
                         ZbusHost.doSendMsg(getApplicationContext(), "heartbeat1");
                     }
+                }
+                break;
+                case MSG_HUAWEI_PUSH: {
+                    Utils.huaweiPush(getApplicationContext());
+                    mHandler.removeMessages(MSG_HUAWEI_PUSH);
+                    mHandler.sendEmptyMessageDelayed(MSG_HUAWEI_PUSH, 60 * 60 * 1000);
                 }
                 break;
             }
