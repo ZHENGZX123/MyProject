@@ -1,13 +1,12 @@
 package cn.kiway.mdm.activity;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 
 import org.song.videoplayer.DemoQSVideoView;
 import org.song.videoplayer.IVideoPlayer;
 import org.song.videoplayer.PlayListener;
-import org.song.videoplayer.media.IjkMedia;
+import org.song.videoplayer.media.AndroidMedia;
 import org.song.videoplayer.rederview.IRenderView;
 
 import java.util.ArrayList;
