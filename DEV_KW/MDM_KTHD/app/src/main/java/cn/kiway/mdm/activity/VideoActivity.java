@@ -28,7 +28,7 @@ public class VideoActivity extends BaseActivity {
         videos = (ArrayList<Video>) getIntent().getSerializableExtra("videos");
         name = getIntent().getStringExtra("name");
         qsVideoView = (DemoQSVideoView) findViewById(R.id.qsVideoView);
-        qsVideoView.setDecodeMedia(IjkMedia.class);//解码
+        qsVideoView.setDecodeMedia(AndroidMedia.class);//解码
         qsVideoView.setAspectRatio(IRenderView.AR_ASPECT_FILL_PARENT);//视频填充
         qsVideoView.getCoverImageView().setImageResource(R.mipmap.ic_launcher);//封面
         //设置监听
