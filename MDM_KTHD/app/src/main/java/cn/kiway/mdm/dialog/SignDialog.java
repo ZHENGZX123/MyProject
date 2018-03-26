@@ -14,8 +14,11 @@ import studentsession.kiway.cn.mdm_studentsession.R;
 
 public class SignDialog extends BaseDialog {
 
+    private Context context;
+
     public SignDialog(@NonNull Context context) {
         super(context);
+        this.context = context;
     }
 
     @Override
@@ -31,7 +34,7 @@ public class SignDialog extends BaseDialog {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.sing_btn:
-                Utils.sendToServer("sign");
+                Utils.sendToServer(context, "sign");
                 this.dismiss();
                 break;
         }

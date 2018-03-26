@@ -371,7 +371,7 @@ public class BaseActivity extends Activity {
                     o.put("time", System.currentTimeMillis());
                     o.put("name", getSharedPreferences("kiwaykthd", 0).getString("studentName", ""));
                     o.put("avatar", "");
-                    boolean ret = Utils.sendToServer("question_" + o.toString());
+                    boolean ret = Utils.sendToServer(getApplicationContext(), "question_" + o.toString());
                     if (!ret) {
                         toast("提问失败");
                         return;
@@ -494,7 +494,7 @@ public class BaseActivity extends Activity {
                     o.put("name", "学生");
                     o.put("avatar", "");
                     o.put("duration", duration);
-                    boolean ret = Utils.sendToServer("question_" + o.toString());
+                    boolean ret = Utils.sendToServer(getApplicationContext(), "question_" + o.toString());
                     if (!ret) {
                         toast("提问失败");
                         return;

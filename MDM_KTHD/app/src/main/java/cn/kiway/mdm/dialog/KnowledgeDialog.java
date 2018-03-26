@@ -15,15 +15,14 @@ import studentsession.kiway.cn.mdm_studentsession.R;
 
 public class KnowledgeDialog extends BaseDialog {
 
-    public KnowledgeDialog(@NonNull Context context) {
-        super(context);
-    }
 
-    public String title;
+    private String title;
+    private Context context;
 
     public KnowledgeDialog(@NonNull Context context, String knowledge) {
         super(context);
         this.title = knowledge;
+        this.context = context;
     }
 
     @Override
@@ -41,11 +40,11 @@ public class KnowledgeDialog extends BaseDialog {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.know:
-                Utils.sendToServer("tongji_know");
+                Utils.sendToServer(context, "tongji_know");
                 this.dismiss();
                 break;
             case R.id.unknow:
-                Utils.sendToServer("tongji_unknow");
+                Utils.sendToServer(context, "tongji_unknow");
                 this.dismiss();
                 break;
         }

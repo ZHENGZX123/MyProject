@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.os.RemoteException;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -404,10 +403,11 @@ public class Utils {
         return retStr;
     }
 
-    public static boolean sendToServer(String msg) {
+    public static boolean sendToServer(Context c, String msg) {
         try {
             return App.instance.mRemoteInterface.callbackMessage(msg);
-        } catch (RemoteException e) {
+        } catch (Exception e) {
+            Toast.makeText(c, "教育桌面出现问题，请重启平板", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
         return false;
