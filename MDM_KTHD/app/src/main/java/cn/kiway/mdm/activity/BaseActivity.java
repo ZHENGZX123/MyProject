@@ -370,7 +370,7 @@ public class BaseActivity extends Activity {
                     o.put("content", contentStr);
                     o.put("time", System.currentTimeMillis());
                     o.put("name", getSharedPreferences("kiwaykthd", 0).getString("studentName", ""));
-                    o.put("avatar", "");
+                    o.put("avatar", getSharedPreferences("kiway", 0).getString("userUrl", ""));
                     boolean ret = Utils.sendToServer(getApplicationContext(), "question_" + o.toString());
                     if (!ret) {
                         toast("提问失败");
@@ -491,8 +491,8 @@ public class BaseActivity extends Activity {
                     o.put("type", 2);
                     o.put("content", url);
                     o.put("time", System.currentTimeMillis());
-                    o.put("name", "学生");
-                    o.put("avatar", "");
+                    o.put("name", getSharedPreferences("kiwaykthd", 0).getString("studentName", ""));
+                    o.put("avatar", getSharedPreferences("kiway", 0).getString("userUrl", ""));
                     o.put("duration", duration);
                     boolean ret = Utils.sendToServer(getApplicationContext(), "question_" + o.toString());
                     if (!ret) {
