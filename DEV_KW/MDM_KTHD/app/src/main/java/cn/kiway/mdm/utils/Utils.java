@@ -445,7 +445,7 @@ public class Utils {
                     Logger.log("login::::::" + ret);
                     int StatusCode = o.optInt("statusCode");
                     String token = o.getJSONObject("data").optString("token");
-                    context.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
+                    context.getSharedPreferences("kiwaykthd", 0).edit().putString("x-auth-token", token).commit();
                     //TODO 返回pwd，密钥不一样怎么办
                     Log.d("test", "login get token = " + token);
                     if (StatusCode == 200) {

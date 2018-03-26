@@ -525,7 +525,7 @@ public class QuestionActivity extends BaseActivity {
                                     @Override
                                     public void onImage(String filepath) {
                                         Log.d("test", "onImage = " + filepath);
-                                        String token = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                                        String token = getSharedPreferences("kiwaykthd", 0).getString("x-auth-token", "");
                                         String result = UploadUtil.uploadFile(filepath, Constant.clientUrl + "common/file?x-auth-token=" + token, new File(filepath).getName());
                                         String url = null;
                                         try {

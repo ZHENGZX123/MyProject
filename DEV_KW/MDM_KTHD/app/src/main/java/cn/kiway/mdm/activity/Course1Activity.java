@@ -93,7 +93,7 @@ public class Course1Activity extends BaseActivity {
             String url = Constant.clientUrl + "/device/teacher/course/" + course.id + "/attend";
             Log.d("test", "url = " + url);
             AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+            client.addHeader("x-auth-token", getSharedPreferences("kiwaykthd", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             client.get(this, url, null, new TextHttpResponseHandler() {
                 @Override

@@ -79,8 +79,8 @@ public class MainActivity extends ScreenSharingActivity {
         userPic = (RoundedImageView) findViewById(R.id.userPic);
         connect = (ImageView) findViewById(R.id.connect);
 
-        if (!getSharedPreferences("kiway", 0).getString("userUrl", "").equals(""))
-            ImageLoader.getInstance().displayImage(getSharedPreferences("kiway", 0).getString("userUrl", ""),
+        if (!getSharedPreferences("kiwaykthd", 0).getString("userUrl", "").equals(""))
+            ImageLoader.getInstance().displayImage(getSharedPreferences("kiwaykthd", 0).getString("userUrl", ""),
                     userPic, App.getLoaderOptions());
         studentName.setText(getSharedPreferences("kiwaykthd", 0).getString("studentName", ""));
         className.setText(getSharedPreferences("kiwaykthd", 0).getString("className", ""));
@@ -90,8 +90,8 @@ public class MainActivity extends ScreenSharingActivity {
     protected void onResume() {
         mRotationObserver.startObserver();
         super.onResume();
-        if (!getSharedPreferences("kiway", 0).getString("userUrl", "").equals(""))
-            ImageLoader.getInstance().displayImage(getSharedPreferences("kiway", 0).getString("userUrl", ""),
+        if (!getSharedPreferences("kiwaykthd", 0).getString("userUrl", "").equals(""))
+            ImageLoader.getInstance().displayImage(getSharedPreferences("kiwaykthd", 0).getString("userUrl", ""),
                     userPic, App.getLoaderOptions());
         checkConnect();
     }

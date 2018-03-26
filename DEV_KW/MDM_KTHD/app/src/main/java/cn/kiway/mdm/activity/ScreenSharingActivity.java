@@ -215,7 +215,7 @@ public class ScreenSharingActivity extends BaseActivity {
             initModules();
             startCapture();
 
-            String channel = "kiway";
+            String channel = "kiwaykthd";
 
             TextView tv = (TextView) findViewById(io.agora.rtc.ss.app.R.id.channel_name_info);
             tv.setText(getString(io.agora.rtc.ss.app.R.string.label_channel_info, channel));
