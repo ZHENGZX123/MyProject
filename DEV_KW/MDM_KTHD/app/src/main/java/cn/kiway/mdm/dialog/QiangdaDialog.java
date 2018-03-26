@@ -39,7 +39,7 @@ public class QiangdaDialog extends BaseDialog {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.answer_btn:
-                Utils.sendToServer("qiangda");
+                Utils.sendToServer(this.activity, "qiangda");
                 break;
         }
     }

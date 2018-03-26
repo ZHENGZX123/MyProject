@@ -185,9 +185,13 @@ public class App extends KiwayApplication {
                     ((BaseActivity) currentActivity).onQuestion(o);
                 } else if (command.equals("sign")) {//签到
                     ((BaseActivity) currentActivity).onSign();
+                } else if (command.equals("sign_timeout")) {
+                    ((BaseActivity) currentActivity).toast("老师已结束点名，学生无法点到");
                 } else if (command.equals("tongji")) {//知识点统计
                     String knowledge = o.optString("knowledge");
                     ((BaseActivity) currentActivity).onTongji(knowledge);
+                } else if (command.equals("tongji_timeout")) {
+                    ((BaseActivity) currentActivity).toast("老师已结束统计，学生无法点到");
                 } else if (command.equals("qiangda")) {
                     ((BaseActivity) currentActivity).onQiangda();
                 } else if (command.equals("qiangdaResult")) {

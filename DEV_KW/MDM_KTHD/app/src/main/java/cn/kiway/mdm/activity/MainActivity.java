@@ -112,7 +112,7 @@ public class MainActivity extends ScreenSharingActivity {
 
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
-                Utils.sendToServer("hello");
+                Utils.sendToServer(getApplicationContext(), "hello");
             }
         }).setPositiveButton(android.R.string.cancel, null).create();
         builder.show();

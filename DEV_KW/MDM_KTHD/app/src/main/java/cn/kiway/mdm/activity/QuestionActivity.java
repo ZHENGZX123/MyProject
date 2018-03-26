@@ -577,7 +577,7 @@ public class QuestionActivity extends BaseActivity {
                     Log.d("test", "打印学生答题情况:" + answerArray.toString());
                     //整理答案
                     String answer = "answer_" + answerArray.toString();
-                    boolean ret = Utils.sendToServer(answer);
+                    boolean ret = Utils.sendToServer(getApplicationContext(), answer);
                     if (ret) {
                         //1.禁止答题
                         forbid();
