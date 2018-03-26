@@ -72,6 +72,48 @@ public class ZbusHost {
         }.start();
     }
 
+    public static void tongji_timeout(final Activity c, final OnListener onListener) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String title = "知识点统计失效";
+                    String userId = Utils.getIMEI(c);
+                    String msg = new JSONObject().put("data", new JSONObject().put("command", "tongji_timeout").put("teacherUserId", userId).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
+                    doSendMsg(c, title, userId, msg, students);
+                    if (onListener != null) {
+                        c.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                c.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        onListener.onSuccess();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if (onListener != null) {
+                        c.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                c.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        onListener.onFailure();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+        }.start();
+    }
+
     public static void tuiping(final Activity c, final int status, final OnListener onListener) {
         new Thread() {
             @Override
@@ -424,6 +466,33 @@ public class ZbusHost {
             String title = "点名";
             String userId = Utils.getIMEI(c);
             String msg = new JSONObject().put("data", new JSONObject().put("command", "sign").put("teacherUserId", userId).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
+            doSendMsg(c, title, userId, msg, students);
+            if (onListener != null) {
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (onListener != null) {
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
+            }
+        }
+    }
+
+    public static void sign_timeout(Activity c, final OnListener onListener) {
+        try {
+            String title = "点名失效";
+            String userId = Utils.getIMEI(c);
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "sign_timeout").put("teacherUserId", userId).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
                 c.runOnUiThread(new Runnable() {

@@ -135,6 +135,7 @@ public class ZbusMessageHandler implements MessageHandler {
     private void tongji(String studentIMEI, int known) {
         if (!(KWApplication.currentActivity instanceof StudentGridActivity)) {
             Log.d("test", "不是当前页面，信息可能已过期");
+            ZbusHost.tongji_timeout(KWApplication.currentActivity, null);
             return;
         }
         ((StudentGridActivity) KWApplication.currentActivity).knowOneStudent(studentIMEI, known);
@@ -143,6 +144,7 @@ public class ZbusMessageHandler implements MessageHandler {
     private void sign(String studentIMEI) {
         if (!(KWApplication.currentActivity instanceof StudentGridActivity)) {
             Log.d("test", "不是当前页面，信息可能已过期");
+            ZbusHost.sign_timeout(KWApplication.currentActivity, null);
             return;
         }
         ((StudentGridActivity) KWApplication.currentActivity).signOneStudent(studentIMEI);

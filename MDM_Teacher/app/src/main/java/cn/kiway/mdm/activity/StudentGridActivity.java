@@ -95,6 +95,8 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
     private ArrayList<KnowledgePoint> selectKPs;
     private String selectCourseId;
 
+
+    //文件发送有关。。。
     static String uploadurl;
     static String uploadname;
     static String uploadsize;
@@ -1244,13 +1246,13 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
                 for (Student s : students) {
                     if (s.imei.equals(studentIMEI)) {
                         //如果已经点到过，就不要再次online了
-                        if (s.come) {
-                            return;
-                        }
                         s.online = true;
+                        if (s.come) {
+                            break;
+                        }
+                        adapter.notifyDataSetChanged();
                     }
                 }
-                adapter.notifyDataSetChanged();
             }
         });
     }
@@ -1278,11 +1280,14 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
         });
     }
 
-
     public void signOneStudent(final String studentIMEI) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (dialog_dianming == null || !dialog_dianming.isShowing()) {
+                    ZbusHost.sign_timeout(StudentGridActivity.this, null);
+                    return;
+                }
                 for (Student s : students) {
                     if (s.imei.equals(studentIMEI)) {
                         s.come = true;
@@ -1307,6 +1312,10 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (dialog_tongji == null || !dialog_tongji.isShowing()) {
+                    ZbusHost.tongji_timeout(StudentGridActivity.this, null);
+                    return;
+                }
                 for (Student s : students) {
                     if (s.imei.equals(student)) {
                         s.known = known;
