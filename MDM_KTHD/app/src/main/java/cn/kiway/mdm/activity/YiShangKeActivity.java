@@ -85,7 +85,7 @@ public class YiShangKeActivity extends BaseActivity {
     public void loadData() {
         try {
             AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+            client.addHeader("x-auth-token", getSharedPreferences("kiwaykthd", 0).getString("x-auth-token", ""));
             client.setTimeout(10000);
             RequestParams param = new RequestParams();
             Log.d("test", "param = " + param.toString());

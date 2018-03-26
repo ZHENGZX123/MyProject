@@ -370,7 +370,8 @@ public class BaseActivity extends Activity {
                     o.put("content", contentStr);
                     o.put("time", System.currentTimeMillis());
                     o.put("name", getSharedPreferences("kiwaykthd", 0).getString("studentName", ""));
-                    o.put("avatar", getSharedPreferences("kiway", 0).getString("userUrl", ""));
+                    o.put("avatar", getSharedPreferences("kiwaykthd", 0).getString("userUrl", ""));
+                    o.put("className", getSharedPreferences("kiwaykthd", 0).getString("className", ""));
                     boolean ret = Utils.sendToServer(getApplicationContext(), "question_" + o.toString());
                     if (!ret) {
                         toast("提问失败");
@@ -482,7 +483,7 @@ public class BaseActivity extends Activity {
             @Override
             public void run() {
                 //1.上传录制文件
-                String token = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                String token = getSharedPreferences("kiwaykthd", 0).getString("x-auth-token", "");
                 String result = UploadUtil.uploadFile(recordFile.getAbsolutePath(), Constant.clientUrl +
                         "common/file?x-auth-token=" + token, recordFile.getName());
                 try {
@@ -492,7 +493,8 @@ public class BaseActivity extends Activity {
                     o.put("content", url);
                     o.put("time", System.currentTimeMillis());
                     o.put("name", getSharedPreferences("kiwaykthd", 0).getString("studentName", ""));
-                    o.put("avatar", getSharedPreferences("kiway", 0).getString("userUrl", ""));
+                    o.put("avatar", getSharedPreferences("kiwaykthd", 0).getString("userUrl", ""));
+                    o.put("className", getSharedPreferences("kiwaykthd", 0).getString("className", ""));
                     o.put("duration", duration);
                     boolean ret = Utils.sendToServer(getApplicationContext(), "question_" + o.toString());
                     if (!ret) {

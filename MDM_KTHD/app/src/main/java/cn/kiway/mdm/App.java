@@ -177,7 +177,7 @@ public class App extends KiwayApplication {
         public void accpterMessage(String msg, String token) throws RemoteException {
             Log.d("test", "accpterMessage msg = " + msg + "");
             isAttenClass = true;
-            getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
+            getSharedPreferences("kiwaykthd", 0).edit().putString("x-auth-token", token).commit();
             try {
                 JSONObject o = new JSONObject(msg);
                 String command = o.optString("command");
@@ -264,7 +264,7 @@ public class App extends KiwayApplication {
     //修改用户头像 ,名字
     public void uploadUserInfo(final String urlPath, final String name) {
         AsyncHttpClient client = new AsyncHttpClient();
-        client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+        client.addHeader("x-auth-token", getSharedPreferences("kiwaykthd", 0).getString("x-auth-token", ""));
         client.setTimeout(10000);
         RequestParams param = new RequestParams();
         if (urlPath != null && !urlPath.equals(""))
@@ -308,7 +308,7 @@ public class App extends KiwayApplication {
 
     public void uploadUserFile(final String url, final int type, final String name, final String size) {
         AsyncHttpClient client = new AsyncHttpClient();
-        client.addHeader("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+        client.addHeader("x-auth-token", getSharedPreferences("kiwaykthd", 0).getString("x-auth-token", ""));
         client.setTimeout(10000);
         RequestParams param = new RequestParams();
         param.put("url", url);

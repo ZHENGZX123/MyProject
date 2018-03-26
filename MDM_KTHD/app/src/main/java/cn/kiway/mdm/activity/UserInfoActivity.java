@@ -56,8 +56,8 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         versionCode = (TextView) findViewById(R.id.versionCode);
         pic = (RoundedImageView) findViewById(R.id.pic);
         pic.setOnClickListener(this);
-        if (!getSharedPreferences("kiway", 0).getString("userUrl", "").equals(""))
-            ImageLoader.getInstance().displayImage(getSharedPreferences("kiway", 0).getString("userUrl", ""),
+        if (!getSharedPreferences("kiwaykthd", 0).getString("userUrl", "").equals(""))
+            ImageLoader.getInstance().displayImage(getSharedPreferences("kiwaykthd", 0).getString("userUrl", ""),
                     pic, App.getLoaderOptions());
         account.setText("学号：" + getSharedPreferences("kiwaykthd", 0).getString("studentNumber", ""));
         userName.setText("姓名:" + getSharedPreferences("kiwaykthd", 0).getString("studentName", ""));
@@ -150,7 +150,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
                     });
 
                     ImageLoader.getInstance().displayImage(url, pic, App.getLoaderOptions());
-                    getSharedPreferences("kiway", 0).edit().putString("userUrl", url).commit();
+                    getSharedPreferences("kiwaykthd", 0).edit().putString("userUrl", url).commit();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
