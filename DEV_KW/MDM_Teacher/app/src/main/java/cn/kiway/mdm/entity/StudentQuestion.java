@@ -13,8 +13,9 @@ public class StudentQuestion {
     public String time;//发送时间
     public String studentName;//发送人名字
     public String studentAvatar;//发送人头像
+    public String className;//班级名字
 
-    public StudentQuestion(int type, String content, int duration, String filepath, String time, String studentName, String studentAvatar) {
+    public StudentQuestion(int type, String content, int duration, String filepath, String time, String studentName, String studentAvatar, String className) {
         this.type = type;
         this.content = content;
         this.duration = duration;
@@ -22,5 +23,6 @@ public class StudentQuestion {
         this.time = time;
         this.studentName = studentName;
         this.studentAvatar = studentAvatar;
+        this.className = className;
     }
 }

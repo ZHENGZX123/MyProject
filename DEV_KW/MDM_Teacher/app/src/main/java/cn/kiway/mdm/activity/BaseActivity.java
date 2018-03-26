@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -279,6 +280,7 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
     }
 
     public void cropImage(String filePath) {
+        Log.d("test", "cropImage filePath = " + filePath);
         //需要裁剪的图片路径
         Uri sourceUri = Uri.fromFile(new File(filePath));
         //裁剪完毕的图片存放路径
