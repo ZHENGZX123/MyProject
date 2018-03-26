@@ -191,7 +191,7 @@ public class App extends KiwayApplication {
                     String knowledge = o.optString("knowledge");
                     ((BaseActivity) currentActivity).onTongji(knowledge);
                 } else if (command.equals("tongji_timeout")) {
-                    ((BaseActivity) currentActivity).toast("老师已结束统计，学生无法点到");
+                    ((BaseActivity) currentActivity).toast("老师已结束统计，学生已无法点击‘听懂了’或‘不懂’按钮");
                 } else if (command.equals("qiangda")) {
                     ((BaseActivity) currentActivity).onQiangda();
                 } else if (command.equals("qiangdaResult")) {
