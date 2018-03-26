@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import cn.kiway.autoreply.activity.MainActivity;
 import cn.kiway.autoreply.entity.Action;
 import cn.kiway.autoreply.util.Constant;
 import cn.kiway.autoreply.util.UploadUtil;
@@ -70,6 +71,7 @@ public class AutoReplyService extends AccessibilityService {
         super.onCreate();
         Log.d("maptrix", "service oncreate");
 
+        actions.clear();
         instance = this;
         installationPush(this, Utils.getIMEI(this), Utils.getIMEI(this));
     }
@@ -122,6 +124,12 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     actions.put(id, action);
 
+                    int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0) + 1;
+                    getSharedPreferences("kiway", 0).edit().putInt("recvCount", recvCount).apply();
+                    if (MainActivity.instance != null) {
+                        MainActivity.instance.updateServiceCount();
+                    }
+
                     //2.获取答案
                     if (action.receiveType == TYPE_TXT) {
                         //文字的话直接走zbus
@@ -156,6 +164,11 @@ public class AutoReplyService extends AccessibilityService {
                 if (receiveType == TYPE_TXT) {
                     sendTxt();
                     release();
+                    int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0) + 1;
+                    getSharedPreferences("kiway", 0).edit().putInt("replyCount", replyCount).apply();
+                    if (MainActivity.instance != null) {
+                        MainActivity.instance.updateServiceCount();
+                    }
                 } else if (receiveType == TYPE_IMAGE && !uploaded) {
                     // 找到最后一张图片，放大，截屏，上传，得到url后返回
                     lastFrameLayout = null;
@@ -371,13 +384,14 @@ public class AutoReplyService extends AccessibilityService {
      * 回到系统桌面
      */
     private void back2Home() {
-        Intent home = new Intent(Intent.ACTION_MAIN);
-        home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        home.addCategory(Intent.CATEGORY_HOME);
-        startActivity(home);
-    }
+//        Intent home = new Intent(Intent.ACTION_MAIN);
+//        home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        home.addCategory(Intent.CATEGORY_HOME);
+//        startActivity(home);
 
-    private long time = 5000;
+        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.autoreply");
+        startActivity(intent);
+    }
 
     //初始化zbus
     public void initZbus() {

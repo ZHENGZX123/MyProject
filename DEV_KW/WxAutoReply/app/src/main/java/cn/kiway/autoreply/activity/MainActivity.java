@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -29,26 +30,41 @@ public class MainActivity extends BaseActivity {
     public static final int MSG_NETWORK_ERR = 2;
     public static final int MSG_HEARTBEAT = 3;
 
-    //AccessibilityService 管理
-    private AccessibilityManager accessibilityManager;
+    private TextView nameTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         instance = this;
+        nameTV = (TextView) findViewById(R.id.name);
         star = (Button) findViewById(R.id.star);
-        //监听AccessibilityService 变化
-        accessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
+        if (AutoReplyService.instance != null) {
+            AutoReplyService.instance.initZbus();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         updateServiceStatus();
+        updateServiceCount();
+    }
+
+    public void updateServiceCount() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String name = getSharedPreferences("kiway", 0).getString("name", "");
+                int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0);
+                int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0);
+                nameTV.setText(name + "\n" + "接收次数：" + recvCount + "，回复次数：" + replyCount);
+            }
+        });
     }
 
     private boolean isServiceEnabled() {
+        AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
         List<AccessibilityServiceInfo> accessibilityServices = accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
         for (AccessibilityServiceInfo info : accessibilityServices) {
             if (info.getId().equals(getPackageName() + "/.service.AutoReplyService")) {
