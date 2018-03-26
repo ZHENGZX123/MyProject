@@ -1377,7 +1377,7 @@ public class Course0Activity extends BaseActivity {
             }
 
             final StudentQuestion q = studentQuestions.get(position);
-            holder.name.setText(q.studentName);
+            holder.name.setText(q.studentName + "  " + q.className);
             ImageLoader.getInstance().displayImage(q.studentAvatar, holder.avatar, KWApplication.getLoaderOptions());
             if (q.type == 1) {
                 holder.content.setVisibility(View.VISIBLE);
@@ -1437,6 +1437,7 @@ public class Course0Activity extends BaseActivity {
                     String time = o.optString("time");
                     String name = o.optString("name");
                     String avatar = o.optString("avatar");
+                    String className = o.optString("className");
                     int duration = o.optInt("duration");
                     toast("收到学生提问");
 
@@ -1451,9 +1452,9 @@ public class Course0Activity extends BaseActivity {
                     lv.setAdapter(sqAdapter);
 
                     if (type == 1) {
-                        studentQuestions.add(new StudentQuestion(1, content, 0, "", time, name, avatar));
+                        studentQuestions.add(new StudentQuestion(1, content, 0, "", time, name, avatar, className));
                     } else if (type == 2) {
-                        studentQuestions.add(new StudentQuestion(2, "", duration, content, time, name, avatar));
+                        studentQuestions.add(new StudentQuestion(2, "", duration, content, time, name, avatar, className));
                     }
                     //刷新页面
                     sqAdapter.notifyDataSetChanged();
