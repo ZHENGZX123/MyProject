@@ -20,8 +20,14 @@ import cn.kiway.mdm.entity.UploadTask;
 
 public class UploadUtil2 {
 
+    private final static Object o = new Object();
+
+
     public static void addTask(Context c, String filepath, String courseID) {
         new MyDBHelper(c).addTask(new UploadTask(filepath, courseID, UploadTask.STATUS_START, 0, ""));
+        synchronized (o) {
+            o.notifyAll();
+        }
     }
 
     public static void startTask(Context c) {
@@ -54,10 +60,12 @@ public class UploadUtil2 {
                     } else {
                         Log.d("test", "不是wifi");
                     }
-                    try {
-                        sleep(60000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    synchronized (o) {
+                        try {
+                            o.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -70,6 +78,7 @@ public class UploadUtil2 {
         org.xutils.http.RequestParams params = new org.xutils.http.RequestParams(url);
         //params.addBodyParameter("upload", new File("/mnt/sdcard/15204167950531.jpg") );
         //params.addBodyParameter("filename", "15204167950531.jpg");
+        //上传视频的时候，使用这个参数
         params.addBodyParameter("origin", "true");
 
         File file = new File(ut.filepath);
