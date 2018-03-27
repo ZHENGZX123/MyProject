@@ -33,7 +33,6 @@ import com.leon.lfilepickerlibrary.utils.Constant;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.soundcloud.android.crop.Crop;
 import com.tencent.smtt.sdk.TbsReaderView;
 
 import org.apache.http.Header;
@@ -220,13 +219,7 @@ public class Course0Activity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK)
             return;
-        if (requestCode == Crop.REQUEST_CROP) {
-            final Uri resultUri = Crop.getOutput(data);
-            if (resultUri != null)
-                sendFile(resultUri.getPath());
-        } else if (requestCode == REQUEST_ORIGINAL) {
-            cropImage(picPath);
-        } else if (requestCode == requsetFile2) {
+         if (requestCode == requsetFile2) {
             List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
             String filePath = list.get(0);
             sendFile(filePath);
@@ -317,12 +310,7 @@ public class Course0Activity extends BaseActivity {
         startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_WENJIAN));
     }
 
-    public void sendFile(String filePath) {
-        toast(R.string.chooseStudent);
-        //2.再选择学生
-        startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_WENJIAN).putExtra("filePath",
-                filePath));
-    }
+
 
     public void shezhi(View view) {
         //设置？？？不知道是什么。
