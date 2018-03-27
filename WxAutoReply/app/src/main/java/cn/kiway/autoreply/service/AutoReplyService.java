@@ -114,7 +114,8 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("test", "sender name = " + sender);
                     Log.d("test", "sender content = " + content);
 
-                    if (Utils.isInfilters(getApplicationContext() , sender)){
+                    if (Utils.isInfilters(getApplicationContext(), sender)) {
+                        Log.d("test", "该昵称被过滤");
                         continue;
                     }
 
@@ -439,10 +440,11 @@ public class AutoReplyService extends AccessibilityService {
                                         }
                                     }
                                     try {
-                                        String msg = new JSONObject(temp).optString("message");
-                                        JSONObject o = new JSONObject(msg);
+
+                                        JSONObject o = new JSONObject(temp);
                                         long id = o.getLong("id");
-                                        int receiveType = o.getInt("receiveType");
+                                        int returnType = o.getInt("returnType");
+                                        String returnMessage = o.getString("returnMessage");
                                         Action action = actions.get(id);
                                         if (action == null) {
                                             Log.d("test", "action null , error!!!");
@@ -452,11 +454,11 @@ public class AutoReplyService extends AccessibilityService {
                                         handler.post(new Runnable() {
                                             @Override
                                             public void run() {
-                                                if (receiveType == TYPE_TXT) {
+                                                if (returnType == TYPE_TXT) {
                                                     currentActionID = id;
-                                                    action.reply = msg;//FIXME
+                                                    action.reply = temp;//returnMessage
                                                     launchWechat();
-                                                } else if (receiveType == TYPE_IMAGE || receiveType == TYPE_TEST) {
+                                                } else if (returnType == TYPE_IMAGE || returnType == TYPE_TEST) {
                                                     Log.d("test", "do nothing");
                                                 }
                                             }
@@ -487,9 +489,7 @@ public class AutoReplyService extends AccessibilityService {
                             .put("sender", action.sender)
                             .put("content", action.content)
                             .put("me", name)
-                            .put("time", System.currentTimeMillis())
-                            .put("receiveType", action.receiveType).toString();
-
+                            .toString();
                     //topic : 老师的deviceId#userId
                     String userId = Utils.getIMEI(getApplicationContext());
 

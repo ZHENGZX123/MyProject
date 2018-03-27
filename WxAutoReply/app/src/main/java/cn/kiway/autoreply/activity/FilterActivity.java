@@ -47,26 +47,14 @@ public class FilterActivity extends BaseActivity {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText et = new EditText(getApplicationContext());
-                et.setSingleLine();
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(FilterActivity.this);
-                builder.setTitle("请输入要过滤的昵称");
-                builder.setView(et);
-                builder.setNegativeButton("取消", null);
-                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String name = et.getText().toString().trim();
-                        if (name.equals("")) {
-                            toast("不能为空");
-                            return;
-                        }
-                        String filters = getSharedPreferences("filters", 0).getString("filters", "");
-                        getSharedPreferences("filters", 0).edit().putString("filters", filters + "===").commit();
-                        refresh();
-                    }
-                }).create().show();
+                String name = et.getText().toString().trim();
+                if (name.equals("")) {
+                    toast("不能为空");
+                    return;
+                }
+                String filters = getSharedPreferences("filters", 0).getString("filters", "");
+                getSharedPreferences("filters", 0).edit().putString("filters", filters + "===" + name).commit();
+                refresh();
             }
         });
 
@@ -83,7 +71,7 @@ public class FilterActivity extends BaseActivity {
                         String name = filterNames.get(which);
 
                         String filters = getSharedPreferences("filters", 0).getString("filters", "");
-                        filters = filters.replace(name + "===", "");
+                        filters = filters.replace("===" + name, "");
                         getSharedPreferences("filters", 0).edit().putString("filters", filters).commit();
                         refresh();
                     }
@@ -99,6 +87,7 @@ public class FilterActivity extends BaseActivity {
         if (filters.length == 0) {
             return;
         }
+        filterNames.clear();
         for (String temp : filters) {
             if (StringUtil.isNullOrEmpty(temp)) {
                 continue;
