@@ -89,6 +89,10 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    public void filter(View view) {
+        startActivity(new Intent(this, FilterActivity.class));
+    }
+
     public void logout(View view) {
         getSharedPreferences("kiway", 0).edit().clear().commit();
         startActivity(new Intent(this, LoginActivity.class));

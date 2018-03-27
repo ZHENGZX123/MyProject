@@ -83,6 +83,10 @@ public class AutoReplyService extends AccessibilityService {
         switch (eventType) {
             case AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED:
                 Log.d("maptrix", "接收到通知");
+                if (!getSharedPreferences("kiway", 0).getBoolean("login", false)) {
+                    Log.d("test", "user do not login");
+                    return;
+                }
                 List<CharSequence> texts = event.getText();
                 if (texts.isEmpty()) {
                     return;
@@ -110,6 +114,10 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("test", "sender name = " + sender);
                     Log.d("test", "sender content = " + content);
 
+                    if (Utils.isInfilters(getApplicationContext() , sender)){
+                        continue;
+                    }
+
                     //1.预先加入map
                     id = System.currentTimeMillis();
                     PendingIntent intent = ((Notification) event.getParcelableData()).contentIntent;
@@ -125,7 +133,7 @@ public class AutoReplyService extends AccessibilityService {
                     actions.put(id, action);
 
                     int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0) + 1;
-                    getSharedPreferences("kiway", 0).edit().putInt("recvCount", recvCount).apply();
+                    getSharedPreferences("kiway", 0).edit().putInt("recvCount", recvCount).commit();
                     if (MainActivity.instance != null) {
                         MainActivity.instance.updateServiceCount();
                     }
@@ -165,7 +173,7 @@ public class AutoReplyService extends AccessibilityService {
                     sendTxt();
                     release();
                     int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0) + 1;
-                    getSharedPreferences("kiway", 0).edit().putInt("replyCount", replyCount).apply();
+                    getSharedPreferences("kiway", 0).edit().putInt("replyCount", replyCount).commit();
                     if (MainActivity.instance != null) {
                         MainActivity.instance.updateServiceCount();
                     }
