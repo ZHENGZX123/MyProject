@@ -18,6 +18,7 @@ import java.util.List;
 import cn.kiway.autoreply.R;
 import cn.kiway.autoreply.entity.Action;
 import cn.kiway.autoreply.service.AutoReplyService;
+import cn.kiway.autoreply.util.Utils;
 
 import static cn.kiway.autoreply.entity.Action.TYPE_TEST;
 
@@ -40,7 +41,7 @@ public class MainActivity extends BaseActivity {
         nameTV = (TextView) findViewById(R.id.name);
         star = (Button) findViewById(R.id.star);
         if (AutoReplyService.instance != null) {
-            AutoReplyService.instance.initZbus();
+            AutoReplyService.instance.installationPush(this);
         }
     }
 
