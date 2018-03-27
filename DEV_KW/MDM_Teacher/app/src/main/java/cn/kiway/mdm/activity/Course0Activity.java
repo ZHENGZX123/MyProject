@@ -53,6 +53,7 @@ import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.entity.StudentQuestion;
 import cn.kiway.mdm.entity.TeachingContentVo;
+import cn.kiway.mdm.entity.UploadTask;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.HttpDownload;
