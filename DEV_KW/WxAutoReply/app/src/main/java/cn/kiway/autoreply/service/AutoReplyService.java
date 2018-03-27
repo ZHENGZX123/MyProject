@@ -73,7 +73,7 @@ public class AutoReplyService extends AccessibilityService {
 
         actions.clear();
         instance = this;
-        installationPush(this, Utils.getIMEI(this), Utils.getIMEI(this));
+        installationPush(this);
     }
 
     @Override
@@ -534,8 +534,11 @@ public class AutoReplyService extends AccessibilityService {
         //ZbusUtils.close();
     }
 
-    public void installationPush(final Context c, final String userId, final String imei) {
+    public void installationPush(final Context c) {
         try {
+            String userId = Utils.getIMEI(c);
+            String imei = Utils.getIMEI(c);
+
             String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
             String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
 
