@@ -13,14 +13,15 @@
             android:id="@+id/et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/add" />
+            android:layout_toLeftOf="@+id/add"
+            android:hint="请输入要过滤的昵称" />
 
         <Button
             android:id="@+id/add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="添加过滤" />
+            android:text="添加" />
     </RelativeLayout>
 
     <ListView
