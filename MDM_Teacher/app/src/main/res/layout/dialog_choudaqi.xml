@@ -33,7 +33,7 @@
                 android:background="@null"
                 android:text="X"
                 android:textColor="#ffffff"
-                android:textSize="25sp" />
+                android:textSize="22sp" />
         </RelativeLayout>
 
 

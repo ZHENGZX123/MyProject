@@ -260,7 +260,11 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
                 int status = data.getIntExtra(ShareConstant.EXTRA_SHARE_STATUS, -1);
                 new ShareCallBack().onShareCallback(channel, status);
             }
-        } if (requestCode == Crop.REQUEST_CROP) {
+        }
+        if (requestCode == Crop.REQUEST_CROP) {
+            if (data == null) {
+                return;
+            }
             final Uri resultUri = Crop.getOutput(data);
             if (resultUri != null)
                 sendFile(resultUri.getPath());
@@ -282,12 +286,14 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
             cropImage(picPath);
         }
     }
+
     public void sendFile(String filePath) {
         toast(R.string.chooseStudent);
         //2.再选择学生
         startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_WENJIAN).putExtra("filePath",
                 filePath));
     }
+
     public void cropImage(String filePath) {
         Log.d("test", "cropImage filePath = " + filePath);
         //需要裁剪的图片路径

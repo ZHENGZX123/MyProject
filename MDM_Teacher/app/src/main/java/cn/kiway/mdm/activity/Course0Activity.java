@@ -117,6 +117,7 @@ public class Course0Activity extends BaseActivity {
     //画笔
     private ImageView huabiIV;
     private PaletteView huabiView;
+    private LinearLayout tools_huabi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +158,7 @@ public class Course0Activity extends BaseActivity {
 
         huabiView = (PaletteView) findViewById(R.id.huabiView);
         huabiIV = (ImageView) findViewById(R.id.huabiIV);
+        tools_huabi = (LinearLayout) findViewById(R.id.tools_huabi);
     }
 
     public void initData() {
@@ -219,7 +221,7 @@ public class Course0Activity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK)
             return;
-         if (requestCode == requsetFile2) {
+        if (requestCode == requsetFile2) {
             List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
             String filePath = list.get(0);
             sendFile(filePath);
@@ -234,6 +236,7 @@ public class Course0Activity extends BaseActivity {
             x5FileLayout.removeAllViews();
 
             huabiView.setVisibility(View.GONE);
+            tools_huabi.setVisibility(View.GONE);
             huabiView.clear();
             huabiIV.setBackgroundResource(R.drawable.u1750);
 
@@ -271,24 +274,9 @@ public class Course0Activity extends BaseActivity {
         startActivity(new Intent(this, WhiteBoardActivity.class));
     }
 
-    public void huabi(View view) {
-        if (huabiView.getVisibility() == View.VISIBLE) {
-            huabiView.setVisibility(View.GONE);
-            huabiView.clear();
-            huabiIV.setBackgroundResource(R.drawable.u1750);
-            toast("画笔功能关闭");
-        } else {
-            huabiIV.setBackgroundResource(R.drawable.u1751);
-            huabiView.setVisibility(View.VISIBLE);
-            toast("画笔功能开启");
-        }
-    }
-
-
     public void tuiping(View view) {
         b_tuiping();
     }
-
 
     public void chaping(View view) {
         b_chaping();
@@ -309,7 +297,6 @@ public class Course0Activity extends BaseActivity {
         //1.先选择一个文件
         startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_WENJIAN));
     }
-
 
 
     public void shezhi(View view) {
@@ -1490,5 +1477,182 @@ public class Course0Activity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         Utils.courseOperation(this, course.id, 7, "");
+    }
+
+
+    //-----------------画笔---------------------------
+
+    public void huabi(View view) {
+        if (tools_huabi.getVisibility() == View.VISIBLE) {
+            tools_huabi.setVisibility(View.GONE);
+            huabiView.setVisibility(View.GONE);
+            huabiView.clear();
+            huabiIV.setBackgroundResource(R.drawable.u1750);
+            toast("画笔功能关闭");
+        } else {
+            tools_huabi.setVisibility(View.VISIBLE);
+            huabiIV.setBackgroundResource(R.drawable.u1751);
+            huabiView.setVisibility(View.VISIBLE);
+            toast("画笔功能开启");
+        }
+    }
+
+    public void yanse(View v) {
+        if (xiangpica) {
+            toast("橡皮擦模式无法设置线条颜色");
+            return;
+        }
+        final Dialog dialog = new Dialog(this, R.style.popupDialog);
+        dialog.setContentView(R.layout.dialog_color);
+        dialog.show();
+
+        Button color1 = (Button) dialog.findViewById(R.id.color1);
+        Button color2 = (Button) dialog.findViewById(R.id.color2);
+        Button color3 = (Button) dialog.findViewById(R.id.color3);
+        Button color4 = (Button) dialog.findViewById(R.id.color4);
+        Button color5 = (Button) dialog.findViewById(R.id.color5);
+        Button color6 = (Button) dialog.findViewById(R.id.color6);
+        Button color7 = (Button) dialog.findViewById(R.id.color7);
+        Button color8 = (Button) dialog.findViewById(R.id.color8);
+        Button color9 = (Button) dialog.findViewById(R.id.color9);
+        Button color10 = (Button) dialog.findViewById(R.id.color10);
+
+        Button close = (Button) dialog.findViewById(R.id.close);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        color1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                huabiView.setPenColor(Color.parseColor(v.getTag().toString()));
+                dialog.dismiss();
+            }
+        });
+        color2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                huabiView.setPenColor(Color.parseColor(v.getTag().toString()));
+                dialog.dismiss();
+            }
+        });
+        color3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                huabiView.setPenColor(Color.parseColor(v.getTag().toString()));
+                dialog.dismiss();
+            }
+        });
+        color4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                huabiView.setPenColor(Color.parseColor(v.getTag().toString()));
+                dialog.dismiss();
+            }
+        });
+        color5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                huabiView.setPenColor(Color.parseColor(v.getTag().toString()));
+                dialog.dismiss();
+            }
+        });
+        color6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                huabiView.setPenColor(Color.parseColor(v.getTag().toString()));
+                dialog.dismiss();
+            }
+        });
+        color7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                huabiView.setPenColor(Color.parseColor(v.getTag().toString()));
+                dialog.dismiss();
+            }
+        });
+        color8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                huabiView.setPenColor(Color.parseColor(v.getTag().toString()));
+                dialog.dismiss();
+            }
+        });
+        color9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                huabiView.setPenColor(Color.parseColor(v.getTag().toString()));
+                dialog.dismiss();
+            }
+        });
+        color10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                huabiView.setPenColor(Color.parseColor(v.getTag().toString()));
+                dialog.dismiss();
+            }
+        });
+    }
+
+    public void cuxi(View v) {
+        if (xiangpica) {
+            toast("橡皮擦模式无法设置线条粗细");
+            return;
+        }
+        final Dialog dialog = new Dialog(this, R.style.popupDialog);
+        dialog.setContentView(R.layout.dialog_thickness);
+        dialog.show();
+
+        RelativeLayout thickness1 = (RelativeLayout) dialog.findViewById(R.id.thickness1);
+        RelativeLayout thickness2 = (RelativeLayout) dialog.findViewById(R.id.thickness2);
+        RelativeLayout thickness3 = (RelativeLayout) dialog.findViewById(R.id.thickness3);
+        Button close = (Button) dialog.findViewById(R.id.close);
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        thickness1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                huabiView.setPenRawSize(10);
+                dialog.dismiss();
+            }
+        });
+
+        thickness2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                huabiView.setPenRawSize(20);
+                dialog.dismiss();
+            }
+        });
+
+        thickness3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                huabiView.setPenRawSize(30);
+                dialog.dismiss();
+            }
+        });
+    }
+
+    boolean xiangpica = false;
+
+    public void xiangpica(View v) {
+        xiangpica = !xiangpica;
+        if (xiangpica) {
+            ((ImageButton) v).setImageResource(R.drawable.ic_eraser);
+            huabiView.setMode(PaletteView.Mode.ERASER);
+        } else {
+            ((ImageButton) v).setImageResource(R.drawable.ic_pen);
+            huabiView.setMode(PaletteView.Mode.DRAW);
+        }
     }
 }

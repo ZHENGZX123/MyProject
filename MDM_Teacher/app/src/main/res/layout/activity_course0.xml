@@ -91,6 +91,40 @@
                 android:text="画笔"
                 android:textColor="#ffffff" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tools_huabi"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="50dp"
+            android:background="@drawable/kuang_huabi"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:visibility="gone">
+
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/yanse"
+                android:onClick="yanse" />
+
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/xiantiao"
+                android:onClick="cuxi" />
+
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/ic_pen"
+                android:onClick="xiangpica" />
+
+        </LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout
@@ -468,6 +502,5 @@
         </LinearLayout>
 
     </LinearLayout>
-
 
 </RelativeLayout>
