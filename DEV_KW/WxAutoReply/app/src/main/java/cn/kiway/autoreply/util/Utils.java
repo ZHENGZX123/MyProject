@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import cn.kiway.autoreply.KWApplication;
+import io.netty.util.internal.StringUtil;
 
 /**
  * Created by Administrator on 2018/3/21.
@@ -50,5 +51,22 @@ public class Utils {
             last = 10 - last;
         }
         return input + last;
+    }
+
+    public static boolean isInfilters(Context c, String sender) {
+        String f = c.getSharedPreferences("filters", 0).getString("filters", "");
+        String filters[] = f.split("===");
+        if (filters.length == 0) {
+            return false;
+        }
+        for (String temp : filters) {
+            if (StringUtil.isNullOrEmpty(temp)) {
+                continue;
+            }
+            if (temp.equals(sender)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
