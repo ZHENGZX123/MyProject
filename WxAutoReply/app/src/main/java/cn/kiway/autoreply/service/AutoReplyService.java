@@ -440,23 +440,30 @@ public class AutoReplyService extends AccessibilityService {
                                         }
                                     }
                                     try {
-
                                         JSONObject o = new JSONObject(temp);
-                                        long id = o.getLong("id");
+                                        long id = o.optLong("id");
+                                        if (id == 0) {
+                                            Log.d("test", "没有id！！！");
+                                            return;
+                                        }
                                         int returnType = o.getInt("returnType");
                                         String returnMessage = o.getString("returnMessage");
+                                        if (TextUtils.isEmpty(returnMessage)) {
+                                            returnMessage = "测试回复";
+                                        }
                                         Action action = actions.get(id);
                                         if (action == null) {
                                             Log.d("test", "action null , error!!!");
                                             return;
                                         }
                                         Log.d("test", "开始处理action = " + id);
+                                        String finalReturnMessage = returnMessage;
                                         handler.post(new Runnable() {
                                             @Override
                                             public void run() {
                                                 if (returnType == TYPE_TXT) {
                                                     currentActionID = id;
-                                                    action.reply = temp;//returnMessage
+                                                    action.reply = finalReturnMessage;
                                                     launchWechat();
                                                 } else if (returnType == TYPE_IMAGE || returnType == TYPE_TEST) {
                                                     Log.d("test", "do nothing");
