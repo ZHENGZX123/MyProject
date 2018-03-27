@@ -73,7 +73,7 @@ public class PaletteView extends View {
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mDrawSize = 10;
-        mEraserSize = 40;
+        mEraserSize = 200;
         mPaint.setStrokeWidth(mDrawSize);
         mPaint.setColor(Color.RED);
 
@@ -110,10 +110,8 @@ public class PaletteView extends View {
             mMode = mode;
             if (mMode == Mode.DRAW) {
                 mPaint.setXfermode(null);
-                mPaint.setStrokeWidth(mDrawSize);
             } else {
                 mPaint.setXfermode(mClearMode);
-                mPaint.setStrokeWidth(mEraserSize);
             }
         }
     }
@@ -124,6 +122,7 @@ public class PaletteView extends View {
 
     public void setPenRawSize(float size) {
         mDrawSize = size;
+        mPaint.setStrokeWidth(mDrawSize);
     }
 
     public void setPenColor(int color) {
