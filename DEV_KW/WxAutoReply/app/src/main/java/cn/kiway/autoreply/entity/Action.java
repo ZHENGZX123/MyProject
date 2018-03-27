@@ -17,7 +17,7 @@ public class Action {
     public String content;
     public String reply;
     public int receiveType;
-    public boolean uploaded;
+    public boolean uploaded;//图片
 
     public String sendTime;
     public String replyTime;
