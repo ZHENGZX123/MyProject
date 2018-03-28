@@ -58,8 +58,6 @@ public class AutoReplyService extends AccessibilityService {
     private Handler handler = new Handler();
     private final Object o = new Object();
 
-    //递增的id
-    private long id;
     //事件map
     public HashMap<Long, Action> actions = new HashMap<>();
     //当前执行的事件id
@@ -124,7 +122,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
 
                     //1.预先加入map
-                    id = System.currentTimeMillis();
+                    long id = System.currentTimeMillis();
                     PendingIntent intent = ((Notification) event.getParcelableData()).contentIntent;
                     Action action = new Action();
                     action.sender = sender;
@@ -135,8 +133,10 @@ public class AutoReplyService extends AccessibilityService {
                     } else {
                         action.receiveType = TYPE_TXT;
                     }
+
                     actions.put(id, action);
 
+                    //1.刷新界面
                     int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0) + 1;
                     getSharedPreferences("kiway", 0).edit().putInt("recvCount", recvCount).commit();
                     if (MainActivity.instance != null) {
@@ -212,7 +212,7 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }
                     }, 1500);
-                }else {
+                } else {
                     Log.d("test", "");
                     release();
                 }
@@ -498,15 +498,17 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 Log.d("test", "sendMsgToServer");
                 try {
+                    String userId = Utils.getIMEI(getApplicationContext());
+                    String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
                     String msg = new JSONObject()
                             .put("id", id)
                             .put("sender", action.sender)
                             .put("content", action.content)
                             .put("me", name)
+                            .put("installationId", installationId)
                             .toString();
-                    //topic : 老师的deviceId#userId
-                    String userId = Utils.getIMEI(getApplicationContext());
 
+                    //topic : 老师的deviceId#userId
                     String topic = Utils.getIMEI(getApplicationContext()) + "#" + userId;
                     String url = Constant.zbusHost + ":" + Constant.zbusPost;
                     PushMessageVo pushMessageVo = new PushMessageVo();
@@ -549,12 +551,10 @@ public class AutoReplyService extends AccessibilityService {
             String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
             String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
 
-
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
             Log.d("test", "xtoken = " + xtoken);
             client.addHeader("x-auth-token", xtoken);
-
             Log.d("test", "userId = " + userId);
             RequestParams param = new RequestParams();
             param.put("appId", APPID);
@@ -563,15 +563,20 @@ public class AutoReplyService extends AccessibilityService {
             param.put("userId", imei);//userId
             param.put("module", "student");
             param.put("robotId", robotId);
-
             Log.d("test", "installationPush param = " + param.toString());
-            //StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+
             String url = clientUrl + "/installation";
             Log.d("test", "installationPush = " + url);
             client.post(c, url, param, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "installationPush onSuccess = " + ret);
+                    try {
+                        String installationId = new JSONObject(ret).getJSONObject("data").getString("installationId");
+                        getSharedPreferences("kiway", 0).edit().putString("installationId", installationId).commit();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     initZbus();
                 }
 
