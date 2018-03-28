@@ -18,7 +18,7 @@ import java.util.List;
 import cn.kiway.autoreply.R;
 import cn.kiway.autoreply.entity.Action;
 import cn.kiway.autoreply.service.AutoReplyService;
-import cn.kiway.autoreply.util.Utils;
+import cn.kiway.wx.reply.utils.ZbusUtils;
 
 import static cn.kiway.autoreply.entity.Action.TYPE_TEST;
 
@@ -29,7 +29,6 @@ public class MainActivity extends BaseActivity {
 
     public static final int MSG_NETWORK_OK = 1;
     public static final int MSG_NETWORK_ERR = 2;
-    public static final int MSG_HEARTBEAT = 3;
 
     private TextView nameTV;
 
@@ -118,15 +117,12 @@ public class MainActivity extends BaseActivity {
                 Log.d("test", "有网络");
                 if (AutoReplyService.instance != null) {
                     AutoReplyService.instance.initZbus();
-                    sendEmptyMessageDelayed(MSG_HEARTBEAT, 1000);
                 }
             } else if (msg.what == MSG_NETWORK_ERR) {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 rl_nonet.setVisibility(View.VISIBLE);
                 Log.d("test", "无网络");
-                //ZbusUtils.close();
-            } else if (msg.what == MSG_HEARTBEAT) {
-                test(null);
+                ZbusUtils.close();
             }
         }
     };
