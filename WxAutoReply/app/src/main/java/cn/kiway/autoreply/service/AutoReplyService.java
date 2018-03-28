@@ -505,7 +505,6 @@ public class AutoReplyService extends AccessibilityService {
                             .put("sender", action.sender)
                             .put("content", action.content)
                             .put("me", name)
-                            .put("installationId", installationId)
                             .toString();
 
                     //topic : 老师的deviceId#userId
@@ -523,6 +522,7 @@ public class AutoReplyService extends AccessibilityService {
                     pushMessageVo.setUserId(userIds);//学生token
                     pushMessageVo.setSenderId(userId);//老师的userId
                     pushMessageVo.setPushType("zbus");
+                    pushMessageVo.setInstallationId(installationId);
 
                     Log.d("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
                     ZbusUtils.sendMsg(topic, pushMessageVo);
