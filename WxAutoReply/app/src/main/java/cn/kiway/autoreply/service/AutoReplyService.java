@@ -118,6 +118,10 @@ public class AutoReplyService extends AccessibilityService {
                         Log.d("test", "该昵称被过滤");
                         continue;
                     }
+                    if (!Utils.isGetPic(getApplicationContext(), content)) {
+                        Log.d("test", "图片接收被过滤");
+                        continue;
+                    }
 
                     //1.预先加入map
                     id = System.currentTimeMillis();
@@ -208,6 +212,9 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }
                     }, 1500);
+                }else {
+                    Log.d("test", "");
+                    release();
                 }
 
                 //2.发送图片回复
@@ -337,20 +344,20 @@ public class AutoReplyService extends AccessibilityService {
         Log.d("test", "sendTxt is called");
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
         boolean find = findEditText(rootNode);
-        Log.d("test", "find = " + find);
+        Log.d("test", "findEditText = " + find);
         if (find) {
-            Log.d("test", "send is called");
             AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
-            if (nodeInfo != null) {
-                List<AccessibilityNodeInfo> list = nodeInfo
-                        .findAccessibilityNodeInfosByText("发送");
-                if (list != null && list.size() > 0) {
-                    for (AccessibilityNodeInfo n : list) {
-                        if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
-                            n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        }
+            List<AccessibilityNodeInfo> list = nodeInfo
+                    .findAccessibilityNodeInfosByText("发送");
+            if (list != null && list.size() > 0) {
+                for (AccessibilityNodeInfo n : list) {
+                    if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
+                        n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+
                     }
                 }
+            } else {
+                Log.d("test", "find send button false");
             }
         }
     }

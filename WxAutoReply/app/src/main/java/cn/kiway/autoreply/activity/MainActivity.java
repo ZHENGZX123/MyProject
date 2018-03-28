@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -31,6 +33,7 @@ public class MainActivity extends BaseActivity {
     public static final int MSG_NETWORK_ERR = 2;
 
     private TextView nameTV;
+    private CheckBox getPic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +42,18 @@ public class MainActivity extends BaseActivity {
         instance = this;
         nameTV = (TextView) findViewById(R.id.name);
         star = (Button) findViewById(R.id.star);
+        getPic = (CheckBox) findViewById(R.id.getPic);
+
         if (AutoReplyService.instance != null) {
             AutoReplyService.instance.installationPush(this);
         }
+
+        getPic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                getSharedPreferences("getPic", 0).edit().putBoolean("getPic", isChecked).commit();
+            }
+        });
     }
 
     @Override
