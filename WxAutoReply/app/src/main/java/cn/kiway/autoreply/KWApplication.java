@@ -15,6 +15,8 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
+import cn.kiway.autoreply.util.CrashHandler;
+
 /**
  * Created by Administrator on 2018/3/21.
  */
@@ -31,6 +33,7 @@ public class KWApplication extends Application {
         Log.d("test", "APP onCreate");
 
         initImageCache();
+        CrashHandler.getInstance().init(this);
     }
 
 

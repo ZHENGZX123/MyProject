@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_nonet"
         android:layout_margin="20dp"
-        android:text=""
+        android:text="title"
         android:textColor="#000000"
         android:textSize="20sp" />
 
