@@ -1,4 +1,4 @@
-package cn.kiway.autoreply.service;
+package cn.kiway.autoreply.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
