@@ -26,46 +26,53 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_nonet"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:text="title"
         android:textColor="#000000"
         android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/star"
+    <cn.kiway.autoreply.view.FlowLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/name"
-        android:onClick="start"
-        android:text="点击开启服务" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/name">
 
-    <Button
-        android:id="@+id/filter"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/star"
-        android:layout_marginTop="2dp"
-        android:onClick="filter"
-        android:text="设置过滤昵称" />
+        <Button
+            android:id="@+id/star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="start"
+            android:text="点击开启服务" />
 
-    <Button
-        android:id="@+id/logout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/filter"
-        android:layout_marginTop="2dp"
-        android:onClick="logout"
-        android:text="注销本次登录" />
+        <Button
+            android:id="@+id/filter"
+            android:onClick="filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设置过滤昵称" />
 
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/logout"
-        android:layout_marginTop="3dp"
-        android:onClick="test"
-        android:text="测试zbus"
-        android:visibility="gone" />
+        <CheckBox
+            android:id="@+id/getPic"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:checked="true"
+            android:text="是否接收图片" />
+
+
+        <Button
+            android:id="@+id/logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="logout"
+            android:text="注销本次登录" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="test"
+            android:text="测试zbus"
+            android:visibility="gone" />
+    </cn.kiway.autoreply.view.FlowLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -82,6 +89,6 @@
 7、手机操作系统暂时只能选择简体中文，其他的不可以。\n
 8、保持手机wifi正常。"
         android:textColor="#000000"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
 </RelativeLayout>

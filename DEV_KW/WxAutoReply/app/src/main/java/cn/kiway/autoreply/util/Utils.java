@@ -69,4 +69,11 @@ public class Utils {
         }
         return false;
     }
+
+    public static boolean isGetPic(Context c, String content) {
+        if (!content.equals("[图片]")) {
+            return true;
+        }
+        return c.getSharedPreferences("getPic", 0).getBoolean("getPic", true);
+    }
 }
