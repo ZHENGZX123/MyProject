@@ -395,7 +395,7 @@ public class AutoReplyService extends AccessibilityService {
                     if (sender.equals("朋友圈使者") && content.startsWith("[链接]")) {
                         //需要转发到朋友圈
                         action.receiveType = TYPE_LINK;
-                    } else if (sender.equals("转发使者")) {
+                    } else if (sender.equals("转发使者") && !content.equals("[语音]")) {
                         //需要转发该消息
                         action.receiveType = TYPE_TRANSMIT;
                     } else if (content.equals("[图片]")) {
@@ -570,7 +570,7 @@ public class AutoReplyService extends AccessibilityService {
                             release();
                         }
                     }
-                }, 3000);
+                }, 2000);
                 return true;
             }
             if (findTransferButton(nodeInfo)) {
