@@ -66,6 +66,7 @@ public class MainActivity extends BaseActivity {
         getPic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d("test", "onCheckedChanged isCheck = " + isChecked);
                 getSharedPreferences("getPic", 0).edit().putBoolean("getPic", isChecked).commit();
             }
         });
