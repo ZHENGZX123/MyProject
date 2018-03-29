@@ -40,11 +40,9 @@ import cn.kiway.autoreply.util.UploadUtil;
 import cn.kiway.autoreply.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
 import cn.kiway.wx.reply.vo.PushMessageVo;
-import io.zbus.mq.Broker;
 import io.zbus.mq.Message;
 import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
-import io.zbus.mq.Producer;
 
 import static cn.kiway.autoreply.entity.Action.TYPE_IMAGE;
 import static cn.kiway.autoreply.entity.Action.TYPE_TEST;
@@ -420,9 +418,6 @@ public class AutoReplyService extends AccessibilityService {
                     if (TextUtils.isEmpty(userId)) {
                         return;
                     }
-                    Broker broker = new Broker(Constant.zbusHost + ":" + Constant.zbusPost);
-                    Producer p = new Producer(broker);
-                    ZbusUtils.init(broker, p);
                     String topic = "kiway_wx_reply_push_" + userId;
                     Log.d("test", "topic = " + topic);
                     ZbusUtils.consumeMsg(topic, new MessageHandler() {
@@ -500,6 +495,8 @@ public class AutoReplyService extends AccessibilityService {
                 try {
                     String userId = Utils.getIMEI(getApplicationContext());
                     String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
+                    String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
+
                     String msg = new JSONObject()
                             .put("id", id)
                             .put("sender", action.sender)
@@ -507,8 +504,8 @@ public class AutoReplyService extends AccessibilityService {
                             .put("me", name)
                             .toString();
 
-                    //topic : 老师的deviceId#userId
-                    String topic = Utils.getIMEI(getApplicationContext()) + "#" + userId;
+                    //topic : robotId#userId
+                    String topic = robotId + "#" + userId;
                     String url = Constant.zbusHost + ":" + Constant.zbusPost;
                     PushMessageVo pushMessageVo = new PushMessageVo();
                     pushMessageVo.setDescription("desc");
@@ -519,8 +516,8 @@ public class AutoReplyService extends AccessibilityService {
                     Set<String> userIds = new HashSet<>();
                     userIds.add(Utils.getIMEI(getApplicationContext()));
 
-                    pushMessageVo.setUserId(userIds);//学生token
-                    pushMessageVo.setSenderId(userId);//老师的userId
+                    pushMessageVo.setUserId(userIds);
+                    pushMessageVo.setSenderId(userId);
                     pushMessageVo.setPushType("zbus");
                     pushMessageVo.setInstallationId(installationId);
 

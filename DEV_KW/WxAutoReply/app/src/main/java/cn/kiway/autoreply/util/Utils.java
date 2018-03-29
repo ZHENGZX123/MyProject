@@ -15,21 +15,22 @@ import io.netty.util.internal.StringUtil;
 public class Utils {
 
     public static String getIMEI(Context c) {
-        String imei = FileUtils.readSDCardFile(KWApplication.ROOT + "/imei.txt", c);
-        if (TextUtils.isEmpty(imei)) {
-            TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
-            imei = tm.getDeviceId();
-            if (TextUtils.isEmpty(imei)) {
-                Log.d("test", "这个IMEI是生成的");
-                imei = genIMEI();
-            }
-            FileUtils.saveFile(imei);
-        }
+        TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
+        String imei = tm.getDeviceId();
         Log.d("test", "IMEI = " + imei);
         return imei;
     }
 
-    public static String genIMEI() {
+    public static String getUUID(Context c) {
+        String uuid = FileUtils.readSDCardFile(KWApplication.ROOT + "/uuid.txt", c);
+        if (TextUtils.isEmpty(uuid)) {
+            uuid = genUUID();
+            FileUtils.saveUUID(uuid);
+        }
+        return uuid;
+    }
+
+    private static String genUUID() {
         int r1 = 1000000 + new java.util.Random().nextInt(9000000);
         int r2 = 1000000 + new java.util.Random().nextInt(9000000);
         String input = r1 + "" + r2;

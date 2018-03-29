@@ -68,8 +68,7 @@ public class FilterActivity extends BaseActivity {
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String name = filterNames.get(which);
-
+                        String name = filterNames.get(position);
                         String filters = getSharedPreferences("filters", 0).getString("filters", "");
                         filters = filters.replace("===" + name, "");
                         getSharedPreferences("filters", 0).edit().putString("filters", filters).commit();
