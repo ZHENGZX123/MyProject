@@ -48,7 +48,7 @@ import io.zbus.mq.MqClient;
 import static cn.kiway.autoreply.entity.Action.TYPE_IMAGE;
 import static cn.kiway.autoreply.entity.Action.TYPE_LINK;
 import static cn.kiway.autoreply.entity.Action.TYPE_TEST;
-import static cn.kiway.autoreply.entity.Action.TYPE_TRANSFER;
+import static cn.kiway.autoreply.entity.Action.TYPE_TRANSMIT;
 import static cn.kiway.autoreply.entity.Action.TYPE_TXT;
 import static cn.kiway.autoreply.util.Constant.APPID;
 import static cn.kiway.autoreply.util.Constant.clientUrl;
@@ -397,7 +397,7 @@ public class AutoReplyService extends AccessibilityService {
                         action.receiveType = TYPE_LINK;
                     } else if (sender.equals("转发使者")) {
                         //需要转发该消息
-                        action.receiveType = TYPE_TRANSFER;
+                        action.receiveType = TYPE_TRANSMIT;
                     } else if (content.equals("[图片]")) {
                         //保存给易敏即可
                         action.receiveType = TYPE_IMAGE;
@@ -428,7 +428,7 @@ public class AutoReplyService extends AccessibilityService {
                         handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 30000);
                         currentActionID = id;
                         launchWechat();
-                    } else if (action.receiveType == TYPE_TRANSFER) {
+                    } else if (action.receiveType == TYPE_TRANSMIT) {
                         handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 30000);
                         currentActionID = id;
                         launchWechat();
@@ -510,7 +510,7 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }
                     }, 5000);
-                } else if (receiveType == TYPE_TRANSFER) {
+                } else if (receiveType == TYPE_TRANSMIT) {
                     // 找到最后一张链接，点击转发到朋友圈
                     Log.d("test", "----------------findLastMsg------------------");
                     lastMsgView = null;
