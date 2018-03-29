@@ -129,9 +129,6 @@ public class MainActivity extends BaseActivity {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 rl_nonet.setVisibility(View.GONE);
                 Log.d("test", "有网络");
-//                if (AutoReplyService.instance != null) {
-//                    AutoReplyService.instance.initZbus();
-//                }
             } else if (msg.what == MSG_NETWORK_ERR) {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 rl_nonet.setVisibility(View.VISIBLE);
