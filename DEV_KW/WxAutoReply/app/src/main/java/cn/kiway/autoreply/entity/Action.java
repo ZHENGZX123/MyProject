@@ -10,7 +10,9 @@ public class Action {
 
     public static final int TYPE_TXT = 1;
     public static final int TYPE_IMAGE = 2;
+
     public static final int TYPE_LINK = 99;//需要转发到朋友圈
+    public static final int TYPE_Transfer = 100;//需要转发给指定的人
     public static final int TYPE_TEST = 9999;
 
     public PendingIntent intent;
@@ -19,8 +21,5 @@ public class Action {
     public String reply;
     public int receiveType;
     public boolean uploaded;//图片
-
-    public String sendTime;
-    public String replyTime;
 
 }
