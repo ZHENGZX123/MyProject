@@ -86,7 +86,7 @@ public class MainActivity extends BaseActivity {
                 String name = getSharedPreferences("kiway", 0).getString("name", "");
                 int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0);
                 int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0);
-                nameTV.setText(name + "  IMEI：" + Utils.getIMEI(getApplication()) + "\n" + "接收次数：" + recvCount + "，回复次数：" + replyCount);
+                nameTV.setText("昵称：" + name + "  IMEI：" + Utils.getIMEI(getApplication()) + "\n" + "接收次数：" + recvCount + "，回复次数：" + replyCount);
             }
         });
     }
