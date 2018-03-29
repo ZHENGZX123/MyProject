@@ -258,8 +258,8 @@ public class FileUtils {
         return "";
     }
 
-    public static void saveFile(String str) {
-        String filePath = KWApplication.ROOT + "imei.txt";
+    public static void saveUUID(String str) {
+        String filePath = KWApplication.ROOT + "uuid.txt";
         try {
             File file = new File(filePath);
             if (!file.exists()) {

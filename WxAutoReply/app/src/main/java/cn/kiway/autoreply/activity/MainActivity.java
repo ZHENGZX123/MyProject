@@ -20,6 +20,7 @@ import java.util.List;
 import cn.kiway.autoreply.R;
 import cn.kiway.autoreply.entity.Action;
 import cn.kiway.autoreply.service.AutoReplyService;
+import cn.kiway.autoreply.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
 
 import static cn.kiway.autoreply.entity.Action.TYPE_TEST;
@@ -70,7 +71,7 @@ public class MainActivity extends BaseActivity {
                 String name = getSharedPreferences("kiway", 0).getString("name", "");
                 int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0);
                 int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0);
-                nameTV.setText(name + "\n" + "接收次数：" + recvCount + "，回复次数：" + replyCount);
+                nameTV.setText(name + "  IMEI：" + Utils.getIMEI(getApplication()) + "\n" + "接收次数：" + recvCount + "，回复次数：" + replyCount);
             }
         });
     }
@@ -106,6 +107,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void logout(View view) {
+        ZbusUtils.close();
         getSharedPreferences("kiway", 0).edit().clear().commit();
         startActivity(new Intent(this, LoginActivity.class));
         finish();
@@ -127,9 +129,9 @@ public class MainActivity extends BaseActivity {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 rl_nonet.setVisibility(View.GONE);
                 Log.d("test", "有网络");
-                if (AutoReplyService.instance != null) {
-                    AutoReplyService.instance.initZbus();
-                }
+//                if (AutoReplyService.instance != null) {
+//                    AutoReplyService.instance.initZbus();
+//                }
             } else if (msg.what == MSG_NETWORK_ERR) {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 rl_nonet.setVisibility(View.VISIBLE);
