@@ -402,7 +402,6 @@ public class AutoReplyService extends AccessibilityService {
 //        home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //        home.addCategory(Intent.CATEGORY_HOME);
 //        startActivity(home);
-
         Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.autoreply");
         startActivity(intent);
     }
@@ -418,7 +417,8 @@ public class AutoReplyService extends AccessibilityService {
                     if (TextUtils.isEmpty(userId)) {
                         return;
                     }
-                    String topic = "kiway_wx_reply_push_" + userId;
+                    String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
+                    String topic = "kiway_wx_reply_push_" + robotId + "#" + userId;
                     Log.d("test", "topic = " + topic);
                     ZbusUtils.consumeMsg(topic, new MessageHandler() {
 
@@ -514,7 +514,7 @@ public class AutoReplyService extends AccessibilityService {
                     pushMessageVo.setAppId(APPID);
                     pushMessageVo.setModule("wx_reply");
                     Set<String> userIds = new HashSet<>();
-                    userIds.add(Utils.getIMEI(getApplicationContext()));
+                    userIds.add(topic);
 
                     pushMessageVo.setUserId(userIds);
                     pushMessageVo.setSenderId(userId);
