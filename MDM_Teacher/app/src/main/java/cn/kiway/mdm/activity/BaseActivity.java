@@ -22,12 +22,15 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.soundcloud.android.crop.Crop;
+import com.xyzlf.share.library.bean.ShareEntity;
 import com.xyzlf.share.library.interfaces.ShareConstant;
+import com.xyzlf.share.library.util.ShareUtil;
 
 import java.io.File;
 import java.util.List;
 
 import cn.kiway.mdm.KWApplication;
+import cn.kiway.mdm.dialog.SendorShareDialog;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.ShareCallBack;
@@ -65,8 +68,11 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
 
     public RelativeLayout toolsRL;
     public ProgressDialog pd;
-    private RelativeLayout retryRL;
     public DisplayMetrics displaysMetrics;
+    //-------------------------------录屏相关-----------------------------
+    public MediaProjectionManager projectionManager;
+    public MediaProjection mediaProjection;
+    private RelativeLayout retryRL;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -145,7 +151,6 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
             }
         });
     }
-
 
     public void clickBack(View view) {
         finish();
@@ -260,8 +265,7 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
                 int status = data.getIntExtra(ShareConstant.EXTRA_SHARE_STATUS, -1);
                 new ShareCallBack().onShareCallback(channel, status);
             }
-        }
-        if (requestCode == Crop.REQUEST_CROP) {
+        }else if (requestCode == Crop.REQUEST_CROP) {
             if (data == null) {
                 return;
             }
@@ -284,14 +288,19 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
             }
         } else if (requestCode == REQUEST_ORIGINAL) {
             cropImage(picPath);
+        }else if (requestCode == ShareConstant.REQUEST_CODE) {//分享回调处理
+            if (data != null) {
+                int channel = data.getIntExtra(ShareConstant.EXTRA_SHARE_CHANNEL, -1);
+                int status = data.getIntExtra(ShareConstant.EXTRA_SHARE_STATUS, -1);
+                new ShareCallBack().onShareCallback(channel, status);
+            }
         }
     }
 
     public void sendFile(String filePath) {
-        toast(R.string.chooseStudent);
-        //2.再选择学生
-        startActivity(new Intent(this, StudentGridActivity.class).putExtra("type", TYPE_WENJIAN).putExtra("filePath",
-                filePath));
+        SendorShareDialog dialog=new SendorShareDialog(this,filePath);
+        dialog.show();
+
     }
 
     public void cropImage(String filePath) {
@@ -313,11 +322,6 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
     protected void onPause() {
         super.onPause();
     }
-
-
-    //-------------------------------录屏相关-----------------------------
-    public MediaProjectionManager projectionManager;
-    public MediaProjection mediaProjection;
 
     public void b_startRecord() {
         //1.判断SD卡空间
@@ -404,4 +408,30 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
         });
     }
 
+    public void shareUrl(String title, String content, String url) {
+        ShareEntity bean = new ShareEntity(title, content);
+        bean.setUrl(url); //分享链接
+        share(ShareConstant.SHARE_CHANNEL_ALL,bean);
+    }
+
+    /**
+     * 分享大图，大图分享支持，微信，微信朋友圈，微博，QQ，其他渠道不支持
+     *
+     * 分享大图注意点
+     * 1、setShareBigImg为ture
+     * 2、QQ分享大图，只能是本地图片
+     */
+    public void shareImgUrl( String imgUrl) {
+        ShareEntity bean = new ShareEntity("","");
+        bean.setImgUrl(imgUrl); //分享图片
+        bean.setShareBigImg(true);
+        int channel = ShareConstant.SHARE_CHANNEL_WEIXIN_CIRCLE |
+                ShareConstant.SHARE_CHANNEL_WEIXIN_FRIEND |
+                ShareConstant.SHARE_CHANNEL_QQ ;
+        share(channel,bean);
+    }
+
+    public void share(int channel,ShareEntity bean) {
+        ShareUtil.showShareDialog(this, channel, bean, ShareConstant.REQUEST_CODE);
+    }
 }
