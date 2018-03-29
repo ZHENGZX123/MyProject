@@ -1,0 +1,2 @@
+F:/kiway_xm/WxAutoReply2/app/.externalNativeBuild/cmake/debug/mips/CMakeFiles/edit_cache.dir
+F:/kiway_xm/WxAutoReply2/app/.externalNativeBuild/cmake/debug/mips/CMakeFiles/rebuild_cache.dir
