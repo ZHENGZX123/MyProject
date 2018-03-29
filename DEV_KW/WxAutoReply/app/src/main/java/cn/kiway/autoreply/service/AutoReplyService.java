@@ -48,6 +48,7 @@ import io.zbus.mq.MqClient;
 import static cn.kiway.autoreply.entity.Action.TYPE_IMAGE;
 import static cn.kiway.autoreply.entity.Action.TYPE_LINK;
 import static cn.kiway.autoreply.entity.Action.TYPE_TEST;
+import static cn.kiway.autoreply.entity.Action.TYPE_TRANSFER;
 import static cn.kiway.autoreply.entity.Action.TYPE_TXT;
 import static cn.kiway.autoreply.util.Constant.APPID;
 import static cn.kiway.autoreply.util.Constant.clientUrl;
@@ -75,240 +76,6 @@ public class AutoReplyService extends AccessibilityService {
         installationPush(this);
     }
 
-    @Override
-    public void onAccessibilityEvent(final AccessibilityEvent event) {
-        int eventType = event.getEventType();
-        Log.d("maptrix", "get event = " + eventType);
-        switch (eventType) {
-            case AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED:
-                Log.d("maptrix", "接收到通知");
-                if (!getSharedPreferences("kiway", 0).getBoolean("login", false)) {
-                    Log.d("test", "user do not login");
-                    return;
-                }
-                List<CharSequence> texts = event.getText();
-                if (texts.isEmpty()) {
-                    return;
-                }
-                for (CharSequence text : texts) {
-                    Log.d("test", "text = " + text);
-                    String txt = text.toString();
-                    if (TextUtils.isEmpty(txt)) {
-                        continue;
-                    }
-                    if (event.getParcelableData() == null) {
-                        continue;
-                    }
-                    if (!(event.getParcelableData() instanceof Notification)) {
-                        continue;
-                    }
-                    Notification notification = (Notification) event.getParcelableData();
-                    String ticker = notification.tickerText.toString();
-                    if (!ticker.contains(":")) {
-                        continue;
-                    }
-                    String[] cc = ticker.split(":");
-                    String sender = cc[0].trim();
-                    String content = cc[1].trim();
-                    Log.d("test", "sender name = " + sender);
-                    Log.d("test", "sender content = " + content);
-
-                    if (Utils.isInfilters(getApplicationContext(), sender)) {
-                        Log.d("test", "该昵称被过滤");
-                        continue;
-                    }
-                    if (!Utils.isGetPic(getApplicationContext(), content)) {
-                        Log.d("test", "图片接收被过滤");
-                        continue;
-                    }
-
-
-                    //1.预先加入map
-                    long id = System.currentTimeMillis();
-                    PendingIntent intent = ((Notification) event.getParcelableData()).contentIntent;
-                    Action action = new Action();
-                    action.sender = sender;
-                    action.content = content;
-                    action.intent = intent;
-                    if (sender.equals("朋友圈使者") && content.startsWith("[链接]")) {
-                        action.receiveType = TYPE_LINK;
-                    } else if (content.equals("[图片]")) {
-                        action.receiveType = TYPE_IMAGE;
-                    } else {
-                        action.receiveType = TYPE_TXT;
-                    }
-
-                    actions.put(id, action);
-
-                    //1.刷新界面
-                    int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0) + 1;
-                    getSharedPreferences("kiway", 0).edit().putInt("recvCount", recvCount).commit();
-                    if (MainActivity.instance != null) {
-                        MainActivity.instance.updateServiceCount();
-                    }
-
-                    //2.获取答案
-                    if (action.receiveType == TYPE_TXT) {
-                        //文字的话直接走zbus
-                        sendMsgToServer(id, action);
-                    } else if (action.receiveType == TYPE_IMAGE) {
-                        //图片要先拉起微信,截图上传
-                        handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 30000);
-                        currentActionID = id;
-                        launchWechat();
-                    } else if (action.receiveType == TYPE_LINK) {
-                        handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 30000);
-                        currentActionID = id;
-                        launchWechat();
-                    }
-                }
-                break;
-            case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
-                Log.d("maptrix", "窗口状态变化");
-                if (currentActionID == -1) {
-                    Log.d("maptrix", "没有事件，return1");
-                    return;
-                }
-                if (actioningFlag) {
-                    Log.d("maptrix", "事件进行中，return2");
-                    return;
-                }
-                String className = event.getClassName().toString();
-                if (!className.equals("com.tencent.mm.ui.LauncherUI")) {
-                    Log.d("maptrix", "return3");
-                    return;
-                }
-                actioningFlag = true;
-
-                int receiveType = actions.get(currentActionID).receiveType;
-                boolean uploaded = actions.get(currentActionID).uploaded;
-                //1.发送文字回复
-                if (receiveType == TYPE_TXT) {
-                    sendTxt();
-                    release();
-                    int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0) + 1;
-                    getSharedPreferences("kiway", 0).edit().putInt("replyCount", replyCount).commit();
-                    if (MainActivity.instance != null) {
-                        MainActivity.instance.updateServiceCount();
-                    }
-                } else if (receiveType == TYPE_IMAGE && !uploaded) {
-                    // 找到最后一张图片，放大，截屏，上传，得到url后返回
-                    lastFrameLayout = null;
-                    Log.d("test", "----------------findLastMsg------------------");
-                    findLastMsg(getRootInActiveWindow());
-                    if (lastFrameLayout == null) {
-                        Log.d("test", "没有找到最后一张图片？郁闷。。。");
-                        release();
-                        return;
-                    }
-                    lastFrameLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            //找下载按钮
-                            Log.d("test", "-------------------findDownloadButton------------------");
-                            boolean find = findDownloadButton(getRootInActiveWindow());
-                            if (!find) {
-                                Log.d("test", "找不到下载按钮");
-                                release();
-                            }
-                        }
-                    }, 1500);
-                } else if (receiveType == TYPE_LINK) {
-                    // 找到最后一张图片，放大，截屏，上传，得到url后返回
-                    lastFrameLayout = null;
-                    Log.d("test", "----------------findLastMsg------------------");
-                    findLastMsg(getRootInActiveWindow());
-                    if (lastFrameLayout == null) {
-                        Log.d("test", "没有找到最后一张图片？郁闷。。。");
-                        release();
-                        return;
-                    }
-                    lastFrameLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            //找下载按钮
-                            Log.d("test", "-------------------findTopRightButton------------------");
-                            boolean find = findTopRightButton(getRootInActiveWindow());
-                            if (!find) {
-                                Log.d("test", "找不到右上角按钮");
-                                release();
-                            }
-                        }
-                    }, 5000);
-                } else {
-                    Log.d("test", "没有匹配的消息，直接release");
-                    release();
-                }
-                break;
-        }
-    }
-
-    private boolean findTopRightButton(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                //1秒后找gridview
-                Log.d("test", "=========findShareButton==============");
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        secondLinearLayout = 0;
-                        findShareButton(getRootInActiveWindow());
-                    }
-                }, 1000);
-                return true;
-            }
-            if (findTopRightButton(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    int secondLinearLayout = 0;
-
-    private boolean findShareButton(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().equals("分享到朋友圈")) {
-                Log.d("test", "click 分享到朋友圈");
-                AccessibilityNodeInfo parent = nodeInfo.getParent();
-                parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("test", "----------findSendImageButton------------------");
-                        boolean find = findSendImageButton(getRootInActiveWindow());
-                        if (!find) {
-                            Log.d("test", "找不到发送按钮，relase");
-                            release();
-                        }
-                    }
-                }, 3000);
-                return true;
-            }
-            if (findShareButton(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
@@ -324,140 +91,6 @@ public class AutoReplyService extends AccessibilityService {
         } catch (PendingIntent.CanceledException e) {
             e.printStackTrace();
         }
-    }
-
-    private boolean findDownloadButton(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            //Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            //Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.view.View")) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-
-                File[] files = new File("/mnt/sdcard/tencent/MicroMsg/WeiXin/").listFiles();
-                File lastFile = files[files.length - 1];
-                Log.d("test", "lastFile = " + lastFile.getName());
-                //上传
-                new Thread() {
-                    @Override
-                    public void run() {
-                        boolean exception = false;
-                        long tempID = currentActionID;
-                        try {
-                            Log.d("test", "uploading...");
-                            String xToken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-                            final String ret = UploadUtil.uploadFile(lastFile, clientUrl + "/common/file?x-auth-token=" + xToken, lastFile.getName());
-                            Log.d("test", "upload ret = " + ret);
-                            JSONObject obj = new JSONObject(ret);
-                            String url = obj.optJSONObject("data").optString("url");
-                            Log.d("test", "url = " + url);
-                            actions.get(currentActionID).uploaded = true;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            exception = true;
-                        }
-                        release();
-                        try {
-                            sleep(3000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        if (!exception) {
-                            sendMsgToServer(tempID, actions.get(tempID));
-                        }
-                    }
-                }.start();
-                return true;
-            }
-            if (findDownloadButton(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //找到最后的ImageView
-    private AccessibilityNodeInfo lastFrameLayout = null;
-
-    private boolean findLastMsg(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            //Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            //Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.FrameLayout")) {
-                lastFrameLayout = nodeInfo;
-            }
-            if (findLastMsg(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //---------------------------发送文字----------------
-
-    private void sendTxt() {
-        Log.d("test", "sendTxt is called");
-        AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-        boolean find = findEditText(rootNode);
-        Log.d("test", "findEditText = " + find);
-        if (find) {
-            AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
-            List<AccessibilityNodeInfo> list = nodeInfo
-                    .findAccessibilityNodeInfosByText("发送");
-            if (list != null && list.size() > 0) {
-                for (AccessibilityNodeInfo n : list) {
-                    if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
-                        n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-
-                    }
-                }
-            } else {
-                Log.d("test", "find send button false");
-            }
-        }
-    }
-
-    private boolean findEditText(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            if ("android.widget.EditText".equals(nodeInfo.getClassName())) {
-                Bundle arguments = new Bundle();
-                arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
-                        AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
-                arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN,
-                        true);
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY,
-                        arguments);
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                ClipData clip = ClipData.newPlainText("label", actions.get(currentActionID).reply);
-                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                clipboardManager.setPrimaryClip(clip);
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
-                return true;
-            }
-            if (findEditText(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void onInterrupt() {
-
     }
 
     /**
@@ -701,6 +334,573 @@ public class AutoReplyService extends AccessibilityService {
         } catch (Exception e) {
             Log.d("test", "e = " + e.toString());
         }
+    }
+
+
+    @Override
+    public void onAccessibilityEvent(final AccessibilityEvent event) {
+        int eventType = event.getEventType();
+        Log.d("maptrix", "get event = " + eventType);
+        switch (eventType) {
+            case AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED:
+                Log.d("maptrix", "接收到通知");
+                if (!getSharedPreferences("kiway", 0).getBoolean("login", false)) {
+                    Log.d("test", "user do not login");
+                    return;
+                }
+                List<CharSequence> texts = event.getText();
+                if (texts.isEmpty()) {
+                    return;
+                }
+                for (CharSequence text : texts) {
+                    Log.d("test", "text = " + text);
+                    String txt = text.toString();
+                    if (TextUtils.isEmpty(txt)) {
+                        continue;
+                    }
+                    if (event.getParcelableData() == null) {
+                        continue;
+                    }
+                    if (!(event.getParcelableData() instanceof Notification)) {
+                        continue;
+                    }
+                    Notification notification = (Notification) event.getParcelableData();
+                    String ticker = notification.tickerText.toString();
+                    if (!ticker.contains(":")) {
+                        continue;
+                    }
+                    String[] cc = ticker.split(":");
+                    String sender = cc[0].trim();
+                    String content = cc[1].trim();
+                    Log.d("test", "sender name = " + sender);
+                    Log.d("test", "sender content = " + content);
+
+                    if (Utils.isInfilters(getApplicationContext(), sender)) {
+                        Log.d("test", "该昵称被过滤");
+                        continue;
+                    }
+
+                    if (!Utils.isGetPic(getApplicationContext(), content)) {
+                        Log.d("test", "图片接收被过滤");
+                        continue;
+                    }
+
+                    //1.预先加入map
+                    long id = System.currentTimeMillis();
+                    PendingIntent intent = ((Notification) event.getParcelableData()).contentIntent;
+                    Action action = new Action();
+                    action.sender = sender;
+                    action.content = content;
+                    action.intent = intent;
+                    if (sender.equals("朋友圈使者") && content.startsWith("[链接]")) {
+                        //需要转发到朋友圈
+                        action.receiveType = TYPE_LINK;
+                    } else if (sender.equals("转发使者")) {
+                        //需要转发该消息
+                        action.receiveType = TYPE_TRANSFER;
+                    } else if (content.equals("[图片]")) {
+                        //保存给易敏即可
+                        action.receiveType = TYPE_IMAGE;
+                    } else {
+                        //文字直接回复
+                        action.receiveType = TYPE_TXT;
+                    }
+
+                    actions.put(id, action);
+
+                    //1.刷新界面
+                    int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0) + 1;
+                    getSharedPreferences("kiway", 0).edit().putInt("recvCount", recvCount).commit();
+                    if (MainActivity.instance != null) {
+                        MainActivity.instance.updateServiceCount();
+                    }
+
+                    //2.获取答案
+                    if (action.receiveType == TYPE_TXT) {
+                        //文字的话直接走zbus
+                        sendMsgToServer(id, action);
+                    } else if (action.receiveType == TYPE_IMAGE) {
+                        //图片要先拉起微信,截图上传
+                        handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 30000);
+                        currentActionID = id;
+                        launchWechat();
+                    } else if (action.receiveType == TYPE_LINK) {
+                        handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 30000);
+                        currentActionID = id;
+                        launchWechat();
+                    } else if (action.receiveType == TYPE_TRANSFER) {
+                        handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 30000);
+                        currentActionID = id;
+                        launchWechat();
+                    }
+                }
+                break;
+            case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
+                Log.d("maptrix", "窗口状态变化");
+                if (currentActionID == -1) {
+                    Log.d("maptrix", "没有事件，return1");
+                    return;
+                }
+                if (actioningFlag) {
+                    Log.d("maptrix", "事件进行中，return2");
+                    return;
+                }
+                String className = event.getClassName().toString();
+                Log.d("test", "className = " + className);
+                if (!className.equals("com.tencent.mm.ui.LauncherUI")) {
+                    Log.d("maptrix", "return3");
+                    return;
+                }
+                actioningFlag = true;
+
+                int receiveType = actions.get(currentActionID).receiveType;
+                boolean uploaded = actions.get(currentActionID).uploaded;
+                //1.发送文字回复
+                if (receiveType == TYPE_TXT) {
+                    sendTxt();
+                    release();
+                    int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0) + 1;
+                    getSharedPreferences("kiway", 0).edit().putInt("replyCount", replyCount).commit();
+                    if (MainActivity.instance != null) {
+                        MainActivity.instance.updateServiceCount();
+                    }
+                } else if (receiveType == TYPE_IMAGE && !uploaded) {
+                    // 找到最后一张图片，放大，截屏，上传，得到url后返回
+                    lastFrameLayout = null;
+                    Log.d("test", "----------------findLastImageOrLinkMsg------------------");
+                    findLastImageOrLinkMsg(getRootInActiveWindow());
+                    if (lastFrameLayout == null) {
+                        Log.d("test", "没有找到最后一张图片？郁闷。。。");
+                        release();
+                        return;
+                    }
+                    lastFrameLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //找下载按钮
+                            Log.d("test", "-------------------findDownloadButton------------------");
+                            boolean find = findDownloadButton(getRootInActiveWindow());
+                            if (!find) {
+                                Log.d("test", "找不到下载按钮");
+                                release();
+                            }
+                        }
+                    }, 1500);
+                } else if (receiveType == TYPE_LINK) {
+                    // 找到最后一张链接，点击转发到朋友圈
+                    lastFrameLayout = null;
+                    Log.d("test", "----------------findLastImageOrLinkMsg------------------");
+                    findLastImageOrLinkMsg(getRootInActiveWindow());
+                    if (lastFrameLayout == null) {
+                        Log.d("test", "没有找到最后一张图片？郁闷。。。");
+                        release();
+                        return;
+                    }
+                    lastFrameLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //找下载按钮
+                            Log.d("test", "-------------------findTopRightButton------------------");
+                            boolean find = findTopRightButton(getRootInActiveWindow());
+                            if (!find) {
+                                Log.d("test", "找不到右上角按钮");
+                                release();
+                            }
+                        }
+                    }, 5000);
+                } else if (receiveType == TYPE_TRANSFER) {
+                    // 找到最后一张链接，点击转发到朋友圈
+                    Log.d("test", "----------------findLastMsg------------------");
+                    lastMsgView = null;
+                    findLastMsg(getRootInActiveWindow());
+                    if (lastMsgView == null) {
+                        Log.d("test", "没有找到最后一条消息？郁闷。。。");
+                        release();
+                        return;
+                    }
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.d("test", "=================findTransferButton===============");
+                                    boolean find = findTransferButton(getRootInActiveWindow());
+                                    if (!find) {
+                                        release();
+                                    }
+                                }
+                            }, 1000);
+                        }
+                    }, 1000);
+                } else {
+                    Log.d("test", "没有匹配的消息，直接release");
+                    release();
+                }
+                break;
+        }
+    }
+
+    //---------------------下面都是找控件--------------------------
+
+    //发送给朋友
+    private boolean findTransferButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().equals("发送给朋友")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                //跳页
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //找文本框
+                        Log.d("test", " =================findSearchEditText===============");
+                        String targetPeople = "5之";
+                        boolean find = findSearchEditText(getRootInActiveWindow(), targetPeople);
+                        if (!find) {
+                            release();
+                        }
+                    }
+                }, 3000);
+                return true;
+            }
+            if (findTransferButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findSearchEditText(AccessibilityNodeInfo rootNode, String targetPeople) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.EditText")) {
+                Bundle arguments = new Bundle();
+                arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
+                        AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
+                arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN, true);
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY, arguments);
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+                ClipData clip = ClipData.newPlainText("label", targetPeople);
+                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                clipboardManager.setPrimaryClip(clip);
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "=============findTargetPeople==============");
+                        boolean find = findTargetPeople(getRootInActiveWindow(), targetPeople);
+                        if (!find) {
+                            Log.d("test", "findTargetPeople failure");
+                            release();
+                        }
+                    }
+                }, 1000);
+                return true;
+            }
+            if (findSearchEditText(nodeInfo, targetPeople)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findTargetPeople(AccessibilityNodeInfo rootNode, String targetPeople) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(targetPeople)) {
+                Log.d("test", "click targetPeople = " + targetPeople);
+                AccessibilityNodeInfo parent = nodeInfo.getParent();
+                parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "=========findSendButtonInDialog============");
+                        boolean find = findSendButtonInDialog(getRootInActiveWindow());
+                        if (!find) {
+                            release();
+                        }
+                    }
+                }, 1000);
+                return true;
+            }
+            if (findTargetPeople(nodeInfo, targetPeople)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findSendButtonInDialog(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText().equals("发送")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                Log.d("test", "转发完成");
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        release();
+                    }
+                }, 1000);
+                return true;
+            }
+            if (findSendButtonInDialog(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private AccessibilityNodeInfo lastMsgView = null;
+
+    private boolean findLastMsg(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.view.View")) {
+                lastMsgView = nodeInfo;
+            }
+            if (findLastMsg(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findTopRightButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                //1秒后找gridview
+                Log.d("test", "=========findShareButton==============");
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        secondLinearLayout = 0;
+                        boolean find = findShareButton(getRootInActiveWindow());
+                        if (!find) {
+                            release();
+                        }
+                    }
+                }, 1000);
+                return true;
+            }
+            if (findTopRightButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    int secondLinearLayout = 0;
+
+    private boolean findShareButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().equals("分享到朋友圈")) {
+                Log.d("test", "click 分享到朋友圈");
+                AccessibilityNodeInfo parent = nodeInfo.getParent();
+                parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "----------findSendImageButton------------------");
+                        boolean find = findSendImageButton(getRootInActiveWindow());
+                        if (!find) {
+                            Log.d("test", "找不到发送按钮，relase");
+                            release();
+                        }
+                    }
+                }, 3000);
+                return true;
+            }
+            if (findShareButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findDownloadButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            //Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            //Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.view.View")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+
+                File[] files = new File("/mnt/sdcard/tencent/MicroMsg/WeiXin/").listFiles();
+                File lastFile = files[files.length - 1];
+                Log.d("test", "lastFile = " + lastFile.getName());
+                //上传
+                new Thread() {
+                    @Override
+                    public void run() {
+                        boolean exception = false;
+                        long tempID = currentActionID;
+                        try {
+                            Log.d("test", "uploading...");
+                            String xToken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                            final String ret = UploadUtil.uploadFile(lastFile, clientUrl + "/common/file?x-auth-token=" + xToken, lastFile.getName());
+                            Log.d("test", "upload ret = " + ret);
+                            JSONObject obj = new JSONObject(ret);
+                            String url = obj.optJSONObject("data").optString("url");
+                            Log.d("test", "url = " + url);
+                            actions.get(currentActionID).uploaded = true;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            exception = true;
+                        }
+                        release();
+                        try {
+                            sleep(3000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        if (!exception) {
+                            sendMsgToServer(tempID, actions.get(tempID));
+                        }
+                    }
+                }.start();
+                return true;
+            }
+            if (findDownloadButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //找到最后的ImageView
+    private AccessibilityNodeInfo lastFrameLayout = null;
+
+    private boolean findLastImageOrLinkMsg(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            //Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            //Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.FrameLayout")) {
+                lastFrameLayout = nodeInfo;
+            }
+            if (findLastImageOrLinkMsg(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //---------------------------发送文字----------------
+
+    private void sendTxt() {
+        Log.d("test", "sendTxt is called");
+        AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+        boolean find = findInputEditText(rootNode);
+        Log.d("test", "findInputEditText = " + find);
+        if (find) {
+            AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+            List<AccessibilityNodeInfo> list = nodeInfo
+                    .findAccessibilityNodeInfosByText("发送");
+            if (list != null && list.size() > 0) {
+                for (AccessibilityNodeInfo n : list) {
+                    if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
+                        n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+
+                    }
+                }
+            } else {
+                Log.d("test", "find send button false");
+            }
+        }
+    }
+
+    private boolean findInputEditText(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            if ("android.widget.EditText".equals(nodeInfo.getClassName())) {
+                Bundle arguments = new Bundle();
+                arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
+                        AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
+                arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN,
+                        true);
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY,
+                        arguments);
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+                ClipData clip = ClipData.newPlainText("label", actions.get(currentActionID).reply);
+                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                clipboardManager.setPrimaryClip(clip);
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
+                return true;
+            }
+            if (findInputEditText(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void onInterrupt() {
+
     }
 
     //---------------发送图片---------------------------------------
