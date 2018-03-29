@@ -31,7 +31,7 @@ public class KWApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d("test", "APP onCreate");
-
+        x.Ext.init(this);
         initImageCache();
         CrashHandler.getInstance().init(this);
     }

@@ -1,6 +1,8 @@
 package cn.kiway.autoreply.util;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -77,4 +79,16 @@ public class Utils {
         }
         return c.getSharedPreferences("getPic", 0).getBoolean("getPic", true);
     }
+
+    public static String getCurrentVersion(Context c) {
+        String versionName = "1.0.0";
+        try {
+            PackageInfo pkg = c.getPackageManager().getPackageInfo(c.getPackageName(), 0);
+            versionName = pkg.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionName;
+    }
+
 }
