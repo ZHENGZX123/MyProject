@@ -36,7 +36,6 @@ import cn.kiway.autoreply.service.AutoReplyService;
 import cn.kiway.autoreply.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
 
-import static cn.kiway.autoreply.entity.Action.TYPE_TEST;
 import static cn.kiway.autoreply.util.Constant.clientUrl;
 import static cn.kiway.autoreply.util.Utils.getCurrentVersion;
 
@@ -154,7 +153,7 @@ public class MainActivity extends BaseActivity {
         Action a = new Action();
         a.sender = "test";
         a.content = "content";
-        a.receiveType = TYPE_TEST;
+        a.receiveType = Action.TYPE_TEST;
         if (AutoReplyService.instance != null) {
             AutoReplyService.instance.sendMsgToServer(9999, a);
         }
