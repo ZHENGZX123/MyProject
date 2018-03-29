@@ -15,6 +15,8 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
+import org.xutils.x;
+
 import cn.kiway.autoreply.util.CrashHandler;
 
 /**
