@@ -33,7 +33,6 @@ import java.util.List;
 import cn.kiway.autoreply.R;
 import cn.kiway.autoreply.entity.Action;
 import cn.kiway.autoreply.service.AutoReplyService;
-import cn.kiway.autoreply.util.NetworkUtil;
 import cn.kiway.autoreply.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
 
@@ -190,12 +189,15 @@ public class MainActivity extends BaseActivity {
                     String apkVersion = new JSONObject(ret).getString("apkCode");
                     String apkUrl = new JSONObject(ret).getString("apkUrl");
                     if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
-                        toast("有新的版本，正在后台下载");
+                        toast("有新的版本，正在后台下载，请稍等");
                         downloadSilently(apkUrl, apkVersion);
                     }
                 } catch (Exception e) {
+                    mHandler.sendEmptyMessage(3);
                     e.printStackTrace();
                 }
+            } else if (msg.what == 3) {
+                toast("检查更新失败");
             } else if (msg.what == 4) {
                 // 下载完成后安装
                 String savedFilePath = (String) msg.obj;
@@ -211,11 +213,6 @@ public class MainActivity extends BaseActivity {
 
 
     private void downloadSilently(String apkUrl, String version) {
-        boolean isWifi = NetworkUtil.isWifi(this);
-        if (!isWifi) {
-            Log.d("test", "不是wifi...");
-            return;
-        }
         final String savedFilePath = "/mnt/sdcard/cache/kw_robot_" + version + ".apk";
         if (new File(savedFilePath).exists()) {
             Log.d("test", "该文件已经下载好了");
@@ -249,7 +246,7 @@ public class MainActivity extends BaseActivity {
 
     private void askforInstall(final String savedFilePath) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
-        AlertDialog dialog_download = builder.setMessage("有新的APK需要更新").setNegativeButton(android.R.string.ok, new
+        AlertDialog dialog_download = builder.setMessage("请点击更新APK").setNegativeButton(android.R.string.ok, new
                 DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface di, int arg1) {
