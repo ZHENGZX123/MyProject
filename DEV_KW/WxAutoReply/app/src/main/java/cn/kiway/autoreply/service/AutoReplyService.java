@@ -398,7 +398,7 @@ public class AutoReplyService extends AccessibilityService {
                         action.receiveType = TYPE_LINK;
                     } else if (sender.equals("转发使者") && content.startsWith("设置转发对象：")) {
                         action.receiveType = TYPE_SET_FORWARDING;
-                    } else if (sender.equals("转发使者") && !content.equals("[语音]")) {
+                    } else if (sender.equals("转发使者") && !content.equals("[语音]") && !content.equals("[动画表情]")) {
                         //需要转发该消息
                         action.receiveType = TYPE_TRANSMIT;
                     } else if (content.equals("[图片]")) {
@@ -529,29 +529,43 @@ public class AutoReplyService extends AccessibilityService {
                         release();
                         return;
                     }
-                    lastMsgView = null;
-                    findLastMsg(getRootInActiveWindow());
-                    if (lastMsgView == null) {
-                        Log.d("test", "没有找到最后一条消息？郁闷。。。");
-                        release();
-                        return;
-                    }
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
+                            lastMsgView = null;
+                            findLastMsg(getRootInActiveWindow());
+                            if (lastMsgView == null) {
+                                Log.d("test", "没有找到最后一条消息。。。");
+                                release();
+                                return;
+                            }
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.d("test", "=================findTransferButton===============");
-                                    boolean find = findTransferButton(getRootInActiveWindow());
-                                    if (!find) {
-                                        release();
+                                    Action action = actions.get(currentActionID);
+                                    int type = action.receiveType;
+                                    Log.d("test", "准备长按 type = " + type);
+                                    lastMsgView.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+                                    if (type == TYPE_TXT) {
+                                        lastMsgView.performAction(AccessibilityNodeInfo.ACTION_SELECT);
                                     }
+                                    lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
+                                    Log.d("test", "执行长按事件");
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.d("test", "=================findTransferButton===============");
+                                            boolean find = findTransferButton(getRootInActiveWindow());
+                                            if (!find) {
+                                                Log.d("test", "findTransferButton失败，长按不出来？");
+                                                release();
+                                            }
+                                        }
+                                    }, 2000);
                                 }
-                            }, 1000);
+                            }, 2000);
                         }
-                    }, 1000);
+                    }, 2000);
                 } else {
                     Log.d("test", "没有匹配的消息，直接release");
                     release();
@@ -583,6 +597,7 @@ public class AutoReplyService extends AccessibilityService {
                         String forwarding = getSharedPreferences("forwarding", 0).getString("forwarding", "");
                         boolean find = findSearchEditText(getRootInActiveWindow(), forwarding);
                         if (!find) {
+                            Log.d("test", "findSearchEditText失败");
                             release();
                         }
                     }
@@ -708,7 +723,7 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.view.View")) {
+            if (nodeInfo.getClassName().equals("android.view.View") || nodeInfo.getClassName().equals("android.widget.FrameLayout")) {
                 lastMsgView = nodeInfo;
             }
             if (findLastMsg(nodeInfo)) {
