@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
@@ -47,6 +48,7 @@ import io.zbus.mq.MqClient;
 
 import static cn.kiway.autoreply.entity.Action.TYPE_IMAGE;
 import static cn.kiway.autoreply.entity.Action.TYPE_LINK;
+import static cn.kiway.autoreply.entity.Action.TYPE_SET_FORWARDING;
 import static cn.kiway.autoreply.entity.Action.TYPE_TEST;
 import static cn.kiway.autoreply.entity.Action.TYPE_TRANSMIT;
 import static cn.kiway.autoreply.entity.Action.TYPE_TXT;
@@ -71,7 +73,6 @@ public class AutoReplyService extends AccessibilityService {
         super.onCreate();
         Log.d("maptrix", "service oncreate");
 
-        actions.clear();
         instance = this;
         installationPush(this);
     }
@@ -395,6 +396,8 @@ public class AutoReplyService extends AccessibilityService {
                     if (sender.equals("朋友圈使者") && content.startsWith("[链接]")) {
                         //需要转发到朋友圈
                         action.receiveType = TYPE_LINK;
+                    } else if (sender.equals("转发使者") && content.startsWith("设置转发对象：")) {
+                        action.receiveType = TYPE_SET_FORWARDING;
                     } else if (sender.equals("转发使者") && !content.equals("[语音]")) {
                         //需要转发该消息
                         action.receiveType = TYPE_TRANSMIT;
@@ -406,6 +409,9 @@ public class AutoReplyService extends AccessibilityService {
                         action.receiveType = TYPE_TXT;
                     }
 
+                    if (actions.size() > 100000) {
+                        actions.clear();
+                    }
                     actions.put(id, action);
 
                     //1.刷新界面
@@ -432,6 +438,10 @@ public class AutoReplyService extends AccessibilityService {
                         handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 30000);
                         currentActionID = id;
                         launchWechat();
+                    } else if (action.receiveType == TYPE_SET_FORWARDING) {
+                        String forwarding = action.content.replace("设置转发对象：", "").trim();
+                        getSharedPreferences("forwarding", 0).edit().putString("forwarding", forwarding).commit();
+                        Toast.makeText(AutoReplyService.instance.getApplicationContext(), "设置转发对象成功", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -513,6 +523,12 @@ public class AutoReplyService extends AccessibilityService {
                 } else if (receiveType == TYPE_TRANSMIT) {
                     // 找到最后一张链接，点击转发到朋友圈
                     Log.d("test", "----------------findLastMsg------------------");
+                    String forwarding = getSharedPreferences("forwarding", 0).getString("forwarding", "");
+                    if (TextUtils.isEmpty(forwarding)) {
+                        Toast.makeText(AutoReplyService.instance.getApplicationContext(), "您还没有设置转发对象", Toast.LENGTH_SHORT).show();
+                        release();
+                        return;
+                    }
                     lastMsgView = null;
                     findLastMsg(getRootInActiveWindow());
                     if (lastMsgView == null) {
@@ -564,8 +580,8 @@ public class AutoReplyService extends AccessibilityService {
                     public void run() {
                         //找文本框
                         Log.d("test", " =================findSearchEditText===============");
-                        String targetPeople = "5之";
-                        boolean find = findSearchEditText(getRootInActiveWindow(), targetPeople);
+                        String forwarding = getSharedPreferences("forwarding", 0).getString("forwarding", "");
+                        boolean find = findSearchEditText(getRootInActiveWindow(), forwarding);
                         if (!find) {
                             release();
                         }
@@ -580,7 +596,7 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-    private boolean findSearchEditText(AccessibilityNodeInfo rootNode, String targetPeople) {
+    private boolean findSearchEditText(AccessibilityNodeInfo rootNode, String forwarding) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
@@ -596,7 +612,7 @@ public class AutoReplyService extends AccessibilityService {
                 arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN, true);
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY, arguments);
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                ClipData clip = ClipData.newPlainText("label", targetPeople);
+                ClipData clip = ClipData.newPlainText("label", forwarding);
                 ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 clipboardManager.setPrimaryClip(clip);
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
@@ -605,7 +621,7 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         Log.d("test", "=============findTargetPeople==============");
-                        boolean find = findTargetPeople(getRootInActiveWindow(), targetPeople);
+                        boolean find = findTargetPeople(getRootInActiveWindow(), forwarding);
                         if (!find) {
                             Log.d("test", "findTargetPeople failure");
                             release();
@@ -614,14 +630,14 @@ public class AutoReplyService extends AccessibilityService {
                 }, 1000);
                 return true;
             }
-            if (findSearchEditText(nodeInfo, targetPeople)) {
+            if (findSearchEditText(nodeInfo, forwarding)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean findTargetPeople(AccessibilityNodeInfo rootNode, String targetPeople) {
+    private boolean findTargetPeople(AccessibilityNodeInfo rootNode, String forwarding) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
@@ -630,8 +646,8 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(targetPeople)) {
-                Log.d("test", "click targetPeople = " + targetPeople);
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(forwarding)) {
+                Log.d("test", "click targetPeople = " + forwarding);
                 AccessibilityNodeInfo parent = nodeInfo.getParent();
                 parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
 
@@ -647,7 +663,7 @@ public class AutoReplyService extends AccessibilityService {
                 }, 1000);
                 return true;
             }
-            if (findTargetPeople(nodeInfo, targetPeople)) {
+            if (findTargetPeople(nodeInfo, forwarding)) {
                 return true;
             }
         }
