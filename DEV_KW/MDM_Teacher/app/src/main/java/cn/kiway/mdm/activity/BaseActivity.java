@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.soundcloud.android.crop.Crop;
+
 import java.io.File;
 import java.util.List;
 
@@ -252,7 +253,7 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-     if (requestCode == Crop.REQUEST_CROP) {
+        if (requestCode == Crop.REQUEST_CROP) {
             if (data == null) {
                 return;
             }
@@ -279,9 +280,8 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
     }
 
     public void sendFile(String filePath) {
-        SendorShareDialog dialog=new SendorShareDialog(this,filePath);
+        SendorShareDialog dialog = new SendorShareDialog(this, filePath);
         dialog.show();
-
     }
 
     public void cropImage(String filePath) {
@@ -387,27 +387,11 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
                 toast("发送推屏命令失败");
             }
         });
+
     }
 
-    public void shareUrl(String title, String content, String url) {
+    public void shareImgUrl(String imgUrl) {
         OnekeyShare oks = new OnekeyShare();
-        //关闭sso授权
-        oks.disableSSOWhenAuthorize();
-
-        // title标题，微信、QQ和QQ空间等平台使用
-        oks.setTitle(getString(R.string.app_name));
-        // titleUrl QQ和QQ空间跳转链接
-        oks.setTitleUrl(url);
-        // text是分享文本，所有平台都需要这个字段
-        oks.setText(content);
-        // 启动分享GUI
-        oks.show(this);
-    }
-
-    public void shareImgUrl( String imgUrl) {
-        OnekeyShare oks = new OnekeyShare();
-        //关闭sso授权
-        oks.disableSSOWhenAuthorize();
         oks.setImagePath(imgUrl);//确保SDcard下面存在此张图片
         oks.show(this);
     }

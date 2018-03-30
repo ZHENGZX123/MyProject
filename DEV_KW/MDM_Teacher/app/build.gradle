@@ -66,6 +66,7 @@ MobSDK {
             QQ {
                 appId "101469210"
                 appKey "81ff7dc167b8663b77bd642c73bc44cd"
+                shareByAppClient true
             }
             QZone {
                 appId "101469210"

@@ -24,12 +24,13 @@ public class SendorShareDialog extends Dialog implements View.OnClickListener {
     protected ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT);
     BaseActivity activity;
-String file;
-    public SendorShareDialog(@NonNull Context context,String file) {
+    String filePath;
+
+    public SendorShareDialog(@NonNull Context context, String filePath) {
         super(context, R.style.LoadingDialog);
         this.activity = (BaseActivity) context;
-        this.file=file;
-        Log.e("----",file);
+        this.filePath = filePath;
+        Log.e("----", filePath);
         fullWindowCenter();
     }
 
@@ -54,13 +55,14 @@ String file;
         switch (view.getId()) {
             case R.id.share:
                 //需要上传
-                activity.shareImgUrl(file);
+                activity.shareImgUrl(filePath);
                 break;
             case R.id.send:
                 activity.toast(R.string.chooseStudent);
                 //2.再选择学生
-                activity.startActivity(new Intent(activity, StudentGridActivity.class).putExtra("type", TYPE_WENJIAN).putExtra("filePath",
-                        file));
+                activity.startActivity(new Intent(activity, StudentGridActivity.class).putExtra("type", TYPE_WENJIAN)
+                        .putExtra("filePath",
+                                filePath));
                 break;
         }
     }
