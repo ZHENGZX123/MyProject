@@ -22,10 +22,6 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.soundcloud.android.crop.Crop;
-import com.xyzlf.share.library.bean.ShareEntity;
-import com.xyzlf.share.library.interfaces.ShareConstant;
-import com.xyzlf.share.library.util.ShareUtil;
-
 import java.io.File;
 import java.util.List;
 
@@ -33,13 +29,13 @@ import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.dialog.SendorShareDialog;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
-import cn.kiway.mdm.util.ShareCallBack;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.RoundedImageView;
 import cn.kiway.mdm.view.popup.PopCommon;
 import cn.kiway.mdm.view.popup.PopModel;
 import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
+import cn.sharesdk.onekeyshare.OnekeyShare;
 import io.agora.openlive.model.ConstantApp;
 import io.agora.openlive.ui.LiveRoomActivity;
 import io.agora.rtc.Constants;
@@ -256,16 +252,7 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        /**
-         * 分享回调处理
-         */
-        if (requestCode == ShareConstant.REQUEST_CODE) {
-            if (data != null) {
-                int channel = data.getIntExtra(ShareConstant.EXTRA_SHARE_CHANNEL, -1);
-                int status = data.getIntExtra(ShareConstant.EXTRA_SHARE_STATUS, -1);
-                new ShareCallBack().onShareCallback(channel, status);
-            }
-        }else if (requestCode == Crop.REQUEST_CROP) {
+     if (requestCode == Crop.REQUEST_CROP) {
             if (data == null) {
                 return;
             }
@@ -288,12 +275,6 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
             }
         } else if (requestCode == REQUEST_ORIGINAL) {
             cropImage(picPath);
-        }else if (requestCode == ShareConstant.REQUEST_CODE) {//分享回调处理
-            if (data != null) {
-                int channel = data.getIntExtra(ShareConstant.EXTRA_SHARE_CHANNEL, -1);
-                int status = data.getIntExtra(ShareConstant.EXTRA_SHARE_STATUS, -1);
-                new ShareCallBack().onShareCallback(channel, status);
-            }
         }
     }
 
@@ -409,29 +390,26 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
     }
 
     public void shareUrl(String title, String content, String url) {
-        ShareEntity bean = new ShareEntity(title, content);
-        bean.setUrl(url); //分享链接
-        share(ShareConstant.SHARE_CHANNEL_ALL,bean);
+        OnekeyShare oks = new OnekeyShare();
+        //关闭sso授权
+        oks.disableSSOWhenAuthorize();
+
+        // title标题，微信、QQ和QQ空间等平台使用
+        oks.setTitle(getString(R.string.app_name));
+        // titleUrl QQ和QQ空间跳转链接
+        oks.setTitleUrl(url);
+        // text是分享文本，所有平台都需要这个字段
+        oks.setText(content);
+        // 启动分享GUI
+        oks.show(this);
     }
 
-    /**
-     * 分享大图，大图分享支持，微信，微信朋友圈，微博，QQ，其他渠道不支持
-     *
-     * 分享大图注意点
-     * 1、setShareBigImg为ture
-     * 2、QQ分享大图，只能是本地图片
-     */
     public void shareImgUrl( String imgUrl) {
-        ShareEntity bean = new ShareEntity("","");
-        bean.setImgUrl(imgUrl); //分享图片
-        bean.setShareBigImg(true);
-        int channel = ShareConstant.SHARE_CHANNEL_WEIXIN_CIRCLE |
-                ShareConstant.SHARE_CHANNEL_WEIXIN_FRIEND |
-                ShareConstant.SHARE_CHANNEL_QQ ;
-        share(channel,bean);
+        OnekeyShare oks = new OnekeyShare();
+        //关闭sso授权
+        oks.disableSSOWhenAuthorize();
+        oks.setImagePath(imgUrl);//确保SDcard下面存在此张图片
+        oks.show(this);
     }
 
-    public void share(int channel,ShareEntity bean) {
-        ShareUtil.showShareDialog(this, channel, bean, ShareConstant.REQUEST_CODE);
-    }
 }

@@ -107,67 +107,47 @@
             android:screenOrientation="landscape"></activity>
 
 
-        <!--分享相关-->
-        <meta-data
-            android:name="tencent_qq_appid"
-            android:value="@string/tencent_qq_appid" />
+        <!--&lt;!&ndash;分享相关&ndash;&gt;-->
+        <!--<meta-data-->
+            <!--android:name="tencent_qq_appid"-->
+            <!--android:value="@string/tencent_qq_appid" />-->
 
-        <meta-data
-            android:name="weixin_key"
-            android:value="@string/weixin_key" />
-
-
-        <!-- 微信分享注册 -->
-        <activity
-            android:name="cn.kiway.mdm.wxapi.WXEntryActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="true"
-            android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!--<meta-data-->
+            <!--android:name="weixin_key"-->
+            <!--android:value="@string/weixin_key" />-->
 
 
-        <!-- QQ SDK 需要註冊Activity -->
-        <activity
-            android:name="com.tencent.connect.common.AssistActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!--&lt;!&ndash; 微信分享注册 &ndash;&gt;-->
+        <!--<activity-->
+            <!--android:name=".wxapi.WXEntryActivity"-->
+            <!--android:configChanges="keyboardHidden|orientation|screenSize"-->
+            <!--android:exported="true"-->
+            <!--android:screenOrientation="landscape"-->
+            <!--android:theme="@android:style/Theme.Translucent.NoTitleBar" />-->
 
-        <activity
-            android:name="com.tencent.tauth.AuthActivity"
-            android:launchMode="singleTask"
-            android:noHistory="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+        <!--&lt;!&ndash; QQ SDK 需要註冊Activity &ndash;&gt;-->
+        <!--<activity-->
+            <!--android:name="com.tencent.connect.common.AssistActivity"-->
+            <!--android:configChanges="orientation|keyboardHidden"-->
+            <!--android:screenOrientation="landscape"-->
+            <!--android:theme="@android:style/Theme.Translucent.NoTitleBar" />-->
 
-                <data android:scheme="tencent222222" />
-                <!-- 100380359 100381104 222222 -->
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.xyzlf.share.library.ShareDialogActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTask"
-            android:screenOrientation="landscape"
-            android:theme="@style/ShareDialogTheme"
-            tools:replace="android:screenOrientation" />
+        <!--<activity-->
+            <!--android:name="com.tencent.tauth.AuthActivity"-->
+            <!--android:launchMode="singleTask"-->
+            <!--android:noHistory="true">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
 
-        <activity
-            android:name="com.xyzlf.share.library.ShareHandlerActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTop"
-            android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Translucent"
-            tools:replace="android:screenOrientation">
-            <intent-filter>
-                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+                <!--<data android:scheme="tencent222222" />-->
+                <!--&lt;!&ndash; 100380359 100381104 222222 &ndash;&gt;-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
+
     </application>
 
 </manifest>
