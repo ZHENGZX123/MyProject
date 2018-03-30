@@ -32,7 +32,7 @@ public class WXApplication extends Application {
     public static String HTML = "mdm_parent/dist/index.html";
     public static String ZIP = "mdm_parent.zip";
 
-    public static String countlyUrl = "http://mdm.kiway.cn:8085/countly";
+    public static String countlyUrl = url + "/countly";
     public static String countlyAppKey = "97d0a7554daaef1b93285cd83875bb3e22ec9835";
 
     @Override

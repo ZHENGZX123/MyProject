@@ -127,6 +127,7 @@ public class MainActivity extends BaseActivity {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
+        settings.setSavePassword(false);
         wv.setWebViewClient(new MyWebViewClient());
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new WebChromeClient());
