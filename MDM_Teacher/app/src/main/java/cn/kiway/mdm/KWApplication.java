@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.mob.MobSDK;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -66,6 +67,8 @@ public class KWApplication extends Application {
         UploadUtil2.startTask(this);
         //countly
         Countly.sharedInstance().init(this, countlyUrl, countlyAppKey);
+
+        MobSDK.init(this);
     }
 
     /**

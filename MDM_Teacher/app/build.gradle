@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
-
+apply plugin: "com.mob.sdk"
 android {
     signingConfigs {
         kiway {
-//            storeFile file('F:/android_signature/kiway.key')
-            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+            storeFile file('F:/android_signature/kiway.key')
+//            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
             storePassword 'kiway123'
             keyAlias 'kiway'
             keyPassword 'kiway123'
@@ -17,8 +17,8 @@ android {
         applicationId "cn.kiway.mdm.teacher"
         minSdkVersion 21
         targetSdkVersion 22
-        versionCode 10
-        versionName "0.1.0"
+        versionCode 11
+        versionName "0.1.1"
         jackOptions {
             enabled true
         }
@@ -47,6 +47,35 @@ android {
     }
 }
 
+MobSDK {
+    appKey "24f2efc5803be"
+    appSecret "8a02e100bc393827aa9b4516dccd55bf"
+
+    ShareSDK {
+        //平台配置信息
+        devInfo {
+
+            Wechat {
+                appId "wxd2f893611dd6e2e8"
+                appSecret ""
+            }
+            WechatMoments{
+                appId "wxd2f893611dd6e2e8"
+                appSecret ""
+            }
+            QQ {
+                appId "101469210"
+                appKey "81ff7dc167b8663b77bd642c73bc44cd"
+            }
+            QZone {
+                appId "101469210"
+                appKey "81ff7dc167b8663b77bd642c73bc44cd"
+            }
+        }
+    }
+
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/android-async-http-1.4.5.jar')
@@ -72,7 +101,5 @@ dependencies {
     compile 'com.zhijieeeeee:pieviewlibrary:2.0.3'
     compile 'com.soundcloud.android:android-crop:1.0.1@aar'
     compile 'ly.count:sdk-android:14.12'
-    compile ('com.xyzlf.share:sharesdk:0.0.10') {
-        exclude group: 'com.android.support', module: 'appcompat-v7'
-    }
+
 }
