@@ -53,6 +53,7 @@ import io.zbus.mq.MqClient;
 
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_LINK;
+import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_SET_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_TRANSMIT;
 import static cn.kiway.robot.entity.Action.TYPE_TXT;
@@ -369,22 +370,26 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     Notification notification = (Notification) event.getParcelableData();
                     String ticker = notification.tickerText.toString();
-                    if (!ticker.contains(":")) {
-                        continue;
-                    }
-                    String[] cc = ticker.split(":");
-                    String sender = cc[0].trim();
-                    String content = cc[1].trim();
-                    Log.d("test", "sender name = " + sender);
-                    Log.d("test", "sender content = " + content);
-
-                    if (Utils.isInfilters(getApplicationContext(), sender)) {
-                        Log.d("test", "该昵称被过滤");
-                        continue;
-                    }
-
-                    if (!Utils.isGetPic(getApplicationContext(), content)) {
-                        Log.d("test", "图片接收被过滤");
+                    String sender = "";
+                    String content = "";
+                    if (ticker.contains(":")) {
+                        String[] cc = ticker.split(":");
+                        sender = cc[0].trim();
+                        content = cc[1].trim();
+                        Log.d("test", "sender name = " + sender);
+                        Log.d("test", "sender content = " + content);
+                        if (Utils.isInfilters(getApplicationContext(), sender)) {
+                            Log.d("test", "该昵称被过滤");
+                            continue;
+                        }
+                        if (!Utils.isGetPic(getApplicationContext(), content)) {
+                            Log.d("test", "图片接收被过滤");
+                            continue;
+                        }
+                    } else if (ticker.endsWith("请求添加你为朋友")) {
+                        sender = "系统";
+                        content = ticker;
+                    } else {
                         continue;
                     }
 
@@ -406,6 +411,8 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (content.equals("[图片]")) {
                         //保存给易敏即可
                         action.receiveType = TYPE_IMAGE;
+                    } else if (content.endsWith("请求添加你为朋友")) {
+                        action.receiveType = TYPE_REQUEST_FRIEND;
                     } else {
                         //文字直接回复
                         action.receiveType = TYPE_TXT;
@@ -448,6 +455,10 @@ public class AutoReplyService extends AccessibilityService {
                         handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 30000);
                         currentActionID = id;
                         launchWechat();
+                    } else if (action.receiveType == TYPE_REQUEST_FRIEND) {
+                        handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 30000);
+                        currentActionID = id;
+                        launchWechat();
                     }
                 }
                 break;
@@ -463,7 +474,7 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 String className = event.getClassName().toString();
                 Log.d("test", "className = " + className);
-                if (!className.equals("com.tencent.mm.ui.LauncherUI")) {
+                if (!className.startsWith("com.tencent.mm")) {
                     Log.d("maptrix", "return3");
                     return;
                 }
@@ -585,7 +596,19 @@ public class AutoReplyService extends AccessibilityService {
                                 }
                             }, 2000);
                         }
-                    }, 3000);
+                    }, 2000);
+                } else if (receiveType == TYPE_REQUEST_FRIEND) {
+                    //查找接受按钮，并点击一下
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("test", "=============findAcceptButton===============");
+                            boolean find = findAcceptButton(getRootInActiveWindow());
+                            if (!find) {
+                                release();
+                            }
+                        }
+                    }, 2000);
                 } else {
                     Log.d("test", "没有匹配的消息，直接release");
                     release();
@@ -637,6 +660,58 @@ public class AutoReplyService extends AccessibilityService {
 
 
     //---------------------下面都是找控件--------------------------
+
+    //自动加好友
+    private boolean findAcceptButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText().toString().equals("接受")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean find = findFinishButton(getRootInActiveWindow());
+                        if (!find) {
+                            release();
+                        }
+                    }
+                }, 2000);
+                return true;
+            }
+            if (findAcceptButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findFinishButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText().toString().equals("完成")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                release();
+                return true;
+            }
+            if (findFinishButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     //发送给朋友
     private boolean findTransferButton(AccessibilityNodeInfo rootNode) {
