@@ -405,7 +405,7 @@ public class AutoReplyService extends AccessibilityService {
                         action.receiveType = TYPE_LINK;
                     } else if (sender.equals("转发使者") && content.startsWith("设置转发对象：")) {
                         action.receiveType = TYPE_SET_FORWARDING;
-                    } else if (sender.equals("转发使者") && !content.equals("[语音]") && !content.equals("[动画表情]")) {
+                    } else if (sender.equals("转发使者") && !content.equals("[语音]") && !content.equals("[动画表情]") && !content.contains("向你推荐了") && !content.startsWith("[微信红包]")) {
                         //需要转发该消息
                         action.receiveType = TYPE_TRANSMIT;
                     } else if (content.equals("[图片]")) {
@@ -630,7 +630,7 @@ public class AutoReplyService extends AccessibilityService {
                 if (ret == 0) {
                     Log.d("test", "longClickAgain");
                     String content = actions.get(currentActionID).content;
-                    if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[文件]")) {
+                    if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[文件]") || content.startsWith("[位置]")) {
                         String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
                         int ret = RootCmd.execRootCmdSilent(cmd);
                         Log.d("test", "execRootCmdSilent ret = " + ret);
