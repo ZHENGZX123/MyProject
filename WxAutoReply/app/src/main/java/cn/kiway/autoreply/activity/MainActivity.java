@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
@@ -59,7 +60,7 @@ public class MainActivity extends BaseActivity {
         instance = this;
         initView();
         initListener();
-        checkRoot();
+        checkRoot(null);
         mHandler.sendEmptyMessage(MSG_INSTALL);
     }
 
@@ -88,8 +89,13 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void checkRoot() {
-        RootCmd.haveRoot();
+    public void checkForwarding(View v) {
+        String forwarding = getSharedPreferences("forwarding", 0).getString("forwarding", "");
+        if (TextUtils.isEmpty(forwarding)) {
+            toast("您还没有设置转发对象");
+        } else {
+            toast("当前转发对象：" + forwarding);
+        }
     }
 
     @Override

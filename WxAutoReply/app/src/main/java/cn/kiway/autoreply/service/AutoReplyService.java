@@ -527,6 +527,10 @@ public class AutoReplyService extends AccessibilityService {
                     String forwarding = getSharedPreferences("forwarding", 0).getString("forwarding", "");
                     if (TextUtils.isEmpty(forwarding)) {
                         Toast.makeText(AutoReplyService.instance.getApplicationContext(), "您还没有设置转发对象", Toast.LENGTH_LONG).show();
+                        //回复给微信
+                        Action action = actions.get(currentActionID);
+                        action.reply = "您还没有设置转发对象";
+                        sendTxt();
                         release();
                         return;
                     }
