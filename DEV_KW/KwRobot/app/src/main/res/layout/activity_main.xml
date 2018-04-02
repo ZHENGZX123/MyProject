@@ -31,7 +31,7 @@
         android:textColor="#000000"
         android:textSize="20sp" />
 
-    <cn.kiway.autoreply.view.FlowLayout
+    <cn.kiway.robot.view.FlowLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/name">
@@ -90,7 +90,7 @@
             android:onClick="test"
             android:text="测试zbus"
             android:visibility="gone" />
-    </cn.kiway.autoreply.view.FlowLayout>
+    </cn.kiway.robot.view.FlowLayout>
 
     <TextView
         android:layout_width="match_parent"

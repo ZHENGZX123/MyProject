@@ -1,4 +1,4 @@
-package cn.kiway.autoreply.activity;
+package cn.kiway.robot.activity;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.AlertDialog;
@@ -31,15 +31,15 @@ import org.xutils.x;
 import java.io.File;
 import java.util.List;
 
-import cn.kiway.autoreply.R;
-import cn.kiway.autoreply.entity.Action;
-import cn.kiway.autoreply.service.AutoReplyService;
-import cn.kiway.autoreply.util.RootCmd;
-import cn.kiway.autoreply.util.Utils;
+import cn.kiway.robot.R;
+import cn.kiway.robot.entity.Action;
+import cn.kiway.robot.service.AutoReplyService;
+import cn.kiway.robot.util.RootCmd;
+import cn.kiway.robot.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
 
-import static cn.kiway.autoreply.util.Constant.clientUrl;
-import static cn.kiway.autoreply.util.Utils.getCurrentVersion;
+import static cn.kiway.robot.util.Constant.clientUrl;
+import static cn.kiway.robot.util.Utils.getCurrentVersion;
 
 public class MainActivity extends BaseActivity {
 

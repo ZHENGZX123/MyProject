@@ -1,4 +1,4 @@
-package cn.kiway.autoreply.activity;
+package cn.kiway.robot.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

@@ -1,4 +1,4 @@
-package cn.kiway.autoreply.entity;
+package cn.kiway.robot.entity;
 
 import android.app.PendingIntent;
 

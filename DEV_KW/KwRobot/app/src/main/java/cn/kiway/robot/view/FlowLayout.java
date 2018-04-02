@@ -1,4 +1,4 @@
-package cn.kiway.autoreply.view;
+package cn.kiway.robot.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -1,4 +1,4 @@
-package cn.kiway.autoreply.broadcast;
+package cn.kiway.robot.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.os.Message;
 import android.util.Log;
 
-import cn.kiway.autoreply.activity.MainActivity;
-import cn.kiway.autoreply.util.NetworkUtil;
+import cn.kiway.robot.activity.MainActivity;
+import cn.kiway.robot.util.NetworkUtil;
 
 
 public class NetChangeReceiver extends BroadcastReceiver {
