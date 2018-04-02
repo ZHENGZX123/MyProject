@@ -415,15 +415,13 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     actions.put(id, action);
 
-                    //1.刷新界面
-                    int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0) + 1;
-                    getSharedPreferences("kiway", 0).edit().putInt("recvCount", recvCount).commit();
-                    if (MainActivity.instance != null) {
-                        MainActivity.instance.updateServiceCount();
-                    }
-
-                    //2.获取答案
                     if (action.receiveType == TYPE_TXT) {
+                        //刷新界面
+                        int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0) + 1;
+                        getSharedPreferences("kiway", 0).edit().putInt("recvCount", recvCount).commit();
+                        if (MainActivity.instance != null) {
+                            MainActivity.instance.updateServiceCount();
+                        }
                         //文字的话直接走zbus
                         sendMsgToServer(id, action);
                     } else if (action.receiveType == TYPE_IMAGE) {
@@ -441,8 +439,14 @@ public class AutoReplyService extends AccessibilityService {
                         launchWechat();
                     } else if (action.receiveType == TYPE_SET_FORWARDING) {
                         String forwarding = action.content.replace("设置转发对象：", "").trim();
+                        if (TextUtils.isEmpty(forwarding)) {
+                            continue;
+                        }
                         getSharedPreferences("forwarding", 0).edit().putString("forwarding", forwarding).commit();
                         Toast.makeText(AutoReplyService.instance.getApplicationContext(), "设置转发对象成功", Toast.LENGTH_SHORT).show();
+                        handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 30000);
+                        currentActionID = id;
+                        launchWechat();
                     }
                 }
                 break;
@@ -521,6 +525,11 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }
                     }, 10000);//防止页面加载不完整
+                } else if (receiveType == TYPE_SET_FORWARDING) {
+                    Action action = actions.get(currentActionID);
+                    action.reply = "设置成功！";
+                    sendTxt();
+                    release();
                 } else if (receiveType == TYPE_TRANSMIT) {
                     // 找到最后一张链接，点击转发给某人
                     Log.d("test", "----------------findLastMsg------------------");
@@ -547,7 +556,7 @@ public class AutoReplyService extends AccessibilityService {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);//1500  2000
+                                    lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
                                     Log.d("test", "执行长按事件");
                                     handler.postDelayed(new Runnable() {
 
@@ -559,18 +568,35 @@ public class AutoReplyService extends AccessibilityService {
                                                 Log.d("test", "findTransferButton失败，长按不出来，点击了一下");
                                                 Rect r = new Rect();
                                                 lastMsgView.getBoundsInScreen(r);
-                                                // 生成点击坐标
+                                                // 1.生成点击坐标
                                                 int x = r.width() / 2 + r.left;
                                                 int y = r.height() / 2 + r.top;
                                                 String cmd = "input tap " + x + " " + y;
                                                 Log.d("test", "cmd = " + cmd);
-                                                // 执行su命令
+                                                // 2.执行su命令
                                                 int ret = RootCmd.execRootCmdSilent(cmd);
                                                 Log.d("test", "ret = " + ret);
+
+                                                //3.再次执行长按
                                                 handler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        release();
+                                                        if (ret == 0) {
+                                                            Log.d("test", "long click again");
+                                                            lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
+                                                            handler.postDelayed(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    Log.d("test", "=================findTransferButton===============");
+                                                                    boolean find = findTransferButton(getRootInActiveWindow());
+                                                                    if (!find) {
+                                                                        release();
+                                                                    }
+                                                                }
+                                                            }, 2000);
+                                                        } else {
+                                                            release();
+                                                        }
                                                     }
                                                 }, 1000);
                                             }
