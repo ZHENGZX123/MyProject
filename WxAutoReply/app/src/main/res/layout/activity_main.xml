@@ -45,9 +45,9 @@
 
         <Button
             android:id="@+id/filter"
-            android:onClick="filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="filter"
             android:text="设置过滤昵称" />
 
 
@@ -71,6 +71,12 @@
             android:layout_height="wrap_content"
             android:onClick="checkNewVersion"
             android:text="检测新版本" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="checkRoot"
+            android:text="检测Root权限" />
 
         <Button
             android:layout_width="wrap_content"
