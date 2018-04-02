@@ -1,4 +1,4 @@
-package cn.kiway.autoreply.util;
+package cn.kiway.robot.util;
 
 /**
  * Created by Administrator on 2018/2/23.

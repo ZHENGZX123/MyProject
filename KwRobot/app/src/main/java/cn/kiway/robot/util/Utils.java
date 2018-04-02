@@ -1,4 +1,4 @@
-package cn.kiway.autoreply.util;
+package cn.kiway.robot.util;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -7,7 +7,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import cn.kiway.autoreply.KWApplication;
+import cn.kiway.robot.KWApplication;
 import io.netty.util.internal.StringUtil;
 
 /**

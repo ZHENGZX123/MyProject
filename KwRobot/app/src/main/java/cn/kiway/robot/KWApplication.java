@@ -1,4 +1,4 @@
-package cn.kiway.autoreply;
+package cn.kiway.robot;
 
 import android.app.Application;
 import android.graphics.Bitmap;
@@ -17,7 +17,7 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
 import org.xutils.x;
 
-import cn.kiway.autoreply.util.CrashHandler;
+import cn.kiway.robot.util.CrashHandler;
 
 /**
  * Created by Administrator on 2018/3/21.
@@ -26,7 +26,7 @@ import cn.kiway.autoreply.util.CrashHandler;
 public class KWApplication extends Application {
 
 
-    public static String ROOT = "/mnt/sdcard/kiway_autoreply/";
+    public static String ROOT = "/mnt/sdcard/kiway_robot/";
 
 
     @Override

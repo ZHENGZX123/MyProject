@@ -1,4 +1,4 @@
-package cn.kiway.autoreply.activity;
+package cn.kiway.robot.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import cn.kiway.autoreply.R;
+import cn.kiway.robot.R;
 import io.netty.util.internal.StringUtil;
 
 /**

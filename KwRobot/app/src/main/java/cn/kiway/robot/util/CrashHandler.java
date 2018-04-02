@@ -1,4 +1,4 @@
-package cn.kiway.autoreply.util;
+package cn.kiway.robot.util;
 
 import android.content.Context;
 import android.os.Environment;
@@ -141,7 +141,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             String time = formatter.format(new Date());
             String fileName = "crash-" + time + "-" + timestamp + ".log";
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                String path = "/mnt/sdcard/crash/wxautoreply/";
+                String path = "/mnt/sdcard/crash/kiway_robot/";
                 File dir = new File(path);
                 if (!dir.exists()) {
                     dir.mkdirs();

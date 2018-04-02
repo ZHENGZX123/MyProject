@@ -1,4 +1,4 @@
-package cn.kiway.autoreply.util;
+package cn.kiway.robot.util;
 
 import android.content.Context;
 import android.os.Environment;
@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 
-import cn.kiway.autoreply.KWApplication;
+import cn.kiway.robot.KWApplication;
 
 /**
  * Created by Android on 2016/4/20.

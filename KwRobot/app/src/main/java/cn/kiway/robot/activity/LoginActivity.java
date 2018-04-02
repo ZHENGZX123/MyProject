@@ -1,4 +1,4 @@
-package cn.kiway.autoreply.activity;
+package cn.kiway.robot.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,10 +15,10 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import org.apache.http.Header;
 import org.json.JSONObject;
 
-import cn.kiway.autoreply.R;
-import cn.kiway.autoreply.util.Utils;
+import cn.kiway.robot.R;
+import cn.kiway.robot.util.Utils;
 
-import static cn.kiway.autoreply.util.Constant.clientUrl;
+import static cn.kiway.robot.util.Constant.clientUrl;
 
 /**
  * Created by Administrator on 2018/3/23.

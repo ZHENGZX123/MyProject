@@ -1,4 +1,4 @@
-package cn.kiway.autoreply.service;
+package cn.kiway.robot.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Notification;
@@ -36,26 +36,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import cn.kiway.autoreply.activity.MainActivity;
-import cn.kiway.autoreply.entity.Action;
-import cn.kiway.autoreply.util.Constant;
-import cn.kiway.autoreply.util.RootCmd;
-import cn.kiway.autoreply.util.UploadUtil;
-import cn.kiway.autoreply.util.Utils;
+import cn.kiway.robot.activity.MainActivity;
+import cn.kiway.robot.entity.Action;
+import cn.kiway.robot.util.Constant;
+import cn.kiway.robot.util.RootCmd;
+import cn.kiway.robot.util.UploadUtil;
+import cn.kiway.robot.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
 import cn.kiway.wx.reply.vo.PushMessageVo;
 import io.zbus.mq.Message;
 import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
 
-import static cn.kiway.autoreply.entity.Action.TYPE_IMAGE;
-import static cn.kiway.autoreply.entity.Action.TYPE_LINK;
-import static cn.kiway.autoreply.entity.Action.TYPE_SET_FORWARDING;
-import static cn.kiway.autoreply.entity.Action.TYPE_TEST;
-import static cn.kiway.autoreply.entity.Action.TYPE_TRANSMIT;
-import static cn.kiway.autoreply.entity.Action.TYPE_TXT;
-import static cn.kiway.autoreply.util.Constant.APPID;
-import static cn.kiway.autoreply.util.Constant.clientUrl;
+import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
+import static cn.kiway.robot.entity.Action.TYPE_LINK;
+import static cn.kiway.robot.entity.Action.TYPE_SET_FORWARDING;
+import static cn.kiway.robot.entity.Action.TYPE_TEST;
+import static cn.kiway.robot.entity.Action.TYPE_TRANSMIT;
+import static cn.kiway.robot.entity.Action.TYPE_TXT;
+import static cn.kiway.robot.util.Constant.APPID;
+import static cn.kiway.robot.util.Constant.clientUrl;
 
 public class AutoReplyService extends AccessibilityService {
 
@@ -104,7 +104,7 @@ public class AutoReplyService extends AccessibilityService {
 //        home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //        home.addCategory(Intent.CATEGORY_HOME);
 //        startActivity(home);
-        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.autoreply");
+        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
         startActivity(intent);
     }
 

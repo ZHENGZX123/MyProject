@@ -1,8 +1,8 @@
-package cn.kiway.autoreply.activity;
+package cn.kiway.robot.activity;
 
 import android.os.Bundle;
 
-import cn.kiway.autoreply.R;
+import cn.kiway.robot.R;
 
 
 public class NoNetActivity extends BaseActivity {
