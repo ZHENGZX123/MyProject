@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rl_nonet"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#fec7de"
+        android:onClick="clickNetwork"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="无法连接服务器，请检查你的网络设置"
+            android:textColor="#aaaaaa" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_nonet"
+        android:layout_margin="10dp"
+        android:text="title"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <cn.kiway.autoreply.view.FlowLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/name">
+
+        <Button
+            android:id="@+id/star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="start"
+            android:text="点击开启服务" />
+
+        <Button
+            android:id="@+id/filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="filter"
+            android:text="设置过滤昵称" />
+
+
+        <CheckBox
+            android:id="@+id/getPic"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:checked="true"
+            android:text="是否接收图片" />
+
+
+        <Button
+            android:id="@+id/logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="logout"
+            android:text="注销本次登录" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="checkNewVersion"
+            android:text="检测新版本" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="checkRoot"
+            android:text="检测Root权限" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="checkForwarding"
+            android:text="查看转发对象" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="test"
+            android:text="测试zbus"
+            android:visibility="gone" />
+    </cn.kiway.autoreply.view.FlowLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20dp"
+        android:text="使用方法和注意事项：\n
+1、点击开启服务后，返回客服机器人主页面即可。\n
+2、使用期间保持手机屏幕常亮，不能锁屏（最好一直连着充电线，设置不锁屏）。\n
+3、保持微信处于手机后台，不能人为干预：不能打开微信操作。\n
+4、客服机器人APP不能被杀死，最好保持主页面在前台\n
+5、手机系统要7.0以下，最好使用安卓原生系统。推荐手机LG Nexus5。\n
+6、手机不要装360、百度手机助手等一些能杀死APP的软件，关闭各种悬浮控件。\n
+7、手机操作系统暂时只能选择简体中文，其他的不可以。\n
+8、保持手机wifi正常。"
+        android:textColor="#000000"
+        android:textSize="14sp" />
+
+</RelativeLayout>
