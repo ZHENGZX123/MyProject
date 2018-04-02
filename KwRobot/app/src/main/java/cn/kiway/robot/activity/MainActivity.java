@@ -177,7 +177,6 @@ public class MainActivity extends BaseActivity {
 
     public void test(View v) {
 
-
 //        Action a = new Action();
 //        a.sender = "test";
 //        a.content = "content";
