@@ -520,16 +520,16 @@ public class AutoReplyService extends AccessibilityService {
                                 release();
                             }
                         }
-                    }, 5000);
+                    }, 10000);//防止页面加载不完整
                 } else if (receiveType == TYPE_TRANSMIT) {
-                    // 找到最后一张链接，点击转发到朋友圈
+                    // 找到最后一张链接，点击转发给某人
                     Log.d("test", "----------------findLastMsg------------------");
                     String forwarding = getSharedPreferences("forwarding", 0).getString("forwarding", "");
                     if (TextUtils.isEmpty(forwarding)) {
                         Toast.makeText(AutoReplyService.instance.getApplicationContext(), "您还没有设置转发对象", Toast.LENGTH_LONG).show();
                         //回复给微信
                         Action action = actions.get(currentActionID);
-                        action.reply = "您还没有设置转发对象";
+                        action.reply = "您还没有设置转发对象，设置方法：请输入“设置转发对象：昵称”";
                         sendTxt();
                         release();
                         return;
