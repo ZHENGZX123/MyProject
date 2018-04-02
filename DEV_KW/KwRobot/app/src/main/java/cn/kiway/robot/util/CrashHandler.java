@@ -75,9 +75,9 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 //            } catch (InterruptedException e) {
 //                Log.e(TAG, "error : ", e);
 //            }
-            //退出程序
-            //android.os.Process.killProcess(android.os.Process.myPid());
-            //System.exit(1);
+//            //退出程序
+//            android.os.Process.killProcess(android.os.Process.myPid());
+//            System.exit(1);
         }
     }
 
@@ -92,18 +92,6 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             return false;
         }
         Log.d("test", "全局异常 ex = " + ex.toString());
-        //使用Toast来显示异常信息
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                Looper.prepare();
-//                Log.d("test", "全局异常");
-//                Toast.makeText(mContext, "很抱歉,程序出现异常,即将退出.", Toast.LENGTH_LONG).show();
-//                Looper.loop();
-//            }
-//        }.start();
-        //收集设备参数信息
-        //collectDeviceInfo(mContext);
         //保存日志文件
         saveCrashInfo2File(ex);
         return true;

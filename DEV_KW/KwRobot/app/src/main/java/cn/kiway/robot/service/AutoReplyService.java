@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
@@ -575,30 +576,9 @@ public class AutoReplyService extends AccessibilityService {
                                                 Log.d("test", "cmd = " + cmd);
                                                 // 2.执行su命令
                                                 int ret = RootCmd.execRootCmdSilent(cmd);
-                                                Log.d("test", "ret = " + ret);
-
+                                                Log.d("test", "execRootCmdSilent ret = " + ret);
                                                 //3.再次执行长按
-                                                handler.postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        if (ret == 0) {
-                                                            Log.d("test", "long click again");
-                                                            lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
-                                                            handler.postDelayed(new Runnable() {
-                                                                @Override
-                                                                public void run() {
-                                                                    Log.d("test", "=================findTransferButton===============");
-                                                                    boolean find = findTransferButton(getRootInActiveWindow());
-                                                                    if (!find) {
-                                                                        release();
-                                                                    }
-                                                                }
-                                                            }, 2000);
-                                                        } else {
-                                                            release();
-                                                        }
-                                                    }
-                                                }, 1000);
+                                                longClickAgain(ret);
                                             }
                                         }
                                     }, 2000);
@@ -613,6 +593,42 @@ public class AutoReplyService extends AccessibilityService {
                 break;
         }
     }
+
+    private void longClickAgain(int ret) {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (ret == 0) {
+                    Log.d("test", "longClickAgain");
+                    String content = actions.get(currentActionID).content;
+                    if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[文件]")) {
+                        String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
+                        int ret = RootCmd.execRootCmdSilent(cmd);
+                        Log.d("test", "execRootCmdSilent ret = " + ret);
+                    }
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.d("test", "=================findTransferButton===============");
+                                    boolean find = findTransferButton(getRootInActiveWindow());
+                                    if (!find) {
+                                        release();
+                                    }
+                                }
+                            }, 2000);
+                        }
+                    }, 2000);
+                } else {
+                    release();
+                }
+            }
+        }, 1000);
+    }
+
 
     //---------------------下面都是找控件--------------------------
 
