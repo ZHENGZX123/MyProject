@@ -13,6 +13,15 @@ public class PopModel implements Serializable {
 
     private int drawableId;
     private String itemDesc;
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public int getDrawableId() {
         return drawableId;
