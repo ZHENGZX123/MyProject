@@ -27,11 +27,13 @@ import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -143,37 +145,35 @@ public class AutoReplyService extends AccessibilityService {
                                         }
                                     }
                                     try {
-                                        JSONArray array = new JSONArray(temp);
-                                        JSONObject o = array.getJSONObject(0);//TODO暂时拿第一个
+                                        JSONObject o = new JSONObject(temp);
                                         long id = o.optLong("id");
                                         if (id == 0) {
                                             Log.d("test", "没有id！！！");
                                             return;
                                         }
-                                        int returnType = o.getInt("returnType");
-                                        String returnMessage = o.getString("returnMessage");
-                                        if (TextUtils.isEmpty(returnMessage)) {
-                                            returnMessage = "测试回复";
-                                        }
+                                        JSONArray returnMessage = o.getJSONArray("returnMessage");
                                         Action action = actions.get(id);
                                         if (action == null) {
                                             Log.d("test", "action null , error!!!");
                                             return;
                                         }
                                         Log.d("test", "开始处理action = " + id);
-                                        String finalReturnMessage = returnMessage;
                                         handler.post(new Runnable() {
                                             @Override
                                             public void run() {
                                                 //目前只有文字回复
-                                                if (returnType == TYPE_TXT) {
-                                                    currentActionID = id;
-                                                    handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 10000);
-                                                    action.reply = finalReturnMessage;
-                                                    launchWechat();
-                                                } else {
-                                                    Log.d("test", "do nothing");
+                                                currentActionID = id;
+                                                handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 10000);
+                                                int size = returnMessage.length();
+                                                action.reply.clear();
+                                                for (int i = 0; i < size; i++) {
+                                                    try {
+                                                        action.reply.add(returnMessage.getJSONObject(i).getString("content"));
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
                                                 }
+                                                launchWechat();
                                             }
                                         });
                                     } catch (Exception e) {
@@ -528,7 +528,7 @@ public class AutoReplyService extends AccessibilityService {
                     }, 10000);//防止页面加载不完整
                 } else if (receiveType == TYPE_SET_FORWARDING) {
                     Action action = actions.get(currentActionID);
-                    action.reply = "设置成功！";
+                    action.reply.add("设置成功！");
                     sendTxt();
                     release();
                 } else if (receiveType == TYPE_TRANSMIT) {
@@ -539,7 +539,7 @@ public class AutoReplyService extends AccessibilityService {
                         toast("您还没有设置转发对象");
                         //回复给微信
                         Action action = actions.get(currentActionID);
-                        action.reply = "您还没有设置转发对象，设置方法：请输入“设置转发对象：昵称”";
+                        action.reply.add("您还没有设置转发对象，设置方法：请输入“设置转发对象：昵称”");
                         sendTxt();
                         release();
                         return;
@@ -942,27 +942,28 @@ public class AutoReplyService extends AccessibilityService {
 
     private void sendTxt() {
         Log.d("test", "sendTxt is called");
-        AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-        boolean find = findInputEditText(rootNode);
-        Log.d("test", "findInputEditText = " + find);
-        if (!find) {
-            release();
-            return;
-        }
-        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
-        List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByText("发送");
-        if (list != null && list.size() > 0) {
-            for (AccessibilityNodeInfo n : list) {
-                if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
-                    n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        ArrayList<String> reply = actions.get(currentActionID).reply;
+        int count = reply.size();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+            boolean find = findInputEditText(rootNode, reply.get(i));
+            Log.d("test", "findInputEditText = " + find);
+            if (!find) {
+                continue;
+            }
+            AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+            List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByText("发送");
+            if (list != null && list.size() > 0) {
+                for (AccessibilityNodeInfo n : list) {
+                    if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
+                        n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    }
                 }
             }
-        } else {
-            release();
         }
     }
 
-    private boolean findInputEditText(AccessibilityNodeInfo rootNode) {
+    private boolean findInputEditText(AccessibilityNodeInfo rootNode, String reply) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
@@ -978,13 +979,13 @@ public class AutoReplyService extends AccessibilityService {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY,
                         arguments);
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                ClipData clip = ClipData.newPlainText("label", actions.get(currentActionID).reply);
+                ClipData clip = ClipData.newPlainText("label", reply);
                 ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 clipboardManager.setPrimaryClip(clip);
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
                 return true;
             }
-            if (findInputEditText(nodeInfo)) {
+            if (findInputEditText(nodeInfo, reply)) {
                 return true;
             }
         }
