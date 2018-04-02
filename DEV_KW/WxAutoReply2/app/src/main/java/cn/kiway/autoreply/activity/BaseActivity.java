@@ -15,11 +15,14 @@ import cn.kiway.autoreply.KWApplication;
 public class BaseActivity extends Activity {
 
     public ProgressDialog pd;
-KWApplication app;
+    KWApplication app;
+    public static BaseActivity instance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app= (KWApplication) getApplicationContext();
+        instance = this;
+        app = (KWApplication) getApplicationContext();
         pd = new ProgressDialog(this);
         pd.setMessage("网络请求中");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

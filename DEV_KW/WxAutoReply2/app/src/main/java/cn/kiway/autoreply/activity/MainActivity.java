@@ -26,7 +26,6 @@ import java.util.List;
 
 import cn.kiway.autoreply.R;
 import cn.kiway.autoreply.entity.Action;
-import cn.kiway.autoreply.service.AutoReplyService;
 import cn.kiway.autoreply.util.WxUtils;
 
 import static cn.kiway.autoreply.entity.Action.TYPE_TEST;
@@ -51,11 +50,8 @@ public class MainActivity extends BaseActivity {
         instance = this;
         nameTV = (TextView) findViewById(R.id.name);
         star = (Button) findViewById(R.id.star);
-        if (AutoReplyService.instance != null) {
-            AutoReplyService.instance.initZbus();
-        }
-        startService(new Intent(this, AutoReplyService.class));
         // sendWxCardMsg();
+
         app.wToolSDK.setOnMessageListener(new OnMessageListener() {
             @Override
             public void messageEvent(MessageEvent messageEvent) {
@@ -65,9 +61,10 @@ public class MainActivity extends BaseActivity {
         app.wToolSDK.setOnTaskEndListener(new OnTaskEndListener() {
             @Override
             public void taskEndEvent(TaskEndEvent taskEndEvent) {
-                Log.e("----", taskEndEvent.toString());
+                Log.e("----Task", taskEndEvent.toString());
             }
         });
+        sendWxCardMsg();
     }
 
 
@@ -131,9 +128,6 @@ public class MainActivity extends BaseActivity {
         a.sender = "test";
         a.content = "content";
         a.receiveType = TYPE_TEST;
-        if (AutoReplyService.instance != null) {
-            AutoReplyService.instance.sendMsgToServer(9999, a);
-        }
     }
 
     public Handler mHandler = new Handler() {
@@ -142,10 +136,6 @@ public class MainActivity extends BaseActivity {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 rl_nonet.setVisibility(View.GONE);
                 Log.d("test", "有网络");
-                if (AutoReplyService.instance != null) {
-                    AutoReplyService.instance.initZbus();
-                    sendEmptyMessageDelayed(MSG_HEARTBEAT, 1000);
-                }
             } else if (msg.what == MSG_NETWORK_ERR) {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 rl_nonet.setVisibility(View.VISIBLE);
@@ -232,13 +222,35 @@ public class MainActivity extends BaseActivity {
             jsonObject.put("content", new JSONObject());
             jsonObject.getJSONObject("content").put("talker", wxRoomId1);
             jsonObject.getJSONObject("content").put("timeout", -1);
-            jsonObject.put("type", 49);//1文字 2图片 3语音 4 视频
-            jsonObject.getJSONObject("content").put("text", "http://588ku.com/image/n-huabiyansetubiao.html");
+            jsonObject.put("type", 12);//1文字 2图片 3语音 4 视频
+            jsonObject.getJSONObject("content").put("msgid", 100);
+            jsonObject.getJSONObject("content").put("msgtype", 1);
             String result = app.wToolSDK.sendTask(jsonObject.toString());
             Log.e("cccc", result);
         } catch (JSONException e1) {
             e1.printStackTrace();
         }
+    }
+
+    public void startMessageListner(){
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.put(1);
+            jsonArray.put(2);
+            jsonObject.put("talkertypes", jsonArray);
+            jsonObject.put("froms", new JSONArray());
+            jsonArray = new JSONArray();
+            jsonArray.put(1);
+            jsonArray.put(42);
+            jsonObject.put("msgtypes", jsonArray);
+            jsonObject.put("msgfilters", new JSONArray());
+            String result = app.wToolSDK.startMessageListener(jsonObject.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

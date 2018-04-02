@@ -14,4 +14,10 @@ public class Constant {
 
     public static String clientUrl = "http://192.168.8.161:8081";
 
+
+    public static final String SHE_MSG_TOFORWARDSERVIDE = "SHE_MSG_TOFORWARDSERVIDE";//个人消息转发到后台
+    public static final String SHE_MSG_TOFOREARD_ROOM = "SHE_MSG_TOFOREARD_ROOM";//在某群内做转发
+    public static final String SHE_MSG_TOFORDARD_ROOMMB = "SHE_MSG_TOFORDARD_ROOMMB";//在群内转发的目标微信号
+    public static final String SHE_FREIEND_ROOM = "SHE_FREIEND_ROOM";//某群转发到朋友圈
+
 }
