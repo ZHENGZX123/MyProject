@@ -2,6 +2,8 @@ package cn.kiway.robot.entity;
 
 import android.app.PendingIntent;
 
+import java.util.ArrayList;
+
 /**
  * Created by Administrator on 2018/3/21.
  */
@@ -19,7 +21,7 @@ public class Action {
     public PendingIntent intent;
     public String sender;
     public String content;
-    public String reply;
+    public ArrayList<String> reply = new ArrayList<>();
     public int receiveType;
     public boolean uploaded;//图片
 
