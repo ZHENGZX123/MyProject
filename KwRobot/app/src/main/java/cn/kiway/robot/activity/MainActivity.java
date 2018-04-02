@@ -32,6 +32,7 @@ import java.io.File;
 import java.util.List;
 
 import cn.kiway.robot.R;
+import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
@@ -80,12 +81,17 @@ public class MainActivity extends BaseActivity {
     }
 
     public void checkRoot(View v) {
-        boolean have = RootCmd.haveRoot();
-        if (have) {
-            toast("已经拥有Root权限");
-        } else {
-            toast("尚未拥有Root权限");
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                boolean have = RootCmd.haveRoot();
+                if (have) {
+                    toast("已经拥有Root权限");
+                } else {
+                    toast("尚未拥有Root权限");
+                }
+            }
+        }.start();
     }
 
     public void checkForwarding(View v) {
@@ -176,14 +182,13 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test(View v) {
-
-//        Action a = new Action();
-//        a.sender = "test";
-//        a.content = "content";
-//        a.receiveType = Action.TYPE_TEST;
-//        if (AutoReplyService.instance != null) {
-//            AutoReplyService.instance.sendMsgToServer(9999, a);
-//        }
+        Action a = new Action();
+        a.sender = "test";
+        a.content = "content";
+        a.receiveType = Action.TYPE_TEST;
+        if (AutoReplyService.instance != null) {
+            AutoReplyService.instance.sendMsgToServer(9999, a);
+        }
     }
 
     private void updateServiceStatus() {
