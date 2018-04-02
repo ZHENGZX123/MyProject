@@ -340,7 +340,6 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
         int eventType = event.getEventType();
@@ -520,7 +519,7 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("test", "----------------findLastImageOrLinkMsg------------------");
                     findLastImageOrLinkMsg(getRootInActiveWindow());
                     if (lastFrameLayout == null) {
-                        Log.d("test", "没有找到最后一张图片？郁闷。。。");
+                        Log.d("test", "没有找到最后一个链接？郁闷。。。");
                         release();
                         return;
                     }
@@ -630,7 +629,7 @@ public class AutoReplyService extends AccessibilityService {
                 if (ret == 0) {
                     Log.d("test", "longClickAgain");
                     String content = actions.get(currentActionID).content;
-                    if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[文件]") || content.startsWith("[位置]")) {
+                    if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[文件]") || content.startsWith("[位置]") || isCallingDialog(getRootInActiveWindow())) {
                         String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
                         int ret = RootCmd.execRootCmdSilent(cmd);
                         Log.d("test", "execRootCmdSilent ret = " + ret);
@@ -660,6 +659,27 @@ public class AutoReplyService extends AccessibilityService {
 
 
     //---------------------下面都是找控件--------------------------
+
+    //查询是不是呼叫对话框
+    private boolean isCallingDialog(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText().toString().equals("添加到手机通讯录")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                return true;
+            }
+            if (isCallingDialog(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     //自动加好友
     private boolean findAcceptButton(AccessibilityNodeInfo rootNode) {
