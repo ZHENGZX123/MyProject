@@ -32,7 +32,6 @@ import java.io.File;
 import java.util.List;
 
 import cn.kiway.robot.R;
-import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
@@ -177,13 +176,15 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test(View v) {
-        Action a = new Action();
-        a.sender = "test";
-        a.content = "content";
-        a.receiveType = Action.TYPE_TEST;
-        if (AutoReplyService.instance != null) {
-            AutoReplyService.instance.sendMsgToServer(9999, a);
-        }
+
+
+//        Action a = new Action();
+//        a.sender = "test";
+//        a.content = "content";
+//        a.receiveType = Action.TYPE_TEST;
+//        if (AutoReplyService.instance != null) {
+//            AutoReplyService.instance.sendMsgToServer(9999, a);
+//        }
     }
 
     private void updateServiceStatus() {
