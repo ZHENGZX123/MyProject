@@ -2,10 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.kiway.robot.guard">
 
-    <permission
-        android:name="app.custom.permission"
-        android:protectionLevel="signature" />
-    <uses-permission android:name="app.custom.permission" />
+    <uses-permission android:name="android.permission.GET_TASKS"></uses-permission>
 
     <application
         android:allowBackup="true"
@@ -22,7 +19,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name="cn.kiway.robot.guard.GuideService"></service>
+        <service android:name=".service.GuideService"></service>
 
     </application>
 
