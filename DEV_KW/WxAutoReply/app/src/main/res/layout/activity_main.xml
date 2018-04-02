@@ -81,6 +81,12 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="checkForwarding"
+            android:text="查看转发对象" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:onClick="test"
             android:text="测试zbus"
             android:visibility="gone" />
