@@ -186,7 +186,7 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                switch (position) {
+                switch (list.get(position).getId()) {
                     case 0://截屏
                         Countly.sharedInstance().recordEvent("截屏");
                         String filePath = Utils.GetandSaveCurrentImage(BaseActivity.this);

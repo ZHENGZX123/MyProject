@@ -511,11 +511,13 @@ public class Utils {
         PopModel feedPopModel = new PopModel();
         feedPopModel.setDrawableId(R.drawable.p_u1742);
         feedPopModel.setItemDesc("截屏");
+        feedPopModel.setId(0);
         list.add(feedPopModel);
 
         PopModel messagePopMode = new PopModel();
         messagePopMode.setDrawableId(R.drawable.p_u1744);
         messagePopMode.setItemDesc("拍照");
+        messagePopMode.setId(1);
         list.add(messagePopMode);
 
 //        PopModel luke = new PopModel();
@@ -526,7 +528,7 @@ public class Utils {
 //            luke.setDrawableId(R.drawable.p_rk1);
 //            luke.setItemDesc("录课");
 //        }
-//
+//luke.setId(2);
 //        list.add(luke);
 
         PopModel tuiping = new PopModel();
@@ -537,36 +539,43 @@ public class Utils {
             tuiping.setDrawableId(R.drawable.p_screen_control1);
             tuiping.setItemDesc("推屏");
         }
+        tuiping.setId(3);
         list.add(tuiping);
 
         PopModel huibi = new PopModel();
         huibi.setDrawableId(R.drawable.p_u1750);
         huibi.setItemDesc("画笔");
+        huibi.setId(4);
         list.add(huibi);
 
         PopModel chaping = new PopModel();
         chaping.setDrawableId(R.drawable.p_linkage);
         chaping.setItemDesc("查屏");
+        chaping.setId(5);
         list.add(chaping);
 
         PopModel suoping = new PopModel();
         suoping.setDrawableId(R.drawable.p_lock);
         suoping.setItemDesc("锁屏");
+        suoping.setId(6);
         list.add(suoping);
 
         PopModel jingying = new PopModel();
         jingying.setDrawableId(R.drawable.p_mute1);
         jingying.setItemDesc("静音");
+        jingying.setId(7);
         list.add(jingying);
 
         PopModel wenjian = new PopModel();
         wenjian.setDrawableId(R.drawable.p_send_msg);
         wenjian.setItemDesc("文件");
+        wenjian.setId(8);
         list.add(wenjian);
 
         PopModel shezhi = new PopModel();
         shezhi.setDrawableId(R.drawable.p_setting);
         shezhi.setItemDesc("设置");
+        shezhi.setId(9);
         list.add(shezhi);
 
         return list;
