@@ -52,7 +52,6 @@ import io.zbus.mq.MqClient;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_LINK;
 import static cn.kiway.robot.entity.Action.TYPE_SET_FORWARDING;
-import static cn.kiway.robot.entity.Action.TYPE_TEST;
 import static cn.kiway.robot.entity.Action.TYPE_TRANSMIT;
 import static cn.kiway.robot.entity.Action.TYPE_TXT;
 import static cn.kiway.robot.util.Constant.APPID;
@@ -166,12 +165,13 @@ public class AutoReplyService extends AccessibilityService {
                                         handler.post(new Runnable() {
                                             @Override
                                             public void run() {
+                                                //目前只有文字回复
                                                 if (returnType == TYPE_TXT) {
                                                     currentActionID = id;
                                                     handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 10000);
                                                     action.reply = finalReturnMessage;
                                                     launchWechat();
-                                                } else if (returnType == TYPE_IMAGE || returnType == TYPE_TEST) {
+                                                } else {
                                                     Log.d("test", "do nothing");
                                                 }
                                             }
@@ -444,7 +444,7 @@ public class AutoReplyService extends AccessibilityService {
                             continue;
                         }
                         getSharedPreferences("forwarding", 0).edit().putString("forwarding", forwarding).commit();
-                        Toast.makeText(AutoReplyService.instance.getApplicationContext(), "设置转发对象成功", Toast.LENGTH_SHORT).show();
+                        toast("设置转发对象成功");
                         handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 30000);
                         currentActionID = id;
                         launchWechat();
@@ -536,7 +536,7 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("test", "----------------findLastMsg------------------");
                     String forwarding = getSharedPreferences("forwarding", 0).getString("forwarding", "");
                     if (TextUtils.isEmpty(forwarding)) {
-                        Toast.makeText(AutoReplyService.instance.getApplicationContext(), "您还没有设置转发对象", Toast.LENGTH_LONG).show();
+                        toast("您还没有设置转发对象");
                         //回复给微信
                         Action action = actions.get(currentActionID);
                         action.reply = "您还没有设置转发对象，设置方法：请输入“设置转发对象：昵称”";
@@ -591,6 +591,12 @@ public class AutoReplyService extends AccessibilityService {
                     release();
                 }
                 break;
+        }
+    }
+
+    private void toast(String txt) {
+        if (AutoReplyService.instance != null) {
+            Toast.makeText(AutoReplyService.instance.getApplicationContext(), txt, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -939,20 +945,20 @@ public class AutoReplyService extends AccessibilityService {
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
         boolean find = findInputEditText(rootNode);
         Log.d("test", "findInputEditText = " + find);
-        if (find) {
-            AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
-            List<AccessibilityNodeInfo> list = nodeInfo
-                    .findAccessibilityNodeInfosByText("发送");
-            if (list != null && list.size() > 0) {
-                for (AccessibilityNodeInfo n : list) {
-                    if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
-                        n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-
-                    }
+        if (!find) {
+            release();
+            return;
+        }
+        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+        List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByText("发送");
+        if (list != null && list.size() > 0) {
+            for (AccessibilityNodeInfo n : list) {
+                if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
+                    n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 }
-            } else {
-                Log.d("test", "find send button false");
             }
+        } else {
+            release();
         }
     }
 
