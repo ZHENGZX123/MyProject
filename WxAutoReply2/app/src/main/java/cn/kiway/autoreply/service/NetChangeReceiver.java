@@ -15,11 +15,7 @@ public class NetChangeReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("test", "NetChangeBroadcast onReceive");
-        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-            context.startService(new Intent(context, AutoReplyService.class));
-        } else {
             checkNetWork(context);
-        }
     }
 
     public void checkNetWork(Context context) {

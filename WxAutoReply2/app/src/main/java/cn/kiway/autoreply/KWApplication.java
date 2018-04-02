@@ -33,14 +33,14 @@ public class KWApplication extends Application {
         super.onCreate();
         Log.d("test", "APP onCreate");
         wToolSDK.encodeValue("1");
-        wToolSDK.init("9999", "757533D0860F8CC0590B510BE2374F48C5750673");
+        String s = wToolSDK.init("9999", "757533D0860F8CC0590B510BE2374F48C5750673");
+        Log.e("zzx",s);
         initImageCache();
     }
 
     private void initImageCache() {
         DisplayMetrics displayMetrics = getApplicationContext().getResources()
                 .getDisplayMetrics();
-
         //设置默认显示情况
         DisplayImageOptions.Builder displayImageOptionsBuilder = new DisplayImageOptions.Builder();
         // displayImageOptionsBuilder.showImageForEmptyUri(R.drawable.loading);

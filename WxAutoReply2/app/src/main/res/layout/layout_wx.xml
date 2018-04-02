@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/wx_pl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="微信设置"
+        android:textColor="#333333"
+        android:textSize="18sp"
+        />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="设置个人消息转发到后台的微信号"
+        android:textColor="#333333"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/gr_zf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="未设置"
+        android:textColor="#ff0000"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3px"
+        android:background="#e5e5e5"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="设置在某群内的消息做转发"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        />
+
+    <TextView
+        android:id="@+id/room_zf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="未设置"
+        android:textColor="#ff0000"/>
+
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="群内转发的目标"
+        android:textColor="#333333"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/room_mb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="转发的目标"
+        android:textColor="#ff0000"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3px"
+        android:background="#e5e5e5"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="设置在某群内的消息做转发朋友圈"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        />
+
+    <TextView
+        android:id="@+id/friend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="未设置"
+        android:textColor="#ff0000"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="logout"
+        android:text="退出"
+        android:layout_marginTop="30dp"/>
+</LinearLayout>
