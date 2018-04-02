@@ -33,6 +33,7 @@ import java.util.List;
 import cn.kiway.autoreply.R;
 import cn.kiway.autoreply.entity.Action;
 import cn.kiway.autoreply.service.AutoReplyService;
+import cn.kiway.autoreply.util.RootCmd;
 import cn.kiway.autoreply.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
 
@@ -58,6 +59,7 @@ public class MainActivity extends BaseActivity {
         instance = this;
         initView();
         initListener();
+        checkRoot();
         mHandler.sendEmptyMessage(MSG_INSTALL);
     }
 
@@ -75,6 +77,19 @@ public class MainActivity extends BaseActivity {
                 getSharedPreferences("getPic", 0).edit().putBoolean("getPic", isChecked).commit();
             }
         });
+    }
+
+    public void checkRoot(View v) {
+        boolean have = RootCmd.haveRoot();
+        if (have) {
+            toast("已经拥有Root权限");
+        } else {
+            toast("尚未拥有Root权限");
+        }
+    }
+
+    private void checkRoot() {
+        RootCmd.haveRoot();
     }
 
     @Override

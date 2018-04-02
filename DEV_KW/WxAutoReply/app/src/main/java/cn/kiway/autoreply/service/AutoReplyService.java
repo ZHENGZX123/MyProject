@@ -8,6 +8,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -38,6 +39,7 @@ import java.util.Set;
 import cn.kiway.autoreply.activity.MainActivity;
 import cn.kiway.autoreply.entity.Action;
 import cn.kiway.autoreply.util.Constant;
+import cn.kiway.autoreply.util.RootCmd;
 import cn.kiway.autoreply.util.UploadUtil;
 import cn.kiway.autoreply.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
@@ -241,7 +243,6 @@ public class AutoReplyService extends AccessibilityService {
                 synchronized (o) {
                     currentActionID = -1;
                     actioningFlag = false;
-                    Log.d("test", "唤醒。。。");
                     o.notify();
                 }
             }
@@ -525,7 +526,7 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("test", "----------------findLastMsg------------------");
                     String forwarding = getSharedPreferences("forwarding", 0).getString("forwarding", "");
                     if (TextUtils.isEmpty(forwarding)) {
-                        Toast.makeText(AutoReplyService.instance.getApplicationContext(), "您还没有设置转发对象", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AutoReplyService.instance.getApplicationContext(), "您还没有设置转发对象", Toast.LENGTH_LONG).show();
                         release();
                         return;
                     }
@@ -542,30 +543,39 @@ public class AutoReplyService extends AccessibilityService {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Action action = actions.get(currentActionID);
-                                    int type = action.receiveType;
-                                    Log.d("test", "准备长按 type = " + type);
-                                    lastMsgView.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                                    if (type == TYPE_TXT) {
-                                        lastMsgView.performAction(AccessibilityNodeInfo.ACTION_SELECT);
-                                    }
-                                    lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
+                                    lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);//1500  2000
                                     Log.d("test", "执行长按事件");
                                     handler.postDelayed(new Runnable() {
+
                                         @Override
                                         public void run() {
                                             Log.d("test", "=================findTransferButton===============");
                                             boolean find = findTransferButton(getRootInActiveWindow());
                                             if (!find) {
-                                                Log.d("test", "findTransferButton失败，长按不出来？");
-                                                release();
+                                                Log.d("test", "findTransferButton失败，长按不出来，点击了一下");
+                                                Rect r = new Rect();
+                                                lastMsgView.getBoundsInScreen(r);
+                                                // 生成点击坐标
+                                                int x = r.width() / 2 + r.left;
+                                                int y = r.height() / 2 + r.top;
+                                                String cmd = "input tap " + x + " " + y;
+                                                Log.d("test", "cmd = " + cmd);
+                                                // 执行su命令
+                                                int ret = RootCmd.execRootCmdSilent(cmd);
+                                                Log.d("test", "ret = " + ret);
+                                                handler.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        release();
+                                                    }
+                                                }, 1000);
                                             }
                                         }
                                     }, 2000);
                                 }
                             }, 2000);
                         }
-                    }, 2000);
+                    }, 3000);
                 } else {
                     Log.d("test", "没有匹配的消息，直接release");
                     release();
@@ -586,7 +596,7 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().equals("发送给朋友")) {
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("发送给朋友")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 //跳页
                 handler.postDelayed(new Runnable() {
@@ -694,7 +704,7 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText().equals("发送")) {
+            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText().toString().equals("发送")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 Log.d("test", "转发完成");
                 handler.postDelayed(new Runnable() {
@@ -776,7 +786,7 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().equals("分享到朋友圈")) {
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("分享到朋友圈")) {
                 Log.d("test", "click 分享到朋友圈");
                 AccessibilityNodeInfo parent = nodeInfo.getParent();
                 parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -1089,7 +1099,7 @@ public class AutoReplyService extends AccessibilityService {
                 continue;
             }
             //Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().equals("发送")) {
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("发送")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 handler.postDelayed(new Runnable() {
                     @Override
