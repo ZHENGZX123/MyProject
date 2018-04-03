@@ -14,6 +14,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
 import android.net.NetworkInfo;
@@ -734,7 +735,7 @@ public class Utils {
         return packageName;
     }
 
-    public static Thread temporary_appThread;
+    public static Thread temporaryAppThread;
     public static String packageName = null;
     public static String url = null;
     public static String name = null;
@@ -750,10 +751,10 @@ public class Utils {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (temporary_appThread != null) {
+        if (temporaryAppThread != null) {
             return;
         }
-        temporary_appThread = new Thread() {
+        temporaryAppThread = new Thread() {
             @Override
             public void run() {
                 while (KWApp.temporary_app) {
@@ -778,10 +779,37 @@ public class Utils {
                         }
                     }
                 }
-                temporary_appThread = null;
+                temporaryAppThread = null;
             }
         };
-        temporary_appThread.start();
+        temporaryAppThread.start();
+    }
+
+    private static Thread muteThread;
+
+    public static void muteCheck(final Context c) {
+        if (muteThread != null) {
+            return;
+        }
+        muteThread = new Thread() {
+            @Override
+            public void run() {
+                while (KWApp.muted) {
+                    try {
+                        AudioManager audioManager = (AudioManager) c.getSystemService(Context.AUDIO_SERVICE);
+                        int current = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                        if (current > 0) {
+                            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+                        }
+                        sleep(1000);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                muteThread = null;
+            }
+        };
+        muteThread.start();
     }
 
     public static String getToday() {
@@ -1356,4 +1384,6 @@ public class Utils {
             retStr = "" + i;
         return retStr;
     }
+
+
 }

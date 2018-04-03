@@ -35,7 +35,6 @@ import static com.android.kiway.KWApp.MSG_MESSAGE;
 import static com.android.kiway.KWApp.MSG_MUTE;
 import static com.android.kiway.KWApp.MSG_PARENT_BIND;
 import static com.android.kiway.KWApp.MSG_PORTRAIT;
-import static com.android.kiway.KWApp.MSG_PUSH_FILE;
 import static com.android.kiway.KWApp.MSG_REBOOT;
 import static com.android.kiway.KWApp.MSG_SHUTDOWN;
 import static com.android.kiway.KWApp.MSG_TOAST;
@@ -222,10 +221,6 @@ public class CommandUtil {
                         new MyDBHelper(context).updateNetwork(n);
                     }
                 }
-            } else if (command.equals("file_push")) {
-                JSONObject content = data.getJSONObject("content");
-                m.what = MSG_PUSH_FILE;
-                m.obj = content.toString();
             } else if (command.equals("portrait")) {
                 m.what = MSG_PORTRAIT;
             } else if (command.equals("landscape")) {
