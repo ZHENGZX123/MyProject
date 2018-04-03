@@ -26,12 +26,6 @@
         </activity>
 
         <service android:name=".service.GuideService"></service>
-        <service android:name="cn.kiway.robot.guard.service.RemoteAidlService">
-            <intent-filter>
-                <action android:name="kiway.cn.robot.guard.RemoteAidlService"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </service>
     </application>
 
 </manifest>
