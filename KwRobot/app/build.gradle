@@ -3,8 +3,8 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         kiway {
-//            storeFile file('F:/android_signature/kiway.key')
-            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+           storeFile file('F:/android_signature/kiway.key')
+//            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
             storePassword 'kiway123'
             keyAlias 'kiway'
             keyPassword 'kiway123'
@@ -22,6 +22,12 @@ android {
         jackOptions {
             enabled true
         }
+        externalNativeBuild {
+            cmake {
+                abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+                cppFlags ""
+            }
+        }
     }
 
     buildTypes {
@@ -34,6 +40,25 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.kiway
+        }
+    }
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def fileName = "开维客服机器人.apk"
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java', 'src/main/aidl']
         }
     }
 }
@@ -51,4 +76,5 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile files('libs/wx-reply-zbus-1.0-SNAPSHOT.jar')
     compile 'org.xutils:xutils:3.5.0'
+    compile files('libs/wtoolsdk.jar')
 }
