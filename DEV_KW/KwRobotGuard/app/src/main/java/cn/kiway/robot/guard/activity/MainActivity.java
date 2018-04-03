@@ -20,15 +20,13 @@ public class MainActivity extends Activity {
     }
 
     public void clickWechat(View v) {
-
+        Intent intent = getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
+        startActivity(intent);
     }
 
     public void clickRobot(View v) {
-
-    }
-
-    public void clickSettings(View v) {
-
+        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
+        startActivity(intent);
     }
 
     @Override

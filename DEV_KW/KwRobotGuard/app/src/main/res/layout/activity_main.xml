@@ -30,12 +30,6 @@
             android:onClick="clickRobot"
             android:text="打开客服机器人" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="clickSettings"
-            android:text="打开设置"
-            android:visibility="gone" />
 
     </cn.kiway.robot.guard.view.FlowLayout>
 
