@@ -85,10 +85,29 @@
             android:text="查看转发对象" />
 
         <Button
+            android:onClick="getFriend"
+            android:text="获取所有的好友"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:onClick="groupSend"
+            android:text="群发消息给所有的好友"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <Button
+            android:onClick="getFriendCircle"
+            android:text="获取所有好友的朋友圈"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="test"
-            android:text="测试" />
+            android:text="测试用" />
     </cn.kiway.robot.view.FlowLayout>
 
     <TextView
