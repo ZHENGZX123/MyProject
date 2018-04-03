@@ -112,26 +112,16 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="clickInstruction"
+            android:text="使用说明和注意事项" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:onClick="test"
             android:text="测试"
             android:visibility="gone" />
     </cn.kiway.robot.view.FlowLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="20dp"
-        android:text="使用方法和注意事项：\n
-1、点击开启服务后，返回客服机器人主页面即可。\n
-2、使用期间保持手机屏幕常亮，不能锁屏（最好一直连着充电线，设置不锁屏）。\n
-3、保持微信处于手机后台，不能人为干预：不能打开微信操作。\n
-4、客服机器人APP不能被杀死，最好保持主页面在前台\n
-5、手机系统要7.0以下，最好使用安卓原生系统。推荐手机LG Nexus5。\n
-6、手机不要装360、百度手机助手等一些能杀死APP的软件，关闭各种悬浮控件。\n
-7、手机操作系统暂时只能选择简体中文，其他的不可以。\n
-8、保持手机wifi正常。"
-        android:textColor="#000000"
-        android:textSize="14sp" />
 
 </RelativeLayout>
