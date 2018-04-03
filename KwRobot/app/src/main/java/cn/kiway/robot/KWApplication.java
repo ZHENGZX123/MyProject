@@ -2,7 +2,6 @@ package cn.kiway.robot;
 
 import android.app.Application;
 import android.graphics.Bitmap;
-import android.os.RemoteException;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -18,7 +17,7 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
 import org.xutils.x;
 
-import cn.kiway.robot.aidl.ClientCallback;
+import cn.kiway.robot.util.CrashHandler;
 
 
 /**
@@ -27,9 +26,7 @@ import cn.kiway.robot.aidl.ClientCallback;
 
 public class KWApplication extends Application {
 
-
     public static String ROOT = "/mnt/sdcard/kiway_robot/";
-
 
     @Override
     public void onCreate() {
@@ -37,15 +34,8 @@ public class KWApplication extends Application {
         Log.d("test", "APP onCreate");
         x.Ext.init(this);
         initImageCache();
-       // CrashHandler.getInstance().init(this);
+        CrashHandler.getInstance().init(this);
     }
-
-    public ClientCallback.Stub mClientCallBack = new ClientCallback.Stub() {
-        @Override
-        public void accpterMessage(String msg) throws RemoteException {
-            Log.e("----------", msg);
-        }
-    };
 
     private void initImageCache() {
         DisplayMetrics displayMetrics = getApplicationContext().getResources()

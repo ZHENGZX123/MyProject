@@ -321,7 +321,6 @@ public class MainActivity extends BaseActivity {
     //-----------------------------新增功能------------------------
 
     public void Xposed(View view) {
-
         //1.获取所有的好友
         //2.上报给易敏
         startActivity(new Intent(this, WeChatActivity.class));
