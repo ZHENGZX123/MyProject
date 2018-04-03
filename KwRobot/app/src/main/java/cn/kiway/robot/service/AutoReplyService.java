@@ -469,21 +469,25 @@ public class AutoReplyService extends AccessibilityService {
                 break;
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 Log.d("maptrix", "窗口状态变化");
+                String className = event.getClassName().toString();
+                Log.d("test", "className = " + className);
+                if (!className.startsWith("com.tencent.mm")) {
+                    Log.d("maptrix", "当前不是微信页面return3");
+                    return;
+                }
                 if (currentActionID == -1) {
-                    //TODO 判断是不是视频通话，挂断并关闭页面即可。
                     Log.d("maptrix", "没有事件，return1");
+                    if (className.equals("com.tencent.mm.plugin.voip.ui.VideoActivity")) {
+                        //TODO 判断是不是视频通话，挂断并关闭页面即可。
+                        findHungupButton(getRootInActiveWindow());
+                    }
                     return;
                 }
                 if (actioningFlag) {
                     Log.d("maptrix", "事件进行中，return2");
                     return;
                 }
-                String className = event.getClassName().toString();
-                Log.d("test", "className = " + className);
-                if (!className.startsWith("com.tencent.mm")) {
-                    Log.d("maptrix", "return3");
-                    return;
-                }
+
                 actioningFlag = true;
 
                 int receiveType = actions.get(currentActionID).receiveType;
@@ -622,6 +626,29 @@ public class AutoReplyService extends AccessibilityService {
                 break;
         }
 
+    }
+
+    //找到挂断按钮
+    private boolean findHungupButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("挂断")) {
+                AccessibilityNodeInfo prevNode = rootNode.getChild(i - 1);
+                prevNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                release();
+                return true;
+            }
+            if (findHungupButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void toast(String txt) {
