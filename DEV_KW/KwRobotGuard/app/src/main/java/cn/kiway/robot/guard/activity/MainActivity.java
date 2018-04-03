@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import cn.kiway.robot.guard.R;
-import cn.kiway.robot.guard.aidl.RemoteAidlService;
+import cn.kiway.robot.guard.service.RemoteAidlService;
 
 public class MainActivity extends Activity {
 

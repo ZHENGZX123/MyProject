@@ -1,4 +1,4 @@
-package cn.kiway.robot.guard.aidl;
+package cn.kiway.robot.guard.service;
 
 import android.app.Service;
 import android.content.Intent;
@@ -8,8 +8,8 @@ import android.util.Log;
 
 import android.support.annotation.Nullable;
 
-import cn.kiway.wx.aidl.ClientCallback;
-import cn.kiway.wx.aidl.RemoteInterface;
+import cn.kiway.robot.aidl.ClientCallback;
+import cn.kiway.robot.aidl.RemoteInterface;
 
 /**
  * 服务端，利用AIDL与客户端通信
@@ -26,6 +26,12 @@ public class RemoteAidlService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return mRemoteInterface;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.e("AidlTest","服务启动");
     }
 
     @Override
