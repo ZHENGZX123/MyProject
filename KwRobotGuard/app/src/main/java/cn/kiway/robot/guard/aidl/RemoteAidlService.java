@@ -6,7 +6,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 import cn.kiway.wx.aidl.ClientCallback;
 import cn.kiway.wx.aidl.RemoteInterface;

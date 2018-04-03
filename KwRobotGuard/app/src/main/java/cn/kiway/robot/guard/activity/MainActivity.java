@@ -7,7 +7,6 @@ import android.view.View;
 
 import cn.kiway.robot.guard.R;
 import cn.kiway.robot.guard.aidl.RemoteAidlService;
-import cn.kiway.robot.guard.service.GuideService;
 
 public class MainActivity extends Activity {
 
@@ -16,8 +15,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent i = new Intent(this, GuideService.class);
-        startService(i);
+        //Intent i = new Intent(this, GuideService.class);
+       // startService(i);
     }
 
     public void clickWechat(View v) {
