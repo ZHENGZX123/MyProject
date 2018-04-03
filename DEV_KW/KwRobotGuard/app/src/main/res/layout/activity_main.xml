@@ -30,7 +30,11 @@
             android:onClick="clickRobot"
             android:text="打开客服机器人" />
 
-
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="Text"
+            android:text="测试发消息" />
     </cn.kiway.robot.guard.view.FlowLayout>
 
 
