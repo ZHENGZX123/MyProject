@@ -16,17 +16,13 @@ import android.widget.Toast;
 import com.android.kiway.activity.BaseActivity;
 import com.android.kiway.aidlservice.RemoteAidlService;
 import com.android.kiway.utils.CrashHandler;
-import com.android.kiway.utils.HttpDownload;
 import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.Utils;
 import com.android.kiway.windows.LockSreenService;
 import com.android.kiway.zbus.ZbusHost;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.x;
-
-import java.io.File;
 
 import cn.kiway.mdmsdk.MDMHelper;
 
@@ -48,8 +44,6 @@ public class KWApp extends Application {
     public static final int MSG_LAUNCH_APP = 4;//打开某个APP
     public static final int MSG_LAUNCH_MDM = 5;//打开MDM
     public static final int MSG_FLAGCOMMAND = 6;//flag类型的命令
-    public static final int MSG_PUSH_FILE = 7;//下载文件
-    public static final int MSG_OPEN_FILE = 8;//打开文件
     public static final int MSG_REBOOT = 9;//重启
     public static final int MSG_SHUTDOWN = 10;//关机
     public static final int MSG_PORTRAIT = 11;//横屏
@@ -147,10 +141,6 @@ public class KWApp extends Application {
                 MDMHelper.getAdapter().rebootDevice();
             } else if (msg.what == MSG_SHUTDOWN) {
                 MDMHelper.getAdapter().shutdownDevice();
-            } else if (msg.what == MSG_PUSH_FILE) {
-                handlePushFile(msg.obj.toString());
-            } else if (msg.what == MSG_OPEN_FILE) {
-                Utils.openFile(getApplicationContext(), msg.obj.toString());
             } else if (msg.what == MSG_PORTRAIT) {
                 getSharedPreferences("kiway", 0).edit().putInt("oriantation", 0).commit();
                 if (currentActivity != null && currentActivity instanceof BaseActivity) {
@@ -242,44 +232,6 @@ public class KWApp extends Application {
         x.Ext.init(this);
     }
 
-    private void handlePushFile(String c) {
-        try {
-            JSONObject content = new JSONObject(c);
-            final String url = content.getString("url");
-            String size = content.getString("size");
-            String name = content.getString("name");
-            Toast.makeText(getApplicationContext(), "老师给你发来文件：" + name, Toast.LENGTH_SHORT).show();
-            new Thread() {
-                @Override
-                public void run() {
-                    final String filename = url.substring(url.lastIndexOf("/") + 1);
-                    final String folder = "/mnt/sdcard/kiway_mdm_student/file/";
-                    final String filePath = folder + filename;
-                    //文件已存在,直接打开
-                    if (new File(filePath).exists()) {
-                        Message m = new Message();
-                        m.what = MSG_OPEN_FILE;
-                        m.obj = filePath;
-                        mHandler.sendMessage(m);
-                        return;
-                    }
-                    //1.下载文件
-                    //2.弹出提示
-                    int ret = new HttpDownload().downFile(url, folder, filename);
-                    Log.d("test", "download ret = " + ret);
-                    if (ret == -1) {
-                        return;
-                    }
-                    Message m = new Message();
-                    m.what = MSG_OPEN_FILE;
-                    m.obj = filePath;
-                    mHandler.sendMessage(m);
-                }
-            }.start();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void excuteFlagCommand() {
         int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
@@ -329,6 +281,7 @@ public class KWApp extends Application {
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         lastVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+        Utils.muteCheck(getApplicationContext());
     }
 
     public void unMute() {
