@@ -1,0 +1,15 @@
+Executable : D:\MySoftl\Android\sdk\cmake\3.6.4111459\bin\cmake.exe
+arguments : 
+-HF:\kiway_xm\KwRobot\app
+-BF:\kiway_xm\KwRobot\app\.externalNativeBuild\cmake\debug\armeabi-v7a
+-GAndroid Gradle - Ninja
+-DANDROID_ABI=armeabi-v7a
+-DANDROID_NDK=D:\MySoftl\Android\sdk\ndk-bundle
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=F:\kiway_xm\KwRobot\app\build\intermediates\cmake\debug\obj\armeabi-v7a
+-DCMAKE_BUILD_TYPE=Debug
+-DCMAKE_MAKE_PROGRAM=D:\MySoftl\Android\sdk\cmake\3.6.4111459\bin\ninja.exe
+-DCMAKE_TOOLCHAIN_FILE=D:\MySoftl\Android\sdk\ndk-bundle\build\cmake\android.toolchain.cmake
+-DANDROID_PLATFORM=android-16
+-DCMAKE_CXX_FLAGS=
+jvmArgs : 
+

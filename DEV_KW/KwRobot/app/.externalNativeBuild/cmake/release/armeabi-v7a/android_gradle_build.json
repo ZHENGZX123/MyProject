@@ -1,0 +1,16 @@
+
+{
+	"buildFiles" : [ "F:/kiway_xm/KwRobot/app/CMakeLists.txt" ],
+	"cleanCommands" : 
+	[
+		"D:\\MySoftl\\Android\\sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build F:\\kiway_xm\\KwRobot\\app\\.externalNativeBuild\\cmake\\release\\armeabi-v7a --target clean"
+	],
+	"toolchains" : 
+	{
+		"2477139145" : 
+		{
+			"cCompilerExecutable" : "D:/MySoftl/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe",
+			"cppCompilerExecutable" : "D:/MySoftl/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe"
+		}
+	}
+}
