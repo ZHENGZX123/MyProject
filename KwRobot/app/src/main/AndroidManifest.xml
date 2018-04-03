@@ -47,6 +47,11 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"></activity>
 
+        <activity
+            android:name=".activity.InstructionActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
+
         <service
             android:name=".service.AutoReplyService"
             android:enabled="true"

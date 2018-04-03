@@ -27,6 +27,13 @@ public class RootCmd {
         return mHaveRoot;
     }
 
+
+    public static boolean testCmd() {
+        String cmd = "input tap 100 100";
+        int ret = RootCmd.execRootCmdSilent(cmd);
+        return ret == 0;
+    }
+
     // 执行命令并且输出结果  
     public static String execRootCmd(String cmd) {
         String result = "";

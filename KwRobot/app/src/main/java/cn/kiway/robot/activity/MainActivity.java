@@ -311,6 +311,10 @@ public class MainActivity extends BaseActivity {
         dialog_download.show();
     }
 
+    public void clickInstruction(View view) {
+        startActivity(new Intent(this, InstructionActivity.class));
+    }
+
     //-----------------------------新增功能------------------------
 
     public void getFriend(View view) {
