@@ -66,18 +66,23 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
      */
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
+        Log.d("test", "全局异常 ex = " + ex.toString());
         if (!handleException(ex) && mDefaultHandler != null) {
             //如果用户没有处理则让系统默认的异常处理器来处理
             mDefaultHandler.uncaughtException(thread, ex);
         } else {
-//            try {
-//                Thread.sleep(3000);
-//            } catch (InterruptedException e) {
-//                Log.e(TAG, "error : ", e);
-//            }
-//            //退出程序
-//            android.os.Process.killProcess(android.os.Process.myPid());
-//            System.exit(1);
+            //zbus的异常过滤掉
+            if (ex.toString().startsWith("java.util.concurrent.RejectedExecutionException")) {
+                return;
+            }
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                Log.e(TAG, "error : ", e);
+            }
+            //退出程序
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(1);
         }
     }
 
@@ -91,7 +96,6 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         if (ex == null) {
             return false;
         }
-        Log.d("test", "全局异常 ex = " + ex.toString());
         //保存日志文件
         saveCrashInfo2File(ex);
         return true;

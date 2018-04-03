@@ -99,14 +99,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    /**
-     * 回到系统桌面
-     */
-    private void back2Home() {
-//        Intent home = new Intent(Intent.ACTION_MAIN);
-//        home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        home.addCategory(Intent.CATEGORY_HOME);
-//        startActivity(home);
+    private void backToRobot() {
         Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
         startActivity(intent);
     }
@@ -238,7 +231,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private void release() {
         handler.removeMessages(MSG_CLEAR_ACTION);
-        back2Home();
+        backToRobot();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
