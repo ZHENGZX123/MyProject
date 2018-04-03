@@ -33,37 +33,51 @@ public class GuideService extends Service {
                 while (!stop) {
                     Log.d("test", "guard is running ...");
                     try {
-                        sleep(5 * 1000);
+                        sleep(10 * 1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    boolean isRun = isRun(GuideService.this.getApplicationContext());
-                    Log.d("test", "isRun = " + isRun);
-                    if (!isRun) {
+                    boolean isRun1 = isRun(GuideService.this, "cn.kiway.robot");
+                    Log.d("test", "isRun1 = " + isRun1);
+                    if (!isRun1) {
                         Log.d("test", "启动机器人");
-                        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
-                        startActivity(intent);
+                        //上报给易敏
                     }
+
+                    boolean isRun2 = isRun(GuideService.this, "com.tencent.mm");
+                    Log.d("test", "isRun2 = " + isRun2);
+                    if (!isRun2) {
+                        Log.d("test", "启动微信");
+                        Intent intent = getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
+                        startActivity(intent);
+                        try {
+                            sleep(5000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        Intent home = new Intent(Intent.ACTION_MAIN);
+                        home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        home.addCategory(Intent.CATEGORY_HOME);
+                        startActivity(home);
+                    }
+
+
                 }
             }
         }.start();
     }
 
-    public boolean isRun(Context context) {
+    public boolean isRun(Context context, String packageName) {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(100);
         boolean isAppRunning = false;
-        String MY_PKG_NAME = "cn.kiway.robot";
         //100表示取的最大的任务数，info.topActivity表示当前正在运行的Activity，info.baseActivity表系统后台有此进程在运行
         for (ActivityManager.RunningTaskInfo info : list) {
-            if (info.topActivity.getPackageName().equals(MY_PKG_NAME) || info.baseActivity.getPackageName().equals(MY_PKG_NAME)) {
+            if (info.topActivity.getPackageName().equals(packageName) || info.baseActivity.getPackageName().equals(packageName)) {
                 isAppRunning = true;
-                Log.i("ActivityService isRun()", info.topActivity.getPackageName() + " info.baseActivity.getPackageName()=" + info.baseActivity.getPackageName());
                 break;
             }
         }
-
-        Log.i("ActivityService isRun()", "com.ad 程序   ...isAppRunning......" + isAppRunning);
         return isAppRunning;
     }
 
@@ -76,7 +90,7 @@ public class GuideService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("test", "GuideService onStartCommand");
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     @Override
