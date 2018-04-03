@@ -181,7 +181,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test(View v) {
-        System.out.println(100/0);
+        System.out.println(100 / 0);
 //        Action a = new Action();
 //        a.sender = "test";
 //        a.content = "content";
@@ -299,5 +299,21 @@ public class MainActivity extends BaseActivity {
             }
         }).create();
         dialog_download.show();
+    }
+
+    //-----------------------------新增功能------------------------
+    
+    public void getFriend(View view) {
+        //1.获取所有的好友
+        //2.上报给易敏
+    }
+
+    public void groupSend(View view) {
+        //群发文字、群发卡片给所有好友
+    }
+
+    public void getFriendCircle(View view) {
+        //1.获取所有好友的朋友圈
+        //2.上报给易敏
     }
 }
