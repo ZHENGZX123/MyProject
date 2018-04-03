@@ -46,7 +46,10 @@
             android:name=".activity.FilterActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"></activity>
-
+        <activity
+            android:name=".activity.WeChatActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".activity.InstructionActivity"
             android:launchMode="singleTask"
