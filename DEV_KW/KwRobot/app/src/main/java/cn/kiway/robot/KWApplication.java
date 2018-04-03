@@ -1,5 +1,6 @@
 package cn.kiway.robot;
 
+import android.app.Application;
 import android.graphics.Bitmap;
 import android.os.RemoteException;
 import android.util.DisplayMetrics;
@@ -24,7 +25,7 @@ import cn.kiway.robot.aidl.ClientCallback;
  * Created by Administrator on 2018/3/21.
  */
 
-public class KWApplication extends KiwayApplication {
+public class KWApplication extends Application {
 
 
     public static String ROOT = "/mnt/sdcard/kiway_robot/";
@@ -34,7 +35,6 @@ public class KWApplication extends KiwayApplication {
     public void onCreate() {
         super.onCreate();
         Log.d("test", "APP onCreate");
-        connectService(mClientCallBack);
         x.Ext.init(this);
         initImageCache();
        // CrashHandler.getInstance().init(this);

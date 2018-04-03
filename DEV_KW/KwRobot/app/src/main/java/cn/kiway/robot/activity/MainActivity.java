@@ -31,7 +31,6 @@ import org.xutils.x;
 import java.io.File;
 import java.util.List;
 
-import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.R;
 import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.service.AutoReplyService;
@@ -328,7 +327,4 @@ public class MainActivity extends BaseActivity {
         startActivity(new Intent(this, WeChatActivity.class));
     }
 
-    public void aidl(View view) {
-        ((KWApplication) getApplicationContext()).sendMessage("客户端发个服务器");
-    }
 }
