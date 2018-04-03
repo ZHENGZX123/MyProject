@@ -200,7 +200,7 @@ public class MainActivity extends BaseActivity {
         a.content = "content";
         a.receiveType = Action.TYPE_TEST;
         if (AutoReplyService.instance != null) {
-            AutoReplyService.instance.sendMsgToServer(9999, a);
+            AutoReplyService.instance.sendMsgToServer(System.currentTimeMillis(), a);
         }
     }
 
