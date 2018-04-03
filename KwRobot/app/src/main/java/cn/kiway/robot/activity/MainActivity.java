@@ -31,6 +31,7 @@ import org.xutils.x;
 import java.io.File;
 import java.util.List;
 
+import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.R;
 import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.service.AutoReplyService;
@@ -126,14 +127,17 @@ public class MainActivity extends BaseActivity {
                 String name = getSharedPreferences("kiway", 0).getString("name", "");
                 int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0);
                 int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0);
-                nameTV.setText("昵称：" + name + "  IMEI：" + Utils.getIMEI(getApplication()) + "\n" + "接收次数：" + recvCount + "，回复次数：" + replyCount);
+                nameTV.setText("昵称：" + name + "  IMEI：" + Utils.getIMEI(getApplication()) + "\n" + "接收次数：" +
+                        recvCount + "，回复次数：" + replyCount);
             }
         });
     }
 
     private boolean isServiceEnabled() {
-        AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
-        List<AccessibilityServiceInfo> accessibilityServices = accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
+        AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(Context
+                .ACCESSIBILITY_SERVICE);
+        List<AccessibilityServiceInfo> accessibilityServices = accessibilityManager
+                .getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
         for (AccessibilityServiceInfo info : accessibilityServices) {
             if (info.getId().equals(getPackageName() + "/.service.AutoReplyService")) {
                 return true;
@@ -317,17 +321,14 @@ public class MainActivity extends BaseActivity {
 
     //-----------------------------新增功能------------------------
 
-    public void getFriend(View view) {
+    public void Xposed(View view) {
+
         //1.获取所有的好友
         //2.上报给易敏
+        startActivity(new Intent(this, WeChatActivity.class));
     }
 
-    public void groupSend(View view) {
-        //群发文字、群发卡片给所有好友
-    }
-
-    public void getFriendCircle(View view) {
-        //1.获取所有好友的朋友圈
-        //2.上报给易敏
+    public void aidl(View view) {
+        ((KWApplication) getApplicationContext()).sendMessage("客户端发个服务器");
     }
 }
