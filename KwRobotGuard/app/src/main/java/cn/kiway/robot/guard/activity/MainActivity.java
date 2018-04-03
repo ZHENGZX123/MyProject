@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import cn.kiway.robot.guard.R;
-import cn.kiway.robot.guard.service.RemoteAidlService;
 
 public class MainActivity extends Activity {
 
@@ -27,10 +26,6 @@ public class MainActivity extends Activity {
     public void clickRobot(View v) {
         Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
         startActivity(intent);
-    }
-
-    public void Text(View v) {
-        RemoteAidlService.sendClientMsg("服务器发给客户端测试消息");
     }
 
     @Override
