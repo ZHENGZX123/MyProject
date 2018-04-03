@@ -32,6 +32,7 @@ import java.io.File;
 import java.util.List;
 
 import cn.kiway.robot.R;
+import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
@@ -91,6 +92,15 @@ public class MainActivity extends BaseActivity {
                 }
             }
         }.start();
+    }
+
+    public void checkRemark(View v) {
+        String remark = getSharedPreferences("remark", 0).getString("remark", "");
+        if (TextUtils.isEmpty(remark)) {
+            toast("您还没有设置朋友圈备注");
+        } else {
+            toast("当前朋友圈备注：" + remark);
+        }
     }
 
     public void checkForwarding(View v) {
@@ -181,14 +191,14 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test(View v) {
-        System.out.println(100 / 0);
-//        Action a = new Action();
-//        a.sender = "test";
-//        a.content = "content";
-//        a.receiveType = Action.TYPE_TEST;
-//        if (AutoReplyService.instance != null) {
-//            AutoReplyService.instance.sendMsgToServer(9999, a);
-//        }
+        //System.out.println(100 / 0);
+        Action a = new Action();
+        a.sender = "test";
+        a.content = "content";
+        a.receiveType = Action.TYPE_TEST;
+        if (AutoReplyService.instance != null) {
+            AutoReplyService.instance.sendMsgToServer(9999, a);
+        }
     }
 
     private void updateServiceStatus() {
@@ -302,7 +312,7 @@ public class MainActivity extends BaseActivity {
     }
 
     //-----------------------------新增功能------------------------
-    
+
     public void getFriend(View view) {
         //1.获取所有的好友
         //2.上报给易敏
