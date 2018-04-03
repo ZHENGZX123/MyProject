@@ -33,7 +33,7 @@ public class GuideService extends Service {
                 while (!stop) {
                     Log.d("test", "guard is running ...");
                     try {
-                        sleep(10 * 1000);
+                        sleep(60 * 1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -55,10 +55,8 @@ public class GuideService extends Service {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        Intent home = new Intent(Intent.ACTION_MAIN);
-                        home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        home.addCategory(Intent.CATEGORY_HOME);
-                        startActivity(home);
+                        Intent intent2 = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot.guard");
+                        startActivity(intent2);
                     }
 
 
