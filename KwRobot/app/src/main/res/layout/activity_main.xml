@@ -85,6 +85,12 @@
             android:text="查看转发对象" />
 
         <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="checkRemark"
+            android:text="查看朋友圈备注" />
+
+        <Button
             android:onClick="getFriend"
             android:text="获取所有的好友"
             android:layout_width="wrap_content"

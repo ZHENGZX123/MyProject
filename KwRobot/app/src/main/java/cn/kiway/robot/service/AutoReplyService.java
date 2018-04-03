@@ -55,6 +55,7 @@ import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_LINK;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_SET_FORWARDING;
+import static cn.kiway.robot.entity.Action.TYPE_SET_REMARK;
 import static cn.kiway.robot.entity.Action.TYPE_TRANSMIT;
 import static cn.kiway.robot.entity.Action.TYPE_TXT;
 import static cn.kiway.robot.util.Constant.APPID;
@@ -395,6 +396,8 @@ public class AutoReplyService extends AccessibilityService {
                     if (sender.equals("朋友圈使者") && content.startsWith("[链接]")) {
                         //需要转发到朋友圈
                         action.receiveType = TYPE_LINK;
+                    } else if (sender.equals("朋友圈使者") && content.startsWith("设置朋友圈备注：")) {
+                        action.receiveType = TYPE_SET_REMARK;
                     } else if (sender.equals("转发使者") && content.startsWith("设置转发对象：")) {
                         action.receiveType = TYPE_SET_FORWARDING;
                     } else if (sender.equals("转发使者") && !content.equals("[语音]") && !content.equals("[动画表情]") && !content.contains("向你推荐了") && !content.startsWith("[微信红包]")) {
@@ -444,6 +447,16 @@ public class AutoReplyService extends AccessibilityService {
                         }
                         getSharedPreferences("forwarding", 0).edit().putString("forwarding", forwarding).commit();
                         toast("设置转发对象成功");
+                        handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 30000);
+                        currentActionID = id;
+                        launchWechat();
+                    } else if (action.receiveType == TYPE_SET_REMARK) {
+                        String remark = action.content.replace("设置朋友圈备注：", "").trim();
+                        if (TextUtils.isEmpty(remark)) {
+                            continue;
+                        }
+                        getSharedPreferences("remark", 0).edit().putString("remark", remark).commit();
+                        toast("设置朋友圈备注成功");
                         handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 30000);
                         currentActionID = id;
                         launchWechat();
@@ -530,7 +543,7 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }
                     }, 10000);//防止页面加载不完整
-                } else if (receiveType == TYPE_SET_FORWARDING) {
+                } else if (receiveType == TYPE_SET_FORWARDING || receiveType == TYPE_SET_REMARK) {
                     Action action = actions.get(currentActionID);
                     action.reply.add("设置成功！");
                     sendTxt();
@@ -608,6 +621,7 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 break;
         }
+
     }
 
     private void toast(String txt) {
@@ -934,10 +948,11 @@ public class AutoReplyService extends AccessibilityService {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d("test", "----------findSendImageButton------------------");
-                        boolean find = findSendImageButton(getRootInActiveWindow());
+                        //输入：这一刻的想法
+                        String remark = getSharedPreferences("remark", 0).getString("remark", "");
+                        Log.d("test", "--------------------findMindEditText----------");
+                        boolean find = findMindEditText(getRootInActiveWindow(), remark);
                         if (!find) {
-                            Log.d("test", "找不到发送按钮，relase");
                             release();
                         }
                     }
@@ -945,6 +960,48 @@ public class AutoReplyService extends AccessibilityService {
                 return true;
             }
             if (findShareButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private boolean findMindEditText(AccessibilityNodeInfo rootNode, String mind) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.EditText")) {
+                Bundle arguments = new Bundle();
+                arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
+                        AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
+                arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN, true);
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY, arguments);
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+                ClipData clip = ClipData.newPlainText("label", mind);
+                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                clipboardManager.setPrimaryClip(clip);
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "----------findSendImageButton------------------");
+                        boolean find = findSendImageButton(getRootInActiveWindow());
+                        if (!find) {
+                            Log.d("test", "找不到发送按钮，relase");
+                            release();
+                        }
+                    }
+                }, 1000);
+                return true;
+            }
+            if (findMindEditText(nodeInfo, mind)) {
                 return true;
             }
         }
@@ -1233,14 +1290,13 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private boolean findSendImageButton(AccessibilityNodeInfo rootNode) {
-        //Log.d("test", "findSendImageButton");
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
             if (nodeInfo == null) {
                 continue;
             }
-            //Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
             if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("发送")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 handler.postDelayed(new Runnable() {
