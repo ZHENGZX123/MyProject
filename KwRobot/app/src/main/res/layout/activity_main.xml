@@ -131,6 +131,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:visibility="gone"
         android:layout_margin="20dp"
         android:text="使用方法和注意事项：\n
 1、点击开启服务后，返回客服机器人主页面即可。\n
