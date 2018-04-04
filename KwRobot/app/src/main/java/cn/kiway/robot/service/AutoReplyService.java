@@ -157,9 +157,7 @@ public class AutoReplyService extends AccessibilityService {
                                         handler.post(new Runnable() {
                                             @Override
                                             public void run() {
-                                                //目前只有文字回复
-                                                currentActionID = id;
-                                                handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 10000);
+
                                                 int size = returnMessage.length();
                                                 action.returnMessages.clear();
                                                 for (int i = 0; i < size; i++) {
@@ -172,6 +170,9 @@ public class AutoReplyService extends AccessibilityService {
                                                         e.printStackTrace();
                                                     }
                                                 }
+                                                //FIXME 目前只有文字回复
+                                                handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 30000);
+                                                currentActionID = id;
                                                 launchWechat();
                                             }
                                         });
