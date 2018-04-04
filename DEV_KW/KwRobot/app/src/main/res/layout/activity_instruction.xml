@@ -19,6 +19,6 @@
 7、手机操作系统暂时只能选择简体中文，其他的不可以。\n
 8、保持手机wifi正常。"
         android:textColor="#000000"
-        android:textSize="14sp" />
+        android:textSize="16sp" />
 
 </LinearLayout>
