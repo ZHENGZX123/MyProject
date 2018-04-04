@@ -615,7 +615,6 @@ public class AutoReplyService extends AccessibilityService {
                             //1.如果是名片，判断一下是个人名片还是企业名片.
                             String content = actions.get(currentActionID).content;
                             if (content.contains("向你推荐了")) {
-                                //这里如果是个人公众号，要点一下
                                 lastTextView = null;
                                 Log.d("test", "=============getLastTextView=============");
                                 getLastTextView(getRootInActiveWindow());
@@ -623,9 +622,12 @@ public class AutoReplyService extends AccessibilityService {
                                 boolean isPublic = text.equals("公众号名片");
                                 Log.d("test", "isPublic = " + isPublic);
                                 if (isPublic) {
+                                    //众号号名片
                                     doLongClickLastMsg();
                                 } else {
-                                    //TODO
+                                    //个人公众号
+                                    sendTextOnly("个人名片暂时不支持转发");
+                                    release();
                                 }
                             } else {
                                 doLongClickLastMsg();
