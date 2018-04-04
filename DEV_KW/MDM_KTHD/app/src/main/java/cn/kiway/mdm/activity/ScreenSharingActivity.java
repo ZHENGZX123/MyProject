@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -68,8 +69,13 @@ public class ScreenSharingActivity extends BaseActivity {
                 AgoraVideoFrame vf = new AgoraVideoFrame();
                 vf.format = AgoraVideoFrame.FORMAT_TEXTURE_OES;
                 vf.timeStamp = frame.pts;
-                vf.stride = frame.mFormat.mWidth + 150;
-                vf.height = frame.mFormat.mHeight;
+                if (Build.MODEL.equals("rk3288") || Build.MODEL.equals("rk3368-P9")) {
+                    vf.stride = frame.mFormat.mHeight;
+                    vf.height = frame.mFormat.mWidth;
+                } else {
+                    vf.stride = frame.mFormat.mWidth;
+                    vf.height = frame.mFormat.mHeight;
+                }
                 vf.textureID = frame.mTextureId;
                 vf.syncMode = true;
                 vf.eglContext14 = mScreenGLRender.getEGLContext();

@@ -17,8 +17,8 @@ android {
         applicationId "cn.kiway.session"
         minSdkVersion 21
         targetSdkVersion 22
-        versionCode 10
-        versionName "0.1.0"
+        versionCode 12
+        versionName "0.1.2"
         jackOptions {
             enabled true
         }
