@@ -17,7 +17,9 @@ public class Action {
     public static final int TYPE_SET_FORWARDING = 101;//设置消息转发对象
     public static final int TYPE_SET_REMARK = 102;//设置朋友圈转发备注
     public static final int TYPE_REQUEST_FRIEND = 103;//好友请求
-    public static final int TYPE_REDPACKAGE= 104;//红包
+    public static final int TYPE_REDPACKAGE = 104;//红包
+    public static final int TYPE_TRANSFER = 105;//转账
+
 
     public static final int TYPE_TEST = 9999;
 
