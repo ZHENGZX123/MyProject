@@ -48,7 +48,8 @@ public class WelcomeActivity extends BaseActivity {
 
     //下面是版本更新相关
     public void checkNewVersion() {
-        final String checkUrl = WXApplication.url + "/static/download/version/zip_school.json";
+        final String checkUrl = WXApplication.url2 + "/static/download/version/zip_school.json";
+        Log.d("test", "checkUrl = " + checkUrl);
         new Thread() {
             @Override
             public void run() {
