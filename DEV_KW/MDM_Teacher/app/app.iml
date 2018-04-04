@@ -89,23 +89,32 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/transforms" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 25 Platform (1)" jdkType="Android SDK" />
+    <content url="file://$MODULE_DIR$/../build/intermediates/Mob/assets">
+      <sourceFolder url="file://$MODULE_DIR$/../build/intermediates/Mob/assets" type="java-resource" />
+    </content>
+    <orderEntry type="jdk" jdkName="Android API 25 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="zbus-0.11.3" level="project" />
     <orderEntry type="library" exported="" name="pieviewlibrary-2.0.3" level="project" />
     <orderEntry type="library" exported="" name="picasso-2.5.2" level="project" />
     <orderEntry type="library" exported="" name="gson-2.8.0" level="project" />
     <orderEntry type="library" exported="" name="constraint-layout-1.0.2" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Moments-3.1.4" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-QZone-3.1.4" level="project" />
     <orderEntry type="library" exported="" name="Luban-1.1.3" level="project" />
     <orderEntry type="library" exported="" name="transition-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="ijkplayer-armv7a-0.7.7.1" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-3.1.4" level="project" />
     <orderEntry type="library" exported="" name="design-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-Wechat-3.1.4" level="project" />
     <orderEntry type="library" exported="" name="sdk-android-14.12" level="project" />
     <orderEntry type="library" exported="" name="support-core-ui-25.3.1" level="project" />
-    <orderEntry type="library" exported="" name="sharesdk-0.0.10" level="project" />
     <orderEntry type="library" exported="" name="zip4j_1.3.1" level="project" />
+    <orderEntry type="library" exported="" name="MobGUI-2018.0322.1147" level="project" />
+    <orderEntry type="library" exported="" name="OneKeyShare-3.1.4" level="project" />
     <orderEntry type="library" exported="" name="android-crop-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="xutils-3.5.0" level="project" />
+    <orderEntry type="library" exported="" name="SDKWrapper-2018.0201.1609" level="project" />
     <orderEntry type="library" exported="" name="support-core-utils-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="support-fragment-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="ijkplayer-exo-0.7.7.1" level="project" />
@@ -113,7 +122,9 @@
     <orderEntry type="library" exported="" name="push-server-zbus-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="fastjson-1.2.24" level="project" />
     <orderEntry type="library" exported="" name="hutool-all-3.2.3" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Core-3.1.4" level="project" />
     <orderEntry type="library" exported="" name="gt_sdk_3.1.0" level="project" />
+    <orderEntry type="library" exported="" name="MobCommons-2018.0322.1145" level="project" />
     <orderEntry type="library" exported="" name="tbs_sdk_thirdapp_v3.5.0.1004_43500_sharewithdownload_withoutGame_obfs_20170801_113025" level="project" />
     <orderEntry type="library" exported="" name="libvideoprp-unspecified" level="project" />
     <orderEntry type="library" exported="" name="ijkplayer-java-0.7.7.1" level="project" />
@@ -121,6 +132,7 @@
     <orderEntry type="library" exported="" name="support-v4-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="support-media-compat-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="multidex-1.0.0" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-QQ-3.1.4" level="project" />
     <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-25.3.1" level="project" />
@@ -129,6 +141,7 @@
     <orderEntry type="library" exported="" name="image_compress" level="project" />
     <orderEntry type="library" exported="" name="support-compat-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="animated-vector-drawable-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="MobTools-2018.0322.1147" level="project" />
     <orderEntry type="module" module-name="AgoraPlayer" exported="" />
     <orderEntry type="module" module-name="qsvideoplayer" exported="" />
     <orderEntry type="module" module-name="AgoraPusher" exported="" />
@@ -138,8 +151,8 @@
     <orderEntry type="library" exported="" name="org.apache.http.legacy-android-25" level="project" />
     <orderEntry type="library" exported="" name="agora-rtc-sdk" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="hamcrest-core-1.3" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="junit-4.12" level="project" />
     <orderEntry type="library" exported="" name="exo-2.0.4" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="junit-4.12" level="project" />
     <orderEntry type="library" exported="" name="constraint-layout-solver-1.0.2" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.5" level="project" />
     <orderEntry type="library" exported="" name="support-v4-18.0.0" level="project" />
