@@ -61,6 +61,7 @@ import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_SET_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_SET_REMARK;
 import static cn.kiway.robot.entity.Action.TYPE_TEXT;
+import static cn.kiway.robot.entity.Action.TYPE_TRANSFER;
 import static cn.kiway.robot.entity.Action.TYPE_TRANSMIT;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.clientUrl;
@@ -448,6 +449,8 @@ public class AutoReplyService extends AccessibilityService {
                     if (content.startsWith("[微信红包]")) {
                         //需要转发到朋友圈
                         action.receiveType = TYPE_REDPACKAGE;
+                    } else if (content.startsWith("[转账]")) {
+                        action.receiveType = TYPE_TRANSFER;
                     } else if (sender.equals("朋友圈使者") && content.startsWith("[链接]")) {
                         //需要转发到朋友圈
                         action.receiveType = TYPE_LINK;
@@ -504,6 +507,8 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (action.receiveType == TYPE_REQUEST_FRIEND) {
                         launchWechat(id);
                     } else if (action.receiveType == TYPE_REDPACKAGE) {
+                        launchWechat(id);
+                    } else if (action.receiveType == TYPE_TRANSFER) {
                         launchWechat(id);
                     }
                 }
@@ -669,12 +674,55 @@ public class AutoReplyService extends AccessibilityService {
                             findOpenPackageButton(getRootInActiveWindow());
                         }
                     }, 3000);
+                } else if (receiveType == TYPE_TRANSFER) {
+                    Log.d("test", "================TYPE_TRANSFER=================");
+                    lastTextView = null;
+                    findLastTransferMsg(getRootInActiveWindow());
+                    if (lastTextView == null) {
+                        release();
+                        return;
+                    }
+                    AccessibilityNodeInfo parent = lastTextView.getParent();
+                    parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //找到“确认收款”按钮
+                            findConfirmationButton(getRootInActiveWindow());
+                        }
+                    }, 3000);
                 } else {
                     Log.d("test", "没有匹配的消息，直接release");
                     release();
                 }
                 break;
         }
+    }
+
+    private boolean findConfirmationButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.Button")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        release();
+                    }
+                }, 5000);
+                return true;
+            }
+            if (findConfirmationButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean findOpenPackageButton(AccessibilityNodeInfo rootNode) {
@@ -697,6 +745,25 @@ public class AutoReplyService extends AccessibilityService {
                 return true;
             }
             if (findOpenPackageButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findLastTransferMsg(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("微信转账")) {
+                lastTextView = nodeInfo;
+            }
+            if (findLastTransferMsg(nodeInfo)) {
                 return true;
             }
         }
