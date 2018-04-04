@@ -16,8 +16,8 @@ android {
         applicationId "cn.kiway.mdm.school"
         minSdkVersion 18
         targetSdkVersion 20
-        versionCode 1
-        versionName "0.0.1"
+        versionCode 12
+        versionName "0.1.2"
     }
     buildTypes {
         release {

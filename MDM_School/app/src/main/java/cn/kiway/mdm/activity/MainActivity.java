@@ -127,6 +127,7 @@ public class MainActivity extends BaseActivity {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
+        settings.setSavePassword(false);
         wv.setWebViewClient(new MyWebViewClient());
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new WebChromeClient());
@@ -182,11 +183,13 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public String getIMEI() {
+            Log.d("test", "getIMEI is called");
             return Utils.getIMEI(MainActivity.this);
         }
 
         @JavascriptInterface
         public String getHost() {
+            Log.d("test", "getHost is called");
             return WXApplication.url;
         }
 

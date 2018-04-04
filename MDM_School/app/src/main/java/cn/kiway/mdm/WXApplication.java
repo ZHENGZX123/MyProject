@@ -24,7 +24,7 @@ import ly.count.android.api.Countly;
 
 public class WXApplication extends Application {
 
-        public static String url = "http://mdm.kiway.cn:8085";
+    public static String url = "http://mdm.kiway.cn:8083";
 //    public static String url = "http://192.168.8.161/mdms";
 
     public static String ROOT = "/mnt/sdcard/kiway_mdm_school/";
