@@ -41,6 +41,7 @@ import java.util.Set;
 
 import cn.kiway.robot.activity.MainActivity;
 import cn.kiway.robot.entity.Action;
+import cn.kiway.robot.entity.ReturnMessage;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.UploadUtil;
@@ -57,7 +58,7 @@ import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_SET_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_SET_REMARK;
 import static cn.kiway.robot.entity.Action.TYPE_TRANSMIT;
-import static cn.kiway.robot.entity.Action.TYPE_TXT;
+import static cn.kiway.robot.entity.Action.TYPE_TEXT;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.clientUrl;
 
@@ -160,10 +161,13 @@ public class AutoReplyService extends AccessibilityService {
                                                 currentActionID = id;
                                                 handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 10000);
                                                 int size = returnMessage.length();
-                                                action.reply.clear();
+                                                action.returnMessages.clear();
                                                 for (int i = 0; i < size; i++) {
                                                     try {
-                                                        action.reply.add(returnMessage.getJSONObject(i).getString("content"));
+                                                        ReturnMessage rm = new ReturnMessage();
+                                                        rm.returnType = returnMessage.getJSONObject(i).getInt("returnType");
+                                                        rm.content = returnMessage.getJSONObject(i).getString("content");
+                                                        action.returnMessages.add(rm);
                                                     } catch (JSONException e) {
                                                         e.printStackTrace();
                                                     }
@@ -410,7 +414,7 @@ public class AutoReplyService extends AccessibilityService {
                         action.receiveType = TYPE_REQUEST_FRIEND;
                     } else {
                         //文字直接回复
-                        action.receiveType = TYPE_TXT;
+                        action.receiveType = TYPE_TEXT;
                     }
 
                     if (actions.size() > 100000) {
@@ -418,7 +422,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     actions.put(id, action);
 
-                    if (action.receiveType == TYPE_TXT) {
+                    if (action.receiveType == TYPE_TEXT) {
                         //刷新界面
                         int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0) + 1;
                         getSharedPreferences("kiway", 0).edit().putInt("recvCount", recvCount).commit();
@@ -493,7 +497,7 @@ public class AutoReplyService extends AccessibilityService {
                 int receiveType = actions.get(currentActionID).receiveType;
                 boolean uploaded = actions.get(currentActionID).uploaded;
                 //1.发送文字回复
-                if (receiveType == TYPE_TXT) {
+                if (receiveType == TYPE_TEXT) {
                     sendTxt();
                     release();
                     int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0) + 1;
@@ -549,7 +553,7 @@ public class AutoReplyService extends AccessibilityService {
                     }, 10000);//防止页面加载不完整
                 } else if (receiveType == TYPE_SET_FORWARDING || receiveType == TYPE_SET_REMARK) {
                     Action action = actions.get(currentActionID);
-                    action.reply.add("设置成功！");
+                    action.returnMessages.add(new ReturnMessage(TYPE_TEXT, "设置成功！"));
                     sendTxt();
                     release();
                 } else if (receiveType == TYPE_TRANSMIT) {
@@ -560,7 +564,7 @@ public class AutoReplyService extends AccessibilityService {
                         toast("您还没有设置转发对象");
                         //回复给微信
                         Action action = actions.get(currentActionID);
-                        action.reply.add("您还没有设置转发对象，设置方法：请输入“设置转发对象：昵称”");
+                        action.returnMessages.add(new ReturnMessage(TYPE_TEXT, "您还没有设置转发对象，设置方法：请输入“设置转发对象：昵称”"));
                         sendTxt();
                         release();
                         return;
@@ -1115,11 +1119,11 @@ public class AutoReplyService extends AccessibilityService {
 
     private void sendTxt() {
         Log.d("test", "sendTxt is called");
-        ArrayList<String> reply = actions.get(currentActionID).reply;
-        int count = reply.size();
+        ArrayList<ReturnMessage> returnMessages = actions.get(currentActionID).returnMessages;
+        int count = returnMessages.size();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-            boolean find = findInputEditText(rootNode, reply.get(i));
+            boolean find = findInputEditText(rootNode, returnMessages.get(i).content);
             Log.d("test", "findInputEditText = " + find);
             if (!find) {
                 continue;
