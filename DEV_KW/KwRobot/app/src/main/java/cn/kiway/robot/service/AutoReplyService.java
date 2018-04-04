@@ -903,7 +903,7 @@ public class AutoReplyService extends AccessibilityService {
                 if (ret == 0) {
                     Log.d("test", "doLongClickLastMsgAgain");
                     String content = actions.get(currentActionID).content;
-                    if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[文件]") || content.startsWith("[位置]") || isCallingDialog(getRootInActiveWindow())) {
+                    if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了") || isCallingDialog(getRootInActiveWindow())) {
                         String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
                         int ret = RootCmd.execRootCmdSilent(cmd);
                         Log.d("test", "execRootCmdSilent ret = " + ret);
@@ -928,7 +928,7 @@ public class AutoReplyService extends AccessibilityService {
                     release();
                 }
             }
-        }, 1000);
+        }, 5000);
     }
 
 
@@ -968,7 +968,7 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText().toString().equals("添加到手机通讯录")) {
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("添加到手机通讯录")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 return true;
             }
@@ -989,7 +989,7 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText().toString().equals("接受")) {
+            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("接受")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -1018,7 +1018,7 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText().toString().equals("完成")) {
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("完成")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 release();
                 return true;
@@ -1149,7 +1149,7 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText().toString().equals("发送")) {
+            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("发送")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 Log.d("test", "转发完成");
                 handler.postDelayed(new Runnable() {
