@@ -424,11 +424,7 @@ public class AutoReplyService extends AccessibilityService {
 
                     if (action.receiveType == TYPE_TEXT) {
                         //刷新界面
-                        int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0) + 1;
-                        getSharedPreferences("kiway", 0).edit().putInt("recvCount", recvCount).commit();
-                        if (MainActivity.instance != null) {
-                            MainActivity.instance.updateServiceCount();
-                        }
+                        refreshUI1();
                         //文字的话直接走zbus
                         sendMsgToServer(id, action);
                     } else if (action.receiveType == TYPE_IMAGE) {
@@ -500,7 +496,7 @@ public class AutoReplyService extends AccessibilityService {
                 if (receiveType == TYPE_TEXT) {
                     sendTxt();
                     release();
-                    refreshUI();
+                    refreshUI2();
                 } else if (receiveType == TYPE_IMAGE && !uploaded) {
                     // 找到最后一张图片，放大，截屏，上传，得到url后返回
                     lastFrameLayout = null;
@@ -625,10 +621,17 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 break;
         }
-
     }
 
-    private void refreshUI() {
+    private void refreshUI1(){
+        int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0) + 1;
+        getSharedPreferences("kiway", 0).edit().putInt("recvCount", recvCount).commit();
+        if (MainActivity.instance != null) {
+            MainActivity.instance.updateServiceCount();
+        }
+    }
+
+    private void refreshUI2() {
         int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0) + 1;
         getSharedPreferences("kiway", 0).edit().putInt("replyCount", replyCount).commit();
         if (MainActivity.instance != null) {
