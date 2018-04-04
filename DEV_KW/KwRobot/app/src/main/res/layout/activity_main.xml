@@ -60,13 +60,6 @@
 
 
         <Button
-            android:id="@+id/logout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="logout"
-            android:text="注销本次登录" />
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="checkNewVersion"
@@ -87,6 +80,13 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="checkRemark"
+            android:text="查看朋友圈备注" />
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:onClick="Xposed"
             android:text="xposed操作" />
 
@@ -97,12 +97,27 @@
             android:text="使用说明和注意事项" />
 
         <Button
+            android:id="@+id/logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="logout"
+            android:text="注销本次登录" />
+
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="test"
-            android:text="测试用" />
+            android:text="测试用"
+            android:visibility="gone" />
 
     </cn.kiway.robot.view.FlowLayout>
 
+    <TextView
+        android:id="@+id/version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:text="当前版本号" />
 
 </RelativeLayout>
