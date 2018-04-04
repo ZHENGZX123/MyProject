@@ -56,6 +56,7 @@ import io.zbus.mq.MqClient;
 
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_LINK;
+import static cn.kiway.robot.entity.Action.TYPE_REDPACKAGE;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_SET_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_SET_REMARK;
@@ -444,14 +445,17 @@ public class AutoReplyService extends AccessibilityService {
                     action.sender = sender;
                     action.content = content;
                     action.intent = intent;
-                    if (sender.equals("朋友圈使者") && content.startsWith("[链接]")) {
+                    if (content.startsWith("[微信红包]")) {
+                        //需要转发到朋友圈
+                        action.receiveType = TYPE_REDPACKAGE;
+                    } else if (sender.equals("朋友圈使者") && content.startsWith("[链接]")) {
                         //需要转发到朋友圈
                         action.receiveType = TYPE_LINK;
                     } else if (sender.equals("朋友圈使者") && content.startsWith("设置朋友圈备注：")) {
                         action.receiveType = TYPE_SET_REMARK;
                     } else if (sender.equals("转发使者") && content.startsWith("设置转发对象：")) {
                         action.receiveType = TYPE_SET_FORWARDING;
-                    } else if (sender.equals("转发使者") && !content.equals("[语音]") && !content.equals("[动画表情]") && !content.startsWith("[微信红包]")) {
+                    } else if (sender.equals("转发使者") && !content.equals("[语音]") && !content.equals("[动画表情]")) {
                         //需要转发该消息
                         action.receiveType = TYPE_TRANSMIT;
                     } else if (content.equals("[图片]")) {
@@ -498,6 +502,8 @@ public class AutoReplyService extends AccessibilityService {
                         toast("设置朋友圈备注成功");
                         launchWechat(id);
                     } else if (action.receiveType == TYPE_REQUEST_FRIEND) {
+                        launchWechat(id);
+                    } else if (action.receiveType == TYPE_REDPACKAGE) {
                         launchWechat(id);
                     }
                 }
@@ -625,7 +631,7 @@ public class AutoReplyService extends AccessibilityService {
                                     //众号号名片
                                     doLongClickLastMsg();
                                 } else {
-                                    //个人公众号
+                                    //个人名片
                                     sendTextOnly("个人名片暂时不支持转发");
                                     release();
                                 }
@@ -646,12 +652,75 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }
                     }, 2000);
+                } else if (receiveType == TYPE_REDPACKAGE) {
+                    Log.d("test", "================TYPE_REDPACKAGE=================");
+                    lastTextView = null;
+                    findLastRedPackageMsg(getRootInActiveWindow());
+                    if (lastTextView == null) {
+                        release();
+                        return;
+                    }
+                    AccessibilityNodeInfo parent = lastTextView.getParent();
+                    parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //找到“开”按钮
+                            findOpenPackageButton(getRootInActiveWindow());
+                        }
+                    }, 3000);
                 } else {
                     Log.d("test", "没有匹配的消息，直接release");
                     release();
                 }
                 break;
         }
+    }
+
+    private boolean findOpenPackageButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.Button")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        release();
+                    }
+                }, 5000);
+                return true;
+            }
+            if (findOpenPackageButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private boolean findLastRedPackageMsg(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("领取红包")) {
+                lastTextView = nodeInfo;
+            }
+            if (findLastRedPackageMsg(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private AccessibilityNodeInfo lastTextView;
@@ -1226,8 +1295,8 @@ public class AutoReplyService extends AccessibilityService {
             if (nodeInfo == null) {
                 continue;
             }
-            //Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            //Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.FrameLayout")) {
                 lastFrameLayout = nodeInfo;
             }
@@ -1350,8 +1419,7 @@ public class AutoReplyService extends AccessibilityService {
             }
             if (imageButtonCount == 4) {
                 imageButtonCount = 0;
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);//FIXME 问题处在这里吗？
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
