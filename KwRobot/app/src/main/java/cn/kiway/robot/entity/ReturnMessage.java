@@ -5,8 +5,10 @@ package cn.kiway.robot.entity;
  */
 
 public class ReturnMessage {
+
     public int returnType;
     public String content;
+    public boolean returnFinished;
 
     public ReturnMessage(int returnType, String content) {
         this.returnType = returnType;
