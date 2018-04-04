@@ -31,35 +31,36 @@ public class GuideService extends Service {
             @Override
             public void run() {
                 while (!stop) {
-                    Log.d("test", "guard is running ...");
                     try {
+                        Log.d("test", "guard is running ...");
+
                         sleep(60 * 1000);
-                    } catch (InterruptedException e) {
+
+                        boolean isRun1 = isRun(GuideService.this, "cn.kiway.robot");
+                        Log.d("test", "isRun1 = " + isRun1);
+                        if (!isRun1) {
+                            Log.d("test", "启动机器人");
+                            Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
+                            startActivity(intent);
+                        }
+                        sleep(5000);
+                        boolean isRun2 = isRun(GuideService.this, "com.tencent.mm");
+                        Log.d("test", "isRun2 = " + isRun2);
+                        if (!isRun2) {
+                            Log.d("test", "启动微信");
+                            Intent intent = getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
+                            startActivity(intent);
+                            try {
+                                sleep(5000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            Intent intent2 = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot.guard");
+                            startActivity(intent2);
+                        }
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    boolean isRun1 = isRun(GuideService.this, "cn.kiway.robot");
-                    Log.d("test", "isRun1 = " + isRun1);
-                    if (!isRun1) {
-                        Log.d("test", "启动机器人");
-                        //上报给易敏
-                    }
-
-                    boolean isRun2 = isRun(GuideService.this, "com.tencent.mm");
-                    Log.d("test", "isRun2 = " + isRun2);
-                    if (!isRun2) {
-                        Log.d("test", "启动微信");
-                        Intent intent = getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
-                        startActivity(intent);
-                        try {
-                            sleep(5000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        Intent intent2 = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot.guard");
-                        startActivity(intent2);
-                    }
-
-
                 }
             }
         }.start();
