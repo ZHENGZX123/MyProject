@@ -5,7 +5,11 @@ import android.util.Log;
 import android.view.View;
 
 import com.easy.wtool.sdk.WToolSDK;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
 
+import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,6 +19,8 @@ import java.util.ArrayList;
 import cn.kiway.robot.R;
 import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.util.WxUtils;
+
+import static cn.kiway.robot.util.Constant.clientUrl;
 
 /**
  * Created by Administrator on 2018/4/3.
@@ -39,6 +45,65 @@ public class WeChatActivity extends BaseActivity {
         //1.获取所有的好友
         //2.上报给易敏
         getWxPeople();
+        uploadPeople();
+    }
+
+    private void uploadPeople() {
+        try {
+            String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+            String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
+
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            Log.d("test", "xtoken = " + xtoken);
+            client.addHeader("x-auth-token", xtoken);
+
+            String url = clientUrl + "/freind/all";
+            Log.d("test", "freind url = " + url);
+
+            JSONArray param = new JSONArray();
+            JSONObject o1 = new JSONObject();
+            o1.put("nickname", "test1");//昵称
+            o1.put("remark", "test1");//备注
+            o1.put("wxId", "1");//微信id
+            o1.put("wxNo", "1");//微信号
+            o1.put("robotId", robotId);
+            param.put(o1);
+
+            JSONObject o2 = new JSONObject();
+            o2.put("nickname", "test2");//昵称
+            o2.put("remark", "test2");//备注
+            o2.put("wxId", "2");//微信id
+            o2.put("wxNo", "2");//微信号
+            o2.put("robotId", robotId);
+            param.put(o2);
+
+            JSONObject o3 = new JSONObject();
+            o3.put("nickname", "test3");//昵称
+            o3.put("remark", "test3");//备注
+            o3.put("wxId", "3");//微信id
+            o3.put("wxNo", "3");//微信号
+            o3.put("robotId", robotId);
+            param.put(o3);
+
+            Log.d("test", "freind param = " + param.toString());
+
+
+            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+            client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "freind onSuccess = " + ret);
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "freind onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
+        }
     }
 
     public void groupSendText(View view) {

@@ -451,7 +451,7 @@ public class AutoReplyService extends AccessibilityService {
                         action.receiveType = TYPE_SET_REMARK;
                     } else if (sender.equals("转发使者") && content.startsWith("设置转发对象：")) {
                         action.receiveType = TYPE_SET_FORWARDING;
-                    } else if (sender.equals("转发使者") && !content.equals("[语音]") && !content.equals("[动画表情]") && !content.contains("向你推荐了") && !content.startsWith("[微信红包]")) {
+                    } else if (sender.equals("转发使者") && !content.equals("[语音]") && !content.equals("[动画表情]") /*&& !content.contains("向你推荐了")*/ && !content.startsWith("[微信红包]")) {
                         //需要转发该消息
                         action.receiveType = TYPE_TRANSMIT;
                     } else if (content.equals("[图片]")) {
@@ -1306,10 +1306,11 @@ public class AutoReplyService extends AccessibilityService {
             }
             if (imageButtonCount == 4) {
                 imageButtonCount = 0;
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         Log.d("test", "---------------------findAlbumButton----------------------------");
                         boolean find = findAlbumButton(getRootInActiveWindow(), rm);
                         if (!find) {
@@ -1375,6 +1376,7 @@ public class AutoReplyService extends AccessibilityService {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+
                         Log.d("test", "----------findSendImageButton------------------");
                         boolean find = findSendImageButton1(getRootInActiveWindow(), rm);
                         if (!find) {
