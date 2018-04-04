@@ -157,7 +157,6 @@ public class AutoReplyService extends AccessibilityService {
                                         handler.post(new Runnable() {
                                             @Override
                                             public void run() {
-
                                                 int size = returnMessage.length();
                                                 action.returnMessages.clear();
                                                 for (int i = 0; i < size; i++) {
@@ -501,11 +500,7 @@ public class AutoReplyService extends AccessibilityService {
                 if (receiveType == TYPE_TEXT) {
                     sendTxt();
                     release();
-                    int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0) + 1;
-                    getSharedPreferences("kiway", 0).edit().putInt("replyCount", replyCount).commit();
-                    if (MainActivity.instance != null) {
-                        MainActivity.instance.updateServiceCount();
-                    }
+                    refreshUI();
                 } else if (receiveType == TYPE_IMAGE && !uploaded) {
                     // 找到最后一张图片，放大，截屏，上传，得到url后返回
                     lastFrameLayout = null;
@@ -633,27 +628,12 @@ public class AutoReplyService extends AccessibilityService {
 
     }
 
-    //找到挂断按钮
-    private boolean findHungupButton(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("挂断")) {
-                AccessibilityNodeInfo prevNode = rootNode.getChild(i - 1);
-                prevNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                release();
-                return true;
-            }
-            if (findHungupButton(nodeInfo)) {
-                return true;
-            }
+    private void refreshUI() {
+        int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0) + 1;
+        getSharedPreferences("kiway", 0).edit().putInt("replyCount", replyCount).commit();
+        if (MainActivity.instance != null) {
+            MainActivity.instance.updateServiceCount();
         }
-        return false;
     }
 
     private void toast(String txt) {
@@ -699,6 +679,30 @@ public class AutoReplyService extends AccessibilityService {
 
 
     //---------------------下面都是找控件--------------------------
+
+    //找到挂断按钮
+    private boolean findHungupButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("挂断")) {
+                AccessibilityNodeInfo prevNode = rootNode.getChild(i - 1);
+                prevNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                release();
+                return true;
+            }
+            if (findHungupButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     //查询是不是呼叫对话框
     private boolean isCallingDialog(AccessibilityNodeInfo rootNode) {
