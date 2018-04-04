@@ -451,7 +451,7 @@ public class AutoReplyService extends AccessibilityService {
                         action.receiveType = TYPE_SET_REMARK;
                     } else if (sender.equals("转发使者") && content.startsWith("设置转发对象：")) {
                         action.receiveType = TYPE_SET_FORWARDING;
-                    } else if (sender.equals("转发使者") && !content.equals("[语音]") && !content.equals("[动画表情]") /*&& !content.contains("向你推荐了")*/ && !content.startsWith("[微信红包]")) {
+                    } else if (sender.equals("转发使者") && !content.equals("[语音]") && !content.equals("[动画表情]") && !content.startsWith("[微信红包]")) {
                         //需要转发该消息
                         action.receiveType = TYPE_TRANSMIT;
                     } else if (content.equals("[图片]")) {
@@ -612,36 +612,24 @@ public class AutoReplyService extends AccessibilityService {
                                 release();
                                 return;
                             }
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
-                                    Log.d("test", "执行长按事件");
-                                    handler.postDelayed(new Runnable() {
-
-                                        @Override
-                                        public void run() {
-                                            Log.d("test", "=================findTransferButton===============");
-                                            boolean find = findTransferButton(getRootInActiveWindow());
-                                            if (!find) {
-                                                Log.d("test", "findTransferButton失败，长按不出来，点击了一下");
-                                                Rect r = new Rect();
-                                                lastMsgView.getBoundsInScreen(r);
-                                                // 1.生成点击坐标
-                                                int x = r.width() / 2 + r.left;
-                                                int y = r.height() / 2 + r.top;
-                                                String cmd = "input tap " + x + " " + y;
-                                                Log.d("test", "cmd = " + cmd);
-                                                // 2.执行su命令
-                                                int ret = RootCmd.execRootCmdSilent(cmd);
-                                                Log.d("test", "execRootCmdSilent ret = " + ret);
-                                                //3.再次执行长按
-                                                longClickAgain(ret);
-                                            }
-                                        }
-                                    }, 2000);
+                            //1.如果是名片，判断一下是个人名片还是企业名片.
+                            String content = actions.get(currentActionID).content;
+                            if (content.contains("向你推荐了")) {
+                                //这里如果是个人公众号，要点一下
+                                lastTextView = null;
+                                Log.d("test", "=============getLastTextView=============");
+                                getLastTextView(getRootInActiveWindow());
+                                String text = lastTextView.getText().toString().trim();
+                                boolean isPublic = text.equals("公众号名片");
+                                Log.d("test", "isPublic = " + isPublic);
+                                if (isPublic) {
+                                    doLongClickLastMsg();
+                                } else {
+                                    //TODO
                                 }
-                            }, 2000);
+                            } else {
+                                doLongClickLastMsg();
+                            }
                         }
                     }, 2000);
                 } else if (receiveType == TYPE_REQUEST_FRIEND) {
@@ -662,6 +650,60 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 break;
         }
+    }
+
+    private AccessibilityNodeInfo lastTextView;
+
+    private boolean getLastTextView(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView")) {
+                lastTextView = nodeInfo;
+            }
+            if (getLastTextView(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void doLongClickLastMsg() {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
+                Log.d("test", "执行长按事件");
+                handler.postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Log.d("test", "=================findTransferButton===============");
+                        boolean find = findTransferButton(getRootInActiveWindow());
+                        if (!find) {
+                            Log.d("test", "findTransferButton失败，长按不出来，点击了一下");
+                            Rect r = new Rect();
+                            lastMsgView.getBoundsInScreen(r);
+                            // 1.生成点击坐标
+                            int x = r.width() / 2 + r.left;
+                            int y = r.height() / 2 + r.top;
+                            String cmd = "input tap " + x + " " + y;
+                            Log.d("test", "cmd = " + cmd);
+                            // 2.执行su命令
+                            int ret = RootCmd.execRootCmdSilent(cmd);
+                            Log.d("test", "execRootCmdSilent ret = " + ret);
+                            //3.再次执行长按
+                            doLongClickLastMsgAgain(ret);
+                        }
+                    }
+                }, 2000);
+            }
+        }, 2000);
     }
 
     private void checkMessageAllDone(ArrayList<ReturnMessage> returnMessages) {
@@ -716,12 +758,12 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void longClickAgain(int ret) {
+    private void doLongClickLastMsgAgain(int ret) {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (ret == 0) {
-                    Log.d("test", "longClickAgain");
+                    Log.d("test", "doLongClickLastMsgAgain");
                     String content = actions.get(currentActionID).content;
                     if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[文件]") || content.startsWith("[位置]") || isCallingDialog(getRootInActiveWindow())) {
                         String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
