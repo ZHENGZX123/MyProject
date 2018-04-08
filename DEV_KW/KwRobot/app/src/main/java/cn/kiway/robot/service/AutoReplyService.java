@@ -61,7 +61,7 @@ import static cn.kiway.robot.entity.Action.TYPE_LINK;
 import static cn.kiway.robot.entity.Action.TYPE_REDPACKAGE;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_SET_FORWARDTO;
-import static cn.kiway.robot.entity.Action.TYPE_SET_REMARK;
+import static cn.kiway.robot.entity.Action.TYPE_SET_FRIEND_CIRCLER;
 import static cn.kiway.robot.entity.Action.TYPE_TEXT;
 import static cn.kiway.robot.entity.Action.TYPE_TRANSFER;
 import static cn.kiway.robot.entity.Action.TYPE_TRANSMIT;
@@ -462,7 +462,7 @@ public class AutoReplyService extends AccessibilityService {
                         //需要转发到朋友圈
                         action.receiveType = TYPE_LINK;
                     } else if (sender.equals("朋友圈使者") && content.startsWith("设置朋友圈备注：")) {
-                        action.receiveType = TYPE_SET_REMARK;
+                        action.receiveType = TYPE_SET_FRIEND_CIRCLER;
                     } else if (sender.equals(Utils.getForwardFrom(this)) && content.startsWith("设置转发对象：")) {
                         action.receiveType = TYPE_SET_FORWARDTO;
                     } else if (sender.equals(Utils.getForwardFrom(this)) && !content.equals("[语音]") && !content.equals("[动画表情]")) {
@@ -503,7 +503,7 @@ public class AutoReplyService extends AccessibilityService {
                         getSharedPreferences("forwardto", 0).edit().putString("forwardto", forwardto).commit();
                         toast("设置转发对象成功");
                         launchWechat(id);
-                    } else if (action.receiveType == TYPE_SET_REMARK) {
+                    } else if (action.receiveType == TYPE_SET_FRIEND_CIRCLER) {
                         String remark = action.content.replace("设置朋友圈备注：", "").trim();
                         if (TextUtils.isEmpty(remark)) {
                             continue;
@@ -607,12 +607,13 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }
                     }, 10000);//防止页面加载不完整
-                } else if (receiveType == TYPE_SET_FORWARDTO || receiveType == TYPE_SET_REMARK) {
+                } else if (receiveType == TYPE_SET_FORWARDTO || receiveType == TYPE_SET_FRIEND_CIRCLER) {
+                    //TODO 如果是一个公众号，还要点一下
                     sendTextOnly("设置成功！");
                     release();
                 } else if (receiveType == TYPE_TRANSMIT) {
+                    //TODO 如果是一个公众号，还要点一下
                     // 找到最后一张链接，点击转发给某人
-                    Log.d("test", "----------------findLastMsg------------------");
                     String forwardto = getSharedPreferences("forwardto", 0).getString("forwardto", "");
                     if (TextUtils.isEmpty(forwardto)) {
                         toast("您还没有设置转发对象");
@@ -624,8 +625,16 @@ public class AutoReplyService extends AccessibilityService {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            Log.d("test", "===============findMsgListView================");
+                            listViewNode = null;
+                            findMsgListView(getRootInActiveWindow());
+                            if (listViewNode == null) {
+                                release();
+                                return;
+                            }
                             lastMsgView = null;
-                            findLastMsg(getRootInActiveWindow());
+                            Log.d("test", "=================findLastMsgViewInListView====================");
+                            findLastMsgViewInListView(listViewNode);
                             if (lastMsgView == null) {
                                 Log.d("test", "没有找到最后一条消息。。。");
                                 release();
@@ -651,6 +660,7 @@ public class AutoReplyService extends AccessibilityService {
                             } else {
                                 doLongClickLastMsg();
                             }
+
                         }
                     }, 2000);
                 } else if (receiveType == TYPE_REQUEST_FRIEND) {
@@ -1275,9 +1285,9 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-    private AccessibilityNodeInfo lastMsgView = null;
+    private AccessibilityNodeInfo listViewNode;
 
-    private boolean findLastMsg(AccessibilityNodeInfo rootNode) {
+    private boolean findMsgListView(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
@@ -1286,10 +1296,40 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.ListView")) {
+                listViewNode = nodeInfo;
+                return true;
+            }
+
+            if (findMsgListView(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private AccessibilityNodeInfo lastMsgView = null;
+
+    //这个函数要想办法区分是个人微信、还是公众号。
+    private boolean findLastMsgViewInListView(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            //个人微信发来文字类：android.view.View
+            //个人微信发来的链接、图片、位置、名片：android.widget.FrameLayout
+            //公众号微信发来的文字类：android.view.View
+            //公众号微信发来的链接：android.widget.LinearLayout
             if (nodeInfo.getClassName().equals("android.view.View") || nodeInfo.getClassName().equals("android.widget.FrameLayout")) {
                 lastMsgView = nodeInfo;
+            } else if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getParent().getClassName().equals("android.widget.LinearLayout")) {
+                lastMsgView = nodeInfo.getParent();
             }
-            if (findLastMsg(nodeInfo)) {
+            if (findLastMsgViewInListView(nodeInfo)) {
                 return true;
             }
         }
