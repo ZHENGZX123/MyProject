@@ -63,43 +63,23 @@ public class WeChatActivity extends BaseActivity {
         try {
             String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
             String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
-
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
             Log.d("test", "xtoken = " + xtoken);
             client.addHeader("x-auth-token", xtoken);
-
             String url = clientUrl + "/freind/all";
             Log.d("test", "freind url = " + url);
-
             JSONArray param = new JSONArray();
-            JSONObject o1 = new JSONObject();
-            o1.put("nickname", "test1");//昵称
-            o1.put("remark", "test1");//备注
-            o1.put("wxId", "1");//微信id
-            o1.put("wxNo", "1");//微信号
-            o1.put("robotId", robotId);
-            param.put(o1);
-
-            JSONObject o2 = new JSONObject();
-            o2.put("nickname", "test2");//昵称
-            o2.put("remark", "test2");//备注
-            o2.put("wxId", "2");//微信id
-            o2.put("wxNo", "2");//微信号
-            o2.put("robotId", robotId);
-            param.put(o2);
-
-            JSONObject o3 = new JSONObject();
-            o3.put("nickname", "test3");//昵称
-            o3.put("remark", "test3");//备注
-            o3.put("wxId", "3");//微信id
-            o3.put("wxNo", "3");//微信号
-            o3.put("robotId", robotId);
-            param.put(o3);
-
+            for (int i = 0; i < wxPeopleList.length(); i++) {
+                JSONObject item = new JSONObject();
+                item.put("nickname", wxPeopleList.optJSONObject(i).optString("nickname"));//昵称
+                item.put("remark", wxPeopleList.optJSONObject(i).optString("remark"));//备注
+                item.put("wxId", wxPeopleList.optJSONObject(i).optString("wxid"));//微信id
+                item.put("wxNo", wxPeopleList.optJSONObject(i).optString("wxno"));//微信号
+                item.put("robotId", robotId);
+                param.put(item);
+            }
             Log.d("test", "freind param = " + param.toString());
-
-
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
             client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
                 @Override
@@ -173,7 +153,6 @@ public class WeChatActivity extends BaseActivity {
             startActivity(intent);
         }
     }
-
 
 
     private void getWxPeople() {
