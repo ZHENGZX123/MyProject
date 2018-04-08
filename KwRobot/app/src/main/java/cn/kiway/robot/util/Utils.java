@@ -24,10 +24,10 @@ public class Utils {
     }
 
     public static String getUUID(Context c) {
-        String uuid = FileUtils.readSDCardFile(KWApplication.ROOT + "/uuid.txt", c);
+        String uuid = FileUtils.readSDCardFile(KWApplication.ROOT + "uuid.txt", c);
         if (TextUtils.isEmpty(uuid)) {
             uuid = genUUID();
-            FileUtils.saveUUID(uuid);
+            FileUtils.saveFile(uuid, "uuid.txt");
         }
         return uuid;
     }
@@ -89,6 +89,18 @@ public class Utils {
             e.printStackTrace();
         }
         return versionName;
+    }
+
+    public static String getParentRemark(Context c) {
+        String parentId = FileUtils.readSDCardFile(KWApplication.ROOT + "parent.txt", c);
+        if (TextUtils.isEmpty(parentId)) {
+            parentId = "1";
+        } else {
+            int id = Integer.parseInt(parentId);
+            parentId = "" + (id + 1);
+        }
+        FileUtils.saveFile(parentId, "parent.txt");
+        return "家长" + parentId;
     }
 
 }
