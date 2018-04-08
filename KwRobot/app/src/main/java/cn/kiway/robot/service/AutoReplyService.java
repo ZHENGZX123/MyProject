@@ -855,6 +855,9 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 while (true) {
+                    if (!actioningFlag) {
+                        break;
+                    }
                     boolean allDone = true;
                     for (ReturnMessage rm : returnMessages) {
                         allDone = allDone & rm.returnFinished;
@@ -1111,9 +1114,15 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         //找到文本框输入文字发送
-                        sendTextOnly("感谢您添加招生客服机器人，你可以向我提问啦");
+                        sendTextOnly("感谢您添加招生客服机器人，您可以按以下关键字发送咨询招生相关问题，谢谢！\n" +
+                                "1、计生证明或者计划生育证明\n" +
+                                "2、租房或者住房\n" +
+                                "3、台湾或者香港\n" +
+                                "4、户籍\n" +
+                                "5、网上报名\n" +
+                                "6、验核材料\n" +
+                                "7、录取\n");
                         release();
-
                         String current = System.currentTimeMillis() + "";
                         uploadFriend(nickname, remark + " " + nickname, current, current);
                     }
@@ -1558,17 +1567,50 @@ public class AutoReplyService extends AccessibilityService {
         context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file.getAbsolutePath())));
     }
 
+
+    private AccessibilityNodeInfo lastRelativeLayout;
+
     private void sendImageOnly(ReturnMessage rm) {
         Log.d("test", "sendImageOnly");
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-        boolean find2 = findPlusButton(rootNode, rm);
-        Log.d("test", "find2 = " + find2);
-        if (!find2) {
+        Log.d("test", "-------------------------findPlusButton-----------------");
+        lastImageButton = null;
+        findPlusButton(rootNode, rm);
+        if (lastImageButton == null) {
             rm.returnFinished = true;
+            return;
         }
+        lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("test", "---------------------findAlbumButton----------------------------");
+                lastRelativeLayout = null;
+                boolean find = findAlbumButton(getRootInActiveWindow(), rm);
+                if (!find) {
+                    Log.d("test", "找不到GridView");
+                    if (lastRelativeLayout == null) {
+                        rm.returnFinished = true;
+                    } else {
+                        lastRelativeLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d("test", "----------findSendImageButton------------------");
+                                boolean find = findSendImageButton1(getRootInActiveWindow(), rm);
+                                if (!find) {
+                                    Log.d("test", "找不到发送按钮，relase");
+                                    rm.returnFinished = true;
+                                }
+                            }
+                        }, 3000);
+                    }
+                }
+            }
+        }, 3000);
     }
 
-    int imageButtonCount = 0;
+    private AccessibilityNodeInfo lastImageButton;
 
     //找到最后一个按钮，就是加号，点击一下
     private boolean findPlusButton(AccessibilityNodeInfo rootNode, ReturnMessage rm) {
@@ -1579,24 +1621,9 @@ public class AutoReplyService extends AccessibilityService {
                 continue;
             }
             if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
-                imageButtonCount++;
+                lastImageButton = nodeInfo;
             }
-            if (imageButtonCount == 4) {
-                imageButtonCount = 0;
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);//FIXME 问题处在这里吗？
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("test", "---------------------findAlbumButton----------------------------");
-                        boolean find = findAlbumButton(getRootInActiveWindow(), rm);
-                        if (!find) {
-                            Log.d("test", "找不到GridView，release掉");
-                            rm.returnFinished = true;
-                        }
-                    }
-                }, 2000);
-                return true;
-            }
+            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
             if (findPlusButton(nodeInfo, rm)) {
                 return true;
             }
@@ -1612,10 +1639,10 @@ public class AutoReplyService extends AccessibilityService {
             if (nodeInfo == null) {
                 continue;
             }
-            //Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
             if (nodeInfo.getClassName().equals("android.widget.GridView")) {
                 AccessibilityNodeInfo first = nodeInfo.getChild(0);
-                //Log.d("test", "first child = " + first.getClassName());
+                Log.d("test", "first child = " + first.getClassName());
                 first.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -1629,6 +1656,9 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }, 3000);
                 return true;
+            }
+            if (nodeInfo.getClassName().equals("android.widget.RelativeLayout")) {
+                lastRelativeLayout = nodeInfo;
             }
             if (findAlbumButton(nodeInfo, rm)) {
                 return true;
@@ -1652,7 +1682,6 @@ public class AutoReplyService extends AccessibilityService {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
                         Log.d("test", "----------findSendImageButton------------------");
                         boolean find = findSendImageButton1(getRootInActiveWindow(), rm);
                         if (!find) {
