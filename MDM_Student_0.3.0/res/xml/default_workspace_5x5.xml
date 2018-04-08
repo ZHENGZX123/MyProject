@@ -35,6 +35,13 @@
         launcher:x="1"
         launcher:y="-1">
     </favorite>
+    <favorite
+        launcher:className="cn.kiway.message.ParentMessageActivity"
+        launcher:packageName="cn.kiway.message"
+        launcher:screen="0"
+        launcher:x="2"
+        launcher:y="-1">
+    </favorite>
     <!--<favorite-->
     <!--launcher:className="com.android.kiway.activity.EulaActivity"-->
     <!--launcher:packageName="cn.kiway.mdm"-->
