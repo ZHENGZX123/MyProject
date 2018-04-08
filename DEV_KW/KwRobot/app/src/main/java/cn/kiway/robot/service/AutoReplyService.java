@@ -112,7 +112,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void backToRobot() {
-        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
+        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");//.guard
         startActivity(intent);
     }
 
