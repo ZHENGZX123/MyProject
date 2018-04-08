@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.kiway.robot.moment.Model.SnsInfo;
+import cn.kiway.robot.moment.model.SnsInfo;
 
 
 /**
