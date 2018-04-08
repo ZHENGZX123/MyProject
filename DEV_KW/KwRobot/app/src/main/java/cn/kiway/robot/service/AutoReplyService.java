@@ -66,6 +66,7 @@ import static cn.kiway.robot.entity.Action.TYPE_TRANSFER;
 import static cn.kiway.robot.entity.Action.TYPE_TRANSMIT;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.clientUrl;
+import static java.lang.System.currentTimeMillis;
 
 public class AutoReplyService extends AccessibilityService {
 
@@ -442,7 +443,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
 
                     //1.预先加入map
-                    long id = System.currentTimeMillis();
+                    long id = currentTimeMillis();
                     PendingIntent intent = ((Notification) event.getParcelableData()).contentIntent;
                     Action action = new Action();
                     action.sender = sender;
@@ -1035,7 +1036,8 @@ public class AutoReplyService extends AccessibilityService {
                 arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN, true);
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY, arguments);
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                ClipData clip = ClipData.newPlainText("label", Utils.getParentRemark(this));
+                remark = Utils.getParentRemark(this);
+                ClipData clip = ClipData.newPlainText("label", remark);
                 ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 clipboardManager.setPrimaryClip(clip);
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
@@ -1108,6 +1110,9 @@ public class AutoReplyService extends AccessibilityService {
                         //找到文本框输入文字发送
                         sendTextOnly("感谢您添加招生客服机器人，你可以向我提问啦");
                         release();
+
+                        String current = System.currentTimeMillis() + "";
+                        uploadFriend(nickname, remark + " " + nickname, current, current);
                     }
                 }, 2000);
                 return true;
@@ -1529,7 +1534,7 @@ public class AutoReplyService extends AccessibilityService {
         if (!appDir.exists()) {
             appDir.mkdir();
         }
-        String fileName = System.currentTimeMillis() + ".jpg";
+        String fileName = currentTimeMillis() + ".jpg";
         File file = new File(appDir, fileName);
         try {
             FileOutputStream fos = new FileOutputStream(file);
