@@ -70,4 +70,12 @@ public class Utils {
         return "家长" + parentId;
     }
 
+    public static String getForwardFrom(Context c) {
+        String forwardfrom = c.getSharedPreferences("forwardfrom", 0).getString("forwardfrom", "");
+        if (TextUtils.isEmpty(forwardfrom)) {
+            return "wxid_cokkmqud47e121的接口测试号";//转发使者
+        } else {
+            return forwardfrom;
+        }
+    }
 }
