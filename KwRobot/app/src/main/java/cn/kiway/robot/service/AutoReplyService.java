@@ -458,10 +458,10 @@ public class AutoReplyService extends AccessibilityService {
                         action.receiveType = TYPE_REDPACKAGE;
                     } else if (content.startsWith("[转账]")) {
                         action.receiveType = TYPE_TRANSFER;
-                    } else if (sender.equals("朋友圈使者") && content.startsWith("[链接]")) {
+                    } else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("[链接]")) {
                         //需要转发到朋友圈
                         action.receiveType = TYPE_LINK;
-                    } else if (sender.equals("朋友圈使者") && content.startsWith("设置朋友圈备注：")) {
+                    } else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("设置朋友圈备注：")) {
                         action.receiveType = TYPE_SET_FRIEND_CIRCLER;
                     } else if (sender.equals(Utils.getForwardFrom(this)) && content.startsWith("设置转发对象：")) {
                         action.receiveType = TYPE_SET_FORWARDTO;
