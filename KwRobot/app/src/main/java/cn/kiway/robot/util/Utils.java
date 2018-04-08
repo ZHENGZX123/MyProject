@@ -73,7 +73,7 @@ public class Utils {
     public static String getForwardFrom(Context c) {
         String forwardfrom = c.getSharedPreferences("forwardfrom", 0).getString("forwardfrom", "");
         if (TextUtils.isEmpty(forwardfrom)) {
-            return "wxid_cokkmqud47e121的接口测试号";//转发使者
+            return "wxid_cokkmqud47e121的接口测试号";//转发使者  wxid_cokkmqud47e121的接口测试号
         } else {
             return forwardfrom;
         }
