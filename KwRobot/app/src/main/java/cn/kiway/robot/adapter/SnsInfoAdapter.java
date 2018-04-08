@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import cn.kiway.robot.R;
-import cn.kiway.robot.moment.Model.SnsInfo;
+import cn.kiway.robot.moment.model.SnsInfo;
 
 
 /**

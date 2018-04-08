@@ -7,7 +7,7 @@ import android.util.Log;
 import java.io.File;
 import java.util.ArrayList;
 
-import cn.kiway.robot.moment.Model.SnsInfo;
+import cn.kiway.robot.moment.model.SnsInfo;
 
 
 /**

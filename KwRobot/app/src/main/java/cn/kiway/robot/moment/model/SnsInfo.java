@@ -1,4 +1,4 @@
-package cn.kiway.robot.moment.Model;
+package cn.kiway.robot.moment.model;
 
 import android.util.Log;
 

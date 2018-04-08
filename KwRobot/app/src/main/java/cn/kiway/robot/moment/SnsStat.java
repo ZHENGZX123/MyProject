@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import cn.kiway.robot.moment.Model.SnsInfo;
-import cn.kiway.robot.moment.Model.UserSnsInfo;
+import cn.kiway.robot.moment.model.SnsInfo;
+import cn.kiway.robot.moment.model.UserSnsInfo;
 
 
 /**

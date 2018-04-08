@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.robot.R;
-import cn.kiway.robot.moment.Model.SnsInfo;
+import cn.kiway.robot.moment.model.SnsInfo;
 import dalvik.system.DexClassLoader;
 
 /**
