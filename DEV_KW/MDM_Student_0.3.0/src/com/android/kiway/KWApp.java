@@ -6,6 +6,7 @@ import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
@@ -142,11 +143,35 @@ public class KWApp extends Application {
             } else if (msg.what == MSG_SHUTDOWN) {
                 MDMHelper.getAdapter().shutdownDevice();
             } else if (msg.what == MSG_PORTRAIT) {
+                if (Build.MODEL.equals("BZK-W00") && currentActivity != null && currentActivity instanceof
+                        BaseActivity) {
+                    ((BaseActivity) currentActivity).toast("该型号手机暂不支持横竖屏操作");
+                    return;
+                }
+                if (lockscreen && currentActivity != null && currentActivity instanceof BaseActivity) {
+                    ((BaseActivity) currentActivity).toast("无法进行竖屏操作，请先解除锁屏状态");
+                    return;
+                }
+                if (getSharedPreferences("kiway", 0).getInt("oriantation", 0) == 0) {
+                    return;
+                }
                 getSharedPreferences("kiway", 0).edit().putInt("oriantation", 0).commit();
                 if (currentActivity != null && currentActivity instanceof BaseActivity) {
                     ((BaseActivity) currentActivity).setScreenOrientation();
                 }
             } else if (msg.what == MSG_LANDSCAPE) {
+                if (Build.MODEL.equals("BZK-W00") && currentActivity != null && currentActivity instanceof
+                        BaseActivity) {
+                    ((BaseActivity) currentActivity).toast("该型号手机暂不支持横竖屏操作");
+                    return;
+                }
+                if (lockscreen && currentActivity != null && currentActivity instanceof BaseActivity) {
+                    ((BaseActivity) currentActivity).toast("无法进行竖屏操作，请先解除锁屏状态");
+                    return;
+                }
+                if (getSharedPreferences("kiway", 0).getInt("oriantation", 0) == 1) {
+                    return;
+                }
                 getSharedPreferences("kiway", 0).edit().putInt("oriantation", 1).commit();
                 if (currentActivity != null && currentActivity instanceof BaseActivity) {
                     ((BaseActivity) currentActivity).setScreenOrientation();
@@ -170,25 +195,6 @@ public class KWApp extends Application {
                         return;
                     }
                     isAttendClass = true;
-                    MDMHelper.getAdapter().setTaskButtonDisabled(true);
-                    MDMHelper.getAdapter().setHomeButtonDisabled(true);
-                    Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
-                    in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    //1.打开APP
-                    in.putExtra("shangke", msg.obj.toString());
-                    in.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name", ""));
-                    in.putExtra("className", getSharedPreferences("kiway", 0).getString("className", ""));
-                    in.putExtra("studentNumber", getSharedPreferences("kiway", 0).getString("studentNumber", ""));
-                    in.putExtra("classId", getSharedPreferences("kiway", 0).getString("classId", ""));
-                    in.putExtra("schoolId", getSharedPreferences("kiway", 0).getString("schoolId", ""));
-                    in.putExtra("huaweiToken", getSharedPreferences("huawei", 0).getString("token", ""));
-                    RemoteAidlService.attendClass(msg.obj.toString());
-                    startActivity(in);
-
-                    //2.发送zbus命令
-                    //返回shagnke给教师端，当作online
-                    ZbusHost.doSendMsg(KWApp.instance, "shangke");
-
                     //3.唤醒屏幕
                     // 获取电源管理器对象
                     PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -207,6 +213,23 @@ public class KWApp extends Application {
                     // 屏幕锁定
                     keyguardLock.reenableKeyguard();
                     keyguardLock.disableKeyguard(); // 解锁
+                    MDMHelper.getAdapter().setTaskButtonDisabled(true);
+                    MDMHelper.getAdapter().setHomeButtonDisabled(true);
+                    Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
+                    in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    //1.打开APP
+                    in.putExtra("shangke", msg.obj.toString());
+                    in.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name", ""));
+                    in.putExtra("className", getSharedPreferences("kiway", 0).getString("className", ""));
+                    in.putExtra("studentNumber", getSharedPreferences("kiway", 0).getString("studentNumber", ""));
+                    in.putExtra("classId", getSharedPreferences("kiway", 0).getString("classId", ""));
+                    in.putExtra("schoolId", getSharedPreferences("kiway", 0).getString("schoolId", ""));
+                    in.putExtra("huaweiToken", getSharedPreferences("huawei", 0).getString("token", ""));
+                    RemoteAidlService.attendClass(msg.obj.toString());
+                    startActivity(in);
+                    //2.发送zbus命令
+                    //返回shagnke给教师端，当作online
+                    ZbusHost.doSendMsg(KWApp.instance, "shangke");
                 }
             } else if (msg.what == MSG_GET_OUT_OF_CALASS) {
                 RemoteAidlService.goOutClass();

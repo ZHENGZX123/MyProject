@@ -125,7 +125,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //14.距离传感器
         //registerSensor();
         //16.检查版本更新
-        checkUpgrade();
+      //  checkUpgrade();
         //17.检查通话功能
         checkTelephoney();
         //18.获取经纬度

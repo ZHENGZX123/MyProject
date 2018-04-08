@@ -77,7 +77,7 @@ public class BaseActivity extends com.android.launcher3.BaseActivity {
         pd.dismiss();
     }
 
-    protected void toast(final String id) {
+    public void toast(final String id) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
