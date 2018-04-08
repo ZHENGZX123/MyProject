@@ -129,6 +129,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+
     public void checkForwardFrom(View v) {
         String forwardfrom = getSharedPreferences("forwardfrom", 0).getString("forwardfrom", "wxid_cokkmqud47e121的接口测试号");
         EditText et = new EditText(this);
@@ -151,14 +152,6 @@ public class MainActivity extends BaseActivity {
         dialog.show();
     }
 
-    public void checkForwardTo(View v) {
-        String forwardto = getSharedPreferences("forwardto", 0).getString("forwardto", "");
-        if (TextUtils.isEmpty(forwardto)) {
-            toast("您还没有设置转发对象");
-        } else {
-            toast("当前转发对象：" + forwardto);
-        }
-    }
 
     @Override
     protected void onResume() {

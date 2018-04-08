@@ -57,14 +57,14 @@ import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
 
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
-import static cn.kiway.robot.entity.Action.TYPE_LINK;
+import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
 import static cn.kiway.robot.entity.Action.TYPE_REDPACKAGE;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
-import static cn.kiway.robot.entity.Action.TYPE_SET_FORWARDTO;
-import static cn.kiway.robot.entity.Action.TYPE_SET_FRIEND_CIRCLER;
+import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
+import static cn.kiway.robot.entity.Action.TYPE_SET_FRIEND_CIRCLER_REMARK;
 import static cn.kiway.robot.entity.Action.TYPE_TEXT;
-import static cn.kiway.robot.entity.Action.TYPE_TRANSFER;
-import static cn.kiway.robot.entity.Action.TYPE_TRANSMIT;
+import static cn.kiway.robot.entity.Action.TYPE_TRANSFER_MONEY;
+import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static java.lang.System.currentTimeMillis;
@@ -112,7 +112,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void backToRobot() {
-        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");//.guard
+        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
         startActivity(intent);
     }
 
@@ -405,6 +405,11 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("test", "user do not login");
                     return;
                 }
+                String fromPKG = event.getPackageName().toString();
+                Log.d("test", "fromPKG = " + fromPKG);
+                if (fromPKG.equals("com.tencent.mobileqq")) {
+                    return;
+                }
                 List<CharSequence> texts = event.getText();
                 if (texts.isEmpty()) {
                     return;
@@ -454,27 +459,29 @@ public class AutoReplyService extends AccessibilityService {
                     action.content = content;
                     action.intent = intent;
                     if (content.startsWith("[微信红包]")) {
-                        //需要转发到朋友圈
                         action.receiveType = TYPE_REDPACKAGE;
-                    } else if (content.startsWith("[转账]")) {
-                        action.receiveType = TYPE_TRANSFER;
-                    } else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("[链接]")) {
-                        //需要转发到朋友圈
-                        action.receiveType = TYPE_LINK;
+                    }
+                    //转账
+                    else if (content.startsWith("[转账]")) {
+                        action.receiveType = TYPE_TRANSFER_MONEY;
+                    }
+                    //需要转发到朋友圈，目前只支持链接
+                    else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("[链接]")) {
+                        action.receiveType = TYPE_FRIEND_CIRCLER;
                     } else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("设置朋友圈备注：")) {
-                        action.receiveType = TYPE_SET_FRIEND_CIRCLER;
-                    } else if (sender.equals(Utils.getForwardFrom(this)) && content.startsWith("设置转发对象：")) {
-                        action.receiveType = TYPE_SET_FORWARDTO;
+                        action.receiveType = TYPE_SET_FRIEND_CIRCLER_REMARK;
+                    }
+                    //来自公众号的消息每一条都要转发：图片还没有做
+                    else if (sender.equals(Utils.getForwardFrom(this)) && content.startsWith("设置转发对象：")) {
+                        action.receiveType = TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
                     } else if (sender.equals(Utils.getForwardFrom(this)) && !content.equals("[语音]") && !content.equals("[动画表情]")) {
-                        //需要转发该消息
-                        action.receiveType = TYPE_TRANSMIT;
-                    } else if (content.equals("[图片]")) {
-                        //保存给易敏即可
-                        action.receiveType = TYPE_IMAGE;
-                    } else if (content.endsWith("请求添加你为朋友")) {
+                        action.receiveType = TYPE_PUBLIC_ACCONT_FORWARDING;
+                    }
+                    //自动加好友
+                    else if (content.endsWith("请求添加你为朋友")) {
                         action.receiveType = TYPE_REQUEST_FRIEND;
                     } else {
-                        //文字直接回复
+                        //文字直接走zbus即可
                         action.receiveType = TYPE_TEXT;
                     }
 
@@ -491,11 +498,11 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (action.receiveType == TYPE_IMAGE) {
                         //图片要先拉起微信,截图上传
                         launchWechat(id);
-                    } else if (action.receiveType == TYPE_LINK) {
+                    } else if (action.receiveType == TYPE_FRIEND_CIRCLER) {
                         launchWechat(id);
-                    } else if (action.receiveType == TYPE_TRANSMIT) {
+                    } else if (action.receiveType == TYPE_PUBLIC_ACCONT_FORWARDING) {
                         launchWechat(id);
-                    } else if (action.receiveType == TYPE_SET_FORWARDTO) {
+                    } else if (action.receiveType == TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO) {
                         String forwardto = action.content.replace("设置转发对象：", "").trim();
                         if (TextUtils.isEmpty(forwardto)) {
                             continue;
@@ -503,7 +510,7 @@ public class AutoReplyService extends AccessibilityService {
                         getSharedPreferences("forwardto", 0).edit().putString("forwardto", forwardto).commit();
                         toast("设置转发对象成功");
                         launchWechat(id);
-                    } else if (action.receiveType == TYPE_SET_FRIEND_CIRCLER) {
+                    } else if (action.receiveType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
                         String remark = action.content.replace("设置朋友圈备注：", "").trim();
                         if (TextUtils.isEmpty(remark)) {
                             continue;
@@ -515,7 +522,7 @@ public class AutoReplyService extends AccessibilityService {
                         launchWechat(id);
                     } else if (action.receiveType == TYPE_REDPACKAGE) {
                         launchWechat(id);
-                    } else if (action.receiveType == TYPE_TRANSFER) {
+                    } else if (action.receiveType == TYPE_TRANSFER_MONEY) {
                         launchWechat(id);
                     }
                 }
@@ -584,7 +591,7 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }
                     }, 1500);
-                } else if (receiveType == TYPE_LINK) {
+                } else if (receiveType == TYPE_FRIEND_CIRCLER) {
                     // 找到最后一张链接，点击转发到朋友圈
                     lastFrameLayout = null;
                     Log.d("test", "----------------findLastImageOrLinkMsg------------------");
@@ -607,11 +614,11 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }
                     }, 10000);//防止页面加载不完整
-                } else if (receiveType == TYPE_SET_FORWARDTO || receiveType == TYPE_SET_FRIEND_CIRCLER) {
+                } else if (receiveType == TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO || receiveType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
                     //TODO 如果是一个公众号，还要点一下
                     sendTextOnly("设置成功！");
                     release();
-                } else if (receiveType == TYPE_TRANSMIT) {
+                } else if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING) {
                     //TODO 如果是一个公众号，还要点一下
                     // 找到最后一张链接，点击转发给某人
                     String forwardto = getSharedPreferences("forwardto", 0).getString("forwardto", "");
@@ -692,8 +699,8 @@ public class AutoReplyService extends AccessibilityService {
                             findOpenPackageButton(getRootInActiveWindow());
                         }
                     }, 3000);
-                } else if (receiveType == TYPE_TRANSFER) {
-                    Log.d("test", "================TYPE_TRANSFER=================");
+                } else if (receiveType == TYPE_TRANSFER_MONEY) {
+                    Log.d("test", "================TYPE_TRANSFER_MONEY=================");
                     lastTextView = null;
                     findLastTransferMsg(getRootInActiveWindow());
                     if (lastTextView == null) {

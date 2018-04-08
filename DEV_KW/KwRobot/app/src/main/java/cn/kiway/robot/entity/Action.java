@@ -12,13 +12,15 @@ public class Action {
 
     public static final int TYPE_TEXT = 1;
     public static final int TYPE_IMAGE = 2;
-    public static final int TYPE_LINK = 99;//需要转发到朋友圈
-    public static final int TYPE_TRANSMIT = 100;//需要转发给指定的人
-    public static final int TYPE_SET_FORWARDTO = 101;//设置消息转发对象
-    public static final int TYPE_SET_FRIEND_CIRCLER = 102;//设置朋友圈转发备注
+    public static final int TYPE_FRIEND_CIRCLER = 99;//需要转发到朋友圈
+    
+    public static final int TYPE_PUBLIC_ACCONT_FORWARDING = 100;//需要转发给指定的人
+    public static final int TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO = 101;//设置消息转发对象
+
+    public static final int TYPE_SET_FRIEND_CIRCLER_REMARK = 102;//设置朋友圈转发备注
     public static final int TYPE_REQUEST_FRIEND = 103;//好友请求
     public static final int TYPE_REDPACKAGE = 104;//红包
-    public static final int TYPE_TRANSFER = 105;//转账
+    public static final int TYPE_TRANSFER_MONEY = 105;//转账
 
 
     public static final int TYPE_TEST = 9999;
