@@ -1,4 +1,17 @@
 <resources>
     <string name="app_name">开维客服机器人</string>
     <string name="accessibility_description">1、点击“开维客服机器人”\n2、选择开启即可</string>
+    <string name="not_rooted">查询微信缓存失败。请允许root权限后重试。</string>
+    <string name="done">完成</string>
+    <string name="cancel">取消</string>
+    <string name="toggle_select_all">全选/全不选</string>
+    <string name="user_moment_count">%d 条</string>
+    <string name="export">导出</string>
+    <string name="share">分享</string>
+    <string name="share_suffix">——分享自WeChatMomentStat</string>
+    <string name="filter">筛选</string>
+    <string name="export_success">已将所选朋友圈导出到 %s</string>
+    <string name="export_moments">导出朋友圈数据</string>
+    <string name="exporting_sns">正在导出朋友圈数据...</string>
+    <string name="launch">运行</string>
 </resources>

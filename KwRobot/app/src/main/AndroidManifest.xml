@@ -54,7 +54,14 @@
             android:name=".activity.InstructionActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"></activity>
-
+        <activity
+            android:name=".activity.MomentListActivity"
+            android:label="@string/export_moments"
+            android:parentActivityName=".activity.WeChatActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.WeChatActivity" />
+        </activity>
         <service
             android:name=".service.AutoReplyService"
             android:enabled="true"
