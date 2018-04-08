@@ -2,6 +2,7 @@ package cn.kiway.robot.guard.service;
 
 import android.app.ActivityManager;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
@@ -39,10 +40,17 @@ public class GuideService extends Service {
                 while (!stop) {
                     try {
                         Log.d("test", "guard is running ...");
+                        sleep(10 * 1000);
+//                        boolean isRun1 = isRun(GuideService.this, "cn.kiway.robot");
+//                        Log.d("test", "isRun1 = " + isRun1);
+//                        boolean isRun2 = isRun(GuideService.this, "com.tencent.mm");
+//                        Log.d("test", "isRun2 = " + isRun2);
+//                        boolean isRun3 = isRunInFront(GuideService.this, "cn.kiway.robot");
+//                        Log.d("test", "isRun3 = " + isRun3);
+//                        boolean isRun4 = isRunInFront(GuideService.this, "com.tencent.mm");
+//                        Log.d("test", "isRun4 = " + isRun4);
 
-                        sleep(60 * 1000);
-
-                        //1.检查机器人是否祈祷能够
+                        //1.检查机器人是否启动
                         boolean isRun1 = isRun(GuideService.this, "cn.kiway.robot");
                         Log.d("test", "isRun1 = " + isRun1);
                         if (!isRun1) {
@@ -67,11 +75,13 @@ public class GuideService extends Service {
                             startActivity(intent2);
                         }
 
-                        //3.检查微信是否一直在前台
+                        //3. 检查微信是否一直在前台
                         boolean isWxInfront = isRunInFront(GuideService.this, "com.tencent.mm");
                         boolean robotActioning = getRobotActioningFlag();
+                        Log.d("test", "isWxInfront = " + isWxInfront + " , robotActioning = " + robotActioning);
                         if (isWxInfront && !robotActioning) {
                             repeat++;
+                            Log.d("test", "repeat = " + repeat);
                             if (repeat % 5 == 0) {
                                 Intent intent2 = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot.guard");
                                 startActivity(intent2);
@@ -103,13 +113,13 @@ public class GuideService extends Service {
         return Boolean.parseBoolean(actioningFlag);
     }
 
+    //前后台
     public boolean isRun(Context context, String packageName) {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(100);
         boolean isAppRunning = false;
-        //100表示取的最大的任务数，info.topActivity表示当前正在运行的Activity，info.baseActivity表系统后台有此进程在运行
         for (ActivityManager.RunningTaskInfo info : list) {
-            if (info.topActivity.getPackageName().equals(packageName) || info.baseActivity.getPackageName().equals(packageName)) {
+            if (info.baseActivity.getPackageName().equals(packageName)) {
                 isAppRunning = true;
                 break;
             }
@@ -119,16 +129,12 @@ public class GuideService extends Service {
 
     public boolean isRunInFront(Context context, String packageName) {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(100);
-        boolean isAppRunning = false;
-        //100表示取的最大的任务数，info.topActivity表示当前正在运行的Activity，info.baseActivity表系统后台有此进程在运行
-        for (ActivityManager.RunningTaskInfo info : list) {
-            if (info.topActivity.getPackageName().equals(packageName)) {
-                isAppRunning = true;
-                break;
-            }
+        ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
+        String pkg = cn.getPackageName();
+        if (TextUtils.isEmpty(pkg)) {
+            return false;
         }
-        return isAppRunning;
+        return pkg.equals(packageName);
     }
 
     @Override
