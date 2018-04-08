@@ -46,6 +46,7 @@ import cn.kiway.robot.activity.MainActivity;
 import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.entity.ReturnMessage;
 import cn.kiway.robot.util.Constant;
+import cn.kiway.robot.util.FileUtils;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.UploadUtil;
 import cn.kiway.robot.util.Utils;
@@ -295,6 +296,7 @@ public class AutoReplyService extends AccessibilityService {
                 synchronized (o) {
                     currentActionID = -1;
                     actioningFlag = false;
+                    FileUtils.saveFile("" + actioningFlag, "actioningFlag.txt");
                     o.notify();
                 }
             }
@@ -538,6 +540,7 @@ public class AutoReplyService extends AccessibilityService {
                 }
 
                 actioningFlag = true;
+                FileUtils.saveFile("" + actioningFlag, "actioningFlag.txt");
 
                 int receiveType = actions.get(currentActionID).receiveType;
                 boolean uploaded = actions.get(currentActionID).uploaded;
