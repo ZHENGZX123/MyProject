@@ -40,7 +40,7 @@ public class GuideService extends Service {
                 while (!stop) {
                     try {
                         Log.d("test", "guard is running ...");
-                        sleep(10 * 1000);
+                        sleep(60 * 1000);
 //                        boolean isRun1 = isRun(GuideService.this, "cn.kiway.robot");
 //                        Log.d("test", "isRun1 = " + isRun1);
 //                        boolean isRun2 = isRun(GuideService.this, "com.tencent.mm");
