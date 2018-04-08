@@ -508,7 +508,7 @@ public class AutoReplyService extends AccessibilityService {
                         if (TextUtils.isEmpty(remark)) {
                             continue;
                         }
-                        getSharedPreferences("remark", 0).edit().putString("remark", remark).commit();
+                        getSharedPreferences("FCremark", 0).edit().putString("FCremark", remark).commit();
                         toast("设置朋友圈备注成功");
                         launchWechat(id);
                     } else if (action.receiveType == TYPE_REQUEST_FRIEND) {
@@ -1387,7 +1387,7 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         //输入：这一刻的想法
-                        String remark = getSharedPreferences("remark", 0).getString("remark", "");
+                        String remark = getSharedPreferences("FCremark", 0).getString("FCremark", "");
                         Log.d("test", "--------------------findMindEditText----------");
                         boolean find = findMindEditText(getRootInActiveWindow(), remark);
                         if (!find) {
@@ -1808,7 +1808,7 @@ public class AutoReplyService extends AccessibilityService {
             JSONArray param = new JSONArray();
             JSONObject o1 = new JSONObject();
             o1.put("nickname", nickname);//昵称
-            o1.put("remark", remark);//备注
+            o1.put("FCremark", remark);//备注
             o1.put("wxId", wxId);//微信id
             o1.put("wxNo", wxNo);//微信号
             o1.put("robotId", robotId);
