@@ -446,7 +446,7 @@ public class Utils {
             }
             FileUtils.saveFile(imei);
         }
-        Log.d("test", "IMEI = " + imei);
+        Log.e("test", "IMEI = " + imei);
         return imei;
     }
 
