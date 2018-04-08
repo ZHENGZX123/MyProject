@@ -17,6 +17,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -97,8 +98,30 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
-    public void checkRemark(View v) {
-        String remark = getSharedPreferences("remark", 0).getString("remark", "");
+    public void checkFCFrom(View v) {
+        String forwardfrom = getSharedPreferences("FCFrom", 0).getString("FCFrom", "朋友圈使者");
+        EditText et = new EditText(this);
+        et.setSingleLine();
+        et.setText(forwardfrom);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("当前朋友圈使者：" + forwardfrom)
+                .setView(et)
+                .setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String content = et.getText().toString().trim();
+                        if (TextUtils.isEmpty(content)) {
+                            toast("不能为空");
+                            return;
+                        }
+                        getSharedPreferences("FCFrom", 0).edit().putString("FCFrom", content).commit();
+                    }
+                }).setPositiveButton("取消", null).create();
+        dialog.show();
+    }
+
+    public void checkFCRemark(View v) {
+        String remark = getSharedPreferences("FCremark", 0).getString("FCremark", "");
         if (TextUtils.isEmpty(remark)) {
             toast("您还没有设置朋友圈备注");
         } else {
@@ -107,12 +130,25 @@ public class MainActivity extends BaseActivity {
     }
 
     public void checkForwardFrom(View v) {
-        String forwardfrom = getSharedPreferences("forwardfrom", 0).getString("forwardfrom", "");
-        if (TextUtils.isEmpty(forwardfrom)) {
-            toast("您还没有设置转发人，默认昵称是转发使者");
-        } else {
-            toast("当前转发人：" + forwardfrom);
-        }
+        String forwardfrom = getSharedPreferences("forwardfrom", 0).getString("forwardfrom", "wxid_cokkmqud47e121的接口测试号");
+        EditText et = new EditText(this);
+        et.setSingleLine();
+        et.setText(forwardfrom);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("当前转发人：" + forwardfrom)
+                .setView(et)
+                .setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String content = et.getText().toString().trim();
+                        if (TextUtils.isEmpty(content)) {
+                            toast("不能为空");
+                            return;
+                        }
+                        getSharedPreferences("forwardfrom", 0).edit().putString("forwardfrom", content).commit();
+                    }
+                }).setPositiveButton("取消", null).create();
+        dialog.show();
     }
 
     public void checkForwardTo(View v) {

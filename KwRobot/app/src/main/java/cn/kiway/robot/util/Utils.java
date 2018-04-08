@@ -71,11 +71,10 @@ public class Utils {
     }
 
     public static String getForwardFrom(Context c) {
-        String forwardfrom = c.getSharedPreferences("forwardfrom", 0).getString("forwardfrom", "");
-        if (TextUtils.isEmpty(forwardfrom)) {
-            return "wxid_cokkmqud47e121的接口测试号";//转发使者  wxid_cokkmqud47e121的接口测试号
-        } else {
-            return forwardfrom;
-        }
+        return c.getSharedPreferences("forwardfrom", 0).getString("forwardfrom", "wxid_cokkmqud47e121的接口测试号");//转发使者 wxid_cokkmqud47e121的接口测试号
+    }
+
+    public static String getFCFrom(Context c) {
+        return c.getSharedPreferences("FCFrom", 0).getString("FCFrom", "朋友圈使者");
     }
 }

@@ -80,7 +80,13 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="checkRemark"
+            android:onClick="checkFCFrom"
+            android:text="设置朋友圈使者" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="checkFCRemark"
             android:text="查看朋友圈备注" />
 
 
