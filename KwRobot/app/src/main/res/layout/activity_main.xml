@@ -69,13 +69,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="checkForwardFrom"
-            android:text="设置转发使者" />
+            android:text="设置消息来源的公众号" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="checkForwardTo"
-            android:text="查看转发对象" />
+
+
 
         <Button
             android:layout_width="wrap_content"
