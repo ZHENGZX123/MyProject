@@ -13,6 +13,7 @@ import org.xutils.x;
 public class KWApplication extends Application {
 
     public static String ROOT = "/mnt/sdcard/kiway_robot_launcher/";
+    public static String ROOT_ROBOT = "/mnt/sdcard/kiway_robot/";
 
     @Override
     public void onCreate() {

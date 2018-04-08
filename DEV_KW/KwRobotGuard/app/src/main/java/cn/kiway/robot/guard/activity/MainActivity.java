@@ -42,6 +42,7 @@ public class MainActivity extends BaseActivity {
 
         versionTV = (TextView) findViewById(R.id.version);
         versionTV.setText("当前版本号：" + getCurrentVersion(this));
+
     }
 
     public void clickWechat(View v) {

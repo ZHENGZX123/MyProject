@@ -5,9 +5,13 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.List;
+
+import cn.kiway.robot.guard.KWApplication;
+import cn.kiway.robot.guard.util.FileUtils;
 
 /**
  * Created by Administrator on 2018/4/2.
@@ -16,6 +20,7 @@ import java.util.List;
 public class GuideService extends Service {
 
     private boolean stop = false;
+    private int repeat = 0;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -27,6 +32,7 @@ public class GuideService extends Service {
         super.onCreate();
         Log.d("test", "GuideService onCreate");
         stop = false;
+        repeat = 0;
         new Thread() {
             @Override
             public void run() {
@@ -36,6 +42,7 @@ public class GuideService extends Service {
 
                         sleep(60 * 1000);
 
+                        //1.检查机器人是否祈祷能够
                         boolean isRun1 = isRun(GuideService.this, "cn.kiway.robot");
                         Log.d("test", "isRun1 = " + isRun1);
                         if (!isRun1) {
@@ -44,6 +51,7 @@ public class GuideService extends Service {
                             startActivity(intent);
                         }
                         sleep(5000);
+                        //2.检查微信是否启动
                         boolean isRun2 = isRun(GuideService.this, "com.tencent.mm");
                         Log.d("test", "isRun2 = " + isRun2);
                         if (!isRun2) {
@@ -58,12 +66,41 @@ public class GuideService extends Service {
                             Intent intent2 = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot.guard");
                             startActivity(intent2);
                         }
+
+                        //3.检查微信是否一直在前台
+                        boolean isWxInfront = isRunInFront(GuideService.this, "com.tencent.mm");
+                        boolean robotActioning = getRobotActioningFlag();
+                        if (isWxInfront && !robotActioning) {
+                            repeat++;
+                            if (repeat % 5 == 0) {
+                                Intent intent2 = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot.guard");
+                                startActivity(intent2);
+                                repeat = 0;
+                            }
+                        } else {
+                            repeat = 0;
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
+                        try {
+                            sleep(5000);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+                        continue;
                     }
                 }
             }
         }.start();
+    }
+
+    private boolean getRobotActioningFlag() {
+        String actioningFlag = FileUtils.readSDCardFile(KWApplication.ROOT_ROBOT + "actioningFlag.txt", GuideService.this.getApplicationContext());
+        Log.d("test", "actioningFlag = " + actioningFlag);
+        if (TextUtils.isEmpty(actioningFlag)) {
+            return false;
+        }
+        return Boolean.parseBoolean(actioningFlag);
     }
 
     public boolean isRun(Context context, String packageName) {
@@ -73,6 +110,20 @@ public class GuideService extends Service {
         //100表示取的最大的任务数，info.topActivity表示当前正在运行的Activity，info.baseActivity表系统后台有此进程在运行
         for (ActivityManager.RunningTaskInfo info : list) {
             if (info.topActivity.getPackageName().equals(packageName) || info.baseActivity.getPackageName().equals(packageName)) {
+                isAppRunning = true;
+                break;
+            }
+        }
+        return isAppRunning;
+    }
+
+    public boolean isRunInFront(Context context, String packageName) {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(100);
+        boolean isAppRunning = false;
+        //100表示取的最大的任务数，info.topActivity表示当前正在运行的Activity，info.baseActivity表系统后台有此进程在运行
+        for (ActivityManager.RunningTaskInfo info : list) {
+            if (info.topActivity.getPackageName().equals(packageName)) {
                 isAppRunning = true;
                 break;
             }
