@@ -1320,6 +1320,7 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            //TODO 目前公众号只有文字、链接。个人微信和公众号微信要做到兼容
             //个人微信发来文字类：android.view.View
             //个人微信发来的链接、图片、位置、名片：android.widget.FrameLayout
             //公众号微信发来的文字类：android.view.View
