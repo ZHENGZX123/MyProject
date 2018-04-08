@@ -198,15 +198,15 @@ public class AutoReplyService extends AccessibilityService {
                                                     handleImageMsg(id, action.returnMessages);
                                                 } else if (imageCount > 1) {
                                                     //这里加工一下，只保留1个图片就可以了。
-                                                    boolean retain = true;
+                                                    boolean removed = false;
                                                     Iterator<ReturnMessage> it = action.returnMessages.iterator();
                                                     while (it.hasNext()) {
                                                         ReturnMessage rm = it.next();
                                                         if (rm.returnType == TYPE_IMAGE) {
-                                                            if (!retain) {
+                                                            if (removed) {
                                                                 it.remove();
                                                             }
-                                                            retain = true;
+                                                            removed = true;
                                                         }
                                                     }
                                                     handleImageMsg(id, action.returnMessages);
