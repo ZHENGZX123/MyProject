@@ -23,6 +23,7 @@
         android:text="群发好友图片"/>
 
     <Button
+        android:id="@+id/wx"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="getFriendCircle"

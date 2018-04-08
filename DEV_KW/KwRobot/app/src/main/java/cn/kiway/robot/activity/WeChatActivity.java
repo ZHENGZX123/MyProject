@@ -1,8 +1,12 @@
 package cn.kiway.robot.activity;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.easy.wtool.sdk.WToolSDK;
 import com.loopj.android.http.AsyncHttpClient;
@@ -18,6 +22,9 @@ import java.util.ArrayList;
 
 import cn.kiway.robot.R;
 import cn.kiway.robot.db.MyDBHelper;
+import cn.kiway.robot.moment.SnsStat;
+import cn.kiway.robot.moment.Task;
+import cn.kiway.robot.moment.common.Share;
 import cn.kiway.robot.util.WxUtils;
 
 import static cn.kiway.robot.util.Constant.clientUrl;
@@ -30,11 +37,15 @@ public class WeChatActivity extends BaseActivity {
     public WToolSDK wToolSDK = new WToolSDK();
     JSONArray wxPeopleList = new JSONArray();
     JSONArray wxRoomList = new JSONArray();
+    SnsStat snsStat = null;
+    Task task = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        task = new Task(this.getApplicationContext());
         setContentView(R.layout.activity_wechat);
+        task.testRoot();
         wToolSDK.encodeValue("1");
         String s = wToolSDK.init("9999", "757533D0860F8CC0590B510BE2374F48C5750673");
         // String s = wToolSDK.init("17810096", "010112143ECFD10AC82DE363C837A7CBB45E0302");
@@ -124,7 +135,46 @@ public class WeChatActivity extends BaseActivity {
     public void getFriendCircle(View view) {
         //1.获取所有好友的朋友圈
         //2.上报给易敏
+        ((Button) findViewById(R.id.wx)).setText(R.string.exporting_sns);
+        ((Button) findViewById(R.id.wx)).setEnabled(false);
+        new RunningTask().execute();
     }
+
+
+    class RunningTask extends AsyncTask<Void, Void, Void> {
+
+        Throwable error = null;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                task.copySnsDB();
+                task.initSnsReader();
+                task.snsReader.run();
+                snsStat = new SnsStat(task.snsReader.getSnsList());
+            } catch (Throwable e) {
+                this.error = e;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void voidParam) {
+            super.onPostExecute(voidParam);
+            ((Button) findViewById(R.id.wx)).setText(R.string.launch);
+            ((Button) findViewById(R.id.wx)).setEnabled(true);
+            if (this.error != null) {
+                Toast.makeText(WeChatActivity.this, R.string.not_rooted, Toast.LENGTH_LONG).show();
+                Log.e("wechatmomentstat", "exception", this.error);
+                return;
+            }
+            Share.snsData = snsStat;
+            Intent intent = new Intent(WeChatActivity.this, MomentListActivity.class);
+            startActivity(intent);
+        }
+    }
+
+
 
     private void getWxPeople() {
         try {
