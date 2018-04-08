@@ -258,8 +258,8 @@ public class FileUtils {
         return "";
     }
 
-    public static void saveUUID(String str) {
-        String filePath = KWApplication.ROOT + "uuid.txt";
+    public static void saveFile(String content, String fileName) {
+        String filePath = KWApplication.ROOT + fileName;
         try {
             File file = new File(filePath);
             if (!file.exists()) {
@@ -268,7 +268,7 @@ public class FileUtils {
                 file.createNewFile();
             }
             FileOutputStream outStream = new FileOutputStream(file);
-            outStream.write(str.getBytes());
+            outStream.write(content.getBytes());
             outStream.close();
         } catch (Exception e) {
             e.printStackTrace();

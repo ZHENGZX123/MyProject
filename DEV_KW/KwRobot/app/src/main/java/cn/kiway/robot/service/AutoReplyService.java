@@ -27,6 +27,7 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,6 +79,7 @@ public class AutoReplyService extends AccessibilityService {
     //当前执行的事件id
     private long currentActionID = -1;
     private boolean actioningFlag;
+
 
     @Override
     public void onCreate() {
@@ -980,6 +982,9 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     //自动加好友
+    private String nickname;
+    private String remark;
+
     private boolean findAcceptButton(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -990,11 +995,16 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("接受")) {
+                AccessibilityNodeInfo nicknameNode = rootNode.getChild(i - 2);
+                nickname = nicknameNode.getText().toString();
+                Log.d("test", "nickname = " + nickname);
+
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        boolean find = findFinishButton(getRootInActiveWindow());
+                        Log.d("test", "==============findRemarkEdiText===================");
+                        boolean find = findRemarkEdiText(getRootInActiveWindow());
                         if (!find) {
                             release();
                         }
@@ -1003,6 +1013,46 @@ public class AutoReplyService extends AccessibilityService {
                 return true;
             }
             if (findAcceptButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findRemarkEdiText(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.EditText")) {
+                Bundle arguments = new Bundle();
+                arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
+                        AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
+                arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN, true);
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY, arguments);
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+                ClipData clip = ClipData.newPlainText("label", Utils.getParentRemark(this));
+                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                clipboardManager.setPrimaryClip(clip);
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "===============findFinishButton==================");
+                        boolean find = findFinishButton(getRootInActiveWindow());
+                        if (!find) {
+                            release();
+                        }
+                    }
+                }, 1000);
+                return true;
+            }
+            if (findRemarkEdiText(nodeInfo)) {
                 return true;
             }
         }
@@ -1020,10 +1070,49 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("完成")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                release();
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //找到发消息，发一段话
+                        boolean find = findSendButton(getRootInActiveWindow());
+                        if (!find) {
+                            release();
+                            return;
+                        }
+                    }
+                }, 5000);
                 return true;
             }
             if (findFinishButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findSendButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("发消息")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //找到文本框输入文字发送
+                        sendTextOnly("感谢您添加招生客服机器人，你可以向我提问啦");
+                        release();
+                    }
+                }, 2000);
+                return true;
+            }
+            if (findSendButton(nodeInfo)) {
                 return true;
             }
         }
@@ -1622,5 +1711,45 @@ public class AutoReplyService extends AccessibilityService {
             }
         }
         return false;
+    }
+
+    private void uploadFriend(String nickname, String remark, String wxId, String wxNo) {
+        try {
+            String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+            String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
+
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            Log.d("test", "xtoken = " + xtoken);
+            client.addHeader("x-auth-token", xtoken);
+
+            String url = clientUrl + "/freind/all";
+            Log.d("test", "freind url = " + url);
+
+            JSONArray param = new JSONArray();
+            JSONObject o1 = new JSONObject();
+            o1.put("nickname", nickname);//昵称
+            o1.put("remark", remark);//备注
+            o1.put("wxId", wxId);//微信id
+            o1.put("wxNo", wxNo);//微信号
+            o1.put("robotId", robotId);
+            param.put(o1);
+
+            Log.d("test", "freind param = " + param.toString());
+            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+            client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "freind onSuccess = " + ret);
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "freind onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
+        }
     }
 }

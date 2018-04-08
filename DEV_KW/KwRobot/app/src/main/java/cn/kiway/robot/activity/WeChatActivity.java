@@ -56,10 +56,10 @@ public class WeChatActivity extends BaseActivity {
         //1.获取所有的好友
         //2.上报给易敏
         getWxPeople();
-        uploadPeople();
+        uploadFriend();
     }
 
-    private void uploadPeople() {
+    private void uploadFriend() {
         try {
             String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
             String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
