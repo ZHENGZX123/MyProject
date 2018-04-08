@@ -106,12 +106,21 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    public void checkForwarding(View v) {
-        String forwarding = getSharedPreferences("forwarding", 0).getString("forwarding", "");
-        if (TextUtils.isEmpty(forwarding)) {
+    public void checkForwardFrom(View v) {
+        String forwardfrom = getSharedPreferences("forwardfrom", 0).getString("forwardfrom", "");
+        if (TextUtils.isEmpty(forwardfrom)) {
+            toast("您还没有设置转发人，默认昵称是转发使者");
+        } else {
+            toast("当前转发人：" + forwardfrom);
+        }
+    }
+
+    public void checkForwardTo(View v) {
+        String forwardto = getSharedPreferences("forwardto", 0).getString("forwardto", "");
+        if (TextUtils.isEmpty(forwardto)) {
             toast("您还没有设置转发对象");
         } else {
-            toast("当前转发对象：" + forwarding);
+            toast("当前转发对象：" + forwardto);
         }
     }
 
