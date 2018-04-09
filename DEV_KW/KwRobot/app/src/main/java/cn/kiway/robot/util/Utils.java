@@ -1,5 +1,6 @@
 package cn.kiway.robot.util;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -7,7 +8,10 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.Calendar;
+import java.util.Enumeration;
 
 import cn.kiway.robot.KWApplication;
 import io.netty.util.internal.StringUtil;
@@ -21,9 +25,63 @@ public class Utils {
     public static String getIMEI(Context c) {
         TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
         String imei = tm.getDeviceId();
+        if (imei == null || imei.equals("null")) {
+            imei = getLocalEthernetMacAddress();
+        }
         Log.d("test", "IMEI = " + imei);
         return imei;
     }
+
+
+    @SuppressLint("NewApi")
+    public static String getLocalEthernetMacAddress() {
+        String mac = null;
+        try {
+            @SuppressWarnings("rawtypes")
+            Enumeration localEnumeration = NetworkInterface
+                    .getNetworkInterfaces();
+            while (localEnumeration.hasMoreElements()) {
+                NetworkInterface localNetworkInterface = (NetworkInterface) localEnumeration
+                        .nextElement();
+                String interfaceName = localNetworkInterface.getDisplayName();
+                if (interfaceName == null) {
+                    continue;
+                }
+                if (interfaceName.equals("eth0")) {
+                    mac = convertToMac(localNetworkInterface
+                            .getHardwareAddress());
+                    if (mac != null && mac.startsWith("0:")) {
+                        mac = "0" + mac;
+                    }
+                    break;
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        return mac;
+    }
+
+    @SuppressLint("DefaultLocale")
+    private static String convertToMac(byte[] mac) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < mac.length; i++) {
+            byte b = mac[i];
+            int value = 0;
+            if (b >= 0 && b <= 16) {
+                value = b;
+                sb.append("0" + Integer.toHexString(value));
+            } else if (b > 16) {
+                value = b;
+                sb.append(Integer.toHexString(value));
+            } else {
+                value = 256 + b;
+                sb.append(Integer.toHexString(value));
+            }
+        }
+        return sb.toString().toLowerCase();
+    }
+
 
     public static boolean isInfilters(Context c, String sender) {
         String f = c.getSharedPreferences("filters", 0).getString("filters", "");
@@ -73,7 +131,8 @@ public class Utils {
     }
 
     public static String getForwardFrom(Context c) {
-        return c.getSharedPreferences("forwardfrom", 0).getString("forwardfrom", "wxid_cokkmqud47e121的接口测试号");//转发使者 wxid_cokkmqud47e121的接口测试号
+        return c.getSharedPreferences("forwardfrom", 0).getString("forwardfrom", "wxid_cokkmqud47e121的接口测试号");//转发使者
+        // wxid_cokkmqud47e121的接口测试号
     }
 
     public static String getFCFrom(Context c) {
