@@ -131,7 +131,7 @@ public class MainActivity extends BaseActivity {
 
     public void setForwardFrom(View v) {
         startActivity(new Intent(this, SetPublicAccountActivity.class));
-        
+
         if (true) {
             return;
         }

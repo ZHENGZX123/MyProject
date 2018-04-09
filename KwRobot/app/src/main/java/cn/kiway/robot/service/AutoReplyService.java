@@ -86,6 +86,7 @@ public class AutoReplyService extends AccessibilityService {
     private long currentActionID = -1;
     private boolean actioningFlag;
 
+    private String sender;
     private String forwardto;//当前要转发的对象
 
     @Override
@@ -471,8 +472,10 @@ public class AutoReplyService extends AccessibilityService {
                         String[] cc = ticker.split(":");
                         sender = cc[0].trim();
                         content = cc[1].trim();
+                        AutoReplyService.instance.sender = sender;
                         Log.d("test", "sender name = " + sender);
                         Log.d("test", "sender content = " + content);
+
                         if (Utils.isInfilters(getApplicationContext(), sender)) {
                             Log.d("test", "该昵称被过滤");
                             continue;
@@ -1324,8 +1327,19 @@ public class AutoReplyService extends AccessibilityService {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        //随机给公众号回复一点消息
-                        //找到最后的ImageView
+                        int receiveType = actions.get(currentActionID).receiveType;
+                        if (receiveType == TYPE_COLLECTOR_FORWARDING) {
+                            release();
+                            return;
+                        }
+                        //给公众号回复一条消息，每天回复一次
+                        String today = Utils.getToday();
+                        boolean todaySended = getSharedPreferences("kiway", 0).getBoolean(today, false);
+                        if (todaySended) {
+                            release();
+                            return;
+                        }
+                        //1.找到最后的ImageView
                         lastImageView = null;
                         findLastImageView(getRootInActiveWindow());
                         if (lastImageView == null) {
@@ -1333,12 +1347,14 @@ public class AutoReplyService extends AccessibilityService {
                             return;
                         }
                         lastImageView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        //2.发送文本内容
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 String sendContent = getSharedPreferences("sendContent", 0).getString("sendContent", "你好，请问客服在吗？");
                                 sendTextOnly(sendContent);
                                 release();
+                                getSharedPreferences("kiway", 0).edit().putBoolean(today, true).commit();
                             }
                         }, 1000);
                     }

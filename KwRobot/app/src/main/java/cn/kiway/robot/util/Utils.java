@@ -7,6 +7,8 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.util.Calendar;
+
 import cn.kiway.robot.KWApplication;
 import io.netty.util.internal.StringUtil;
 
@@ -76,5 +78,14 @@ public class Utils {
 
     public static String getFCFrom(Context c) {
         return c.getSharedPreferences("FCFrom", 0).getString("FCFrom", "朋友圈使者");
+    }
+
+    public static String getToday() {
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH) + 1;
+        int date = c.get(Calendar.DATE);
+        String today = "" + year + month + date;
+        return today;
     }
 }
