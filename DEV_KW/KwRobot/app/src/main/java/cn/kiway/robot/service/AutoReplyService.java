@@ -58,6 +58,7 @@ import io.zbus.mq.MqClient;
 
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
+import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING2;
 import static cn.kiway.robot.entity.Action.TYPE_REDPACKAGE;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
@@ -82,6 +83,7 @@ public class AutoReplyService extends AccessibilityService {
     private long currentActionID = -1;
     private boolean actioningFlag;
 
+    private String forwardto;//当前要转发的对象
 
     @Override
     public void onCreate() {
@@ -465,23 +467,28 @@ public class AutoReplyService extends AccessibilityService {
                     else if (content.startsWith("[转账]")) {
                         action.receiveType = TYPE_TRANSFER_MONEY;
                     }
+                    //自动加好友
+                    else if (content.endsWith("请求添加你为朋友")) {
+                        action.receiveType = TYPE_REQUEST_FRIEND;
+                    }
                     //需要转发到朋友圈，目前只支持链接
                     else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("[链接]")) {
                         action.receiveType = TYPE_FRIEND_CIRCLER;
                     } else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("设置朋友圈备注：")) {
                         action.receiveType = TYPE_SET_FRIEND_CIRCLER_REMARK;
                     }
-                    //来自公众号的消息每一条都要转发：图片还没有做
+                    //来自公众号的消息每一条都要转发：图片还没有做，需要测试
                     else if (sender.equals(Utils.getForwardFrom(this)) && content.startsWith("设置转发对象：")) {
                         action.receiveType = TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
                     } else if (sender.equals(Utils.getForwardFrom(this)) && !content.equals("[语音]") && !content.equals("[动画表情]")) {
                         action.receiveType = TYPE_PUBLIC_ACCONT_FORWARDING;
                     }
-                    //自动加好友
-                    else if (content.endsWith("请求添加你为朋友")) {
-                        action.receiveType = TYPE_REQUEST_FRIEND;
-                    } else {
-                        //文字直接走zbus即可
+                    //需要转发到“消息收集群”
+                    else if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了")) {
+                        action.receiveType = TYPE_PUBLIC_ACCONT_FORWARDING2;
+                    }
+                    //其他文字直接走zbus即可
+                    else {
                         action.receiveType = TYPE_TEXT;
                     }
 
@@ -500,7 +507,7 @@ public class AutoReplyService extends AccessibilityService {
                         launchWechat(id);
                     } else if (action.receiveType == TYPE_FRIEND_CIRCLER) {
                         launchWechat(id);
-                    } else if (action.receiveType == TYPE_PUBLIC_ACCONT_FORWARDING) {
+                    } else if (action.receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || action.receiveType == TYPE_PUBLIC_ACCONT_FORWARDING2) {
                         launchWechat(id);
                     } else if (action.receiveType == TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO) {
                         String forwardto = action.content.replace("设置转发对象：", "").trim();
@@ -592,7 +599,7 @@ public class AutoReplyService extends AccessibilityService {
                         }
                     }, 1500);
                 } else if (receiveType == TYPE_FRIEND_CIRCLER) {
-                    // 找到最后一张链接，点击转发到朋友圈
+                    // 找到最后一个链接，点击转发到朋友圈
                     lastFrameLayout = null;
                     Log.d("test", "----------------findLastImageOrLinkMsg------------------");
                     findLastImageOrLinkMsg(getRootInActiveWindow());
@@ -615,13 +622,15 @@ public class AutoReplyService extends AccessibilityService {
                         }
                     }, 10000);//防止页面加载不完整
                 } else if (receiveType == TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO || receiveType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
-                    //TODO 如果是一个公众号，还要点一下
                     sendTextOnly("设置成功！");
                     release();
-                } else if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING) {
-                    //TODO 如果是一个公众号，还要点一下
+                } else if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || receiveType == TYPE_PUBLIC_ACCONT_FORWARDING2) {
                     // 找到最后一张链接，点击转发给某人
-                    String forwardto = getSharedPreferences("forwardto", 0).getString("forwardto", "");
+                    if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING) {
+                        forwardto = getSharedPreferences("forwardto", 0).getString("forwardto", "");
+                    } else if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING2) {
+                        forwardto = getSharedPreferences("collector", 0).getString("collector", "");
+                    }
                     if (TextUtils.isEmpty(forwardto)) {
                         toast("您还没有设置转发对象");
                         //回复给微信
@@ -667,7 +676,6 @@ public class AutoReplyService extends AccessibilityService {
                             } else {
                                 doLongClickLastMsg();
                             }
-
                         }
                     }, 2000);
                 } else if (receiveType == TYPE_REQUEST_FRIEND) {
@@ -1174,7 +1182,6 @@ public class AutoReplyService extends AccessibilityService {
                     public void run() {
                         //找文本框
                         Log.d("test", " =================findSearchEditText===============");
-                        String forwardto = getSharedPreferences("forwardto", 0).getString("forwardto", "");
                         boolean find = findSearchEditText(getRootInActiveWindow(), forwardto);
                         if (!find) {
                             Log.d("test", "findSearchEditText失败");
@@ -1255,7 +1262,7 @@ public class AutoReplyService extends AccessibilityService {
                             release();
                         }
                     }
-                }, 1000);
+                }, 2000);
                 return true;
             }
             if (findTargetPeople(nodeInfo, forwardto)) {
@@ -1282,7 +1289,7 @@ public class AutoReplyService extends AccessibilityService {
                     public void run() {
                         release();
                     }
-                }, 1000);
+                }, 2000);
                 return true;
             }
             if (findSendButtonInDialog(nodeInfo)) {
@@ -1366,7 +1373,7 @@ public class AutoReplyService extends AccessibilityService {
                             release();
                         }
                     }
-                }, 1000);
+                }, 2000);
                 return true;
             }
             if (findTopRightButton(nodeInfo)) {
@@ -1444,7 +1451,7 @@ public class AutoReplyService extends AccessibilityService {
                             release();
                         }
                     }
-                }, 1000);
+                }, 2000);
                 return true;
             }
             if (findMindEditText(nodeInfo, mind)) {
