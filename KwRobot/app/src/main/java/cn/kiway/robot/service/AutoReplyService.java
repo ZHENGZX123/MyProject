@@ -140,7 +140,7 @@ public class AutoReplyService extends AccessibilityService {
     };
 
     private void launchWechat(long id) {
-        handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 30000);
+        handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 60000);
         currentActionID = id;
         try {
             actions.get(currentActionID).intent.send();
@@ -921,7 +921,7 @@ public class AutoReplyService extends AccessibilityService {
                                     //4.再次执行长按
                                     doLongClickLastMsgAgain();
                                 }
-                            }, 2000);
+                            }, 5000);
                         }
                     }
                 }, 2000);
