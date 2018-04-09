@@ -522,7 +522,7 @@ public class AutoReplyService extends AccessibilityService {
                         action.receiveType = TYPE_PUBLIC_ACCONT_FORWARDING;
                     }
                     //需要转发到“消息收集群”
-                    else if (content.equals("[图片]") || content.equals("[链接]") || content.equals("[视频]") || content.equals("[文件]") || content.equals("[位置]") || content.contains("向你推荐了")) {
+                    else if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了")) {
                         action.receiveType = TYPE_COLLECTOR_FORWARDING;
                     }
                     //其他文字直接走zbus即可
@@ -906,8 +906,22 @@ public class AutoReplyService extends AccessibilityService {
                             // 2.执行su命令
                             int ret = RootCmd.execRootCmdSilent(cmd);
                             Log.d("test", "execRootCmdSilent ret = " + ret);
-                            //3.再次执行长按
-                            doLongClickLastMsgAgain(ret);
+
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //3.点一下返回
+                                    String content = actions.get(currentActionID).content;
+                                    Log.d("test", "content = " + content);
+                                    if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了") || isCallingDialog(getRootInActiveWindow())) {
+                                        String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
+                                        int ret = RootCmd.execRootCmdSilent(cmd);
+                                        Log.d("test", "execRootCmdSilent ret = " + ret);
+                                    }
+                                    //4.再次执行长按
+                                    doLongClickLastMsgAgain();
+                                }
+                            }, 2000);
                         }
                     }
                 }, 2000);
@@ -970,37 +984,27 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void doLongClickLastMsgAgain(int ret) {
+    private void doLongClickLastMsgAgain() {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (ret == 0) {
-                    Log.d("test", "doLongClickLastMsgAgain");
-                    String content = actions.get(currentActionID).content;
-                    if (content.equals("[图片]") || content.equals("[链接]") || content.equals("[视频]") || content.equals("[文件]") || content.equals("[位置]") || content.contains("向你推荐了") || isCallingDialog(getRootInActiveWindow())) {
-                        String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
-                        int ret = RootCmd.execRootCmdSilent(cmd);
-                        Log.d("test", "execRootCmdSilent ret = " + ret);
-                    }
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Log.d("test", "=================findTransferButton===============");
-                                    boolean find = findTransferButton(getRootInActiveWindow());
-                                    if (!find) {
-                                        release();
-                                    }
+                Log.d("test", "doLongClickLastMsgAgain");
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d("test", "=================findTransferButton===============");
+                                boolean find = findTransferButton(getRootInActiveWindow());
+                                if (!find) {
+                                    release();
                                 }
-                            }, 2000);
-                        }
-                    }, 2000);
-                } else {
-                    release();
-                }
+                            }
+                        }, 2000);
+                    }
+                }, 2000);
             }
         }, 5000);
     }
@@ -1298,7 +1302,8 @@ public class AutoReplyService extends AccessibilityService {
                         int receiveType = actions.get(currentActionID).receiveType;
                         if (receiveType == TYPE_COLLECTOR_FORWARDING) {
                             //这里要额外做一步，找到文本框并粘贴内容
-                            String content = "sender:" + sender + ",openid:123456";
+                            String openId = getSharedPreferences("openId", 0).getString("openId", "osP5zwJ-lEdJVGD-_5_WyvQL9Evo");
+                            String content = "sender:" + sender + ",openid:" + openId;
                             findInputEditText(getRootInActiveWindow(), content);
                         }
                         Log.d("test", "=========findSendButtonInDialog============");
@@ -1336,7 +1341,7 @@ public class AutoReplyService extends AccessibilityService {
                     public void run() {
                         int receiveType = actions.get(currentActionID).receiveType;
                         if (receiveType == TYPE_COLLECTOR_FORWARDING) {
-                            //donothing
+                            release();
                         } else if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING) {
                             //给公众号回复一条消息，每天回复一次
                             String today = Utils.getToday();
