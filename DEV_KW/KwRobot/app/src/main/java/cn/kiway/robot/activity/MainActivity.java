@@ -185,6 +185,29 @@ public class MainActivity extends BaseActivity {
         dialog.show();
     }
 
+    public void setOpenId(View view) {
+        String openId = getSharedPreferences("openId", 0).getString("openId", "osP5zwJ-lEdJVGD-_5_WyvQL9Evo");
+        EditText et = new EditText(this);
+        et.setSingleLine();
+        et.setText(openId);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("当前openId：" + openId)
+                .setView(et)
+                .setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String content = et.getText().toString().trim();
+                        if (TextUtils.isEmpty(content)) {
+                            toast("不能为空");
+                            return;
+                        }
+                        getSharedPreferences("openId", 0).edit().putString("openId", content).commit();
+                    }
+                }).setPositiveButton("取消", null).create();
+        dialog.show();
+    }
+
+
     @Override
     protected void onResume() {
         super.onResume();

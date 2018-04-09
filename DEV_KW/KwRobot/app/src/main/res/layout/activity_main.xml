@@ -76,6 +76,11 @@
             android:onClick="setCollector"
             android:text="设置消息收集的微信（群）名称" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="setOpenId"
+            android:text="设置本机器人对应的openId" />
 
         <Button
             android:layout_width="wrap_content"
