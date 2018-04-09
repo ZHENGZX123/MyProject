@@ -130,6 +130,10 @@ public class MainActivity extends BaseActivity {
     }
 
     public void setForwardFrom(View v) {
+        startActivity(new Intent(this, SetPublicAccountActivity.class));
+        if (true) {
+            return;
+        }
         String forwardfrom = getSharedPreferences("forwardfrom", 0).getString("forwardfrom", "wxid_cokkmqud47e121的接口测试号");
         EditText et = new EditText(this);
         et.setSingleLine();

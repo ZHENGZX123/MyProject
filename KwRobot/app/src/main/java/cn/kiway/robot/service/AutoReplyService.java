@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -56,16 +57,16 @@ import io.zbus.mq.Message;
 import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
 
-import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
+import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
+import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING2;
+import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
 import static cn.kiway.robot.entity.Action.TYPE_REDPACKAGE;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
-import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
 import static cn.kiway.robot.entity.Action.TYPE_SET_FRIEND_CIRCLER_REMARK;
 import static cn.kiway.robot.entity.Action.TYPE_TEXT;
 import static cn.kiway.robot.entity.Action.TYPE_TRANSFER_MONEY;
-import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static java.lang.System.currentTimeMillis;
@@ -73,6 +74,8 @@ import static java.lang.System.currentTimeMillis;
 public class AutoReplyService extends AccessibilityService {
 
     public static int MSG_CLEAR_ACTION = 1;
+    public static int MSG_ALARM = 2;
+
 
     public static AutoReplyService instance;
     private final Object o = new Object();
@@ -89,7 +92,6 @@ public class AutoReplyService extends AccessibilityService {
     public void onCreate() {
         super.onCreate();
         Log.d("maptrix", "service oncreate");
-
         instance = this;
         installationPush(this);
     }
@@ -99,6 +101,39 @@ public class AutoReplyService extends AccessibilityService {
         public void handleMessage(android.os.Message msg) {
             if (msg.what == MSG_CLEAR_ACTION) {
                 release();
+                return;
+            }
+            if (msg.what == MSG_ALARM) {
+                //这里不要了。。。写了半天，发现实现不了
+                handler.removeMessages(MSG_ALARM);
+                handler.sendEmptyMessageDelayed(MSG_ALARM, 60 * 1000);
+
+                int hour = getSharedPreferences("sendHour", 0).getInt("sendHour", 0);
+                int minute = getSharedPreferences("sendMinute", 0).getInt("sendMinute", 0);
+
+                Calendar c = Calendar.getInstance();
+
+                int year = c.get(Calendar.YEAR);
+                int month = c.get(Calendar.MONTH) + 1;
+                int date = c.get(Calendar.DATE);
+                String today = "" + year + month + date;
+
+                int currentHour = c.get(Calendar.HOUR_OF_DAY);
+                int currentMinute = c.get(Calendar.MINUTE);
+                //Log.d("test", year + " " + month + " " + date + " " + currentHour + " " + currentMinute);
+                boolean todaySended = getSharedPreferences("kiway", 0).getBoolean(today, false);
+                if (todaySended) {
+                    return;
+                }
+                if (actioningFlag) {
+                    return;
+                }
+                if (currentHour == hour && Math.abs(currentMinute - minute) < 10) {
+                    actioningFlag = true;
+                    FileUtils.saveFile("" + actioningFlag, "actioningFlag.txt");
+                    release();
+                }
+                return;
             }
         }
     };
