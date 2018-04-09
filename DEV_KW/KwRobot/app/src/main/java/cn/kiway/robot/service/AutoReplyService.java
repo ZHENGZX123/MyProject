@@ -1226,7 +1226,7 @@ public class AutoReplyService extends AccessibilityService {
                             release();
                         }
                     }
-                }, 2000);
+                }, 3000);
                 return true;
             }
             if (findTransferButton(nodeInfo)) {
@@ -1291,9 +1291,16 @@ public class AutoReplyService extends AccessibilityService {
                 AccessibilityNodeInfo parent = nodeInfo.getParent();
                 parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
 
+                //弹出发送框框
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        int receiveType = actions.get(currentActionID).receiveType;
+                        if (receiveType == TYPE_COLLECTOR_FORWARDING) {
+                            //这里要额外做一步，找到文本框并粘贴内容
+                            String content = "sender:" + sender + ",openid:123456";
+                            findInputEditText(getRootInActiveWindow(), content);
+                        }
                         Log.d("test", "=========findSendButtonInDialog============");
                         boolean find = findSendButtonInDialog(getRootInActiveWindow());
                         if (!find) {
@@ -1329,34 +1336,34 @@ public class AutoReplyService extends AccessibilityService {
                     public void run() {
                         int receiveType = actions.get(currentActionID).receiveType;
                         if (receiveType == TYPE_COLLECTOR_FORWARDING) {
-                            release();
-                            return;
-                        }
-                        //给公众号回复一条消息，每天回复一次
-                        String today = Utils.getToday();
-                        boolean todaySended = getSharedPreferences("kiway", 0).getBoolean(today, false);
-                        if (todaySended) {
-                            release();
-                            return;
-                        }
-                        //1.找到最后的ImageView
-                        lastImageView = null;
-                        findLastImageView(getRootInActiveWindow());
-                        if (lastImageView == null) {
-                            release();
-                            return;
-                        }
-                        lastImageView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        //2.发送文本内容
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                String sendContent = getSharedPreferences("sendContent", 0).getString("sendContent", "你好，请问客服在吗？");
-                                sendTextOnly(sendContent);
+                            //donothing
+                        } else if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING) {
+                            //给公众号回复一条消息，每天回复一次
+                            String today = Utils.getToday();
+                            boolean todaySended = getSharedPreferences("kiway", 0).getBoolean(today, false);
+                            if (todaySended) {
                                 release();
-                                getSharedPreferences("kiway", 0).edit().putBoolean(today, true).commit();
+                                return;
                             }
-                        }, 1000);
+                            //1.找到最后的ImageView
+                            lastImageView = null;
+                            findLastImageView(getRootInActiveWindow());
+                            if (lastImageView == null) {
+                                release();
+                                return;
+                            }
+                            lastImageView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            //2.发送文本内容
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    String sendContent = getSharedPreferences("sendContent", 0).getString("sendContent", "你好，请问客服在吗？");
+                                    sendTextOnly(sendContent);
+                                    release();
+                                    getSharedPreferences("kiway", 0).edit().putBoolean(today, true).commit();
+                                }
+                            }, 1000);
+                        }
                     }
                 }, 4000);
                 return true;
