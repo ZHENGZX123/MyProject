@@ -60,7 +60,7 @@ import io.zbus.mq.MqClient;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING;
-import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING2;
+import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
 import static cn.kiway.robot.entity.Action.TYPE_REDPACKAGE;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
@@ -520,7 +520,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     //需要转发到“消息收集群”
                     else if (content.equals("[图片]") || content.equals("[链接]") || content.equals("[视频]") || content.equals("[文件]") || content.equals("[位置]") || content.contains("向你推荐了")) {
-                        action.receiveType = TYPE_PUBLIC_ACCONT_FORWARDING2;
+                        action.receiveType = TYPE_COLLECTOR_FORWARDING;
                     }
                     //其他文字直接走zbus即可
                     else {
@@ -542,7 +542,7 @@ public class AutoReplyService extends AccessibilityService {
                         launchWechat(id);
                     } else if (action.receiveType == TYPE_FRIEND_CIRCLER) {
                         launchWechat(id);
-                    } else if (action.receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || action.receiveType == TYPE_PUBLIC_ACCONT_FORWARDING2) {
+                    } else if (action.receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || action.receiveType == TYPE_COLLECTOR_FORWARDING) {
                         launchWechat(id);
                     } else if (action.receiveType == TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO) {
                         String forwardto = action.content.replace("设置转发对象：", "").trim();
@@ -659,11 +659,11 @@ public class AutoReplyService extends AccessibilityService {
                 } else if (receiveType == TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO || receiveType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
                     sendTextOnly("设置成功！");
                     release();
-                } else if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || receiveType == TYPE_PUBLIC_ACCONT_FORWARDING2) {
+                } else if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || receiveType == TYPE_COLLECTOR_FORWARDING) {
                     // 找到最后一张链接，点击转发给某人
                     if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING) {
                         forwardto = getSharedPreferences("forwardto", 0).getString("forwardto", "");
-                    } else if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING2) {
+                    } else if (receiveType == TYPE_COLLECTOR_FORWARDING) {
                         forwardto = getSharedPreferences("collector", 0).getString("collector", "");
                     }
                     if (TextUtils.isEmpty(forwardto)) {
@@ -1307,6 +1307,8 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
+    private AccessibilityNodeInfo lastImageView;
+
     private boolean findSendButtonInDialog(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -1322,12 +1324,46 @@ public class AutoReplyService extends AccessibilityService {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        release();
+                        //随机给公众号回复一点消息
+                        //找到最后的ImageView
+                        lastImageView = null;
+                        findLastImageView(getRootInActiveWindow());
+                        if (lastImageView == null) {
+                            release();
+                            return;
+                        }
+                        lastImageView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                String sendContent = getSharedPreferences("sendContent", 0).getString("sendContent", "你好，请问客服在吗？");
+                                sendTextOnly(sendContent);
+                                release();
+                            }
+                        }, 1000);
                     }
-                }, 2000);
+                }, 4000);
                 return true;
             }
             if (findSendButtonInDialog(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findLastImageView(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            if (nodeInfo.getClassName().equals("android.widget.ImageView")) {
+                lastImageView = nodeInfo;
+            }
+            if (findLastImageView(nodeInfo)) {
                 return true;
             }
         }
