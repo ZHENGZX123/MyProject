@@ -157,12 +157,12 @@ public class MainActivity extends BaseActivity {
     }
 
     public void setCollector(View view) {
-        String collector = getSharedPreferences("collector", 0).getString("collector", "我的KW");
+        String oldCollector = getSharedPreferences("collector", 0).getString("collector", "我的KW");
         EditText et = new EditText(this);
         et.setSingleLine();
-        et.setText(collector);
+        et.setText(oldCollector);
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("当前消息收集微信（群）：" + collector)
+                .setTitle("当前消息收集微信（群）：" + oldCollector)
                 .setView(et)
                 .setNegativeButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -173,8 +173,12 @@ public class MainActivity extends BaseActivity {
                             return;
                         }
                         getSharedPreferences("collector", 0).edit().putString("collector", content).commit();
-                        //这个消息收集器是自动要过滤的
+                        //这个消息收集器是自动要过滤的，先减后加
                         String filters = getSharedPreferences("filters", 0).getString("filters", "");
+                        filters = filters.replace("===" + oldCollector, "");
+                        getSharedPreferences("filters", 0).edit().putString("filters", filters).commit();
+
+                        filters = getSharedPreferences("filters", 0).getString("filters", "");
                         getSharedPreferences("filters", 0).edit().putString("filters", filters + "===" + content).commit();
                     }
                 }).setPositiveButton("取消", null).create();
