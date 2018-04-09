@@ -129,8 +129,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-
-    public void checkForwardFrom(View v) {
+    public void setForwardFrom(View v) {
         String forwardfrom = getSharedPreferences("forwardfrom", 0).getString("forwardfrom", "wxid_cokkmqud47e121的接口测试号");
         EditText et = new EditText(this);
         et.setSingleLine();
@@ -152,6 +151,30 @@ public class MainActivity extends BaseActivity {
         dialog.show();
     }
 
+    public void setCollector(View view) {
+        String collector = getSharedPreferences("collector", 0).getString("collector", "我的KW");
+        EditText et = new EditText(this);
+        et.setSingleLine();
+        et.setText(collector);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("当前消息收集微信（群）：" + collector)
+                .setView(et)
+                .setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String content = et.getText().toString().trim();
+                        if (TextUtils.isEmpty(content)) {
+                            toast("不能为空");
+                            return;
+                        }
+                        getSharedPreferences("collector", 0).edit().putString("collector", content).commit();
+                        //这个消息收集器是自动要过滤的
+                        String filters = getSharedPreferences("filters", 0).getString("filters", "");
+                        getSharedPreferences("filters", 0).edit().putString("filters", filters + "===" + content).commit();
+                    }
+                }).setPositiveButton("取消", null).create();
+        dialog.show();
+    }
 
     @Override
     protected void onResume() {

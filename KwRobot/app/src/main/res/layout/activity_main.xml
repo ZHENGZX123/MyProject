@@ -48,8 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="filter"
-            android:text="设置过滤昵称" />
-
+            android:text="设置过滤谁的消息" />
 
         <CheckBox
             android:id="@+id/getPic"
@@ -57,7 +56,6 @@
             android:layout_height="40dp"
             android:checked="true"
             android:text="是否接收图片" />
-
 
         <Button
             android:layout_width="wrap_content"
@@ -68,10 +66,15 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="checkForwardFrom"
+            android:onClick="setForwardFrom"
             android:text="设置消息来源的公众号" />
 
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="setCollector"
+            android:text="设置消息收集的微信（群）名称" />
 
 
         <Button

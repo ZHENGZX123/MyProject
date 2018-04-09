@@ -67,7 +67,7 @@ public class Utils {
             parentId = "" + (id + 1);
         }
         FileUtils.saveFile(parentId, "parent.txt");
-        return "家长" + parentId;
+        return parentId;
     }
 
     public static String getForwardFrom(Context c) {

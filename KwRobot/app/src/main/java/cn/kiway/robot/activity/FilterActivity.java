@@ -36,14 +36,26 @@ public class FilterActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
 
+        //默认添加一个“我的KW”
+        String filters = getSharedPreferences("filters", 0).getString("filters", "");
+        if (!filters.contains("我的KW")) {
+            getSharedPreferences("filters", 0).edit().putString("filters", filters + "===" + "我的KW").commit();
+        }
+
+        initView();
+        setListener();
+        refresh();
+    }
+
+    private void initView() {
         lv = (ListView) findViewById(R.id.lv);
         adapter = new MyAdapter();
         lv.setAdapter(adapter);
-        refresh();
-
         et = (EditText) findViewById(R.id.et);
         add = (Button) findViewById(R.id.add);
+    }
 
+    private void setListener() {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,6 +91,7 @@ public class FilterActivity extends BaseActivity {
             }
         });
     }
+
 
     private void refresh() {
         String f = getSharedPreferences("filters", 0).getString("filters", "");
