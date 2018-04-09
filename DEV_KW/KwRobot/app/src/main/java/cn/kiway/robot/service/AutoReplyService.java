@@ -484,7 +484,7 @@ public class AutoReplyService extends AccessibilityService {
                         action.receiveType = TYPE_PUBLIC_ACCONT_FORWARDING;
                     }
                     //需要转发到“消息收集群”
-                    else if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了")) {
+                    else if (content.equals("[图片]") || content.equals("[链接]") || content.equals("[视频]") || content.equals("[文件]") || content.equals("[位置]") || content.contains("向你推荐了")) {
                         action.receiveType = TYPE_PUBLIC_ACCONT_FORWARDING2;
                     }
                     //其他文字直接走zbus即可
@@ -503,7 +503,7 @@ public class AutoReplyService extends AccessibilityService {
                         //文字的话直接走zbus
                         sendMsgToServer(id, action);
                     } else if (action.receiveType == TYPE_IMAGE) {
-                        //图片要先拉起微信,截图上传
+                        //图片要先拉起微信,截图上传：0408业务调整，暂时没有这种类型了
                         launchWechat(id);
                     } else if (action.receiveType == TYPE_FRIEND_CIRCLER) {
                         launchWechat(id);
@@ -939,7 +939,7 @@ public class AutoReplyService extends AccessibilityService {
                 if (ret == 0) {
                     Log.d("test", "doLongClickLastMsgAgain");
                     String content = actions.get(currentActionID).content;
-                    if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了") || isCallingDialog(getRootInActiveWindow())) {
+                    if (content.equals("[图片]") || content.equals("[链接]") || content.equals("[视频]") || content.equals("[文件]") || content.equals("[位置]") || content.contains("向你推荐了") || isCallingDialog(getRootInActiveWindow())) {
                         String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
                         int ret = RootCmd.execRootCmdSilent(cmd);
                         Log.d("test", "execRootCmdSilent ret = " + ret);
