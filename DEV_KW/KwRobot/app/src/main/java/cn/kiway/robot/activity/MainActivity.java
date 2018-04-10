@@ -205,7 +205,7 @@ public class MainActivity extends BaseActivity {
                         }
                         getSharedPreferences("openId", 0).edit().putString("openId", content).commit();
 
-                        updateOpenId(content);
+                        updateOpenIdOrStatus(content);
                     }
                 }).setPositiveButton("取消", null).create();
         dialog.show();
@@ -219,34 +219,34 @@ public class MainActivity extends BaseActivity {
         updateServiceCount();
     }
 
-    private void updateOpenId(String openId) {
-        Log.d("test", "openId = " + openId);
+    private void updateOpenIdOrStatus(Object o) {
         try {
             String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
             String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
-
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
             Log.d("test", "xtoken = " + xtoken);
             client.addHeader("x-auth-token", xtoken);
-
             String url = clientUrl + "/robot/" + robotId;
-            Log.d("test", "updateOpenId url = " + url);
+            Log.d("test", "updateOpenIdOrStatus url = " + url);
 
             com.loopj.android.http.RequestParams param = new com.loopj.android.http.RequestParams();
-            param.put("openId", openId);
+            if (o instanceof String) {
+                param.put("openId", o);
+            } else if (o instanceof Integer) {
+                param.put("status", o);
+            }
+            Log.d("test", "param = " + param.toString());
 
             client.put(this, url, param, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "updateOpenId onSuccess = " + ret);
-                    toast("设置成功");
+                    Log.d("test", "updateOpenIdOrStatus onSuccess = " + ret);
                 }
 
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "updateOpenId onFailure = " + s);
-                    toast("设置失败");
+                    Log.d("test", "updateOpenIdOrStatus onFailure = " + s);
                 }
             });
         } catch (Exception e) {
@@ -350,9 +350,11 @@ public class MainActivity extends BaseActivity {
         if (isServiceEnabled()) {
             star.setText("服务已经开启");
             star.setEnabled(false);
+            updateOpenIdOrStatus(1);
         } else {
             star.setText("点击开启服务");
             star.setEnabled(true);
+            updateOpenIdOrStatus(2);
         }
     }
 
