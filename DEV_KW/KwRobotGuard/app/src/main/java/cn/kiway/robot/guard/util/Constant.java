@@ -7,6 +7,8 @@ package cn.kiway.robot.guard.util;
 public class Constant {
 
 
-    public static String clientUrl = "http://192.168.8.161:8081";
+    //    public static String clientUrl = "http://192.168.8.161:8081";
+    
+    public static String clientUrl = "http://rbtest.kiway.cn";
 
 }

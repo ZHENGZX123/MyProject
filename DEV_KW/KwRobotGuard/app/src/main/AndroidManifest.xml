@@ -28,7 +28,8 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.GuideService"></service>
+        <service android:name=".service.GuideService_4"></service>
+        <service android:name=".service.GuideService_5"></service>
     </application>
 
 </manifest>

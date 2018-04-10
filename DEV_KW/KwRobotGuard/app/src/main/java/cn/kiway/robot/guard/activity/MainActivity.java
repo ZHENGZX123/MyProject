@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,7 +24,8 @@ import org.xutils.x;
 import java.io.File;
 
 import cn.kiway.robot.guard.R;
-import cn.kiway.robot.guard.service.GuideService;
+import cn.kiway.robot.guard.service.GuideService_4;
+import cn.kiway.robot.guard.service.GuideService_5;
 
 import static cn.kiway.robot.guard.util.Constant.clientUrl;
 import static cn.kiway.robot.guard.util.Utils.getCurrentVersion;
@@ -37,8 +39,14 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        Intent i = new Intent(this, GuideService.class);
-        startService(i);
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
+            Intent i = new Intent(this, GuideService_5.class);
+            startService(i);
+        } else {
+            Intent i = new Intent(this, GuideService_4.class);
+            startService(i);
+        }
 
         versionTV = (TextView) findViewById(R.id.version);
         versionTV.setText("当前版本号：" + getCurrentVersion(this));
@@ -64,7 +72,9 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    HttpGet httpRequest = new HttpGet(clientUrl + "static/download/version/zip_robot_launcher.json");
+                    String url = clientUrl + "/static/download/version/zip_robot_launcher.json";
+                    Log.d("test", "url = " + url);
+                    HttpGet httpRequest = new HttpGet(url);
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());

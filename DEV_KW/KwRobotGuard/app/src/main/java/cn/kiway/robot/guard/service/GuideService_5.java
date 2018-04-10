@@ -2,7 +2,6 @@ package cn.kiway.robot.guard.service;
 
 import android.app.ActivityManager;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
@@ -18,7 +17,7 @@ import cn.kiway.robot.guard.util.FileUtils;
  * Created by Administrator on 2018/4/2.
  */
 
-public class GuideService extends Service {
+public class GuideService_5 extends Service {
 
     private boolean stop = false;
     private int repeat = 0;
@@ -41,17 +40,19 @@ public class GuideService extends Service {
                     try {
                         Log.d("test", "guard is running ...");
                         sleep(60 * 1000);
-//                        boolean isRun1 = isRun(GuideService.this, "cn.kiway.robot");
+
+//                        boolean isRun1 = isRun(GuideService_5.this, "cn.kiway.robot");
 //                        Log.d("test", "isRun1 = " + isRun1);
-//                        boolean isRun2 = isRun(GuideService.this, "com.tencent.mm");
+//                        boolean isRun2 = isRun(GuideService_5.this, "com.tencent.mm");
 //                        Log.d("test", "isRun2 = " + isRun2);
-//                        boolean isRun3 = isRunInFront(GuideService.this, "cn.kiway.robot");
+//
+//                        boolean isRun3 = !isAppIsInBackground(GuideService_5.this, "cn.kiway.robot");
 //                        Log.d("test", "isRun3 = " + isRun3);
-//                        boolean isRun4 = isRunInFront(GuideService.this, "com.tencent.mm");
+//                        boolean isRun4 = !isAppIsInBackground(GuideService_5.this, "com.tencent.mm");
 //                        Log.d("test", "isRun4 = " + isRun4);
 
                         //1.检查机器人是否启动
-                        boolean isRun1 = isRun(GuideService.this, "cn.kiway.robot");
+                        boolean isRun1 = isRun(GuideService_5.this, "cn.kiway.robot");
                         Log.d("test", "isRun1 = " + isRun1);
                         if (!isRun1) {
                             Log.d("test", "启动机器人");
@@ -60,7 +61,7 @@ public class GuideService extends Service {
                         }
                         sleep(5000);
                         //2.检查微信是否启动
-                        boolean isRun2 = isRun(GuideService.this, "com.tencent.mm");
+                        boolean isRun2 = isRun(GuideService_5.this, "com.tencent.mm");
                         Log.d("test", "isRun2 = " + isRun2);
                         if (!isRun2) {
                             Log.d("test", "启动微信");
@@ -76,7 +77,7 @@ public class GuideService extends Service {
                         }
 
                         //3. 检查微信是否一直在前台
-                        boolean isWxInfront = isRunInFront(GuideService.this, "com.tencent.mm");
+                        boolean isWxInfront = !isAppIsInBackground(GuideService_5.this, "com.tencent.mm");
                         boolean robotActioning = getRobotActioningFlag();
                         Log.d("test", "isWxInfront = " + isWxInfront + " , robotActioning = " + robotActioning);
                         if (isWxInfront && !robotActioning) {
@@ -105,7 +106,7 @@ public class GuideService extends Service {
     }
 
     private boolean getRobotActioningFlag() {
-        String actioningFlag = FileUtils.readSDCardFile(KWApplication.ROOT_ROBOT + "actioningFlag.txt", GuideService.this.getApplicationContext());
+        String actioningFlag = FileUtils.readSDCardFile(KWApplication.ROOT_ROBOT + "actioningFlag.txt", GuideService_5.this.getApplicationContext());
         Log.d("test", "actioningFlag = " + actioningFlag);
         if (TextUtils.isEmpty(actioningFlag)) {
             return false;
@@ -113,28 +114,37 @@ public class GuideService extends Service {
         return Boolean.parseBoolean(actioningFlag);
     }
 
-    //前后台
-    public boolean isRun(Context context, String packageName) {
+    private boolean isRun(Context context, String pkgName) {
+        boolean isRun = false;
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(100);
-        boolean isAppRunning = false;
-        for (ActivityManager.RunningTaskInfo info : list) {
-            if (info.baseActivity.getPackageName().equals(packageName)) {
-                isAppRunning = true;
-                break;
+        List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
+        for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
+            if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND || processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND) {
+                for (String activeProcess : processInfo.pkgList) {
+                    if (activeProcess.equals(pkgName)) {
+                        isRun = true;
+                    }
+                }
             }
         }
-        return isAppRunning;
+        return isRun;
     }
 
-    public boolean isRunInFront(Context context, String packageName) {
+    private boolean isAppIsInBackground(Context context, String pkgName) {
+        boolean isInBackground = true;
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
-        String pkg = cn.getPackageName();
-        if (TextUtils.isEmpty(pkg)) {
-            return false;
+        List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
+        for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
+            //前台程序
+            if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                for (String activeProcess : processInfo.pkgList) {
+                    if (activeProcess.equals(pkgName)) {
+                        isInBackground = false;
+                    }
+                }
+            }
         }
-        return pkg.equals(packageName);
+        return isInBackground;
     }
 
     @Override
