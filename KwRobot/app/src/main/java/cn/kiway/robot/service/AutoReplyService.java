@@ -1905,7 +1905,10 @@ public class AutoReplyService extends AccessibilityService {
                 continue;
             }
             if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
-                lastImageButton = nodeInfo;
+                AccessibilityNodeInfo prevNode = rootNode.getChild(i - 1);
+                if (prevNode != null && prevNode.getClassName().equals("android.widget.ImageButton")) {
+                    lastImageButton = nodeInfo;
+                }
             }
             Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
             if (findPlusButton(nodeInfo, rm)) {
