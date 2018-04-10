@@ -33,6 +33,15 @@ android {
             signingConfig signingConfigs.kiway
         }
     }
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def fileName = "开维客服机器人桌面.apk"
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
+    }
     sourceSets {
         main {
             java.srcDirs = ['src/main/java', 'src/main/aidl']
