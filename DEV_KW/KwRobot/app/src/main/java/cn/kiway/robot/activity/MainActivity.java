@@ -21,6 +21,10 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -202,6 +206,8 @@ public class MainActivity extends BaseActivity {
                             return;
                         }
                         getSharedPreferences("openId", 0).edit().putString("openId", content).commit();
+
+                        updateOpenId(content);
                     }
                 }).setPositiveButton("取消", null).create();
         dialog.show();
@@ -213,6 +219,41 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         updateServiceStatus();
         updateServiceCount();
+    }
+
+    private void updateOpenId(String openId) {
+        Log.d("test", "openId = " + openId);
+        try {
+            String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+            String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
+
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            Log.d("test", "xtoken = " + xtoken);
+            client.addHeader("x-auth-token", xtoken);
+
+            String url = clientUrl + "/robot/" + robotId;
+            Log.d("test", "updateOpenId url = " + url);
+
+            com.loopj.android.http.RequestParams param = new com.loopj.android.http.RequestParams();
+            param.put("openId", openId);
+            
+            client.put(this, url, param, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "updateOpenId onSuccess = " + ret);
+                    toast("设置成功");
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "updateOpenId onFailure = " + s);
+                    toast("设置失败");
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
+        }
     }
 
     public void updateServiceCount() {
@@ -272,7 +313,9 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    HttpGet httpRequest = new HttpGet(clientUrl + "static/download/version/zip_robot.json");
+                    String url = clientUrl + "/static/download/version/zip_robot.json";
+                    Log.d("test", "url = " + url);
+                    HttpGet httpRequest = new HttpGet(url);
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
