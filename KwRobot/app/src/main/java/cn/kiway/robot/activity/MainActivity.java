@@ -237,7 +237,7 @@ public class MainActivity extends BaseActivity {
 
             com.loopj.android.http.RequestParams param = new com.loopj.android.http.RequestParams();
             param.put("openId", openId);
-            
+
             client.put(this, url, param, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
@@ -332,7 +332,11 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
+    public static String msg = "";
+
     public void test(View v) {
+        AutoReplyService.instance.doHandleZbusMsg(msg);
+
 //        System.out.println(100 / 0);
 //        Action a = new Action();
 //        a.sender = "test";

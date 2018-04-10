@@ -37,8 +37,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -59,10 +57,10 @@ import io.zbus.mq.Message;
 import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
 
+import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING;
-import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
 import static cn.kiway.robot.entity.Action.TYPE_REDPACKAGE;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
@@ -81,6 +79,7 @@ public class AutoReplyService extends AccessibilityService {
 
     public static AutoReplyService instance;
     private final Object o = new Object();
+    private final Object o2 = new Object();
 
     //事件map
     public HashMap<Long, Action> actions = new HashMap<>();
@@ -174,97 +173,9 @@ public class AutoReplyService extends AccessibilityService {
 
                         @Override
                         public void handle(Message message, MqClient mqClient) {
-                            new Thread() {
-                                @Override
-                                public void run() {
-                                    String temp = message.getBodyString();
-                                    Log.d("test", "zbus receive = " + temp);
-
-                                    if (currentActionID != -1) {
-                                        Log.d("test", "当前有事件在处理，锁定");
-                                        synchronized (o) {
-                                            try {
-                                                o.wait();
-                                            } catch (InterruptedException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    }
-                                    try {
-                                        JSONObject o = new JSONObject(temp);
-                                        long id = o.optLong("id");
-                                        if (id == 0) {
-                                            Log.d("test", "没有id！！！");
-                                            return;
-                                        }
-                                        JSONArray returnMessage = o.getJSONArray("returnMessage");
-                                        Action action = actions.get(id);
-                                        if (action == null) {
-                                            Log.d("test", "action null , error!!!");
-                                            return;
-                                        }
-                                        Log.d("test", "开始处理action = " + id);
-                                        mHandler.post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                int size = returnMessage.length();
-                                                if (size == 0) {
-                                                    return;
-                                                }
-                                                action.returnMessages.clear();
-                                                int textCount = 0;
-                                                int imageCount = 0;
-                                                for (int i = 0; i < size; i++) {
-                                                    try {
-                                                        ReturnMessage rm = new ReturnMessage();
-                                                        rm.returnType = returnMessage.getJSONObject(i).getInt("returnType");
-                                                        if (rm.returnType == TYPE_TEXT) {
-                                                            textCount++;
-                                                        } else if (rm.returnType == TYPE_IMAGE) {
-                                                            imageCount++;
-                                                        }
-                                                        rm.content = returnMessage.getJSONObject(i).getString("content");
-                                                        action.returnMessages.add(rm);
-                                                    } catch (JSONException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }
-                                                Log.d("test", "imageCount = " + imageCount);
-                                                if (imageCount == 0) {
-                                                    //没有图片的话，可以直接去回复文字
-                                                    launchWechat(id);
-                                                } else if (imageCount > 0) {
-                                                    Log.d("test", "处理前count = " + action.returnMessages.size());
-                                                    //这里加工一下，只保留1个图片就可以了
-                                                    boolean removed = false;
-                                                    Iterator<ReturnMessage> it = action.returnMessages.iterator();
-                                                    while (it.hasNext()) {
-                                                        ReturnMessage rm = it.next();
-                                                        if (rm.returnType == TYPE_IMAGE) {
-                                                            if (removed) {
-                                                                it.remove();
-                                                            }
-                                                            removed = true;
-                                                        }
-                                                    }
-                                                    Log.d("test", "处理后count = " + action.returnMessages.size());
-                                                    //排序。
-                                                    Collections.sort(action.returnMessages, new Comparator<ReturnMessage>() {
-                                                        @Override
-                                                        public int compare(ReturnMessage o1, ReturnMessage o2) {
-                                                            return o1.returnType - o2.returnType;
-                                                        }
-                                                    });
-
-                                                    handleImageMsg(id, action.returnMessages);
-                                                }
-                                            }
-                                        });
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }.start();
+                            String msg = message.getBodyString();
+                            MainActivity.msg = msg;
+                            doHandleZbusMsg(msg);
                         }
                     }, Constant.zbusHost + ":" + Constant.zbusPost);
                 } catch (Exception e) {
@@ -272,6 +183,91 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
         }.start();
+    }
+
+    public void doHandleZbusMsg(String msg) {
+        Log.d("test", "doHandleZbusMsg msg = " + msg);
+        new Thread() {
+            @Override
+            public void run() {
+                if (currentActionID != -1) {
+                    Log.d("test", "当前有事件在处理，锁定");
+                    synchronized (o) {
+                        try {
+                            o.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                try {
+                    JSONObject o = new JSONObject(msg);
+                    long id = o.optLong("id");
+                    if (id == 0) {
+                        Log.d("test", "没有id！！！");
+                        return;
+                    }
+                    JSONArray returnMessage = o.getJSONArray("returnMessage");
+                    Action action = actions.get(id);
+                    if (action == null) {
+                        Log.d("test", "action null , error!!!");
+                        return;
+                    }
+                    Log.d("test", "开始处理action = " + id);
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            int size = returnMessage.length();
+                            if (size == 0) {
+                                return;
+                            }
+                            action.returnMessages.clear();
+                            int textCount = 0;
+                            int imageCount = 0;
+                            for (int i = 0; i < size; i++) {
+                                try {
+                                    ReturnMessage rm = new ReturnMessage();
+                                    rm.returnType = returnMessage.getJSONObject(i).getInt("returnType");
+                                    if (rm.returnType == TYPE_TEXT) {
+                                        textCount++;
+                                    } else if (rm.returnType == TYPE_IMAGE) {
+                                        imageCount++;
+                                    }
+                                    rm.content = returnMessage.getJSONObject(i).getString("content");
+                                    action.returnMessages.add(rm);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            Log.d("test", "imageCount = " + imageCount);
+                            if (imageCount == 0) {
+                                //没有图片的话，可以直接去回复文字
+                                launchWechat(id);
+                            } else if (imageCount > 0) {
+                                Log.d("test", "处理前count = " + action.returnMessages.size());
+                                //这里加工一下，只保留1个图片就可以了
+                                boolean removed = false;
+                                Iterator<ReturnMessage> it = action.returnMessages.iterator();
+                                while (it.hasNext()) {
+                                    ReturnMessage rm = it.next();
+                                    if (rm.returnType == TYPE_IMAGE) {
+                                        if (removed) {
+                                            it.remove();
+                                        }
+                                        removed = true;
+                                    }
+                                }
+                                Log.d("test", "处理后count = " + action.returnMessages.size());
+                                handleImageMsg(id, action.returnMessages);
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
     }
 
     private void handleImageMsg(long id, ArrayList<ReturnMessage> returnMessages) {
@@ -612,16 +608,31 @@ public class AutoReplyService extends AccessibilityService {
                     ArrayList<ReturnMessage> returnMessages = actions.get(currentActionID).returnMessages;
                     checkMessageAllDone(returnMessages);
 
-                    int count = returnMessages.size();
-                    for (int i = 0; i < count; i++) {
-                        ReturnMessage rm = returnMessages.get(i);
-                        if (rm.returnType == TYPE_TEXT) {
-                            sendTextOnly(rm.content);   //sendTextOnly可以认为是同步的。
-                            rm.returnFinished = true;
-                        } else if (rm.returnType == TYPE_IMAGE) {
-                            sendImageOnly(rm);            //sendImageOnly一定是异步的
+                    //串行，遍历
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            int count = returnMessages.size();
+                            for (int i = 0; i < count; i++) {
+                                while (i != 0 && !returnMessages.get(i - 1).returnFinished) {
+                                    synchronized (o2) {
+                                        try {
+                                            o2.wait(1000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                                ReturnMessage rm = returnMessages.get(i);
+                                if (rm.returnType == TYPE_TEXT) {
+                                    sendTextOnly(rm.content);   //sendTextOnly可以认为是同步的。
+                                    rm.returnFinished = true;
+                                } else if (rm.returnType == TYPE_IMAGE) {
+                                    sendImageOnly(rm);            //sendImageOnly一定是异步的。
+                                }
+                            }
                         }
-                    }
+                    }.start();
                 } else if (receiveType == TYPE_IMAGE && !uploaded) {
                     // 找到最后一张图片，放大，截屏，上传，得到url后返回
                     lastFrameLayout = null;
@@ -1664,22 +1675,29 @@ public class AutoReplyService extends AccessibilityService {
     //---------------------------发送文字----------------
 
     private void sendTextOnly(String reply) {
-        Log.d("test", "sendTextOnly is called");
-        AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-        boolean find = findInputEditText(rootNode, reply);
-        Log.d("test", "findInputEditText = " + find);
-        if (!find) {
-            return;
-        }
-        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
-        List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByText("发送");
-        if (list != null && list.size() > 0) {
-            for (AccessibilityNodeInfo n : list) {
-                if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
-                    n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                {
+                    Log.d("test", "sendTextOnly is called");
+                    AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+                    boolean find = findInputEditText(rootNode, reply);
+                    Log.d("test", "findInputEditText = " + find);
+                    if (!find) {
+                        return;
+                    }
+                    AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+                    List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByText("发送");
+                    if (list != null && list.size() > 0) {
+                        for (AccessibilityNodeInfo n : list) {
+                            if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
+                                n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            }
+                        }
+                    }
                 }
             }
-        }
+        });
     }
 
     private boolean findInputEditText(AccessibilityNodeInfo rootNode, String reply) {
@@ -1752,43 +1770,50 @@ public class AutoReplyService extends AccessibilityService {
     private AccessibilityNodeInfo lastRelativeLayout;
 
     private void sendImageOnly(ReturnMessage rm) {
-        Log.d("test", "sendImageOnly");
-        AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-        Log.d("test", "-------------------------findPlusButton-----------------");
-        lastImageButton = null;
-        findPlusButton(rootNode, rm);
-        if (lastImageButton == null) {
-            rm.returnFinished = true;
-            return;
-        }
-        lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-        mHandler.postDelayed(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
-                Log.d("test", "---------------------findAlbumButton----------------------------");
-                lastRelativeLayout = null;
-                boolean find = findAlbumButton(getRootInActiveWindow(), rm);
-                if (!find) {
-                    Log.d("test", "找不到GridView");
-                    if (lastRelativeLayout == null) {
+                {
+                    Log.d("test", "sendImageOnly");
+                    AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+                    Log.d("test", "-------------------------findPlusButton-----------------");
+                    lastImageButton = null;
+                    findPlusButton(rootNode, rm);
+                    if (lastImageButton == null) {
                         rm.returnFinished = true;
-                    } else {
-                        lastRelativeLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Log.d("test", "----------findSendImageButton------------------");
-                                boolean find = findSendImageButton1(getRootInActiveWindow(), rm);
-                                if (!find) {
-                                    Log.d("test", "找不到发送按钮，relase");
+                        return;
+                    }
+                    lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("test", "---------------------findAlbumButton----------------------------");
+                            lastRelativeLayout = null;
+                            boolean find = findAlbumButton(getRootInActiveWindow(), rm);
+                            if (!find) {
+                                Log.d("test", "找不到GridView");
+                                if (lastRelativeLayout == null) {
                                     rm.returnFinished = true;
+                                } else {
+                                    lastRelativeLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.d("test", "----------findSendImageButton------------------");
+                                            boolean find = findSendImageButton1(getRootInActiveWindow(), rm);
+                                            if (!find) {
+                                                Log.d("test", "找不到发送按钮，relase");
+                                                rm.returnFinished = true;
+                                            }
+                                        }
+                                    }, 5000);
                                 }
                             }
-                        }, 5000);
-                    }
+                        }
+                    }, 3000);
                 }
             }
-        }, 3000);
+        });
     }
 
     private AccessibilityNodeInfo lastImageButton;
