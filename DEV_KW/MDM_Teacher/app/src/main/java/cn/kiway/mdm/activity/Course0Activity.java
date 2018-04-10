@@ -6,10 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import cn.kiway.camera.utils.CameraUtil;
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.entity.AttachInfoVo;
 import cn.kiway.mdm.entity.Course;
@@ -78,7 +77,6 @@ import static cn.kiway.mdm.util.Constant.tuiping;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
 import static cn.kiway.mdm.util.Utils.check301;
 import static cn.kiway.mdm.util.Utils.showBigImage;
-import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile2;
 
 /**
@@ -260,11 +258,12 @@ public class Course0Activity extends BaseActivity {
 
     public void paizhao(View view) {
         Countly.sharedInstance().recordEvent("拍照");
-        picPath = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Uri uri = Uri.fromFile(new File(picPath));
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        startActivityForResult(intent, REQUEST_ORIGINAL);
+//        picPath = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
+//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        Uri uri = Uri.fromFile(new File(picPath));
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+//        startActivityForResult(intent, REQUEST_ORIGINAL);
+        CameraUtil.getInstance().camera(Course0Activity.this);
     }
 
     public void huaban(View view) {

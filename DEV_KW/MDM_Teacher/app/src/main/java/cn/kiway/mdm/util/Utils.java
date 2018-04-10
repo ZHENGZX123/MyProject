@@ -528,7 +528,7 @@ public class Utils {
 //            luke.setDrawableId(R.drawable.p_rk1);
 //            luke.setItemDesc("录课");
 //        }
-//luke.setId(2);
+//         luke.setId(2);
 //        list.add(luke);
 
         PopModel tuiping = new PopModel();
