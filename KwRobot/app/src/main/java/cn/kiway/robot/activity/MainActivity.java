@@ -52,7 +52,6 @@ public class MainActivity extends BaseActivity {
 
     public static final int MSG_NETWORK_OK = 11;
     public static final int MSG_NETWORK_ERR = 22;
-    public static final int MSG_INSTALL = 33;
 
     private TextView nameTV;
     private CheckBox getPic;
@@ -66,7 +65,6 @@ public class MainActivity extends BaseActivity {
         initView();
         initListener();
         checkRoot(null);
-        mHandler.sendEmptyMessage(MSG_INSTALL);
     }
 
     private void initView() {
@@ -336,7 +334,6 @@ public class MainActivity extends BaseActivity {
 
     public void test(View v) {
         AutoReplyService.instance.doHandleZbusMsg(msg);
-
 //        System.out.println(100 / 0);
 //        Action a = new Action();
 //        a.sender = "test";
@@ -394,16 +391,14 @@ public class MainActivity extends BaseActivity {
                 intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
                 startActivity(intent);
                 finish();
-            } else if (msg.what == MSG_INSTALL) {
-                if (AutoReplyService.instance != null) {
-                    AutoReplyService.instance.installationPush(getApplication());
-                }
-                mHandler.removeMessages(MSG_INSTALL);
-                mHandler.sendEmptyMessageDelayed(MSG_INSTALL, 2 * 60 * 60 * 1000);
+            } else if (msg.what == 5) {
+                String savedFilePath = (String) msg.obj;
+                String cmd = "pm install -r " + savedFilePath;
+                int ret = RootCmd.execRootCmdSilent(cmd);
+                Log.d("test", "execRootCmdSilent ret = " + ret);
             }
         }
     };
-
 
     private void downloadSilently(String apkUrl, String version) {
         final String savedFilePath = "/mnt/sdcard/cache/kw_robot_" + version + ".apk";
@@ -439,13 +434,17 @@ public class MainActivity extends BaseActivity {
 
     private void askforInstall(final String savedFilePath) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
-        AlertDialog dialog_download = builder.setMessage("请点击更新APK").setNegativeButton(android.R.string.ok, new
+        AlertDialog dialog_download = builder.setMessage("有新的版本，请点击更新").setNegativeButton(android.R.string.ok, new
                 DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface di, int arg1) {
                         di.dismiss();
                         Message msg = new Message();
-                        msg.what = 4;
+                        if (RootCmd.haveRoot()) {
+                            msg.what = 5;
+                        } else {
+                            msg.what = 4;
+                        }
                         msg.obj = savedFilePath;
                         mHandler.sendMessage(msg);
                     }
