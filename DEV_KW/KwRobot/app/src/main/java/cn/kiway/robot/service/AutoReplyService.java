@@ -37,6 +37,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -97,7 +99,7 @@ public class AutoReplyService extends AccessibilityService {
         installationPush(this);
     }
 
-    private Handler handler = new Handler() {
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
             if (msg.what == MSG_CLEAR_ACTION) {
@@ -106,8 +108,8 @@ public class AutoReplyService extends AccessibilityService {
             }
             if (msg.what == MSG_ALARM) {
                 //这里不要了。。。写了半天，发现实现不了
-                handler.removeMessages(MSG_ALARM);
-                handler.sendEmptyMessageDelayed(MSG_ALARM, 60 * 1000);
+                mHandler.removeMessages(MSG_ALARM);
+                mHandler.sendEmptyMessageDelayed(MSG_ALARM, 60 * 1000);
 
                 int hour = getSharedPreferences("sendHour", 0).getInt("sendHour", 0);
                 int minute = getSharedPreferences("sendMinute", 0).getInt("sendMinute", 0);
@@ -140,7 +142,7 @@ public class AutoReplyService extends AccessibilityService {
     };
 
     private void launchWechat(long id) {
-        handler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 60000);
+        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 60000);
         currentActionID = id;
         try {
             actions.get(currentActionID).intent.send();
@@ -202,7 +204,7 @@ public class AutoReplyService extends AccessibilityService {
                                             return;
                                         }
                                         Log.d("test", "开始处理action = " + id);
-                                        handler.post(new Runnable() {
+                                        mHandler.post(new Runnable() {
                                             @Override
                                             public void run() {
                                                 int size = returnMessage.length();
@@ -231,12 +233,9 @@ public class AutoReplyService extends AccessibilityService {
                                                 if (imageCount == 0) {
                                                     //没有图片的话，可以直接去回复文字
                                                     launchWechat(id);
-                                                } else if (imageCount == 1) {
-                                                    //如果有图片的话，必须先下载完所有的图片
-                                                    handleImageMsg(id, action.returnMessages);
-                                                } else if (imageCount > 1) {
+                                                } else if (imageCount > 0) {
                                                     Log.d("test", "处理前count = " + action.returnMessages.size());
-                                                    //这里加工一下，只保留1个图片就可以了。
+                                                    //这里加工一下，只保留1个图片就可以了
                                                     boolean removed = false;
                                                     Iterator<ReturnMessage> it = action.returnMessages.iterator();
                                                     while (it.hasNext()) {
@@ -249,6 +248,14 @@ public class AutoReplyService extends AccessibilityService {
                                                         }
                                                     }
                                                     Log.d("test", "处理后count = " + action.returnMessages.size());
+                                                    //排序。
+                                                    Collections.sort(action.returnMessages, new Comparator<ReturnMessage>() {
+                                                        @Override
+                                                        public int compare(ReturnMessage o1, ReturnMessage o2) {
+                                                            return o1.returnType - o2.returnType;
+                                                        }
+                                                    });
+
                                                     handleImageMsg(id, action.returnMessages);
                                                 }
                                             }
@@ -272,10 +279,12 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 for (ReturnMessage rm : returnMessages) {
-                    //1.下载图片
-                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(rm.content);
-                    //2.保存图片
-                    saveImage(getApplication(), bmp);
+                    if (rm.returnType == TYPE_IMAGE) {
+                        //1.下载图片
+                        Bitmap bmp = ImageLoader.getInstance().loadImageSync(rm.content);
+                        //2.保存图片
+                        saveImage(getApplication(), bmp);
+                    }
                 }
                 launchWechat(id);
             }
@@ -328,9 +337,9 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void release() {
-        handler.removeMessages(MSG_CLEAR_ACTION);
+        mHandler.removeMessages(MSG_CLEAR_ACTION);
         backToRobot();
-        handler.postDelayed(new Runnable() {
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 synchronized (o) {
@@ -624,7 +633,7 @@ public class AutoReplyService extends AccessibilityService {
                         return;
                     }
                     lastFrameLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    handler.postDelayed(new Runnable() {
+                    mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             //找下载按钮
@@ -647,7 +656,7 @@ public class AutoReplyService extends AccessibilityService {
                         return;
                     }
                     lastFrameLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    handler.postDelayed(new Runnable() {
+                    mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             //找下载按钮
@@ -676,7 +685,7 @@ public class AutoReplyService extends AccessibilityService {
                         release();
                         return;
                     }
-                    handler.postDelayed(new Runnable() {
+                    mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             Log.d("test", "===============findMsgListView================");
@@ -711,6 +720,22 @@ public class AutoReplyService extends AccessibilityService {
                                     sendTextOnly("个人名片暂时不支持转发");
                                     release();
                                 }
+                            } else if (content.startsWith("[视频]")) {
+                                lastMsgView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
+                                        int ret = RootCmd.execRootCmdSilent(cmd);
+                                        Log.d("test", "execRootCmdSilent ret = " + ret);
+                                        mHandler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                doLongClickLastMsg();
+                                            }
+                                        }, 2000);
+                                    }
+                                }, 5000);
                             } else {
                                 doLongClickLastMsg();
                             }
@@ -718,7 +743,7 @@ public class AutoReplyService extends AccessibilityService {
                     }, 2000);
                 } else if (receiveType == TYPE_REQUEST_FRIEND) {
                     //查找接受按钮，并点击一下
-                    handler.postDelayed(new Runnable() {
+                    mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             Log.d("test", "=============findAcceptButton===============");
@@ -738,7 +763,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     AccessibilityNodeInfo parent = lastTextView.getParent();
                     parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    handler.postDelayed(new Runnable() {
+                    mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             //找到“开”按钮
@@ -755,7 +780,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     AccessibilityNodeInfo parent = lastTextView.getParent();
                     parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    handler.postDelayed(new Runnable() {
+                    mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             //找到“确认收款”按钮
@@ -781,7 +806,7 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.Button")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         release();
@@ -807,7 +832,7 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.Button")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         release();
@@ -883,12 +908,12 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void doLongClickLastMsg() {
-        handler.postDelayed(new Runnable() {
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
                 Log.d("test", "执行长按事件");
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
 
                     @Override
                     public void run() {
@@ -907,7 +932,7 @@ public class AutoReplyService extends AccessibilityService {
                             int ret = RootCmd.execRootCmdSilent(cmd);
                             Log.d("test", "execRootCmdSilent ret = " + ret);
 
-                            handler.postDelayed(new Runnable() {
+                            mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     //3.点一下返回
@@ -943,7 +968,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     Log.d("test", "allDone = " + allDone);
                     if (allDone) {
-                        handler.post(new Runnable() {
+                        mHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 release();
@@ -985,15 +1010,15 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void doLongClickLastMsgAgain() {
-        handler.postDelayed(new Runnable() {
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 Log.d("test", "doLongClickLastMsgAgain");
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
-                        handler.postDelayed(new Runnable() {
+                        mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 Log.d("test", "=================findTransferButton===============");
@@ -1076,7 +1101,7 @@ public class AutoReplyService extends AccessibilityService {
                 Log.d("test", "nickname = " + nickname);
 
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Log.d("test", "==============findRemarkEdiText===================");
@@ -1117,7 +1142,7 @@ public class AutoReplyService extends AccessibilityService {
                 clipboardManager.setPrimaryClip(clip);
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
 
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Log.d("test", "===============findFinishButton==================");
@@ -1148,7 +1173,7 @@ public class AutoReplyService extends AccessibilityService {
             if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("完成")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
 
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         //找到发消息，发一段话
@@ -1179,7 +1204,7 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("发消息")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         //找到文本框输入文字发送
@@ -1219,7 +1244,7 @@ public class AutoReplyService extends AccessibilityService {
             if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("发送给朋友")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 //跳页
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         //找文本框
@@ -1261,7 +1286,7 @@ public class AutoReplyService extends AccessibilityService {
                 clipboardManager.setPrimaryClip(clip);
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
 
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Log.d("test", "=============findTargetPeople==============");
@@ -1296,7 +1321,7 @@ public class AutoReplyService extends AccessibilityService {
                 parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
 
                 //弹出发送框框
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         int receiveType = actions.get(currentActionID).receiveType;
@@ -1336,7 +1361,7 @@ public class AutoReplyService extends AccessibilityService {
             if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("发送")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 Log.d("test", "转发完成");
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         int receiveType = actions.get(currentActionID).receiveType;
@@ -1359,7 +1384,7 @@ public class AutoReplyService extends AccessibilityService {
                             }
                             lastImageView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             //2.发送文本内容
-                            handler.postDelayed(new Runnable() {
+                            mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     String sendContent = getSharedPreferences("sendContent", 0).getString("sendContent", "你好，请问客服在吗？");
@@ -1463,7 +1488,7 @@ public class AutoReplyService extends AccessibilityService {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 //1秒后找gridview
                 Log.d("test", "=========findShareButton==============");
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         secondLinearLayout = 0;
@@ -1497,7 +1522,7 @@ public class AutoReplyService extends AccessibilityService {
                 Log.d("test", "click 分享到朋友圈");
                 AccessibilityNodeInfo parent = nodeInfo.getParent();
                 parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         //输入：这一刻的想法
@@ -1540,7 +1565,7 @@ public class AutoReplyService extends AccessibilityService {
                 clipboardManager.setPrimaryClip(clip);
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
 
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Log.d("test", "----------findSendImageButton------------------");
@@ -1737,7 +1762,7 @@ public class AutoReplyService extends AccessibilityService {
             return;
         }
         lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-        handler.postDelayed(new Runnable() {
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 Log.d("test", "---------------------findAlbumButton----------------------------");
@@ -1749,7 +1774,7 @@ public class AutoReplyService extends AccessibilityService {
                         rm.returnFinished = true;
                     } else {
                         lastRelativeLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        handler.postDelayed(new Runnable() {
+                        mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 Log.d("test", "----------findSendImageButton------------------");
@@ -1800,7 +1825,7 @@ public class AutoReplyService extends AccessibilityService {
                 AccessibilityNodeInfo first = nodeInfo.getChild(0);
                 Log.d("test", "first child = " + first.getClassName());
                 first.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Log.d("test", "------------------------findFirstPicture-------------------------");
@@ -1835,7 +1860,7 @@ public class AutoReplyService extends AccessibilityService {
             if (nodeInfo.getClassName().equals("android.widget.RelativeLayout")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 //这里checkbox点击不了，奇怪
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Log.d("test", "----------findSendImageButton------------------");
@@ -1866,7 +1891,7 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getText = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("发送")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         rm.returnFinished = true;
@@ -1891,7 +1916,7 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
             if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("发送")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         release();
