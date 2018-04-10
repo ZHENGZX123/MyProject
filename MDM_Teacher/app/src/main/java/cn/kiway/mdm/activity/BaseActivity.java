@@ -7,7 +7,6 @@ import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -26,6 +25,8 @@ import com.soundcloud.android.crop.Crop;
 import java.io.File;
 import java.util.List;
 
+import cn.kiway.camera.AppConstant;
+import cn.kiway.camera.utils.CameraUtil;
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.dialog.SendorShareDialog;
 import cn.kiway.mdm.service.RecordService;
@@ -49,8 +50,6 @@ import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_SUOPING;
 import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_WENJIAN;
 import static cn.kiway.mdm.util.Constant.tuiping;
 import static cn.kiway.mdm.util.ResultMessage.RECORD_REQUEST_CODE;
-import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
-import static cn.kiway.mdm.web.JsAndroidInterface.picPath;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -197,12 +196,13 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
                         }
                         break;
                     case 1://拍照
-                        Countly.sharedInstance().recordEvent("拍照");
-                        picPath = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        Uri uri = Uri.fromFile(new File(picPath));
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                        startActivityForResult(intent, REQUEST_ORIGINAL);
+//                        Countly.sharedInstance().recordEvent("拍照");
+//                        picPath = "/mnt/sdcard/" + System.currentTimeMillis() + ".jpg";
+//                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                        Uri uri = Uri.fromFile(new File(picPath));
+//                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+//                        startActivityForResult(intent, REQUEST_ORIGINAL);
+                        CameraUtil.getInstance().camera(BaseActivity.this);
                         break;
                     case 2://录课
                         if (RecordService.recording)
@@ -253,7 +253,7 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Crop.REQUEST_CROP) {
+        if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK && !(BaseActivity.this instanceof MainActivity)) {
             if (data == null) {
                 return;
             }
@@ -274,8 +274,9 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
             if (BaseActivity.this instanceof Course0Activity) {
                 ((Course0Activity) BaseActivity.this).recordScreenCall(temp);
             }
-        } else if (requestCode == REQUEST_ORIGINAL) {
-            cropImage(picPath);
+        } else if (requestCode == AppConstant.REQUEST_CODE.CAMERA && resultCode == RESULT_OK&& !(BaseActivity.this instanceof MainActivity)) {
+            String img_path = data.getStringExtra(AppConstant.KEY.IMG_PATH);
+            cropImage(img_path);
         }
     }
 

@@ -4,8 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
@@ -26,6 +24,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 
+import cn.kiway.camera.utils.CameraUtil;
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.activity.StudentGridActivity;
@@ -40,7 +39,6 @@ import static cn.kiway.mdm.activity.StudentGridActivity.TYPE_DIANMING;
 import static cn.kiway.mdm.util.Constant.APPID;
 import static cn.kiway.mdm.util.Constant.clientUrl;
 import static cn.kiway.mdm.util.FileUtils.DOWNFILEPATH;
-import static cn.kiway.mdm.util.FileUtils.EnFILEPATH;
 import static cn.kiway.mdm.util.ResultMessage.SELECT_PHOTO;
 
 /**
@@ -83,13 +81,14 @@ public class JsAndroidInterface {
     @JavascriptInterface//拍照上传
     public void takePhoto(String token) {
         accessToken = token;
-        if (!new File(EnFILEPATH).exists())
-            new File(EnFILEPATH).mkdirs();
-        picPath = EnFILEPATH + "/" + System.currentTimeMillis() + ".png";
-        Intent intent2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Uri uri = Uri.fromFile(new File(picPath));
-        intent2.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        activity.startActivityForResult(intent2, REQUEST_ORIGINAL);
+//        if (!new File(EnFILEPATH).exists())
+//            new File(EnFILEPATH).mkdirs();
+//        picPath = EnFILEPATH + "/" + System.currentTimeMillis() + ".png";
+//        Intent intent2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        Uri uri = Uri.fromFile(new File(picPath));
+//        intent2.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+//        activity.startActivityForResult(intent2, REQUEST_ORIGINAL);
+        CameraUtil.getInstance().camera(activity);
     }
 
     @JavascriptInterface

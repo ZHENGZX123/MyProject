@@ -43,6 +43,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.kiway.camera.AppConstant;
 import cn.kiway.mdm.KWApplication;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
@@ -66,9 +67,7 @@ import static cn.kiway.mdm.util.Constant.tuiping;
 import static cn.kiway.mdm.util.ResultMessage.QRSCAN;
 import static cn.kiway.mdm.util.ResultMessage.SELECT_PHOTO;
 import static cn.kiway.mdm.util.Utils.getCurrentVersion;
-import static cn.kiway.mdm.web.JsAndroidInterface.REQUEST_ORIGINAL;
 import static cn.kiway.mdm.web.JsAndroidInterface.accessToken;
-import static cn.kiway.mdm.web.JsAndroidInterface.picPath;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile2;
 import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
@@ -294,14 +293,14 @@ public class MainActivity extends BaseActivity {
             } else {
                 uploadFile(filePath, true);
             }
-        } else if (requestCode == REQUEST_ORIGINAL) {
+        } if (requestCode == AppConstant.REQUEST_CODE.CAMERA && resultCode == RESULT_OK) {
+            String img_path = data.getStringExtra(AppConstant.KEY.IMG_PATH);
             //需要裁剪的图片路径
-            Uri sourceUri = Uri.fromFile(new File(picPath));
+            Uri sourceUri = Uri.fromFile(new File(img_path));
             //裁剪完毕的图片存放路径
-            Uri destinationUri = Uri.fromFile(new File(picPath.split("\\.")[0] + "1.png"));
-            //UCrop.of(sourceUri, destinationUri).start(this);
+            Uri destinationUri = Uri.fromFile(new File(img_path.split("\\.")[0] + "1.png"));
             Crop.of(sourceUri, destinationUri).start(this);
-        } else if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK) {
+        }else if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK) {
             final Uri resultUri = Crop.getOutput(data);
             //压缩图片
             Luban.with(this).load(resultUri.getPath()).ignoreBy(100).setTargetDir(getPath()).setCompressListener(new OnCompressListener() {
