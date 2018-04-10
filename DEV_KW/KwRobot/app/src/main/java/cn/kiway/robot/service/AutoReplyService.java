@@ -823,6 +823,9 @@ public class AutoReplyService extends AccessibilityService {
 
     private void doSequeSend() {
         ArrayList<ReturnMessage> returnMessages = actions.get(currentActionID).returnMessages;
+
+        checkMessageAllDone(returnMessages);
+
         //2.串行，遍历
         new Thread() {
             @Override
@@ -846,14 +849,39 @@ public class AutoReplyService extends AccessibilityService {
                         sendImageOnly(rm);            //sendImageOnly一定是异步的。
                     }
                 }
-                //allDone
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        release();
-                        refreshUI2();
+            }
+        }.start();
+    }
+
+    private void checkMessageAllDone(ArrayList<ReturnMessage> returnMessages) {
+        new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    if (!actioningFlag) {
+                        break;
                     }
-                });
+                    boolean allDone = true;
+                    for (ReturnMessage rm : returnMessages) {
+                        allDone = allDone & rm.returnFinished;
+                    }
+                    Log.d("test", "allDone = " + allDone);
+                    if (allDone) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                release();
+                                refreshUI2();
+                            }
+                        });
+                        break;
+                    }
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }.start();
     }
