@@ -333,7 +333,9 @@ public class MainActivity extends BaseActivity {
     public static String msg = "";
 
     public void test(View v) {
-        AutoReplyService.instance.doHandleZbusMsg(msg);
+        String msg = "{\"sender\":\"1小辉小号\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"学位房学位房学位房学位房学位房学位房学位房学位房学位房学位房\",\"returnType\":1},{\"content\":\"学位房2学位房2学位房2学位房2学位房2学位房2学位房2\",\"returnType\":1}],\"id\":9999,\"time\":1523342900085,\"content\":\"学位房\"}";
+        AutoReplyService.instance.handleZbusMsg(msg);
+
 //        System.out.println(100 / 0);
 //        Action a = new Action();
 //        a.sender = "test";
@@ -375,6 +377,8 @@ public class MainActivity extends BaseActivity {
                     if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
                         toast("有新的版本，正在后台下载，请稍等");
                         downloadSilently(apkUrl, apkVersion);
+                    } else {
+                        toast("已经是最新版本");
                     }
                 } catch (Exception e) {
                     mHandler.sendEmptyMessage(3);

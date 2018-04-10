@@ -36,11 +36,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import cn.kiway.robot.activity.MainActivity;
@@ -74,8 +74,6 @@ import static java.lang.System.currentTimeMillis;
 public class AutoReplyService extends AccessibilityService {
 
     public static int MSG_CLEAR_ACTION = 1;
-    public static int MSG_ALARM = 2;
-
 
     public static AutoReplyService instance;
     private final Object o = new Object();
@@ -103,39 +101,6 @@ public class AutoReplyService extends AccessibilityService {
         public void handleMessage(android.os.Message msg) {
             if (msg.what == MSG_CLEAR_ACTION) {
                 release();
-                return;
-            }
-            if (msg.what == MSG_ALARM) {
-                //这里不要了。。。写了半天，发现实现不了
-                mHandler.removeMessages(MSG_ALARM);
-                mHandler.sendEmptyMessageDelayed(MSG_ALARM, 60 * 1000);
-
-                int hour = getSharedPreferences("sendHour", 0).getInt("sendHour", 0);
-                int minute = getSharedPreferences("sendMinute", 0).getInt("sendMinute", 0);
-
-                Calendar c = Calendar.getInstance();
-
-                int year = c.get(Calendar.YEAR);
-                int month = c.get(Calendar.MONTH) + 1;
-                int date = c.get(Calendar.DATE);
-                String today = "" + year + month + date;
-
-                int currentHour = c.get(Calendar.HOUR_OF_DAY);
-                int currentMinute = c.get(Calendar.MINUTE);
-                //Log.d("test", year + " " + month + " " + date + " " + currentHour + " " + currentMinute);
-                boolean todaySended = getSharedPreferences("kiway", 0).getBoolean(today, false);
-                if (todaySended) {
-                    return;
-                }
-                if (actioningFlag) {
-                    return;
-                }
-                if (currentHour == hour && Math.abs(currentMinute - minute) < 10) {
-                    actioningFlag = true;
-                    FileUtils.saveFile("" + actioningFlag, "actioningFlag.txt");
-                    release();
-                }
-                return;
             }
         }
     };
@@ -175,7 +140,7 @@ public class AutoReplyService extends AccessibilityService {
                         public void handle(Message message, MqClient mqClient) {
                             String msg = message.getBodyString();
                             MainActivity.msg = msg;
-                            doHandleZbusMsg(msg);
+                            handleZbusMsg(msg);
                         }
                     }, Constant.zbusHost + ":" + Constant.zbusPost);
                 } catch (Exception e) {
@@ -185,7 +150,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    public void doHandleZbusMsg(String msg) {
+    public void handleZbusMsg(String msg) {
         Log.d("test", "doHandleZbusMsg msg = " + msg);
         new Thread() {
             @Override
@@ -211,63 +176,82 @@ public class AutoReplyService extends AccessibilityService {
                     Action action = actions.get(id);
                     if (action == null) {
                         Log.d("test", "action null , error!!!");
-                        return;
-                    }
-                    Log.d("test", "开始处理action = " + id);
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            int size = returnMessage.length();
-                            if (size == 0) {
-                                return;
-                            }
-                            action.returnMessages.clear();
-                            int textCount = 0;
-                            int imageCount = 0;
-                            for (int i = 0; i < size; i++) {
-                                try {
-                                    ReturnMessage rm = new ReturnMessage();
-                                    rm.returnType = returnMessage.getJSONObject(i).getInt("returnType");
-                                    if (rm.returnType == TYPE_TEXT) {
-                                        textCount++;
-                                    } else if (rm.returnType == TYPE_IMAGE) {
-                                        imageCount++;
-                                    }
-                                    rm.content = returnMessage.getJSONObject(i).getString("content");
-                                    action.returnMessages.add(rm);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            Log.d("test", "imageCount = " + imageCount);
-                            if (imageCount == 0) {
-                                //没有图片的话，可以直接去回复文字
-                                launchWechat(id);
-                            } else if (imageCount > 0) {
-                                Log.d("test", "处理前count = " + action.returnMessages.size());
-                                //这里加工一下，只保留1个图片就可以了
-                                boolean removed = false;
-                                Iterator<ReturnMessage> it = action.returnMessages.iterator();
-                                while (it.hasNext()) {
-                                    ReturnMessage rm = it.next();
-                                    if (rm.returnType == TYPE_IMAGE) {
-                                        if (removed) {
-                                            it.remove();
-                                        }
-                                        removed = true;
-                                    }
-                                }
-                                Log.d("test", "处理后count = " + action.returnMessages.size());
-                                handleImageMsg(id, action.returnMessages);
+                        //0410 构造action，然后打开微信主页？
+                        //0410 构造action，然后查找一个用过的action，点一下
+                        String sender = o.getString("sender");
+                        String content = o.getString("content");
+                        Iterator<Map.Entry<Long, Action>> iter = actions.entrySet().iterator();
+                        while (iter.hasNext()) {
+                            Map.Entry entry = (Map.Entry) iter.next();
+                            long akey = (long) entry.getKey();
+                            Action a = (Action) entry.getValue();
+                            if (a.sender.equals(sender)) {
+                                Log.d("test", "找到一个可用的action");
+                                a.content = content;
+                                a.receiveType = TYPE_TEXT;
+                                doHandleZbusMsg(akey, a, returnMessage);
+                                break;
                             }
                         }
-                    });
+                    } else {
+                        doHandleZbusMsg(id, action, returnMessage);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }.start();
 
+    }
+
+
+    private void doHandleZbusMsg(long id, Action action, JSONArray returnMessage) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("test", "开始执行action = " + id);
+                int size = returnMessage.length();
+                if (size == 0) {
+                    return;
+                }
+                action.returnMessages.clear();
+                int imageCount = 0;
+                for (int i = 0; i < size; i++) {
+                    try {
+                        ReturnMessage rm = new ReturnMessage();
+                        rm.returnType = returnMessage.getJSONObject(i).getInt("returnType");
+                        if (rm.returnType == TYPE_IMAGE) {
+                            imageCount++;
+                        }
+                        rm.content = returnMessage.getJSONObject(i).getString("content");
+                        action.returnMessages.add(rm);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Log.d("test", "imageCount = " + imageCount);
+                if (imageCount == 0) {
+                    //没有图片的话，可以直接去回复文字
+                    launchWechat(id);
+                } else if (imageCount > 0) {
+                    Log.d("test", "处理前count = " + action.returnMessages.size());
+                    //这里加工一下，只保留1个图片就可以了
+                    boolean removed = false;
+                    Iterator<ReturnMessage> it = action.returnMessages.iterator();
+                    while (it.hasNext()) {
+                        ReturnMessage rm = it.next();
+                        if (rm.returnType == TYPE_IMAGE) {
+                            if (removed) {
+                                it.remove();
+                            }
+                            removed = true;
+                        }
+                    }
+                    Log.d("test", "处理后count = " + action.returnMessages.size());
+                    handleImageMsg(id, action.returnMessages);
+                }
+            }
+        });
     }
 
     private void handleImageMsg(long id, ArrayList<ReturnMessage> returnMessages) {
@@ -503,6 +487,7 @@ public class AutoReplyService extends AccessibilityService {
                     action.sender = sender;
                     action.content = content;
                     action.intent = intent;
+
                     if (content.startsWith("[微信红包]")) {
                         action.receiveType = TYPE_REDPACKAGE;
                     }
@@ -702,7 +687,7 @@ public class AutoReplyService extends AccessibilityService {
                     if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING) {
                         forwardto = getSharedPreferences("forwardto", 0).getString("forwardto", "");
                     } else if (receiveType == TYPE_COLLECTOR_FORWARDING) {
-                        forwardto = getSharedPreferences("collector", 0).getString("collector", "");
+                        forwardto = getSharedPreferences("collector", 0).getString("collector", "我的KW");
                     }
                     if (TextUtils.isEmpty(forwardto)) {
                         toast("您还没有设置转发对象");
