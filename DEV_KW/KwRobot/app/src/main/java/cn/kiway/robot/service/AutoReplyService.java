@@ -87,7 +87,7 @@ public class AutoReplyService extends AccessibilityService {
     private long currentActionID = -1;
     private boolean actioningFlag;
 
-    private String sender;
+    private String senderFromNotification;
     private String forwardto;//当前要转发的对象
 
     @Override
@@ -141,7 +141,7 @@ public class AutoReplyService extends AccessibilityService {
     };
 
     private void launchWechat(long id) {
-        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 60000);
+        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 45000);
         currentActionID = id;
         try {
             actions.get(currentActionID).intent.send();
@@ -477,7 +477,7 @@ public class AutoReplyService extends AccessibilityService {
                         String[] cc = ticker.split(":");
                         sender = cc[0].trim();
                         content = cc[1].trim();
-                        AutoReplyService.instance.sender = sender;
+                        AutoReplyService.this.senderFromNotification = sender;
                         Log.d("test", "sender name = " + sender);
                         Log.d("test", "sender content = " + content);
 
@@ -613,13 +613,40 @@ public class AutoReplyService extends AccessibilityService {
                     tongxunlu = false;
                     faxian = false;
                     wo = false;
+                    lastTextView = null;
                     checkIsWxHomePage(getRootInActiveWindow());
                     boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
                     Log.d("test", "isWxHomePage = " + isWxHomePage);
                     if (isWxHomePage) {
-                        
+                        if (lastTextView == null) {
+                            release();
+                            return;
+                        }
+                        lastTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                String sender = actions.get(currentActionID).sender;
+                                boolean find = findInputEditText(getRootInActiveWindow(), sender);
+                                if (!find) {
+                                    release();
+                                    return;
+                                }
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Log.d("test", "=============findTargetPeople2==============");
+                                        boolean find = findTargetPeople2(getRootInActiveWindow(), sender);
+                                        if (!find) {
+                                            Log.d("test", "findTargetPeople2 failure");
+                                            release();
+                                        }
+                                    }
+                                }, 2000);
+                            }
+                        }, 2000);
                     } else {
-                        doSequeSend(returnMessages);
+                        doSequeSend();
                     }
                 } else if (receiveType == TYPE_IMAGE && !uploaded) {
                     // 找到最后一张图片，放大，截屏，上传，得到url后返回
@@ -794,7 +821,8 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void doSequeSend(ArrayList<ReturnMessage> returnMessages) {
+    private void doSequeSend() {
+        ArrayList<ReturnMessage> returnMessages = actions.get(currentActionID).returnMessages;
         //2.串行，遍历
         new Thread() {
             @Override
@@ -844,19 +872,51 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null) {
-                if (nodeInfo.getText().toString().equals("微信")) {
-                    weixin = true;
-                } else if (nodeInfo.getText().toString().equals("通讯录")) {
-                    tongxunlu = true;
-                } else if (nodeInfo.getText().toString().equals("发现")) {
-                    faxian = true;
-                } else if (nodeInfo.getText().toString().equals("我")) {
-                    wo = true;
+            if (nodeInfo.getClassName().equals("android.widget.TextView")) {
+                if (nodeInfo.getText() != null) {
+                    if (nodeInfo.getText().toString().equals("微信")) {
+                        weixin = true;
+                    } else if (nodeInfo.getText().toString().equals("通讯录")) {
+                        tongxunlu = true;
+                    } else if (nodeInfo.getText().toString().equals("发现")) {
+                        faxian = true;
+                    } else if (nodeInfo.getText().toString().equals("我")) {
+                        wo = true;
+                    }
                 }
+                lastTextView = nodeInfo;
             }
             checkIsWxHomePage(nodeInfo);
         }
+    }
+
+    private boolean findTargetPeople2(AccessibilityNodeInfo rootNode, String forwardto) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(forwardto)) {
+                Log.d("test", "click targetPeople = " + forwardto);
+                AccessibilityNodeInfo parent = nodeInfo.getParent();
+                parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                //跳到聊天页面
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        doSequeSend();
+                    }
+                }, 3000);
+                return true;
+            }
+            if (findTargetPeople2(nodeInfo, forwardto)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean findConfirmationButton(AccessibilityNodeInfo rootNode) {
@@ -1327,7 +1387,7 @@ public class AutoReplyService extends AccessibilityService {
                             release();
                         }
                     }
-                }, 1000);
+                }, 2000);
                 return true;
             }
             if (findSearchEditText(nodeInfo, forwardto)) {
@@ -1359,7 +1419,7 @@ public class AutoReplyService extends AccessibilityService {
                         if (receiveType == TYPE_COLLECTOR_FORWARDING) {
                             //这里要额外做一步，找到文本框并粘贴内容
                             String openId = getSharedPreferences("openId", 0).getString("openId", "osP5zwJ-lEdJVGD-_5_WyvQL9Evo");
-                            String content = "sender:" + sender + ",openid:" + openId;
+                            String content = "sender:" + senderFromNotification + ",openid:" + openId;
                             findInputEditText(getRootInActiveWindow(), content);
                         }
                         Log.d("test", "=========findSendButtonInDialog============");
@@ -1793,45 +1853,43 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                {
-                    Log.d("test", "sendImageOnly");
-                    AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-                    Log.d("test", "-------------------------findPlusButton-----------------");
-                    lastImageButton = null;
-                    findPlusButton(rootNode, rm);
-                    if (lastImageButton == null) {
-                        rm.returnFinished = true;
-                        return;
-                    }
-                    lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d("test", "---------------------findAlbumButton----------------------------");
-                            lastRelativeLayout = null;
-                            boolean find = findAlbumButton(getRootInActiveWindow(), rm);
-                            if (!find) {
-                                Log.d("test", "找不到GridView");
-                                if (lastRelativeLayout == null) {
-                                    rm.returnFinished = true;
-                                } else {
-                                    lastRelativeLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                    mHandler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Log.d("test", "----------findSendImageButton------------------");
-                                            boolean find = findSendImageButton1(getRootInActiveWindow(), rm);
-                                            if (!find) {
-                                                Log.d("test", "找不到发送按钮，relase");
-                                                rm.returnFinished = true;
-                                            }
+                Log.d("test", "sendImageOnly");
+                AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+                Log.d("test", "-------------------------findPlusButton-----------------");
+                lastImageButton = null;
+                findPlusButton(rootNode, rm);
+                if (lastImageButton == null) {
+                    rm.returnFinished = true;
+                    return;
+                }
+                lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "---------------------findAlbumButton----------------------------");
+                        lastRelativeLayout = null;
+                        boolean find = findAlbumButton(getRootInActiveWindow(), rm);
+                        if (!find) {
+                            Log.d("test", "找不到GridView");
+                            if (lastRelativeLayout == null) {
+                                rm.returnFinished = true;
+                            } else {
+                                lastRelativeLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Log.d("test", "----------findSendImageButton------------------");
+                                        boolean find = findSendImageButton1(getRootInActiveWindow(), rm);
+                                        if (!find) {
+                                            Log.d("test", "找不到发送按钮，relase");
+                                            rm.returnFinished = true;
                                         }
-                                    }, 5000);
-                                }
+                                    }
+                                }, 5000);
                             }
                         }
-                    }, 3000);
-                }
+                    }
+                }, 3000);
             }
         });
     }
