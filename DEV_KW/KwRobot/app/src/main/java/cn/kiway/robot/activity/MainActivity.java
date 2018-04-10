@@ -47,11 +47,13 @@ import static cn.kiway.robot.util.Utils.getCurrentVersion;
 
 public class MainActivity extends BaseActivity {
 
+
     public static MainActivity instance;
     private Button star;
 
     public static final int MSG_NETWORK_OK = 11;
     public static final int MSG_NETWORK_ERR = 22;
+    private static final int MSG_INSTALL = 33;
 
     private TextView nameTV;
     private CheckBox getPic;
@@ -65,6 +67,7 @@ public class MainActivity extends BaseActivity {
         initView();
         initListener();
         checkRoot(null);
+        mHandler.sendEmptyMessage(MSG_INSTALL);
     }
 
     private void initView() {
@@ -402,6 +405,12 @@ public class MainActivity extends BaseActivity {
                 String cmd = "pm install -r " + savedFilePath;
                 int ret = RootCmd.execRootCmdSilent(cmd);
                 Log.d("test", "execRootCmdSilent ret = " + ret);
+            } else if (msg.what == MSG_INSTALL) {
+                if (AutoReplyService.instance != null) {
+                    AutoReplyService.instance.installationPush(getApplication());
+                }
+                mHandler.removeMessages(MSG_INSTALL);
+                mHandler.sendEmptyMessageDelayed(MSG_INSTALL, 2 * 60 * 60 * 1000);
             }
         }
     };
