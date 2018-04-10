@@ -603,36 +603,24 @@ public class AutoReplyService extends AccessibilityService {
 
                 int receiveType = actions.get(currentActionID).receiveType;
                 boolean uploaded = actions.get(currentActionID).uploaded;
-                //1.发送文字回复
+
                 if (receiveType == TYPE_TEXT) {
                     ArrayList<ReturnMessage> returnMessages = actions.get(currentActionID).returnMessages;
-                    checkMessageAllDone(returnMessages);
 
-                    //串行，遍历
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            int count = returnMessages.size();
-                            for (int i = 0; i < count; i++) {
-                                while (i != 0 && !returnMessages.get(i - 1).returnFinished) {
-                                    synchronized (o2) {
-                                        try {
-                                            o2.wait(1000);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }
-                                ReturnMessage rm = returnMessages.get(i);
-                                if (rm.returnType == TYPE_TEXT) {
-                                    sendTextOnly(rm.content);   //sendTextOnly可以认为是同步的。
-                                    rm.returnFinished = true;
-                                } else if (rm.returnType == TYPE_IMAGE) {
-                                    sendImageOnly(rm);            //sendImageOnly一定是异步的。
-                                }
-                            }
-                        }
-                    }.start();
+                    //1.判断当前是不是首页
+                    Log.d("test", "========================checkIsWxHomePage============");
+                    weixin = false;
+                    tongxunlu = false;
+                    faxian = false;
+                    wo = false;
+                    checkIsWxHomePage(getRootInActiveWindow());
+                    boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
+                    Log.d("test", "isWxHomePage = " + isWxHomePage);
+                    if (isWxHomePage) {
+                        
+                    } else {
+                        doSequeSend(returnMessages);
+                    }
                 } else if (receiveType == TYPE_IMAGE && !uploaded) {
                     // 找到最后一张图片，放大，截屏，上传，得到url后返回
                     lastFrameLayout = null;
@@ -806,6 +794,71 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
+    private void doSequeSend(ArrayList<ReturnMessage> returnMessages) {
+        //2.串行，遍历
+        new Thread() {
+            @Override
+            public void run() {
+                int count = returnMessages.size();
+                for (int i = 0; i < count; i++) {
+                    while (i != 0 && !returnMessages.get(i - 1).returnFinished) {
+                        synchronized (o2) {
+                            try {
+                                o2.wait(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    ReturnMessage rm = returnMessages.get(i);
+                    if (rm.returnType == TYPE_TEXT) {
+                        sendTextOnly(rm.content);   //sendTextOnly可以认为是同步的。
+                        rm.returnFinished = true;
+                    } else if (rm.returnType == TYPE_IMAGE) {
+                        sendImageOnly(rm);            //sendImageOnly一定是异步的。
+                    }
+                }
+                //allDone
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        release();
+                        refreshUI2();
+                    }
+                });
+            }
+        }.start();
+    }
+
+    private boolean weixin;
+    private boolean tongxunlu;
+    private boolean faxian;
+    private boolean wo;
+
+    private void checkIsWxHomePage(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null) {
+                if (nodeInfo.getText().toString().equals("微信")) {
+                    weixin = true;
+                } else if (nodeInfo.getText().toString().equals("通讯录")) {
+                    tongxunlu = true;
+                } else if (nodeInfo.getText().toString().equals("发现")) {
+                    faxian = true;
+                } else if (nodeInfo.getText().toString().equals("我")) {
+                    wo = true;
+                }
+            }
+            checkIsWxHomePage(nodeInfo);
+        }
+    }
+
     private boolean findConfirmationButton(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -963,39 +1016,6 @@ public class AutoReplyService extends AccessibilityService {
                 }, 2000);
             }
         }, 2000);
-    }
-
-    private void checkMessageAllDone(ArrayList<ReturnMessage> returnMessages) {
-        new Thread() {
-            @Override
-            public void run() {
-                while (true) {
-                    if (!actioningFlag) {
-                        break;
-                    }
-                    boolean allDone = true;
-                    for (ReturnMessage rm : returnMessages) {
-                        allDone = allDone & rm.returnFinished;
-                    }
-                    Log.d("test", "allDone = " + allDone);
-                    if (allDone) {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                release();
-                                refreshUI2();
-                            }
-                        });
-                        break;
-                    }
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }.start();
     }
 
     private void refreshUI1() {
