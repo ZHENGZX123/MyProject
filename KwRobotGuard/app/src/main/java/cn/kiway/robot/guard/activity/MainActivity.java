@@ -103,6 +103,8 @@ public class MainActivity extends BaseActivity {
                     if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
                         toast("有新的版本，正在后台下载，请稍等");
                         downloadSilently(apkUrl, apkVersion);
+                    } else {
+                        toast("已经是最新版本");
                     }
                 } catch (Exception e) {
                     mHandler.sendEmptyMessage(3);
@@ -157,7 +159,7 @@ public class MainActivity extends BaseActivity {
 
     private void askforInstall(final String savedFilePath) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
-        AlertDialog dialog_download = builder.setMessage("请点击更新APK").setNegativeButton(android.R.string.ok, new
+        AlertDialog dialog_download = builder.setMessage("有新的版本，请点击更新").setNegativeButton(android.R.string.ok, new
                 DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface di, int arg1) {
