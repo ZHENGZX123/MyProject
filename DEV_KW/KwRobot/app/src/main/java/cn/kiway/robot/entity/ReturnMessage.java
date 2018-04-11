@@ -17,4 +17,13 @@ public class ReturnMessage {
 
     public ReturnMessage() {
     }
+
+    @Override
+    public String toString() {
+        return "ReturnMessage{" +
+                "returnType=" + returnType +
+                ", content='" + content + '\'' +
+                ", returnFinished=" + returnFinished +
+                '}';
+    }
 }
