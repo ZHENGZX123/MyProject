@@ -1863,7 +1863,7 @@ public class AutoReplyService extends AccessibilityService {
     private AccessibilityNodeInfo lastRelativeLayout;
 
     private void sendImageOnly(ReturnMessage rm) {
-        mHandler.post(new Runnable() {
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 Log.d("test", "sendImageOnly");
@@ -1904,7 +1904,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }, 3000);
             }
-        });
+        }, 2000);
     }
 
     private AccessibilityNodeInfo lastImageButton;
@@ -1917,7 +1917,7 @@ public class AutoReplyService extends AccessibilityService {
             if (nodeInfo == null) {
                 continue;
             }
-            if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
+            if (nodeInfo.getClassName().equals("android.widget.ImageButton") && (i > 0)) {
                 AccessibilityNodeInfo prevNode = rootNode.getChild(i - 1);
                 if (prevNode != null && prevNode.getClassName().equals("android.widget.ImageButton")) {
                     lastImageButton = nodeInfo;
