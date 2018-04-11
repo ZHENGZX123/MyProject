@@ -55,6 +55,7 @@ import cn.kiway.wx.reply.vo.PushMessageVo;
 
 import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
+import static cn.kiway.robot.entity.Action.TYPE_GET_ALL_FRIENDS;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
@@ -100,6 +101,16 @@ public class AutoReplyService extends AccessibilityService {
             }
         }
     };
+
+    private void launchWechat(long id, long sleepTime) {
+        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, sleepTime);
+        currentActionID = id;
+        try {
+            actions.get(currentActionID).intent.send();
+        } catch (PendingIntent.CanceledException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void launchWechat(long id) {
         mHandler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 45000);
@@ -167,9 +178,7 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
         }.start();
-
     }
-
 
     private void doHandleZbusMsg(long id, Action action, JSONArray returnMessage) {
         mHandler.post(new Runnable() {
@@ -475,16 +484,9 @@ public class AutoReplyService extends AccessibilityService {
                 boolean uploaded = actions.get(currentActionID).uploaded;
 
                 if (receiveType == TYPE_TEXT) {
-                    ArrayList<ReturnMessage> returnMessages = actions.get(currentActionID).returnMessages;
-
                     //1.判断当前是不是首页
                     Log.d("test", "========================checkIsWxHomePage============");
-                    weixin = false;
-                    tongxunlu = false;
-                    faxian = false;
-                    wo = false;
-                    lastTextView = null;
-                    checkIsWxHomePage(getRootInActiveWindow());
+                    checkIsWxHomePage();
                     boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
                     Log.d("test", "isWxHomePage = " + isWxHomePage);
                     if (isWxHomePage) {
@@ -698,12 +700,94 @@ public class AutoReplyService extends AccessibilityService {
                             findConfirmationButton(getRootInActiveWindow());
                         }
                     }, 3000);
+                } else if (receiveType == TYPE_GET_ALL_FRIENDS) {
+                    Log.d("test", "========================checkIsWxHomePage============");
+                    checkIsWxHomePage();
+                    boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
+                    Log.d("test", "isWxHomePage = " + isWxHomePage);
+                    if (!isWxHomePage || tongxunluTextView == null || secondListView == null) {
+                        Log.d("test", "该事件不符合");
+                        release();
+                        return;
+                    }
+                    tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            doFindFriendInListView();
+                        }
+                    }, 1000);
                 } else {
                     Log.d("test", "没有匹配的消息，直接release");
                     release();
                 }
                 break;
         }
+    }
+
+    private Set<String> friends = new HashSet<>();
+
+    private void doFindFriendInListView() {
+        friends.clear();
+        new Thread() {
+            @Override
+            public void run() {
+                int friendCount = getSharedPreferences("friendCount", 0).getInt("friendCount", 100);
+                int scrollCount = friendCount / 5;
+
+                for (int i = 0; i < scrollCount; i++) {
+
+                    findFriendView(getRootInActiveWindow());
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            secondListView.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+                        }
+                    });
+                    synchronized (o2) {
+                        try {
+                            o2.wait(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                for (String f : friends) {
+                    Log.d("test", "f===>" + f);
+                }
+                Log.d("test", "friends.size = " + friends.size());
+                release();
+            }
+        }.start();
+    }
+
+    private void findFriendView(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.view.View") && nodeInfo.getText() != null) {
+                friends.add(nodeInfo.getText().toString());
+            }
+            findFriendView(nodeInfo);
+        }
+    }
+
+    private void checkIsWxHomePage() {
+        weixin = false;
+        tongxunlu = false;
+        faxian = false;
+        wo = false;
+        lastTextView = null;
+        tongxunluTextView = null;
+        listviewCount = 0;
+        secondListView = null;
+        checkIsWxHomePage(getRootInActiveWindow());
     }
 
     private void doSequeSend() {
@@ -780,6 +864,9 @@ public class AutoReplyService extends AccessibilityService {
     private boolean tongxunlu;
     private boolean faxian;
     private boolean wo;
+    private AccessibilityNodeInfo tongxunluTextView;
+    private int listviewCount;
+    private AccessibilityNodeInfo secondListView;
 
     private void checkIsWxHomePage(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
@@ -796,6 +883,7 @@ public class AutoReplyService extends AccessibilityService {
                         weixin = true;
                     } else if (nodeInfo.getText().toString().equals("通讯录")) {
                         tongxunlu = true;
+                        tongxunluTextView = nodeInfo.getParent();
                     } else if (nodeInfo.getText().toString().equals("发现")) {
                         faxian = true;
                     } else if (nodeInfo.getText().toString().equals("我")) {
@@ -803,6 +891,11 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }
                 lastTextView = nodeInfo;
+            } else if (nodeInfo.getClassName().equals("android.widget.ListView")) {
+                listviewCount++;
+                if (listviewCount == 2) {
+                    secondListView = nodeInfo;
+                }
             }
             checkIsWxHomePage(nodeInfo);
         }
@@ -929,6 +1022,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private AccessibilityNodeInfo lastTextView;
+
 
     private boolean getLastTextView(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
@@ -2010,5 +2104,13 @@ public class AutoReplyService extends AccessibilityService {
         } catch (Exception e) {
             Log.d("test", "e = " + e.toString());
         }
+    }
+
+    public void getAllFriends(Long firstKey, Action firstA) {
+        firstA.receiveType = TYPE_GET_ALL_FRIENDS;
+        int friendCount = getSharedPreferences("friendCount", 0).getInt("friendCount", 100);
+        int scrollCount = friendCount / 5;
+        long sleepTime = scrollCount * 2000;//*4000
+        launchWechat(firstKey, sleepTime);
     }
 }

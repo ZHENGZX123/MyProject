@@ -94,6 +94,12 @@
             android:onClick="checkFCRemark"
             android:text="查看朋友圈备注" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="getAllFriends"
+            android:text="获取好友列表" />
+
 
         <Button
             android:layout_width="wrap_content"
@@ -125,7 +131,7 @@
             android:layout_height="wrap_content"
             android:onClick="test"
             android:text="测试用"
-            android:visibility="gone" />
+              />
 
     </cn.kiway.robot.view.FlowLayout>
 

@@ -22,6 +22,8 @@ public class Action {
     public static final int TYPE_REQUEST_FRIEND = 104;//好友请求
     public static final int TYPE_REDPACKAGE = 105;//红包
     public static final int TYPE_TRANSFER_MONEY = 106;//转账
+    public static final int TYPE_GET_ALL_FRIENDS = 107;//转账
+
 
     public PendingIntent intent;
     public String sender;
@@ -30,5 +32,14 @@ public class Action {
     public int receiveType;
     public boolean uploaded;//图片
 
-
+    @Override
+    public String toString() {
+        return "Action{" +
+                "sender='" + sender + '\'' +
+                ", content='" + content + '\'' +
+                ", returnMessages=" + returnMessages +
+                ", receiveType=" + receiveType +
+                ", uploaded=" + uploaded +
+                '}';
+    }
 }
