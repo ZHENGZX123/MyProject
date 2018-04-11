@@ -1,6 +1,8 @@
 package cn.kiway.robot.guard.activity;
 
 import android.app.AlertDialog;
+import android.app.AppOpsManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -26,13 +29,16 @@ import java.io.File;
 import cn.kiway.robot.guard.R;
 import cn.kiway.robot.guard.service.GuideService_4;
 import cn.kiway.robot.guard.service.GuideService_5;
+import cn.kiway.robot.guard.util.ShowMessageDailog;
 
 import static cn.kiway.robot.guard.util.Constant.clientUrl;
+import static cn.kiway.robot.guard.util.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 import static cn.kiway.robot.guard.util.Utils.getCurrentVersion;
 
 public class MainActivity extends BaseActivity {
 
     private TextView versionTV;
+    public static final int USAGE_STATS = 1101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,17 +46,52 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
-            Intent i = new Intent(this, GuideService_5.class);
-            startService(i);
-        } else {
-            Intent i = new Intent(this, GuideService_4.class);
-            startService(i);
-        }
 
         versionTV = (TextView) findViewById(R.id.version);
         versionTV.setText("当前版本号：" + getCurrentVersion(this));
 
+        startService();
+    }
+
+    private void startService() {
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)) {
+            if (hasPermission()) {
+                Intent i = new Intent(this, GuideService_5.class);
+                startService(i);
+            } else {
+                ShowMessageDailog showMessageDailog = new ShowMessageDailog(this);
+                showMessageDailog.setShowMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开", YUXUNFANWENJLU);
+                showMessageDailog.setCancelable(false);
+                showMessageDailog.show();
+            }
+        } else {
+            Intent i = new Intent(this, GuideService_4.class);
+            startService(i);
+        }
+    }
+
+    private boolean hasPermission() {
+        AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
+        int mode = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    android.os.Process.myUid(), getPackageName());
+        }
+        return mode == AppOpsManager.MODE_ALLOWED;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == USAGE_STATS) {
+            if (hasPermission()) {
+                Intent i = new Intent(this, GuideService_5.class);
+                startService(i);
+            } else {
+                toast("请务必设置权限");
+                startActivityForResult(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS), USAGE_STATS);
+            }
+        }
     }
 
     public void clickWechat(View v) {
