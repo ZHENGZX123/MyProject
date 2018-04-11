@@ -56,6 +56,7 @@ import cn.kiway.wx.reply.vo.PushMessageVo;
 import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
 import static cn.kiway.robot.entity.Action.TYPE_GET_ALL_FRIENDS;
+import static cn.kiway.robot.entity.Action.TYPE_GET_TODAY_FC;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
@@ -256,12 +257,14 @@ public class AutoReplyService extends AccessibilityService {
                     String userId = Utils.getIMEI(getApplicationContext());
                     String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
                     String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
+                    String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
 
                     String msg = new JSONObject()
                             .put("id", id)
                             .put("sender", action.sender)
                             .put("content", action.content)
                             .put("me", name)
+                            .put("areaCode", areaCode)
                             .toString();
 
                     //topic : robotId#userId
@@ -705,7 +708,7 @@ public class AutoReplyService extends AccessibilityService {
                     checkIsWxHomePage();
                     boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
                     Log.d("test", "isWxHomePage = " + isWxHomePage);
-                    if (!isWxHomePage || tongxunluTextView == null || secondListView == null) {
+                    if (!isWxHomePage) {
                         Log.d("test", "该事件不符合");
                         release();
                         return;
@@ -717,12 +720,53 @@ public class AutoReplyService extends AccessibilityService {
                             doFindFriendInListView();
                         }
                     }, 1000);
+                } else if (receiveType == TYPE_GET_TODAY_FC) {
+                    Log.d("test", "========================checkIsWxHomePage============");
+                    checkIsWxHomePage();
+                    boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
+                    Log.d("test", "isWxHomePage = " + isWxHomePage);
+                    if (!isWxHomePage) {
+                        Log.d("test", "该事件不符合");
+                        release();
+                        return;
+                    }
+
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("test", "pengyouquanTextView click");
+                            pengyouquanTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.d("test", "=======findContentInListView======");
+                                    findContentInListView(getRootInActiveWindow());
+                                }
+                            }, 5000);
+                        }
+                    }, 1000);
                 } else {
                     Log.d("test", "没有匹配的消息，直接release");
                     release();
                 }
                 break;
         }
+    }
+
+    private boolean findContentInListView(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (findContentInListView(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Set<String> friends = new HashSet<>();
@@ -802,6 +846,7 @@ public class AutoReplyService extends AccessibilityService {
         tongxunluTextView = null;
         listviewCount = 0;
         secondListView = null;
+        pengyouquanTextView = null;
         checkIsWxHomePage(getRootInActiveWindow());
     }
 
@@ -880,6 +925,7 @@ public class AutoReplyService extends AccessibilityService {
     private boolean faxian;
     private boolean wo;
     private AccessibilityNodeInfo tongxunluTextView;
+    private AccessibilityNodeInfo pengyouquanTextView;
     private int listviewCount;
     private AccessibilityNodeInfo secondListView;
 
@@ -903,6 +949,8 @@ public class AutoReplyService extends AccessibilityService {
                         faxian = true;
                     } else if (nodeInfo.getText().toString().equals("我")) {
                         wo = true;
+                    } else if (nodeInfo.getText().toString().equals("朋友圈")) {
+                        pengyouquanTextView = nodeInfo.getParent();
                     }
                 }
                 lastTextView = nodeInfo;
@@ -2127,5 +2175,10 @@ public class AutoReplyService extends AccessibilityService {
         int scrollCount = friendCount / 6;
         long sleepTime = scrollCount * 2000;
         launchWechat(firstKey, sleepTime);
+    }
+
+    public void getTodayFriendCircle(Long firstKey, Action firstA) {
+        firstA.receiveType = TYPE_GET_TODAY_FC;
+        launchWechat(firstKey);
     }
 }

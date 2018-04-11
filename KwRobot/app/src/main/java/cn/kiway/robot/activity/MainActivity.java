@@ -381,6 +381,18 @@ public class MainActivity extends BaseActivity {
         dialog.show();
     }
 
+    public void getTodayFriendCircle(View view) {
+        if (AutoReplyService.instance == null) {
+            return;
+        }
+        if (AutoReplyService.instance.actions.size() < 1) {
+            return;
+        }
+        Long firstKey = AutoReplyService.instance.actions.keySet().iterator().next();
+        Action firstA = AutoReplyService.instance.actions.get(firstKey);
+        AutoReplyService.instance.getTodayFriendCircle(firstKey, firstA);
+    }
+
     public void test(View v) {
         String msg = "{\"sender\":\"1小辉小号\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"学位房学位房学位房学位房学位房学位房学位房学位房学位房学位房\",\"returnType\":1},{\"content\":\"学位房2学位房2学位房2学位房2学位房2学位房2学位房2\",\"returnType\":1}],\"id\":9999,\"time\":1523342900085,\"content\":\"学位房\"}";
         AutoReplyService.instance.handleZbusMsg(msg);
