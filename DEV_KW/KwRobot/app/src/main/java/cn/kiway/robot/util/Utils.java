@@ -121,10 +121,10 @@ public class Utils {
     public static String getParentRemark(Context c) {
         String parentId = FileUtils.readSDCardFile(KWApplication.ROOT + "parent.txt", c);
         if (TextUtils.isEmpty(parentId)) {
-            parentId = "1";
+            parentId = "1";//String.format("%04d", 1);
         } else {
             int id = Integer.parseInt(parentId);
-            parentId = "" + (id + 1);
+            parentId = "" + (id + 1);//String.format("%04d", (id + 1));
         }
         FileUtils.saveFile(parentId, "parent.txt");
         return parentId;
