@@ -22,7 +22,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -53,9 +52,6 @@ import cn.kiway.robot.util.UploadUtil;
 import cn.kiway.robot.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
 import cn.kiway.wx.reply.vo.PushMessageVo;
-import io.zbus.mq.Message;
-import io.zbus.mq.MessageHandler;
-import io.zbus.mq.MqClient;
 
 import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
@@ -93,7 +89,7 @@ public class AutoReplyService extends AccessibilityService {
         super.onCreate();
         Log.d("maptrix", "service oncreate");
         instance = this;
-        installationPush(this);
+        Utils.installationPush(getApplication());
     }
 
     private Handler mHandler = new Handler() {
@@ -118,36 +114,6 @@ public class AutoReplyService extends AccessibilityService {
     private void backToRobot() {
         Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
         startActivity(intent);
-    }
-
-    //初始化zbus
-    public void initZbus() {
-        Log.d("test", "initZbus");
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    String userId = Utils.getIMEI(getApplicationContext());
-                    if (TextUtils.isEmpty(userId)) {
-                        return;
-                    }
-                    String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
-                    String topic = "kiway_wx_reply_push_" + robotId + "#" + userId;
-                    Log.d("test", "topic = " + topic);
-                    ZbusUtils.consumeMsg(topic, new MessageHandler() {
-
-                        @Override
-                        public void handle(Message message, MqClient mqClient) {
-                            String msg = message.getBodyString();
-                            MainActivity.msg = msg;
-                            handleZbusMsg(msg);
-                        }
-                    }, Constant.zbusHost + ":" + Constant.zbusPost);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
     }
 
     public void handleZbusMsg(String msg) {
@@ -338,87 +304,6 @@ public class AutoReplyService extends AccessibilityService {
         Log.d("maptrix", "service destroy");
         //uninstallPush(this);
         //ZbusUtils.close();
-    }
-
-    public void installationPush(final Context c) {
-        try {
-            String userId = Utils.getIMEI(c);
-            String imei = Utils.getIMEI(c);
-
-            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-            String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
-
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
-            Log.d("test", "xtoken = " + xtoken);
-            client.addHeader("x-auth-token", xtoken);
-            Log.d("test", "userId = " + userId);
-            RequestParams param = new RequestParams();
-            param.put("appId", APPID);
-            param.put("type", "huawei");
-            param.put("deviceId", imei);
-            param.put("userId", imei);//userId
-            param.put("module", "student");
-            param.put("robotId", robotId);
-            Log.d("test", "installationPush param = " + param.toString());
-
-            String url = clientUrl + "/installation";
-            Log.d("test", "installationPush = " + url);
-            client.post(c, url, param, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "installationPush onSuccess = " + ret);
-                    try {
-                        String installationId = new JSONObject(ret).getJSONObject("data").getString("installationId");
-                        getSharedPreferences("kiway", 0).edit().putString("installationId", installationId).commit();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    initZbus();
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "installationPush onFailure = " + s);
-                }
-            });
-        } catch (Exception e) {
-            Log.d("test", "e = " + e.toString());
-        }
-    }
-
-    public void uninstallPush(final Context c) {
-        try {
-            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-            String userId = c.getSharedPreferences("kiway", 0).getString("userId", "");
-            if (TextUtils.isEmpty(xtoken)) {
-                return;
-            }
-            AsyncHttpClient client = new AsyncHttpClient();
-            Log.d("test", "xtoken = " + xtoken);
-            client.addHeader("x-auth-token", xtoken);
-            client.setTimeout(10000);
-            RequestParams param = new RequestParams();
-            param.put("type", "huawei");
-            param.put("imei", Utils.getIMEI(c));
-            param.put("token", userId);
-            Log.d("test", "param = " + param.toString());
-            String url = clientUrl + "/device/uninstall";
-            Log.d("test", "uninstallPush = " + url);
-            client.post(c, url, param, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "uninstallPush onSuccess = " + ret);
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "uninstallPush onFailure = " + s);
-                }
-            });
-        } catch (Exception e) {
-            Log.d("test", "e = " + e.toString());
-        }
     }
 
     @Override
@@ -681,7 +566,12 @@ public class AutoReplyService extends AccessibilityService {
                     }, 10000);//防止页面加载不完整
                 } else if (receiveType == TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO || receiveType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
                     sendTextOnly("设置成功！");
-                    release();
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            release();
+                        }
+                    }, 2000);
                 } else if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || receiveType == TYPE_COLLECTOR_FORWARDING) {
                     // 找到最后一张链接，点击转发给某人
                     if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING) {
@@ -693,7 +583,12 @@ public class AutoReplyService extends AccessibilityService {
                         toast("您还没有设置转发对象");
                         //回复给微信
                         sendTextOnly("您还没有设置转发对象，设置方法：请输入“设置转发对象：昵称”");
-                        release();
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                release();
+                            }
+                        }, 2000);
                         return;
                     }
                     mHandler.postDelayed(new Runnable() {
@@ -729,7 +624,12 @@ public class AutoReplyService extends AccessibilityService {
                                 } else {
                                     //个人名片
                                     sendTextOnly("个人名片暂时不支持转发");
-                                    release();
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            release();
+                                        }
+                                    }, 2000);
                                 }
                             } else if (content.startsWith("[视频]")) {
                                 lastMsgView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -829,6 +729,11 @@ public class AutoReplyService extends AccessibilityService {
                     ReturnMessage rm = returnMessages.get(i);
                     if (rm.returnType == TYPE_TEXT) {
                         sendTextOnly(rm.content);   //sendTextOnly可以认为是同步的。
+                        try {
+                            sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         rm.returnFinished = true;
                     } else if (rm.returnType == TYPE_IMAGE) {
                         sendImageOnly(rm);            //sendImageOnly一定是异步的。
@@ -1320,9 +1225,15 @@ public class AutoReplyService extends AccessibilityService {
                                 "5、网上报名\n" +
                                 "6、验核材料\n" +
                                 "7、录取\n");
-                        release();
-                        String current = System.currentTimeMillis() + "";
-                        uploadFriend(nickname, remark + " " + nickname, current, current);
+
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                release();
+                                String current = System.currentTimeMillis() + "";
+                                uploadFriend(nickname, remark + " " + nickname, current, current);
+                            }
+                        }, 2000);
                     }
                 }, 2000);
                 return true;
@@ -1493,8 +1404,13 @@ public class AutoReplyService extends AccessibilityService {
                                 public void run() {
                                     String sendContent = getSharedPreferences("sendContent", 0).getString("sendContent", "你好，请问客服在吗？");
                                     sendTextOnly(sendContent);
-                                    release();
-                                    getSharedPreferences("kiway", 0).edit().putBoolean(today, true).commit();
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            release();
+                                            getSharedPreferences("kiway", 0).edit().putBoolean(today, true).commit();
+                                        }
+                                    }, 2000);
                                 }
                             }, 1000);
                         }
@@ -1779,15 +1695,21 @@ public class AutoReplyService extends AccessibilityService {
                     if (!find) {
                         return;
                     }
-                    AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
-                    List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByText("发送");
-                    if (list != null && list.size() > 0) {
-                        for (AccessibilityNodeInfo n : list) {
-                            if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
-                                n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+                            List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByText("发送");
+                            if (list != null && list.size() > 0) {
+                                for (AccessibilityNodeInfo n : list) {
+                                    if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
+                                        n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                    }
+                                }
                             }
                         }
-                    }
+                    }, 1000);
                 }
             }
         });
