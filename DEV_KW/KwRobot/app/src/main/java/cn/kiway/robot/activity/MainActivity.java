@@ -37,7 +37,6 @@ import java.io.File;
 import java.util.List;
 
 import cn.kiway.robot.R;
-import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
@@ -333,12 +332,8 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
-    public static String msg = "";
 
     public void test(View v) {
-        String msg = "{\"sender\":\"1小辉小号\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"学位房学位房学位房学位房学位房学位房学位房学位房学位房学位房\",\"returnType\":1},{\"content\":\"学位房2学位房2学位房2学位房2学位房2学位房2学位房2\",\"returnType\":1}],\"id\":9999,\"time\":1523342900085,\"content\":\"学位房\"}";
-        AutoReplyService.instance.handleZbusMsg(msg);
-
 //        System.out.println(100 / 0);
 //        Action a = new Action();
 //        a.sender = "test";
@@ -406,9 +401,7 @@ public class MainActivity extends BaseActivity {
                 int ret = RootCmd.execRootCmdSilent(cmd);
                 Log.d("test", "execRootCmdSilent ret = " + ret);
             } else if (msg.what == MSG_INSTALL) {
-                if (AutoReplyService.instance != null) {
-                    AutoReplyService.instance.installationPush(getApplication());
-                }
+                Utils.installationPush(getApplication());
                 mHandler.removeMessages(MSG_INSTALL);
                 mHandler.sendEmptyMessageDelayed(MSG_INSTALL, 2 * 60 * 60 * 1000);
             }

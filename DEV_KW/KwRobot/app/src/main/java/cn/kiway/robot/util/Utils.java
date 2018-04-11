@@ -8,13 +8,28 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.json.JSONObject;
+
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Calendar;
 import java.util.Enumeration;
 
 import cn.kiway.robot.KWApplication;
+import cn.kiway.robot.service.AutoReplyService;
+import cn.kiway.wx.reply.utils.ZbusUtils;
 import io.netty.util.internal.StringUtil;
+import io.zbus.mq.Message;
+import io.zbus.mq.MessageHandler;
+import io.zbus.mq.MqClient;
+
+import static cn.kiway.robot.util.Constant.APPID;
+import static cn.kiway.robot.util.Constant.clientUrl;
 
 /**
  * Created by Administrator on 2018/3/21.
@@ -146,5 +161,83 @@ public class Utils {
         int date = c.get(Calendar.DATE);
         String today = "" + year + month + date;
         return today;
+    }
+
+    public static void installationPush(final Context c) {
+        try {
+            String userId = Utils.getIMEI(c);
+            String imei = Utils.getIMEI(c);
+
+            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+            String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
+
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            Log.d("test", "xtoken = " + xtoken);
+            client.addHeader("x-auth-token", xtoken);
+            Log.d("test", "userId = " + userId);
+            RequestParams param = new RequestParams();
+            param.put("appId", APPID);
+            param.put("type", "huawei");
+            param.put("deviceId", imei);
+            param.put("userId", imei);//userId
+            param.put("module", "student");
+            param.put("robotId", robotId);
+            Log.d("test", "installationPush param = " + param.toString());
+
+            String url = clientUrl + "/installation";
+            Log.d("test", "installationPush = " + url);
+            client.post(c, url, param, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "installationPush onSuccess = " + ret);
+                    try {
+                        String installationId = new JSONObject(ret).getJSONObject("data").getString("installationId");
+                        c.getSharedPreferences("kiway", 0).edit().putString("installationId", installationId).commit();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    initZbus(c);
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "installationPush onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
+        }
+    }
+
+    //初始化zbus
+    public static void initZbus(Context c) {
+        Log.d("test", "initZbus");
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String userId = Utils.getIMEI(c);
+                    if (TextUtils.isEmpty(userId)) {
+                        return;
+                    }
+                    String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
+                    String topic = "kiway_wx_reply_push_" + robotId + "#" + userId;
+                    Log.d("test", "topic = " + topic);
+                    ZbusUtils.consumeMsg(topic, new MessageHandler() {
+
+                        @Override
+                        public void handle(Message message, MqClient mqClient) {
+                            String msg = message.getBodyString();
+                            if (AutoReplyService.instance != null) {
+                                AutoReplyService.instance.handleZbusMsg(msg);
+                            }
+                        }
+                    }, Constant.zbusHost + ":" + Constant.zbusPost);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 }
