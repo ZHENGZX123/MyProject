@@ -22,7 +22,8 @@ public class Action {
     public static final int TYPE_REQUEST_FRIEND = 104;//好友请求
     public static final int TYPE_REDPACKAGE = 105;//红包
     public static final int TYPE_TRANSFER_MONEY = 106;//转账
-    public static final int TYPE_GET_ALL_FRIENDS = 107;//转账
+    public static final int TYPE_GET_ALL_FRIENDS = 107;//获取好友列表
+    public static final int TYPE_GET_TODAY_FC = 108;//获取好友列表
 
 
     public PendingIntent intent;

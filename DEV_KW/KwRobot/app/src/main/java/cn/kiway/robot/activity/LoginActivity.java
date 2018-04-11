@@ -90,18 +90,20 @@ public class LoginActivity extends BaseActivity {
                         JSONObject o = new JSONObject(ret);
                         int statusCode = o.optInt("statusCode");
                         errorMsg = o.optString("errorMsg");
-                        String token = o.getJSONObject("data").getString("token");
-                        String robotId = o.getJSONObject("data").getString("robotId");
+                        JSONObject data = o.getJSONObject("data");
+                        String token = data.optString("token");
+                        String robotId = data.optString("robotId");
+                        String areaCode = data.optString("areaCode");
                         Log.d("test", "login get token = " + token);
                         if (statusCode == 200) {
                             toast("登录成功");
-
                             getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
                             getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
                             getSharedPreferences("kiway", 0).edit().putString("username", username).commit();
                             getSharedPreferences("kiway", 0).edit().putString("password", password).commit();
                             getSharedPreferences("kiway", 0).edit().putString("name", name).commit();
                             getSharedPreferences("kiway", 0).edit().putString("robotId", robotId).commit();
+                            getSharedPreferences("kiway", 0).edit().putString("areaCode", areaCode).commit();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         } else {

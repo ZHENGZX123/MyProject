@@ -98,8 +98,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="getAllFriends"
-            android:text="获取好友列表" />
+            android:text="获取好友列表"
+            android:visibility="gone" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="getTodayFriendCircle"
+            android:text="获取今日朋友圈内容"
+            android:visibility="gone" />
 
         <Button
             android:layout_width="wrap_content"
@@ -130,8 +137,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="test"
-            android:text="测试用"
-              />
+            android:text="测试用" />
 
     </cn.kiway.robot.view.FlowLayout>
 

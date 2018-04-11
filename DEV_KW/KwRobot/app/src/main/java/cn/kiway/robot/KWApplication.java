@@ -17,6 +17,8 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
 import org.xutils.x;
 
+import cn.kiway.robot.util.CrashHandler;
+
 
 /**
  * Created by Administrator on 2018/3/21.
@@ -32,7 +34,7 @@ public class KWApplication extends Application {
         Log.d("test", "APP onCreate");
         x.Ext.init(this);
         initImageCache();
-        //CrashHandler.getInstance().init(this);
+        CrashHandler.getInstance().init(this);
     }
 
     private void initImageCache() {
