@@ -733,12 +733,27 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 int friendCount = getSharedPreferences("friendCount", 0).getInt("friendCount", 100);
-                int scrollCount = friendCount / 5;
+                int scrollCount = friendCount / 6;
 
+                //先回到顶部
                 for (int i = 0; i < scrollCount; i++) {
-
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            secondListView.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+                        }
+                    });
+                    synchronized (o2) {
+                        try {
+                            o2.wait(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                //开始滚动读取
+                for (int i = 0; i < scrollCount; i++) {
                     findFriendView(getRootInActiveWindow());
-
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -747,7 +762,7 @@ public class AutoReplyService extends AccessibilityService {
                     });
                     synchronized (o2) {
                         try {
-                            o2.wait(2000);
+                            o2.wait(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -2109,8 +2124,8 @@ public class AutoReplyService extends AccessibilityService {
     public void getAllFriends(Long firstKey, Action firstA) {
         firstA.receiveType = TYPE_GET_ALL_FRIENDS;
         int friendCount = getSharedPreferences("friendCount", 0).getInt("friendCount", 100);
-        int scrollCount = friendCount / 5;
-        long sleepTime = scrollCount * 2000;//*4000
+        int scrollCount = friendCount / 6;
+        long sleepTime = scrollCount * 2000;
         launchWechat(firstKey, sleepTime);
     }
 }
