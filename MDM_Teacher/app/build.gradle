@@ -98,6 +98,7 @@ dependencies {
     compile project(':AgoraPusher')
     compile project(':qsvideoplayer')
     compile project(':ImagePicker')
+    compile project(':camera')
     compile files('libs/image_compress.jar')
     compile 'com.zhijieeeeee:pieviewlibrary:2.0.3'
     compile 'com.soundcloud.android:android-crop:1.0.1@aar'

@@ -1,1 +1,1 @@
-include ':app', ":lfilepickerlibrary", ':AgoraPusher', "photoview", ':libvideoprp', ':AgoraPlayer', ':ImagePicker', ':qsvideoplayer'
+include ':app', ':camera', ":lfilepickerlibrary", ':AgoraPusher', "photoview", ':libvideoprp', ':AgoraPlayer', ':ImagePicker', ':qsvideoplayer'
