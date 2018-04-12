@@ -502,20 +502,24 @@ public class MainActivity extends BaseActivity {
         x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
             @Override
             public void onSuccess(File result) {
+                Log.d("test", "onSuccess");
                 //成功后弹出对话框询问，是否安装
                 askforInstall(savedFilePath);
             }
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
+                Log.d("test", "onError");
             }
 
             @Override
             public void onCancelled(CancelledException cex) {
+                Log.d("test", "onCancelled");
             }
 
             @Override
             public void onFinished() {
+                Log.d("test", "onFinished");
             }
         });
     }
