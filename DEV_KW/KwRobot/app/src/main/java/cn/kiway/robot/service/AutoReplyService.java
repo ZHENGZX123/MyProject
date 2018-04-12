@@ -56,7 +56,7 @@ import cn.kiway.wx.reply.vo.PushMessageVo;
 import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
 import static cn.kiway.robot.entity.Action.TYPE_GET_ALL_FRIENDS;
-import static cn.kiway.robot.entity.Action.TYPE_GET_TODAY_FC;
+import static cn.kiway.robot.entity.Action.TYPE_GET_FC;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
@@ -720,7 +720,7 @@ public class AutoReplyService extends AccessibilityService {
                             doFindFriendInListView();
                         }
                     }, 1000);
-                } else if (receiveType == TYPE_GET_TODAY_FC) {
+                } else if (receiveType == TYPE_GET_FC) {
                     Log.d("test", "========================checkIsWxHomePage============");
                     checkIsWxHomePage();
                     boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
@@ -731,20 +731,33 @@ public class AutoReplyService extends AccessibilityService {
                         return;
                     }
 
+                    if (lastTextView == null) {
+                        release();
+                        return;
+                    }
+                    lastTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d("test", "pengyouquanTextView click");
-                            pengyouquanTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            String FCName = getSharedPreferences("FCName", 0).getString("FCName", "");
+                            boolean find = findInputEditText(getRootInActiveWindow(), FCName);
+                            if (!find) {
+                                release();
+                                return;
+                            }
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.d("test", "=======findContentInListView======");
-                                    findContentInListView(getRootInActiveWindow());
+                                    Log.d("test", "=============findTargetPeople2==============");
+                                    boolean find = findTargetPeople3(getRootInActiveWindow(), FCName);
+                                    if (!find) {
+                                        Log.d("test", "findTargetPeople2 failure");
+                                        release();
+                                    }
                                 }
-                            }, 5000);
+                            }, 2000);
                         }
-                    }, 1000);
+                    }, 2000);
                 } else {
                     Log.d("test", "没有匹配的消息，直接release");
                     release();
@@ -987,6 +1000,153 @@ public class AutoReplyService extends AccessibilityService {
                 return true;
             }
             if (findTargetPeople2(nodeInfo, forwardto)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findTargetPeople3(AccessibilityNodeInfo rootNode, String forwardto) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(forwardto)) {
+                Log.d("test", "click targetPeople = " + forwardto);
+                AccessibilityNodeInfo parent = nodeInfo.getParent();
+                parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                //跳到聊天页面
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        lastImageButton = null;
+                        findInfoButton(getRootInActiveWindow());
+                        if (lastImageButton == null) {
+                            release();
+                            return;
+                        }
+                        lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                boolean find = findTargetPeople4(getRootInActiveWindow(), forwardto);
+                                if (!find) {
+                                    release();
+                                }
+                            }
+                        }, 3000);
+                    }
+                }, 3000);
+                return true;
+            }
+            if (findTargetPeople3(nodeInfo, forwardto)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findTargetPeople4(AccessibilityNodeInfo rootNode, String forwardto) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(forwardto)) {
+                Log.d("test", "click targetPeople = " + forwardto);
+                AccessibilityNodeInfo parent = nodeInfo.getParent();
+                parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //个人相册
+                        boolean find = findPrivateAlbum(getRootInActiveWindow());
+                        if (!find) {
+                            release();
+                        }
+                    }
+                }, 3000);
+                return true;
+            }
+            if (findTargetPeople4(nodeInfo, forwardto)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findPrivateAlbum(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("个人相册")) {
+                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        listViewNode = null;
+                        findListView(getRootInActiveWindow());
+                        if (listViewNode == null) {
+                            release();
+                            return;
+                        }
+                        //开始获取文字消息TextView内容，需要过滤掉一些干扰
+                    }
+                }, 3000);
+                return true;
+            }
+            if (findPrivateAlbum(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findListView(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.ListView")) {
+                listViewNode = nodeInfo;
+                return true;
+            }
+            if (findListView(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //个人信息按钮
+    private boolean findInfoButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
+                lastImageButton = nodeInfo;
+            }
+            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            if (findInfoButton(nodeInfo)) {
                 return true;
             }
         }
@@ -2177,8 +2337,8 @@ public class AutoReplyService extends AccessibilityService {
         launchWechat(firstKey, sleepTime);
     }
 
-    public void getTodayFriendCircle(Long firstKey, Action firstA) {
-        firstA.receiveType = TYPE_GET_TODAY_FC;
+    public void getFriendCircle(Long firstKey, Action firstA) {
+        firstA.receiveType = TYPE_GET_FC;
         launchWechat(firstKey);
     }
 }

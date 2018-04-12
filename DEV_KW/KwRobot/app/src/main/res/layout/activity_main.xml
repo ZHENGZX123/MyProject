@@ -97,20 +97,6 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="getAllFriends"
-            android:text="获取好友列表"
-            android:visibility="gone" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="getTodayFriendCircle"
-            android:text="获取今日朋友圈内容"
-            android:visibility="gone" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:onClick="Xposed"
             android:text="xposed操作" />
 
@@ -132,6 +118,20 @@
             android:layout_height="wrap_content"
             android:onClick="logout"
             android:text="注销本次登录" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="getAllFriends"
+            android:text="获取好友列表"
+            android:visibility="gone" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="getFriendCircle"
+            android:text="获取某个好友朋友圈内容"
+            android:visibility="gone" />
 
         <Button
             android:layout_width="wrap_content"
