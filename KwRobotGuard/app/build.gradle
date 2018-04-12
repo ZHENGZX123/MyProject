@@ -18,8 +18,8 @@ android {
         applicationId "cn.kiway.robot.guard"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 4
-        versionName "0.0.4"
+        versionCode 5
+        versionName "0.0.5"
     }
     buildTypes {
         release {
@@ -37,7 +37,7 @@ android {
         variant.outputs.each { output ->
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                def fileName = "开维客服机器人桌面.apk"
+                def fileName = "launcher_" + versionName + ".apk"
                 output.outputFile = new File(outputFile.parent, fileName)
             }
         }
