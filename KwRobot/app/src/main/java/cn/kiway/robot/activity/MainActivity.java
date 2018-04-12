@@ -138,7 +138,6 @@ public class MainActivity extends BaseActivity {
 
     public void setForwardFrom(View v) {
         startActivity(new Intent(this, SetPublicAccountActivity.class));
-
         if (true) {
             return;
         }
@@ -381,16 +380,37 @@ public class MainActivity extends BaseActivity {
         dialog.show();
     }
 
-    public void getTodayFriendCircle(View view) {
+    public void getFriendCircle(View view) {
         if (AutoReplyService.instance == null) {
             return;
         }
         if (AutoReplyService.instance.actions.size() < 1) {
             return;
         }
-        Long firstKey = AutoReplyService.instance.actions.keySet().iterator().next();
-        Action firstA = AutoReplyService.instance.actions.get(firstKey);
-        AutoReplyService.instance.getTodayFriendCircle(firstKey, firstA);
+        EditText et = new EditText(this);
+        et.setHint("请输入好友昵称");
+        et.setSingleLine();
+        et.setText("5之");
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("请输入好友昵称")
+                .setView(et)
+                .setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String content = et.getText().toString().trim();
+                        if (TextUtils.isEmpty(content)) {
+                            toast("不能为空");
+                            return;
+                        }
+
+                        getSharedPreferences("FCName", 0).edit().putString("FCName", content).commit();
+
+                        Long firstKey = AutoReplyService.instance.actions.keySet().iterator().next();
+                        Action firstA = AutoReplyService.instance.actions.get(firstKey);
+                        AutoReplyService.instance.getFriendCircle(firstKey, firstA);
+                    }
+                }).setPositiveButton("取消", null).create();
+        dialog.show();
     }
 
     public void test(View v) {
