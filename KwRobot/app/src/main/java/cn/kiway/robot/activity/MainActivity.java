@@ -56,6 +56,7 @@ public class MainActivity extends BaseActivity {
     public static final int MSG_NETWORK_OK = 11;
     public static final int MSG_NETWORK_ERR = 22;
     private static final int MSG_INSTALL = 33;
+    private static final int MSG_UPGRADE = 44;
 
     private TextView nameTV;
     private CheckBox getPic;
@@ -70,6 +71,7 @@ public class MainActivity extends BaseActivity {
         initListener();
         checkRoot(null);
         mHandler.sendEmptyMessage(MSG_INSTALL);
+        mHandler.sendEmptyMessage(MSG_UPGRADE);
     }
 
     private void initView() {
@@ -478,6 +480,10 @@ public class MainActivity extends BaseActivity {
                 Utils.installationPush(getApplication());
                 mHandler.removeMessages(MSG_INSTALL);
                 mHandler.sendEmptyMessageDelayed(MSG_INSTALL, 2 * 60 * 60 * 1000);
+            } else if (msg.what == MSG_UPGRADE) {
+                mHandler.removeMessages(MSG_UPGRADE);
+                checkNewVersion(null);
+                mHandler.sendEmptyMessageDelayed(MSG_UPGRADE, 8 * 60 * 60 * 1000);
             }
         }
     };
@@ -515,27 +521,32 @@ public class MainActivity extends BaseActivity {
     }
 
     private void askforInstall(final String savedFilePath) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
-        AlertDialog dialog_download = builder.setMessage("有新的版本，请点击更新").setNegativeButton(android.R.string.ok, new
-                DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface di, int arg1) {
-                        di.dismiss();
-                        Message msg = new Message();
-                        if (RootCmd.haveRoot()) {
-                            msg.what = 5;
-                        } else {
-                            msg.what = 4;
-                        }
-                        msg.obj = savedFilePath;
-                        mHandler.sendMessage(msg);
-                    }
-                }).setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-            }
-        }).create();
-        dialog_download.show();
+        startInstall(savedFilePath);
+//        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
+//        AlertDialog dialog_download = builder.setMessage("有新的版本，请点击更新").setNegativeButton(android.R.string.ok, new
+//                DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface di, int arg1) {
+//                        di.dismiss();
+//                        startInstall(savedFilePath);
+//                    }
+//                }).setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//            }
+//        }).create();
+//        dialog_download.show();
+    }
+
+    private void startInstall(String savedFilePath) {
+        Message msg = new Message();
+        if (RootCmd.haveRoot()) {
+            msg.what = 5;
+        } else {
+            msg.what = 4;
+        }
+        msg.obj = savedFilePath;
+        mHandler.sendMessage(msg);
     }
 
     public void clickInstruction(View view) {
