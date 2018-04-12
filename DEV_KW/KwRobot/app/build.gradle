@@ -17,8 +17,8 @@ android {
         applicationId "cn.kiway.robot"
         minSdkVersion 16
         targetSdkVersion 21
-        versionCode 4
-        versionName "0.0.4"
+        versionCode 5
+        versionName "0.0.5"
         jackOptions {
             enabled true
         }
@@ -46,7 +46,7 @@ android {
         variant.outputs.each { output ->
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                def fileName = "开维客服机器人.apk"
+                def fileName = "robot_" + versionName + ".apk"
                 output.outputFile = new File(outputFile.parent, fileName)
             }
         }
