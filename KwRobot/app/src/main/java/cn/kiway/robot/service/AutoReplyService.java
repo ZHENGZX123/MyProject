@@ -2305,7 +2305,7 @@ public class AutoReplyService extends AccessibilityService {
             JSONArray param = new JSONArray();
             JSONObject o1 = new JSONObject();
             o1.put("nickname", nickname);//昵称
-            o1.put("FCremark", remark);//备注
+            o1.put("remark", remark);//备注
             o1.put("wxId", wxId);//微信id
             o1.put("wxNo", wxNo);//微信号
             o1.put("robotId", robotId);
