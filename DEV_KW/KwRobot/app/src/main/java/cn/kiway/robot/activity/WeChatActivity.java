@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.easy.wtool.sdk.MessageEvent;
+import com.easy.wtool.sdk.OnMessageListener;
 import com.easy.wtool.sdk.WToolSDK;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -28,6 +30,7 @@ import cn.kiway.robot.moment.common.Share;
 import cn.kiway.robot.util.WxUtils;
 
 import static cn.kiway.robot.util.Constant.clientUrl;
+import static com.loopj.android.http.AsyncHttpClient.LOG_TAG;
 
 /**
  * Created by Administrator on 2018/4/3.
@@ -47,9 +50,32 @@ public class WeChatActivity extends BaseActivity {
         setContentView(R.layout.activity_wechat);
         task.testRoot();
         wToolSDK.encodeValue("1");
-        String s = wToolSDK.init("9999", "757533D0860F8CC0590B510BE2374F48C5750673");
+        //String s = wToolSDK.init("9999", "757533D0860F8CC0590B510BE2374F48C5750673");临时
+        String s = wToolSDK.init("19552766", "0505CD626951D9D63B72541B75BF82CF7E9F7673");//可用 有消息监听
         // String s = wToolSDK.init("17810096", "010112143ECFD10AC82DE363C837A7CBB45E0302");
         Log.e("zzx", s);
+
+        wToolSDK.setOnMessageListener(new OnMessageListener() {
+            @Override
+            public void messageEvent(MessageEvent event) {
+                JSONObject jsonTask = new JSONObject();
+                try {//开发消息监听后这里做转发回去
+                    jsonTask.put("type", 12);
+                    jsonTask.put("taskid", System.currentTimeMillis());
+                    jsonTask.put("content", new JSONObject());
+                    jsonTask.getJSONObject("content").put("talker", event.getTalker());
+                    jsonTask.getJSONObject("content").put("msgtype", event.getMsgType());
+                    jsonTask.getJSONObject("content").put("msgid", new JSONObject(event.getContent()).getString
+                            ("msgid"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //jsonTask.getJSONObject("content").put("timeout",-1);
+                String content = wToolSDK.sendTask(jsonTask.toString());
+                Log.e("---", content);
+                Log.e(LOG_TAG, "messageEvent on message: " + event.getTalker() + "," + event.getContent());
+            }
+        });
     }
 
     public void getFriend(View view) {
@@ -57,6 +83,30 @@ public class WeChatActivity extends BaseActivity {
         //2.上报给易敏
         getWxPeople();
         uploadFriend();
+    }
+
+    public void message(View view) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.put(1);//个人
+            jsonArray.put(2);//群聊
+            jsonObject.put("talkertypes", jsonArray);//设置监听的消息来源
+            jsonObject.put("froms", new JSONArray());//可以设置监听某个人或者群聊的消息  wxid roomid
+            jsonArray = new JSONArray();
+            jsonArray.put(1);//文字 设置监听的消息类型
+            jsonArray.put(3);//图片
+            jsonArray.put(34);//语音
+            jsonArray.put(43);//视频
+            jsonArray.put(49);//图文链接
+            jsonArray.put(62);//视频
+            jsonObject.put("msgtypes", jsonArray);
+            jsonObject.put("msgfilters", new JSONArray());
+            String result = wToolSDK.startMessageListener(jsonObject.toString());
+            Log.e("----", result);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void uploadFriend() {
