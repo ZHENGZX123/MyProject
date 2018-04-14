@@ -31,7 +31,7 @@ public class Action {
     public String content;
     public ArrayList<ReturnMessage> returnMessages = new ArrayList<>();
     public int receiveType;
-    public boolean uploaded;//图片
+    public boolean replied;
 
     @Override
     public String toString() {
@@ -40,7 +40,7 @@ public class Action {
                 ", content='" + content + '\'' +
                 ", returnMessages=" + returnMessages +
                 ", receiveType=" + receiveType +
-                ", uploaded=" + uploaded +
+                ", replied=" + replied +
                 '}';
     }
 }
