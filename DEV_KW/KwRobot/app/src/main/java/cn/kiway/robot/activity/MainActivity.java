@@ -57,6 +57,7 @@ public class MainActivity extends BaseActivity {
     public static final int MSG_NETWORK_ERR = 22;
     private static final int MSG_INSTALL = 33;
     private static final int MSG_UPGRADE = 44;
+    private static final int MSG_WELCOME = 55;
 
     private TextView nameTV;
     private CheckBox getPic;
@@ -336,6 +337,26 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
+    public void getWelcome(View view) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String url = clientUrl + "/getwelcome";
+                    Log.d("test", "url = " + url);
+                    HttpGet httpRequest = new HttpGet(url);
+                    DefaultHttpClient client = new DefaultHttpClient();
+                    HttpResponse response = client.execute(httpRequest);
+                    String ret = EntityUtils.toString(response.getEntity());
+                    Log.d("test", "getWelcome  = " + ret);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
     public void getAllFriends(View view) {
         if (AutoReplyService.instance == null) {
             return;
@@ -416,7 +437,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test(View v) {
-        String msg = "{\"sender\":\"1小辉小号\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"学位房学位房学位房学位房学位房学位房学位房学位房学位房学位房\",\"returnType\":1},{\"content\":\"学位房2学位房2学位房2学位房2学位房2学位房2学位房2\",\"returnType\":1}],\"id\":9999,\"time\":1523342900085,\"content\":\"学位房\"}";
+        String msg = "{\"sender\":\"白丨丿色\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"学位房学位房学位房学位房学位房学位房学位房学位房学位房学位房\",\"returnType\":1},{\"content\":\"学位房2学位房2学位房2学位房2学位房2学位房2学位房2\",\"returnType\":1}],\"id\":9999,\"time\":1523342900085,\"content\":\"学位房\"}";
         AutoReplyService.instance.handleZbusMsg(msg);
     }
 
@@ -484,6 +505,10 @@ public class MainActivity extends BaseActivity {
                 mHandler.removeMessages(MSG_UPGRADE);
                 checkNewVersion(null);
                 mHandler.sendEmptyMessageDelayed(MSG_UPGRADE, 8 * 60 * 60 * 1000);
+            } else if (msg.what == MSG_WELCOME) {
+                mHandler.removeMessages(MSG_WELCOME);
+                getWelcome(null);
+                mHandler.sendEmptyMessageDelayed(MSG_WELCOME, 8 * 60 * 60 * 1000);
             }
         }
     };

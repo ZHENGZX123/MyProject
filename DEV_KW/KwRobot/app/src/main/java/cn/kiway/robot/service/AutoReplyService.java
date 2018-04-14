@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -48,7 +49,6 @@ import cn.kiway.robot.entity.ReturnMessage;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.FileUtils;
 import cn.kiway.robot.util.RootCmd;
-import cn.kiway.robot.util.UploadUtil;
 import cn.kiway.robot.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
 import cn.kiway.wx.reply.vo.PushMessageVo;
@@ -72,6 +72,7 @@ import static java.lang.System.currentTimeMillis;
 public class AutoReplyService extends AccessibilityService {
 
     public static int MSG_CLEAR_ACTION = 1;
+    public static int MSG_SERVER_BUSY = 2;
 
     public static AutoReplyService instance;
     private final Object o = new Object();
@@ -99,6 +100,11 @@ public class AutoReplyService extends AccessibilityService {
         public void handleMessage(android.os.Message msg) {
             if (msg.what == MSG_CLEAR_ACTION) {
                 release();
+                return;
+            }
+            if (msg.what == MSG_SERVER_BUSY) {
+                String busy = msg.obj.toString();
+                handleZbusMsg(busy);
             }
         }
     };
@@ -172,6 +178,10 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }
                     } else {
+                        if (action.replied){
+                            Log.d("test", "已经回复过了");
+                            return;
+                        }
                         doHandleZbusMsg(id, action, returnMessage);
                     }
                 } catch (Exception e) {
@@ -182,6 +192,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void doHandleZbusMsg(long id, Action action, JSONArray returnMessage) {
+        action.replied = true;
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -292,6 +303,14 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
         }.start();
+    }
+
+    private void sendReply20sLater(long id, Action action) {
+        Message msg = new Message();
+        msg.what = MSG_SERVER_BUSY;
+        String busy = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"客服正忙，请耐心等待。\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+        msg.obj = busy;
+        mHandler.sendMessageDelayed(msg, 20000);
     }
 
     private void release() {
@@ -427,6 +446,7 @@ public class AutoReplyService extends AccessibilityService {
                         refreshUI1();
                         //文字的话直接走zbus
                         sendMsgToServer(id, action);
+                        sendReply20sLater(id, action);
                     } else if (action.receiveType == TYPE_IMAGE) {
                         //图片要先拉起微信,截图上传：0408业务调整，暂时没有这种类型了
                         launchWechat(id);
@@ -484,7 +504,6 @@ public class AutoReplyService extends AccessibilityService {
                 FileUtils.saveFile("" + actioningFlag, "actioningFlag.txt");
 
                 int receiveType = actions.get(currentActionID).receiveType;
-                boolean uploaded = actions.get(currentActionID).uploaded;
 
                 if (receiveType == TYPE_TEXT) {
                     //1.判断当前是不是首页
@@ -523,29 +542,6 @@ public class AutoReplyService extends AccessibilityService {
                     } else {
                         doSequeSend();
                     }
-                } else if (receiveType == TYPE_IMAGE && !uploaded) {
-                    // 找到最后一张图片，放大，截屏，上传，得到url后返回
-                    lastFrameLayout = null;
-                    Log.d("test", "----------------findLastImageOrLinkMsg------------------");
-                    findLastImageOrLinkMsg(getRootInActiveWindow());
-                    if (lastFrameLayout == null) {
-                        Log.d("test", "没有找到最后一张图片？郁闷。。。");
-                        release();
-                        return;
-                    }
-                    lastFrameLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            //找下载按钮
-                            Log.d("test", "-------------------findDownloadButton------------------");
-                            boolean find = findDownloadButton(getRootInActiveWindow());
-                            if (!find) {
-                                Log.d("test", "找不到下载按钮");
-                                release();
-                            }
-                        }
-                    }, 1500);
                 } else if (receiveType == TYPE_FRIEND_CIRCLER) {
                     // 找到最后一个链接，点击转发到朋友圈
                     lastFrameLayout = null;
@@ -766,21 +762,6 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private boolean findContentInListView(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (findContentInListView(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private Set<String> friends = new HashSet<>();
 
@@ -1534,14 +1515,16 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         //找到文本框输入文字发送
-                        sendTextOnly("感谢您添加招生客服机器人，您可以按以下关键字发送咨询招生相关问题，谢谢！\n" +
-                                "1、计生证明或者计划生育证明\n" +
-                                "2、租房或者住房\n" +
-                                "3、台湾或者香港\n" +
-                                "4、户籍\n" +
-                                "5、网上报名\n" +
-                                "6、验核材料\n" +
-                                "7、录取\n");
+                        String welcome = getSharedPreferences("welcome", 0).getString("welcome",
+                                "感谢您添加招生客服机器人，您可以按以下关键字发送咨询招生相关问题，谢谢！\n" +
+                                        "1、计生证明或者计划生育证明\n" +
+                                        "2、租房或者住房\n" +
+                                        "3、台湾或者香港\n" +
+                                        "4、户籍\n" +
+                                        "5、网上报名\n" +
+                                        "6、验核材料\n" +
+                                        "7、录取\n");
+                        sendTextOnly(welcome);
 
                         mHandler.postDelayed(new Runnable() {
                             @Override
@@ -1916,60 +1899,6 @@ public class AutoReplyService extends AccessibilityService {
                 return true;
             }
             if (findMindEditText(nodeInfo, mind)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findDownloadButton(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            //Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            //Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.view.View")) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-
-                File[] files = new File("/mnt/sdcard/tencent/MicroMsg/WeiXin/").listFiles();
-                File lastFile = files[files.length - 1];
-                Log.d("test", "lastFile = " + lastFile.getName());
-                //上传
-                new Thread() {
-                    @Override
-                    public void run() {
-                        boolean exception = false;
-                        long tempID = currentActionID;
-                        try {
-                            Log.d("test", "uploading...");
-                            String xToken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-                            final String ret = UploadUtil.uploadFile(lastFile, clientUrl + "/common/file?x-auth-token=" + xToken, lastFile.getName());
-                            Log.d("test", "upload ret = " + ret);
-                            JSONObject obj = new JSONObject(ret);
-                            String url = obj.optJSONObject("data").optString("url");
-                            Log.d("test", "url = " + url);
-                            actions.get(currentActionID).uploaded = true;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            exception = true;
-                        }
-                        release();
-                        try {
-                            sleep(3000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        if (!exception) {
-                            sendMsgToServer(tempID, actions.get(tempID));
-                        }
-                    }
-                }.start();
-                return true;
-            }
-            if (findDownloadButton(nodeInfo)) {
                 return true;
             }
         }
