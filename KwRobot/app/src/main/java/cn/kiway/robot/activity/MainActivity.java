@@ -35,6 +35,7 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
+import java.net.URLEncoder;
 import java.util.List;
 
 import cn.kiway.robot.R;
@@ -73,6 +74,8 @@ public class MainActivity extends BaseActivity {
         checkRoot(null);
         mHandler.sendEmptyMessage(MSG_INSTALL);
         mHandler.sendEmptyMessage(MSG_UPGRADE);
+        mHandler.sendEmptyMessage(MSG_WELCOME);
+
     }
 
     private void initView() {
@@ -342,14 +345,19 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    String url = clientUrl + "/getwelcome";
+                    String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
+                    String url = clientUrl + "/replyContent/keyWords?title=" + URLEncoder.encode("感谢您添加招生客服机器人，您可以按以下关键字发送咨询招生相关问题，谢谢！", "utf-8") + "&origin=mp&areaCode=" + areaCode;
                     Log.d("test", "url = " + url);
                     HttpGet httpRequest = new HttpGet(url);
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
                     Log.d("test", "getWelcome  = " + ret);
-
+                    String welcome = new JSONObject(ret).getJSONObject("data").getString("message");
+                    Log.d("test", "welcome = " + welcome);
+                    if (!TextUtils.isEmpty(welcome)) {
+                        getSharedPreferences("welcome", 0).edit().putString("welcome", "").commit();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
