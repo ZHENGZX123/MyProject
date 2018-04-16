@@ -40,7 +40,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import cn.kiway.robot.activity.MainActivity;
@@ -168,6 +167,7 @@ public class AutoReplyService extends AccessibilityService {
                         Log.d("test", "action null , error!!!");
                         //0410 构造action，然后打开微信主页？
                         //0410 构造action，然后查找一个用过的action，点一下
+                        //0416 找第一个action
                         doFindUsableAction(o, realReply);
                     } else {
                         if (action.replied) {
@@ -191,20 +191,30 @@ public class AutoReplyService extends AccessibilityService {
             String sender = o.getString("sender");
             String content = o.getString("content");
             JSONArray returnMessage = o.getJSONArray("returnMessage");
-            for (Map.Entry<Long, Action> longActionEntry : actions.entrySet()) {
-                Map.Entry entry = (Map.Entry) longActionEntry;
-                long akey = (long) entry.getKey();
-                Log.d("test", "遍历akey = " + akey);
-                Action a = (Action) entry.getValue();
-                Log.d("test", "a.sender = " + a.sender + " a.content = " + a.content);
-                if (a.sender.equals(sender)) {
-                    Log.d("test", "找到一个可用的action");
-                    a.content = content;
-                    a.receiveType = TYPE_TEXT;
-                    doHandleZbusMsg(akey, a, returnMessage, realReply);
-                    break;
-                }
+            if (actions.size() < 1) {
+                return;
             }
+            Long firstKey = actions.keySet().iterator().next();
+            Action firstA = actions.get(firstKey);
+            firstA.sender = sender;
+            firstA.content = content;
+            firstA.receiveType = TYPE_TEXT;
+            doHandleZbusMsg(firstKey, firstA, returnMessage, realReply);
+
+            //旧的写法：遍历找同名的发送者
+//            for (Map.Entry<Long, Action> longActionEntry : actions.entrySet()) {
+//                Map.Entry entry = (Map.Entry) longActionEntry;
+//                long akey = (long) entry.getKey();
+//                Action a = (Action) entry.getValue();
+//
+//                if (a.sender.equals(sender)) {
+//                    Log.d("test", "找到一个可用的action");
+//                    a.content = content;
+//                    a.receiveType = TYPE_TEXT;
+//                    doHandleZbusMsg(akey, a, returnMessage, realReply);
+//                    break;
+//                }
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -329,6 +339,8 @@ public class AutoReplyService extends AccessibilityService {
     private void sendReply20sLater(long id, Action action) {
         Message msg = new Message();
         msg.what = MSG_SERVER_BUSY;
+        //id写死成9999，让它去取第一个action
+        id = 9999;
         String busy = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"因为咨询人员较多，客服正忙，请耐心等待。\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
         msg.obj = new ZbusRecv(busy, false);
         mHandler.sendMessageDelayed(msg, 20000);
@@ -464,7 +476,7 @@ public class AutoReplyService extends AccessibilityService {
                         refreshUI1();
                         //文字的话直接走zbus
                         sendMsgToServer(id, action);
-                        //sendReply20sLater(id, action);
+                        sendReply20sLater(id, action);
                     } else if (action.receiveType == TYPE_FRIEND_CIRCLER) {
                         launchWechat(id);
                     } else if (action.receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || action.receiveType == TYPE_COLLECTOR_FORWARDING) {
