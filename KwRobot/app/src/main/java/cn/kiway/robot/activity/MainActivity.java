@@ -40,6 +40,7 @@ import java.util.List;
 
 import cn.kiway.robot.R;
 import cn.kiway.robot.entity.Action;
+import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
@@ -445,8 +446,16 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test(View v) {
-        String msg = "{\"sender\":\"小辉小号\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"学位房学位房学位房学位房学位房学位房学位房学位房学位房学位房\",\"returnType\":1},{\"content\":\"学位房2学位房2学位房2学位房2学位房2学位房2学位房2\",\"returnType\":1}],\"id\":9999,\"time\":1523342900085,\"content\":\"学位房\"}";
-        AutoReplyService.instance.handleZbusMsg(msg , false);
+//        Intent intent = new Intent();
+//        ComponentName cmp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.LauncherUI");
+//        intent.setAction(Intent.ACTION_MAIN);
+//        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.setComponent(cmp);
+//        startActivity(intent);
+        String msg = "{\"sender\":\"test\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"学位房学位房学位房学位房学位房学位房学位房学位房学位房学位房\",\"returnType\":1},{\"content\":\"学位房2学位房2学位房2学位房2学位房2学位房2学位房2\",\"returnType\":1}],\"id\":9999,\"time\":1523342900085,\"content\":\"学位房\"}";
+        AutoReplyService.instance.zbusRecvs.add(new ZbusRecv(msg, false));
+
     }
 
     private void updateServiceStatus() {

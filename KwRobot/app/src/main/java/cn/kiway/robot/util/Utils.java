@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Enumeration;
 
 import cn.kiway.robot.KWApplication;
+import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.wx.reply.utils.ZbusUtils;
 import io.netty.util.internal.StringUtil;
@@ -230,7 +231,7 @@ public class Utils {
                         public void handle(Message message, MqClient mqClient) {
                             String msg = message.getBodyString();
                             if (AutoReplyService.instance != null) {
-                                AutoReplyService.instance.handleZbusMsg(msg, true);
+                                AutoReplyService.instance.zbusRecvs.add(new ZbusRecv(msg, true));
                             }
                         }
                     }, Constant.zbusHost + ":" + Constant.zbusPost);

@@ -36,9 +36,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,6 +46,7 @@ import java.util.Set;
 import cn.kiway.robot.activity.MainActivity;
 import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.entity.ReturnMessage;
+import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.FileUtils;
 import cn.kiway.robot.util.RootCmd;
@@ -73,16 +74,17 @@ public class AutoReplyService extends AccessibilityService {
 
     public static int MSG_CLEAR_ACTION = 1;
     public static int MSG_SERVER_BUSY = 2;
+    public static int MSG_ZBUS_QUEUE = 3;
 
     public static AutoReplyService instance;
-    private final Object o = new Object();
-    private final Object o2 = new Object();
+    private final Object obj = new Object();
 
     //事件map
-    public HashMap<Long, Action> actions = new HashMap<>();
+    public LinkedHashMap<Long, Action> actions = new LinkedHashMap<>();
     //当前执行的事件id
     private long currentActionID = -1;
     private boolean actioningFlag;
+    public ArrayList<ZbusRecv> zbusRecvs = new ArrayList<>();
 
     private String senderFromNotification;
     private String forwardto;//当前要转发的对象
@@ -93,6 +95,7 @@ public class AutoReplyService extends AccessibilityService {
         Log.d("maptrix", "service oncreate");
         instance = this;
         Utils.installationPush(getApplication());
+        mHandler.sendEmptyMessage(MSG_ZBUS_QUEUE);
     }
 
     private Handler mHandler = new Handler() {
@@ -103,8 +106,21 @@ public class AutoReplyService extends AccessibilityService {
                 return;
             }
             if (msg.what == MSG_SERVER_BUSY) {
-                String busy = msg.obj.toString();
-                handleZbusMsg(busy, false);
+                ZbusRecv recv = (ZbusRecv) msg.obj;
+                zbusRecvs.add(recv);
+                return;
+            }
+            if (msg.what == MSG_ZBUS_QUEUE) {
+                mHandler.removeMessages(MSG_ZBUS_QUEUE);
+                mHandler.sendEmptyMessageDelayed(MSG_ZBUS_QUEUE, 1000);
+                if (zbusRecvs.size() == 0) {
+                    return;
+                }
+                if (currentActionID != -1) {
+                    return;
+                }
+                handleZbusMsg(zbusRecvs.remove(0));
+                return;
             }
         }
     };
@@ -134,61 +150,66 @@ public class AutoReplyService extends AccessibilityService {
         startActivity(intent);
     }
 
-    public void handleZbusMsg(String msg, boolean realReply) {
-        Log.d("test", "doHandleZbusMsg msg = " + msg);
+    public void handleZbusMsg(ZbusRecv recv) {
+        Log.d("test", "doHandleZbusMsg msg = " + recv.msg);
+        boolean realReply = recv.realReply;
         new Thread() {
             @Override
             public void run() {
-                if (currentActionID != -1) {
-                    Log.d("test", "当前有事件在处理，锁定");
-                    synchronized (o) {
-                        try {
-                            o.wait();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
                 try {
-                    JSONObject o = new JSONObject(msg);
+                    JSONObject o = new JSONObject(recv.msg);
                     long id = o.optLong("id");
                     if (id == 0) {
                         Log.d("test", "没有id！！！");
                         return;
                     }
-                    JSONArray returnMessage = o.getJSONArray("returnMessage");
                     Action action = actions.get(id);
                     if (action == null) {
                         Log.d("test", "action null , error!!!");
                         //0410 构造action，然后打开微信主页？
                         //0410 构造action，然后查找一个用过的action，点一下
-                        String sender = o.getString("sender");
-                        String content = o.getString("content");
-                        Iterator<Map.Entry<Long, Action>> iter = actions.entrySet().iterator();
-                        while (iter.hasNext()) {
-                            Map.Entry entry = (Map.Entry) iter.next();
-                            long akey = (long) entry.getKey();
-                            Action a = (Action) entry.getValue();
-                            if (a.sender.equals(sender)) {
-                                Log.d("test", "找到一个可用的action");
-                                a.content = content;
-                                a.receiveType = TYPE_TEXT;
-                                doHandleZbusMsg(akey, a, returnMessage, realReply);
-                                break;
-                            }
-                        }
+                        doFindUsableAction(o, realReply);
                     } else {
                         if (action.replied) {
                             Log.d("test", "已经回复过了");
                             return;
                         }
+                        JSONArray returnMessage = o.getJSONArray("returnMessage");
                         doHandleZbusMsg(id, action, returnMessage, realReply);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+
+
         }.start();
+    }
+
+    private void doFindUsableAction(JSONObject o, boolean realReply) {
+        try {
+            String sender = o.getString("sender");
+            String content = o.getString("content");
+            JSONArray returnMessage = o.getJSONArray("returnMessage");
+            boolean find = false;
+            for (Map.Entry<Long, Action> longActionEntry : actions.entrySet()) {
+                Map.Entry entry = (Map.Entry) longActionEntry;
+                long akey = (long) entry.getKey();
+                Log.d("test", "遍历akey = " + akey);
+                Action a = (Action) entry.getValue();
+                Log.d("test", "a.sender = " + a.sender + " a.content = " + a.content);
+                if (a.sender.equals(sender)) {
+                    Log.d("test", "找到一个可用的action");
+                    a.content = content;
+                    a.receiveType = TYPE_TEXT;
+                    doHandleZbusMsg(akey, a, returnMessage, realReply);
+                    find = true;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void doHandleZbusMsg(long id, Action action, JSONArray returnMessage, boolean realReply) {
@@ -311,7 +332,7 @@ public class AutoReplyService extends AccessibilityService {
         Message msg = new Message();
         msg.what = MSG_SERVER_BUSY;
         String busy = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"因为咨询人员较多，客服正忙，请耐心等待。\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-        msg.obj = busy;
+        msg.obj = new ZbusRecv(busy, false);
         mHandler.sendMessageDelayed(msg, 20000);
     }
 
@@ -321,12 +342,9 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                synchronized (o) {
-                    currentActionID = -1;
-                    actioningFlag = false;
-                    FileUtils.saveFile("" + actioningFlag, "actioningFlag.txt");
-                    o.notify();
-                }
+                currentActionID = -1;
+                actioningFlag = false;
+                FileUtils.saveFile("" + actioningFlag, "actioningFlag.txt");
             }
         }, 1000);
     }
@@ -571,7 +589,7 @@ public class AutoReplyService extends AccessibilityService {
                         public void run() {
                             release();
                         }
-                    }, 2000);
+                    }, 3000);
                 } else if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || receiveType == TYPE_COLLECTOR_FORWARDING) {
                     // 找到最后一张链接，点击转发给某人
                     if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING) {
@@ -588,7 +606,7 @@ public class AutoReplyService extends AccessibilityService {
                             public void run() {
                                 release();
                             }
-                        }, 2000);
+                        }, 3000);
                         return;
                     }
                     mHandler.postDelayed(new Runnable() {
@@ -629,7 +647,7 @@ public class AutoReplyService extends AccessibilityService {
                                         public void run() {
                                             release();
                                         }
-                                    }, 2000);
+                                    }, 3000);
                                 }
                             } else if (content.startsWith("[视频]")) {
                                 lastMsgView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -780,9 +798,9 @@ public class AutoReplyService extends AccessibilityService {
                             secondListView.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
                         }
                     });
-                    synchronized (o2) {
+                    synchronized (obj) {
                         try {
-                            o2.wait(1000);
+                            obj.wait(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -797,9 +815,9 @@ public class AutoReplyService extends AccessibilityService {
                             secondListView.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
                         }
                     });
-                    synchronized (o2) {
+                    synchronized (obj) {
                         try {
-                            o2.wait(1000);
+                            obj.wait(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -855,9 +873,9 @@ public class AutoReplyService extends AccessibilityService {
                 int count = returnMessages.size();
                 for (int i = 0; i < count; i++) {
                     while (i != 0 && !returnMessages.get(i - 1).returnFinished) {
-                        synchronized (o2) {
+                        synchronized (obj) {
                             try {
-                                o2.wait(1000);
+                                obj.wait(1000);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -865,9 +883,9 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     ReturnMessage rm = returnMessages.get(i);
                     if (rm.returnType == TYPE_TEXT) {
-                        sendTextOnly(rm.content);   //sendTextOnly可以认为是同步的。
+                        sendTextOnly(rm.content);
                         try {
-                            sleep(2000);
+                            sleep(3000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -1534,7 +1552,7 @@ public class AutoReplyService extends AccessibilityService {
                                 String current = System.currentTimeMillis() + "";
                                 uploadFriend(nickname, remark + " " + nickname, current, current);
                             }
-                        }, 2000);
+                        }, 3000);
                     }
                 }, 2000);
                 return true;
@@ -1711,7 +1729,7 @@ public class AutoReplyService extends AccessibilityService {
                                             release();
                                             getSharedPreferences("kiway", 0).edit().putBoolean(today, true).commit();
                                         }
-                                    }, 2000);
+                                    }, 3000);
                                 }
                             }, 1000);
                         }
