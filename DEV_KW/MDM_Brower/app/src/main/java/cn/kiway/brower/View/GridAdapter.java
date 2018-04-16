@@ -1,5 +1,6 @@
 package cn.kiway.brower.View;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Message;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -17,6 +19,7 @@ import org.askerov.dynamicgrid.BaseDynamicGridAdapter;
 
 import java.util.List;
 
+import cn.kiway.brower.Activity.BrowserActivity;
 import cn.kiway.brower.Browser.AlbumController;
 import cn.kiway.brower.Browser.BrowserController;
 import cn.kiway.brower.Ninja.R;
@@ -126,7 +129,7 @@ public class GridAdapter extends BaseDynamicGridAdapter implements BrowserContro
             holder = (Holder) view.getTag();
         }
 
-        GridItem item = list.get(position);
+       final GridItem item = list.get(position);
         holder.title.setText(item.getTitle());
         if (item.getFilename().startsWith("http://")) {
             holder.cover.setVisibility(View.GONE);
@@ -135,14 +138,28 @@ public class GridAdapter extends BaseDynamicGridAdapter implements BrowserContro
             webView.setBrowserController(this);
             webView.setFlag(BrowserUnit.FLAG_NINJA);
             webView.setAlbumCover(null);
+            WebSettings settings=webView.getSettings();
+            settings.setJavaScriptEnabled(true);
+            settings.setLoadWithOverviewMode(true);
+            settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+            webView.setInitialScale(25);
             webView.loadUrl(item.getURL());
             webView.deactivate();
+            webView.setEnabled(false);
             holder.webView.addView(webView);
         } else {
             holder.cover.setVisibility(View.VISIBLE);
             holder.webView.setVisibility(View.GONE);
             holder.cover.setImageBitmap(BrowserUnit.file2Bitmap(context, item.getFilename()));
         }
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if ((Activity)context instanceof BrowserActivity){
+                    ((BrowserActivity)context).updateAlbum(item.getURL());
+                }
+            }
+        });
         ViewUnit.setElevation(view, context.getResources().getDimensionPixelSize(R.dimen.elevation_1dp));
 
         return view;

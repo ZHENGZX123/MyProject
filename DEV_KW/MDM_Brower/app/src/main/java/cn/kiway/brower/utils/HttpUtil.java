@@ -18,7 +18,8 @@ import org.apache.http.Header;
  */
 
 public class HttpUtil {
-    public static final String clientUrl = "http://192.168.8.161:8085/";
+    public static final String serverUrl = "http://mdm.kiway.cn:8083/";
+    public static final String clientUrl = "http://mdm.kiway.cn:8085/";
 
     public static void childOperation(final Activity c, String type, String message) {
         try {

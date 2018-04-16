@@ -1055,7 +1055,7 @@ public class BrowserActivity extends Activity implements BrowserController {
         updateOmnibox();
     }
 
-    private synchronized void updateAlbum(String url) {
+    public synchronized void updateAlbum(String url) {
         if (currentAlbumController == null) {
             return;
         }

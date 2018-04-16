@@ -38,6 +38,5 @@
         android:layout_marginLeft="@dimen/layout_margin_4dp"
         android:layout_marginRight="@dimen/layout_margin_4dp"
         android:background="@color/white"
-        android:visibility="gone"
         android:scaleType="centerCrop"></RelativeLayout>
 </LinearLayout>
