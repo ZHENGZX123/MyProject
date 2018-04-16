@@ -191,7 +191,6 @@ public class AutoReplyService extends AccessibilityService {
             String sender = o.getString("sender");
             String content = o.getString("content");
             JSONArray returnMessage = o.getJSONArray("returnMessage");
-            boolean find = false;
             for (Map.Entry<Long, Action> longActionEntry : actions.entrySet()) {
                 Map.Entry entry = (Map.Entry) longActionEntry;
                 long akey = (long) entry.getKey();
@@ -203,7 +202,6 @@ public class AutoReplyService extends AccessibilityService {
                     a.content = content;
                     a.receiveType = TYPE_TEXT;
                     doHandleZbusMsg(akey, a, returnMessage, realReply);
-                    find = true;
                     break;
                 }
             }
@@ -466,7 +464,7 @@ public class AutoReplyService extends AccessibilityService {
                         refreshUI1();
                         //文字的话直接走zbus
                         sendMsgToServer(id, action);
-                        sendReply20sLater(id, action);
+                        //sendReply20sLater(id, action);
                     } else if (action.receiveType == TYPE_FRIEND_CIRCLER) {
                         launchWechat(id);
                     } else if (action.receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || action.receiveType == TYPE_COLLECTOR_FORWARDING) {
@@ -529,35 +527,29 @@ public class AutoReplyService extends AccessibilityService {
                     boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
                     Log.d("test", "isWxHomePage = " + isWxHomePage);
                     if (isWxHomePage) {
-                        if (lastTextView == null) {
-                            release();
-                            return;
-                        }
-                        lastTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                String sender = actions.get(currentActionID).sender;
-                                boolean find = findInputEditText(getRootInActiveWindow(), sender);
-                                if (!find) {
-                                    release();
-                                    return;
-                                }
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Log.d("test", "=============findTargetPeople2==============");
-                                        boolean find = findTargetPeople2(getRootInActiveWindow(), sender);
-                                        if (!find) {
-                                            Log.d("test", "findTargetPeople2 failure");
-                                            release();
-                                        }
-                                    }
-                                }, 2000);
-                            }
-                        }, 2000);
+                        //1.如果已经使用过的action，进来会去到首页
+                        searchSenderInWxHomePage();
                     } else {
-                        doSequeSend();
+                        //2.判断是不是正确的消息页面
+                        String targetSender = actions.get(currentActionID).sender;
+                        Log.d("test", "checkIsCorrectPage targetSender = " + targetSender);
+
+                        boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
+                        Log.d("test", "isCorrect = " + isCorrect);
+                        if (isCorrect) {
+                            doSequeSend();
+                        } else {
+                            //先返回，再按搜索去做
+                            String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
+                            int ret = RootCmd.execRootCmdSilent(cmd);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    checkIsWxHomePage();
+                                    searchSenderInWxHomePage();
+                                }
+                            }, 2000);
+                        }
                     }
                 } else if (receiveType == TYPE_FRIEND_CIRCLER) {
                     // 找到最后一个链接，点击转发到朋友圈
@@ -779,6 +771,53 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
+    private boolean checkIsCorrectSender(AccessibilityNodeInfo rootNode, String targetSender) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(targetSender)) {
+                return true;
+            }
+            return checkIsCorrectSender(nodeInfo, targetSender);
+        }
+        return false;
+    }
+
+    private void searchSenderInWxHomePage() {
+        if (lastTextView == null) {
+            release();
+            return;
+        }
+        lastTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                String sender = actions.get(currentActionID).sender;
+                boolean find = findInputEditText(getRootInActiveWindow(), sender);
+                if (!find) {
+                    release();
+                    return;
+                }
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "=============findTargetPeople2==============");
+                        boolean find = findTargetPeople2(getRootInActiveWindow(), sender);
+                        if (!find) {
+                            Log.d("test", "findTargetPeople2 failure");
+                            release();
+                        }
+                    }
+                }, 2000);
+            }
+        }, 2000);
+    }
+
 
     private Set<String> friends = new HashSet<>();
 
@@ -864,41 +903,7 @@ public class AutoReplyService extends AccessibilityService {
     private void doSequeSend() {
         ArrayList<ReturnMessage> returnMessages = actions.get(currentActionID).returnMessages;
 
-        checkMessageAllDone(returnMessages);
-
-        //2.串行，遍历
-        new Thread() {
-            @Override
-            public void run() {
-                int count = returnMessages.size();
-                for (int i = 0; i < count; i++) {
-                    while (i != 0 && !returnMessages.get(i - 1).returnFinished) {
-                        synchronized (obj) {
-                            try {
-                                obj.wait(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    ReturnMessage rm = returnMessages.get(i);
-                    if (rm.returnType == TYPE_TEXT) {
-                        sendTextOnly(rm.content);
-                        try {
-                            sleep(3000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        rm.returnFinished = true;
-                    } else if (rm.returnType == TYPE_IMAGE) {
-                        sendImageOnly(rm);            //sendImageOnly一定是异步的。
-                    }
-                }
-            }
-        }.start();
-    }
-
-    private void checkMessageAllDone(ArrayList<ReturnMessage> returnMessages) {
+        //检查allDone线程
         new Thread() {
             @Override
             public void run() {
@@ -925,6 +930,38 @@ public class AutoReplyService extends AccessibilityService {
                         sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+
+
+        //2.挨个发送线程
+        new Thread() {
+            @Override
+            public void run() {
+                int count = returnMessages.size();
+                for (int i = 0; i < count; i++) {
+                    while (i != 0 && !returnMessages.get(i - 1).returnFinished) {
+                        synchronized (obj) {
+                            try {
+                                obj.wait(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    ReturnMessage rm = returnMessages.get(i);
+                    if (rm.returnType == TYPE_TEXT) {
+                        sendTextOnly(rm.content);
+                        try {
+                            sleep(3000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        rm.returnFinished = true;
+                    } else if (rm.returnType == TYPE_IMAGE) {
+                        sendImageOnly(rm);            //sendImageOnly一定是异步的。
                     }
                 }
             }
