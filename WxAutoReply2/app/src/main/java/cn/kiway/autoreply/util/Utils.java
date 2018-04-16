@@ -51,4 +51,14 @@ public class Utils {
         }
         return input + last;
     }
+    public static boolean isForwrad(int msgType){
+        if (msgType == 3//图片
+                || msgType == 34//语音
+                || msgType == 42//名片
+                || msgType == 43//视频
+                || msgType == 49) {//图文链接
+            return true;
+        }
+        return false;
+    }
 }

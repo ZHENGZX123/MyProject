@@ -33,8 +33,10 @@ public class KWApplication extends Application {
         super.onCreate();
         Log.d("test", "APP onCreate");
         wToolSDK.encodeValue("1");
-        String s = wToolSDK.init("9999", "757533D0860F8CC0590B510BE2374F48C5750673");
-        Log.e("zzx",s);
+        //String s = wToolSDK.init("9999", "757533D0860F8CC0590B510BE2374F48C5750673");临时
+        String s = wToolSDK.init("19552766", "0505CD626951D9D63B72541B75BF82CF7E9F7673");//可用 有消息监听
+        // String s = wToolSDK.init("17810096", "010112143ECFD10AC82DE363C837A7CBB45E0302");//不可用，得等平台那边处理
+        Log.e("zzx", s);
         initImageCache();
     }
 
@@ -93,5 +95,4 @@ public class KWApplication extends Application {
                 .build();
         return defaultDisplayImageOptions;
     }
-
 }

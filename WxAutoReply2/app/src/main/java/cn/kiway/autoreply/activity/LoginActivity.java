@@ -48,7 +48,6 @@ public class LoginActivity extends BaseActivity {
 
     public void login(View view) {
         //1.客户端校验
-
         final String username = usernameET.getText().toString().trim();
         if (TextUtils.isEmpty(username)) {
             toast("请填写帐号");
