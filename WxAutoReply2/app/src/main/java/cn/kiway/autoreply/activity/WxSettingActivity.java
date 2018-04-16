@@ -7,8 +7,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.easy.wtool.sdk.MessageEvent;
+import com.easy.wtool.sdk.OnMessageListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,6 +21,8 @@ import org.json.JSONObject;
 
 import cn.kiway.autoreply.R;
 import cn.kiway.autoreply.adpater.LvCarIdsDailogAdapter;
+import cn.kiway.autoreply.db.MyDBHelper;
+import cn.kiway.autoreply.util.Utils;
 
 import static cn.kiway.autoreply.util.Constant.SHE_FREIEND_ROOM;
 import static cn.kiway.autoreply.util.Constant.SHE_MSG_TOFORDARD_ROOMMB;
@@ -31,6 +38,10 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
     JSONArray wxRoomList = new JSONArray();
     View chooseView;
     TextView gr_zf, room_zf, room_mb, friend;
+    CheckBox checkBox;
+    String item1, item2, item3, item4;
+    String wxid1,wxid2,wxid3,wxid4;
+    String toForwradTalker = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +51,59 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
         getWxRoom();
         initView();
         setData();
+        app.wToolSDK.setOnMessageListener(new OnMessageListener() {
+            @Override
+            public void messageEvent(MessageEvent event) {
+                try {
+                    String talker = event.getTalker();
+                    JSONObject wxMsg = new JSONObject(event.getContent());
+                    String content = app.wToolSDK.decodeValue(wxMsg.getString("content"));
+                    String msgid = wxMsg.getString("msgid");
+                    if (talker.endsWith("@chatroom")) {
+                        Log.e("zzx", "这是群消息");
+                        if (talker.equals(wxid4)) {//转发到朋友圈
+                            Log.e("zzx", "朋友圈群");     //TODO: 2018/4/2
+                        } else if (talker.equals(wxid2)) {//群内消息做转发
+                            if (content.startsWith("toForward")) {//做转发给谁的消息
+                                if (content.split(":")[1].length() > 2)
+                                    toForwradTalker = content.split(":")[1];
+                                Log.e("zzx", "转发群：转发到目标人" + toForwradTalker);
+                            } else {
+                                Log.e("zzx", "转发群：转发的内容");
+                                if (!toForwradTalker.equals(""))
+                                    forWard(toForwradTalker, event.getMsgType(), msgid);
+                                toForwradTalker = "";
+                            }
+                        } else {
+                            Log.e("zzx", "其他群");// TODO: 2018/4/2
+                        }
+                    } else {
+                        // TODO: 2018/4/2
+                        if (Utils.isForwrad(event.getMsgType())) {//是否需要转发
+                            forWard(wxid1, event.getMsgType(), msgid);
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void forWard(String talker, int msgType, String msgId) {
+        JSONObject jsonTask = new JSONObject();
+        try {//开发消息监听后这里做转发回去
+            jsonTask.put("type", 12);
+            jsonTask.put("taskid", System.currentTimeMillis());
+            jsonTask.put("content", new JSONObject());
+            jsonTask.getJSONObject("content").put("talker", talker);//转发给谁
+            jsonTask.getJSONObject("content").put("msgtype", msgType);//转发的消息类型
+            jsonTask.getJSONObject("content").put("msgid", msgId);//转发的msgId
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String s = app.wToolSDK.sendTask(jsonTask.toString());
+        Log.e("---", s);
     }
 
     @Override
@@ -66,21 +130,42 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
         room_zf = (TextView) findViewById(R.id.room_zf);
         room_mb = (TextView) findViewById(R.id.room_mb);
         friend = (TextView) findViewById(R.id.friend);
+        checkBox = (CheckBox) findViewById(R.id.wxReply);
         findViewById(R.id.gr_zf).setOnClickListener(this);
         findViewById(R.id.room_zf).setOnClickListener(this);
         findViewById(R.id.room_mb).setOnClickListener(this);
         findViewById(R.id.friend).setOnClickListener(this);
+        if (getSharedPreferences("kiway", 0).getBoolean("wxReply", false)) {
+            checkBox.setChecked(true);
+            openMessageReply();
+        } else {
+            checkBox.setChecked(false);
+        }
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    checkBox.setText("关闭自动回复");
+                    getSharedPreferences("kiway", 0).edit().putBoolean("wxReply", true).commit();
+                    openMessageReply();
+                } else {
+                    checkBox.setText("开启自动回复");
+                    getSharedPreferences("kiway", 0).edit().putBoolean("wxReply", false).commit();
+                }
+            }
+        });
     }
+
 
     private void setData() {
         try {
-            String item1 = getSharedPreferences("kiway", Activity.MODE_WORLD_READABLE).getString
+            item1 = getSharedPreferences("kiway", Activity.MODE_WORLD_READABLE).getString
                     (SHE_MSG_TOFORWARDSERVIDE, "");
-            String item2 = getSharedPreferences("kiway", Activity.MODE_WORLD_READABLE).getString
+            item2 = getSharedPreferences("kiway", Activity.MODE_WORLD_READABLE).getString
                     (SHE_MSG_TOFOREARD_ROOM, "");
-            String item3 = getSharedPreferences("kiway", Activity.MODE_WORLD_READABLE).getString
+            item3 = getSharedPreferences("kiway", Activity.MODE_WORLD_READABLE).getString
                     (SHE_MSG_TOFORDARD_ROOMMB, "");
-            String item4 = getSharedPreferences("kiway", Activity.MODE_WORLD_READABLE).getString(SHE_FREIEND_ROOM, "");
+            item4 = getSharedPreferences("kiway", Activity.MODE_WORLD_READABLE).getString(SHE_FREIEND_ROOM, "");
             if (!item1.equals("")) {
                 JSONObject jbItem1 = new JSONObject(item1);
                 if (!jbItem1.optString("remark").equals("")) {//备注
@@ -88,6 +173,7 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
                 } else {
                     gr_zf.setText(jbItem1.optString("nickname"));
                 }
+                wxid1=jbItem1.optString("wxid");
             }
             if (!item2.equals("")) {
                 JSONObject jbItem2 = new JSONObject(item2);
@@ -96,6 +182,7 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
                 } else {
                     room_zf.setText(jbItem2.optString("displayname"));
                 }
+                wxid2=jbItem2.optString("wxid");
             }
             if (!item3.equals("")) {
                 JSONObject jbItem3 = new JSONObject(item3);
@@ -104,6 +191,7 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
                 } else {
                     room_mb.setText(jbItem3.optString("nickname"));
                 }
+                wxid3=jbItem3.optString("wxid");
             }
             if (!item4.equals("")) {
                 JSONObject jbItem4 = new JSONObject(item4);
@@ -112,6 +200,7 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
                 } else {
                     friend.setText(jbItem4.optString("displayname"));
                 }
+                wxid4=jbItem4.optString("wxid");
             }
 
         } catch (JSONException e) {
@@ -134,7 +223,7 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
             jsonTask.getJSONObject("content").put("pagecount", 0);
             String content = app.wToolSDK.sendTask(jsonTask.toString());
             JSONObject jsonObject = new JSONObject(content);
-            Log.e("zzx", jsonObject.toString());
+            Log.e("people", jsonObject.toString());
             if (jsonObject.getInt("result") == 0) {
                 wxPeopleList = jsonObject.getJSONArray("content");
                 for (int i = 0; i < wxPeopleList.length(); i++) {
@@ -149,7 +238,9 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
                     item.put("wxno", wxno);//微信号
                     wxPeopleList.put(i, item);
                 }
+                new MyDBHelper(this).addWxPeople(wxPeopleList);
             }
+            wxPeopleList = new MyDBHelper(this).getWxPeople();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -166,7 +257,7 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
             jsonTask.getJSONObject("content").put("ismembers", 0);
             String content = app.wToolSDK.sendTask(jsonTask.toString());
             JSONObject jsonObject = new JSONObject(content);
-            Log.e("zzx", jsonObject.toString());
+            Log.e("wxRoom", jsonObject.toString());
             if (jsonObject.getInt("result") == 0) {
                 wxRoomList = jsonObject.getJSONArray("content");
                 for (int i = 0; i < wxRoomList.length(); i++) {
@@ -183,7 +274,9 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
                     item.put("wxno", wxno);//微信号
                     wxRoomList.put(i, item);
                 }
+                new MyDBHelper(this).addWxRoom(wxRoomList);
             }
+            wxRoomList = new MyDBHelper(this).getWxRoom();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -204,6 +297,8 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
         lvCarIds.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.e("-----", array
+                        .optJSONObject(i).toString());
                 if (chooseView != null) {
                     switch (chooseView.getId()) {
                         case R.id.gr_zf:
@@ -246,5 +341,33 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         app.wToolSDK.unload();
+    }
+
+    public void openMessageReply() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.put(1);//个人
+            jsonArray.put(2);//群聊
+            jsonObject.put("talkertypes", jsonArray);//设置监听的消息来源
+            jsonObject.put("froms", new JSONArray());//可以设置监听某个人或者群聊的消息  wxid roomid
+            jsonArray = new JSONArray();
+//            jsonArray.put(1);//文字 设置监听的消息类型
+//            jsonArray.put(3);//图片
+//            jsonArray.put(34);//语音
+//            jsonArray.put(42);//名片
+//            jsonArray.put(43);//视频
+//            jsonArray.put(49);//图文链接
+//            jsonArray.put(62);//不知道是啥
+            for (int i=0;i<100;i++){
+                jsonArray.put(i);
+            }
+            jsonObject.put("msgtypes", jsonArray);
+            jsonObject.put("msgfilters", new JSONArray());
+            String result = app.wToolSDK.startMessageListener(jsonObject.toString());
+            Log.e("----", result);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
