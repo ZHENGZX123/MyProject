@@ -201,20 +201,6 @@ public class AutoReplyService extends AccessibilityService {
             firstA.receiveType = TYPE_TEXT;
             doHandleZbusMsg(firstKey, firstA, returnMessage, realReply);
 
-            //旧的写法：遍历找同名的发送者
-//            for (Map.Entry<Long, Action> longActionEntry : actions.entrySet()) {
-//                Map.Entry entry = (Map.Entry) longActionEntry;
-//                long akey = (long) entry.getKey();
-//                Action a = (Action) entry.getValue();
-//
-//                if (a.sender.equals(sender)) {
-//                    Log.d("test", "找到一个可用的action");
-//                    a.content = content;
-//                    a.receiveType = TYPE_TEXT;
-//                    doHandleZbusMsg(akey, a, returnMessage, realReply);
-//                    break;
-//                }
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
