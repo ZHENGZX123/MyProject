@@ -118,7 +118,7 @@ public class NinjaWebViewClient extends WebViewClient {
             white = adBlock.isWhite(url);
             return false;
         } else {
-            Toast.makeText(context, "该网站不能访问", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "url该网站不能访问", Toast.LENGTH_SHORT).show();
             return true;
         }
     }
