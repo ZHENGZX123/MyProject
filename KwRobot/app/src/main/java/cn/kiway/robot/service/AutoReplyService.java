@@ -104,7 +104,7 @@ public class AutoReplyService extends AccessibilityService {
             }
             if (msg.what == MSG_SERVER_BUSY) {
                 String busy = msg.obj.toString();
-                handleZbusMsg(busy);
+                handleZbusMsg(busy, false);
             }
         }
     };
@@ -134,7 +134,7 @@ public class AutoReplyService extends AccessibilityService {
         startActivity(intent);
     }
 
-    public void handleZbusMsg(String msg) {
+    public void handleZbusMsg(String msg, boolean realReply) {
         Log.d("test", "doHandleZbusMsg msg = " + msg);
         new Thread() {
             @Override
@@ -173,16 +173,16 @@ public class AutoReplyService extends AccessibilityService {
                                 Log.d("test", "找到一个可用的action");
                                 a.content = content;
                                 a.receiveType = TYPE_TEXT;
-                                doHandleZbusMsg(akey, a, returnMessage);
+                                doHandleZbusMsg(akey, a, returnMessage, realReply);
                                 break;
                             }
                         }
                     } else {
-                        if (action.replied){
+                        if (action.replied) {
                             Log.d("test", "已经回复过了");
                             return;
                         }
-                        doHandleZbusMsg(id, action, returnMessage);
+                        doHandleZbusMsg(id, action, returnMessage, realReply);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -191,8 +191,10 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void doHandleZbusMsg(long id, Action action, JSONArray returnMessage) {
-        action.replied = true;
+    private void doHandleZbusMsg(long id, Action action, JSONArray returnMessage, boolean realReply) {
+        if (realReply) {
+            action.replied = true;
+        }
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -308,7 +310,7 @@ public class AutoReplyService extends AccessibilityService {
     private void sendReply20sLater(long id, Action action) {
         Message msg = new Message();
         msg.what = MSG_SERVER_BUSY;
-        String busy = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"客服正忙，请耐心等待。\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+        String busy = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"因为咨询人员较多，客服正忙，请耐心等待。\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
         msg.obj = busy;
         mHandler.sendMessageDelayed(msg, 20000);
     }
@@ -447,9 +449,6 @@ public class AutoReplyService extends AccessibilityService {
                         //文字的话直接走zbus
                         sendMsgToServer(id, action);
                         sendReply20sLater(id, action);
-                    } else if (action.receiveType == TYPE_IMAGE) {
-                        //图片要先拉起微信,截图上传：0408业务调整，暂时没有这种类型了
-                        launchWechat(id);
                     } else if (action.receiveType == TYPE_FRIEND_CIRCLER) {
                         launchWechat(id);
                     } else if (action.receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || action.receiveType == TYPE_COLLECTOR_FORWARDING) {
@@ -1524,6 +1523,8 @@ public class AutoReplyService extends AccessibilityService {
                                         "5、网上报名\n" +
                                         "6、验核材料\n" +
                                         "7、录取\n");
+                        Log.d("test", "welcome xxx = " + welcome);
+
                         sendTextOnly(welcome);
 
                         mHandler.postDelayed(new Runnable() {

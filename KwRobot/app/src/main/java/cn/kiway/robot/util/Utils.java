@@ -230,7 +230,7 @@ public class Utils {
                         public void handle(Message message, MqClient mqClient) {
                             String msg = message.getBodyString();
                             if (AutoReplyService.instance != null) {
-                                AutoReplyService.instance.handleZbusMsg(msg);
+                                AutoReplyService.instance.handleZbusMsg(msg, true);
                             }
                         }
                     }, Constant.zbusHost + ":" + Constant.zbusPost);
