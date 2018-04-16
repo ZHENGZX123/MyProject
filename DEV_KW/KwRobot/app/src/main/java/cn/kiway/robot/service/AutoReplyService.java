@@ -530,7 +530,7 @@ public class AutoReplyService extends AccessibilityService {
                         //1.如果已经使用过的action，进来会去到首页
                         searchSenderInWxHomePage();
                     } else {
-                        //2.判断是不是正确的消息页面
+                        //2.容错判断
                         String targetSender = actions.get(currentActionID).sender;
                         Log.d("test", "checkIsCorrectPage targetSender = " + targetSender);
 
@@ -783,7 +783,9 @@ public class AutoReplyService extends AccessibilityService {
             if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(targetSender)) {
                 return true;
             }
-            return checkIsCorrectSender(nodeInfo, targetSender);
+            if (checkIsCorrectSender(nodeInfo, targetSender)) {
+                return true;
+            }
         }
         return false;
     }
