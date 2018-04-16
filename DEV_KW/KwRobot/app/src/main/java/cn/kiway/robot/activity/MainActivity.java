@@ -346,7 +346,7 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 try {
                     String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
-                    String url = clientUrl + "/replyContent/keyWords?title=" + URLEncoder.encode("感谢您添加招生客服机器人，您可以按以下关键字发送咨询招生相关问题，谢谢！", "utf-8") + "&origin=mp&areaCode=" + areaCode;
+                    String url = clientUrl + "/replyContent/keyWords?title=" + URLEncoder.encode("感谢您添加招生客服，您可以发送您的问题进行人工咨询。为了减少您的等待，您可以按以下关键字发送咨询招生相关问题。谢谢！", "utf-8") + "&origin=mp&areaCode=" + areaCode;
                     Log.d("test", "url = " + url);
                     HttpGet httpRequest = new HttpGet(url);
                     DefaultHttpClient client = new DefaultHttpClient();
@@ -356,7 +356,7 @@ public class MainActivity extends BaseActivity {
                     String welcome = new JSONObject(ret).getJSONObject("data").getString("message");
                     Log.d("test", "welcome = " + welcome);
                     if (!TextUtils.isEmpty(welcome)) {
-                        getSharedPreferences("welcome", 0).edit().putString("welcome", "").commit();
+                        getSharedPreferences("welcome", 0).edit().putString("welcome", welcome).commit();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -445,8 +445,8 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test(View v) {
-        String msg = "{\"sender\":\"白丨丿色\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"学位房学位房学位房学位房学位房学位房学位房学位房学位房学位房\",\"returnType\":1},{\"content\":\"学位房2学位房2学位房2学位房2学位房2学位房2学位房2\",\"returnType\":1}],\"id\":9999,\"time\":1523342900085,\"content\":\"学位房\"}";
-        AutoReplyService.instance.handleZbusMsg(msg);
+        String msg = "{\"sender\":\"小辉小号\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"学位房学位房学位房学位房学位房学位房学位房学位房学位房学位房\",\"returnType\":1},{\"content\":\"学位房2学位房2学位房2学位房2学位房2学位房2学位房2\",\"returnType\":1}],\"id\":9999,\"time\":1523342900085,\"content\":\"学位房\"}";
+        AutoReplyService.instance.handleZbusMsg(msg , false);
     }
 
     private void updateServiceStatus() {
