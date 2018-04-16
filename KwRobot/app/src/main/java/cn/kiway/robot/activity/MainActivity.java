@@ -453,7 +453,7 @@ public class MainActivity extends BaseActivity {
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //        intent.setComponent(cmp);
 //        startActivity(intent);
-        String msg = "{\"sender\":\"test\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"学位房学位房学位房学位房学位房学位房学位房学位房学位房学位房\",\"returnType\":1},{\"content\":\"学位房2学位房2学位房2学位房2学位房2学位房2学位房2\",\"returnType\":1}],\"id\":9999,\"time\":1523342900085,\"content\":\"学位房\"}";
+        String msg = "{\"sender\":\"20 小辉小号\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"学位房学位房学位房学位房学位房学位房学位房学位房学位房学位房\",\"returnType\":1},{\"content\":\"学位房2学位房2学位房2学位房2学位房2学位房2学位房2\",\"returnType\":1}],\"id\":9999,\"time\":1523342900085,\"content\":\"学位房\"}";
         AutoReplyService.instance.zbusRecvs.add(new ZbusRecv(msg, false));
 
     }

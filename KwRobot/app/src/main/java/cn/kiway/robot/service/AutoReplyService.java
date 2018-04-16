@@ -151,7 +151,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     public void handleZbusMsg(ZbusRecv recv) {
-        Log.d("test", "doHandleZbusMsg msg = " + recv.msg);
+        Log.d("test", "handleZbusMsg msg = " + recv.msg);
         boolean realReply = recv.realReply;
         new Thread() {
             @Override
