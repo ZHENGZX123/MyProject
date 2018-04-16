@@ -234,6 +234,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }
                 Log.d("test", "imageCount = " + imageCount);
+
                 if (imageCount == 0) {
                     //没有图片的话，可以直接去回复文字
                     launchWechat(id);
@@ -325,8 +326,8 @@ public class AutoReplyService extends AccessibilityService {
     private void sendReply20sLater(long id, Action action) {
         Message msg = new Message();
         msg.what = MSG_SERVER_BUSY;
-        //id写死成9999，让它去取第一个action
-        id = 9999;
+        //id写死成9999，让它去取第一个action，测试无效
+        //id = 9999;
         String busy = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"因为咨询人员较多，客服正忙，请耐心等待。\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
         msg.obj = new ZbusRecv(busy, false);
         mHandler.sendMessageDelayed(msg, 20000);
@@ -953,6 +954,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     ReturnMessage rm = returnMessages.get(i);
                     if (rm.returnType == TYPE_TEXT) {
+                        Log.d("test", "处理后，content length = " + rm.content.length());
                         sendTextOnly(rm.content);
                         try {
                             sleep(3000);
