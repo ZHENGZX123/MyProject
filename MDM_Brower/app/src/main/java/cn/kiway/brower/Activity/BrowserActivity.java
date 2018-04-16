@@ -1059,6 +1059,7 @@ public class BrowserActivity extends Activity implements BrowserController {
         if (currentAlbumController == null) {
             return;
         }
+        Log.e("----", url);
         if (!checkUrlEnable(url)) {
             NinjaToast.show(this, R.string.toast_load_error);
             return;
