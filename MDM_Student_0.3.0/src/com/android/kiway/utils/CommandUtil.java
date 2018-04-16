@@ -1,6 +1,7 @@
 package com.android.kiway.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
@@ -196,6 +197,15 @@ public class CommandUtil {
                 } else if (a.operation.equals("delete")) {
                     new MyDBHelper(context).deleteNetwork(a.id);
                 }
+                if (KWApp.instance.currentActivity != null) {
+                    Intent intent = new Intent("KIWAY_BROWER");
+                    intent.putExtra("enable_type", Utils.getEnable_Network(KWApp.instance.currentActivity));
+                    intent.putExtra("all_network", new MyDBHelper(KWApp.instance.currentActivity).getAllNetworks
+                            (Utils.getEnable_Network(KWApp.instance.currentActivity)));
+                    intent.putExtra("x-auth-token", KWApp.instance.currentActivity.getSharedPreferences("kiway", 0)
+                            .getString("x-auth-token", ""));
+                    KWApp.instance.currentActivity.sendBroadcast(intent);
+                }
             } else if (command.equals("network_black_white")) {
                 //network黑白名单启用
                 int enable_network_type = data.getJSONObject("content").getInt("type");
@@ -220,6 +230,15 @@ public class CommandUtil {
                         n.enable = 1;
                         new MyDBHelper(context).updateNetwork(n);
                     }
+                }
+                if (KWApp.instance.currentActivity != null) {
+                    Intent intent = new Intent("KIWAY_BROWER");
+                    intent.putExtra("enable_type", Utils.getEnable_Network(KWApp.instance.currentActivity));
+                    intent.putExtra("all_network", new MyDBHelper(KWApp.instance.currentActivity).getAllNetworks
+                            (Utils.getEnable_Network(KWApp.instance.currentActivity)));
+                    intent.putExtra("x-auth-token", KWApp.instance.currentActivity.getSharedPreferences("kiway", 0)
+                            .getString("x-auth-token", ""));
+                    KWApp.instance.currentActivity.sendBroadcast(intent);
                 }
             } else if (command.equals("portrait")) {
                 m.what = MSG_PORTRAIT;
