@@ -9,7 +9,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-import cn.kiway.autoreply.activity.BaseActivity;
 import cn.kiway.autoreply.util.PreferencesUtils;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
@@ -41,16 +40,13 @@ public class Main implements IXposedHookLoadPackage {
         }
     }
 
-    Object object;
-
-
     private void handleMsg(ContentValues contentValues, LoadPackageParam lpparam) throws
             XmlPullParserException, IOException, JSONException {
         int status = contentValues.getAsInteger("status");//不知道是啥
         String talker = contentValues.getAsString("talker");//xxx@chatroom 群聊
         int isSend = contentValues.getAsInteger("isSend");//1是否为自己发送
-        String content = contentValues.getAsString("content");
-        int type = contentValues.getAsInteger("type");
+        String content = contentValues.getAsString("content");//消息内容
+        int type = contentValues.getAsInteger("type");//1文字 2图片 3语音 4视频
         String item1 = "";//个人消息转发到后台
         String item2 = "";//某群内做转发
         String item3 = "";//在item2群内的消息(来自item3发的)转到指定人下（消息格式：目标人:消息内容）
@@ -71,29 +67,28 @@ public class Main implements IXposedHookLoadPackage {
             item4 = PreferencesUtils.getZFFriendsPeople().getString("wxid");
             Log.e("PreferencesUtils", PreferencesUtils.getZFFriendsPeople().toString());
         }
-        Log.e("zzx", BaseActivity.instance + "");
         if (status == 4)
             return;
         if (talker.endsWith("@chatroom")) {
             Log.e("zzx", "这是群消息");
             if (talker.equals(item4)) {//转发到朋友圈
-                //// TODO: 2018/4/2
+                //TODO: 2018/4/2
                 Log.e("zzx", "这是要转发到朋友圈的群");
             } else if (talker.equals(item2)) {//群内消息做转发
                 String roomTalker = content.split(":")[0];//群内发消息的人的wxid
                 if (roomTalker.equals(item3)) { //从后台来的消息才做转发
-                    //// TODO: 2018/4/2
+                    // TODO: 2018/4/2
                     Log.e("zzx", "目标群：转发到目标人" + content);//content格式：接收人：消息内容
                 } else {
-                    //// TODO: 2018/4/2
+                    //TODO: 2018/4/2
                     Log.e("zzx", "目标群：未做转发");
                 }
             } else {
-                //// TODO: 2018/4/2
+                // TODO: 2018/4/2
                 Log.e("zzx", "既不是转发群也不是转发朋友圈群消息的其他处理");
             }
         } else {
-            //// TODO: 2018/4/2
+            // TODO: 2018/4/2
             Log.e("zzx", "这是个人消息我要转发到后台");
         }
     }
