@@ -40,7 +40,7 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
     TextView gr_zf, room_zf, room_mb, friend;
     CheckBox checkBox;
     String item1, item2, item3, item4;
-    String wxid1,wxid2,wxid3,wxid4;
+    String wxid1, wxid2, wxid3, wxid4;
     String toForwradTalker = "";
 
     @Override
@@ -55,7 +55,8 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void messageEvent(MessageEvent event) {
                 try {
-                    String talker = event.getTalker();
+                    String from = event.getFrom();//谁发的消息
+                    String talker = event.getTalker();//消息的来源 来自哪个群或者哪个人
                     JSONObject wxMsg = new JSONObject(event.getContent());
                     String content = app.wToolSDK.decodeValue(wxMsg.getString("content"));
                     String msgid = wxMsg.getString("msgid");
@@ -173,7 +174,7 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
                 } else {
                     gr_zf.setText(jbItem1.optString("nickname"));
                 }
-                wxid1=jbItem1.optString("wxid");
+                wxid1 = jbItem1.optString("wxid");
             }
             if (!item2.equals("")) {
                 JSONObject jbItem2 = new JSONObject(item2);
@@ -182,7 +183,7 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
                 } else {
                     room_zf.setText(jbItem2.optString("displayname"));
                 }
-                wxid2=jbItem2.optString("wxid");
+                wxid2 = jbItem2.optString("wxid");
             }
             if (!item3.equals("")) {
                 JSONObject jbItem3 = new JSONObject(item3);
@@ -191,7 +192,7 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
                 } else {
                     room_mb.setText(jbItem3.optString("nickname"));
                 }
-                wxid3=jbItem3.optString("wxid");
+                wxid3 = jbItem3.optString("wxid");
             }
             if (!item4.equals("")) {
                 JSONObject jbItem4 = new JSONObject(item4);
@@ -200,7 +201,7 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
                 } else {
                     friend.setText(jbItem4.optString("displayname"));
                 }
-                wxid4=jbItem4.optString("wxid");
+                wxid4 = jbItem4.optString("wxid");
             }
 
         } catch (JSONException e) {
@@ -352,16 +353,13 @@ public class WxSettingActivity extends BaseActivity implements View.OnClickListe
             jsonObject.put("talkertypes", jsonArray);//设置监听的消息来源
             jsonObject.put("froms", new JSONArray());//可以设置监听某个人或者群聊的消息  wxid roomid
             jsonArray = new JSONArray();
-//            jsonArray.put(1);//文字 设置监听的消息类型
-//            jsonArray.put(3);//图片
-//            jsonArray.put(34);//语音
-//            jsonArray.put(42);//名片
-//            jsonArray.put(43);//视频
-//            jsonArray.put(49);//图文链接
-//            jsonArray.put(62);//不知道是啥
-            for (int i=0;i<100;i++){
-                jsonArray.put(i);
-            }
+            jsonArray.put(1);//文字 设置监听的消息类型
+            jsonArray.put(3);//图片
+            jsonArray.put(34);//语音
+            jsonArray.put(42);//名片
+            jsonArray.put(43);//视频
+            jsonArray.put(49);//图文链接
+            jsonArray.put(62);//不知道是啥
             jsonObject.put("msgtypes", jsonArray);
             jsonObject.put("msgfilters", new JSONArray());
             String result = app.wToolSDK.startMessageListener(jsonObject.toString());
