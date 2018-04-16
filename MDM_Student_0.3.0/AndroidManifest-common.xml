@@ -497,7 +497,7 @@
 
         <service android:name="com.android.kiway.aidlservice.RemoteAidlService">
             <intent-filter>
-                <action android:name="cn.kiway.mdm.aidlservice.RemoteAidlService" />
+                    <action android:name="cn.kiway.mdm.aidlservice.RemoteAidlService" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>

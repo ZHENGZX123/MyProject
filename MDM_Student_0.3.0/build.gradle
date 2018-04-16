@@ -20,8 +20,8 @@ apply plugin: 'com.google.protobuf'
 android {
     signingConfigs {
         kiway {
-//        storeFile file('F:/android_signature/kiway.key')
-            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+        storeFile file('F:/android_signature/kiway.key')
+//            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
             storePassword 'kiway123'
             keyAlias 'kiway'
             keyPassword 'kiway123'
@@ -33,8 +33,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 22
-        versionCode 10
-        versionName "0.1.0"
+        versionCode 13
+        versionName "0.1.3"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
