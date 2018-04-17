@@ -73,7 +73,7 @@ import static java.lang.System.currentTimeMillis;
 public class AutoReplyService extends AccessibilityService {
 
     public static int MSG_CLEAR_ACTION = 1;
-    public static int MSG_SERVER_BUSY = 2;
+    public static int MSG_ADD_RECV = 2;
     public static int MSG_ZBUS_QUEUE = 3;
 
     public static AutoReplyService instance;
@@ -105,7 +105,7 @@ public class AutoReplyService extends AccessibilityService {
                 release();
                 return;
             }
-            if (msg.what == MSG_SERVER_BUSY) {
+            if (msg.what == MSG_ADD_RECV) {
                 ZbusRecv recv = (ZbusRecv) msg.obj;
                 zbusRecvs.add(recv);
                 return;
@@ -139,13 +139,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void launchWechat(long id) {
-        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 60000);
-        currentActionID = id;
-        try {
-            actions.get(currentActionID).intent.send();
-        } catch (PendingIntent.CanceledException e) {
-            e.printStackTrace();
-        }
+        launchWechat(id, 60000);
     }
 
     private void backToRobot() {
@@ -185,8 +179,6 @@ public class AutoReplyService extends AccessibilityService {
                     e.printStackTrace();
                 }
             }
-
-
         }.start();
     }
 
@@ -329,7 +321,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private void sendReply20sLater(long id, Action action) {
         Message msg = new Message();
-        msg.what = MSG_SERVER_BUSY;
+        msg.what = MSG_ADD_RECV;
         //id写死成9999，让它去取第一个action，测试无效
 
         String hint = "";
@@ -342,6 +334,13 @@ public class AutoReplyService extends AccessibilityService {
         String busy = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + hint + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
         msg.obj = new ZbusRecv(busy, false);
         mHandler.sendMessageDelayed(msg, 20000);
+    }
+
+    private void sendReplyImmediately(String fakeRecv) {
+        Message msg = new Message();
+        msg.what = MSG_ADD_RECV;
+        msg.obj = new ZbusRecv(fakeRecv, true);
+        mHandler.sendMessage(msg);
     }
 
     private void release() {
@@ -467,7 +466,6 @@ public class AutoReplyService extends AccessibilityService {
                     else {
                         action.receiveType = TYPE_TEXT;
                     }
-
                     if (actions.size() > 100000) {
                         actions.clear();
                     }
@@ -480,11 +478,12 @@ public class AutoReplyService extends AccessibilityService {
                         sendMsgToServer(id, action);
                         sendReply20sLater(id, action);
                     } else if (action.receiveType == TYPE_AUTO_MATCH) {
-                        launchWechat(id);
+                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+                        sendReplyImmediately(fakeRecv);
                     } else if (action.receiveType == TYPE_FRIEND_CIRCLER) {
-                        launchWechat(id);
+                        //该版本暂时屏蔽launchWechat(id);
                     } else if (action.receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || action.receiveType == TYPE_COLLECTOR_FORWARDING) {
-                        launchWechat(id);
+                        //该版本暂时屏蔽launchWechat(id);
                     } else if (action.receiveType == TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO) {
                         String forwardto = action.content.replace("设置转发对象：", "").trim();
                         if (TextUtils.isEmpty(forwardto)) {
@@ -492,7 +491,7 @@ public class AutoReplyService extends AccessibilityService {
                         }
                         getSharedPreferences("forwardto", 0).edit().putString("forwardto", forwardto).commit();
                         toast("设置转发对象成功");
-                        launchWechat(id);
+                        //该版本暂时屏蔽launchWechat(id);
                     } else if (action.receiveType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
                         String remark = action.content.replace("设置朋友圈备注：", "").trim();
                         if (TextUtils.isEmpty(remark)) {
@@ -500,13 +499,14 @@ public class AutoReplyService extends AccessibilityService {
                         }
                         getSharedPreferences("FCremark", 0).edit().putString("FCremark", remark).commit();
                         toast("设置朋友圈备注成功");
-                        launchWechat(id);
+                        //该版本暂时屏蔽launchWechat(id);
                     } else if (action.receiveType == TYPE_REQUEST_FRIEND) {
-                        launchWechat(id);
+                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+                        sendReplyImmediately(fakeRecv);
                     } else if (action.receiveType == TYPE_REDPACKAGE) {
-                        launchWechat(id);
+                        //该版本暂时屏蔽launchWechat(id);
                     } else if (action.receiveType == TYPE_TRANSFER_MONEY) {
-                        launchWechat(id);
+                        //该版本暂时屏蔽launchWechat(id);
                     }
                 }
                 break;
@@ -549,7 +549,6 @@ public class AutoReplyService extends AccessibilityService {
                         //2.容错判断
                         String targetSender = actions.get(currentActionID).sender;
                         Log.d("test", "checkIsCorrectPage targetSender = " + targetSender);
-
                         //boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
                         //Log.d("test", "isCorrect = " + isCorrect);
 //                        if (isCorrect) {
