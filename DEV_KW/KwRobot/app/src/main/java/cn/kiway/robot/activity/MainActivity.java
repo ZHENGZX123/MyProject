@@ -36,17 +36,20 @@ import org.xutils.x;
 
 import java.io.File;
 import java.net.URLEncoder;
+import java.util.Iterator;
 import java.util.List;
 
 import cn.kiway.robot.R;
 import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.service.AutoReplyService;
+import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
 
 import static cn.kiway.robot.util.Constant.clientUrl;
+import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Utils.getCurrentVersion;
 
 public class MainActivity extends BaseActivity {
@@ -60,6 +63,7 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_INSTALL = 33;
     private static final int MSG_UPGRADE = 44;
     private static final int MSG_WELCOME = 55;
+    private static final int MSG_GET_QA = 66;
 
     private TextView nameTV;
     private CheckBox getPic;
@@ -76,7 +80,7 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessage(MSG_INSTALL);
         mHandler.sendEmptyMessage(MSG_UPGRADE);
         mHandler.sendEmptyMessage(MSG_WELCOME);
-
+        mHandler.sendEmptyMessage(MSG_GET_QA);
     }
 
     private void initView() {
@@ -85,7 +89,7 @@ public class MainActivity extends BaseActivity {
         getPic = (CheckBox) findViewById(R.id.getPic);
 
         versionTV = (TextView) findViewById(R.id.version);
-        versionTV.setText("当前版本号：" + Utils.getCurrentVersion(this));
+        versionTV.setText("当前版本号：" + getCurrentVersion(this));
     }
 
     private void initListener() {
@@ -341,7 +345,7 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
-    public void getWelcome(View view) {
+    public void getWelcome() {
         new Thread() {
             @Override
             public void run() {
@@ -472,16 +476,7 @@ public class MainActivity extends BaseActivity {
 
     public Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
-            if (msg.what == MSG_NETWORK_OK) {
-                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
-                rl_nonet.setVisibility(View.GONE);
-                Log.d("test", "有网络");
-            } else if (msg.what == MSG_NETWORK_ERR) {
-                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
-                rl_nonet.setVisibility(View.VISIBLE);
-                Log.d("test", "无网络");
-                ZbusUtils.close();
-            } else if (msg.what == 2) {
+            if (msg.what == 2) {
                 String ret = (String) msg.obj;
                 try {
                     //1.apk更新
@@ -514,6 +509,15 @@ public class MainActivity extends BaseActivity {
                 String cmd = "pm install -r " + savedFilePath;
                 int ret = RootCmd.execRootCmdSilent(cmd);
                 Log.d("test", "execRootCmdSilent ret = " + ret);
+            } else if (msg.what == MSG_NETWORK_OK) {
+                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
+                rl_nonet.setVisibility(View.GONE);
+                Log.d("test", "有网络");
+            } else if (msg.what == MSG_NETWORK_ERR) {
+                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
+                rl_nonet.setVisibility(View.VISIBLE);
+                Log.d("test", "无网络");
+                ZbusUtils.close();
             } else if (msg.what == MSG_INSTALL) {
                 Utils.installationPush(getApplication());
                 mHandler.removeMessages(MSG_INSTALL);
@@ -524,11 +528,42 @@ public class MainActivity extends BaseActivity {
                 mHandler.sendEmptyMessageDelayed(MSG_UPGRADE, 8 * 60 * 60 * 1000);
             } else if (msg.what == MSG_WELCOME) {
                 mHandler.removeMessages(MSG_WELCOME);
-                getWelcome(null);
+                getWelcome();
                 mHandler.sendEmptyMessageDelayed(MSG_WELCOME, 8 * 60 * 60 * 1000);
+            } else if (msg.what == MSG_GET_QA) {
+                mHandler.removeMessages(MSG_GET_QA);
+                getQA();
+                mHandler.sendEmptyMessageDelayed(MSG_GET_QA, 8 * 60 * 60 * 1000);
             }
         }
     };
+
+    private void getQA() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String url = clientUrl + "/static/download/version/lmhf.json";
+                    Log.d("test", "url = " + url);
+                    HttpGet httpRequest = new HttpGet(url);
+                    DefaultHttpClient client = new DefaultHttpClient();
+                    HttpResponse response = client.execute(httpRequest);
+                    String ret = EntityUtils.toString(response.getEntity(), "utf-8");
+                    Log.d("test", "getQA  = " + ret);
+                    JSONObject obj = new JSONObject(ret);
+                    Iterator<String> sIterator = obj.keys();
+                    while (sIterator.hasNext()) {
+                        String key = sIterator.next();
+                        String value = obj.getString(key);
+                        Constant.qas.put(key, value);
+                    }
+                    Log.d("test", "qas size = " + qas.size());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
 
     private void downloadSilently(String apkUrl, String version) {
         final String savedFilePath = "/mnt/sdcard/cache/kw_robot_" + version + ".apk";
