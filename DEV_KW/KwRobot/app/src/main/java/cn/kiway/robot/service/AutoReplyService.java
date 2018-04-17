@@ -53,6 +53,7 @@ import cn.kiway.robot.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
 import cn.kiway.wx.reply.vo.PushMessageVo;
 
+import static cn.kiway.robot.entity.Action.TYPE_AUTO_MATCH;
 import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
 import static cn.kiway.robot.entity.Action.TYPE_GET_ALL_FRIENDS;
@@ -169,8 +170,8 @@ public class AutoReplyService extends AccessibilityService {
                     if (action == null) {
                         Log.d("test", "action null , error!!!");
                         //0410 构造action，然后打开微信主页？
-                        //0410 构造action，然后查找一个用过的action，点一下
-                        //0416 找第一个action
+                        //0410 构造action，然后查找一个用过的action？
+                        //0416 找第一个action？
                         doFindUsableAction(o, realReply);
                     } else {
                         if (action.replied) {
@@ -458,6 +459,9 @@ public class AutoReplyService extends AccessibilityService {
                     //需要转发到“消息收集群”
                     else if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了")) {
                         action.receiveType = TYPE_COLLECTOR_FORWARDING;
+                    } else if (!TextUtils.isEmpty(Constant.qas.get(content))) {
+                        action.receiveType = TYPE_AUTO_MATCH;
+                        action.returnMessages.add(new ReturnMessage(TYPE_TEXT, Constant.qas.get(content)));
                     }
                     //其他文字直接走zbus即可
                     else {
@@ -475,6 +479,8 @@ public class AutoReplyService extends AccessibilityService {
                         //文字的话直接走zbus
                         sendMsgToServer(id, action);
                         sendReply20sLater(id, action);
+                    } else if (action.receiveType == TYPE_AUTO_MATCH) {
+                        launchWechat(id);
                     } else if (action.receiveType == TYPE_FRIEND_CIRCLER) {
                         launchWechat(id);
                     } else if (action.receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || action.receiveType == TYPE_COLLECTOR_FORWARDING) {
@@ -530,7 +536,7 @@ public class AutoReplyService extends AccessibilityService {
 
                 int receiveType = actions.get(currentActionID).receiveType;
 
-                if (receiveType == TYPE_TEXT) {
+                if (receiveType == TYPE_TEXT || receiveType == TYPE_AUTO_MATCH) {
                     //1.判断当前是不是首页
                     Log.d("test", "========================checkIsWxHomePage============");
                     checkIsWxHomePage();

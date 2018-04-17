@@ -1,5 +1,7 @@
 package cn.kiway.robot.util;
 
+import java.util.HashMap;
+
 /**
  * Created by Administrator on 2018/2/23.
  */
@@ -12,8 +14,18 @@ public class Constant {
     public static String zbusHost = "robot.kiway.cn";//192.168.8.161  rbtest.kiway.cn
     public static String zbusPost = "15555";
 
-    public static String clientUrl = "http://robot.kiway.cn";
+    public static String clientUrl = "http://robot.kiway.cn"; //"http://192.168.8.161:8081";
 
-    //"http://192.168.8.161:8081";
+
+    public static HashMap<String, String> qas = new HashMap<>();
+
+    static {
+        qas.put("你好", "家长您好。");
+        qas.put("您好", "家长您好。");
+        qas.put("客服你好", "家长您好。");
+        qas.put("客服您好", "家长您好。");
+        qas.put("客服在吗", "家长您好，请问您要咨询什么问题？");
+        qas.put("谢谢", "不用谢。欢迎下次再咨询。");
+    }
 
 }
