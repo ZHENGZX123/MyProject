@@ -23,7 +23,8 @@ public class Action {
     public static final int TYPE_REDPACKAGE = 105;//红包
     public static final int TYPE_TRANSFER_MONEY = 106;//转账
     public static final int TYPE_GET_ALL_FRIENDS = 107;//获取好友列表
-    public static final int TYPE_GET_FC = 108;//获取好友列表
+    public static final int TYPE_GET_FC = 108;//获取好友朋友圈
+    public static final int TYPE_AUTO_MATCH = 109;//自动匹配
 
 
     public PendingIntent intent;
