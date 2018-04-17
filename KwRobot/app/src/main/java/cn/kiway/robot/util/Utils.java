@@ -17,7 +17,10 @@ import org.json.JSONObject;
 
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
 
 import cn.kiway.robot.KWApplication;
@@ -240,5 +243,42 @@ public class Utils {
                 }
             }
         }.start();
+    }
+
+
+    public static boolean isEffectiveDate() {
+        try {
+            String format = "HH:mm:ss";
+
+            String dateStr = new SimpleDateFormat(format).format(new Date());
+            Date nowTime = new SimpleDateFormat(format).parse(dateStr);
+
+
+            Date startTime = new SimpleDateFormat(format).parse("08:30:00");
+            Date endTime = new SimpleDateFormat(format).parse("20:00:00");
+
+            if (nowTime.getTime() == startTime.getTime()
+                    || nowTime.getTime() == endTime.getTime()) {
+                return true;
+            }
+
+            Calendar date = Calendar.getInstance();
+            date.setTime(nowTime);
+
+            Calendar begin = Calendar.getInstance();
+            begin.setTime(startTime);
+
+            Calendar end = Calendar.getInstance();
+            end.setTime(endTime);
+
+            if (date.after(begin) && date.before(end)) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
