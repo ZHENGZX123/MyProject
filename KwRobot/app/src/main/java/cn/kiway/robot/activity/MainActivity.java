@@ -351,20 +351,63 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
+    private void getQA() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String url = clientUrl + "/static/download/version/lmhf.json";
+                    Log.d("test", "url = " + url);
+                    HttpGet httpRequest = new HttpGet(url);
+                    DefaultHttpClient client = new DefaultHttpClient();
+                    HttpResponse response = client.execute(httpRequest);
+                    String ret = EntityUtils.toString(response.getEntity(), "utf-8");
+                    Log.d("test", "getQA  = " + ret);
+                    JSONObject obj = new JSONObject(ret);
+                    Iterator<String> sIterator = obj.keys();
+                    while (sIterator.hasNext()) {
+                        String key = sIterator.next();
+                        String value = obj.getString(key);
+                        Constant.qas.put(key, value);
+                    }
+                    Log.d("test", "qas size = " + qas.size());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
     public void getWelcome() {
         new Thread() {
             @Override
             public void run() {
                 try {
                     String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
-                    String url = clientUrl + "/replyContent/keyWords?title=" + URLEncoder.encode
-                            ("感谢您添加招生客服，您可以发送您的问题进行人工咨询。为了减少您的等待，您可以按以下关键字发送咨询招生相关问题。谢谢！", "utf-8") +
-                            "&origin=mp&areaCode=" + areaCode;
-                    Log.d("test", "url = " + url);
+                    if (TextUtils.isEmpty(areaCode)) {
+                        areaCode = "440303";
+                    }
+                    Log.d("test", "areaCode = " + areaCode);
+
+                    String url = clientUrl + "/static/download/version/subscribe.json";
+                    Log.d("test", "url1 = " + url);
                     HttpGet httpRequest = new HttpGet(url);
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
-                    String ret = EntityUtils.toString(response.getEntity());
+                    String ret = EntityUtils.toString(response.getEntity(), "utf-8");
+                    Log.d("test", "getWelcomeTitle  = " + ret);
+                    JSONObject obj = new JSONObject(ret);
+                    String welcomeTitle = obj.getString(areaCode);
+                    if (TextUtils.isEmpty(welcomeTitle)) {
+                        welcomeTitle = "感谢您添加招生客服，您可以发送您的问题进行人工咨询。为了减少您的等待，您可以按以下关键字发送咨询招生相关问题。谢谢！";
+                    }
+
+                    url = clientUrl + "/replyContent/keyWords?title=" + URLEncoder.encode(welcomeTitle, "utf-8") + "&origin=mp&areaCode=" + areaCode;
+                    Log.d("test", "url2 = " + url);
+                    httpRequest = new HttpGet(url);
+                    client = new DefaultHttpClient();
+                    response = client.execute(httpRequest);
+                    ret = EntityUtils.toString(response.getEntity());
                     Log.d("test", "getWelcome  = " + ret);
                     String welcome = new JSONObject(ret).getJSONObject("data").getString("message");
                     Log.d("test", "welcome = " + welcome);
@@ -458,13 +501,6 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test(View v) {
-//        Intent intent = new Intent();
-//        ComponentName cmp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.LauncherUI");
-//        intent.setAction(Intent.ACTION_MAIN);
-//        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        intent.setComponent(cmp);
-//        startActivity(intent);
         String msg = "{\"sender\":\"20 小辉小号\",\"me\":\"客服888\"," +
                 "\"returnMessage\":[{\"content\":\"学位房学位房学位房学位房学位房学位房学位房学位房学位房学位房\",\"returnType\":1}," +
                 "{\"content\":\"学位房2学位房2学位房2学位房2学位房2学位房2学位房2\",\"returnType\":1}],\"id\":9999,\"time\":1523342900085," +
@@ -557,33 +593,6 @@ public class MainActivity extends BaseActivity {
         }
     };
 
-    private void getQA() {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    String url = clientUrl + "/static/download/version/lmhf.json";
-                    Log.d("test", "url = " + url);
-                    HttpGet httpRequest = new HttpGet(url);
-                    DefaultHttpClient client = new DefaultHttpClient();
-                    HttpResponse response = client.execute(httpRequest);
-                    String ret = EntityUtils.toString(response.getEntity(), "utf-8");
-                    Log.d("test", "getQA  = " + ret);
-                    JSONObject obj = new JSONObject(ret);
-                    Iterator<String> sIterator = obj.keys();
-                    while (sIterator.hasNext()) {
-                        String key = sIterator.next();
-                        String value = obj.getString(key);
-                        Constant.qas.put(key, value);
-                    }
-                    Log.d("test", "qas size = " + qas.size());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
-
     private void downloadSilently(String apkUrl, String version) {
         final String savedFilePath = "/mnt/sdcard/cache/kw_robot_" + version + ".apk";
         if (new File(savedFilePath).exists()) {
@@ -622,20 +631,6 @@ public class MainActivity extends BaseActivity {
 
     private void askforInstall(final String savedFilePath) {
         startInstall(savedFilePath);
-//        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
-//        AlertDialog dialog_download = builder.setMessage("有新的版本，请点击更新").setNegativeButton(android.R.string.ok, new
-//                DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface di, int arg1) {
-//                        di.dismiss();
-//                        startInstall(savedFilePath);
-//                    }
-//                }).setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//            }
-//        }).create();
-//        dialog_download.show();
     }
 
     private void startInstall(String savedFilePath) {
