@@ -458,9 +458,9 @@ public class AutoReplyService extends AccessibilityService {
                     //需要转发到“消息收集群”
                     else if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了")) {
                         action.receiveType = TYPE_COLLECTOR_FORWARDING;
-                    } else if (!TextUtils.isEmpty(Constant.qas.get(content))) {
+                    } else if (!TextUtils.isEmpty(Constant.qas.get(content.trim()))) {
                         action.receiveType = TYPE_AUTO_MATCH;
-                        action.returnMessages.add(new ReturnMessage(TYPE_TEXT, Constant.qas.get(content)));
+                        action.returnMessages.add(new ReturnMessage(TYPE_TEXT, Constant.qas.get(content.trim())));
                     }
                     //其他文字直接走zbus即可
                     else {
@@ -546,16 +546,16 @@ public class AutoReplyService extends AccessibilityService {
                         //1.如果已经使用过的action，进来会去到首页
                         searchSenderInWxHomePage();
                     } else {
-                        //2.容错判断
                         String targetSender = actions.get(currentActionID).sender;
                         Log.d("test", "checkIsCorrectPage targetSender = " + targetSender);
+                        //2.容错判断
                         //boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
                         //Log.d("test", "isCorrect = " + isCorrect);
-//                        if (isCorrect) {
-//                            doSequeSend();目前发现这个方式会丢消息。
-//                        } else {
+                        //if (isCorrect) {
+                        //doSequeSend();目前发现这个方式会丢消息。
+                        //} else {
                         //先返回首页，再按搜索去做
-
+                        //0417不做容错，全都返回
                         String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
                         RootCmd.execRootCmdSilent(cmd);
 
