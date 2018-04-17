@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import com.easy.wtool.sdk.MessageEvent;
 import com.easy.wtool.sdk.OnMessageListener;
+import com.easy.wtool.sdk.OnTaskEndListener;
+import com.easy.wtool.sdk.TaskEndEvent;
 import com.easy.wtool.sdk.WToolSDK;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -74,6 +76,13 @@ public class WeChatActivity extends BaseActivity {
                 String content = wToolSDK.sendTask(jsonTask.toString());
                 Log.e("---", content);
                 Log.e(LOG_TAG, "messageEvent on message: " + event.getTalker() + "," + event.getContent());
+            }
+        });
+        wToolSDK.setOnTaskEndListener(new OnTaskEndListener() {
+            @Override
+            public void taskEndEvent(TaskEndEvent taskEndEvent) {
+                Log.e(LOG_TAG, taskEndEvent.getType() + "," + taskEndEvent.getContent() + "," + taskEndEvent
+                        .getTaskId());
             }
         });
     }
@@ -233,7 +242,7 @@ public class WeChatActivity extends BaseActivity {
                 new MyDBHelper(this).addWxPeople(wxPeopleList);
             }
             wxPeopleList = new MyDBHelper(this).getWxPeople();
-            Log.e("zzx", wxPeopleList.toString());
+            Log.e("getWxPeople", wxPeopleList.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -275,6 +284,17 @@ public class WeChatActivity extends BaseActivity {
         }
     }
 
+    public void getWxInfo(View view) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", 26);
+            String content = wToolSDK.sendTask(jsonObject.toString());
+            Log.e("getWxInfo", content);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void sendWxMsg(int type, String wxid, String content) {
         try {
             JSONObject jsonObject = new JSONObject();
@@ -296,7 +316,7 @@ public class WeChatActivity extends BaseActivity {
                 //  jsonObject.getJSONObject("content").put("duration",60);
             }
             String result = wToolSDK.sendTask(jsonObject.toString());
-            Log.e("----", result);
+            Log.e("sendWxMsg", result);
         } catch (JSONException e) {
             e.printStackTrace();
         }
