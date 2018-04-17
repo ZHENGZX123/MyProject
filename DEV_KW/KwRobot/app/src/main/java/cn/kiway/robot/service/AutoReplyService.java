@@ -466,7 +466,7 @@ public class AutoReplyService extends AccessibilityService {
                     else {
                         action.receiveType = TYPE_TEXT;
                     }
-                    if (actions.size() > 100000) {
+                    if (actions.size() > 10000) {
                         actions.clear();
                     }
                     actions.put(id, action);
