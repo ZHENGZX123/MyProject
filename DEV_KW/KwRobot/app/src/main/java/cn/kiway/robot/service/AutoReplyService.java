@@ -327,8 +327,17 @@ public class AutoReplyService extends AccessibilityService {
         Message msg = new Message();
         msg.what = MSG_SERVER_BUSY;
         //id写死成9999，让它去取第一个action，测试无效
-        //id = 9999;
-        String busy = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"因为咨询人员较多，客服正忙，请耐心等待。\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+
+        String hint = "";
+
+        boolean in = Utils.isEffectiveDate();
+        if (in) {
+            hint = "因为咨询人员较多，客服正忙，请耐心等待。";
+        } else {
+            hint = "客服已下线，请于工作时间8：30-20：00再咨询。";
+        }
+
+        String busy = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + hint + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
         msg.obj = new ZbusRecv(busy, false);
         mHandler.sendMessageDelayed(msg, 20000);
     }
@@ -343,7 +352,7 @@ public class AutoReplyService extends AccessibilityService {
                 actioningFlag = false;
                 FileUtils.saveFile("" + actioningFlag, "actioningFlag.txt");
             }
-        }, 1000);
+        }, 2000);
     }
 
     @Override
@@ -574,7 +583,7 @@ public class AutoReplyService extends AccessibilityService {
                         }
                     }, 10000);//防止页面加载不完整
                 } else if (receiveType == TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO || receiveType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
-                    sendTextOnly("设置成功！");
+                    sendTextOnly2("设置成功！");
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -591,7 +600,7 @@ public class AutoReplyService extends AccessibilityService {
                     if (TextUtils.isEmpty(forwardto)) {
                         toast("您还没有设置转发对象");
                         //回复给微信
-                        sendTextOnly("您还没有设置转发对象，设置方法：请输入“设置转发对象：昵称”");
+                        sendTextOnly2("您还没有设置转发对象，设置方法：请输入“设置转发对象：昵称”");
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -632,7 +641,7 @@ public class AutoReplyService extends AccessibilityService {
                                     doLongClickLastMsg();
                                 } else {
                                     //个人名片
-                                    sendTextOnly("个人名片暂时不支持转发");
+                                    sendTextOnly2("个人名片暂时不支持转发");
                                     mHandler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
@@ -943,27 +952,18 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 int count = returnMessages.size();
                 for (int i = 0; i < count; i++) {
-                    while (i != 0 && !returnMessages.get(i - 1).returnFinished) {
-                        synchronized (obj) {
+                    ReturnMessage rm = returnMessages.get(i);
+                    if (rm.returnType == TYPE_TEXT) {
+                        while (i != 0 && !returnMessages.get(i - 1).returnFinished) {
                             try {
-                                obj.wait(1000);
+                                sleep(1000);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
-                    }
-                    ReturnMessage rm = returnMessages.get(i);
-                    if (rm.returnType == TYPE_TEXT) {
-                        Log.d("test", "处理后，content length = " + rm.content.length());
-                        sendTextOnly(rm.content);
-                        try {
-                            sleep(3000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        rm.returnFinished = true;
+                        sendTextOnly(rm);
                     } else if (rm.returnType == TYPE_IMAGE) {
-                        sendImageOnly(rm);            //sendImageOnly一定是异步的。
+                        sendImageOnly(rm);
                     }
                 }
             }
@@ -1582,7 +1582,7 @@ public class AutoReplyService extends AccessibilityService {
                                         "7、录取\n");
                         Log.d("test", "welcome xxx = " + welcome);
 
-                        sendTextOnly(welcome);
+                        sendTextOnly2(welcome);
 
                         mHandler.postDelayed(new Runnable() {
                             @Override
@@ -1761,7 +1761,7 @@ public class AutoReplyService extends AccessibilityService {
                                 @Override
                                 public void run() {
                                     String sendContent = getSharedPreferences("sendContent", 0).getString("sendContent", "你好，请问客服在吗？");
-                                    sendTextOnly(sendContent);
+                                    sendTextOnly2(sendContent);
                                     mHandler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
@@ -1987,37 +1987,65 @@ public class AutoReplyService extends AccessibilityService {
 
     //---------------------------发送文字----------------
 
-    private void sendTextOnly(String reply) {
+    private void sendTextOnly(ReturnMessage rm) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                {
-                    Log.d("test", "sendTextOnly is called");
-                    AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-                    boolean find = findInputEditText(rootNode, reply);
-                    Log.d("test", "findInputEditText = " + find);
-                    if (!find) {
-                        return;
-                    }
-
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
-                            List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByText("发送");
-                            if (list != null && list.size() > 0) {
-                                for (AccessibilityNodeInfo n : list) {
-                                    if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
-                                        n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                    }
+                Log.d("test", "sendTextOnly is called");
+                AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+                boolean find = findInputEditText(rootNode, rm.content);
+                Log.d("test", "findInputEditText = " + find);
+                if (!find) {
+                    return;
+                }
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+                        List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByText("发送");
+                        if (list != null && list.size() > 0) {
+                            for (AccessibilityNodeInfo n : list) {
+                                if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
+                                    n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                                 }
                             }
                         }
-                    }, 1000);
-                }
+                        rm.returnFinished = true;
+                    }
+                }, 1000);
             }
         });
     }
+
+    private void sendTextOnly2(String reply) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("test", "sendTextOnly is called");
+                AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+                boolean find = findInputEditText(rootNode, reply);
+                Log.d("test", "findInputEditText = " + find);
+                if (!find) {
+                    return;
+                }
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+                        List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByText("发送");
+                        if (list != null && list.size() > 0) {
+                            for (AccessibilityNodeInfo n : list) {
+                                if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
+                                    n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                }
+                            }
+                        }
+                    }
+                }, 1000);
+            }
+        });
+    }
+
 
     private boolean findInputEditText(AccessibilityNodeInfo rootNode, String reply) {
         int count = rootNode.getChildCount();
