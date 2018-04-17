@@ -19,4 +19,13 @@ public class Constant {
 
     public static HashMap<String, String> qas = new HashMap<>();
 
+    static {
+        qas.put("你好", "家长您好。");
+        qas.put("您好", "家长您好。");
+        qas.put("客服你好", "家长您好。");
+        qas.put("客服您好", "家长您好。");
+        qas.put("客服在吗", "家长您好，请问您要咨询什么问题？");
+        qas.put("谢谢", "不用谢。欢迎下次再咨询。");
+    }
+
 }

@@ -476,7 +476,7 @@ public class MainActivity extends BaseActivity {
     public void share(View view) {
         ShareEntity testBean = new ShareEntity("开维教育", "我是内容，描述内容。");
         testBean.setUrl("http://www.kiway.cn");//分享的地址
-        testBean.setImgUrl(Environment.getExternalStorageDirectory()+"/Yjpty/photos/1.png");//只能本地地址，正方形
+        testBean.setImgUrl(Environment.getExternalStorageDirectory() + "/Yjpty/photos/1.png");//只能本地地址，正方形
         ShareUtil.startShare(this, ShareConstant.SHARE_CHANNEL_WEIXIN_FRIEND, testBean, ShareConstant
                 .REQUEST_CODE);
     }
