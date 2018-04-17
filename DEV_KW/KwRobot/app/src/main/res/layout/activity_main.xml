@@ -125,7 +125,12 @@
             android:onClick="test"
             android:text="测试用"
         />
-
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="share"
+            android:text="分享"
+            />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

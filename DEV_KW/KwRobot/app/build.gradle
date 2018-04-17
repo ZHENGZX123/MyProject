@@ -3,8 +3,8 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         kiway {
-//            storeFile file('F:/android_signature/kiway.key')
-            storeFile file('C:/Users/Administrator/.android/kiway.keystore')
+            storeFile file('F:/android_signature/kiway.key')
+            //storeFile file('C:/Users/Administrator/.android/kiway.keystore')
             storePassword 'kiway123'
             keyAlias 'kiway'
             keyPassword 'kiway123'
@@ -14,7 +14,8 @@ android {
     buildToolsVersion "25.0.3"
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
-        applicationId "cn.kiway.robot"
+       applicationId "cn.kiway.robot"
+        //applicationId "cn.kiway.mdm.teacher"
         minSdkVersion 16
         targetSdkVersion 21
         versionCode 11
@@ -77,4 +78,7 @@ dependencies {
     compile files('libs/wx-reply-zbus-1.0-SNAPSHOT.jar')
     compile 'org.xutils:xutils:3.5.0'
     compile files('libs/wtoolsdk.jar')
+    compile ('com.xyzlf.share:sharesdk:0.0.10') {
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+    }
 }

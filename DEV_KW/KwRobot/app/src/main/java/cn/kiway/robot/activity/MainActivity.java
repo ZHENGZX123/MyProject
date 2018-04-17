@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
@@ -24,6 +25,9 @@ import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.xyzlf.share.library.bean.ShareEntity;
+import com.xyzlf.share.library.interfaces.ShareConstant;
+import com.xyzlf.share.library.util.ShareUtil;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -152,7 +156,8 @@ public class MainActivity extends BaseActivity {
         if (true) {
             return;
         }
-        String forwardfrom = getSharedPreferences("forwardfrom", 0).getString("forwardfrom", "wxid_cokkmqud47e121的接口测试号");
+        String forwardfrom = getSharedPreferences("forwardfrom", 0).getString("forwardfrom",
+                "wxid_cokkmqud47e121的接口测试号");
         EditText et = new EditText(this);
         et.setSingleLine();
         et.setText(forwardfrom);
@@ -196,7 +201,8 @@ public class MainActivity extends BaseActivity {
                         getSharedPreferences("filters", 0).edit().putString("filters", filters).commit();
 
                         filters = getSharedPreferences("filters", 0).getString("filters", "");
-                        getSharedPreferences("filters", 0).edit().putString("filters", filters + "===" + content).commit();
+                        getSharedPreferences("filters", 0).edit().putString("filters", filters + "===" + content)
+                                .commit();
                     }
                 }).setPositiveButton("取消", null).create();
         dialog.show();
@@ -351,7 +357,9 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 try {
                     String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
-                    String url = clientUrl + "/replyContent/keyWords?title=" + URLEncoder.encode("感谢您添加招生客服，您可以发送您的问题进行人工咨询。为了减少您的等待，您可以按以下关键字发送咨询招生相关问题。谢谢！", "utf-8") + "&origin=mp&areaCode=" + areaCode;
+                    String url = clientUrl + "/replyContent/keyWords?title=" + URLEncoder.encode
+                            ("感谢您添加招生客服，您可以发送您的问题进行人工咨询。为了减少您的等待，您可以按以下关键字发送咨询招生相关问题。谢谢！", "utf-8") +
+                            "&origin=mp&areaCode=" + areaCode;
                     Log.d("test", "url = " + url);
                     HttpGet httpRequest = new HttpGet(url);
                     DefaultHttpClient client = new DefaultHttpClient();
@@ -457,9 +465,20 @@ public class MainActivity extends BaseActivity {
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //        intent.setComponent(cmp);
 //        startActivity(intent);
-        String msg = "{\"sender\":\"20 小辉小号\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"学位房学位房学位房学位房学位房学位房学位房学位房学位房学位房\",\"returnType\":1},{\"content\":\"学位房2学位房2学位房2学位房2学位房2学位房2学位房2\",\"returnType\":1}],\"id\":9999,\"time\":1523342900085,\"content\":\"学位房\"}";
+        String msg = "{\"sender\":\"20 小辉小号\",\"me\":\"客服888\"," +
+                "\"returnMessage\":[{\"content\":\"学位房学位房学位房学位房学位房学位房学位房学位房学位房学位房\",\"returnType\":1}," +
+                "{\"content\":\"学位房2学位房2学位房2学位房2学位房2学位房2学位房2\",\"returnType\":1}],\"id\":9999,\"time\":1523342900085," +
+                "\"content\":\"学位房\"}";
         AutoReplyService.instance.zbusRecvs.add(new ZbusRecv(msg, false));
 
+    }
+
+    public void share(View view) {
+        ShareEntity testBean = new ShareEntity("开维教育", "我是内容，描述内容。");
+        testBean.setUrl("http://www.kiway.cn");//分享的地址
+        testBean.setImgUrl(Environment.getExternalStorageDirectory()+"/Yjpty/photos/1.png");//只能本地地址，正方形
+        ShareUtil.startShare(this, ShareConstant.SHARE_CHANNEL_WEIXIN_FRIEND, testBean, ShareConstant
+                .REQUEST_CODE);
     }
 
     private void updateServiceStatus() {
