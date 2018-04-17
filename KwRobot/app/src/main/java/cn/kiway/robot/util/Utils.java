@@ -255,7 +255,7 @@ public class Utils {
 
 
             Date startTime = new SimpleDateFormat(format).parse("08:30:00");
-            Date endTime = new SimpleDateFormat(format).parse("20:00:00");
+            Date endTime = new SimpleDateFormat(format).parse("22:00:00");
 
             if (nowTime.getTime() == startTime.getTime()
                     || nowTime.getTime() == endTime.getTime()) {

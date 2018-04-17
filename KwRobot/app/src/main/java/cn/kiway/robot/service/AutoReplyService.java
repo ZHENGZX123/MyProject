@@ -125,6 +125,9 @@ public class AutoReplyService extends AccessibilityService {
     };
 
     private void launchWechat(long id, long sleepTime) {
+        if (sleepTime < 60000) {
+            sleepTime = 60000;
+        }
         mHandler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, sleepTime);
         currentActionID = id;
         try {
@@ -135,7 +138,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void launchWechat(long id) {
-        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 45000);
+        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 60000);
         currentActionID = id;
         try {
             actions.get(currentActionID).intent.send();
@@ -233,11 +236,11 @@ public class AutoReplyService extends AccessibilityService {
                         e.printStackTrace();
                     }
                 }
+                long sleepTime = action.returnMessages.size() * 8000;
                 Log.d("test", "imageCount = " + imageCount);
-
                 if (imageCount == 0) {
                     //没有图片的话，可以直接去回复文字
-                    launchWechat(id);
+                    launchWechat(id, sleepTime);
                 } else if (imageCount > 0) {
                     Log.d("test", "处理前count = " + action.returnMessages.size());
                     //这里加工一下，只保留1个图片就可以了
@@ -253,13 +256,13 @@ public class AutoReplyService extends AccessibilityService {
                         }
                     }
                     Log.d("test", "处理后count = " + action.returnMessages.size());
-                    handleImageMsg(id, action.returnMessages);
+                    handleImageMsg(id, action.returnMessages, sleepTime);
                 }
             }
         });
     }
 
-    private void handleImageMsg(long id, ArrayList<ReturnMessage> returnMessages) {
+    private void handleImageMsg(long id, ArrayList<ReturnMessage> returnMessages, long sleepTime) {
         new Thread() {
             @Override
             public void run() {
@@ -271,7 +274,7 @@ public class AutoReplyService extends AccessibilityService {
                         saveImage(getApplication(), bmp);
                     }
                 }
-                launchWechat(id);
+                launchWechat(id, sleepTime);
             }
         }.start();
     }
@@ -329,20 +332,19 @@ public class AutoReplyService extends AccessibilityService {
         //id写死成9999，让它去取第一个action，测试无效
 
         String hint = "";
-
         boolean in = Utils.isEffectiveDate();
         if (in) {
             hint = "因为咨询人员较多，客服正忙，请耐心等待。";
         } else {
-            hint = "客服已下线，请于工作时间8：30-20：00再咨询。";
+            hint = "客服已下线，请于工作时间8：30-22：00再咨询。";
         }
-
         String busy = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + hint + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
         msg.obj = new ZbusRecv(busy, false);
-        mHandler.sendMessageDelayed(msg, 20000);
+        mHandler.sendMessageDelayed(msg, 5000);//20000
     }
 
     private void release() {
+        Log.d("test", "release is called");
         mHandler.removeMessages(MSG_CLEAR_ACTION);
         backToRobot();
         mHandler.postDelayed(new Runnable() {
@@ -542,23 +544,25 @@ public class AutoReplyService extends AccessibilityService {
                         String targetSender = actions.get(currentActionID).sender;
                         Log.d("test", "checkIsCorrectPage targetSender = " + targetSender);
 
-                        boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
-                        Log.d("test", "isCorrect = " + isCorrect);
-                        if (isCorrect) {
-                            doSequeSend();
-                        } else {
-                            //先返回，再按搜索去做
-                            String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
-                            int ret = RootCmd.execRootCmdSilent(cmd);
-                            mHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    checkIsWxHomePage();
-                                    searchSenderInWxHomePage();
-                                }
-                            }, 2000);
-                        }
+                        //boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
+                        //Log.d("test", "isCorrect = " + isCorrect);
+//                        if (isCorrect) {
+//                            doSequeSend();目前发现这个方式会丢消息。
+//                        } else {
+                        //先返回首页，再按搜索去做
+
+                        String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
+                        RootCmd.execRootCmdSilent(cmd);
+
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                checkIsWxHomePage();
+                                searchSenderInWxHomePage();
+                            }
+                        }, 3000);
                     }
+//                    }
                 } else if (receiveType == TYPE_FRIEND_CIRCLER) {
                     // 找到最后一个链接，点击转发到朋友圈
                     lastFrameLayout = null;
@@ -809,6 +813,7 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 String sender = actions.get(currentActionID).sender;
                 boolean find = findInputEditText(getRootInActiveWindow(), sender);
+                Log.d("test", "findInputEditText = " + find);
                 if (!find) {
                     release();
                     return;
@@ -823,9 +828,9 @@ public class AutoReplyService extends AccessibilityService {
                             release();
                         }
                     }
-                }, 2000);
+                }, 3000);
             }
-        }, 2000);
+        }, 3000);
     }
 
 
@@ -1988,7 +1993,7 @@ public class AutoReplyService extends AccessibilityService {
     //---------------------------发送文字----------------
 
     private void sendTextOnly(ReturnMessage rm) {
-        mHandler.post(new Runnable() {
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 Log.d("test", "sendTextOnly is called");
@@ -1996,6 +2001,7 @@ public class AutoReplyService extends AccessibilityService {
                 boolean find = findInputEditText(rootNode, rm.content);
                 Log.d("test", "findInputEditText = " + find);
                 if (!find) {
+                    rm.returnFinished = true;
                     return;
                 }
                 mHandler.postDelayed(new Runnable() {
@@ -2010,11 +2016,16 @@ public class AutoReplyService extends AccessibilityService {
                                 }
                             }
                         }
-                        rm.returnFinished = true;
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                rm.returnFinished = true;
+                            }
+                        }, 1500);
                     }
-                }, 1000);
+                }, 1500);
             }
-        });
+        }, 1500);
     }
 
     private void sendTextOnly2(String reply) {
@@ -2356,4 +2367,6 @@ public class AutoReplyService extends AccessibilityService {
         firstA.receiveType = TYPE_GET_FC;
         launchWechat(firstKey);
     }
+
+
 }
