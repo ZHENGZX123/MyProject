@@ -340,7 +340,7 @@ public class AutoReplyService extends AccessibilityService {
         }
         String busy = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + hint + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
         msg.obj = new ZbusRecv(busy, false);
-        mHandler.sendMessageDelayed(msg, 5000);//20000
+        mHandler.sendMessageDelayed(msg, 20000);
     }
 
     private void release() {
