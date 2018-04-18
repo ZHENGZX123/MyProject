@@ -174,7 +174,7 @@ public class AutoReplyService extends AccessibilityService {
                         //0410 构造action，然后打开微信主页？
                         //0410 构造action，然后查找一个用过的action？
                         //0416 找第一个action？
-                        doFindUsableAction(o, realReply);
+                        doFindUsableAction(o, false);//因为原有的action丢失，使用的是别人的action，所以realReply是false
                     } else {
                         if (action.replied) {
                             Log.d("test", "已经回复过了");
@@ -291,6 +291,7 @@ public class AutoReplyService extends AccessibilityService {
                     String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
                     String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
                     String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
+                    String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
 
                     String msg = new JSONObject()
                             .put("id", id)
@@ -301,7 +302,7 @@ public class AutoReplyService extends AccessibilityService {
                             .toString();
 
                     //topic : robotId#userId
-                    String topic = robotId + "#" + userId;
+                    String topic = robotId + "#" + wxNo;
                     String url = Constant.zbusHost + ":" + Constant.zbusPost;
                     PushMessageVo pushMessageVo = new PushMessageVo();
                     pushMessageVo.setDescription("desc");
@@ -313,7 +314,7 @@ public class AutoReplyService extends AccessibilityService {
                     userIds.add(topic);
 
                     pushMessageVo.setUserId(userIds);
-                    pushMessageVo.setSenderId(userId);
+                    pushMessageVo.setSenderId(wxNo);// userid imei
                     pushMessageVo.setPushType("zbus");
                     pushMessageVo.setInstallationId(installationId);
 
@@ -1030,17 +1031,27 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.TextView")) {
                 if (nodeInfo.getText() != null) {
-                    if (nodeInfo.getText().toString().equals("微信")) {
+                    String text = nodeInfo.getText().toString();
+                    if (text.equals("微信")) {
                         weixin = true;
-                    } else if (nodeInfo.getText().toString().equals("通讯录")) {
+                    } else if (text.equals("通讯录")) {
                         tongxunlu = true;
                         tongxunluTextView = nodeInfo.getParent();
-                    } else if (nodeInfo.getText().toString().equals("发现")) {
+                    } else if (text.equals("发现")) {
                         faxian = true;
-                    } else if (nodeInfo.getText().toString().equals("我")) {
+                    } else if (text.equals("我")) {
                         wo = true;
-                    } else if (nodeInfo.getText().toString().equals("朋友圈")) {
+                    } else if (text.equals("朋友圈")) {
                         pengyouquanTextView = nodeInfo.getParent();
+                    } else if (text.startsWith("微信号：")) {
+                        Log.d("test", "===============wxNo compare==============");
+                        String realWxNo = text.replace("微信号：", "");
+                        String loginWxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
+                        if (realWxNo.equals(loginWxNo)) {
+                            Log.d("test", "微信号一致");
+                        } else {
+                            toast("机器人的微信号和实际微信号不一致！！！");
+                        }
                     }
                 }
                 lastTextView = nodeInfo;
