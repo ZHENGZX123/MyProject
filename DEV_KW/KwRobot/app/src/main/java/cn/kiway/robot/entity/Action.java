@@ -17,7 +17,6 @@ public class Action {
     public static final int TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO = 100;//设置消息转发对象
     public static final int TYPE_PUBLIC_ACCONT_FORWARDING = 101;//需要转发给指定的人
     public static final int TYPE_COLLECTOR_FORWARDING = 102;//发到消息收集群
-
     public static final int TYPE_SET_FRIEND_CIRCLER_REMARK = 103;//设置朋友圈转发备注
     public static final int TYPE_REQUEST_FRIEND = 104;//好友请求
     public static final int TYPE_REDPACKAGE = 105;//红包
