@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -67,6 +68,7 @@ import static cn.kiway.robot.entity.Action.TYPE_SET_FRIEND_CIRCLER_REMARK;
 import static cn.kiway.robot.entity.Action.TYPE_TEXT;
 import static cn.kiway.robot.entity.Action.TYPE_TRANSFER_MONEY;
 import static cn.kiway.robot.util.Constant.APPID;
+import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static java.lang.System.currentTimeMillis;
 
@@ -84,7 +86,10 @@ public class AutoReplyService extends AccessibilityService {
     //当前执行的事件id
     private long currentActionID = -1;
     private boolean actioningFlag;
+    //zbus接收队列
     public ArrayList<ZbusRecv> zbusRecvs = new ArrayList<>();
+    //家长busy次数
+    public HashMap<String, Integer> busyCountMap = new HashMap<>();
 
     private String senderFromNotification;
     private String forwardto;//当前要转发的对象
@@ -322,12 +327,20 @@ public class AutoReplyService extends AccessibilityService {
     private void sendReply20sLater(long id, Action action) {
         Message msg = new Message();
         msg.what = MSG_ADD_RECV;
-        //id写死成9999，让它去取第一个action，测试无效
 
         String hint = "";
         boolean in = Utils.isEffectiveDate();
         if (in) {
-            hint = "因为咨询人员较多，客服正忙，请耐心等待。";
+            Integer i = busyCountMap.get(action.sender);
+            int busyCount = (i == null) ? 0 : i;
+            Log.d("test", "action.sender = " + action.sender + " ，busyCount = " + busyCount);
+            if (busyCount < 3) {
+                hint = "因为咨询人员较多，客服正忙，请耐心等待。";
+                busyCountMap.put(action.sender, busyCount + 1);
+            } else {
+                hint = getSharedPreferences("welcome", 0).getString("welcome", DEFAULT_WELCOME);
+                busyCountMap.put(action.sender, 0);
+            }
         } else {
             hint = "客服已下线，请于工作时间8：30-22：00再咨询。";
         }
@@ -1591,15 +1604,7 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         //找到文本框输入文字发送
-                        String welcome = getSharedPreferences("welcome", 0).getString("welcome",
-                                "感谢您添加招生客服机器人，您可以按以下关键字发送咨询招生相关问题，谢谢！\n" +
-                                        "1、计生证明或者计划生育证明\n" +
-                                        "2、租房或者住房\n" +
-                                        "3、台湾或者香港\n" +
-                                        "4、户籍\n" +
-                                        "5、网上报名\n" +
-                                        "6、验核材料\n" +
-                                        "7、录取\n");
+                        String welcome = getSharedPreferences("welcome", 0).getString("welcome", DEFAULT_WELCOME);
                         Log.d("test", "welcome xxx = " + welcome);
 
                         sendTextOnly2(welcome);
