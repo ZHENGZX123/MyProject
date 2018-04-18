@@ -549,25 +549,20 @@ public class AutoReplyService extends AccessibilityService {
                         String targetSender = actions.get(currentActionID).sender;
                         Log.d("test", "checkIsCorrectPage targetSender = " + targetSender);
                         //2.容错判断
-                        //boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
-                        //Log.d("test", "isCorrect = " + isCorrect);
-                        //if (isCorrect) {
-                        //doSequeSend();目前发现这个方式会丢消息。
-                        //} else {
-                        //先返回首页，再按搜索去做
-                        //0417不做容错，全都返回
-                        String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
-                        RootCmd.execRootCmdSilent(cmd);
-
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                checkIsWxHomePage();
-                                searchSenderInWxHomePage();
+                        boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
+                        Log.d("test", "isCorrect = " + isCorrect);
+                        if (isCorrect) {
+                            //doSequeSend();
+                            int size = actions.get(currentActionID).returnMessages.size();
+                            if (size < 4) {
+                                doSequeSend();
+                            } else {
+                                backToWxHomePage();
                             }
-                        }, 3000);
+                        } else {
+                            backToWxHomePage();
+                        }
                     }
-//                    }
                 } else if (receiveType == TYPE_FRIEND_CIRCLER) {
                     // 找到最后一个链接，点击转发到朋友圈
                     lastFrameLayout = null;
@@ -786,6 +781,21 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 break;
         }
+    }
+
+    private void backToWxHomePage() {
+        //先返回首页，再按搜索去做
+        //0417不做容错，全都返回
+        String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
+        RootCmd.execRootCmdSilent(cmd);
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                checkIsWxHomePage();
+                searchSenderInWxHomePage();
+            }
+        }, 3000);
     }
 
     private boolean checkIsCorrectSender(AccessibilityNodeInfo rootNode, String targetSender) {
