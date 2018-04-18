@@ -320,6 +320,13 @@ public class MainActivity extends BaseActivity {
         startActivity(new Intent(this, FilterActivity.class));
     }
 
+    public void reLogin(View view) {
+        ZbusUtils.close();
+        getSharedPreferences("kiway", 0).edit().putBoolean("login",false).commit();
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
+    }
+
     public void logout(View view) {
         ZbusUtils.close();
         getSharedPreferences("kiway", 0).edit().clear().commit();

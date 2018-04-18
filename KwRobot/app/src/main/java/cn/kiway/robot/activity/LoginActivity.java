@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import cn.kiway.robot.R;
 import cn.kiway.robot.util.Utils;
 
+import static cn.kiway.robot.R.id.username;
 import static cn.kiway.robot.util.Constant.clientUrl;
 
 /**
@@ -36,9 +37,13 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        usernameET = (EditText) findViewById(R.id.username);
+        usernameET = (EditText) findViewById(username);
         passwordET = (EditText) findViewById(R.id.password);
         nameET = (EditText) findViewById(R.id.name);
+
+        usernameET.setText(getSharedPreferences("kiway", 0).getString("username", ""));
+        passwordET.setText(getSharedPreferences("kiway", 0).getString("password", ""));
+        nameET.setText(getSharedPreferences("kiway", 0).getString("name", ""));
 
         if (getSharedPreferences("kiway", 0).getBoolean("login", false)) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
