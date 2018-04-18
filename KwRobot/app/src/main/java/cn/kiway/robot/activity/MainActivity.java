@@ -279,11 +279,12 @@ public class MainActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                String username = getSharedPreferences("kiway", 0).getString("username", "");
                 String name = getSharedPreferences("kiway", 0).getString("name", "");
+                String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
                 int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0);
                 int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0);
-                nameTV.setText("昵称：" + name + "  IMEI：" + Utils.getIMEI(getApplication()) + "\n" + "接收次数：" +
-                        recvCount + "，回复次数：" + replyCount);
+                nameTV.setText("帐号：" + username + " 昵称：" + name + " 微信号：" + wxNo + " 接收次数：" + recvCount + "，回复次数：" + replyCount);
             }
         });
     }
@@ -322,7 +323,7 @@ public class MainActivity extends BaseActivity {
 
     public void reLogin(View view) {
         ZbusUtils.close();
-        getSharedPreferences("kiway", 0).edit().putBoolean("login",false).commit();
+        getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }

@@ -174,17 +174,18 @@ public class Utils {
 
             String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
             String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
+            String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
 
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
             Log.d("test", "xtoken = " + xtoken);
             client.addHeader("x-auth-token", xtoken);
-            Log.d("test", "userId = " + userId);
+
             RequestParams param = new RequestParams();
             param.put("appId", APPID);
             param.put("type", "huawei");
             param.put("deviceId", imei);
-            param.put("userId", imei);//userId
+            param.put("userId", wxNo);//userId
             param.put("module", "student");
             param.put("robotId", robotId);
             Log.d("test", "installationPush param = " + param.toString());
@@ -221,12 +222,11 @@ public class Utils {
             @Override
             public void run() {
                 try {
-                    String userId = Utils.getIMEI(c);
-                    if (TextUtils.isEmpty(userId)) {
-                        return;
-                    }
+
                     String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
-                    String topic = "kiway_wx_reply_push_" + robotId + "#" + userId;
+                    String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
+
+                    String topic = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
                     Log.d("test", "topic = " + topic);
                     ZbusUtils.consumeMsg(topic, new MessageHandler() {
 

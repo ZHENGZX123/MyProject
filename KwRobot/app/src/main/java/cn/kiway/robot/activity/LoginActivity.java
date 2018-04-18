@@ -16,7 +16,6 @@ import org.apache.http.Header;
 import org.json.JSONObject;
 
 import cn.kiway.robot.R;
-import cn.kiway.robot.util.Utils;
 
 import static cn.kiway.robot.R.id.username;
 import static cn.kiway.robot.util.Constant.clientUrl;
@@ -31,6 +30,7 @@ public class LoginActivity extends BaseActivity {
     private EditText usernameET;
     private EditText passwordET;
     private EditText nameET;
+    private EditText wxNoET;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,9 +40,11 @@ public class LoginActivity extends BaseActivity {
         usernameET = (EditText) findViewById(username);
         passwordET = (EditText) findViewById(R.id.password);
         nameET = (EditText) findViewById(R.id.name);
+        wxNoET = (EditText) findViewById(R.id.wxNo);
 
         usernameET.setText(getSharedPreferences("kiway", 0).getString("username", ""));
         passwordET.setText(getSharedPreferences("kiway", 0).getString("password", ""));
+        wxNoET.setText(getSharedPreferences("kiway", 0).getString("wxNo", ""));
         nameET.setText(getSharedPreferences("kiway", 0).getString("name", ""));
 
         if (getSharedPreferences("kiway", 0).getBoolean("login", false)) {
@@ -53,7 +55,6 @@ public class LoginActivity extends BaseActivity {
 
     public void login(View view) {
         //1.客户端校验
-
         final String username = usernameET.getText().toString().trim();
         if (TextUtils.isEmpty(username)) {
             toast("请填写帐号");
@@ -66,11 +67,14 @@ public class LoginActivity extends BaseActivity {
         }
         final String name = nameET.getText().toString();
         if (TextUtils.isEmpty(name)) {
-            toast("请填写昵称");
+            toast("请填写微信昵称");
             return;
         }
-        final String imei = Utils.getIMEI(this);
-
+        final String wxNo = wxNoET.getText().toString();
+        if (TextUtils.isEmpty(wxNo)) {
+            toast("请填写微信号");
+            return;
+        }
         //2.提交数据
         try {
             showPD();
@@ -79,7 +83,7 @@ public class LoginActivity extends BaseActivity {
             String url = clientUrl + "/robot/login";
             Log.d("test", "url = " + url);
             RequestParams param = new RequestParams();
-            param.put("imei", imei);
+            param.put("imei", wxNo);
             param.put("userName", username);
             param.put("password", password);
             param.put("name", name);
@@ -107,6 +111,7 @@ public class LoginActivity extends BaseActivity {
                             getSharedPreferences("kiway", 0).edit().putString("username", username).commit();
                             getSharedPreferences("kiway", 0).edit().putString("password", password).commit();
                             getSharedPreferences("kiway", 0).edit().putString("name", name).commit();
+                            getSharedPreferences("kiway", 0).edit().putString("wxNo", wxNo).commit();
                             getSharedPreferences("kiway", 0).edit().putString("robotId", robotId).commit();
                             getSharedPreferences("kiway", 0).edit().putString("areaCode", areaCode).commit();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
