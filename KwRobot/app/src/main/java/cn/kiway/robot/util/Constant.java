@@ -28,6 +28,8 @@ public class Constant {
         qas.put("谢谢", "不用谢。欢迎下次再咨询。");
     }
 
+    public static final String DEFAULT_WELCOME_TITLE = "感谢您添加招生客服，您可以发送您的问题进行人工咨询。为了减少您的等待，您可以按以下关键字发送咨询招生相关问题。谢谢！";
+
     public static final String DEFAULT_WELCOME = "感谢您添加招生客服机器人，您可以按以下关键字发送咨询招生相关问题，谢谢！\n" +
             "1、计生证明或者计划生育证明\n" +
             "2、租房或者住房\n" +
@@ -36,5 +38,8 @@ public class Constant {
             "5、网上报名\n" +
             "6、验核材料\n" +
             "7、录取\n";
+    public static final String DEFAULT_BUSY = "因为咨询人员较多，客服正忙，请耐心等待。";
+
+    public static final String DEFAULT_OFFLINE = "客服已下线，请于工作时间8：30-22：00再咨询。";
 
 }

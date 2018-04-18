@@ -68,7 +68,10 @@ import static cn.kiway.robot.entity.Action.TYPE_SET_FRIEND_CIRCLER_REMARK;
 import static cn.kiway.robot.entity.Action.TYPE_TEXT;
 import static cn.kiway.robot.entity.Action.TYPE_TRANSFER_MONEY;
 import static cn.kiway.robot.util.Constant.APPID;
+import static cn.kiway.robot.util.Constant.DEFAULT_BUSY;
+import static cn.kiway.robot.util.Constant.DEFAULT_OFFLINE;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
+import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static java.lang.System.currentTimeMillis;
 
@@ -335,15 +338,17 @@ public class AutoReplyService extends AccessibilityService {
             int busyCount = (i == null) ? 0 : i;
             Log.d("test", "action.sender = " + action.sender + " ，busyCount = " + busyCount);
             if (busyCount < 3) {
-                hint = "因为咨询人员较多，客服正忙，请耐心等待。";
+                hint = DEFAULT_BUSY;
                 busyCountMap.put(action.sender, busyCount + 1);
             } else {
-                hint = getSharedPreferences("welcome", 0).getString("welcome", DEFAULT_WELCOME);
+                String welcomeTitle = getSharedPreferences("welcomeTitle", 0).getString("welcomeTitle", DEFAULT_WELCOME_TITLE);
+                hint = getSharedPreferences("welcome", 0).getString("welcome", DEFAULT_WELCOME).replace(welcomeTitle, "客服正忙，您可以发送以下关键字咨询：");
                 busyCountMap.put(action.sender, 0);
             }
         } else {
-            hint = "客服已下线，请于工作时间8：30-22：00再咨询。";
+            hint = DEFAULT_OFFLINE;
         }
+        Log.d("test", "hint = " + hint);
         String busy = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + hint + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
         msg.obj = new ZbusRecv(busy, false);
         mHandler.sendMessageDelayed(msg, 20000);
@@ -567,6 +572,7 @@ public class AutoReplyService extends AccessibilityService {
                         if (isCorrect) {
                             //doSequeSend();
                             int size = actions.get(currentActionID).returnMessages.size();
+                            Log.d("test", "要回复的条数:" + size);
                             if (size < 4) {
                                 doSequeSend();
                             } else {
