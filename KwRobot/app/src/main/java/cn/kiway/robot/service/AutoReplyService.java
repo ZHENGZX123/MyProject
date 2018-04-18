@@ -462,21 +462,22 @@ public class AutoReplyService extends AccessibilityService {
                         action.receiveType = TYPE_REQUEST_FRIEND;
                     }
                     //需要转发到朋友圈，目前只支持链接
-                    else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("[链接]")) {
-                        action.receiveType = TYPE_FRIEND_CIRCLER;
-                    } else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("设置朋友圈备注：")) {
-                        action.receiveType = TYPE_SET_FRIEND_CIRCLER_REMARK;
-                    }
+//                    else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("[链接]")) {
+//                        action.receiveType = TYPE_FRIEND_CIRCLER;
+//                    } else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("设置朋友圈备注：")) {
+//                        action.receiveType = TYPE_SET_FRIEND_CIRCLER_REMARK;
+//                    }
                     //来自公众号的消息每一条都要转发：图片还没有做，需要测试
-                    else if (sender.equals(Utils.getForwardFrom(this)) && content.startsWith("设置转发对象：")) {
-                        action.receiveType = TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
-                    } else if (sender.equals(Utils.getForwardFrom(this)) && !content.equals("[语音]") && !content.equals("[动画表情]")) {
-                        action.receiveType = TYPE_PUBLIC_ACCONT_FORWARDING;
-                    }
+//                    else if (sender.equals(Utils.getForwardFrom(this)) && content.startsWith("设置转发对象：")) {
+//                        action.receiveType = TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
+//                    } else if (sender.equals(Utils.getForwardFrom(this)) && !content.equals("[语音]") && !content.equals("[动画表情]")) {
+//                        action.receiveType = TYPE_PUBLIC_ACCONT_FORWARDING;
+//                    }
                     //需要转发到“消息收集群”
-                    else if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了")) {
-                        action.receiveType = TYPE_COLLECTOR_FORWARDING;
-                    } else if (!TextUtils.isEmpty(Constant.qas.get(content.trim()))) {
+//                    else if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了")) {
+//                        action.receiveType = TYPE_COLLECTOR_FORWARDING;
+//                    }
+                    else if (!TextUtils.isEmpty(Constant.qas.get(content.trim()))) {
                         action.receiveType = TYPE_AUTO_MATCH;
                         action.returnMessages.add(new ReturnMessage(TYPE_TEXT, Constant.qas.get(content.trim())));
                     }
