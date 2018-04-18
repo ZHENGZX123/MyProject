@@ -51,6 +51,7 @@ import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
 
+import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Utils.getCurrentVersion;
@@ -398,8 +399,9 @@ public class MainActivity extends BaseActivity {
                     JSONObject obj = new JSONObject(ret);
                     String welcomeTitle = obj.getString(areaCode);
                     if (TextUtils.isEmpty(welcomeTitle)) {
-                        welcomeTitle = "感谢您添加招生客服，您可以发送您的问题进行人工咨询。为了减少您的等待，您可以按以下关键字发送咨询招生相关问题。谢谢！";
+                        welcomeTitle = DEFAULT_WELCOME_TITLE;
                     }
+                    getSharedPreferences("welcomeTitle", 0).edit().putString("welcomeTitle", welcomeTitle).commit();
 
                     url = clientUrl + "/replyContent/keyWords?title=" + URLEncoder.encode(welcomeTitle, "utf-8") + "&origin=mp&areaCode=" + areaCode;
                     Log.d("test", "url2 = " + url);
