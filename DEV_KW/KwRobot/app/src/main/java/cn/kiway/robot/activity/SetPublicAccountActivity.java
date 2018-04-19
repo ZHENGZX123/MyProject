@@ -58,7 +58,6 @@ public class SetPublicAccountActivity extends BaseActivity {
         }
         getSharedPreferences("sendContent", 0).edit().putString("sendContent", sendContent).commit();
 
-
         int hour = picker.getCurrentHour();
         int minute = picker.getCurrentMinute();
         Log.d("test", "hour = " + hour + " , minute = " + minute);
