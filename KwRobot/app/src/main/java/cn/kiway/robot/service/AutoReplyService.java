@@ -25,9 +25,6 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.xyzlf.share.library.bean.ShareEntity;
-import com.xyzlf.share.library.interfaces.ShareConstant;
-import com.xyzlf.share.library.util.ShareUtil;
 
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
@@ -57,6 +54,9 @@ import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
 import cn.kiway.wx.reply.vo.PushMessageVo;
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.wechat.friends.Wechat;
 
 import static cn.kiway.robot.entity.Action.TYPE_AUTO_MATCH;
 import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
@@ -2263,10 +2263,11 @@ public class AutoReplyService extends AccessibilityService {
         }
 
         Log.d("test", "sendImageOnly2");
-        ShareEntity testBean = new ShareEntity("开维教育", "我是内容，描述内容。");
-        testBean.setShareBigImg(true);
-        testBean.setImgUrl(localPath);
-        ShareUtil.startShare(MainActivity.instance, ShareConstant.SHARE_CHANNEL_WEIXIN_FRIEND, testBean, ShareConstant.REQUEST_CODE);
+         Platform.ShareParams sp = new Platform.ShareParams();
+        sp.setImagePath(localPath);
+        sp.setShareType(Platform.SHARE_IMAGE);
+        Platform wx = ShareSDK.getPlatform(Wechat.NAME);// 执行图文分享
+        wx.share(sp);
 
         mHandler.postDelayed(new Runnable() {
             @Override

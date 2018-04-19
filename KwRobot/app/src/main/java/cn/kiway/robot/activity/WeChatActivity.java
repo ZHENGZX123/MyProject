@@ -312,7 +312,7 @@ public class WeChatActivity extends BaseActivity {
                 jsonObject.getJSONObject("content").put("duration", 60);
             } else if (type == 4) {//视频
                 //  jsonObject.getJSONObject("content").put("videofile",toVideoFile);//视频地址
-                //    jsonObject.getJSONObject("content").put("videothumbfile", toVideoThumbFile);//视频缩略图地址
+                //  jsonObject.getJSONObject("content").put("videothumbfile", toVideoThumbFile);//视频缩略图地址
                 //  jsonObject.getJSONObject("content").put("duration",60);
             }
             String result = wToolSDK.sendTask(jsonObject.toString());

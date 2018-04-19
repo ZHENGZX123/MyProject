@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
@@ -25,9 +24,6 @@ import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
-import com.xyzlf.share.library.bean.ShareEntity;
-import com.xyzlf.share.library.interfaces.ShareConstant;
-import com.xyzlf.share.library.util.ShareUtil;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -51,6 +47,9 @@ import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
 import cn.kiway.wx.reply.utils.ZbusUtils;
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.wechat.friends.Wechat;
 
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.clientUrl;
@@ -292,7 +291,8 @@ public class MainActivity extends BaseActivity {
                 String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
                 int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0);
                 int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0);
-                nameTV.setText("帐号：" + username + " 昵称：" + name + " 微信号：" + wxNo + " 接收次数：" + recvCount + "，回复次数：" + replyCount);
+                nameTV.setText("帐号：" + username + " 昵称：" + name + " 微信号：" + wxNo + " 接收次数：" + recvCount + "，回复次数：" +
+                        replyCount);
             }
         });
     }
@@ -419,7 +419,8 @@ public class MainActivity extends BaseActivity {
                     }
                     getSharedPreferences("welcomeTitle", 0).edit().putString("welcomeTitle", welcomeTitle).commit();
 
-                    url = clientUrl + "/replyContent/keyWords?title=" + URLEncoder.encode(welcomeTitle, "utf-8") + "&origin=mp&areaCode=" + areaCode;
+                    url = clientUrl + "/replyContent/keyWords?title=" + URLEncoder.encode(welcomeTitle, "utf-8") +
+                            "&origin=mp&areaCode=" + areaCode;
                     Log.d("test", "url2 = " + url);
                     httpRequest = new HttpGet(url);
                     client = new DefaultHttpClient();
@@ -518,20 +519,53 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test(View v) {
-        String msg = "{\"sender\":\"20 小辉小号\",\"me\":\"客服888\"," +
-                "\"returnMessage\":[{\"content\":\"http://upload.jnwb.net/2014/0311/1394514005639.jpg\",\"returnType\":2}]," +
+        String msg = "{\"sender\":\"小辉小号\",\"me\":\"客服888\"," +
+                "\"returnMessage\":[{\"content\":\"http://upload.jnwb.net/2014/0311/1394514005639.jpg\"," +
+                "\"returnType\":2}]," +
                 "\"id\":9999,\"time\":1523342900085," +
                 "\"content\":\"学位房\"}";
         AutoReplyService.instance.zbusRecvs.add(new ZbusRecv(msg, true));
     }
 
-    public void share(View view) {
-        ShareEntity testBean = new ShareEntity("开维教育", "我是内容，描述内容。");
-        testBean.setShareBigImg(true);
-        //testBean.setUrl("http://www.kiway.cn");//分享的地址
-        testBean.setImgUrl(Environment.getExternalStorageDirectory() + "/test.jpg");//只能本地地址，正方形
-        ShareUtil.startShare(this, ShareConstant.SHARE_CHANNEL_WEIXIN_FRIEND, testBean, ShareConstant
-                .REQUEST_CODE);
+    public void sharePic(View view) {
+        Platform.ShareParams sp = new Platform.ShareParams();
+        sp.setImagePath("/mnt/sdcard/1523179210665.jpg");
+        sp.setShareType(Platform.SHARE_IMAGE);
+        Platform wx = ShareSDK.getPlatform(Wechat.NAME);// 执行图文分享
+        wx.share(sp);
+    }
+
+    public void shareFile(View view) {
+        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
+        Platform.ShareParams sp = new Platform.ShareParams();
+        sp.setText("我给你分享了文件");
+        sp.setTitle("我给你分享了文件");
+        sp.setFilePath("/mnt/sdcard/WeChatMomentStat/SnsMicroMsg.db");//本地地址
+        sp.setImagePath("/mnt/sdcard/1523179210665.jpg");//本地地址
+        sp.setShareType(Platform.SHARE_FILE);
+        wx.share(sp);
+    }
+
+    public void shareVideo(View view) {
+        Platform.ShareParams sp = new Platform.ShareParams();
+        sp.setText("我给你分享了视频");
+        sp.setTitle("我给你分享了视频");
+        sp.setUrl("/mnt/sdcard/45e0687ef1c6e78077af099becb2f9cc.mp4");//网络地址
+        sp.setImagePath("/mnt/sdcard/1523179210665.jpg");//缩略图  本地
+        sp.setShareType(Platform.SHARE_VIDEO);
+        Platform wx = ShareSDK.getPlatform(Wechat.NAME);// 执行图文分享
+        wx.share(sp);
+    }
+
+    public void shareWeb(View view) {
+        Platform.ShareParams sp = new Platform.ShareParams();
+        sp.setText("测试分享的文本");
+        sp.setTitle("ccccccccc");
+        sp.setUrl("http://www.kiway.cn");
+        sp.setImagePath("/mnt/sdcard/1523179210665.jpg");
+        sp.setShareType(Platform.SHARE_WEBPAGE);
+        Platform wx = ShareSDK.getPlatform(Wechat.NAME);// 执行图文分享
+        wx.share(sp);
     }
 
     private void updateServiceStatus() {
