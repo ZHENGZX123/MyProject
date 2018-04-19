@@ -124,24 +124,18 @@ public class FilterActivity extends BaseActivity {
             if (rowView == null) {
                 rowView = inflater.inflate(R.layout.item_filter, null);
                 holder = new ViewHolder();
-
                 holder.name = (TextView) rowView.findViewById(R.id.name);
-
-
                 rowView.setTag(holder);
             } else {
                 holder = (ViewHolder) rowView.getTag();
             }
-
             String name = filterNames.get(position);
             holder.name.setText(name);
-
             return rowView;
         }
 
         public class ViewHolder {
             public TextView name;
-
         }
 
         @Override

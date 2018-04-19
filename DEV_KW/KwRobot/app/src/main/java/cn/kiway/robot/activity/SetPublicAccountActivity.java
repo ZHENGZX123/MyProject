@@ -57,13 +57,11 @@ public class SetPublicAccountActivity extends BaseActivity {
             return;
         }
         getSharedPreferences("sendContent", 0).edit().putString("sendContent", sendContent).commit();
-
         int hour = picker.getCurrentHour();
         int minute = picker.getCurrentMinute();
         Log.d("test", "hour = " + hour + " , minute = " + minute);
         getSharedPreferences("sendHour", 0).edit().putInt("sendHour", hour).commit();
         getSharedPreferences("sendMinute", 0).edit().putInt("sendMinute", minute).commit();
-
         toast("设置成功");
     }
 

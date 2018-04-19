@@ -52,8 +52,6 @@ public class MomentListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moment_list);
-
-
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
@@ -62,14 +60,12 @@ public class MomentListActivity extends AppCompatActivity {
                 .defaultDisplayImageOptions(defaultOptions)
                 .build();
         ImageLoader.getInstance().init(config);
-
         updateSnsList();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         if (MomentListActivity.snsListUpdated) {
             MomentListActivity.snsListUpdated = false;
             updateSnsList();
