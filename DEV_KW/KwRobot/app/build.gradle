@@ -15,7 +15,6 @@ android {
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
        applicationId "cn.kiway.robot"
-        //applicationId "cn.kiway.mdm.teacher"
         minSdkVersion 16
         targetSdkVersion 21
         versionCode 13
