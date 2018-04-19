@@ -45,6 +45,7 @@ import java.util.List;
 
 import cn.kiway.robot.R;
 import cn.kiway.robot.entity.Action;
+import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.RootCmd;
@@ -517,20 +518,18 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test(View v) {
-//        String msg = "{\"sender\":\"20 小辉小号\",\"me\":\"客服888\"," +
-//                "\"returnMessage\":[{\"content\":\"学位房学位房学位房学位房学位房学位房学位房学位房学位房学位房\",\"returnType\":1}," +
-//                "{\"content\":\"学位房2学位房2学位房2学位房2学位房2学位房2学位房2\",\"returnType\":1}],\"id\":9999,\"time\":1523342900085," +
-//                "\"content\":\"学位房\"}";
-//        AutoReplyService.instance.zbusRecvs.add(new ZbusRecv(msg, false));
-
-        int a = 100 / 0;
-        System.out.println("a = " + a);
+        String msg = "{\"sender\":\"20 小辉小号\",\"me\":\"客服888\"," +
+                "\"returnMessage\":[{\"content\":\"http://upload.jnwb.net/2014/0311/1394514005639.jpg\",\"returnType\":2}]," +
+                "\"id\":9999,\"time\":1523342900085," +
+                "\"content\":\"学位房\"}";
+        AutoReplyService.instance.zbusRecvs.add(new ZbusRecv(msg, true));
     }
 
     public void share(View view) {
         ShareEntity testBean = new ShareEntity("开维教育", "我是内容，描述内容。");
-        testBean.setUrl("http://www.kiway.cn");//分享的地址
-        testBean.setImgUrl(Environment.getExternalStorageDirectory() + "/Yjpty/photos/1.png");//只能本地地址，正方形
+        testBean.setShareBigImg(true);
+        //testBean.setUrl("http://www.kiway.cn");//分享的地址
+        testBean.setImgUrl(Environment.getExternalStorageDirectory() + "/test.jpg");//只能本地地址，正方形
         ShareUtil.startShare(this, ShareConstant.SHARE_CHANNEL_WEIXIN_FRIEND, testBean, ShareConstant
                 .REQUEST_CODE);
     }

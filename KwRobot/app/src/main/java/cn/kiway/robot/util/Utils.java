@@ -235,6 +235,8 @@ public class Utils {
                         @Override
                         public void handle(Message message, MqClient mqClient) {
                             String msg = message.getBodyString();
+                            //FIXME 在这里要做一个预处理，如果是图片的话，先别急加进去要事先下载
+
                             if (AutoReplyService.instance != null) {
                                 AutoReplyService.instance.zbusRecvs.add(new ZbusRecv(msg, true));
                             }

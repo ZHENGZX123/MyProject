@@ -25,6 +25,9 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.xyzlf.share.library.bean.ShareEntity;
+import com.xyzlf.share.library.interfaces.ShareConstant;
+import com.xyzlf.share.library.util.ShareUtil;
 
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
@@ -43,6 +46,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
+import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.activity.MainActivity;
 import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.entity.ReturnMessage;
@@ -235,6 +239,8 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }
                 long maxReleaseTime = action.returnMessages.size() * 8000;
+
+
                 Log.d("test", "imageCount = " + imageCount);
                 if (imageCount == 0) {
                     //没有图片的话，可以直接去回复文字
@@ -254,7 +260,18 @@ public class AutoReplyService extends AccessibilityService {
                         }
                     }
                     Log.d("test", "处理后count = " + action.returnMessages.size());
-                    handleImageMsg(id, action.returnMessages, maxReleaseTime);
+                    //handleImageMsg(id, action.returnMessages, maxReleaseTime);
+                    //不拉起微信直接调用分享
+
+                    mHandler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 60000);
+                    currentActionID = id;
+                    actioningFlag = true;//不走窗口状态变化事件
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            sendImageOnly2(action.returnMessages.get(0).content);
+                        }
+                    }.start();
                 }
             }
         });
@@ -1649,7 +1666,6 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-
     //发送给朋友
     private boolean findTransferButton(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
@@ -1668,7 +1684,7 @@ public class AutoReplyService extends AccessibilityService {
                     public void run() {
                         //找文本框
                         Log.d("test", " =================findSearchEditText===============");
-                        boolean find = findSearchEditText(getRootInActiveWindow(), forwardto);
+                        boolean find = findSearchEditText(getRootInActiveWindow(), forwardto, false);
                         if (!find) {
                             Log.d("test", "findSearchEditText失败");
                             release();
@@ -1684,7 +1700,7 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-    private boolean findSearchEditText(AccessibilityNodeInfo rootNode, String forwardto) {
+    private boolean findSearchEditText(AccessibilityNodeInfo rootNode, String forwardto, boolean share) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
@@ -1709,7 +1725,7 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         Log.d("test", "=============findTargetPeople==============");
-                        boolean find = findTargetPeople(getRootInActiveWindow(), forwardto);
+                        boolean find = findTargetPeople(getRootInActiveWindow(), forwardto, share);
                         if (!find) {
                             Log.d("test", "findTargetPeople failure");
                             release();
@@ -1718,14 +1734,14 @@ public class AutoReplyService extends AccessibilityService {
                 }, 2000);
                 return true;
             }
-            if (findSearchEditText(nodeInfo, forwardto)) {
+            if (findSearchEditText(nodeInfo, forwardto, share)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean findTargetPeople(AccessibilityNodeInfo rootNode, String forwardto) {
+    private boolean findTargetPeople(AccessibilityNodeInfo rootNode, String forwardto, boolean share) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
@@ -1734,7 +1750,8 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(forwardto)) {
+            //equails
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().contains(forwardto)) {
                 Log.d("test", "click targetPeople = " + forwardto);
                 AccessibilityNodeInfo parent = nodeInfo.getParent();
                 parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -1743,23 +1760,59 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        int receiveType = actions.get(currentActionID).receiveType;
-                        if (receiveType == TYPE_COLLECTOR_FORWARDING) {
-                            //这里要额外做一步，找到文本框并粘贴内容
-                            String openId = getSharedPreferences("openId", 0).getString("openId", "osP5zwJ-lEdJVGD-_5_WyvQL9Evo");
-                            String content = "sender:" + senderFromNotification + ",openid:" + openId;
-                            findInputEditText(getRootInActiveWindow(), content);
+                        if (share) {
+                            //分享
+                            Log.d("test", "=========findShareButtonInDialog============");
+                            boolean find = findShareButtonInDialog(getRootInActiveWindow());
+                            if (!find) {
+                                release();
+                            }
+                        } else {
+                            //转发
+                            int receiveType = actions.get(currentActionID).receiveType;
+                            if (receiveType == TYPE_COLLECTOR_FORWARDING) {
+                                //这里要额外做一步，找到文本框并粘贴内容
+                                String openId = getSharedPreferences("openId", 0).getString("openId", "osP5zwJ-lEdJVGD-_5_WyvQL9Evo");
+                                String content = "sender:" + senderFromNotification + ",openid:" + openId;
+                                findInputEditText(getRootInActiveWindow(), content);
+                            }
+                            Log.d("test", "=========findSendButtonInDialog============");
+                            boolean find = findSendButtonInDialog(getRootInActiveWindow());
+                            if (!find) {
+                                release();
+                            }
                         }
-                        Log.d("test", "=========findSendButtonInDialog============");
-                        boolean find = findSendButtonInDialog(getRootInActiveWindow());
-                        if (!find) {
-                            release();
-                        }
+                    }
+                }, 5000);
+                return true;
+            }
+            if (findTargetPeople(nodeInfo, forwardto, share)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findShareButtonInDialog(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("分享")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        release();
                     }
                 }, 2000);
                 return true;
             }
-            if (findTargetPeople(nodeInfo, forwardto)) {
+            if (findShareButtonInDialog(nodeInfo)) {
                 return true;
             }
         }
@@ -2135,6 +2188,31 @@ public class AutoReplyService extends AccessibilityService {
 
     //---------------发送图片---------------------------------------
 
+    public String saveImage2(Context context, Bitmap bmp) {
+        if (bmp == null) {
+            return null;
+        }
+        // 首先保存图片
+        File appDir = new File(Environment.getExternalStorageDirectory(), "DCIM");
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        String fileName = currentTimeMillis() + ".jpg";
+        File file = new File(appDir, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        String localPath = file.getAbsolutePath();
+        return localPath;
+    }
+
     public void saveImage(Context context, Bitmap bmp) {
         if (bmp == null) {
             return;
@@ -2154,10 +2232,15 @@ public class AutoReplyService extends AccessibilityService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        insertDB(context, file);
+    }
+
+    private void insertDB(Context context, File file) {
         // 其次把文件插入到系统图库
         try {
             MediaStore.Images.Media.insertImage(context.getContentResolver(),
-                    file.getAbsolutePath(), fileName, null);
+                    file.getAbsolutePath(), file.getName(), null);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -2165,6 +2248,40 @@ public class AutoReplyService extends AccessibilityService {
         context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file.getAbsolutePath())));
     }
 
+    private void sendImageOnly2(String url) {
+        //1.下载图片
+        Bitmap bmp = ImageLoader.getInstance().loadImageSync(url, KWApplication.getLoaderOptions());
+        if (bmp == null) {
+            release();
+            return;
+        }
+        //2.保存图片
+        String localPath = saveImage2(getApplication(), bmp);
+        if (localPath == null) {
+            release();
+            return;
+        }
+
+        Log.d("test", "sendImageOnly2");
+        ShareEntity testBean = new ShareEntity("开维教育", "我是内容，描述内容。");
+        testBean.setShareBigImg(true);
+        testBean.setImgUrl(localPath);
+        ShareUtil.startShare(MainActivity.instance, ShareConstant.SHARE_CHANNEL_WEIXIN_FRIEND, testBean, ShareConstant.REQUEST_CODE);
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                String sender = actions.get(currentActionID).sender;
+                //找文本框
+                Log.d("test", " =================findSearchEditText===============");
+                boolean find = findSearchEditText(getRootInActiveWindow(), sender, true);
+                if (!find) {
+                    Log.d("test", "findSearchEditText失败");
+                    release();
+                }
+            }
+        }, 3000);
+    }
 
     private AccessibilityNodeInfo lastRelativeLayout;
 
