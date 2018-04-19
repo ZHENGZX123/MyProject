@@ -260,16 +260,16 @@ public class AutoReplyService extends AccessibilityService {
                         }
                     }
                     Log.d("test", "处理后count = " + action.returnMessages.size());
+                    //拉起微信
                     //handleImageMsg(id, action.returnMessages, maxReleaseTime);
-                    //不拉起微信直接调用分享
-
+                    //0419使用分享的方法，不拉起微信
                     mHandler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 60000);
                     currentActionID = id;
-                    actioningFlag = true;//不走窗口状态变化事件
+                    actioningFlag = true;
                     new Thread() {
                         @Override
                         public void run() {
-                            sendImageOnly2(action.returnMessages.get(0).content);
+                            sendImageOnly2(action.returnMessages.get(0).content);//暂时只处理一个
                         }
                     }.start();
                 }
@@ -317,7 +317,7 @@ public class AutoReplyService extends AccessibilityService {
 
                     //topic : robotId#userId
                     String topic = robotId + "#" + wxNo;
-                    String url = Constant.zbusHost + ":" + Constant.zbusPost;
+                    String url = Constant.zbusHost + ":" + Constant.zbusPort;
                     PushMessageVo pushMessageVo = new PushMessageVo();
                     pushMessageVo.setDescription("desc");
                     pushMessageVo.setTitle("title");
@@ -605,7 +605,7 @@ public class AutoReplyService extends AccessibilityService {
                                 }
                             }
                         }
-                    },2000);
+                    }, 2000);
                 } else if (receiveType == TYPE_FRIEND_CIRCLER) {
                     // 找到最后一个链接，点击转发到朋友圈
                     lastFrameLayout = null;
@@ -1783,7 +1783,7 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }
                     }
-                }, 5000);
+                }, 3000);
                 return true;
             }
             if (findTargetPeople(nodeInfo, forwardto, share)) {
@@ -2263,7 +2263,7 @@ public class AutoReplyService extends AccessibilityService {
         }
 
         Log.d("test", "sendImageOnly2");
-         Platform.ShareParams sp = new Platform.ShareParams();
+        Platform.ShareParams sp = new Platform.ShareParams();
         sp.setImagePath(localPath);
         sp.setShareType(Platform.SHARE_IMAGE);
         Platform wx = ShareSDK.getPlatform(Wechat.NAME);// 执行图文分享

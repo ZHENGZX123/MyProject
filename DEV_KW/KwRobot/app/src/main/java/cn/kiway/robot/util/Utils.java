@@ -241,7 +241,7 @@ public class Utils {
                                 AutoReplyService.instance.zbusRecvs.add(new ZbusRecv(msg, true));
                             }
                         }
-                    }, Constant.zbusHost + ":" + Constant.zbusPost);
+                    }, Constant.zbusHost + ":" + Constant.zbusPort);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

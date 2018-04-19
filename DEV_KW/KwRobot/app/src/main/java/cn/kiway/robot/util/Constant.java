@@ -8,13 +8,29 @@ import java.util.HashMap;
 
 public class Constant {
 
+
     public static final String APPID = "930a4b41b8c92d30f790a6bf01bfe78a";
     public static final String APPKEY = "c83f643092046c0328624fe59aeec6548dac256c";
 
     public static String zbusHost = "robot.kiway.cn";  //192.168.8.161  rbtest.kiway.cn robot.kiway.cn
-    public static String zbusPost = "15555";//15555 25555
+    public static String zbusPort = "15555";//15555 25555
 
     public static String clientUrl = "http://robot.kiway.cn";  //"http://192.168.8.161:8081"; http://rbtest.kiway.cn http://robot.kiway.cn
+
+
+    public static boolean isFormal = true;
+
+    static {
+        if (isFormal) {
+            zbusHost = "robot.kiway.cn";
+            zbusPort = "15555";
+            clientUrl = "http://robot.kiway.cn";
+        } else {
+            zbusHost = "rbtest.kiway.cn";
+            zbusPort = "25555";
+            clientUrl = "http://rbtest.kiway.cn";
+        }
+    }
 
     public static HashMap<String, String> qas = new HashMap<>();
 
