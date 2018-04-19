@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.entity.ZbusRecv;
@@ -279,6 +281,19 @@ public class Utils {
         } catch (ParseException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public static String replace(String text) {
+        while (true) {
+            String expression = "\\[.{1,2}\\]";
+            Pattern pattern = Pattern.compile(expression);
+            Matcher matcher = pattern.matcher(text);
+            if (matcher.find()) {
+                text = text.replace(matcher.group(), "");
+            } else {
+                return text;
+            }
         }
     }
 }
