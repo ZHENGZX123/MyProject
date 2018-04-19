@@ -120,7 +120,7 @@ public class AutoReplyService extends AccessibilityService {
             }
             if (msg.what == MSG_ZBUS_QUEUE) {
                 mHandler.removeMessages(MSG_ZBUS_QUEUE);
-                mHandler.sendEmptyMessageDelayed(MSG_ZBUS_QUEUE, 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_ZBUS_QUEUE, 2000);
                 if (zbusRecvs.size() == 0) {
                     return;
                 }
@@ -133,11 +133,11 @@ public class AutoReplyService extends AccessibilityService {
         }
     };
 
-    private void launchWechat(long id, long sleepTime) {
-        if (sleepTime < 60000) {
-            sleepTime = 60000;
+    private void launchWechat(long id, long maxReleaseTime) {
+        if (maxReleaseTime < 60000) {
+            maxReleaseTime = 60000;
         }
-        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, sleepTime);
+        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, maxReleaseTime);
         currentActionID = id;
         try {
             actions.get(currentActionID).intent.send();
@@ -146,9 +146,6 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void launchWechat(long id) {
-        launchWechat(id, 60000);
-    }
 
     private void backToRobot() {
         Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
@@ -237,11 +234,11 @@ public class AutoReplyService extends AccessibilityService {
                         e.printStackTrace();
                     }
                 }
-                long sleepTime = action.returnMessages.size() * 8000;
+                long maxReleaseTime = action.returnMessages.size() * 8000;
                 Log.d("test", "imageCount = " + imageCount);
                 if (imageCount == 0) {
                     //没有图片的话，可以直接去回复文字
-                    launchWechat(id, sleepTime);
+                    launchWechat(id, maxReleaseTime);
                 } else if (imageCount > 0) {
                     Log.d("test", "处理前count = " + action.returnMessages.size());
                     //这里加工一下，只保留1个图片就可以了
@@ -257,13 +254,13 @@ public class AutoReplyService extends AccessibilityService {
                         }
                     }
                     Log.d("test", "处理后count = " + action.returnMessages.size());
-                    handleImageMsg(id, action.returnMessages, sleepTime);
+                    handleImageMsg(id, action.returnMessages, maxReleaseTime);
                 }
             }
         });
     }
 
-    private void handleImageMsg(long id, ArrayList<ReturnMessage> returnMessages, long sleepTime) {
+    private void handleImageMsg(long id, ArrayList<ReturnMessage> returnMessages, long maxReleaseTime) {
         new Thread() {
             @Override
             public void run() {
@@ -275,7 +272,7 @@ public class AutoReplyService extends AccessibilityService {
                         saveImage(getApplication(), bmp);
                     }
                 }
-                launchWechat(id, sleepTime);
+                launchWechat(id, maxReleaseTime);
             }
         }.start();
     }
@@ -2399,13 +2396,13 @@ public class AutoReplyService extends AccessibilityService {
         firstA.receiveType = TYPE_GET_ALL_FRIENDS;
         int friendCount = getSharedPreferences("friendCount", 0).getInt("friendCount", 100);
         int scrollCount = friendCount / 6;
-        long sleepTime = scrollCount * 2000;
-        launchWechat(firstKey, sleepTime);
+        long maxReleaseTime = scrollCount * 2000;
+        launchWechat(firstKey, maxReleaseTime);
     }
 
     public void getFriendCircle(Long firstKey, Action firstA) {
         firstA.receiveType = TYPE_GET_FC;
-        launchWechat(firstKey);
+        launchWechat(firstKey, 60000);
     }
 
 
