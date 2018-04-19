@@ -240,6 +240,8 @@ public class MainActivity extends BaseActivity {
         updateServiceCount();
     }
 
+    private int lastStatus = -1;
+
     private void updateOpenIdOrStatus(Object o) {
         try {
             String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
@@ -255,7 +257,12 @@ public class MainActivity extends BaseActivity {
             if (o instanceof String) {
                 param.put("openId", o);
             } else if (o instanceof Integer) {
+                if (lastStatus == (int) o) {
+                    Log.d("test", "状态一致，本次不上报");
+                    return;
+                }
                 param.put("status", o);
+                lastStatus = (int) o;
             }
             Log.d("test", "param = " + param.toString());
 
