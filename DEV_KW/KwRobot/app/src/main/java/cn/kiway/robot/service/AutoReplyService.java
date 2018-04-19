@@ -420,9 +420,9 @@ public class AutoReplyService extends AccessibilityService {
                     String content = "";
                     if (ticker.contains(":")) {
                         String[] cc = ticker.split(":");
-                        sender = cc[0].trim();
+                        sender = Utils.replace(cc[0].trim());//由于备注去不掉，在这里把表情去掉
                         content = cc[1].trim();
-                        AutoReplyService.this.senderFromNotification = sender;
+                        AutoReplyService.this.senderFromNotification = sender;//转发用的
                         Log.d("test", "sender name = " + sender);
                         Log.d("test", "sender content = " + content);
 
@@ -804,7 +804,6 @@ public class AutoReplyService extends AccessibilityService {
 
     private void backToWxHomePage() {
         //先返回首页，再按搜索去做
-        //0417不做容错，全都返回
         String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
         RootCmd.execRootCmdSilent(cmd);
 
@@ -826,7 +825,8 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(targetSender)) {
+            //equals
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().contains(targetSender)) {
                 return true;
             }
             if (checkIsCorrectSender(nodeInfo, targetSender)) {
@@ -1072,7 +1072,8 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(forwardto)) {
+            //equals
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().contains(forwardto)) {
                 Log.d("test", "click targetPeople = " + forwardto);
                 AccessibilityNodeInfo parent = nodeInfo.getParent();
                 parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
