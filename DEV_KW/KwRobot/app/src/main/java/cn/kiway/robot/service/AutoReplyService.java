@@ -704,7 +704,7 @@ public class AutoReplyService extends AccessibilityService {
                                 release();
                             }
                         }
-                    }, 2000);
+                    }, 3000);
                 } else if (receiveType == TYPE_REDPACKAGE) {
                     Log.d("test", "================TYPE_REDPACKAGE=================");
                     lastTextView = null;
@@ -1522,7 +1522,7 @@ public class AutoReplyService extends AccessibilityService {
                             release();
                         }
                     }
-                }, 2000);
+                }, 3000);
                 return true;
             }
             if (findAcceptButton(nodeInfo)) {
@@ -1564,7 +1564,7 @@ public class AutoReplyService extends AccessibilityService {
                             release();
                         }
                     }
-                }, 1000);
+                }, 2000);
                 return true;
             }
             if (findRemarkEdiText(nodeInfo)) {
@@ -1585,7 +1585,6 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("完成")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -1593,7 +1592,6 @@ public class AutoReplyService extends AccessibilityService {
                         boolean find = findSendButton(getRootInActiveWindow());
                         if (!find) {
                             release();
-                            return;
                         }
                     }
                 }, 5000);
@@ -1622,10 +1620,8 @@ public class AutoReplyService extends AccessibilityService {
                     public void run() {
                         //找到文本框输入文字发送
                         String welcome = getSharedPreferences("welcome", 0).getString("welcome", DEFAULT_WELCOME);
-                        Log.d("test", "welcome xxx = " + welcome);
 
                         sendTextOnly2(welcome);
-
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -1635,7 +1631,7 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }, 3000);
                     }
-                }, 2000);
+                }, 3000);
                 return true;
             }
             if (findSendButton(nodeInfo)) {
