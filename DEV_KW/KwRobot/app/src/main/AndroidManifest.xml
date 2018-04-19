@@ -81,7 +81,7 @@
 
         <meta-data
             android:name="weixin_key"
-            android:value="wxd2f893611dd6e2e8" />
+            android:value="wx59968907a3824b21" />
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
