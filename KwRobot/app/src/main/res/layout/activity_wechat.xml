@@ -36,10 +36,12 @@
         android:text="开启消息监听"/>
 
     <Button
+        android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="getWxInfo"
         android:text="获取个人信息"/>
+
     <Button
         android:id="@+id/wx"
         android:layout_width="match_parent"

@@ -555,33 +555,40 @@ public class AutoReplyService extends AccessibilityService {
                 int receiveType = actions.get(currentActionID).receiveType;
 
                 if (receiveType == TYPE_TEXT || receiveType == TYPE_AUTO_MATCH) {
-                    //1.判断当前是不是首页
-                    Log.d("test", "========================checkIsWxHomePage============");
-                    checkIsWxHomePage();
-                    boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
-                    Log.d("test", "isWxHomePage = " + isWxHomePage);
-                    if (isWxHomePage) {
-                        //1.如果已经使用过的action，进来会去到首页
-                        searchSenderInWxHomePage();
-                    } else {
-                        String targetSender = actions.get(currentActionID).sender;
-                        Log.d("test", "checkIsCorrectPage targetSender = " + targetSender);
-                        //2.容错判断
-                        boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
-                        Log.d("test", "isCorrect = " + isCorrect);
-                        if (isCorrect) {
-                            //doSequeSend();
-                            int size = actions.get(currentActionID).returnMessages.size();
-                            Log.d("test", "要回复的条数:" + size);
-                            if (size < 4) {
-                                doSequeSend();
-                            } else {
-                                backToWxHomePage();
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            {
+                                //1.判断当前是不是首页
+                                Log.d("test", "========================checkIsWxHomePage============");
+                                checkIsWxHomePage();
+                                boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
+                                Log.d("test", "isWxHomePage = " + isWxHomePage);
+                                if (isWxHomePage) {
+                                    //1.如果已经使用过的action，进来会去到首页
+                                    searchSenderInWxHomePage();
+                                } else {
+                                    String targetSender = actions.get(currentActionID).sender;
+                                    Log.d("test", "checkIsCorrectPage targetSender = " + targetSender);
+                                    //2.容错判断
+                                    boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
+                                    Log.d("test", "isCorrect = " + isCorrect);
+                                    if (isCorrect) {
+                                        //doSequeSend();
+                                        int size = actions.get(currentActionID).returnMessages.size();
+                                        Log.d("test", "要回复的条数:" + size);
+                                        if (size < 4) {
+                                            doSequeSend();
+                                        } else {
+                                            backToWxHomePage();
+                                        }
+                                    } else {
+                                        backToWxHomePage();
+                                    }
+                                }
                             }
-                        } else {
-                            backToWxHomePage();
                         }
-                    }
+                    },2000);
                 } else if (receiveType == TYPE_FRIEND_CIRCLER) {
                     // 找到最后一个链接，点击转发到朋友圈
                     lastFrameLayout = null;
