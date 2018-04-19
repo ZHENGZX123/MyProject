@@ -12,12 +12,11 @@ public class Constant {
     public static final String APPKEY = "c83f643092046c0328624fe59aeec6548dac256c";
 
     public static String zbusHost = "robot.kiway.cn";  //192.168.8.161  rbtest.kiway.cn robot.kiway.cn
-    public static String zbusPost = "15555";//15555
+    public static String zbusPost = "15555";//15555 25555
 
-    public static String clientUrl = "http://robot.kiway.cn";  //"http://192.168.8.161:8081"; http://rbtest.kiway.cn
+    public static String clientUrl = "http://robot.kiway.cn";  //"http://192.168.8.161:8081"; http://rbtest.kiway.cn http://robot.kiway.cn
 
     public static HashMap<String, String> qas = new HashMap<>();
-
 
     static {
         qas.put("你好", "家长您好。");
@@ -46,6 +45,6 @@ public class Constant {
             "7、录取\n";
     public static final String DEFAULT_BUSY = "因为咨询人员较多，客服正忙，请耐心等待。";
 
-    public static final String DEFAULT_OFFLINE = "客服已下线，请于工作时间8：30-22：00再咨询。";
+    public static final String DEFAULT_OFFLINE = "客服已下线，请于工作时间8：30-22：00再咨询，或者您可以发送以下关键字咨询：";
 
 }

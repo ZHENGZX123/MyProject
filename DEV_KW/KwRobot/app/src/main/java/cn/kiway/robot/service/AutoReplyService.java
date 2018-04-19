@@ -334,6 +334,8 @@ public class AutoReplyService extends AccessibilityService {
 
         String hint = "";
         boolean in = Utils.isEffectiveDate();
+        String welcome = getSharedPreferences("welcome", 0).getString("welcome", DEFAULT_WELCOME);
+        String welcomeTitle = getSharedPreferences("welcomeTitle", 0).getString("welcomeTitle", DEFAULT_WELCOME_TITLE);
         if (in) {
             Integer i = busyCountMap.get(action.sender);
             int busyCount = (i == null) ? 0 : i;
@@ -342,12 +344,11 @@ public class AutoReplyService extends AccessibilityService {
                 hint = DEFAULT_BUSY;
                 busyCountMap.put(action.sender, busyCount + 1);
             } else {
-                String welcomeTitle = getSharedPreferences("welcomeTitle", 0).getString("welcomeTitle", DEFAULT_WELCOME_TITLE);
-                hint = getSharedPreferences("welcome", 0).getString("welcome", DEFAULT_WELCOME).replace(welcomeTitle, "客服正忙，您可以发送以下关键字咨询：");
+                hint = welcome.replace(welcomeTitle, "客服正忙，您可以发送以下关键字咨询：");
                 busyCountMap.put(action.sender, 0);
             }
         } else {
-            hint = DEFAULT_OFFLINE;
+            hint = DEFAULT_OFFLINE + welcome.replace(welcomeTitle, "");
         }
         Log.d("test", "hint = " + hint);
         String busy = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + hint + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
@@ -1552,6 +1553,7 @@ public class AutoReplyService extends AccessibilityService {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
                 remark = Utils.getParentRemark(this);
                 ClipData clip = ClipData.newPlainText("label", remark);
+
                 ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 clipboardManager.setPrimaryClip(clip);
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
