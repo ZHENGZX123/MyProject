@@ -50,24 +50,12 @@
             android:onClick="filter"
             android:text="设置过滤谁的消息" />
 
-        <CheckBox
-            android:id="@+id/getPic"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:checked="true"
-            android:text="是否接收图片" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="checkRoot"
             android:text="检测Root权限" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="setForwardFrom"
-            android:text="设置消息来源的公众号" />
 
 
         <Button
@@ -76,29 +64,6 @@
             android:onClick="setCollector"
             android:text="设置消息收集的微信（群）名称" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="setOpenId"
-            android:text="设置本机器人对应的openId" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="checkFCFrom"
-            android:text="设置朋友圈使者" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="checkFCRemark"
-            android:text="查看朋友圈备注" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="Xposed"
-            android:text="xposed操作" />
 
         <Button
             android:layout_width="wrap_content"
@@ -112,12 +77,6 @@
             android:onClick="checkNewVersion"
             android:text="检测新版本" />
 
-        <Button
-            android:id="@+id/logout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="logout"
-            android:text="注销本次登录" />
 
         <Button
             android:layout_width="wrap_content"
@@ -126,16 +85,69 @@
             android:text="重新登录" />
 
         <Button
+            android:id="@+id/logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="logout"
+            android:text="注销本次登录"
+            android:visibility="gone" />
+
+        <CheckBox
+            android:id="@+id/getPic"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:checked="true"
+            android:text="是否接收图片"
+            android:visibility="gone" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="setForwardFrom"
+            android:text="设置消息来源的公众号"
+            android:visibility="gone" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="setOpenId"
+            android:text="设置本机器人对应的openId"
+            android:visibility="gone" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="checkFCFrom"
+            android:text="设置朋友圈使者"
+            android:visibility="gone" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="checkFCRemark"
+            android:text="查看朋友圈备注"
+            android:visibility="gone" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="Xposed"
+            android:text="xposed操作"
+            android:visibility="gone" />
+
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="test"
-            android:text="测试用" />
+            android:text="测试用"
+            android:visibility="gone" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="sharePic"
-            android:text="分享" />
+            android:text="分享"
+            android:visibility="gone" />
 
 
         <Button
