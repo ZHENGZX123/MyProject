@@ -288,7 +288,7 @@ public class Utils {
 
     public static String replace(String text) {
         while (true) {
-            String expression = "\\[.{1,3}\\]";
+            String expression = "\\[.{1,3}\\]|\\&+";
             Pattern pattern = Pattern.compile(expression);
             Matcher matcher = pattern.matcher(text);
             if (matcher.find()) {
