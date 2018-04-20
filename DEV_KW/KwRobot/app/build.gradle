@@ -17,8 +17,8 @@ android {
        applicationId "cn.kiway.robot"
         minSdkVersion 16
         targetSdkVersion 21
-        versionCode 14
-        versionName "0.1.4"
+        versionCode 15
+        versionName "0.1.5"
         jackOptions {
             enabled true
         }
