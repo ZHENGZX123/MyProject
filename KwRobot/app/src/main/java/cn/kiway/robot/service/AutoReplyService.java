@@ -112,7 +112,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private Handler mHandler = new Handler() {
         @Override
-        public void handleMessage(android.os.Message msg) {
+        public void handleMessage(Message msg) {
             if (msg.what == MSG_CLEAR_ACTION) {
                 release();
                 return;
@@ -295,12 +295,13 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     public synchronized void sendMsgToServer(long id, Action action) {
-        String name = getSharedPreferences("kiway", 0).getString("name", "");
+
         new Thread() {
             @Override
             public void run() {
                 Log.d("test", "sendMsgToServer");
                 try {
+                    String name = getSharedPreferences("kiway", 0).getString("name", "");
                     String userId = Utils.getIMEI(getApplicationContext());
                     String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
                     String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
@@ -478,22 +479,23 @@ public class AutoReplyService extends AccessibilityService {
                         action.receiveType = TYPE_REQUEST_FRIEND;
                     }
                     //需要转发到朋友圈，目前只支持链接
-//                    else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("[链接]")) {
-//                        action.receiveType = TYPE_FRIEND_CIRCLER;
-//                    } else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("设置朋友圈备注：")) {
-//                        action.receiveType = TYPE_SET_FRIEND_CIRCLER_REMARK;
-//                    }
+                    else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("[链接]")) {
+                        action.receiveType = TYPE_FRIEND_CIRCLER;
+                    } else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("设置朋友圈备注：")) {
+                        action.receiveType = TYPE_SET_FRIEND_CIRCLER_REMARK;
+                    }
                     //来自公众号的消息每一条都要转发：图片还没有做，需要测试
-//                    else if (sender.equals(Utils.getForwardFrom(this)) && content.startsWith("设置转发对象：")) {
-//                        action.receiveType = TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
-//                    } else if (sender.equals(Utils.getForwardFrom(this)) && !content.equals("[语音]") && !content.equals("[动画表情]")) {
+                    else if (/*sender.equals(Utils.getForwardFrom(this)) &&*/ content.startsWith("设置转发对象：")) {
+                        //设置转发对象有可能丢掉！因为微信可能不弹出通知
+                        action.receiveType = TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
+                    }
+//                    else if (sender.equals(Utils.getForwardFrom(this)) && !content.equals("[语音]") && !content.equals("[动画表情]")) {
 //                        action.receiveType = TYPE_PUBLIC_ACCONT_FORWARDING;
 //                    }
                     //需要转发到“消息收集群”
-//                    else if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了")) {
-//                        action.receiveType = TYPE_COLLECTOR_FORWARDING;
-//                    }
-                    else if (!TextUtils.isEmpty(Constant.qas.get(content.trim()))) {
+                    else if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了")) {
+                        action.receiveType = TYPE_COLLECTOR_FORWARDING;
+                    } else if (!TextUtils.isEmpty(Constant.qas.get(content.trim()))) {
                         action.receiveType = TYPE_AUTO_MATCH;
                         action.returnMessages.add(new ReturnMessage(TYPE_TEXT, Constant.qas.get(content.trim())));
                     }
@@ -505,7 +507,6 @@ public class AutoReplyService extends AccessibilityService {
                         actions.clear();
                     }
                     actions.put(id, action);
-
                     if (action.receiveType == TYPE_TEXT) {
                         //刷新界面
                         refreshUI1();
@@ -517,8 +518,12 @@ public class AutoReplyService extends AccessibilityService {
                         sendReplyImmediately(fakeRecv);
                     } else if (action.receiveType == TYPE_FRIEND_CIRCLER) {
                         //该版本暂时屏蔽launchWechat(id);
+                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+                        sendReplyImmediately(fakeRecv);
                     } else if (action.receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || action.receiveType == TYPE_COLLECTOR_FORWARDING) {
                         //该版本暂时屏蔽launchWechat(id);
+                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+                        sendReplyImmediately(fakeRecv);
                     } else if (action.receiveType == TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO) {
                         String forwardto = action.content.replace("设置转发对象：", "").trim();
                         if (TextUtils.isEmpty(forwardto)) {
@@ -526,7 +531,9 @@ public class AutoReplyService extends AccessibilityService {
                         }
                         getSharedPreferences("forwardto", 0).edit().putString("forwardto", forwardto).commit();
                         toast("设置转发对象成功");
-                        //该版本暂时屏蔽launchWechat(id);
+
+                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+                        sendReplyImmediately(fakeRecv);
                     } else if (action.receiveType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
                         String remark = action.content.replace("设置朋友圈备注：", "").trim();
                         if (TextUtils.isEmpty(remark)) {
@@ -534,7 +541,8 @@ public class AutoReplyService extends AccessibilityService {
                         }
                         getSharedPreferences("FCremark", 0).edit().putString("FCremark", remark).commit();
                         toast("设置朋友圈备注成功");
-                        //该版本暂时屏蔽launchWechat(id);
+                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+                        sendReplyImmediately(fakeRecv);
                     } else if (action.receiveType == TYPE_REQUEST_FRIEND) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv);
@@ -575,38 +583,37 @@ public class AutoReplyService extends AccessibilityService {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            {
-                                //1.判断当前是不是首页
-                                Log.d("test", "========================checkIsWxHomePage============");
-                                checkIsWxHomePage();
-                                boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
-                                Log.d("test", "isWxHomePage = " + isWxHomePage);
-                                if (isWxHomePage) {
-                                    //1.如果已经使用过的action，进来会去到首页
-                                    searchSenderInWxHomePage();
-                                } else {
-                                    String targetSender = actions.get(currentActionID).sender;
-                                    Log.d("test", "checkIsCorrectPage targetSender = " + targetSender);
-                                    //2.容错判断
-                                    boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
-                                    Log.d("test", "isCorrect = " + isCorrect);
-                                    if (isCorrect) {
-                                        //doSequeSend();
-                                        int size = actions.get(currentActionID).returnMessages.size();
-                                        Log.d("test", "要回复的条数:" + size);
-                                        if (size < 4) {
-                                            doSequeSend();
-                                        } else {
-                                            backToWxHomePage();
-                                        }
+                            //1.判断当前是不是首页
+                            Log.d("test", "========================checkIsWxHomePage============");
+                            checkIsWxHomePage();
+                            boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
+                            Log.d("test", "isWxHomePage = " + isWxHomePage);
+                            if (isWxHomePage) {
+                                //1.如果已经使用过的action，进来会去到首页
+                                searchSenderInWxHomePage();
+                            } else {
+                                String targetSender = actions.get(currentActionID).sender;
+                                Log.d("test", "checkIsCorrectPage targetSender = " + targetSender);
+                                //2.容错判断
+                                boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
+                                Log.d("test", "isCorrect = " + isCorrect);
+                                if (isCorrect) {
+                                    //doSequeSend();
+                                    int size = actions.get(currentActionID).returnMessages.size();
+                                    Log.d("test", "要回复的条数:" + size);
+                                    if (size < 4) {
+                                        doSequeSend();
                                     } else {
                                         backToWxHomePage();
                                     }
+                                } else {
+                                    backToWxHomePage();
                                 }
                             }
                         }
                     }, 2000);
                 } else if (receiveType == TYPE_FRIEND_CIRCLER) {
+                    //TODO 这里也要做首页检查和容错！
                     // 找到最后一个链接，点击转发到朋友圈
                     lastFrameLayout = null;
                     Log.d("test", "----------------findLastImageOrLinkMsg------------------");
@@ -630,6 +637,7 @@ public class AutoReplyService extends AccessibilityService {
                         }
                     }, 10000);//防止页面加载不完整
                 } else if (receiveType == TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO || receiveType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
+                    //TODO 这里也要做首页检查和容错！
                     sendTextOnly2("设置成功！");
                     mHandler.postDelayed(new Runnable() {
                         @Override
@@ -638,6 +646,7 @@ public class AutoReplyService extends AccessibilityService {
                         }
                     }, 3000);
                 } else if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || receiveType == TYPE_COLLECTOR_FORWARDING) {
+                    //TODO 这里也要做首页检查和容错！
                     // 找到最后一张链接，点击转发给某人
                     if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING) {
                         forwardto = getSharedPreferences("forwardto", 0).getString("forwardto", "");
@@ -656,6 +665,7 @@ public class AutoReplyService extends AccessibilityService {
                         }, 3000);
                         return;
                     }
+
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -1773,7 +1783,7 @@ public class AutoReplyService extends AccessibilityService {
                             if (receiveType == TYPE_COLLECTOR_FORWARDING) {
                                 //这里要额外做一步，找到文本框并粘贴内容
                                 String openId = getSharedPreferences("openId", 0).getString("openId", "osP5zwJ-lEdJVGD-_5_WyvQL9Evo");
-                                String content = "sender:" + senderFromNotification + ",openid:" + openId;
+                                String content = getCollectorForwardingContent(); //"sender:" + senderFromNotification + ",openid:" + openId;
                                 findInputEditText(getRootInActiveWindow(), content);
                             }
                             Log.d("test", "=========findSendButtonInDialog============");
@@ -1791,6 +1801,42 @@ public class AutoReplyService extends AccessibilityService {
             }
         }
         return false;
+    }
+
+    private String getCollectorForwardingContent() {
+        JSONObject o = new JSONObject();
+        try {
+            String name = getSharedPreferences("kiway", 0).getString("name", "");
+            String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
+            String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
+            String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
+            String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
+            String topic = robotId + "#" + wxNo;
+
+            String msg = new JSONObject()
+                    .put("id", System.currentTimeMillis() + "")
+                    .put("sender", senderFromNotification)
+                    .put("content", "content")
+                    .put("me", name)
+                    .put("areaCode", areaCode)
+                    .toString();
+
+            o.put("appId", APPID);
+            o.put("description", "description");
+            o.put("installationId", installationId);
+            o.put("msg", msg);
+            o.put("module", "wx_reply");
+            o.put("pushType", "zbus");
+            o.put("senderId", wxNo);
+            o.put("title", "title");
+            o.put("userId", new JSONArray().put(topic));
+
+            Log.d("test", "o = " + o.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return o.toString();
     }
 
     private boolean findShareButtonInDialog(AccessibilityNodeInfo rootNode) {
