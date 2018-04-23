@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -40,7 +39,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import cn.kiway.robot.R;
-import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.Constant;
@@ -437,85 +435,6 @@ public class MainActivity extends BaseActivity {
                 }
             }
         }.start();
-    }
-
-    public void getAllFriends(View view) {
-        if (AutoReplyService.instance == null) {
-            return;
-        }
-        if (AutoReplyService.instance.actions.size() < 1) {
-            return;
-        }
-        Long firstKey = AutoReplyService.instance.actions.keySet().iterator().next();
-        Action firstA = AutoReplyService.instance.actions.get(firstKey);
-
-        int friendCount = getSharedPreferences("friendCount", 0).getInt("friendCount", 100);
-        EditText et = new EditText(this);
-        et.setHint("好友数量1~5000");
-        et.setInputType(InputType.TYPE_CLASS_NUMBER);
-        et.setSingleLine();
-        et.setText("" + friendCount);
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("请输入好友数量")
-                .setView(et)
-                .setNegativeButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String content = et.getText().toString().trim();
-                        if (TextUtils.isEmpty(content)) {
-                            toast("不能为空");
-                            return;
-                        }
-                        int temp = 0;
-                        try {
-                            temp = Integer.parseInt(content);
-                        } catch (Exception e) {
-                            toast("必须是数字");
-                            return;
-                        }
-                        if (temp < 1) {
-                            toast("不能小于1");
-                            return;
-                        }
-                        getSharedPreferences("friendCount", 0).edit().putInt("friendCount", temp).commit();
-
-                        AutoReplyService.instance.getAllFriends(firstKey, firstA);
-                    }
-                }).setPositiveButton("取消", null).create();
-        dialog.show();
-    }
-
-    public void getFriendCircle(View view) {
-        if (AutoReplyService.instance == null) {
-            return;
-        }
-        if (AutoReplyService.instance.actions.size() < 1) {
-            return;
-        }
-        EditText et = new EditText(this);
-        et.setHint("请输入好友昵称");
-        et.setSingleLine();
-        et.setText("5之");
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("请输入好友昵称")
-                .setView(et)
-                .setNegativeButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String content = et.getText().toString().trim();
-                        if (TextUtils.isEmpty(content)) {
-                            toast("不能为空");
-                            return;
-                        }
-
-                        getSharedPreferences("FCName", 0).edit().putString("FCName", content).commit();
-
-                        Long firstKey = AutoReplyService.instance.actions.keySet().iterator().next();
-                        Action firstA = AutoReplyService.instance.actions.get(firstKey);
-                        AutoReplyService.instance.getFriendCircle(firstKey, firstA);
-                    }
-                }).setPositiveButton("取消", null).create();
-        dialog.show();
     }
 
     public void test(View v) {
