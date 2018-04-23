@@ -171,7 +171,6 @@ public class Utils {
 
     public static void installationPush(final Context c) {
         try {
-            String userId = Utils.getIMEI(c);
             String imei = Utils.getIMEI(c);
 
             String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
@@ -219,15 +218,19 @@ public class Utils {
 
     //初始化zbus
     public static void initZbus(Context c) {
+        String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
+        String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
+        if (TextUtils.isEmpty(robotId)) {
+            return;
+        }
+        if (TextUtils.isEmpty(wxNo)) {
+            return;
+        }
         Log.d("test", "initZbus");
         new Thread() {
             @Override
             public void run() {
                 try {
-
-                    String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
-                    String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
-
                     String topic = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
                     Log.d("test", "topic = " + topic);
                     ZbusUtils.consumeMsg(topic, new MessageHandler() {
