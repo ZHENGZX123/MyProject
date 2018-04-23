@@ -61,16 +61,12 @@ import cn.sharesdk.wechat.friends.Wechat;
 import static cn.kiway.robot.entity.Action.TYPE_AUTO_MATCH;
 import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
-import static cn.kiway.robot.entity.Action.TYPE_GET_ALL_FRIENDS;
-import static cn.kiway.robot.entity.Action.TYPE_GET_FC;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
-import static cn.kiway.robot.entity.Action.TYPE_REDPACKAGE;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_SET_FRIEND_CIRCLER_REMARK;
 import static cn.kiway.robot.entity.Action.TYPE_TEXT;
-import static cn.kiway.robot.entity.Action.TYPE_TRANSFER_MONEY;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.DEFAULT_BUSY;
 import static cn.kiway.robot.util.Constant.DEFAULT_OFFLINE;
@@ -269,7 +265,7 @@ public class AutoReplyService extends AccessibilityService {
                     new Thread() {
                         @Override
                         public void run() {
-                            sendImageOnly2(action.returnMessages.get(0).content);//暂时只处理一个
+                            sendImageOnly2("http://upload.jnwb.net/2014/0311/1394514005639.jpg");//暂时只处理一个action.returnMessages.get(0).content
                         }
                     }.start();
                 }
@@ -366,8 +362,8 @@ public class AutoReplyService extends AccessibilityService {
             hint = DEFAULT_OFFLINE + welcome.replace(welcomeTitle, "");
         }
         Log.d("test", "hint = " + hint);
-        String busy = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + hint + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-        msg.obj = new ZbusRecv(busy, false);
+        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + hint + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+        msg.obj = new ZbusRecv(fakeRecv, false);
         mHandler.sendMessageDelayed(msg, 20000);
     }
 
@@ -396,8 +392,6 @@ public class AutoReplyService extends AccessibilityService {
     public void onDestroy() {
         super.onDestroy();
         Log.d("maptrix", "service destroy");
-        //uninstallPush(this);
-        //ZbusUtils.close();
     }
 
     @Override
@@ -467,15 +461,8 @@ public class AutoReplyService extends AccessibilityService {
                     action.content = content;
                     action.intent = intent;
 
-                    if (content.startsWith("[微信红包]")) {
-                        action.receiveType = TYPE_REDPACKAGE;
-                    }
-                    //转账
-                    else if (content.startsWith("[转账]")) {
-                        action.receiveType = TYPE_TRANSFER_MONEY;
-                    }
                     //自动加好友
-                    else if (content.endsWith("请求添加你为朋友")) {
+                    if (content.endsWith("请求添加你为朋友")) {
                         action.receiveType = TYPE_REQUEST_FRIEND;
                     }
                     //需要转发到朋友圈，目前只支持链接
@@ -503,9 +490,10 @@ public class AutoReplyService extends AccessibilityService {
                     else {
                         action.receiveType = TYPE_TEXT;
                     }
-                    if (actions.size() > 10000) {
-                        actions.clear();
-                    }
+                    //0427 actions暂时不清了
+//                    if (actions.size() > 10000) {
+//                        actions.clear();
+//                    }
                     actions.put(id, action);
                     if (action.receiveType == TYPE_TEXT) {
                         //刷新界面
@@ -546,10 +534,6 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (action.receiveType == TYPE_REQUEST_FRIEND) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv);
-                    } else if (action.receiveType == TYPE_REDPACKAGE) {
-                        //该版本暂时屏蔽launchWechat(id);
-                    } else if (action.receiveType == TYPE_TRANSFER_MONEY) {
-                        //该版本暂时屏蔽launchWechat(id);
                     }
                 }
                 break;
@@ -573,162 +557,12 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("maptrix", "事件进行中，return2");
                     return;
                 }
-
                 actioningFlag = true;
                 FileUtils.saveFile("" + actioningFlag, "actioningFlag.txt");
-
                 int receiveType = actions.get(currentActionID).receiveType;
 
-                if (receiveType == TYPE_TEXT || receiveType == TYPE_AUTO_MATCH) {
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            //1.判断当前是不是首页
-                            Log.d("test", "========================checkIsWxHomePage============");
-                            checkIsWxHomePage();
-                            boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
-                            Log.d("test", "isWxHomePage = " + isWxHomePage);
-                            if (isWxHomePage) {
-                                //1.如果已经使用过的action，进来会去到首页
-                                searchSenderInWxHomePage();
-                            } else {
-                                String targetSender = actions.get(currentActionID).sender;
-                                Log.d("test", "checkIsCorrectPage targetSender = " + targetSender);
-                                //2.容错判断
-                                boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
-                                Log.d("test", "isCorrect = " + isCorrect);
-                                if (isCorrect) {
-                                    //doSequeSend();
-                                    int size = actions.get(currentActionID).returnMessages.size();
-                                    Log.d("test", "要回复的条数:" + size);
-                                    if (size < 4) {
-                                        doSequeSend();
-                                    } else {
-                                        backToWxHomePage();
-                                    }
-                                } else {
-                                    backToWxHomePage();
-                                }
-                            }
-                        }
-                    }, 2000);
-                } else if (receiveType == TYPE_FRIEND_CIRCLER) {
-                    //TODO 这里也要做首页检查和容错！
-                    // 找到最后一个链接，点击转发到朋友圈
-                    lastFrameLayout = null;
-                    Log.d("test", "----------------findLastImageOrLinkMsg------------------");
-                    findLastImageOrLinkMsg(getRootInActiveWindow());
-                    if (lastFrameLayout == null) {
-                        Log.d("test", "没有找到最后一个链接？郁闷。。。");
-                        release();
-                        return;
-                    }
-                    lastFrameLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            //找下载按钮
-                            Log.d("test", "-------------------findTopRightButton------------------");
-                            boolean find = findTopRightButton(getRootInActiveWindow());
-                            if (!find) {
-                                Log.d("test", "找不到右上角按钮");
-                                release();
-                            }
-                        }
-                    }, 10000);//防止页面加载不完整
-                } else if (receiveType == TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO || receiveType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
-                    //TODO 这里也要做首页检查和容错！
-                    sendTextOnly2("设置成功！");
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            release();
-                        }
-                    }, 3000);
-                } else if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || receiveType == TYPE_COLLECTOR_FORWARDING) {
-                    //TODO 这里也要做首页检查和容错！
-                    // 找到最后一张链接，点击转发给某人
-                    if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING) {
-                        forwardto = getSharedPreferences("forwardto", 0).getString("forwardto", "");
-                    } else if (receiveType == TYPE_COLLECTOR_FORWARDING) {
-                        forwardto = getSharedPreferences("collector", 0).getString("collector", "我的KW");
-                    }
-                    if (TextUtils.isEmpty(forwardto)) {
-                        toast("您还没有设置转发对象");
-                        //回复给微信
-                        sendTextOnly2("您还没有设置转发对象，设置方法：请输入“设置转发对象：昵称”");
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                release();
-                            }
-                        }, 3000);
-                        return;
-                    }
-
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d("test", "===============findMsgListView================");
-                            listViewNode = null;
-                            findMsgListView(getRootInActiveWindow());
-                            if (listViewNode == null) {
-                                release();
-                                return;
-                            }
-                            lastMsgView = null;
-                            Log.d("test", "=================findLastMsgViewInListView====================");
-                            findLastMsgViewInListView(listViewNode);
-                            if (lastMsgView == null) {
-                                Log.d("test", "没有找到最后一条消息。。。");
-                                release();
-                                return;
-                            }
-                            //1.如果是名片，判断一下是个人名片还是企业名片.
-                            String content = actions.get(currentActionID).content;
-                            if (content.contains("向你推荐了")) {
-                                lastTextView = null;
-                                Log.d("test", "=============getLastTextView=============");
-                                getLastTextView(getRootInActiveWindow());
-                                String text = lastTextView.getText().toString().trim();
-                                boolean isPublic = text.equals("公众号名片");
-                                Log.d("test", "isPublic = " + isPublic);
-                                if (isPublic) {
-                                    //众号号名片
-                                    doLongClickLastMsg();
-                                } else {
-                                    //个人名片
-                                    sendTextOnly2("个人名片暂时不支持转发");
-                                    mHandler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            release();
-                                        }
-                                    }, 3000);
-                                }
-                            } else if (content.startsWith("[视频]")) {
-                                lastMsgView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
-                                        int ret = RootCmd.execRootCmdSilent(cmd);
-                                        Log.d("test", "execRootCmdSilent ret = " + ret);
-                                        mHandler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                doLongClickLastMsg();
-                                            }
-                                        }, 2000);
-                                    }
-                                }, 5000);
-                            } else {
-                                doLongClickLastMsg();
-                            }
-                        }
-                    }, 2000);
-                } else if (receiveType == TYPE_REQUEST_FRIEND) {
-                    //查找接受按钮，并点击一下
+                if (receiveType == TYPE_REQUEST_FRIEND) {
+                    //好友请求不用做容错
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -739,100 +573,151 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }
                     }, 3000);
-                } else if (receiveType == TYPE_REDPACKAGE) {
-                    Log.d("test", "================TYPE_REDPACKAGE=================");
-                    lastTextView = null;
-                    findLastRedPackageMsg(getRootInActiveWindow());
-                    if (lastTextView == null) {
-                        release();
-                        return;
-                    }
-                    AccessibilityNodeInfo parent = lastTextView.getParent();
-                    parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            //找到“开”按钮
-                            findOpenPackageButton(getRootInActiveWindow());
-                        }
-                    }, 3000);
-                } else if (receiveType == TYPE_TRANSFER_MONEY) {
-                    Log.d("test", "================TYPE_TRANSFER_MONEY=================");
-                    lastTextView = null;
-                    findLastTransferMsg(getRootInActiveWindow());
-                    if (lastTextView == null) {
-                        release();
-                        return;
-                    }
-                    AccessibilityNodeInfo parent = lastTextView.getParent();
-                    parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            //找到“确认收款”按钮
-                            findConfirmationButton(getRootInActiveWindow());
-                        }
-                    }, 3000);
-                } else if (receiveType == TYPE_GET_ALL_FRIENDS) {
-                    Log.d("test", "========================checkIsWxHomePage============");
-                    checkIsWxHomePage();
-                    boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
-                    Log.d("test", "isWxHomePage = " + isWxHomePage);
-                    if (!isWxHomePage) {
-                        Log.d("test", "该事件不符合");
-                        release();
-                        return;
-                    }
-                    tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            doFindFriendInListView();
-                        }
-                    }, 1000);
-                } else if (receiveType == TYPE_GET_FC) {
-                    Log.d("test", "========================checkIsWxHomePage============");
-                    checkIsWxHomePage();
-                    boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
-                    Log.d("test", "isWxHomePage = " + isWxHomePage);
-                    if (!isWxHomePage) {
-                        Log.d("test", "该事件不符合");
-                        release();
-                        return;
-                    }
+                    return;
+                }
 
-                    if (lastTextView == null) {
+                //1.判断当前是不是首页
+                Log.d("test", "========================checkIsWxHomePage============");
+                checkIsWxHomePage();
+                boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
+                Log.d("test", "isWxHomePage = " + isWxHomePage);
+                if (isWxHomePage) {
+                    //1.如果已经使用过的action，进来会去到首页
+                    searchSenderInWxHomePage();
+                } else {
+                    String targetSender = actions.get(currentActionID).sender;
+                    Log.d("test", "checkIsCorrectPage targetSender = " + targetSender);
+                    //2.容错判断
+                    boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
+                    Log.d("test", "isCorrect = " + isCorrect);
+                    if (isCorrect) {
+                        doActionByReceiveType();
+                    } else {
+                        backToWxHomePage();
+                    }
+                }
+                break;
+        }
+    }
+
+    private void doActionByReceiveType() {
+        int receiveType = actions.get(currentActionID).receiveType;
+        if (receiveType == TYPE_TEXT || receiveType == TYPE_AUTO_MATCH) {
+            doSequeSend();
+        } else if (receiveType == TYPE_FRIEND_CIRCLER) {
+            // 找到最后一个链接，点击转发到朋友圈
+            lastFrameLayout = null;
+            Log.d("test", "----------------findLastImageOrLinkMsg------------------");
+            findLastImageOrLinkMsg(getRootInActiveWindow());
+            if (lastFrameLayout == null) {
+                Log.d("test", "没有找到最后一个链接？郁闷。。。");
+                release();
+                return;
+            }
+            lastFrameLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //找下载按钮
+                    Log.d("test", "-------------------findTopRightButton------------------");
+                    boolean find = findTopRightButton(getRootInActiveWindow());
+                    if (!find) {
+                        Log.d("test", "找不到右上角按钮");
+                        release();
+                    }
+                }
+            }, 10000);//防止页面加载不完整
+        } else if (receiveType == TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO || receiveType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
+            sendTextOnly2("设置成功！");
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    release();
+                }
+            }, 3000);
+        } else if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || receiveType == TYPE_COLLECTOR_FORWARDING) {
+            // 找到最后一张链接，点击转发给某人
+            if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING) {
+                forwardto = getSharedPreferences("forwardto", 0).getString("forwardto", "");
+            } else if (receiveType == TYPE_COLLECTOR_FORWARDING) {
+                forwardto = getSharedPreferences("collector", 0).getString("collector", "我的KW");
+            }
+            if (TextUtils.isEmpty(forwardto)) {
+                toast("您还没有设置转发对象");
+                //回复给微信
+                sendTextOnly2("您还没有设置转发对象，设置方法：请输入“设置转发对象：昵称”");
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        release();
+                    }
+                }, 3000);
+                return;
+            }
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("test", "===============findMsgListView================");
+                    listViewNode = null;
+                    findMsgListView(getRootInActiveWindow());
+                    if (listViewNode == null) {
                         release();
                         return;
                     }
-                    lastTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            String FCName = getSharedPreferences("FCName", 0).getString("FCName", "");
-                            boolean find = findInputEditText(getRootInActiveWindow(), FCName);
-                            if (!find) {
-                                release();
-                                return;
-                            }
+                    lastMsgView = null;
+                    Log.d("test", "=================findLastMsgViewInListView====================");
+                    findLastMsgViewInListView(listViewNode);
+                    if (lastMsgView == null) {
+                        Log.d("test", "没有找到最后一条消息。。。");
+                        release();
+                        return;
+                    }
+                    //1.如果是名片，判断一下是个人名片还是企业名片.
+                    String content = actions.get(currentActionID).content;
+                    if (content.contains("向你推荐了")) {
+                        lastTextView = null;
+                        Log.d("test", "=============getLastTextView=============");
+                        getLastTextView(getRootInActiveWindow());
+                        String text = lastTextView.getText().toString().trim();
+                        boolean isPublic = text.equals("公众号名片");
+                        Log.d("test", "isPublic = " + isPublic);
+                        if (isPublic) {
+                            //众号号名片
+                            doLongClickLastMsg();
+                        } else {
+                            //个人名片
+                            sendTextOnly2("个人名片暂时不支持转发");
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.d("test", "=============findTargetPeople2==============");
-                                    boolean find = findTargetPeople3(getRootInActiveWindow(), FCName);
-                                    if (!find) {
-                                        Log.d("test", "findTargetPeople2 failure");
-                                        release();
-                                    }
+                                    release();
                                 }
-                            }, 2000);
+                            }, 3000);
                         }
-                    }, 2000);
-                } else {
-                    Log.d("test", "没有匹配的消息，直接release");
-                    release();
+                    } else if (content.startsWith("[视频]")) {
+                        lastMsgView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
+                                int ret = RootCmd.execRootCmdSilent(cmd);
+                                Log.d("test", "execRootCmdSilent ret = " + ret);
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        doLongClickLastMsg();
+                                    }
+                                }, 2000);
+                            }
+                        }, 5000);
+                    } else {
+                        doLongClickLastMsg();
+                    }
                 }
-                break;
+            }, 2000);
+        } else {
+            Log.d("test", "没有匹配的消息，直接release");
+            release();
         }
     }
 
@@ -840,7 +725,6 @@ public class AutoReplyService extends AccessibilityService {
         //先返回首页，再按搜索去做
         String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
         RootCmd.execRootCmdSilent(cmd);
-
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -901,85 +785,12 @@ public class AutoReplyService extends AccessibilityService {
         }, 3000);
     }
 
-
-    private Set<String> friends = new HashSet<>();
-
-    private void doFindFriendInListView() {
-        friends.clear();
-        new Thread() {
-            @Override
-            public void run() {
-                int friendCount = getSharedPreferences("friendCount", 0).getInt("friendCount", 100);
-                int scrollCount = friendCount / 6;
-
-                //先回到顶部
-                for (int i = 0; i < scrollCount; i++) {
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            secondListView.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
-                        }
-                    });
-                    synchronized (obj) {
-                        try {
-                            obj.wait(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                //开始滚动读取
-                for (int i = 0; i < scrollCount; i++) {
-                    findFriendView(getRootInActiveWindow());
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            secondListView.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-                        }
-                    });
-                    synchronized (obj) {
-                        try {
-                            obj.wait(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                for (String f : friends) {
-                    Log.d("test", "f===>" + f);
-                }
-                Log.d("test", "friends.size = " + friends.size());
-                release();
-            }
-        }.start();
-    }
-
-    private void findFriendView(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.view.View") && nodeInfo.getText() != null) {
-                friends.add(nodeInfo.getText().toString());
-            }
-            findFriendView(nodeInfo);
-        }
-    }
-
     private void checkIsWxHomePage() {
         weixin = false;
         tongxunlu = false;
         faxian = false;
         wo = false;
         lastTextView = null;
-        tongxunluTextView = null;
-        listviewCount = 0;
-        secondListView = null;
-        pengyouquanTextView = null;
         checkIsWxHomePage(getRootInActiveWindow());
     }
 
@@ -1018,7 +829,6 @@ public class AutoReplyService extends AccessibilityService {
             }
         }.start();
 
-
         //2.挨个发送线程
         new Thread() {
             @Override
@@ -1035,7 +845,9 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }
                         sendTextOnly(rm);
-                    } else if (rm.returnType == TYPE_IMAGE) {
+                    }
+                    //目前用分享来做，不走这个了
+                    else if (rm.returnType == TYPE_IMAGE) {
                         sendImageOnly(rm);
                     }
                 }
@@ -1047,10 +859,6 @@ public class AutoReplyService extends AccessibilityService {
     private boolean tongxunlu;
     private boolean faxian;
     private boolean wo;
-    private AccessibilityNodeInfo tongxunluTextView;
-    private AccessibilityNodeInfo pengyouquanTextView;
-    private int listviewCount;
-    private AccessibilityNodeInfo secondListView;
 
     private void checkIsWxHomePage(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
@@ -1068,13 +876,10 @@ public class AutoReplyService extends AccessibilityService {
                         weixin = true;
                     } else if (text.equals("通讯录")) {
                         tongxunlu = true;
-                        tongxunluTextView = nodeInfo.getParent();
                     } else if (text.equals("发现")) {
                         faxian = true;
                     } else if (text.equals("我")) {
                         wo = true;
-                    } else if (text.equals("朋友圈")) {
-                        pengyouquanTextView = nodeInfo.getParent();
                     } else if (text.startsWith("微信号：")) {
                         Log.d("test", "===============wxNo compare==============");
                         String realWxNo = text.replace("微信号：", "");
@@ -1087,11 +892,6 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }
                 lastTextView = nodeInfo;
-            } else if (nodeInfo.getClassName().equals("android.widget.ListView")) {
-                listviewCount++;
-                if (listviewCount == 2) {
-                    secondListView = nodeInfo;
-                }
             }
             checkIsWxHomePage(nodeInfo);
         }
@@ -1115,7 +915,7 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        doSequeSend();
+                        doActionByReceiveType();
                     }
                 }, 3000);
                 return true;
@@ -1127,246 +927,7 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-    private boolean findTargetPeople3(AccessibilityNodeInfo rootNode, String forwardto) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(forwardto)) {
-                Log.d("test", "click targetPeople = " + forwardto);
-                AccessibilityNodeInfo parent = nodeInfo.getParent();
-                parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                //跳到聊天页面
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        lastImageButton = null;
-                        findInfoButton(getRootInActiveWindow());
-                        if (lastImageButton == null) {
-                            release();
-                            return;
-                        }
-                        lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                boolean find = findTargetPeople4(getRootInActiveWindow(), forwardto);
-                                if (!find) {
-                                    release();
-                                }
-                            }
-                        }, 3000);
-                    }
-                }, 3000);
-                return true;
-            }
-            if (findTargetPeople3(nodeInfo, forwardto)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findTargetPeople4(AccessibilityNodeInfo rootNode, String forwardto) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(forwardto)) {
-                Log.d("test", "click targetPeople = " + forwardto);
-                AccessibilityNodeInfo parent = nodeInfo.getParent();
-                parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        //个人相册
-                        boolean find = findPrivateAlbum(getRootInActiveWindow());
-                        if (!find) {
-                            release();
-                        }
-                    }
-                }, 3000);
-                return true;
-            }
-            if (findTargetPeople4(nodeInfo, forwardto)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findPrivateAlbum(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("个人相册")) {
-                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        listViewNode = null;
-                        findListView(getRootInActiveWindow());
-                        if (listViewNode == null) {
-                            release();
-                            return;
-                        }
-                        //开始获取文字消息TextView内容，需要过滤掉一些干扰
-                    }
-                }, 3000);
-                return true;
-            }
-            if (findPrivateAlbum(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findListView(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.ListView")) {
-                listViewNode = nodeInfo;
-                return true;
-            }
-            if (findListView(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //个人信息按钮
-    private boolean findInfoButton(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
-                lastImageButton = nodeInfo;
-            }
-            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
-            if (findInfoButton(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findConfirmationButton(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.Button")) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        release();
-                    }
-                }, 5000);
-                return true;
-            }
-            if (findConfirmationButton(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findOpenPackageButton(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.Button")) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        release();
-                    }
-                }, 5000);
-                return true;
-            }
-            if (findOpenPackageButton(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findLastTransferMsg(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("微信转账")) {
-                lastTextView = nodeInfo;
-            }
-            if (findLastTransferMsg(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    private boolean findLastRedPackageMsg(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("领取红包")) {
-                lastTextView = nodeInfo;
-            }
-            if (findLastRedPackageMsg(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private AccessibilityNodeInfo lastTextView;
-
 
     private boolean getLastTextView(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
@@ -2559,19 +2120,5 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "e = " + e.toString());
         }
     }
-
-    public void getAllFriends(Long firstKey, Action firstA) {
-        firstA.receiveType = TYPE_GET_ALL_FRIENDS;
-        int friendCount = getSharedPreferences("friendCount", 0).getInt("friendCount", 100);
-        int scrollCount = friendCount / 6;
-        long maxReleaseTime = scrollCount * 2000;
-        launchWechat(firstKey, maxReleaseTime);
-    }
-
-    public void getFriendCircle(Long firstKey, Action firstA) {
-        firstA.receiveType = TYPE_GET_FC;
-        launchWechat(firstKey, 60000);
-    }
-
 
 }

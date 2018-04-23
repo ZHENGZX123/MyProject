@@ -19,10 +19,6 @@ public class Action {
     public static final int TYPE_COLLECTOR_FORWARDING = 102;//发到消息收集群
     public static final int TYPE_SET_FRIEND_CIRCLER_REMARK = 103;//设置朋友圈转发备注
     public static final int TYPE_REQUEST_FRIEND = 104;//好友请求
-    public static final int TYPE_REDPACKAGE = 105;//红包
-    public static final int TYPE_TRANSFER_MONEY = 106;//转账
-    public static final int TYPE_GET_ALL_FRIENDS = 107;//获取好友列表
-    public static final int TYPE_GET_FC = 108;//获取好友朋友圈
     public static final int TYPE_AUTO_MATCH = 109;//自动匹配
 
 

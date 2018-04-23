@@ -18,18 +18,21 @@ public class Constant {
     public static String clientUrl = "http://robot.kiway.cn";  //"http://192.168.8.161:8081"; http://rbtest.kiway.cn http://robot.kiway.cn
 
 
-    public static boolean isFormal = true;
 
     static {
-        if (isFormal) {
-            zbusHost = "robot.kiway.cn";
-            zbusPort = "15555";
-            clientUrl = "http://robot.kiway.cn";
-        } else {
+
+//            zbusHost = "robot.kiway.cn";
+//            zbusPort = "15555";
+//            clientUrl = "http://robot.kiway.cn";
+
             zbusHost = "rbtest.kiway.cn";
             zbusPort = "25555";
             clientUrl = "http://rbtest.kiway.cn";
-        }
+
+//            zbusHost = "192.168.8.161";
+//            zbusPort = "15555";
+//            clientUrl = "http://192.168.8.161:8081";
+
     }
 
     public static HashMap<String, String> qas = new HashMap<>();
