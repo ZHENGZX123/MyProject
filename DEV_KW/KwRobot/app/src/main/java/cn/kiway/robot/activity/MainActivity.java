@@ -448,8 +448,9 @@ public class MainActivity extends BaseActivity {
 
     public void sharePic(View view) {
         Platform.ShareParams sp = new Platform.ShareParams();
-        sp.setImagePath("/mnt/sdcard/1523179210665.jpg");
-        sp.setShareType(Platform.SHARE_IMAGE);
+        //sp.setImagePath("/mnt/sdcard/1523179210665.jpg");
+        sp.setText("sdfsadfasfdfdfadfs");
+        sp.setShareType(Platform.SHARE_TEXT);
         Platform wx = ShareSDK.getPlatform(Wechat.NAME);// 执行图文分享
         wx.share(sp);
     }

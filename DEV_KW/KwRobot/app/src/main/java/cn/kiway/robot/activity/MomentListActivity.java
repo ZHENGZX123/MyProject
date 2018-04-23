@@ -79,7 +79,7 @@ public class MomentListActivity extends AppCompatActivity {
     }
 
     protected void showFilterDialog() {
-       // Intent intent = new Intent(this, UserSelectActivity.class);
+       //  Intent intent = new Intent(this, UserSelectActivity.class);
         //startActivity(intent);
     }
 
