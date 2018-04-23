@@ -82,12 +82,11 @@ import static java.lang.System.currentTimeMillis;
 
 public class AutoReplyService extends AccessibilityService {
 
-    public static int MSG_CLEAR_ACTION = 1;
-    public static int MSG_ADD_RECV = 2;
-    public static int MSG_ZBUS_QUEUE = 3;
+    public static int MSG_ACTION_TIMEOUT = 1;
+    public static int MSG_INSERT_QUEUE = 2;
+    public static int MSG_TRAVERSAL_QUEUE = 3;
 
     public static AutoReplyService instance;
-    private final Object obj = new Object();
 
     //事件map
     public LinkedHashMap<Long, Action> actions = new LinkedHashMap<>();
@@ -107,17 +106,17 @@ public class AutoReplyService extends AccessibilityService {
         Log.d("maptrix", "service oncreate");
         instance = this;
         Utils.installationPush(getApplication());
-        mHandler.sendEmptyMessage(MSG_ZBUS_QUEUE);
+        mHandler.sendEmptyMessage(MSG_TRAVERSAL_QUEUE);
     }
 
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what == MSG_CLEAR_ACTION) {
+            if (msg.what == MSG_ACTION_TIMEOUT) {
                 release();
                 return;
             }
-            if (msg.what == MSG_ADD_RECV) {
+            if (msg.what == MSG_INSERT_QUEUE) {
                 ZbusRecv recv = (ZbusRecv) msg.obj;
                 boolean insertToHead = (msg.arg1 == 1);
                 if (insertToHead) {
@@ -127,9 +126,12 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 return;
             }
-            if (msg.what == MSG_ZBUS_QUEUE) {
-                mHandler.removeMessages(MSG_ZBUS_QUEUE);
-                mHandler.sendEmptyMessageDelayed(MSG_ZBUS_QUEUE, 2000);
+            if (msg.what == MSG_TRAVERSAL_QUEUE) {
+                mHandler.removeMessages(MSG_TRAVERSAL_QUEUE);
+                mHandler.sendEmptyMessageDelayed(MSG_TRAVERSAL_QUEUE, 2000);
+                if (!getSharedPreferences("kiway", 0).getBoolean("login", false)) {
+                    return;
+                }
                 if (zbusRecvs.size() == 0) {
                     return;
                 }
@@ -146,7 +148,7 @@ public class AutoReplyService extends AccessibilityService {
         if (maxReleaseTime < 60000) {
             maxReleaseTime = 60000;
         }
-        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, maxReleaseTime);
+        mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, maxReleaseTime);
         currentActionID = id;
         try {
             actions.get(currentActionID).intent.send();
@@ -268,7 +270,7 @@ public class AutoReplyService extends AccessibilityService {
                     //拉起微信
                     //handleImageMsg(id, action.returnMessages, maxReleaseTime);
                     //0419使用分享的方法，不拉起微信
-                    mHandler.sendEmptyMessageDelayed(MSG_CLEAR_ACTION, 60000);
+                    mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
                     currentActionID = id;
                     actioningFlag = true;
                     new Thread() {
@@ -349,7 +351,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private void sendReply20sLater(long id, Action action) {
         Message msg = new Message();
-        msg.what = MSG_ADD_RECV;
+        msg.what = MSG_INSERT_QUEUE;
 
         String hint = "";
         boolean in = Utils.isEffectiveDate();
@@ -377,7 +379,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private void sendReplyImmediately(String fakeRecv, boolean insertToHead) {
         Message msg = new Message();
-        msg.what = MSG_ADD_RECV;
+        msg.what = MSG_INSERT_QUEUE;
         msg.arg1 = insertToHead ? 1 : 0;
         msg.obj = new ZbusRecv(fakeRecv, true);
         mHandler.sendMessage(msg);
@@ -385,7 +387,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private void release() {
         Log.d("test", "release is called");
-        mHandler.removeMessages(MSG_CLEAR_ACTION);
+        mHandler.removeMessages(MSG_ACTION_TIMEOUT);
         backToRobot();
         mHandler.postDelayed(new Runnable() {
             @Override

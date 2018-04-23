@@ -62,10 +62,9 @@ public class MainActivity extends BaseActivity {
 
     public static final int MSG_NETWORK_OK = 11;
     public static final int MSG_NETWORK_ERR = 22;
-    private static final int MSG_INSTALL = 33;
-    private static final int MSG_UPGRADE = 44;
-    private static final int MSG_WELCOME = 55;
-    private static final int MSG_GET_QA = 66;
+    private static final int MSG_UPGRADE = 33;
+    private static final int MSG_WELCOME = 44;
+    private static final int MSG_GET_QA = 55;
 
     private TextView nameTV;
     private CheckBox getPic;
@@ -79,7 +78,8 @@ public class MainActivity extends BaseActivity {
         initView();
         initListener();
         checkRoot(null);
-        mHandler.sendEmptyMessage(MSG_INSTALL);
+        Utils.installationPush(getApplication());
+
         mHandler.sendEmptyMessage(MSG_UPGRADE);
         mHandler.sendEmptyMessage(MSG_WELCOME);
         mHandler.sendEmptyMessage(MSG_GET_QA);
@@ -544,10 +544,6 @@ public class MainActivity extends BaseActivity {
                 rl_nonet.setVisibility(View.VISIBLE);
                 Log.d("test", "无网络");
                 ZbusUtils.close();
-            } else if (msg.what == MSG_INSTALL) {
-                Utils.installationPush(getApplication());
-                mHandler.removeMessages(MSG_INSTALL);
-                mHandler.sendEmptyMessageDelayed(MSG_INSTALL, 2 * 60 * 60 * 1000);
             } else if (msg.what == MSG_UPGRADE) {
                 mHandler.removeMessages(MSG_UPGRADE);
                 checkNewVersion(null);
