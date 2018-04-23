@@ -94,7 +94,6 @@ public class AutoReplyService extends AccessibilityService {
     //家长busy次数
     public HashMap<String, Integer> busyCountMap = new HashMap<>();
 
-    private String senderFromNotification;
     private String forwardto;//当前要转发的对象
 
     @Override
@@ -298,7 +297,6 @@ public class AutoReplyService extends AccessibilityService {
                 Log.d("test", "sendMsgToServer");
                 try {
                     String name = getSharedPreferences("kiway", 0).getString("name", "");
-                    String userId = Utils.getIMEI(getApplicationContext());
                     String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
                     String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
                     String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
@@ -434,10 +432,8 @@ public class AutoReplyService extends AccessibilityService {
                         String[] cc = ticker.split(":");
                         sender = Utils.replace(cc[0].trim());//由于备注去不掉，在这里把表情去掉
                         content = cc[1].trim();
-                        AutoReplyService.this.senderFromNotification = sender;//转发用的
                         Log.d("test", "sender name = " + sender);
                         Log.d("test", "sender content = " + content);
-
                         if (Utils.isInfilters(getApplicationContext(), sender)) {
                             Log.d("test", "该昵称被过滤");
                             continue;
@@ -600,10 +596,24 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
+    private boolean realSendText;
+
     private void doActionByReceiveType() {
         int receiveType = actions.get(currentActionID).receiveType;
         if (receiveType == TYPE_TEXT || receiveType == TYPE_AUTO_MATCH) {
-            doSequeSend();
+            if (realSendText) {
+                doSequeSend();
+                realSendText = false;
+            } else {
+                int size = actions.get(currentActionID).returnMessages.size();
+                Log.d("test", "要回复的条数:" + size);
+                if (size < 4) {
+                    doSequeSend();
+                } else {
+                    realSendText = true;
+                    backToWxHomePage();
+                }
+            }
         } else if (receiveType == TYPE_FRIEND_CIRCLER) {
             // 找到最后一个链接，点击转发到朋友圈
             lastFrameLayout = null;
@@ -654,6 +664,7 @@ public class AutoReplyService extends AccessibilityService {
                 }, 3000);
                 return;
             }
+
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -1373,10 +1384,11 @@ public class AutoReplyService extends AccessibilityService {
             String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
             String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
             String topic = robotId + "#" + wxNo;
+            Action currentAction = actions.get(currentActionID);
 
             String msg = new JSONObject()
                     .put("id", System.currentTimeMillis() + "")
-                    .put("sender", senderFromNotification)
+                    .put("sender", currentAction.sender)
                     .put("content", "content")
                     .put("me", name)
                     .put("areaCode", areaCode)
