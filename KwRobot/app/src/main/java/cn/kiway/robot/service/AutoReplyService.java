@@ -63,7 +63,7 @@ import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING;
-import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
+import static cn.kiway.robot.entity.Action.TYPE_SET_FORWARDTO;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_SET_FRIEND_CIRCLER_REMARK;
 import static cn.kiway.robot.entity.Action.TYPE_TEXT;
@@ -470,7 +470,7 @@ public class AutoReplyService extends AccessibilityService {
                     //来自公众号的消息每一条都要转发：图片还没有做，需要测试
                     else if (/*sender.equals(Utils.getForwardFrom(this)) &&*/ content.startsWith("设置转发对象：")) {
                         //设置转发对象有可能丢掉！因为微信可能不弹出通知
-                        action.receiveType = TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO;
+                        action.receiveType = TYPE_SET_FORWARDTO;
                     }
 //                    else if (sender.equals(Utils.getForwardFrom(this)) && !content.equals("[语音]") && !content.equals("[动画表情]")) {
 //                        action.receiveType = TYPE_PUBLIC_ACCONT_FORWARDING;
@@ -508,12 +508,13 @@ public class AutoReplyService extends AccessibilityService {
                         //该版本暂时屏蔽launchWechat(id);
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv);
-                    } else if (action.receiveType == TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO) {
+                    } else if (action.receiveType == TYPE_SET_FORWARDTO) {
                         String forwardto = action.content.replace("设置转发对象：", "").trim();
                         if (TextUtils.isEmpty(forwardto)) {
                             continue;
                         }
                         getSharedPreferences("forwardto", 0).edit().putString("forwardto", forwardto).commit();
+                        getSharedPreferences("collector", 0).edit().putString("collector", forwardto).commit();
                         toast("设置转发对象成功");
 
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
@@ -637,7 +638,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }
             }, 10000);//防止页面加载不完整
-        } else if (receiveType == TYPE_PUBLIC_ACCOUNT_SET_FORWARDTO || receiveType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
+        } else if (receiveType == TYPE_SET_FORWARDTO || receiveType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
             sendTextOnly2("设置成功！");
             mHandler.postDelayed(new Runnable() {
                 @Override
