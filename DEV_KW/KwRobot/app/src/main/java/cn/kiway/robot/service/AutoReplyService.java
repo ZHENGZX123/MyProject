@@ -41,6 +41,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import cn.kiway.robot.KWApplication;
@@ -59,20 +60,24 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
 
 import static cn.kiway.robot.entity.Action.TYPE_AUTO_MATCH;
+import static cn.kiway.robot.entity.Action.TYPE_BACK_DOOR;
 import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING;
-import static cn.kiway.robot.entity.Action.TYPE_SET_FORWARDTO;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
+import static cn.kiway.robot.entity.Action.TYPE_SET_FORWARDTO;
 import static cn.kiway.robot.entity.Action.TYPE_SET_FRIEND_CIRCLER_REMARK;
 import static cn.kiway.robot.entity.Action.TYPE_TEXT;
 import static cn.kiway.robot.util.Constant.APPID;
+import static cn.kiway.robot.util.Constant.BACK_DOOR1;
+import static cn.kiway.robot.util.Constant.BACK_DOOR2;
 import static cn.kiway.robot.util.Constant.DEFAULT_BUSY;
 import static cn.kiway.robot.util.Constant.DEFAULT_OFFLINE;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.clientUrl;
+import static cn.kiway.robot.util.Constant.qas;
 import static java.lang.System.currentTimeMillis;
 
 public class AutoReplyService extends AccessibilityService {
@@ -114,7 +119,12 @@ public class AutoReplyService extends AccessibilityService {
             }
             if (msg.what == MSG_ADD_RECV) {
                 ZbusRecv recv = (ZbusRecv) msg.obj;
-                zbusRecvs.add(recv);
+                boolean insertToHead = (msg.arg1 == 1);
+                if (insertToHead) {
+                    zbusRecvs.add(0, recv);
+                } else {
+                    zbusRecvs.add(recv);
+                }
                 return;
             }
             if (msg.what == MSG_ZBUS_QUEUE) {
@@ -365,9 +375,10 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.sendMessageDelayed(msg, 20000);
     }
 
-    private void sendReplyImmediately(String fakeRecv) {
+    private void sendReplyImmediately(String fakeRecv, boolean insertToHead) {
         Message msg = new Message();
         msg.what = MSG_ADD_RECV;
+        msg.arg1 = insertToHead ? 1 : 0;
         msg.obj = new ZbusRecv(fakeRecv, true);
         mHandler.sendMessage(msg);
     }
@@ -468,29 +479,33 @@ public class AutoReplyService extends AccessibilityService {
                         action.receiveType = TYPE_SET_FRIEND_CIRCLER_REMARK;
                     }
                     //来自公众号的消息每一条都要转发：图片还没有做，需要测试
-                    else if (/*sender.equals(Utils.getForwardFrom(this)) &&*/ content.startsWith("设置转发对象：")) {
+                    else if (content.startsWith("设置转发对象：")) {
                         //设置转发对象有可能丢掉！因为微信可能不弹出通知
                         action.receiveType = TYPE_SET_FORWARDTO;
                     }
-//                    else if (sender.equals(Utils.getForwardFrom(this)) && !content.equals("[语音]") && !content.equals("[动画表情]")) {
-//                        action.receiveType = TYPE_PUBLIC_ACCONT_FORWARDING;
-//                    }
                     //需要转发到“消息收集群”
                     else if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了")) {
                         action.receiveType = TYPE_COLLECTOR_FORWARDING;
                     } else if (!TextUtils.isEmpty(Constant.qas.get(content.trim()))) {
                         action.receiveType = TYPE_AUTO_MATCH;
                         action.returnMessages.add(new ReturnMessage(TYPE_TEXT, Constant.qas.get(content.trim())));
+                    } else if (!TextUtils.isEmpty(Constant.backdoors.get(content.trim()))) {
+                        action.receiveType = TYPE_BACK_DOOR;
+                        String ret = "";
+                        if (content.trim().equals(BACK_DOOR1)) {
+                            ret = getBackDoor1();
+                        } else if (content.trim().equals(BACK_DOOR2)) {
+                            ret = getBackDoor2();
+                        }
+                        action.returnMessages.add(new ReturnMessage(TYPE_TEXT, ret));
                     }
                     //其他文字直接走zbus即可
                     else {
                         action.receiveType = TYPE_TEXT;
                     }
-                    //0427 actions暂时不清了
-//                    if (actions.size() > 10000) {
-//                        actions.clear();
-//                    }
+
                     actions.put(id, action);
+
                     if (action.receiveType == TYPE_TEXT) {
                         //刷新界面
                         refreshUI1();
@@ -499,15 +514,16 @@ public class AutoReplyService extends AccessibilityService {
                         sendReply20sLater(id, action);
                     } else if (action.receiveType == TYPE_AUTO_MATCH) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv);
+                        sendReplyImmediately(fakeRecv, false);
+                    } else if (action.receiveType == TYPE_BACK_DOOR) {
+                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+                        sendReplyImmediately(fakeRecv, true);
                     } else if (action.receiveType == TYPE_FRIEND_CIRCLER) {
-                        //该版本暂时屏蔽launchWechat(id);
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv);
+                        sendReplyImmediately(fakeRecv, false);
                     } else if (action.receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || action.receiveType == TYPE_COLLECTOR_FORWARDING) {
-                        //该版本暂时屏蔽launchWechat(id);
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv);
+                        sendReplyImmediately(fakeRecv, false);
                     } else if (action.receiveType == TYPE_SET_FORWARDTO) {
                         String forwardto = action.content.replace("设置转发对象：", "").trim();
                         if (TextUtils.isEmpty(forwardto)) {
@@ -516,9 +532,8 @@ public class AutoReplyService extends AccessibilityService {
                         getSharedPreferences("forwardto", 0).edit().putString("forwardto", forwardto).commit();
                         getSharedPreferences("collector", 0).edit().putString("collector", forwardto).commit();
                         toast("设置转发对象成功");
-
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv);
+                        sendReplyImmediately(fakeRecv, false);
                     } else if (action.receiveType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
                         String remark = action.content.replace("设置朋友圈备注：", "").trim();
                         if (TextUtils.isEmpty(remark)) {
@@ -527,10 +542,10 @@ public class AutoReplyService extends AccessibilityService {
                         getSharedPreferences("FCremark", 0).edit().putString("FCremark", remark).commit();
                         toast("设置朋友圈备注成功");
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv);
+                        sendReplyImmediately(fakeRecv, false);
                     } else if (action.receiveType == TYPE_REQUEST_FRIEND) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv);
+                        sendReplyImmediately(fakeRecv, false);
                     }
                 }
                 break;
@@ -597,11 +612,50 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
+    private String getBackDoor1() {
+        StringBuilder sb = new StringBuilder();
+        int totalActionCount = actions.size();
+        int undoCount = zbusRecvs.size() + 1;
+        int doneCount = totalActionCount - undoCount;
+
+        sb.append("家长问题总个数：" + totalActionCount + "，\n");
+        sb.append("其中已回复个数：" + doneCount + "，\n");
+        sb.append("未回复个数：" + undoCount + "。");
+        return sb.toString();
+    }
+
+    private String getBackDoor2() {
+        int totalActionCount = actions.size();
+        if (totalActionCount == 0) {
+            return "目前家长问题个数是0";
+        }
+        int autoCount = 0;
+
+        String welcome = getSharedPreferences("welcome", 0).getString("welcome", DEFAULT_WELCOME);
+        Iterator<Map.Entry<Long, Action>> it = actions.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<Long, Action> entry = it.next();
+            Action a = entry.getValue();
+            if (!TextUtils.isEmpty(qas.get(a.content))) {
+                autoCount++;
+            }
+            if (welcome.contains(a.content)) {
+                autoCount++;
+            }
+        }
+        int percent = (int) ((float) autoCount / totalActionCount * 100);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("家长问题总个数：" + totalActionCount + "，\n");
+        sb.append("其中自动回复个数：" + autoCount + "，占比" + percent + "%");
+        return sb.toString();
+    }
+
     private boolean realSendText;
 
     private void doActionByReceiveType() {
         int receiveType = actions.get(currentActionID).receiveType;
-        if (receiveType == TYPE_TEXT || receiveType == TYPE_AUTO_MATCH) {
+        if (receiveType == TYPE_TEXT || receiveType == TYPE_AUTO_MATCH || receiveType == TYPE_BACK_DOOR) {
             if (realSendText) {
                 doSequeSend();
                 realSendText = false;

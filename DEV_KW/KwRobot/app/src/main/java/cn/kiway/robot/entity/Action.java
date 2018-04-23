@@ -13,7 +13,6 @@ public class Action {
     public static final int TYPE_TEXT = 1;
     public static final int TYPE_IMAGE = 2;
 
-
     public static final int TYPE_SET_FORWARDTO = 100;//设置消息转发对象：公众号、消息收集人，都是这个设置。
 
     public static final int TYPE_PUBLIC_ACCONT_FORWARDING = 101;//需要转发给指定的人
@@ -24,7 +23,7 @@ public class Action {
 
     public static final int TYPE_REQUEST_FRIEND = 104;//好友请求
     public static final int TYPE_AUTO_MATCH = 109;//自动匹配的消息
-
+    public static final int TYPE_BACK_DOOR = 110;//机器人后门用
 
     public PendingIntent intent;
     public String sender;

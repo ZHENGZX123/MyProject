@@ -73,9 +73,20 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="checkFCFrom"
+            android:text="设置朋友圈使者" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="checkFCRemark"
+            android:text="查看朋友圈备注" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:onClick="checkNewVersion"
             android:text="检测新版本" />
-
 
         <Button
             android:layout_width="wrap_content"
@@ -113,19 +124,6 @@
             android:text="设置本机器人对应的openId"
             android:visibility="gone" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="checkFCFrom"
-            android:text="设置朋友圈使者"
-            android:visibility="gone" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="checkFCRemark"
-            android:text="查看朋友圈备注"
-            android:visibility="gone" />
 
         <Button
             android:layout_width="wrap_content"
