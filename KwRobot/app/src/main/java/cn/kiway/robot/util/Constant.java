@@ -18,16 +18,15 @@ public class Constant {
     public static String clientUrl = "http://robot.kiway.cn";  //"http://192.168.8.161:8081"; http://rbtest.kiway.cn http://robot.kiway.cn
 
 
-
     static {
 
 //            zbusHost = "robot.kiway.cn";
 //            zbusPort = "15555";
 //            clientUrl = "http://robot.kiway.cn";
 
-            zbusHost = "rbtest.kiway.cn";
-            zbusPort = "25555";
-            clientUrl = "http://rbtest.kiway.cn";
+        zbusHost = "rbtest.kiway.cn";
+        zbusPort = "25555";
+        clientUrl = "http://rbtest.kiway.cn";
 
 //            zbusHost = "192.168.8.161";
 //            zbusPort = "15555";
@@ -50,7 +49,19 @@ public class Constant {
         qas.put("[视频]", "暂不支持视频咨询。");*/
         qas.put("[语音]", "暂不支持语音咨询。");
         qas.put("[动画表情]", "暂不支持动画表情咨询。");
+
     }
+
+
+    public static String BACK_DOOR1 = "机器人后门1";
+    public static String BACK_DOOR2 = "机器人后门2";
+    public static HashMap<String, String> backdoors = new HashMap<>();
+
+    static {
+        backdoors.put(BACK_DOOR1, BACK_DOOR1);
+        backdoors.put(BACK_DOOR2, BACK_DOOR2);
+    }
+
 
     public static final String DEFAULT_WELCOME_TITLE = "感谢您添加招生客服，您可以发送您的问题进行人工咨询。为了减少您的等待，您可以按以下关键字发送咨询招生相关问题。谢谢！";
 
