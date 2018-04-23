@@ -178,14 +178,10 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     Action action = actions.get(id);
                     if (action == null) {
-                        Log.d("test", "action null , error!!!");
-                        //0410 构造action，然后打开微信主页？
-                        //0410 构造action，然后查找一个用过的action？
-                        //0416 找第一个action？
-                        doFindUsableAction(o, false);//因为原有的action丢失，使用的是别人的action，所以realReply是false
+                        Log.d("test", "action null , doFindUsableAction");
+                        doFindUsableAction(o, false);//因为原有的action可能丢失，使用的是别人的action，所以realReply是false
                     } else {
                         if (action.replied) {
-                            Log.d("test", "已经回复过了");
                             return;
                         }
                         JSONArray returnMessage = o.getJSONArray("returnMessage");
@@ -245,38 +241,24 @@ public class AutoReplyService extends AccessibilityService {
                         e.printStackTrace();
                     }
                 }
+
                 long maxReleaseTime = action.returnMessages.size() * 8000;
-
-
                 Log.d("test", "imageCount = " + imageCount);
                 if (imageCount == 0) {
-                    //没有图片的话，可以直接去回复文字
+                    //文字
                     launchWechat(id, maxReleaseTime);
                 } else if (imageCount > 0) {
-                    Log.d("test", "处理前count = " + action.returnMessages.size());
-                    //这里加工一下，只保留1个图片就可以了
-                    boolean removed = false;
-                    Iterator<ReturnMessage> it = action.returnMessages.iterator();
-                    while (it.hasNext()) {
-                        ReturnMessage rm = it.next();
-                        if (rm.returnType == TYPE_IMAGE) {
-                            if (removed) {
-                                it.remove();
-                            }
-                            removed = true;
-                        }
-                    }
-                    Log.d("test", "处理后count = " + action.returnMessages.size());
-                    //拉起微信
                     //handleImageMsg(id, action.returnMessages, maxReleaseTime);
-                    //0419使用分享的方法，不拉起微信
+                    //0419使用分享的方法，不直接拉起微信
                     mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
                     currentActionID = id;
                     actioningFlag = true;
                     new Thread() {
                         @Override
                         public void run() {
-                            sendImageOnly2("http://upload.jnwb.net/2014/0311/1394514005639.jpg");//暂时只处理一个action.returnMessages.get(0).content
+                            //action.returnMessages.get(0).content
+                            //"http://upload.jnwb.net/2014/0311/1394514005639.jpg"
+                            sendImageOnly2(action.returnMessages.get(0).content);
                         }
                     }.start();
                 }
