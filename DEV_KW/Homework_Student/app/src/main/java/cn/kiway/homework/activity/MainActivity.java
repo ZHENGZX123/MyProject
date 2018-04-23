@@ -49,9 +49,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import cn.kiway.homework.WXApplication;
 import cn.kiway.homework.entity.HTTPCache;
+import cn.kiway.homework.entity.HttpRequest;
 import cn.kiway.homework.student.R;
 import cn.kiway.homework.util.BadgeUtil;
 import cn.kiway.homework.util.CountlyUtil;
@@ -85,6 +87,9 @@ public class MainActivity extends BaseActivity {
     private String mMac;
     private int mStatus;//0断开 1连接
     private long time;
+
+    //请求map
+    private HashMap<String, HttpRequest> requests = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -989,7 +994,15 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
-                    client.setTimeout(10000);
+                    String currentTime = System.currentTimeMillis() + "";
+                    final HttpRequest request = new HttpRequest(client, url, param, method, tagname, time, related);
+
+                    requests.put(currentTime, request);
+                    Message msg = new Message();
+                    msg.what = 999;
+                    msg.obj = currentTime;
+                    mHandler.sendMessageDelayed(msg, 10000);
+
                     String token = getSharedPreferences("kiway", 0).getString("accessToken", "");
                     client.addHeader("X-Auth-Token", token);
                     if (method.equalsIgnoreCase("POST")) {
@@ -998,6 +1011,10 @@ public class MainActivity extends BaseActivity {
 
                             @Override
                             public void onSuccess(int arg0, Header[] arg1, String ret) {
+                                if (request.finished) {
+                                    return;
+                                }
+                                request.finished = true;
                                 MLog.d("test", "post onSuccess = " + ret);
                                 httpRequestCallback(tagname, ret);
                                 //如果是post，related不为空，查找一下相关的缓存，并清除掉
@@ -1006,7 +1023,10 @@ public class MainActivity extends BaseActivity {
 
                             @Override
                             public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
-                                MLog.d("test", "post onFailure = " + ret);
+                                if (request.finished) {
+                                    return;
+                                }
+                                request.finished = true;
                                 httpRequestCallback(tagname, ret);
                             }
                         });
@@ -1016,6 +1036,10 @@ public class MainActivity extends BaseActivity {
 
                             @Override
                             public void onSuccess(int arg0, Header[] arg1, String ret) {
+                                if (request.finished) {
+                                    return;
+                                }
+                                request.finished = true;
                                 MLog.d("test", "put onSuccess = " + ret);
                                 httpRequestCallback(tagname, ret);
                                 //如果是post，related不为空，查找一下相关的缓存，并清除掉
@@ -1024,6 +1048,10 @@ public class MainActivity extends BaseActivity {
 
                             @Override
                             public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                                if (request.finished) {
+                                    return;
+                                }
+                                request.finished = true;
                                 MLog.d("test", "put onFailure = " + ret);
                                 httpRequestCallback(tagname, ret);
                             }
@@ -1034,6 +1062,10 @@ public class MainActivity extends BaseActivity {
                         client.get(MainActivity.this, checkUrl, new TextHttpResponseHandler() {
                             @Override
                             public void onSuccess(int i, Header[] headers, String ret) {
+                                if (request.finished) {
+                                    return;
+                                }
+                                request.finished = true;
                                 MLog.d("test", "get onSuccess = " + ret);
                                 saveDB(url, param, method, ret, tagname);
                                 httpRequestCallback(tagname, ret);
@@ -1041,10 +1073,14 @@ public class MainActivity extends BaseActivity {
 
                             @Override
                             public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
+                                if (request.finished) {
+                                    return;
+                                }
+                                request.finished = true;
                                 MLog.d("test", "get onFailure = " + ret);
                                 //如果是get，把缓存回它
-                                String request = url + param + method;
-                                HTTPCache cache = new MyDBHelper(getApplicationContext()).getHttpCacheByRequest(request, Integer.parseInt(time));
+                                String requestStr = url + param + method;
+                                HTTPCache cache = new MyDBHelper(getApplicationContext()).getHttpCacheByRequest(requestStr, Integer.parseInt(time));
                                 if (cache != null) {
                                     httpRequestCallback(cache.tagname, cache.response);
                                 } else {
@@ -1056,6 +1092,10 @@ public class MainActivity extends BaseActivity {
                         client.delete(MainActivity.this, url, new TextHttpResponseHandler() {
                             @Override
                             public void onSuccess(int i, Header[] headers, String ret) {
+                                if (request.finished) {
+                                    return;
+                                }
+                                request.finished = true;
                                 MLog.d("test", "get onSuccess = " + ret);
                                 httpRequestCallback(tagname, ret);
                                 //如果是post，related不为空，查找一下相关的缓存，并清除掉
@@ -1064,6 +1104,10 @@ public class MainActivity extends BaseActivity {
 
                             @Override
                             public void onFailure(int i, Header[] headers, String ret, Throwable throwable) {
+                                if (request.finished) {
+                                    return;
+                                }
+                                request.finished = true;
                                 MLog.d("test", "get onFailure = " + ret);
                                 httpRequestCallback(tagname, ret);
                             }
@@ -1296,6 +1340,27 @@ public class MainActivity extends BaseActivity {
                 intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
                 startActivity(intent);
                 finish();
+            } else if (msg.what == 999) {
+                String key = msg.obj.toString();
+                HttpRequest request = requests.get(key);
+                if (request.finished) {
+                    MLog.d("test", "请求已完成，不用做超时处理");
+                    return;
+                }
+                MLog.d("test", "请求已超时，超时做失败处理");
+                request.finished = true;
+                if (request.method.equalsIgnoreCase("GET")) {
+                    //如果是get，把缓存回它
+                    String requestStr = request.url + request.param + request.method;
+                    HTTPCache cache = new MyDBHelper(getApplicationContext()).getHttpCacheByRequest(requestStr, Integer.parseInt(request.time));
+                    if (cache != null) {
+                        httpRequestCallback(cache.tagname, cache.response);
+                    } else {
+                        httpRequestCallback(request.tagname, "");
+                    }
+                } else {
+                    httpRequestCallback(request.tagname, "");
+                }
             }
         }
     };
