@@ -833,15 +833,18 @@ public class AutoReplyService extends AccessibilityService {
 
     private void backToWxHomePage() {
         //先返回首页，再按搜索去做
-        String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
-        RootCmd.execRootCmdSilent(cmd);
+        if (backImageView == null) {
+            release();
+            return;
+        }
+        backImageView.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 checkIsWxHomePage();
                 searchSenderInWxHomePage();
             }
-        }, 3000);
+        }, 2000);
     }
 
     private boolean checkIsCorrectSender(AccessibilityNodeInfo rootNode, String targetSender) {
@@ -901,6 +904,7 @@ public class AutoReplyService extends AccessibilityService {
         faxian = false;
         wo = false;
         lastTextView = null;
+        backImageView = null;
         checkIsWxHomePage(getRootInActiveWindow());
     }
 
@@ -969,6 +973,7 @@ public class AutoReplyService extends AccessibilityService {
     private boolean tongxunlu;
     private boolean faxian;
     private boolean wo;
+    private AccessibilityNodeInfo backImageView;
 
     private void checkIsWxHomePage(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
@@ -1002,6 +1007,8 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }
                 lastTextView = nodeInfo;
+            } else if (nodeInfo.getClassName().equals("android.widget.ImageView") && backImageView == null) {
+                backImageView = nodeInfo;
             }
             checkIsWxHomePage(nodeInfo);
         }
