@@ -26,7 +26,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cn.kiway.robot.KWApplication;
-import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.wx.reply.utils.ZbusUtils;
 import io.netty.util.internal.StringUtil;
@@ -239,9 +238,13 @@ public class Utils {
                         public void handle(Message message, MqClient mqClient) {
                             String msg = message.getBodyString();
                             //FIXME 在这里要做一个预处理，如果是图片的话，先别急加进去要事先下载
-
                             if (AutoReplyService.instance != null) {
-                                AutoReplyService.instance.zbusRecvs.add(new ZbusRecv(msg, true));
+                                //如果发送者是test888，添加到队头
+                                if (msg.contains("test888")) {
+                                    AutoReplyService.instance.sendReplyImmediately(msg, true);
+                                } else {
+                                    AutoReplyService.instance.sendReplyImmediately(msg, false);
+                                }
                             }
                         }
                     }, Constant.zbusHost + ":" + Constant.zbusPort);
@@ -300,5 +303,14 @@ public class Utils {
                 return text;
             }
         }
+    }
+
+    /**
+     * 把long 转换成 日期 再转换成String类型
+     */
+    public static String transferLongToDate(String dateFormat, Long millSec) {
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        Date date = new Date(millSec);
+        return sdf.format(date);
     }
 }

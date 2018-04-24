@@ -53,8 +53,8 @@ public class Constant {
     }
 
 
-    public static String BACK_DOOR1 = "机器人后门1";
-    public static String BACK_DOOR2 = "机器人后门2";
+    public static String BACK_DOOR1 = "开维一本万利";
+    public static String BACK_DOOR2 = "开维前程似锦";
     public static HashMap<String, String> backdoors = new HashMap<>();
 
     static {
@@ -62,10 +62,11 @@ public class Constant {
         backdoors.put(BACK_DOOR2, BACK_DOOR2);
     }
 
+    public static final String HEART_BEAT_TESTER = "心跳测试使者";
 
-    public static final String DEFAULT_WELCOME_TITLE = "感谢您添加招生客服，您可以发送您的问题进行人工咨询。为了减少您的等待，您可以按以下关键字发送咨询招生相关问题。谢谢！";
+    public static final String DEFAULT_WELCOME_TITLE = "感谢您添加招生客服，您可以发送您的问题进行人工咨询。为了减少您的等待，您可以按以下序号或关键字发送咨询招生相关问题。谢谢！";
 
-    public static final String DEFAULT_WELCOME = "感谢您添加招生客服机器人，您可以按以下关键字发送咨询招生相关问题，谢谢！\n" +
+    public static final String DEFAULT_WELCOME = "感谢您添加招生客服机器人，您可以按以下序号或关键字发送咨询招生相关问题，谢谢！\n" +
             "1、计生证明或者计划生育证明\n" +
             "2、租房或者住房\n" +
             "3、台湾或者香港\n" +
@@ -75,6 +76,6 @@ public class Constant {
             "7、录取\n";
     public static final String DEFAULT_BUSY = "因为咨询人员较多，客服正忙，请耐心等待。";
 
-    public static final String DEFAULT_OFFLINE = "客服已下线，请于工作时间8：30-22：00再咨询，或者您可以发送以下关键字咨询：";
+    public static final String DEFAULT_OFFLINE = "客服已下线，请于工作时间8：30-22：00再咨询，或者您可以发送以下序号或关键字咨询：";
 
 }

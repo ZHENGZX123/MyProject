@@ -1,6 +1,7 @@
 package cn.kiway.robot.util;
 
 import android.util.Log;
+import android.view.KeyEvent;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -9,22 +10,15 @@ import java.io.IOException;
 public class RootCmd {
 
     private static final String TAG = "test";
-    private static boolean mHaveRoot = false;
 
     // 判断机器Android是否已经root，即是否获取root权限  
     public static boolean haveRoot() {
-        if (!mHaveRoot) {
-            int ret = execRootCmdSilent("echo test"); // 通过执行测试命令来检测  
-            if (ret != -1) {
-                Log.d(TAG, "have root!");
-                mHaveRoot = true;
-            } else {
-                Log.d(TAG, "not root!");
-            }
-        } else {
-            Log.d(TAG, "mHaveRoot = true, have root!");
+        int ret = execRootCmdSilent("input keyevent " + KeyEvent.KEYCODE_VOLUME_UP); // 通过执行测试命令来检测
+        Log.d("test", "ret = " + ret);
+        if (ret != -1) {
+            return true;
         }
-        return mHaveRoot;
+        return false;
     }
 
 
