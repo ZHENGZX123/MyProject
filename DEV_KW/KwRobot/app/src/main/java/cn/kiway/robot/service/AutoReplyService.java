@@ -76,6 +76,7 @@ import static cn.kiway.robot.util.Constant.DEFAULT_BUSY;
 import static cn.kiway.robot.util.Constant.DEFAULT_OFFLINE;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
+import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Constant.qas;
 import static java.lang.System.currentTimeMillis;
@@ -85,6 +86,7 @@ public class AutoReplyService extends AccessibilityService {
     public static int MSG_ACTION_TIMEOUT = 1;
     public static int MSG_INSERT_QUEUE = 2;
     public static int MSG_TRAVERSAL_QUEUE = 3;
+    public static int MSG_HEART_BEAT = 4;
 
     public static AutoReplyService instance;
 
@@ -100,6 +102,9 @@ public class AutoReplyService extends AccessibilityService {
 
     private String forwardto;//当前要转发的对象
 
+    private long lastHearBeatID;
+    private long zbusFailureCount;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -107,6 +112,8 @@ public class AutoReplyService extends AccessibilityService {
         instance = this;
         Utils.installationPush(getApplication());
         mHandler.sendEmptyMessage(MSG_TRAVERSAL_QUEUE);
+        mHandler.sendEmptyMessage(MSG_HEART_BEAT);
+
     }
 
     private Handler mHandler = new Handler() {
@@ -141,18 +148,33 @@ public class AutoReplyService extends AccessibilityService {
                 handleZbusMsg(zbusRecvs.remove(0));
                 return;
             }
+            if (msg.what == MSG_HEART_BEAT) {
+                mHandler.removeMessages(MSG_HEART_BEAT);
+                mHandler.sendEmptyMessageDelayed(MSG_HEART_BEAT, 10 * 60 * 1000);
+                Log.d("test", "发送了一个心跳");
+                //创建一个假事件作为心跳
+                Action action = new Action();
+                action.sender = HEART_BEAT_TESTER;
+                action.content = "100007";
+                action.receiveType = TYPE_TEXT;
+
+                //zbus发送
+                long id = System.currentTimeMillis();
+                sendMsgToServer(id, action);
+                sendReply20sLater(id, action);
+            }
         }
     };
 
     private void launchWechat(long id, long maxReleaseTime) {
-        if (maxReleaseTime < 60000) {
-            maxReleaseTime = 60000;
-        }
-        mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, maxReleaseTime);
-        currentActionID = id;
         try {
+            if (maxReleaseTime < 60000) {
+                maxReleaseTime = 60000;
+            }
+            mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, maxReleaseTime);
+            currentActionID = id;
             actions.get(currentActionID).intent.send();
-        } catch (PendingIntent.CanceledException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -165,7 +187,6 @@ public class AutoReplyService extends AccessibilityService {
 
     public void handleZbusMsg(ZbusRecv recv) {
         Log.d("test", "handleZbusMsg msg = " + recv.msg);
-        boolean realReply = recv.realReply;
         new Thread() {
             @Override
             public void run() {
@@ -176,6 +197,12 @@ public class AutoReplyService extends AccessibilityService {
                         Log.d("test", "没有id！！！");
                         return;
                     }
+                    doCheckZbusStatus(id, recv.msg);
+                    //心跳测试不用拉起微信
+                    if (recv.msg.contains(HEART_BEAT_TESTER)) {
+                        return;
+                    }
+
                     Action action = actions.get(id);
                     if (action == null) {
                         Log.d("test", "action null , doFindUsableAction");
@@ -185,7 +212,7 @@ public class AutoReplyService extends AccessibilityService {
                             return;
                         }
                         JSONArray returnMessage = o.getJSONArray("returnMessage");
-                        doHandleZbusMsg(id, action, returnMessage, realReply);
+                        doHandleZbusMsg(id, action, returnMessage, recv.realReply);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -266,6 +293,37 @@ public class AutoReplyService extends AccessibilityService {
         });
     }
 
+    private void doCheckZbusStatus(long id, String msg) {
+        //心跳测试使者 100007
+        if (msg.contains(HEART_BEAT_TESTER) && msg.contains("100007")) {
+            if (msg.contains("客服已下线") || msg.contains("客服正忙")) {
+                if (id != lastHearBeatID) {
+                    zbusFailureCount++;
+                    Log.d("test", "心跳测试：zbus断开 FailureCount = " + zbusFailureCount);
+                    if (zbusFailureCount % 3 == 0) {
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                //断开后3秒重连
+                                ZbusUtils.close();
+                                try {
+                                    sleep(3000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                Utils.initZbus(getApplication());
+                            }
+                        }.start();
+                    }
+                }
+            } else {
+                Log.d("test", "心跳测试：zbus正常");
+                lastHearBeatID = id;
+                zbusFailureCount = 0;
+            }
+        }
+    }
+
     private void handleImageMsg(long id, ArrayList<ReturnMessage> returnMessages, long maxReleaseTime) {
         new Thread() {
             @Override
@@ -284,7 +342,6 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     public synchronized void sendMsgToServer(long id, Action action) {
-
         new Thread() {
             @Override
             public void run() {
@@ -347,7 +404,7 @@ public class AutoReplyService extends AccessibilityService {
                 hint = DEFAULT_BUSY;
                 busyCountMap.put(action.sender, busyCount + 1);
             } else {
-                hint = welcome.replace(welcomeTitle, "客服正忙，您可以发送以下关键字咨询：");
+                hint = welcome.replace(welcomeTitle, "客服正忙，您可以发送以下序号或关键字咨询：");
                 busyCountMap.put(action.sender, 0);
             }
         } else {
@@ -359,7 +416,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.sendMessageDelayed(msg, 20000);
     }
 
-    private void sendReplyImmediately(String fakeRecv, boolean insertToHead) {
+    public void sendReplyImmediately(String fakeRecv, boolean insertToHead) {
         Message msg = new Message();
         msg.what = MSG_INSERT_QUEUE;
         msg.arg1 = insertToHead ? 1 : 0;

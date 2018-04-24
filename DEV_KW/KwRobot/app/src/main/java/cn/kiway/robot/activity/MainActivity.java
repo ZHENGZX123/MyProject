@@ -39,7 +39,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import cn.kiway.robot.R;
-import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.RootCmd;
@@ -438,12 +437,12 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test(View v) {
-        String msg = "{\"sender\":\"小辉小号\",\"me\":\"客服888\"," +
+        String fakeRecv = "{\"sender\":\"小辉小号\",\"me\":\"客服888\"," +
                 "\"returnMessage\":[{\"content\":\"http://upload.jnwb.net/2014/0311/1394514005639.jpg\"," +
                 "\"returnType\":2}]," +
                 "\"id\":9999,\"time\":1523342900085," +
                 "\"content\":\"学位房\"}";
-        AutoReplyService.instance.zbusRecvs.add(new ZbusRecv(msg, true));
+        AutoReplyService.instance.sendReplyImmediately(fakeRecv, false);
     }
 
     public void sharePic(View view) {
