@@ -1102,7 +1102,7 @@ public class AutoReplyService extends AccessibilityService {
                                     //4.再次执行长按
                                     doLongClickLastMsgAgain();
                                 }
-                            }, 5000);
+                            }, 2000);//有待查看
                         }
                     }
                 }, 2000);
@@ -1154,7 +1154,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }, 2000);
             }
-        }, 5000);
+        }, 2000);
     }
 
 
