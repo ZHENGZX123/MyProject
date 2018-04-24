@@ -17,7 +17,6 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
@@ -809,9 +808,7 @@ public class AutoReplyService extends AccessibilityService {
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
-                                int ret = RootCmd.execRootCmdSilent(cmd);
-                                Log.d("test", "execRootCmdSilent ret = " + ret);
+                                performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                 mHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
@@ -837,7 +834,8 @@ public class AutoReplyService extends AccessibilityService {
             release();
             return;
         }
-        backImageView.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        //backImageView.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -1079,11 +1077,13 @@ public class AutoReplyService extends AccessibilityService {
                         boolean find = findTransferButton(getRootInActiveWindow());
                         if (!find) {
                             Log.d("test", "findTransferButton失败，长按不出来，点击了一下");
+                            //lastMsgView.performAction(AccessibilityNodeInfo.ACTION_CLICK);//无效
                             Rect r = new Rect();
                             lastMsgView.getBoundsInScreen(r);
                             // 1.生成点击坐标
                             int x = r.width() / 2 + r.left;
                             int y = r.height() / 2 + r.top;
+
                             String cmd = "input tap " + x + " " + y;
                             Log.d("test", "cmd = " + cmd);
                             // 2.执行su命令
@@ -1097,9 +1097,7 @@ public class AutoReplyService extends AccessibilityService {
                                     String content = actions.get(currentActionID).content;
                                     Log.d("test", "content = " + content);
                                     if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了") || isCallingDialog(getRootInActiveWindow())) {
-                                        String cmd = "input keyevent " + KeyEvent.KEYCODE_BACK;
-                                        int ret = RootCmd.execRootCmdSilent(cmd);
-                                        Log.d("test", "execRootCmdSilent ret = " + ret);
+                                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                     }
                                     //4.再次执行长按
                                     doLongClickLastMsgAgain();
