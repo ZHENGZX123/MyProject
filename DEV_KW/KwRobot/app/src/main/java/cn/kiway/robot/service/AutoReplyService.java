@@ -113,7 +113,6 @@ public class AutoReplyService extends AccessibilityService {
         Utils.installationPush(getApplication());
         mHandler.sendEmptyMessage(MSG_TRAVERSAL_QUEUE);
         mHandler.sendEmptyMessage(MSG_HEART_BEAT);
-
     }
 
     private Handler mHandler = new Handler() {
@@ -1451,7 +1450,7 @@ public class AutoReplyService extends AccessibilityService {
                             if (receiveType == TYPE_COLLECTOR_FORWARDING) {
                                 //这里要额外做一步，找到文本框并粘贴内容
                                 String openId = getSharedPreferences("openId", 0).getString("openId", "osP5zwJ-lEdJVGD-_5_WyvQL9Evo");
-                                String content = getCollectorForwardingContent(); //"sender:" + senderFromNotification + ",openid:" + openId;
+                                String content = getCollectorForwardingContent();
                                 findInputEditText(getRootInActiveWindow(), content);
                             }
                             Log.d("test", "=========findSendButtonInDialog============");
@@ -1493,10 +1492,11 @@ public class AutoReplyService extends AccessibilityService {
             o.put("appId", APPID);
             o.put("description", "description");
             o.put("installationId", installationId);
-            o.put("msg", msg);
+            o.put("message", msg);
             o.put("module", "wx_reply");
             o.put("pushType", "zbus");
             o.put("senderId", wxNo);
+            o.put("type", 3);
             o.put("title", "title");
             o.put("userId", new JSONArray().put(topic));
 
