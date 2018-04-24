@@ -274,26 +274,36 @@ public class AutoReplyService extends AccessibilityService {
                 long maxReleaseTime = action.returnMessages.size() * 8000;
                 Log.d("test", "imageCount = " + imageCount);
                 if (imageCount == 0) {
-                    //文字
+                    //文字，直接拉起微信即可；
                     launchWechat(id, maxReleaseTime);
                 } else if (imageCount > 0) {
+                    //一张图片、一张图片一个文字。
                     //handleImageMsg(id, action.returnMessages, maxReleaseTime);
                     //0419使用分享的方法，不直接拉起微信
-                    mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
-                    currentActionID = id;
-                    actioningFlag = true;
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            //action.returnMessages.get(0).content
-                            //"http://upload.jnwb.net/2014/0311/1394514005639.jpg"
-                            sendImageOnly2(action.returnMessages.get(0).content);
-                        }
-                    }.start();
+                    int count = action.returnMessages.size();
+                    if (count == 1) {
+                        hasTextContent = false;
+                        mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
+                        currentActionID = id;
+                        actioningFlag = true;
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                //action.returnMessages.get(0).content
+                                //"http://upload.jnwb.net/2014/0311/1394514005639.jpg"
+                                sendImageOnly2(action.returnMessages.get(0).content);
+                            }
+                        }.start();
+                    } else {
+                        //有文字有图片：先发图片、后处理文字！
+                        hasTextContent = true;
+                    }
                 }
             }
         });
     }
+
+    private boolean hasTextContent = true;
 
     private void doCheckZbusStatus(long id, String msg) {
         //心跳测试使者 100007
@@ -1030,7 +1040,19 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        doActionByReceiveType();
+                        if (hasTextContent){
+                            //从分享过来的
+                            String content = actions.get(currentActionID).returnMessages.get(1).content;
+                            sendTextOnly2(content);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    release();
+                                }
+                            }, 3000);
+                        }else {
+                            doActionByReceiveType();
+                        }
                     }
                 }, 3000);
                 return true;
@@ -1458,7 +1480,6 @@ public class AutoReplyService extends AccessibilityService {
                             int receiveType = actions.get(currentActionID).actionType;
                             if (receiveType == TYPE_COLLECTOR_FORWARDING) {
                                 //这里要额外做一步，找到文本框并粘贴内容
-                                String openId = getSharedPreferences("openId", 0).getString("openId", "osP5zwJ-lEdJVGD-_5_WyvQL9Evo");
                                 String content = getCollectorForwardingContent();
                                 findInputEditText(getRootInActiveWindow(), content);
                             }
@@ -1546,12 +1567,55 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        release();
+                        if (hasTextContent) {
+                            Log.d("test", "要发文件哦");
+                            //留在微信
+                            boolean find = findStayInWechat(getRootInActiveWindow());
+                            if (!find) {
+                                release();
+                            }
+                        } else {
+                            release();
+                        }
                     }
-                }, 2000);
+                }, 3000);
                 return true;
             }
             if (findShareButtonInDialog(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findStayInWechat(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("留在微信")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //这个时候一定是首页！直接找放大镜按钮、或者找消息列表第一个
+                        Log.d("test", "========================checkIsWxHomePage============");
+                        checkIsWxHomePage();
+                        boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
+                        Log.d("test", "isWxHomePage = " + isWxHomePage);
+                        if (isWxHomePage) {
+                            searchSenderInWxHomePage();
+                        } else {
+                            release();
+                        }
+                    }
+                }, 3000);
+                return true;
+            }
+            if (findStayInWechat(nodeInfo)) {
                 return true;
             }
         }
