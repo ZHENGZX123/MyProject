@@ -61,14 +61,18 @@ import cn.sharesdk.wechat.friends.Wechat;
 
 import static cn.kiway.robot.entity.Action.TYPE_AUTO_MATCH;
 import static cn.kiway.robot.entity.Action.TYPE_BACK_DOOR;
+import static cn.kiway.robot.entity.Action.TYPE_CARD;
 import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
+import static cn.kiway.robot.entity.Action.TYPE_FILE;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
+import static cn.kiway.robot.entity.Action.TYPE_LINK;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_SET_FORWARDTO;
 import static cn.kiway.robot.entity.Action.TYPE_SET_FRIEND_CIRCLER_REMARK;
 import static cn.kiway.robot.entity.Action.TYPE_TEXT;
+import static cn.kiway.robot.entity.Action.TYPE_VIDEO;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
@@ -155,7 +159,7 @@ public class AutoReplyService extends AccessibilityService {
                 Action action = new Action();
                 action.sender = HEART_BEAT_TESTER;
                 action.content = "100007";
-                action.receiveType = TYPE_TEXT;
+                action.actionType = TYPE_TEXT;
 
                 //zbus发送
                 long id = System.currentTimeMillis();
@@ -232,7 +236,7 @@ public class AutoReplyService extends AccessibilityService {
             Action firstA = actions.get(firstKey);
             firstA.sender = sender;
             firstA.content = content;
-            firstA.receiveType = TYPE_TEXT;
+            firstA.actionType = TYPE_TEXT;
             doHandleZbusMsg(firstKey, firstA, returnMessage, realReply);
 
         } catch (Exception e) {
@@ -510,27 +514,27 @@ public class AutoReplyService extends AccessibilityService {
 
                     //自动加好友
                     if (content.endsWith("请求添加你为朋友")) {
-                        action.receiveType = TYPE_REQUEST_FRIEND;
+                        action.actionType = TYPE_REQUEST_FRIEND;
                     }
                     //需要转发到朋友圈，目前只支持链接
                     else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("[链接]")) {
-                        action.receiveType = TYPE_FRIEND_CIRCLER;
+                        action.actionType = TYPE_FRIEND_CIRCLER;
                     } else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("设置朋友圈备注：")) {
-                        action.receiveType = TYPE_SET_FRIEND_CIRCLER_REMARK;
+                        action.actionType = TYPE_SET_FRIEND_CIRCLER_REMARK;
                     }
                     //来自公众号的消息每一条都要转发：图片还没有做，需要测试
                     else if (content.startsWith("设置转发对象：")) {
                         //设置转发对象有可能丢掉！因为微信可能不弹出通知
-                        action.receiveType = TYPE_SET_FORWARDTO;
+                        action.actionType = TYPE_SET_FORWARDTO;
                     }
                     //需要转发到“消息收集群”
                     else if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了")) {
-                        action.receiveType = TYPE_COLLECTOR_FORWARDING;
+                        action.actionType = TYPE_COLLECTOR_FORWARDING;
                     } else if (!TextUtils.isEmpty(Constant.qas.get(content.trim()))) {
-                        action.receiveType = TYPE_AUTO_MATCH;
+                        action.actionType = TYPE_AUTO_MATCH;
                         action.returnMessages.add(new ReturnMessage(TYPE_TEXT, Constant.qas.get(content.trim())));
                     } else if (!TextUtils.isEmpty(Constant.backdoors.get(content.trim()))) {
-                        action.receiveType = TYPE_BACK_DOOR;
+                        action.actionType = TYPE_BACK_DOOR;
                         String ret = "";
                         if (content.trim().equals(BACK_DOOR1)) {
                             ret = getBackDoor1();
@@ -541,30 +545,30 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     //其他文字直接走zbus即可
                     else {
-                        action.receiveType = TYPE_TEXT;
+                        action.actionType = TYPE_TEXT;
                     }
 
                     actions.put(id, action);
 
-                    if (action.receiveType == TYPE_TEXT) {
+                    if (action.actionType == TYPE_TEXT) {
                         //刷新界面
                         refreshUI1();
                         //文字的话直接走zbus
                         sendMsgToServer(id, action);
                         sendReply20sLater(id, action);
-                    } else if (action.receiveType == TYPE_AUTO_MATCH) {
+                    } else if (action.actionType == TYPE_AUTO_MATCH) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, false);
-                    } else if (action.receiveType == TYPE_BACK_DOOR) {
+                    } else if (action.actionType == TYPE_BACK_DOOR) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, true);
-                    } else if (action.receiveType == TYPE_FRIEND_CIRCLER) {
+                    } else if (action.actionType == TYPE_FRIEND_CIRCLER) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, false);
-                    } else if (action.receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || action.receiveType == TYPE_COLLECTOR_FORWARDING) {
+                    } else if (action.actionType == TYPE_PUBLIC_ACCONT_FORWARDING || action.actionType == TYPE_COLLECTOR_FORWARDING) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, false);
-                    } else if (action.receiveType == TYPE_SET_FORWARDTO) {
+                    } else if (action.actionType == TYPE_SET_FORWARDTO) {
                         String forwardto = action.content.replace("设置转发对象：", "").trim();
                         if (TextUtils.isEmpty(forwardto)) {
                             continue;
@@ -574,7 +578,7 @@ public class AutoReplyService extends AccessibilityService {
                         toast("设置转发对象成功");
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, false);
-                    } else if (action.receiveType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
+                    } else if (action.actionType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
                         String remark = action.content.replace("设置朋友圈备注：", "").trim();
                         if (TextUtils.isEmpty(remark)) {
                             continue;
@@ -583,7 +587,7 @@ public class AutoReplyService extends AccessibilityService {
                         toast("设置朋友圈备注成功");
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, false);
-                    } else if (action.receiveType == TYPE_REQUEST_FRIEND) {
+                    } else if (action.actionType == TYPE_REQUEST_FRIEND) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, false);
                     }
@@ -611,7 +615,7 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 actioningFlag = true;
                 FileUtils.saveFile("" + actioningFlag, "actioningFlag.txt");
-                int receiveType = actions.get(currentActionID).receiveType;
+                int receiveType = actions.get(currentActionID).actionType;
 
                 if (receiveType == TYPE_REQUEST_FRIEND) {
                     //好友请求不用做容错
@@ -694,7 +698,7 @@ public class AutoReplyService extends AccessibilityService {
     private boolean realSendText;
 
     private void doActionByReceiveType() {
-        int receiveType = actions.get(currentActionID).receiveType;
+        int receiveType = actions.get(currentActionID).actionType;
         if (receiveType == TYPE_TEXT || receiveType == TYPE_AUTO_MATCH || receiveType == TYPE_BACK_DOOR) {
             if (realSendText) {
                 doSequeSend();
@@ -1446,7 +1450,7 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         } else {
                             //转发
-                            int receiveType = actions.get(currentActionID).receiveType;
+                            int receiveType = actions.get(currentActionID).actionType;
                             if (receiveType == TYPE_COLLECTOR_FORWARDING) {
                                 //这里要额外做一步，找到文本框并粘贴内容
                                 String openId = getSharedPreferences("openId", 0).getString("openId", "osP5zwJ-lEdJVGD-_5_WyvQL9Evo");
@@ -1480,6 +1484,7 @@ public class AutoReplyService extends AccessibilityService {
             String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
             String topic = robotId + "#" + wxNo;
             Action currentAction = actions.get(currentActionID);
+            String content = currentAction.content;
 
             String msg = new JSONObject()
                     .put("id", System.currentTimeMillis() + "")
@@ -1489,6 +1494,20 @@ public class AutoReplyService extends AccessibilityService {
                     .put("areaCode", areaCode)
                     .toString();
 
+
+            int msgType = TYPE_TEXT;
+            if (content.startsWith("[图片]")) {
+                msgType = TYPE_IMAGE;
+            } else if (content.startsWith("[链接]")) {
+                msgType = TYPE_LINK;
+            } else if (content.startsWith("[视频]")) {
+                msgType = TYPE_VIDEO;
+            } else if (content.startsWith("[文件]")) {
+                msgType = TYPE_FILE;
+            } else if (content.contains("向你推荐了")) {
+                msgType = TYPE_CARD;
+            }
+
             o.put("appId", APPID);
             o.put("description", "description");
             o.put("installationId", installationId);
@@ -1496,7 +1515,7 @@ public class AutoReplyService extends AccessibilityService {
             o.put("module", "wx_reply");
             o.put("pushType", "zbus");
             o.put("senderId", wxNo);
-            o.put("type", 3);
+            o.put("type", msgType);
             o.put("title", "title");
             o.put("userId", new JSONArray().put(topic));
 
@@ -1551,7 +1570,7 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        int receiveType = actions.get(currentActionID).receiveType;
+                        int receiveType = actions.get(currentActionID).actionType;
                         if (receiveType == TYPE_COLLECTOR_FORWARDING) {
                             release();
                         } else if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING) {
