@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class Action {
 
     public static final int TYPE_TEXT = 1;
-    public static final int TYPE_IMAGE = 2;
+    public static final int TYPE_IMAGE = 3;// 图片3 语音34 名片42 视频43 收藏的表情47 转账49 文件50 链接52 笔记53
 
     public static final int TYPE_SET_FORWARDTO = 100;//设置消息转发对象：公众号、消息收集人，都是这个设置。
 
