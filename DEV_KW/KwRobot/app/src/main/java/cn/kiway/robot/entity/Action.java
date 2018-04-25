@@ -12,11 +12,11 @@ public class Action {
 
     public static final int TYPE_TEXT = 1;
     public static final int TYPE_IMAGE = 3;// 图片3 语音34 名片42 视频43 收藏的表情47 转账49 文件50 链接52 笔记53
-    public static final int TYPE_VIDEO = 43;// 图片3 语音34 名片42 视频43 收藏的表情47 转账49 文件50 链接52 笔记53
-    public static final int TYPE_FILE = 50;// 图片3 语音34 名片42 视频43 收藏的表情47 转账49 文件50 链接52 笔记53
-    public static final int TYPE_LINK = 52;// 图片3 语音34 名片42 视频43 收藏的表情47 转账49 文件50 链接52 笔记53
-    public static final int TYPE_CARD = 42;// 图片3 语音34 名片42 视频43 收藏的表情47 转账49 文件50 链接52 笔记53
-    //public static final int TYPE_GPS = 99;// 图片3 语音34 名片42 视频43 收藏的表情47 转账49 文件50 链接52 笔记53 位置？？
+    public static final int TYPE_VIDEO = 43;
+    public static final int TYPE_FILE = 50;
+    public static final int TYPE_LINK = 52;
+    public static final int TYPE_CARD = 42;
+    //public static final int TYPE_GPS = 99;
 
     public static final int TYPE_SET_FORWARDTO = 100;//设置消息转发对象：公众号、消息收集人，都是这个设置。
 

@@ -257,12 +257,15 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 action.returnMessages.clear();
                 int imageCount = 0;
+                int linkCount = 0;
                 for (int i = 0; i < size; i++) {
                     try {
                         ReturnMessage rm = new ReturnMessage();
                         rm.returnType = returnMessage.getJSONObject(i).getInt("returnType");
                         if (rm.returnType == TYPE_IMAGE) {
                             imageCount++;
+                        } else if (rm.returnType == TYPE_LINK) {
+                            linkCount++;
                         }
                         rm.content = returnMessage.getJSONObject(i).getString("content");
                         action.returnMessages.add(rm);
@@ -276,8 +279,8 @@ public class AutoReplyService extends AccessibilityService {
                 if (imageCount == 0) {
                     //文字，直接拉起微信即可；
                     launchWechat(id, maxReleaseTime);
-                } else {
-                    //一张图片、一张图片一个文字。
+                } else if (imageCount > 0) {
+                    //图片
                     //handleImageMsg(id, action.returnMessages, maxReleaseTime);
                     //0419使用分享的方法，不直接拉起微信
                     mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
@@ -288,7 +291,19 @@ public class AutoReplyService extends AccessibilityService {
                         public void run() {
                             //action.returnMessages.get(0).content
                             //"http://upload.jnwb.net/2014/0311/1394514005639.jpg"
-                            sendImageOnly2(action.returnMessages.get(0).content);
+                            //action.returnMessages.get(0).content
+                            sendImageOnly2("http://upload.jnwb.net/2014/0311/1394514005639.jpg");
+                        }
+                    }.start();
+                } else if (linkCount > 0) {
+                    //链接
+                    mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
+                    currentActionID = id;
+                    actioningFlag = true;
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            sendLinkOnly(action);
                         }
                     }.start();
                 }
@@ -524,11 +539,11 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     //来自公众号的消息每一条都要转发：图片还没有做，需要测试
                     else if (content.startsWith("设置转发对象：")) {
-                        //设置转发对象有可能丢掉！因为微信可能不弹出通知
+                        //设置转发对象有可能丢掉！因 为微信可能不弹出通知
                         action.actionType = TYPE_SET_FORWARDTO;
                     }
                     //需要转发到“消息收集群”
-                    else if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了")) {
+                    else if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.contains("向你推荐了")) {
                         action.actionType = TYPE_COLLECTOR_FORWARDING;
                     } else if (!TextUtils.isEmpty(Constant.qas.get(content.trim()))) {
                         action.actionType = TYPE_AUTO_MATCH;
@@ -1460,13 +1475,23 @@ public class AutoReplyService extends AccessibilityService {
                             if (receiveType == TYPE_COLLECTOR_FORWARDING) {
                                 //这里要额外做一步，找到文本框并粘贴内容
                                 String content = getCollectorForwardingContent();
-                                findInputEditText(getRootInActiveWindow(), content);
+                                boolean find = findInputEditText(getRootInActiveWindow(), content);
+                                if (!find) {
+                                    Log.d("test", "粘贴不上，不发过去");
+                                    release();
+                                    return;
+                                }
                             }
-                            Log.d("test", "=========findSendButtonInDialog============");
-                            boolean find = findSendButtonInDialog(getRootInActiveWindow());
-                            if (!find) {
-                                release();
-                            }
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.d("test", "=========findSendButtonInDialog============");
+                                    boolean find = findSendButtonInDialog(getRootInActiveWindow());
+                                    if (!find) {
+                                        release();
+                                    }
+                                }
+                            }, 2000);
                         }
                     }
                 }, 3000);
@@ -2024,9 +2049,55 @@ public class AutoReplyService extends AccessibilityService {
         Platform.ShareParams sp = new Platform.ShareParams();
         sp.setImagePath(localPath);
         sp.setShareType(Platform.SHARE_IMAGE);
-        Platform wx = ShareSDK.getPlatform(Wechat.NAME);// 执行图文分享
+        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
         wx.share(sp);
 
+        doShareToWechat();
+    }
+
+    private void sendLinkOnly(Action action) {
+        try {
+
+
+            String content = action.returnMessages.get(0).content;
+            JSONObject contentO = new JSONObject(content);
+            String title = contentO.getString("title");
+            String des = contentO.getString("des");
+            String imageUrl = contentO.getString("imageUrl");
+            String url = contentO.getString("url");
+            String remark = contentO.getString("remark");
+
+            //1.下载图片
+            imageUrl = "http://upload.jnwb.net/2014/0311/1394514005639.jpg";
+            String localPath = null;
+            if (!TextUtils.isEmpty(imageUrl)) {
+                Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageUrl, KWApplication.getLoaderOptions());
+                if (bmp != null) {
+                    //2.保存图片
+                    localPath = saveImage2(getApplication(), bmp);
+                }
+            }
+
+            Log.d("test", "sendLinkOnly");
+
+            Platform.ShareParams sp = new Platform.ShareParams();
+            sp.setTitle(title);
+            sp.setText(des);
+            sp.setUrl(url);
+            if (!TextUtils.isEmpty(localPath)) {
+                sp.setImagePath(localPath);
+            }
+            sp.setShareType(Platform.SHARE_WEBPAGE);
+            Platform wx = ShareSDK.getPlatform(Wechat.NAME);
+            wx.share(sp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        doShareToWechat();
+    }
+
+    private void doShareToWechat() {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -2039,7 +2110,7 @@ public class AutoReplyService extends AccessibilityService {
                     release();
                 }
             }
-        }, 3000);
+        }, 4000);
     }
 
     private AccessibilityNodeInfo lastRelativeLayout;
