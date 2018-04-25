@@ -47,6 +47,7 @@ import cn.kiway.wx.reply.utils.ZbusUtils;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
+import cn.sharesdk.wechat.moments.WechatMoments;
 
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.clientUrl;
@@ -483,7 +484,7 @@ public class MainActivity extends BaseActivity {
         sp.setUrl("http://www.kiway.cn");
         sp.setImagePath("/mnt/sdcard/1523179210665.jpg");
         sp.setShareType(Platform.SHARE_WEBPAGE);
-        Platform wx = ShareSDK.getPlatform(Wechat.NAME);// 执行图文分享
+        Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);// 执行图文分享
         wx.share(sp);
     }
 
