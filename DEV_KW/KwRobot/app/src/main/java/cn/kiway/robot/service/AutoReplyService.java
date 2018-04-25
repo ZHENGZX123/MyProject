@@ -57,6 +57,7 @@ import cn.kiway.wx.reply.vo.PushMessageVo;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
+import cn.sharesdk.wechat.moments.WechatMoments;
 
 import static cn.kiway.robot.entity.Action.TYPE_AUTO_MATCH;
 import static cn.kiway.robot.entity.Action.TYPE_BACK_DOOR;
@@ -66,6 +67,7 @@ import static cn.kiway.robot.entity.Action.TYPE_FILE;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_LINK;
+import static cn.kiway.robot.entity.Action.TYPE_MOMENT;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_SET_FORWARDTO;
@@ -258,6 +260,7 @@ public class AutoReplyService extends AccessibilityService {
                 action.returnMessages.clear();
                 int imageCount = 0;
                 int linkCount = 0;
+                int momentCount = 0;
                 for (int i = 0; i < size; i++) {
                     try {
                         ReturnMessage rm = new ReturnMessage();
@@ -266,6 +269,8 @@ public class AutoReplyService extends AccessibilityService {
                             imageCount++;
                         } else if (rm.returnType == TYPE_LINK) {
                             linkCount++;
+                        } else if (rm.returnType == TYPE_MOMENT) {
+                            momentCount++;
                         }
                         rm.content = returnMessage.getJSONObject(i).getString("content");
                         action.returnMessages.add(rm);
@@ -303,7 +308,18 @@ public class AutoReplyService extends AccessibilityService {
                     new Thread() {
                         @Override
                         public void run() {
-                            sendLinkOnly(action);
+                            sendLinkOnly(action, false);
+                        }
+                    }.start();
+                } else if (momentCount > 0) {
+                    //朋友圈
+                    mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
+                    currentActionID = id;
+                    actioningFlag = true;
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            sendLinkOnly(action, true);
                         }
                     }.start();
                 }
@@ -2055,17 +2071,14 @@ public class AutoReplyService extends AccessibilityService {
         doShareToWechat();
     }
 
-    private void sendLinkOnly(Action action) {
+    private void sendLinkOnly(Action action, boolean moment) {
         try {
-
-
             String content = action.returnMessages.get(0).content;
             JSONObject contentO = new JSONObject(content);
             String title = contentO.getString("title");
-            String des = contentO.getString("des");
+            String describe = contentO.getString("describe");
             String imageUrl = contentO.getString("imageUrl");
             String url = contentO.getString("url");
-            String remark = contentO.getString("remark");
 
             //1.下载图片
             imageUrl = "http://upload.jnwb.net/2014/0311/1394514005639.jpg";
@@ -2079,22 +2092,55 @@ public class AutoReplyService extends AccessibilityService {
             }
 
             Log.d("test", "sendLinkOnly");
-
             Platform.ShareParams sp = new Platform.ShareParams();
             sp.setTitle(title);
-            sp.setText(des);
+            sp.setText(describe);
             sp.setUrl(url);
             if (!TextUtils.isEmpty(localPath)) {
                 sp.setImagePath(localPath);
             }
             sp.setShareType(Platform.SHARE_WEBPAGE);
-            Platform wx = ShareSDK.getPlatform(Wechat.NAME);
+            Platform wx = null;
+            if (moment) {
+                wx = ShareSDK.getPlatform(WechatMoments.NAME);
+            } else {
+                wx = ShareSDK.getPlatform(Wechat.NAME);
+            }
             wx.share(sp);
+
+
+            if (moment) {
+                doShareToWechatMoments(describe);
+            } else {
+                doShareToWechat();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        doShareToWechat();
+
+    }
+
+    private void doShareToWechatMoments(String remark) {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!TextUtils.isEmpty(remark)) {
+                    //1.查找备注文本框并粘贴remark
+                    findInputEditText(getRootInActiveWindow(), remark);
+                    //2.查找发送按钮并点击
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            boolean find = findSendImageButton2(getRootInActiveWindow());
+                            if (!find) {
+                                release();
+                            }
+                        }
+                    }, 2000);
+                }
+            }
+        }, 4000);
     }
 
     private void doShareToWechat() {
