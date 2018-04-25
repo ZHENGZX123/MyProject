@@ -281,10 +281,8 @@ public class AutoReplyService extends AccessibilityService {
 
                 long maxReleaseTime = action.returnMessages.size() * 8000;
                 Log.d("test", "imageCount = " + imageCount);
-                if (imageCount == 0) {
-                    //文字，直接拉起微信即可；
-                    launchWechat(id, maxReleaseTime);
-                } else if (imageCount > 0) {
+
+                if (imageCount > 0) {
                     //图片
                     //handleImageMsg(id, action.returnMessages, maxReleaseTime);
                     //0419使用分享的方法，不直接拉起微信
@@ -322,6 +320,9 @@ public class AutoReplyService extends AccessibilityService {
                             sendLinkOnly(action, true);
                         }
                     }.start();
+                } else {
+                    //文字，直接拉起微信即可；
+                    launchWechat(id, maxReleaseTime);
                 }
             }
         });
@@ -2077,7 +2078,7 @@ public class AutoReplyService extends AccessibilityService {
             JSONObject contentO = new JSONObject(content);
             String title = contentO.getString("title");
             String describe = contentO.getString("describe");
-            String imageUrl = contentO.getString("imageUrl");
+            String imageUrl = contentO.getString("imgUrl");
             String url = contentO.getString("url");
 
             //1.下载图片
