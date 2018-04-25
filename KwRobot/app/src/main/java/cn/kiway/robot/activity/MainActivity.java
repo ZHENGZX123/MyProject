@@ -451,7 +451,7 @@ public class MainActivity extends BaseActivity {
         sp.setImagePath("/mnt/sdcard/1520306782983.jpg");//1523179210665
         //sp.setText("sdfsadfasfdfdfadfs");
         sp.setShareType(Platform.SHARE_IMAGE);
-        Platform wx = ShareSDK.getPlatform(Wechat.NAME);// 执行图文分享
+        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
         wx.share(sp);
     }
 
@@ -473,18 +473,28 @@ public class MainActivity extends BaseActivity {
         sp.setUrl("/mnt/sdcard/45e0687ef1c6e78077af099becb2f9cc.mp4");//网络地址
         sp.setImagePath("/mnt/sdcard/1523179210665.jpg");//缩略图  本地
         sp.setShareType(Platform.SHARE_VIDEO);
-        Platform wx = ShareSDK.getPlatform(Wechat.NAME);// 执行图文分享
+        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
         wx.share(sp);
     }
 
     public void shareWeb(View view) {
-        Platform.ShareParams sp = new Platform.ShareParams();
+        /*Platform.ShareParams sp = new Platform.ShareParams();
         sp.setText("测试分享的文本");
         sp.setTitle("ccccccccc");
         sp.setUrl("http://www.kiway.cn");
-        sp.setImagePath("/mnt/sdcard/1523179210665.jpg");
+        //sp.setImagePath("/mnt/sdcard/1520306782983.jpg");
         sp.setShareType(Platform.SHARE_WEBPAGE);
-        Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);// 执行图文分享
+        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
+        wx.share(sp);*/
+
+        //朋友圈
+        Platform.ShareParams sp = new Platform.ShareParams();
+        sp.setText("文本");
+        sp.setTitle("标题");
+        sp.setUrl("http://www.kiway.cn");
+        //sp.setImagePath("/mnt/sdcard/1520306782983.jpg");
+        sp.setShareType(Platform.SHARE_WEBPAGE);
+        Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
         wx.share(sp);
     }
 

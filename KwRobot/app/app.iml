@@ -105,6 +105,7 @@
     <orderEntry type="jdk" jdkName="Android API 25 Platform (1)" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="zbus-0.11.3" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Moments-3.1.4" level="project" />
     <orderEntry type="library" exported="" name="ShareSDK-3.1.4" level="project" />
     <orderEntry type="library" exported="" name="ShareSDK-Wechat-3.1.4" level="project" />
     <orderEntry type="library" exported="" name="support-core-ui-25.3.1" level="project" />
