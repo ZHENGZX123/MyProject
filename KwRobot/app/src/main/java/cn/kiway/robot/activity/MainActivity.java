@@ -489,10 +489,10 @@ public class MainActivity extends BaseActivity {
 
         //朋友圈
         Platform.ShareParams sp = new Platform.ShareParams();
-        sp.setText("文本");
-        sp.setTitle("标题");
+        sp.setTitle("标题11111111111");
+        //sp.setText("文本111111111111");不需要
         sp.setUrl("http://www.kiway.cn");
-        //sp.setImagePath("/mnt/sdcard/1520306782983.jpg");
+        //sp.setImagePath("/mnt/sdcard/1520306782983.jpg");可选
         sp.setShareType(Platform.SHARE_WEBPAGE);
         Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
         wx.share(sp);
