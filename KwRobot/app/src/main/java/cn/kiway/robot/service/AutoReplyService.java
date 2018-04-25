@@ -67,7 +67,6 @@ import static cn.kiway.robot.entity.Action.TYPE_FILE;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_LINK;
-import static cn.kiway.robot.entity.Action.TYPE_MOMENT;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_SET_FORWARDTO;
@@ -196,6 +195,18 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 try {
                     JSONObject o = new JSONObject(recv.msg);
+                    //0425新增朋友圈
+                    if (o.has("type")) {
+                        int type = o.getInt("type");
+                        if (type == 100) {
+                            mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
+                            currentActionID = 9999;
+                            actioningFlag = true;
+                            sendLinkOnly(recv.msg, true);
+                        }
+                        return;
+                    }
+
                     long id = o.optLong("id");
                     if (id == 0) {
                         Log.d("test", "没有id！！！");
@@ -260,7 +271,6 @@ public class AutoReplyService extends AccessibilityService {
                 action.returnMessages.clear();
                 int imageCount = 0;
                 int linkCount = 0;
-                int momentCount = 0;
                 for (int i = 0; i < size; i++) {
                     try {
                         ReturnMessage rm = new ReturnMessage();
@@ -269,8 +279,6 @@ public class AutoReplyService extends AccessibilityService {
                             imageCount++;
                         } else if (rm.returnType == TYPE_LINK) {
                             linkCount++;
-                        } else if (rm.returnType == TYPE_MOMENT) {
-                            momentCount++;
                         }
                         rm.content = returnMessage.getJSONObject(i).getString("content");
                         action.returnMessages.add(rm);
@@ -306,18 +314,7 @@ public class AutoReplyService extends AccessibilityService {
                     new Thread() {
                         @Override
                         public void run() {
-                            sendLinkOnly(action, false);
-                        }
-                    }.start();
-                } else if (momentCount > 0) {
-                    //朋友圈
-                    mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
-                    currentActionID = id;
-                    actioningFlag = true;
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            sendLinkOnly(action, true);
+                            sendLinkOnly(action.returnMessages.get(0).content, false);
                         }
                     }.start();
                 } else {
@@ -2072,12 +2069,11 @@ public class AutoReplyService extends AccessibilityService {
         doShareToWechat();
     }
 
-    private void sendLinkOnly(Action action, boolean moment) {
+    private void sendLinkOnly(String content, boolean moment) {
         try {
-            String content = action.returnMessages.get(0).content;
             JSONObject contentO = new JSONObject(content);
             String title = contentO.getString("title");
-            String describe = contentO.getString("describe");
+            String describe = contentO.getString("description");
             String imageUrl = contentO.getString("imgUrl");
             String url = contentO.getString("url");
 
