@@ -240,44 +240,49 @@ public class MainActivity extends BaseActivity {
 
     private int lastStatus = -1;
 
-    private void updateOpenIdOrStatus(Object o) {
-        try {
-            String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-            String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
-            Log.d("test", "xtoken = " + xtoken);
-            client.addHeader("x-auth-token", xtoken);
-            String url = clientUrl + "/robot/" + robotId;
-            Log.d("test", "updateOpenIdOrStatus url = " + url);
+    public void updateOpenIdOrStatus(Object o) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                    String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.setTimeout(10000);
+                    Log.d("test", "xtoken = " + xtoken);
+                    client.addHeader("x-auth-token", xtoken);
+                    String url = clientUrl + "/robot/" + robotId;
+                    Log.d("test", "updateOpenIdOrStatus url = " + url);
 
-            com.loopj.android.http.RequestParams param = new com.loopj.android.http.RequestParams();
-            if (o instanceof String) {
-                param.put("openId", o);
-            } else if (o instanceof Integer) {
-                if (lastStatus == (int) o) {
-                    Log.d("test", "状态一致，本次不上报");
-                    return;
+                    com.loopj.android.http.RequestParams param = new com.loopj.android.http.RequestParams();
+                    if (o instanceof String) {
+                        param.put("openId", o);
+                    } else if (o instanceof Integer) {
+                        if (lastStatus == (int) o) {
+                            Log.d("test", "状态一致，本次不上报");
+                            return;
+                        }
+                        param.put("status", o);
+                        lastStatus = (int) o;
+                    }
+                    Log.d("test", "param = " + param.toString());
+
+                    client.put(MainActivity.this, url, param, new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "updateOpenIdOrStatus onSuccess = " + ret);
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "updateOpenIdOrStatus onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
                 }
-                param.put("status", o);
-                lastStatus = (int) o;
             }
-            Log.d("test", "param = " + param.toString());
-
-            client.put(this, url, param, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "updateOpenIdOrStatus onSuccess = " + ret);
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "updateOpenIdOrStatus onFailure = " + s);
-                }
-            });
-        } catch (Exception e) {
-            Log.d("test", "e = " + e.toString());
-        }
+        });
     }
 
     public void updateServiceCount() {
