@@ -33,6 +33,7 @@ public class KWApplication extends Application {
 
     public static String ROOT = "/mnt/sdcard/kiway_robot/";
     public static String defaultFile = ROOT + "/downloads/file.png";
+    public static String defaultVideo = ROOT + "/downloads/video.png";
 
     @Override
     public void onCreate() {
@@ -41,20 +42,20 @@ public class KWApplication extends Application {
         x.Ext.init(this);
         initImageCache();
         CrashHandler.getInstance().init(this);
-        saveDefaultFile();
+        saveDefaultFile("file.png", R.mipmap.file);
+        saveDefaultFile("video.png", R.mipmap.video);
     }
 
-
-    public void saveDefaultFile() {
+    public void saveDefaultFile(String fileName, int id) {
         new Thread() {
             @Override
             public void run() {
                 try {
-                    File file = new File(ROOT + "downloads/file.png");
+                    File file = new File(ROOT + "downloads/" + fileName);
                     if (file.exists()) {
                         return;
                     }
-                    InputStream inStream = getResources().openRawResource(R.mipmap.file);
+                    InputStream inStream = getResources().openRawResource(id);
                     FileOutputStream fileOutputStream = new FileOutputStream(file);//存入SDCard
                     byte[] buffer = new byte[10];
                     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
