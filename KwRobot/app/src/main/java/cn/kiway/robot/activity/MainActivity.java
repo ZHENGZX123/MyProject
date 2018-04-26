@@ -465,8 +465,8 @@ public class MainActivity extends BaseActivity {
         Platform wx = ShareSDK.getPlatform(Wechat.NAME);
         Platform.ShareParams sp = new Platform.ShareParams();
         sp.setTitle("我给你分享了文件2");
-        sp.setFilePath(KWApplication.ROOT+"downloads/1394514005639.jpg");
-        sp.setImagePath(KWApplication.ROOT+"downloads/1394514005639.jpg");
+        sp.setFilePath(KWApplication.ROOT + "downloads/1394514005639.jpg");
+        sp.setImagePath(KWApplication.ROOT + "downloads/1394514005639.jpg");
         sp.setShareType(Platform.SHARE_FILE);
         wx.share(sp);
     }
@@ -475,8 +475,8 @@ public class MainActivity extends BaseActivity {
         Platform.ShareParams sp = new Platform.ShareParams();
         sp.setText("我给你分享了视频");
         sp.setTitle("我给你分享了视频");
-        sp.setUrl("/mnt/sdcard/45e0687ef1c6e78077af099becb2f9cc.mp4");//网络地址
-        sp.setImagePath("/mnt/sdcard/1523179210665.jpg");//缩略图  本地
+        sp.setUrl("http://www.baidu.com/test.mp4");//网络地址
+        sp.setImagePath(KWApplication.ROOT + "downloads/1394514005639.jpg");//缩略图  本地
         sp.setShareType(Platform.SHARE_VIDEO);
         Platform wx = ShareSDK.getPlatform(Wechat.NAME);
         wx.share(sp);

@@ -302,7 +302,6 @@ public class AutoReplyService extends AccessibilityService {
                 if (imageCount > 0) {
                     //图片
                     //handleImageMsg(id, action.returnMessages, maxReleaseTime);
-                    //0419使用分享的方法，不直接拉起微信
                     mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
                     currentActionID = id;
                     actioningFlag = true;
@@ -313,9 +312,15 @@ public class AutoReplyService extends AccessibilityService {
                             sendImageOnly2("http://upload.jnwb.net/2014/0311/1394514005639.jpg");
                         }
                     }.start();
+                }
+                if (videoCount > 0) {
+                    //  视频
+                    mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
+                    currentActionID = id;
+                    actioningFlag = true;
+                    sendVideoOnly2();
                 } else if (fileCount > 0) {
                     //文件
-                    //0419使用分享的方法，不直接拉起微信
                     mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
                     currentActionID = id;
                     actioningFlag = true;
@@ -2085,6 +2090,19 @@ public class AutoReplyService extends AccessibilityService {
         Platform.ShareParams sp = new Platform.ShareParams();
         sp.setImagePath(localPath);
         sp.setShareType(Platform.SHARE_IMAGE);
+        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
+        wx.share(sp);
+
+        doShareToWechat();
+    }
+
+    private void sendVideoOnly2() {
+        Platform.ShareParams sp = new Platform.ShareParams();
+        sp.setText("视频");
+        sp.setTitle("视频");
+        sp.setUrl(actions.get(currentActionID).returnMessages.get(0).content);
+        sp.setImagePath(KWApplication.defaultVideo);//缩略图  本地
+        sp.setShareType(Platform.SHARE_VIDEO);
         Platform wx = ShareSDK.getPlatform(Wechat.NAME);
         wx.share(sp);
 
