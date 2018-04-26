@@ -30,6 +30,8 @@ import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -272,6 +274,8 @@ public class AutoReplyService extends AccessibilityService {
                 action.returnMessages.clear();
                 int imageCount = 0;
                 int linkCount = 0;
+                int videoCount = 0;
+                int fileCount = 0;
                 for (int i = 0; i < size; i++) {
                     try {
                         ReturnMessage rm = new ReturnMessage();
@@ -280,6 +284,10 @@ public class AutoReplyService extends AccessibilityService {
                             imageCount++;
                         } else if (rm.returnType == TYPE_LINK) {
                             linkCount++;
+                        } else if (rm.returnType == TYPE_VIDEO) {
+                            videoCount++;
+                        } else if (rm.returnType == TYPE_FILE) {
+                            fileCount++;
                         }
                         rm.content = returnMessage.getJSONObject(i).getString("content");
                         action.returnMessages.add(rm);
@@ -305,6 +313,13 @@ public class AutoReplyService extends AccessibilityService {
                             sendImageOnly2("http://upload.jnwb.net/2014/0311/1394514005639.jpg");
                         }
                     }.start();
+                } else if (fileCount > 0) {
+                    //文件
+                    //0419使用分享的方法，不直接拉起微信
+                    mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
+                    currentActionID = id;
+                    actioningFlag = true;
+                    sendFileOnly2("http://upload.jnwb.net/2014/0311/1394514005639.jpg");
                 } else if (linkCount > 0) {
                     //链接
                     mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
@@ -2076,6 +2091,52 @@ public class AutoReplyService extends AccessibilityService {
         doShareToWechat();
     }
 
+    private void sendFileOnly2(String url) {
+        int index = url.lastIndexOf("/");
+        String fileName = url.substring(index + 1);
+        //1.下载
+        String savedFilePath = KWApplication.ROOT + "downloads/" + fileName;
+
+        RequestParams params = new RequestParams(url);
+        params.setSaveFilePath(savedFilePath);
+        params.setAutoRename(false);
+        params.setAutoResume(true);
+        x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
+            @Override
+            public void onSuccess(File result) {
+                Log.d("test", "onSuccess");
+
+                Log.d("test", "sendFileOnly2");
+                Platform.ShareParams sp = new Platform.ShareParams();
+                sp.setTitle("文件");
+                sp.setFilePath(savedFilePath);
+                sp.setImagePath(KWApplication.defaultFile);
+                sp.setShareType(Platform.SHARE_FILE);
+                Platform wx = ShareSDK.getPlatform(Wechat.NAME);
+                wx.share(sp);
+
+                doShareToWechat();
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                Log.d("test", "onError");
+                release();
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+                Log.d("test", "onCancelled");
+                release();
+            }
+
+            @Override
+            public void onFinished() {
+                Log.d("test", "onFinished");
+            }
+        });
+    }
+
     private void sendLinkOnly(String content, boolean moment) {
         try {
             JSONObject contentO = new JSONObject(content);
@@ -2121,8 +2182,6 @@ public class AutoReplyService extends AccessibilityService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     private void doShareToWechatMoments(String remark) {
