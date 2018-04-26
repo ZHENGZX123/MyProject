@@ -221,9 +221,10 @@ public class AutoReplyService extends AccessibilityService {
                     Action action = actions.get(id);
                     if (action == null) {
                         Log.d("test", "action null , doFindUsableAction");
-                        doFindUsableAction(o, false);//因为原有的action可能丢失，使用的是别人的action，所以realReply是false
+                        doFindUsableAction(o);
                     } else {
-                        if (action.replied) {
+                        if (action.replied && recv.msg.contains("\"returnType\":1") && recv.msg.contains("客服正忙")) {
+                            Log.d("test", "action.replied");
                             return;
                         }
                         JSONArray returnMessage = o.getJSONArray("returnMessage");
@@ -236,7 +237,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void doFindUsableAction(JSONObject o, boolean realReply) {
+    private void doFindUsableAction(JSONObject o) {
         try {
             String sender = o.getString("sender");
             String content = o.getString("content");
@@ -249,8 +250,8 @@ public class AutoReplyService extends AccessibilityService {
             firstA.sender = sender;
             firstA.content = content;
             firstA.actionType = TYPE_TEXT;
-            doHandleZbusMsg(firstKey, firstA, returnMessage, realReply);
-
+            //因为使用的是别人的action，所以realReply是false
+            doHandleZbusMsg(firstKey, firstA, returnMessage, false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -301,8 +302,6 @@ public class AutoReplyService extends AccessibilityService {
                         @Override
                         public void run() {
                             //action.returnMessages.get(0).content
-                            //"http://upload.jnwb.net/2014/0311/1394514005639.jpg"
-                            //action.returnMessages.get(0).content
                             sendImageOnly2("http://upload.jnwb.net/2014/0311/1394514005639.jpg");
                         }
                     }.start();
@@ -332,7 +331,11 @@ public class AutoReplyService extends AccessibilityService {
                 if (id != lastHearBeatID) {
                     zbusFailureCount++;
                     Log.d("test", "心跳测试：zbus断开 FailureCount = " + zbusFailureCount);
+
                     if (zbusFailureCount % 3 == 0) {
+                        if (MainActivity.instance != null) {
+                            MainActivity.instance.updateOpenIdOrStatus(2);
+                        }
                         new Thread() {
                             @Override
                             public void run() {
@@ -352,6 +355,9 @@ public class AutoReplyService extends AccessibilityService {
                 Log.d("test", "心跳测试：zbus正常");
                 lastHearBeatID = id;
                 zbusFailureCount = 0;
+                if (MainActivity.instance != null) {
+                    MainActivity.instance.updateOpenIdOrStatus(1);
+                }
             }
         }
     }
@@ -452,6 +458,7 @@ public class AutoReplyService extends AccessibilityService {
         Message msg = new Message();
         msg.what = MSG_INSERT_QUEUE;
         msg.arg1 = insertToHead ? 1 : 0;
+
         msg.obj = new ZbusRecv(fakeRecv, true);
         mHandler.sendMessage(msg);
     }
