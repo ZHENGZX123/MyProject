@@ -38,6 +38,7 @@ import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 
+import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.R;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.Constant;
@@ -463,10 +464,9 @@ public class MainActivity extends BaseActivity {
     public void shareFile(View view) {
         Platform wx = ShareSDK.getPlatform(Wechat.NAME);
         Platform.ShareParams sp = new Platform.ShareParams();
-        sp.setText("我给你分享了文件");
-        sp.setTitle("我给你分享了文件");
-        sp.setFilePath("/mnt/sdcard/WeChatMomentStat/SnsMicroMsg.db");//本地地址
-        sp.setImagePath("/mnt/sdcard/1523179210665.jpg");//本地地址
+        sp.setTitle("我给你分享了文件2");
+        sp.setFilePath(KWApplication.ROOT+"downloads/1394514005639.jpg");
+        sp.setImagePath(KWApplication.ROOT+"downloads/1394514005639.jpg");
         sp.setShareType(Platform.SHARE_FILE);
         wx.share(sp);
     }

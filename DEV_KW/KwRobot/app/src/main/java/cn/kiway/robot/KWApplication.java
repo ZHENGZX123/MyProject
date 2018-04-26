@@ -17,6 +17,11 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
 import org.xutils.x;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+
 import cn.kiway.robot.util.CrashHandler;
 
 
@@ -27,6 +32,7 @@ import cn.kiway.robot.util.CrashHandler;
 public class KWApplication extends Application {
 
     public static String ROOT = "/mnt/sdcard/kiway_robot/";
+    public static String defaultFile = ROOT + "/downloads/file.png";
 
     @Override
     public void onCreate() {
@@ -35,7 +41,40 @@ public class KWApplication extends Application {
         x.Ext.init(this);
         initImageCache();
         CrashHandler.getInstance().init(this);
+        saveDefaultFile();
     }
+
+
+    public void saveDefaultFile() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    File file = new File(ROOT + "downloads/file.png");
+                    if (file.exists()) {
+                        return;
+                    }
+                    InputStream inStream = getResources().openRawResource(R.mipmap.file);
+                    FileOutputStream fileOutputStream = new FileOutputStream(file);//存入SDCard
+                    byte[] buffer = new byte[10];
+                    ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+                    int len = 0;
+                    while ((len = inStream.read(buffer)) != -1) {
+                        outStream.write(buffer, 0, len);
+                    }
+                    byte[] bs = outStream.toByteArray();
+                    fileOutputStream.write(bs);
+                    outStream.close();
+                    inStream.close();
+                    fileOutputStream.flush();
+                    fileOutputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
 
     private void initImageCache() {
         DisplayMetrics displayMetrics = getApplicationContext().getResources()
