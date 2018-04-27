@@ -47,6 +47,7 @@ import cn.kiway.robot.activity.MainActivity;
 import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.entity.ReturnMessage;
 import cn.kiway.robot.entity.ZbusRecv;
+import cn.kiway.robot.moment.model.Zombie;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.FileUtils;
 import cn.kiway.robot.util.RootCmd;
@@ -110,6 +111,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private long lastHearBeatID;
     private long zbusFailureCount;
+    private ArrayList<Zombie> zombies = new ArrayList<>();
 
     @Override
     public void onCreate() {
@@ -676,7 +678,7 @@ public class AutoReplyService extends AccessibilityService {
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                doClearZombieFan();
+                                findTopRightToolBar();
                             }
                         }, 2000);
                     }
@@ -703,14 +705,270 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void doClearZombieFan() {
-        //无法全选，暂时做不了
+    private void findTopRightToolBar() {
         checkIsWxHomePage();
         if (lastRelativeLayout == null) {
             release();
             return;
         }
         lastRelativeLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //发起群聊
+                boolean find = findGroupChatButton(getRootInActiveWindow());
+                if (!find) {
+                    release();
+                }
+            }
+        }, 2000);
+    }
+
+    private boolean findGroupChatButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("发起群聊")) {
+                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //下拉列表，全部勾选
+                        Log.d("test", "================findFriendListView===================");
+                        listViewNode = null;
+                        sureButton = null;
+                        boolean find = findFriendListView(getRootInActiveWindow());
+                        if (!find) {
+                            release();
+                        }
+                    }
+                }, 2000);
+                return true;
+            }
+            if (findGroupChatButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private AccessibilityNodeInfo sureButton;
+
+    private boolean findFriendListView(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.ListView")) {
+                listViewNode = nodeInfo;
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        checkFriendInListView();
+                    }
+                }, 2000);
+                return true;
+            } else if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("确定")) {
+                sureButton = nodeInfo;
+            }
+
+            if (findFriendListView(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void checkFriendInListView() {
+        new Thread() {
+            @Override
+            public void run() {
+                int friendCount = Integer.parseInt(Utils.getParentRemark(getApplication()));
+                int scrollCount = friendCount / 6;
+                //开始滚动读取
+                for (int i = 0; i < scrollCount; i++) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("test", "==========doCheckFriend===========");
+                            doCheckFriend(getRootInActiveWindow());
+                        }
+                    });
+                    try {
+                        sleep(1500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listViewNode.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+                        }
+                    });
+                    try {
+                        sleep(1500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                //点一下确定。建群时间比较长
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        sureButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                boolean find = findZombieFans(getRootInActiveWindow());
+                                if (!find) {
+                                    Log.d("test", "创建失败或者没有僵尸粉");
+                                    release();
+                                }
+                            }
+                        }, 8000);
+                    }
+                });
+            }
+        }.start();
+    }
+
+    private boolean findZombieFans(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().startsWith("你无法邀请未添加你为好友的用户进去群聊，请先向")) {
+                String text = nodeInfo.getText().toString().replace("你无法邀请未添加你为好友的用户进去群聊，请先向", "").replace("发送朋友验证申请。对方通过验证后，才能加入群聊。", "");
+                String[] temp = text.split("、");
+                Log.d("test", "僵尸粉的数量：" + temp.length);
+                //返回，通过搜索好友名字，去逐个删除。
+                if (temp.length == 0) {
+                    toast("僵尸粉数量为0");
+                    release();
+                }
+                Log.d("test", "重设maxReleaseTime");
+                mHandler.removeMessages(MSG_ACTION_TIMEOUT);
+                int maxReleaseTime = 20000 * temp.length;
+                mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, maxReleaseTime);
+
+                zombies.clear();
+                for (String t : temp) {
+                    zombies.add(new Zombie(t, false));
+                }
+
+                performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        doSequeClearZombies();
+                    }
+                }, 2000);
+                return true;
+            }
+            if (findZombieFans(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Zombie currentZombie;
+
+    private void doSequeClearZombies() {
+        //检查allCleared线程
+        new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    if (!actioningFlag) {
+                        break;
+                    }
+                    boolean allCleared = true;
+                    for (Zombie rm : zombies) {
+                        allCleared = allCleared & rm.cleared;
+                    }
+                    Log.d("test", "allCleared = " + allCleared);
+                    if (allCleared) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                release();
+                            }
+                        });
+                        break;
+                    }
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+
+        new Thread() {
+            @Override
+            public void run() {
+                int count = zombies.size();
+                for (int i = 0; i < count; i++) {
+                    currentZombie = zombies.get(i);
+                    while (i != 0 && !zombies.get(i - 1).cleared) {
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    doClearZombieFan();
+                }
+            }
+        }.start();
+    }
+
+    private void doClearZombieFan() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                checkIsWxHomePage();
+                searchZombieInWxHomePage();
+            }
+        });
+    }
+
+    private boolean doCheckFriend(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.CheckBox")) {
+                Log.d("test", "checked = " + nodeInfo.isChecked());
+                //TODO 这个判断有问题。。。
+                if (!nodeInfo.isChecked()) {
+                    nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                }
+            }
+            if (doCheckFriend(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String getBackDoorByKey(String key) {
@@ -761,13 +1019,13 @@ public class AutoReplyService extends AccessibilityService {
         int receiveType = actions.get(currentActionID).actionType;
         if (receiveType == TYPE_TEXT || receiveType == TYPE_AUTO_MATCH || receiveType == TYPE_BACK_DOOR) {
             if (realSendText) {
-                doSequeSend();
+                doSequeSendText();
                 realSendText = false;
             } else {
                 int size = actions.get(currentActionID).returnMessages.size();
                 Log.d("test", "要回复的条数:" + size);
                 if (size < 4) {
-                    doSequeSend();
+                    doSequeSendText();
                 } else {
                     realSendText = true;
                     backToWxHomePage();
@@ -789,7 +1047,7 @@ public class AutoReplyService extends AccessibilityService {
                 public void run() {
                     //找下载按钮
                     Log.d("test", "-------------------findTopRightButton------------------");
-                    boolean find = findTopRightButton(getRootInActiveWindow());
+                    boolean find = findTopRightButton(getRootInActiveWindow(), false);
                     if (!find) {
                         Log.d("test", "找不到右上角按钮");
                         release();
@@ -941,7 +1199,7 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         Log.d("test", "=============findTargetPeople2==============");
-                        boolean find = findTargetPeople2(getRootInActiveWindow(), sender);
+                        boolean find = findTargetPeople2(getRootInActiveWindow(), sender, true);
                         if (!find) {
                             Log.d("test", "findTargetPeople2 failure");
                             release();
@@ -965,7 +1223,7 @@ public class AutoReplyService extends AccessibilityService {
         return isWxHomePage;
     }
 
-    private void doSequeSend() {
+    private void doSequeSendText() {
         ArrayList<ReturnMessage> returnMessages = actions.get(currentActionID).returnMessages;
 
         //检查allDone线程
@@ -1065,7 +1323,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private boolean findTargetPeople2(AccessibilityNodeInfo rootNode, String forwardto) {
+    private boolean findTargetPeople2(AccessibilityNodeInfo rootNode, String forwardto, boolean chat) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
@@ -1079,16 +1337,89 @@ public class AutoReplyService extends AccessibilityService {
                 Log.d("test", "click targetPeople = " + forwardto);
                 AccessibilityNodeInfo parent = nodeInfo.getParent();
                 parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+
                 //跳到聊天页面
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        doActionByReceiveType();
+                        if (chat) {
+                            //开始聊天
+                            doActionByReceiveType();
+                        } else {
+                            //清粉
+                            lastImageButton = null;
+                            findUserInfoButton(getRootInActiveWindow());
+                            if (lastImageButton == null) {
+                                currentZombie.cleared = true;
+                                return;
+                            }
+                            lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    boolean find = findTargetPeople4(getRootInActiveWindow(), currentZombie.nickname);
+                                    if (!find) {
+                                        currentZombie.cleared = true;
+                                    }
+                                }
+                            }, 2000);
+                        }
                     }
                 }, 3000);
                 return true;
             }
-            if (findTargetPeople2(nodeInfo, forwardto)) {
+            if (findTargetPeople2(nodeInfo, forwardto, chat)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findTargetPeople4(AccessibilityNodeInfo rootNode, String forwardto) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(forwardto)) {
+                AccessibilityNodeInfo parent = nodeInfo.getParent();
+                parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean find = findTopRightButton(getRootInActiveWindow(), true);
+                        if (!find) {
+                            currentZombie.cleared = true;
+                        }
+                    }
+                }, 3000);
+                return true;
+            }
+            if (findTargetPeople4(nodeInfo, forwardto)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private AccessibilityNodeInfo lastImageButton;
+
+    private boolean findUserInfoButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
+                lastImageButton = nodeInfo;
+            }
+            if (findUserInfoButton(nodeInfo)) {
                 return true;
             }
         }
@@ -1700,7 +2031,7 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-    private boolean findTopRightButton(AccessibilityNodeInfo rootNode) {
+    private boolean findTopRightButton(AccessibilityNodeInfo rootNode, boolean clearZombie) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
@@ -1711,21 +2042,24 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                //1秒后找gridview
-                Log.d("test", "=========findShareButton==============");
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        secondLinearLayout = 0;
-                        boolean find = findShareButton(getRootInActiveWindow());
-                        if (!find) {
-                            release();
+                        if (clearZombie) {
+                            Log.d("test", "............................");
+
+                        } else {
+                            secondLinearLayout = 0;
+                            boolean find = findShareButton(getRootInActiveWindow());
+                            if (!find) {
+                                release();
+                            }
                         }
                     }
                 }, 2000);
                 return true;
             }
-            if (findTopRightButton(nodeInfo)) {
+            if (findTopRightButton(nodeInfo, clearZombie)) {
                 return true;
             }
         }
@@ -2127,11 +2461,11 @@ public class AutoReplyService extends AccessibilityService {
             String tempImage = "http://upload.jnwb.net/2014/0311/1394514005639.jpg";
 
             if (title.equals("title") && url.equals("url")) {
-                String[] imageArray = imageUrl.replace("[","").replace("]","").split(",");
+                String[] imageArray = imageUrl.replace("[", "").replace("]", "").split(",");
                 //图文
                 ArrayList<Uri> imageUris = new ArrayList<>();
                 for (int i = 0; i < imageArray.length; i++) {
-                    Log.d("test", "image = "+imageArray[i]);
+                    Log.d("test", "image = " + imageArray[i]);
                     Bitmap bmp = ImageLoader.getInstance().loadImageSync(tempImage, KWApplication.getLoaderOptions());
                     if (bmp != null) {
                         String localPath = saveImage2(getApplication(), bmp);
@@ -2295,6 +2629,37 @@ public class AutoReplyService extends AccessibilityService {
             e.printStackTrace();
         }
         return o.toString();
+    }
+
+    private void searchZombieInWxHomePage() {
+        if (lastTextView == null) {
+            currentZombie.cleared = true;
+            return;
+        }
+        lastTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                String nickname = currentZombie.nickname;
+                boolean find = findInputEditText(getRootInActiveWindow(), nickname);
+                Log.d("test", "findInputEditText = " + find);
+                if (!find) {
+                    currentZombie.cleared = true;
+                    return;
+                }
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "=============findTargetPeople2==============");
+                        boolean find = findTargetPeople2(getRootInActiveWindow(), nickname, false);
+                        if (!find) {
+                            Log.d("test", "findTargetPeople2 failure");
+                            currentZombie.cleared = true;
+                        }
+                    }
+                }, 3000);
+            }
+        }, 3000);
     }
 
 }
