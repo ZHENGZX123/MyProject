@@ -48,7 +48,6 @@ import cn.kiway.wx.reply.utils.ZbusUtils;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
-import cn.sharesdk.wechat.moments.WechatMoments;
 
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.clientUrl;
@@ -493,14 +492,19 @@ public class MainActivity extends BaseActivity {
         wx.share(sp);*/
 
         //朋友圈
-        Platform.ShareParams sp = new Platform.ShareParams();
-        sp.setTitle("标题11111111111");
-        //sp.setText("文本111111111111");不需要
-        sp.setUrl("http://www.kiway.cn");
-        //sp.setImagePath("/mnt/sdcard/1520306782983.jpg");可选
-        sp.setShareType(Platform.SHARE_WEBPAGE);
-        Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
-        wx.share(sp);
+//        Platform.ShareParams sp = new Platform.ShareParams();
+//        sp.setText("fdsafdsafsdaf");
+//        sp.setImageArray(new String[]{KWApplication.defaultVideo, KWApplication.defaultFile});
+//        sp.setShareType(Platform.SHARE_IMAGE);
+//        Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
+//        wx.share(sp);
+
+        //不能绕过审核
+//        Platform.ShareParams sp = new Platform.ShareParams();
+//        sp.setText("fdsafdsafsdaf");
+//        sp.setShareType(Platform.SHARE_TEXT);
+//        Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
+//        wx.share(sp);
     }
 
     private void updateServiceStatus() {
