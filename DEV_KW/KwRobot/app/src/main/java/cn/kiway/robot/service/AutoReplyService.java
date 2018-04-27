@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -204,7 +205,8 @@ public class AutoReplyService extends AccessibilityService {
                             mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
                             currentActionID = 9999;
                             actioningFlag = true;
-                            sendLinkOnly2(recv.msg);
+
+                            shareToWechatMoments(recv.msg);
                         }
                         return;
                     }
@@ -301,7 +303,6 @@ public class AutoReplyService extends AccessibilityService {
 
                 if (imageCount > 0) {
                     //图片
-                    //handleImageMsg(id, action.returnMessages, maxReleaseTime);
                     mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
                     currentActionID = id;
                     actioningFlag = true;
@@ -380,23 +381,6 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
         }
-    }
-
-    private void handleImageMsg(long id, ArrayList<ReturnMessage> returnMessages, long maxReleaseTime) {
-        new Thread() {
-            @Override
-            public void run() {
-                for (ReturnMessage rm : returnMessages) {
-                    if (rm.returnType == TYPE_IMAGE) {
-                        //1.下载图片
-                        Bitmap bmp = ImageLoader.getInstance().loadImageSync(rm.content);
-                        //2.保存图片
-                        saveImage(getApplication(), bmp);
-                    }
-                }
-                launchWechat(id, maxReleaseTime);
-            }
-        }.start();
     }
 
     public synchronized void sendMsgToServer(long id, Action action) {
@@ -1005,20 +989,14 @@ public class AutoReplyService extends AccessibilityService {
                 int count = returnMessages.size();
                 for (int i = 0; i < count; i++) {
                     ReturnMessage rm = returnMessages.get(i);
-                    if (rm.returnType == TYPE_TEXT) {
-                        while (i != 0 && !returnMessages.get(i - 1).returnFinished) {
-                            try {
-                                sleep(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                    while (i != 0 && !returnMessages.get(i - 1).returnFinished) {
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-                        sendTextOnly(rm);
                     }
-                    //目前用分享来做，不走这个了
-                    else if (rm.returnType == TYPE_IMAGE) {
-                        sendImageOnly(rm);
-                    }
+                    sendTextOnly(rm);
                 }
             }
         }.start();
@@ -1870,7 +1848,7 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         Log.d("test", "----------findSendImageButton------------------");
-                        boolean find = findSendImageButton2(getRootInActiveWindow());
+                        boolean find = findSendImageButton(getRootInActiveWindow());
                         if (!find) {
                             Log.d("test", "找不到发送按钮，relase");
                             release();
@@ -2019,7 +1997,7 @@ public class AutoReplyService extends AccessibilityService {
         // 首先保存图片
         File appDir = new File(Environment.getExternalStorageDirectory(), "DCIM");
         if (!appDir.exists()) {
-            appDir.mkdir();
+            appDir.mkdirs();
         }
         String fileName = currentTimeMillis() + ".jpg";
         File file = new File(appDir, fileName);
@@ -2044,7 +2022,7 @@ public class AutoReplyService extends AccessibilityService {
         // 首先保存图片
         File appDir = new File(Environment.getExternalStorageDirectory(), "DCIM");
         if (!appDir.exists()) {
-            appDir.mkdir();
+            appDir.mkdirs();
         }
         String fileName = currentTimeMillis() + ".jpg";
         File file = new File(appDir, fileName);
@@ -2192,7 +2170,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void sendLinkOnly2(String content) {
+    private void shareToWechatMoments(String content) {
         try {
             JSONObject contentO = new JSONObject(content);
             String title = contentO.getString("title");
@@ -2200,30 +2178,53 @@ public class AutoReplyService extends AccessibilityService {
             String imageUrl = contentO.getString("imgUrl");
             String url = contentO.getString("url");
 
-            //1.下载图片
             imageUrl = "http://upload.jnwb.net/2014/0311/1394514005639.jpg";
-            String localPath = null;
-            if (!TextUtils.isEmpty(imageUrl)) {
-                Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageUrl, KWApplication.getLoaderOptions());
-                if (bmp != null) {
-                    //2.保存图片
-                    localPath = saveImage2(getApplication(), bmp);
+            if (true) {
+                //网文
+                ArrayList<Uri> imageUris = new ArrayList<>();
+                for (int i = 0; i < 5; i++) {
+                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageUrl, KWApplication.getLoaderOptions());
+                    if (bmp != null) {
+                        String localPath = saveImage2(getApplication(), bmp);
+                        Log.d("test", "localPath = " + localPath);
+                        imageUris.add(Uri.fromFile(new File(localPath)));
+                    }
                 }
-            }
+                Intent intent = new Intent();
+                ComponentName comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareToTimeLineUI");
+                intent.setComponent(comp);
+                intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                intent.setType("image/*");
+                intent.putExtra("Kdescription", describe);
+                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
 
-            Log.d("test", "sendLinkOnly");
-            Platform.ShareParams sp = new Platform.ShareParams();
-            sp.setTitle(title);
-            sp.setText(describe);
-            sp.setUrl(url);
-            if (!TextUtils.isEmpty(localPath)) {
-                sp.setImagePath(localPath);
-            }
-            sp.setShareType(Platform.SHARE_WEBPAGE);
-            Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
-            wx.share(sp);
+                doShareToWechatMoments("");
 
-            doShareToWechatMoments(describe);
+            } else {
+                //图文
+                String localPath = null;
+                if (!TextUtils.isEmpty(imageUrl)) {
+                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageUrl, KWApplication.getLoaderOptions());
+                    if (bmp != null) {
+                        localPath = saveImage2(getApplication(), bmp);
+                    }
+                }
+
+                Platform.ShareParams sp = new Platform.ShareParams();
+                sp.setTitle(title);
+                sp.setText(describe);
+                sp.setUrl(url);
+                if (!TextUtils.isEmpty(localPath)) {
+                    sp.setImagePath(localPath);
+                }
+                sp.setShareType(Platform.SHARE_WEBPAGE);
+                Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
+                wx.share(sp);
+
+                doShareToWechatMoments(describe);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2233,20 +2234,22 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                int delay = 0;
                 if (!TextUtils.isEmpty(remark)) {
                     //1.查找备注文本框并粘贴remark
                     findInputEditText(getRootInActiveWindow(), remark);
-                    //2.查找发送按钮并点击
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            boolean find = findSendImageButton2(getRootInActiveWindow());
-                            if (!find) {
-                                release();
-                            }
-                        }
-                    }, 2000);
+                    delay = 2000;
                 }
+                //2.查找发送按钮并点击
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean find = findSendImageButton(getRootInActiveWindow());
+                        if (!find) {
+                            release();
+                        }
+                    }
+                }, delay);
             }
         }, 4000);
     }
@@ -2267,172 +2270,7 @@ public class AutoReplyService extends AccessibilityService {
         }, 4000);
     }
 
-    private AccessibilityNodeInfo lastRelativeLayout;
-
-    private void sendImageOnly(ReturnMessage rm) {
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.d("test", "sendImageOnly");
-                AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-                Log.d("test", "-------------------------findPlusButton-----------------");
-                lastImageButton = null;
-                findPlusButton(rootNode, rm);
-                if (lastImageButton == null) {
-                    rm.returnFinished = true;
-                    return;
-                }
-                lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("test", "---------------------findAlbumButton----------------------------");
-                        lastRelativeLayout = null;
-                        boolean find = findAlbumButton(getRootInActiveWindow(), rm);
-                        if (!find) {
-                            Log.d("test", "找不到GridView");
-                            if (lastRelativeLayout == null) {
-                                rm.returnFinished = true;
-                            } else {
-                                lastRelativeLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Log.d("test", "----------findSendImageButton------------------");
-                                        boolean find = findSendImageButton1(getRootInActiveWindow(), rm);
-                                        if (!find) {
-                                            Log.d("test", "找不到发送按钮，relase");
-                                            rm.returnFinished = true;
-                                        }
-                                    }
-                                }, 5000);
-                            }
-                        }
-                    }
-                }, 3000);
-            }
-        }, 2000);
-    }
-
-    private AccessibilityNodeInfo lastImageButton;
-
-    //找到最后一个按钮，就是加号，点击一下
-    private boolean findPlusButton(AccessibilityNodeInfo rootNode, ReturnMessage rm) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            if (nodeInfo.getClassName().equals("android.widget.ImageButton") && (i > 0)) {
-                AccessibilityNodeInfo prevNode = rootNode.getChild(i - 1);
-                if (prevNode != null && prevNode.getClassName().equals("android.widget.ImageButton")) {
-                    lastImageButton = nodeInfo;
-                }
-            }
-            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
-            if (findPlusButton(nodeInfo, rm)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //找到“相册”按钮，点击一下
-    private boolean findAlbumButton(AccessibilityNodeInfo rootNode, ReturnMessage rm) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
-            if (nodeInfo.getClassName().equals("android.widget.GridView")) {
-                AccessibilityNodeInfo first = nodeInfo.getChild(0);
-                Log.d("test", "first child = " + first.getClassName());
-                first.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("test", "------------------------findFirstPicture-------------------------");
-                        boolean find = findFirstPicture(getRootInActiveWindow(), rm);
-                        if (!find) {
-                            Log.d("test", "找不到第一张图片 relase");
-                            rm.returnFinished = true;
-                        }
-                    }
-                }, 3000);
-                return true;
-            }
-            if (nodeInfo.getClassName().equals("android.widget.RelativeLayout")) {
-                lastRelativeLayout = nodeInfo;
-            }
-            if (findAlbumButton(nodeInfo, rm)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //找到第一张图片，点击一下勾勾。
-    private boolean findFirstPicture(AccessibilityNodeInfo rootNode, ReturnMessage rm) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            //Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
-            if (nodeInfo.getClassName().equals("android.widget.RelativeLayout")) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                //这里checkbox点击不了，奇怪
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("test", "----------findSendImageButton------------------");
-                        boolean find = findSendImageButton1(getRootInActiveWindow(), rm);
-                        if (!find) {
-                            Log.d("test", "找不到发送按钮，relase");
-                            rm.returnFinished = true;
-                        }
-                    }
-                }, 5000);
-                return true;
-            }
-            if (findFirstPicture(nodeInfo, rm)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findSendImageButton1(AccessibilityNodeInfo rootNode, ReturnMessage rm) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("发送")) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        rm.returnFinished = true;
-                    }
-                }, 5000);
-                return true;
-            }
-            if (findSendImageButton1(nodeInfo, rm)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findSendImageButton2(AccessibilityNodeInfo rootNode) {
+    private boolean findSendImageButton(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
@@ -2450,7 +2288,7 @@ public class AutoReplyService extends AccessibilityService {
                 }, 3000);
                 return true;
             }
-            if (findSendImageButton2(nodeInfo)) {
+            if (findSendImageButton(nodeInfo)) {
                 return true;
             }
         }
