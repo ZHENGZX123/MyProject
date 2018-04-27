@@ -13,6 +13,8 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.NetworkInterface;
@@ -305,12 +307,45 @@ public class Utils {
         }
     }
 
-    /**
-     * 把long 转换成 日期 再转换成String类型
-     */
-    public static String transferLongToDate(String dateFormat, Long millSec) {
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-        Date date = new Date(millSec);
-        return sdf.format(date);
+    public static void uploadFriend(Context c, String nickname, String remark, String wxId, String wxNo) {
+        try {
+            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+            String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
+
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            Log.d("test", "xtoken = " + xtoken);
+            client.addHeader("x-auth-token", xtoken);
+
+            String url = clientUrl + "/freind/all";
+            Log.d("test", "freind url = " + url);
+
+            JSONArray param = new JSONArray();
+            JSONObject o1 = new JSONObject();
+            o1.put("nickname", nickname);//昵称
+            o1.put("remark", remark);//备注
+            o1.put("wxId", wxId);//微信id
+            o1.put("wxNo", wxNo);//微信号
+            o1.put("robotId", robotId);
+            param.put(o1);
+
+            Log.d("test", "freind param = " + param.toString());
+            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+            client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "freind onSuccess = " + ret);
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "freind onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
+        }
     }
+
+
 }
