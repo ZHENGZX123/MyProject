@@ -110,7 +110,7 @@ public class Task {
     public void makeExtDir() {
         File extDir = new File(Config.EXT_DIR);
         if (!extDir.exists()) {
-            extDir.mkdir();
+            extDir.mkdirs();
         }
     }
 
