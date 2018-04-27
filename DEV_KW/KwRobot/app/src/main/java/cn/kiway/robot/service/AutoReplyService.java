@@ -22,12 +22,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import org.apache.http.Header;
-import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,7 +80,6 @@ import static cn.kiway.robot.util.Constant.DEFAULT_OFFLINE;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
-import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Constant.qas;
 import static java.lang.System.currentTimeMillis;
 
@@ -525,7 +520,7 @@ public class AutoReplyService extends AccessibilityService {
                     String content = "";
                     if (ticker.contains(":")) {
                         String[] cc = ticker.split(":");
-                        sender = Utils.replace(cc[0].trim());//由于备注去不掉，在这里把表情去掉
+                        sender = Utils.replace(cc[0].trim());
                         content = cc[1].trim();
                         Log.d("test", "sender name = " + sender);
                         Log.d("test", "sender content = " + content);
@@ -1373,7 +1368,7 @@ public class AutoReplyService extends AccessibilityService {
                             public void run() {
                                 release();
                                 String current = System.currentTimeMillis() + "";
-                                uploadFriend(nickname, remark + " " + nickname, current, current);
+                                Utils.uploadFriend(getApplication(), nickname, remark + " " + nickname, current, current);
                             }
                         }, 3000);
                     }
@@ -1523,59 +1518,6 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-    private String getCollectorForwardingContent() {
-        JSONObject o = new JSONObject();
-        try {
-            String name = getSharedPreferences("kiway", 0).getString("name", "");
-            String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
-            String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
-            String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
-            String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
-            String topic = robotId + "#" + wxNo;
-            Action currentAction = actions.get(currentActionID);
-            String content = currentAction.content;
-
-            String msg = new JSONObject()
-                    .put("id", System.currentTimeMillis() + "")
-                    .put("sender", currentAction.sender)
-                    .put("content", "content")
-                    .put("me", name)
-                    .put("areaCode", areaCode)
-                    .toString();
-
-
-            int msgType = TYPE_TEXT;
-            if (content.startsWith("[图片]")) {
-                msgType = TYPE_IMAGE;
-            } else if (content.startsWith("[链接]")) {
-                msgType = TYPE_LINK;
-            } else if (content.startsWith("[视频]")) {
-                msgType = TYPE_VIDEO;
-            } else if (content.startsWith("[文件]")) {
-                msgType = TYPE_FILE;
-            } else if (content.contains("向你推荐了")) {
-                msgType = TYPE_CARD;
-            }
-
-            o.put("appId", APPID);
-            o.put("description", "description");
-            o.put("installationId", installationId);
-            o.put("message", msg);
-            o.put("module", "wx_reply");
-            o.put("pushType", "zbus");
-            o.put("senderId", wxNo);
-            o.put("type", msgType);
-            o.put("title", "title");
-            o.put("userId", new JSONArray().put(topic));
-
-            Log.d("test", "o = " + o.toString());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return o.toString();
-    }
-
     private boolean findShareButtonInDialog(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -1596,25 +1538,6 @@ public class AutoReplyService extends AccessibilityService {
                 return true;
             }
             if (findShareButtonInDialog(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findStayInWechat(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("留在微信")) {
-
-                return true;
-            }
-            if (findStayInWechat(nodeInfo)) {
                 return true;
             }
         }
@@ -2295,44 +2218,57 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-    private void uploadFriend(String nickname, String remark, String wxId, String wxNo) {
+    private String getCollectorForwardingContent() {
+        JSONObject o = new JSONObject();
         try {
-            String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+            String name = getSharedPreferences("kiway", 0).getString("name", "");
+            String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
             String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
+            String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
+            String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
+            String topic = robotId + "#" + wxNo;
+            Action currentAction = actions.get(currentActionID);
+            String content = currentAction.content;
 
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
-            Log.d("test", "xtoken = " + xtoken);
-            client.addHeader("x-auth-token", xtoken);
+            String msg = new JSONObject()
+                    .put("id", System.currentTimeMillis() + "")
+                    .put("sender", currentAction.sender)
+                    .put("content", "content")
+                    .put("me", name)
+                    .put("areaCode", areaCode)
+                    .toString();
 
-            String url = clientUrl + "/freind/all";
-            Log.d("test", "freind url = " + url);
 
-            JSONArray param = new JSONArray();
-            JSONObject o1 = new JSONObject();
-            o1.put("nickname", nickname);//昵称
-            o1.put("remark", remark);//备注
-            o1.put("wxId", wxId);//微信id
-            o1.put("wxNo", wxNo);//微信号
-            o1.put("robotId", robotId);
-            param.put(o1);
+            int msgType = TYPE_TEXT;
+            if (content.startsWith("[图片]")) {
+                msgType = TYPE_IMAGE;
+            } else if (content.startsWith("[链接]")) {
+                msgType = TYPE_LINK;
+            } else if (content.startsWith("[视频]")) {
+                msgType = TYPE_VIDEO;
+            } else if (content.startsWith("[文件]")) {
+                msgType = TYPE_FILE;
+            } else if (content.contains("向你推荐了")) {
+                msgType = TYPE_CARD;
+            }
 
-            Log.d("test", "freind param = " + param.toString());
-            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "freind onSuccess = " + ret);
-                }
+            o.put("appId", APPID);
+            o.put("description", "description");
+            o.put("installationId", installationId);
+            o.put("message", msg);
+            o.put("module", "wx_reply");
+            o.put("pushType", "zbus");
+            o.put("senderId", wxNo);
+            o.put("type", msgType);
+            o.put("title", "title");
+            o.put("userId", new JSONArray().put(topic));
 
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "freind onFailure = " + s);
-                }
-            });
+            Log.d("test", "o = " + o.toString());
+
         } catch (Exception e) {
-            Log.d("test", "e = " + e.toString());
+            e.printStackTrace();
         }
+        return o.toString();
     }
 
 }
