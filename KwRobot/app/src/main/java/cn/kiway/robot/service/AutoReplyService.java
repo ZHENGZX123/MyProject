@@ -2124,14 +2124,15 @@ public class AutoReplyService extends AccessibilityService {
             String imageUrl = contentO.getString("imgUrl");
             String url = contentO.getString("url");
 
-            imageUrl = "http://upload.jnwb.net/2014/0311/1394514005639.jpg";
+            String tempImage = "http://upload.jnwb.net/2014/0311/1394514005639.jpg";
+
             if (title.equals("title") && url.equals("url")) {
-                JSONArray imageArray = new JSONArray(imageUrl);
+                String[] imageArray = imageUrl.replace("[","").replace("]","").split(",");
                 //图文
                 ArrayList<Uri> imageUris = new ArrayList<>();
-                for (int i = 0; i < imageArray.length(); i++) {
-                    //imageUrl = imageArray.getString(i);
-                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageUrl, KWApplication.getLoaderOptions());
+                for (int i = 0; i < imageArray.length; i++) {
+                    Log.d("test", "image = "+imageArray[i]);
+                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(tempImage, KWApplication.getLoaderOptions());
                     if (bmp != null) {
                         String localPath = saveImage2(getApplication(), bmp);
                         Log.d("test", "localPath = " + localPath);
@@ -2154,7 +2155,7 @@ public class AutoReplyService extends AccessibilityService {
                 //网文
                 String localPath = null;
                 if (!TextUtils.isEmpty(imageUrl)) {
-                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageUrl, KWApplication.getLoaderOptions());
+                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(tempImage, KWApplication.getLoaderOptions());
                     if (bmp != null) {
                         localPath = saveImage2(getApplication(), bmp);
                     }
