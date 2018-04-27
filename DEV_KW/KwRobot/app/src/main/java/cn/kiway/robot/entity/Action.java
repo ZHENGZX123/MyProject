@@ -25,12 +25,14 @@ public class Action {
     public static final int TYPE_PUBLIC_ACCONT_FORWARDING = 101;//需要转发给指定的人
     public static final int TYPE_COLLECTOR_FORWARDING = 102;//发到消息收集群
 
+    //朋友圈使者，目前暂时用不到了
     public static final int TYPE_FRIEND_CIRCLER = 99;//需要转发到朋友圈
     public static final int TYPE_SET_FRIEND_CIRCLER_REMARK = 103;//设置朋友圈转发备注
 
     public static final int TYPE_REQUEST_FRIEND = 104;//好友请求
     public static final int TYPE_AUTO_MATCH = 109;//自动匹配的消息
     public static final int TYPE_BACK_DOOR = 110;//机器人后门用
+    public static final int TYPE_CLEAR_ZOMBIE_FAN = 111;
 
     public PendingIntent intent;
     public String sender;

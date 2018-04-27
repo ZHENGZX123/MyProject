@@ -36,6 +36,7 @@ import io.zbus.mq.MessageHandler;
 import io.zbus.mq.MqClient;
 
 import static cn.kiway.robot.util.Constant.APPID;
+import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.clientUrl;
 
 /**
@@ -242,7 +243,7 @@ public class Utils {
                             //FIXME 在这里要做一个预处理，如果是图片的话，先别急加进去要事先下载
                             if (AutoReplyService.instance != null) {
                                 //如果发送者是test888，添加到队头
-                                if (msg.contains("test888")) {
+                                if (msg.contains(HEART_BEAT_TESTER)) {
                                     AutoReplyService.instance.sendReplyImmediately(msg, true);
                                 } else {
                                     AutoReplyService.instance.sendReplyImmediately(msg, false);

@@ -61,6 +61,7 @@ import cn.sharesdk.wechat.moments.WechatMoments;
 import static cn.kiway.robot.entity.Action.TYPE_AUTO_MATCH;
 import static cn.kiway.robot.entity.Action.TYPE_BACK_DOOR;
 import static cn.kiway.robot.entity.Action.TYPE_CARD;
+import static cn.kiway.robot.entity.Action.TYPE_CLEAR_ZOMBIE_FAN;
 import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_FILE;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
@@ -75,12 +76,15 @@ import static cn.kiway.robot.entity.Action.TYPE_VIDEO;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
+import static cn.kiway.robot.util.Constant.BACK_DOOR3;
+import static cn.kiway.robot.util.Constant.BACK_DOOR4;
 import static cn.kiway.robot.util.Constant.DEFAULT_BUSY;
 import static cn.kiway.robot.util.Constant.DEFAULT_OFFLINE;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.qas;
+import static cn.kiway.robot.util.Utils.getParentRemark;
 import static java.lang.System.currentTimeMillis;
 
 public class AutoReplyService extends AccessibilityService {
@@ -242,6 +246,7 @@ public class AutoReplyService extends AccessibilityService {
             String content = o.getString("content");
             JSONArray returnMessage = o.getJSONArray("returnMessage");
             if (actions.size() < 1) {
+                toast("需要至少有1个家长消息");
                 return;
             }
             Long firstKey = actions.keySet().iterator().next();
@@ -570,13 +575,10 @@ public class AutoReplyService extends AccessibilityService {
                         action.returnMessages.add(new ReturnMessage(TYPE_TEXT, Constant.qas.get(content.trim())));
                     } else if (!TextUtils.isEmpty(Constant.backdoors.get(content.trim()))) {
                         action.actionType = TYPE_BACK_DOOR;
-                        String ret = "";
-                        if (content.trim().equals(BACK_DOOR1)) {
-                            ret = getBackDoor1();
-                        } else if (content.trim().equals(BACK_DOOR2)) {
-                            ret = getBackDoor2();
-                        }
+                        String ret = getBackDoorByKey(content.trim());
                         action.returnMessages.add(new ReturnMessage(TYPE_TEXT, ret));
+                    } else if (content.trim().equals(BACK_DOOR4)) {
+                        action.actionType = TYPE_CLEAR_ZOMBIE_FAN;
                     }
                     //其他文字直接走zbus即可
                     else {
@@ -625,6 +627,9 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (action.actionType == TYPE_REQUEST_FRIEND) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, false);
+                    } else if (action.actionType == TYPE_CLEAR_ZOMBIE_FAN) {
+                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+                        sendReplyImmediately(fakeRecv, true);
                     }
                 }
                 break;
@@ -652,8 +657,8 @@ public class AutoReplyService extends AccessibilityService {
                 FileUtils.saveFile("" + actioningFlag, "actioningFlag.txt");
                 int receiveType = actions.get(currentActionID).actionType;
 
+                //好友请求不用做容错
                 if (receiveType == TYPE_REQUEST_FRIEND) {
-                    //好友请求不用做容错
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -664,71 +669,91 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }
                     }, 3000);
-                    return;
-                }
 
-                //1.判断当前是不是首页
-                Log.d("test", "========================checkIsWxHomePage============");
-                checkIsWxHomePage();
-                boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
-                Log.d("test", "isWxHomePage = " + isWxHomePage);
-                if (isWxHomePage) {
-                    //1.如果已经使用过的action，进来会去到首页
-                    searchSenderInWxHomePage();
+                } else if (receiveType == TYPE_CLEAR_ZOMBIE_FAN) {
+                    if (!checkIsWxHomePage()) {
+                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                doClearZombieFan();
+                            }
+                        }, 2000);
+                    }
                 } else {
-                    String targetSender = actions.get(currentActionID).sender;
-                    Log.d("test", "checkIsCorrectPage targetSender = " + targetSender);
-                    //2.容错判断
-                    boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
-                    Log.d("test", "isCorrect = " + isCorrect);
-                    if (isCorrect) {
-                        doActionByReceiveType();
+                    //1.判断当前是不是首页
+                    Log.d("test", "========================checkIsWxHomePage============");
+                    if (checkIsWxHomePage()) {
+                        //1.如果已经使用过的action，进来会去到首页
+                        searchSenderInWxHomePage();
                     } else {
-                        backToWxHomePage();
+                        String targetSender = actions.get(currentActionID).sender;
+                        Log.d("test", "checkIsCorrectPage targetSender = " + targetSender);
+                        //2.容错判断
+                        boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
+                        Log.d("test", "isCorrect = " + isCorrect);
+                        if (isCorrect) {
+                            doActionByReceiveType();
+                        } else {
+                            backToWxHomePage();
+                        }
                     }
                 }
                 break;
         }
     }
 
-    private String getBackDoor1() {
-        StringBuilder sb = new StringBuilder();
-        int totalActionCount = actions.size();
-        int undoCount = zbusRecvs.size() + 1;
-        int doneCount = totalActionCount - undoCount;
+    private void doClearZombieFan() {
+        //无法全选，暂时做不了
+        checkIsWxHomePage();
+        if (lastRelativeLayout == null) {
+            release();
+            return;
+        }
+        lastRelativeLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+    }
 
-        sb.append("家长问题总个数：" + totalActionCount + "，\n");
-        sb.append("其中已回复个数：" + doneCount + "，\n");
-        sb.append("未回复个数：" + undoCount + "。");
+    private String getBackDoorByKey(String key) {
+        StringBuilder sb = new StringBuilder();
+
+        if (key.equals(BACK_DOOR1)) {
+            int totalActionCount = actions.size();
+            int undoCount = zbusRecvs.size() + 1;
+            int doneCount = totalActionCount - undoCount;
+
+            sb.append("家长问题总个数：" + totalActionCount + "，\n");
+            sb.append("其中已回复个数：" + doneCount + "，\n");
+            sb.append("未回复个数：" + undoCount + "。");
+        } else if (key.equals(BACK_DOOR2)) {
+            int totalActionCount = actions.size();
+            if (totalActionCount == 0) {
+                return "目前家长问题个数是0";
+            }
+            int autoCount = 0;
+
+            String welcome = getSharedPreferences("welcome", 0).getString("welcome", DEFAULT_WELCOME);
+            Iterator<Map.Entry<Long, Action>> it = actions.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<Long, Action> entry = it.next();
+                Action a = entry.getValue();
+                if (!TextUtils.isEmpty(qas.get(a.content))) {
+                    autoCount++;
+                }
+                if (welcome.contains(a.content)) {
+                    autoCount++;
+                }
+            }
+            int percent = (int) ((float) autoCount / totalActionCount * 100);
+
+
+            sb.append("家长问题总个数：" + totalActionCount + "，\n");
+            sb.append("其中自动回复个数：" + autoCount + "，占比" + percent + "%");
+        } else if (key.equals(BACK_DOOR3)) {
+            sb.append("好友数量：" + Utils.getParentRemark(this));
+        }
         return sb.toString();
     }
 
-    private String getBackDoor2() {
-        int totalActionCount = actions.size();
-        if (totalActionCount == 0) {
-            return "目前家长问题个数是0";
-        }
-        int autoCount = 0;
-
-        String welcome = getSharedPreferences("welcome", 0).getString("welcome", DEFAULT_WELCOME);
-        Iterator<Map.Entry<Long, Action>> it = actions.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<Long, Action> entry = it.next();
-            Action a = entry.getValue();
-            if (!TextUtils.isEmpty(qas.get(a.content))) {
-                autoCount++;
-            }
-            if (welcome.contains(a.content)) {
-                autoCount++;
-            }
-        }
-        int percent = (int) ((float) autoCount / totalActionCount * 100);
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("家长问题总个数：" + totalActionCount + "，\n");
-        sb.append("其中自动回复个数：" + autoCount + "，占比" + percent + "%");
-        return sb.toString();
-    }
 
     private boolean realSendText;
 
@@ -866,11 +891,6 @@ public class AutoReplyService extends AccessibilityService {
 
     private void backToWxHomePage() {
         //先返回首页，再按搜索去做
-        if (backImageView == null) {
-            release();
-            return;
-        }
-        //backImageView.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
         performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -932,14 +952,17 @@ public class AutoReplyService extends AccessibilityService {
         }, 3000);
     }
 
-    private void checkIsWxHomePage() {
+    private boolean checkIsWxHomePage() {
         weixin = false;
         tongxunlu = false;
         faxian = false;
         wo = false;
         lastTextView = null;
-        backImageView = null;
+        lastRelativeLayout = null;
         checkIsWxHomePage(getRootInActiveWindow());
+        boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
+        Log.d("test", "isWxHomePage = " + isWxHomePage);
+        return isWxHomePage;
     }
 
     private void doSequeSend() {
@@ -1001,7 +1024,7 @@ public class AutoReplyService extends AccessibilityService {
     private boolean tongxunlu;
     private boolean faxian;
     private boolean wo;
-    private AccessibilityNodeInfo backImageView;
+    private AccessibilityNodeInfo lastRelativeLayout;
 
     private void checkIsWxHomePage(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
@@ -1035,8 +1058,8 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }
                 lastTextView = nodeInfo;
-            } else if (nodeInfo.getClassName().equals("android.widget.ImageView") && backImageView == null) {
-                backImageView = nodeInfo;
+            } else if (nodeInfo.getClassName().equals("android.widget.RelativeLayout")) {
+                lastRelativeLayout = nodeInfo;
             }
             checkIsWxHomePage(nodeInfo);
         }
@@ -1289,7 +1312,7 @@ public class AutoReplyService extends AccessibilityService {
                 arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN, true);
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY, arguments);
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                remark = Utils.getParentRemark(this);
+                remark = getParentRemark(this);
                 ClipData clip = ClipData.newPlainText("label", remark);
 
                 ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -2102,10 +2125,12 @@ public class AutoReplyService extends AccessibilityService {
             String url = contentO.getString("url");
 
             imageUrl = "http://upload.jnwb.net/2014/0311/1394514005639.jpg";
-            if (true) {
-                //网文
+            if (title.equals("title") && url.equals("url")) {
+                JSONArray imageArray = new JSONArray(imageUrl);
+                //图文
                 ArrayList<Uri> imageUris = new ArrayList<>();
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < imageArray.length(); i++) {
+                    //imageUrl = imageArray.getString(i);
                     Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageUrl, KWApplication.getLoaderOptions());
                     if (bmp != null) {
                         String localPath = saveImage2(getApplication(), bmp);
@@ -2126,7 +2151,7 @@ public class AutoReplyService extends AccessibilityService {
                 doShareToWechatMoments("");
 
             } else {
-                //图文
+                //网文
                 String localPath = null;
                 if (!TextUtils.isEmpty(imageUrl)) {
                     Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageUrl, KWApplication.getLoaderOptions());
