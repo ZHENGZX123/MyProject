@@ -204,7 +204,7 @@ public class AutoReplyService extends AccessibilityService {
                             mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
                             currentActionID = 9999;
                             actioningFlag = true;
-                            sendLinkOnly(recv.msg, true);
+                            sendLinkOnly2(recv.msg);
                         }
                         return;
                     }
@@ -333,7 +333,7 @@ public class AutoReplyService extends AccessibilityService {
                     new Thread() {
                         @Override
                         public void run() {
-                            sendLinkOnly(action.returnMessages.get(0).content, false);
+                            sendLinkOnly(action.returnMessages.get(0).content);
                         }
                     }.start();
                 } else {
@@ -2155,7 +2155,7 @@ public class AutoReplyService extends AccessibilityService {
         });
     }
 
-    private void sendLinkOnly(String content, boolean moment) {
+    private void sendLinkOnly(String content) {
         try {
             JSONObject contentO = new JSONObject(content);
             String title = contentO.getString("title");
@@ -2183,20 +2183,47 @@ public class AutoReplyService extends AccessibilityService {
                 sp.setImagePath(localPath);
             }
             sp.setShareType(Platform.SHARE_WEBPAGE);
-            Platform wx = null;
-            if (moment) {
-                wx = ShareSDK.getPlatform(WechatMoments.NAME);
-            } else {
-                wx = ShareSDK.getPlatform(Wechat.NAME);
-            }
+            Platform wx = ShareSDK.getPlatform(Wechat.NAME);
             wx.share(sp);
 
+            doShareToWechat();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-            if (moment) {
-                doShareToWechatMoments(describe);
-            } else {
-                doShareToWechat();
+    private void sendLinkOnly2(String content) {
+        try {
+            JSONObject contentO = new JSONObject(content);
+            String title = contentO.getString("title");
+            String describe = contentO.getString("description");
+            String imageUrl = contentO.getString("imgUrl");
+            String url = contentO.getString("url");
+
+            //1.下载图片
+            imageUrl = "http://upload.jnwb.net/2014/0311/1394514005639.jpg";
+            String localPath = null;
+            if (!TextUtils.isEmpty(imageUrl)) {
+                Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageUrl, KWApplication.getLoaderOptions());
+                if (bmp != null) {
+                    //2.保存图片
+                    localPath = saveImage2(getApplication(), bmp);
+                }
             }
+
+            Log.d("test", "sendLinkOnly");
+            Platform.ShareParams sp = new Platform.ShareParams();
+            sp.setTitle(title);
+            sp.setText(describe);
+            sp.setUrl(url);
+            if (!TextUtils.isEmpty(localPath)) {
+                sp.setImagePath(localPath);
+            }
+            sp.setShareType(Platform.SHARE_WEBPAGE);
+            Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
+            wx.share(sp);
+
+            doShareToWechatMoments(describe);
         } catch (Exception e) {
             e.printStackTrace();
         }

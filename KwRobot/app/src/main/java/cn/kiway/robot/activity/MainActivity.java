@@ -2,6 +2,7 @@ package cn.kiway.robot.activity;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,6 +36,7 @@ import org.xutils.x;
 
 import java.io.File;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -498,6 +500,24 @@ public class MainActivity extends BaseActivity {
 //        sp.setShareType(Platform.SHARE_IMAGE);
 //        Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
 //        wx.share(sp);
+
+        ArrayList<File> files = new ArrayList<>();
+        files.add(new File(KWApplication.defaultFile));
+        files.add(new File(KWApplication.defaultVideo));
+
+        Intent intent = new Intent();
+        ComponentName comp = new ComponentName("com.tencent.mm",
+                "com.tencent.mm.ui.tools.ShareToTimeLineUI");
+        intent.setComponent(comp);
+        intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+        intent.setType("image/*");
+        intent.putExtra("Kdescription", "dis");
+        ArrayList<Uri> imageUris = new ArrayList<Uri>();
+        for (File f : files) {
+            imageUris.add(Uri.fromFile(f));
+        }
+        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
+        startActivity(intent);
 
         //不能绕过审核
 //        Platform.ShareParams sp = new Platform.ShareParams();

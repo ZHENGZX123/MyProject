@@ -75,13 +75,12 @@ MobSDK {
             WechatMoments {
                 appId "wx52e610d1e20806b0"
                 appSecret ""
-                bypassApproval true
             }
 
         }
     }
-
 }
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     sourceCompatibility = '1.7'
