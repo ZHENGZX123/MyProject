@@ -793,7 +793,8 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 int friendCount = Integer.parseInt(Utils.getParentRemark(getApplication()));
-                int scrollCount = friendCount / 6;
+                int scrollCount = friendCount / 8 + 1;
+                Log.d("test", "scrollCount = " + scrollCount);
                 //开始滚动读取
                 for (int i = 0; i < scrollCount; i++) {
                     mHandler.post(new Runnable() {
@@ -861,7 +862,7 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 Log.d("test", "重设maxReleaseTime");
                 mHandler.removeMessages(MSG_ACTION_TIMEOUT);
-                int maxReleaseTime = 20000 * temp.length;
+                int maxReleaseTime = 30000 * temp.length;
                 mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, maxReleaseTime);
 
                 zombies.clear();
@@ -924,7 +925,6 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 int count = zombies.size();
                 for (int i = 0; i < count; i++) {
-                    currentZombie = zombies.get(i);
                     while (i != 0 && !zombies.get(i - 1).cleared) {
                         try {
                             sleep(1000);
@@ -932,6 +932,7 @@ public class AutoReplyService extends AccessibilityService {
                             e.printStackTrace();
                         }
                     }
+                    currentZombie = zombies.get(i);
                     doClearZombieFan();
                 }
             }
@@ -939,6 +940,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void doClearZombieFan() {
+        Log.d("test", "doClearZombieFan currentZombie = " + currentZombie.nickname);
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -959,7 +961,7 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.CheckBox")) {
                 Log.d("test", "checked = " + nodeInfo.isChecked());
-                //TODO 这个判断有问题。。。
+                //FIXME 这个判断有问题。。。
                 if (!nodeInfo.isChecked()) {
                     nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 }
@@ -2046,8 +2048,16 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         if (clearZombie) {
-                            Log.d("test", "............................");
-
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.d("test", "===============findDeleteButton1================");
+                                    boolean find = findDeleteButton1(getRootInActiveWindow());
+                                    if (!find) {
+                                        currentZombie.cleared = true;
+                                    }
+                                }
+                            }, 2000);
                         } else {
                             secondLinearLayout = 0;
                             boolean find = findShareButton(getRootInActiveWindow());
@@ -2060,6 +2070,62 @@ public class AutoReplyService extends AccessibilityService {
                 return true;
             }
             if (findTopRightButton(nodeInfo, clearZombie)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findDeleteButton1(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("删除")) {
+                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "===============findDeleteButton2================");
+                        boolean find = findDeleteButton2(getRootInActiveWindow());
+                        if (!find) {
+                            currentZombie.cleared = true;
+                        }
+                    }
+                }, 2000);
+                return true;
+            }
+            if (findDeleteButton1(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findDeleteButton2(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("删除")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        currentZombie.cleared = true;
+                    }
+                }, 3000);
+                return true;
+            }
+            if (findDeleteButton2(nodeInfo)) {
                 return true;
             }
         }
