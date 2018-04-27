@@ -55,11 +55,16 @@ public class Constant {
 
     public static String BACK_DOOR1 = "开维一本万利";
     public static String BACK_DOOR2 = "开维前程似锦";
+    public static String BACK_DOOR3 = "查询好友数量";
+    public static String BACK_DOOR4 = "清理僵尸粉";
+
     public static HashMap<String, String> backdoors = new HashMap<>();
 
     static {
         backdoors.put(BACK_DOOR1, BACK_DOOR1);
         backdoors.put(BACK_DOOR2, BACK_DOOR2);
+        backdoors.put(BACK_DOOR3, BACK_DOOR3);
+        //backdoors.put(BACK_DOOR4, "");
     }
 
     public static final String HEART_BEAT_TESTER = "心跳测试使者";
