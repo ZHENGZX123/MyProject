@@ -2530,8 +2530,9 @@ public class AutoReplyService extends AccessibilityService {
                 //图文
                 ArrayList<Uri> imageUris = new ArrayList<>();
                 for (int i = 0; i < imageArray.length; i++) {
-                    Log.d("test", "image = " + imageArray[i]);
-                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageArray[i], KWApplication.getLoaderOptions());
+                    String image = imageArray[i].replace("\"","");
+                    Log.d("test", "image = " + image);
+                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(image, KWApplication.getLoaderOptions());
                     if (bmp != null) {
                         String localPath = saveImage2(getApplication(), bmp);
                         Log.d("test", "localPath = " + localPath);
