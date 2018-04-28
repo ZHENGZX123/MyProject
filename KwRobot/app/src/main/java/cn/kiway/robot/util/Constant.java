@@ -17,21 +17,21 @@ public class Constant {
 
     public static String clientUrl = "http://robot.kiway.cn";  //"http://192.168.8.161:8081"; http://rbtest.kiway.cn http://robot.kiway.cn
 
+    public static final String testImage = "http://upload.jnwb.net/2014/0311/1394514005639.jpg";
 
     static {
 
-//            zbusHost = "robot.kiway.cn";
-//            zbusPort = "15555";
-//            clientUrl = "http://robot.kiway.cn";
+        zbusHost = "robot.kiway.cn";
+        zbusPort = "15555";
+        clientUrl = "http://robot.kiway.cn";
 
-        zbusHost = "rbtest.kiway.cn";
-        zbusPort = "25555";
-        clientUrl = "http://rbtest.kiway.cn";
+//        zbusHost = "rbtest.kiway.cn";
+//        zbusPort = "25555";
+//        clientUrl = "http://rbtest.kiway.cn";
 
-//            zbusHost = "192.168.8.161";
-//            zbusPort = "15555";
-//            clientUrl = "http://192.168.8.161:8081";
-
+//        zbusHost = "192.168.8.161";
+//        zbusPort = "15555";
+//        clientUrl = "http://192.168.8.161:8081";
     }
 
     public static HashMap<String, String> qas = new HashMap<>();
@@ -43,9 +43,9 @@ public class Constant {
         qas.put("客服您好", "家长您好。");
         qas.put("客服在吗", "家长您好，请问您要咨询什么问题？");
         qas.put("谢谢", "不用谢。欢迎下次再咨询。");
-        /*qas.put("[图片]", "暂不支持图片咨询。");
+        /*qas.put("[图片]", "暂不支持图片咨询。");*/
         qas.put("[文件]", "暂不支持文件咨询。");
-        qas.put("[视频]", "暂不支持视频咨询。");*/
+        qas.put("[视频]", "暂不支持视频咨询。");
         qas.put("[语音]", "暂不支持语音咨询。");
         qas.put("[位置]", "暂不支持位置咨询。");
         qas.put("[动画表情]", "暂不支持动画表情咨询。");

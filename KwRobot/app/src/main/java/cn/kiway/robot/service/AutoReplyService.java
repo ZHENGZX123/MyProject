@@ -311,8 +311,7 @@ public class AutoReplyService extends AccessibilityService {
                     new Thread() {
                         @Override
                         public void run() {
-                            //action.returnMessages.get(0).content
-                            sendImageOnly2("http://upload.jnwb.net/2014/0311/1394514005639.jpg");
+                            sendImageOnly2(action.returnMessages.get(0).content);
                         }
                     }.start();
                 }
@@ -570,7 +569,7 @@ public class AutoReplyService extends AccessibilityService {
                         action.actionType = TYPE_SET_FORWARDTO;
                     }
                     //需要转发到“消息收集群”
-                    else if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.contains("向你推荐了")) {
+                    else if (content.startsWith("[图片]") /*|| content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.contains("向你推荐了")*/) {
                         action.actionType = TYPE_COLLECTOR_FORWARDING;
                     } else if (!TextUtils.isEmpty(Constant.qas.get(content.trim()))) {
                         action.actionType = TYPE_AUTO_MATCH;
@@ -2488,7 +2487,6 @@ public class AutoReplyService extends AccessibilityService {
             String url = contentO.getString("url");
 
             //1.下载图片
-            imageUrl = "http://upload.jnwb.net/2014/0311/1394514005639.jpg";
             String localPath = null;
             if (!TextUtils.isEmpty(imageUrl)) {
                 Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageUrl, KWApplication.getLoaderOptions());
@@ -2523,16 +2521,13 @@ public class AutoReplyService extends AccessibilityService {
             String describe = contentO.getString("description");
             String imageUrl = contentO.getString("imgUrl");
             String url = contentO.getString("url");
-
-            String tempImage = "http://upload.jnwb.net/2014/0311/1394514005639.jpg";
-
             if (title.equals("title") && url.equals("url")) {
                 String[] imageArray = imageUrl.replace("[", "").replace("]", "").split(",");
                 //图文
                 ArrayList<Uri> imageUris = new ArrayList<>();
                 for (int i = 0; i < imageArray.length; i++) {
                     Log.d("test", "image = " + imageArray[i]);
-                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(tempImage, KWApplication.getLoaderOptions());
+                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageArray[i], KWApplication.getLoaderOptions());
                     if (bmp != null) {
                         String localPath = saveImage2(getApplication(), bmp);
                         Log.d("test", "localPath = " + localPath);
@@ -2550,12 +2545,11 @@ public class AutoReplyService extends AccessibilityService {
                 startActivity(intent);
 
                 doShareToWechatMoments("");
-
             } else {
                 //网文
                 String localPath = null;
                 if (!TextUtils.isEmpty(imageUrl)) {
-                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(tempImage, KWApplication.getLoaderOptions());
+                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageUrl, KWApplication.getLoaderOptions());
                     if (bmp != null) {
                         localPath = saveImage2(getApplication(), bmp);
                     }
