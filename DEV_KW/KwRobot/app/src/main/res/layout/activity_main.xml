@@ -61,26 +61,9 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="setCollector"
-            android:text="设置消息收集的微信（群）名称" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:onClick="clickInstruction"
             android:text="使用说明和注意事项" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="checkFCFrom"
-            android:text="设置朋友圈使者" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="checkFCRemark"
-            android:text="查看朋友圈备注" />
 
         <Button
             android:layout_width="wrap_content"
@@ -100,6 +83,27 @@
             android:layout_height="wrap_content"
             android:onClick="logout"
             android:text="注销本次登录"
+            android:visibility="gone" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="setCollector"
+            android:text="设置消息收集的微信（群）名称"
+            android:visibility="gone" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="checkFCFrom"
+            android:text="设置朋友圈使者"
+            android:visibility="gone" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="checkFCRemark"
+            android:text="查看朋友圈备注"
             android:visibility="gone" />
 
         <CheckBox
@@ -136,13 +140,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="test"
-            android:text="测试用" />
+            android:text="测试用"
+            android:visibility="gone" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="shareWeb"
-            android:text="分享" />
+            android:text="分享"
+            android:visibility="gone" />
 
     </cn.kiway.robot.view.FlowLayout>
 
