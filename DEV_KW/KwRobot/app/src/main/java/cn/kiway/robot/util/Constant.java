@@ -21,13 +21,13 @@ public class Constant {
 
     static {
 
-        zbusHost = "robot.kiway.cn";
-        zbusPort = "15555";
-        clientUrl = "http://robot.kiway.cn";
+//        zbusHost = "robot.kiway.cn";
+//        zbusPort = "15555";
+//        clientUrl = "http://robot.kiway.cn";
 
-//        zbusHost = "rbtest.kiway.cn";
-//        zbusPort = "25555";
-//        clientUrl = "http://rbtest.kiway.cn";
+        zbusHost = "rbtest.kiway.cn";
+        zbusPort = "25555";
+        clientUrl = "http://rbtest.kiway.cn";
 
 //        zbusHost = "192.168.8.161";
 //        zbusPort = "15555";
@@ -64,7 +64,7 @@ public class Constant {
         backdoors.put(BACK_DOOR1, BACK_DOOR1);
         backdoors.put(BACK_DOOR2, BACK_DOOR2);
         backdoors.put(BACK_DOOR3, BACK_DOOR3);
-//        backdoors.put(BACK_DOOR4, "");
+        backdoors.put(BACK_DOOR4, "");
     }
 
     public static final String HEART_BEAT_TESTER = "心跳测试使者";

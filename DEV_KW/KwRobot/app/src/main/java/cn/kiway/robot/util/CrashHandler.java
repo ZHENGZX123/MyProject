@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.kiway.wx.reply.utils.ZbusUtils;
+
 /**
  * Created by Administrator on 2018/3/5.
  */
@@ -76,6 +78,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             if (ex.toString().startsWith("java.util.concurrent.RejectedExecutionException")) {
                 return;
             }
+            ZbusUtils.close();
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
