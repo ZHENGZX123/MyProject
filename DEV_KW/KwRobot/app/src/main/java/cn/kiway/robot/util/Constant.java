@@ -53,7 +53,6 @@ public class Constant {
         qas.put("[语音]", "暂不支持语音咨询。");
         qas.put("[位置]", "暂不支持位置咨询。");
         qas.put("[动画表情]", "暂不支持动画表情咨询。");
-
     }
 
     public static String BACK_DOOR0 = "开维公司好";
