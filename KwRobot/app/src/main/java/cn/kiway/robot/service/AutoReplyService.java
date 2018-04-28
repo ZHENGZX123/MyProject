@@ -354,7 +354,6 @@ public class AutoReplyService extends AccessibilityService {
                 if (id != lastHearBeatID) {
                     zbusFailureCount++;
                     Log.d("test", "心跳测试：zbus断开 FailureCount = " + zbusFailureCount);
-
                     if (zbusFailureCount % 3 == 0) {
                         if (MainActivity.instance != null) {
                             MainActivity.instance.updateOpenIdOrStatus(2);
@@ -579,7 +578,7 @@ public class AutoReplyService extends AccessibilityService {
                         action.actionType = TYPE_BACK_DOOR;
                         String ret = getBackDoorByKey(content.trim());
                         action.returnMessages.add(new ReturnMessage(TYPE_TEXT, ret));
-                    } else if (content.trim().equals(BACK_DOOR4)) {
+                    } else if (content.trim().startsWith(BACK_DOOR4)) {
                         action.actionType = TYPE_CLEAR_ZOMBIE_FAN;
                     }
                     //其他文字直接走zbus即可
@@ -674,11 +673,19 @@ public class AutoReplyService extends AccessibilityService {
 
                 } else if (receiveType == TYPE_CLEAR_ZOMBIE_FAN) {
                     if (!checkIsWxHomePage()) {
+                        //先分析命令是否正确
+                        String content = actions.get(currentActionID).content;
+                        String temp[] = content.replace(BACK_DOOR4, "").split("-");
+
+                        if (temp.length != 2) {
+                            sendTextOnly2("请输入正确的命令，比如清理僵尸粉1-500");
+                            return;
+                        }
                         performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                findTopRightToolBar();
+                                findTopRightToolBarInHomePage();
                             }
                         }, 2000);
                     }
@@ -705,7 +712,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void findTopRightToolBar() {
+    private void findTopRightToolBarInHomePage() {
         checkIsWxHomePage();
         if (lastRelativeLayout == null) {
             release();
@@ -716,7 +723,7 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 //发起群聊
-                boolean find = findGroupChatButton(getRootInActiveWindow());
+                boolean find = findGroupChatButtonInToolBar(getRootInActiveWindow());
                 if (!find) {
                     release();
                 }
@@ -724,7 +731,7 @@ public class AutoReplyService extends AccessibilityService {
         }, 2000);
     }
 
-    private boolean findGroupChatButton(AccessibilityNodeInfo rootNode) {
+    private boolean findGroupChatButtonInToolBar(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
@@ -750,7 +757,7 @@ public class AutoReplyService extends AccessibilityService {
                 }, 2000);
                 return true;
             }
-            if (findGroupChatButton(nodeInfo)) {
+            if (findGroupChatButtonInToolBar(nodeInfo)) {
                 return true;
             }
         }
@@ -1061,12 +1068,6 @@ public class AutoReplyService extends AccessibilityService {
             }, 10000);//防止页面加载不完整
         } else if (receiveType == TYPE_SET_FORWARDTO || receiveType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
             sendTextOnly2("设置成功！");
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    release();
-                }
-            }, 3000);
         } else if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING || receiveType == TYPE_COLLECTOR_FORWARDING) {
             // 找到最后一张链接，点击转发给某人
             if (receiveType == TYPE_PUBLIC_ACCONT_FORWARDING) {
@@ -1078,12 +1079,6 @@ public class AutoReplyService extends AccessibilityService {
                 toast("您还没有设置转发对象");
                 //回复给微信
                 sendTextOnly2("您还没有设置转发对象，设置方法：请输入“设置转发对象：昵称”");
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        release();
-                    }
-                }, 3000);
                 return;
             }
 
@@ -1120,12 +1115,6 @@ public class AutoReplyService extends AccessibilityService {
                         } else {
                             //个人名片
                             sendTextOnly2("个人名片暂时不支持转发");
-                            mHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    release();
-                                }
-                            }, 3000);
                         }
                     } else if (content.startsWith("[视频]")) {
                         lastMsgView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -1722,14 +1711,9 @@ public class AutoReplyService extends AccessibilityService {
                         String welcome = getSharedPreferences("welcome", 0).getString("welcome", DEFAULT_WELCOME);
 
                         sendTextOnly2(welcome);
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                release();
-                                String current = System.currentTimeMillis() + "";
-                                Utils.uploadFriend(getApplication(), nickname, remark + " " + nickname, current, current);
-                            }
-                        }, 3000);
+
+                        String current = System.currentTimeMillis() + "";
+                        Utils.uploadFriend(getApplication(), nickname, remark + " " + nickname, current, current);
                     }
                 }, 3000);
                 return true;
@@ -1945,13 +1929,7 @@ public class AutoReplyService extends AccessibilityService {
                                 public void run() {
                                     String sendContent = getSharedPreferences("sendContent", 0).getString("sendContent", "你好，请问客服在吗？");
                                     sendTextOnly2(sendContent);
-                                    mHandler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            release();
-                                            getSharedPreferences("kiway", 0).edit().putBoolean(today, true).commit();
-                                        }
-                                    }, 3000);
+                                    getSharedPreferences("kiway", 0).edit().putBoolean(today, true).commit();
                                 }
                             }, 1000);
                         }
@@ -2288,6 +2266,7 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+
                         List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByText("发送");
                         if (list != null && list.size() > 0) {
                             for (AccessibilityNodeInfo n : list) {
@@ -2300,6 +2279,13 @@ public class AutoReplyService extends AccessibilityService {
                 }, 1000);
             }
         });
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                release();
+            }
+        }, 3000);
     }
 
 
@@ -2530,7 +2516,7 @@ public class AutoReplyService extends AccessibilityService {
                 //图文
                 ArrayList<Uri> imageUris = new ArrayList<>();
                 for (int i = 0; i < imageArray.length; i++) {
-                    String image = imageArray[i].replace("\"","");
+                    String image = imageArray[i].replace("\"", "");
                     Log.d("test", "image = " + image);
                     Bitmap bmp = ImageLoader.getInstance().loadImageSync(image, KWApplication.getLoaderOptions());
                     if (bmp != null) {

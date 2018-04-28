@@ -342,10 +342,21 @@ public class MainActivity extends BaseActivity {
     }
 
     public void logout(View view) {
+        toast("3秒后返回登录界面");
         ZbusUtils.close();
-        getSharedPreferences("kiway", 0).edit().clear().commit();
-        startActivity(new Intent(this, LoginActivity.class));
-        finish();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                getSharedPreferences("kiway", 0).edit().clear().commit();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
+            }
+        }.start();
     }
 
     public void checkNewVersion(View view) {
