@@ -112,13 +112,13 @@ public class AutoReplyService extends AccessibilityService {
     private long lastHearBeatID;
     private long zbusFailureCount;
     private ArrayList<Zombie> zombies = new ArrayList<>();
+    private Set<String> checkedFriends = new HashSet<>();//临时变量，已经勾选的好友
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d("maptrix", "service oncreate");
         instance = this;
-        Utils.installationPush(getApplication());
         mHandler.sendEmptyMessage(MSG_TRAVERSAL_QUEUE);
         mHandler.sendEmptyMessage(MSG_HEART_BEAT);
     }
@@ -294,6 +294,7 @@ public class AutoReplyService extends AccessibilityService {
                             fileCount++;
                         }
                         rm.content = returnMessage.getJSONObject(i).getString("content");
+                        rm.fileName = returnMessage.getJSONObject(i).optString("fileName");
                         action.returnMessages.add(rm);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -301,7 +302,7 @@ public class AutoReplyService extends AccessibilityService {
                 }
 
                 long maxReleaseTime = action.returnMessages.size() * 8000;
-                Log.d("test", "imageCount = " + imageCount);
+                Log.d("test", "imageCount = " + imageCount + " fileCount = " + fileCount + " videoCount = " + videoCount + " linkCount = " + linkCount);
 
                 if (imageCount > 0) {
                     //图片
@@ -326,7 +327,7 @@ public class AutoReplyService extends AccessibilityService {
                     mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
                     currentActionID = id;
                     actioningFlag = true;
-                    sendFileOnly2("http://upload.jnwb.net/2014/0311/1394514005639.jpg");
+                    sendFileOnly2(action.returnMessages.get(0).content, action.returnMessages.get(0).fileName);
                 } else if (linkCount > 0) {
                     //链接
                     mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
@@ -795,6 +796,7 @@ public class AutoReplyService extends AccessibilityService {
                 int scrollCount = friendCount / 8 + 1;
                 Log.d("test", "scrollCount = " + scrollCount);
                 //开始滚动读取
+                checkedFriends.clear();
                 for (int i = 0; i < scrollCount; i++) {
                     mHandler.post(new Runnable() {
                         @Override
@@ -959,11 +961,13 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.CheckBox")) {
-                Log.d("test", "checked = " + nodeInfo.isChecked());
-                //FIXME 这个判断有问题。。。
-                if (!nodeInfo.isChecked()) {
-                    nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                AccessibilityNodeInfo prevNode = rootNode.getChild(i - 1);
+                String nickname = prevNode.getText().toString();
+                if (checkedFriends.contains(nickname)) {
+                    continue;
                 }
+                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                checkedFriends.add(nickname);
             }
             if (doCheckFriend(nodeInfo)) {
                 return true;
@@ -2424,7 +2428,7 @@ public class AutoReplyService extends AccessibilityService {
         sp.setText("视频");
         sp.setTitle("视频");
         sp.setUrl(actions.get(currentActionID).returnMessages.get(0).content);
-        sp.setImagePath(KWApplication.defaultVideo);//缩略图  本地
+        sp.setImagePath(KWApplication.defaultVideo);
         sp.setShareType(Platform.SHARE_VIDEO);
         Platform wx = ShareSDK.getPlatform(Wechat.NAME);
         wx.share(sp);
@@ -2432,9 +2436,9 @@ public class AutoReplyService extends AccessibilityService {
         doShareToWechat();
     }
 
-    private void sendFileOnly2(String url) {
-        int index = url.lastIndexOf("/");
-        String fileName = url.substring(index + 1);
+    private void sendFileOnly2(String url, String fileName) {
+        //int index = url.lastIndexOf("/");
+        //String fileName = url.substring(index + 1);
         //1.下载
         String savedFilePath = KWApplication.ROOT + "downloads/" + fileName;
 

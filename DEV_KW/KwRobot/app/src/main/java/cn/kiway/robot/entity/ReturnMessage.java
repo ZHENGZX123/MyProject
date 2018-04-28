@@ -8,6 +8,7 @@ public class ReturnMessage {
 
     public int returnType;
     public String content;
+    public String fileName;
     public boolean returnFinished;
 
     public ReturnMessage(int returnType, String content) {
