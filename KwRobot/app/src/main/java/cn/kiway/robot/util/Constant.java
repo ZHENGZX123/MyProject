@@ -1,6 +1,10 @@
 package cn.kiway.robot.util;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import cn.kiway.robot.entity.Action;
 
 /**
  * Created by Administrator on 2018/2/23.
@@ -34,7 +38,7 @@ public class Constant {
 //        clientUrl = "http://192.168.8.161:8081";
     }
 
-    public static HashMap<String, String> qas = new HashMap<>();
+    public static Map<String, String> qas = new HashMap<>();
 
     static {
         qas.put("你好", "家长您好。");
@@ -52,19 +56,22 @@ public class Constant {
 
     }
 
-
+    public static String BACK_DOOR0 = "开维公司好";
     public static String BACK_DOOR1 = "开维一本万利";
     public static String BACK_DOOR2 = "开维前程似锦";
     public static String BACK_DOOR3 = "查询好友数量";
     public static String BACK_DOOR4 = "清理僵尸粉";
+    public static String BACK_DOOR5 = "重新计算好友数量";
 
-    public static HashMap<String, String> backdoors = new HashMap<>();
+    public static Map<String, Integer> backdoors = new LinkedHashMap<>();
 
     static {
-        backdoors.put(BACK_DOOR1, BACK_DOOR1);
-        backdoors.put(BACK_DOOR2, BACK_DOOR2);
-        backdoors.put(BACK_DOOR3, BACK_DOOR3);
-        backdoors.put(BACK_DOOR4, "");
+        backdoors.put(BACK_DOOR0, Action.TYPE_BACK_DOOR);
+        backdoors.put(BACK_DOOR1, Action.TYPE_BACK_DOOR);
+        backdoors.put(BACK_DOOR2, Action.TYPE_BACK_DOOR);
+        backdoors.put(BACK_DOOR3, Action.TYPE_BACK_DOOR);
+        backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
+        backdoors.put(BACK_DOOR5, Action.TYPE_GET_ALL_FRIENDS);
     }
 
     public static final String HEART_BEAT_TESTER = "心跳测试使者";
