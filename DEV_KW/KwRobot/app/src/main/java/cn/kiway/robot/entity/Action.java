@@ -16,9 +16,9 @@ public class Action {
     public static final int TYPE_FILE = 50;
     public static final int TYPE_LINK = 52;
     public static final int TYPE_CARD = 42;
+    //public static final int TYPE_GPS = 99;
     public static final int TYPE_MOMENT = 100;
 
-    //public static final int TYPE_GPS = 99;
 
     public static final int TYPE_SET_FORWARDTO = 100;//设置消息转发对象：公众号、消息收集人，都是这个设置。
 
@@ -33,6 +33,7 @@ public class Action {
     public static final int TYPE_AUTO_MATCH = 109;//自动匹配的消息
     public static final int TYPE_BACK_DOOR = 110;//机器人后门用
     public static final int TYPE_CLEAR_ZOMBIE_FAN = 111;
+    public static final  int TYPE_GET_ALL_FRIENDS = 112;
 
     public PendingIntent intent;
     public String sender;
