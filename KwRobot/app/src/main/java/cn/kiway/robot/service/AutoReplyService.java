@@ -183,12 +183,17 @@ public class AutoReplyService extends AccessibilityService {
 
     private void launchWechat(long id, long maxReleaseTime) {
         try {
+            currentActionID = id;
+            actions.get(currentActionID).intent.send();
+
             if (maxReleaseTime < 60000) {
                 maxReleaseTime = 60000;
             }
+            int actionType = actions.get(currentActionID).actionType;
+            if (actionType == TYPE_GET_ALL_FRIENDS) {
+                maxReleaseTime = 30 * 60 * 1000;
+            }
             mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, maxReleaseTime);
-            currentActionID = id;
-            actions.get(currentActionID).intent.send();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -712,7 +717,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 } else if (actionType == TYPE_GET_ALL_FRIENDS) {
                     if (!checkIsWxHomePage()) {
-                        sendTextOnly2("正在重新计算好友数量，请稍等", false);
+                        //sendTextOnly2("正在重新计算好友数量，请稍等", false);
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -720,13 +725,15 @@ public class AutoReplyService extends AccessibilityService {
                                 mHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
+                                        checkIsWxHomePage();
                                         tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                                         mHandler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
+                                                checkIsWxHomePage();
                                                 doFindFriendInListView();
                                             }
-                                        }, 2000);
+                                        }, 3000);
                                     }
                                 }, 2000);
                             }
@@ -760,46 +767,79 @@ public class AutoReplyService extends AccessibilityService {
 
     private void doFindFriendInListView() {
         friends.clear();
+
         new Thread() {
             @Override
             public void run() {
-//                while (true) {
-//                    mHandler.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            secondListView.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
-//                        }
-//                    });
-//                    synchronized (obj) {
-//                        try {
-//                            obj.wait(1000);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
                 //开始滚动读取
-//                while (true) {
-//                    findFriendView(getRootInActiveWindow());
-//                    mHandler.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            secondListView.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-//                        }
-//                    });
-//                    try {
-//                        sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                for (String f : friends) {
-//                    Log.d("test", "f===>" + f);
-//                }
-//                Log.d("test", "friends.size = " + friends.size());
-//                release();
+                while (true) {
+                    Log.d("test", "==============findFriendView=============");
+                    findFriendView(getRootInActiveWindow());
+                    //查询是否滚动到底部
+                    Log.d("test", "==============checkIsBottom=============");
+                    boolean isBottom = checkIsBottom(getRootInActiveWindow());
+                    Log.d("test", "isBottom = " + isBottom);
+                    if (isBottom) {
+                        break;
+                    }
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            secondListView.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+                        }
+                    });
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                int count = friends.size();
+                Log.d("test", "friends.size = " + count);
+                FileUtils.saveFile(count + "", "parent.txt");
             }
         }.start();
+    }
+
+    private boolean checkIsBottom(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().endsWith("位联系人")) {
+                return true;
+            }
+            if (checkIsBottom(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void findFriendView(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.view.View") && nodeInfo.getText() != null) {
+                String nickname = nodeInfo.getText().toString();
+                String me = getSharedPreferences("kiway", 0).getString("name", "");
+                if (nickname.equals("微信团队") || nickname.equals("文件传输助手") || nickname.equals(me)) {
+                    continue;
+                }
+                friends.add(nickname);
+            }
+            findFriendView(nodeInfo);
+        }
     }
 
     private void findTopRightToolBarInHomePage() {
@@ -1092,7 +1132,7 @@ public class AutoReplyService extends AccessibilityService {
         } else if (key.equals(BACK_DOOR2)) {
             int totalActionCount = actions.size();
             if (totalActionCount == 0) {
-                return "目前家长问题个数是0";
+                return "目前还没有家长提问";
             }
             int autoCount = 0;
 
@@ -1409,16 +1449,16 @@ public class AutoReplyService extends AccessibilityService {
                         } else {
                             toast("机器人的微信号和实际微信号不一致！！！");
                         }
-                    } else if (nodeInfo.getClassName().equals("android.widget.ListView")) {
-                        listviewCount++;
-                        if (listviewCount == 2) {
-                            secondListView = nodeInfo;
-                        }
                     }
                 }
                 lastTextView = nodeInfo;
             } else if (nodeInfo.getClassName().equals("android.widget.RelativeLayout")) {
                 lastRelativeLayout = nodeInfo;
+            } else if (nodeInfo.getClassName().equals("android.widget.ListView")) {
+                listviewCount++;
+                if (listviewCount == 2) {
+                    secondListView = nodeInfo;
+                }
             }
             checkIsWxHomePage(nodeInfo);
         }
