@@ -16,10 +16,10 @@ public class Constant {
     public static final String APPID = "930a4b41b8c92d30f790a6bf01bfe78a";
     public static final String APPKEY = "c83f643092046c0328624fe59aeec6548dac256c";
 
-    public static String zbusHost = "robot.kiway.cn";  //192.168.8.161  rbtest.kiway.cn robot.kiway.cn
-    public static String zbusPort = "15555";//15555 25555
+    public static String zbusHost = "robot.kiway.cn";
+    public static String zbusPort = "15555";
 
-    public static String clientUrl = "http://robot.kiway.cn";  //"http://192.168.8.161:8081"; http://rbtest.kiway.cn http://robot.kiway.cn
+    public static String clientUrl = "http://robot.kiway.cn";
 
     public static final String testImage = "http://upload.jnwb.net/2014/0311/1394514005639.jpg";
 
@@ -55,12 +55,14 @@ public class Constant {
         qas.put("[动画表情]", "暂不支持动画表情咨询。");
     }
 
-    public static String BACK_DOOR0 = "开维公司好";
-    public static String BACK_DOOR1 = "开维一本万利";
-    public static String BACK_DOOR2 = "开维前程似锦";
-    public static String BACK_DOOR3 = "查询好友数量";
-    public static String BACK_DOOR4 = "清理僵尸粉";
-    public static String BACK_DOOR5 = "重新计算好友数量";
+    public static final String BACK_DOOR0 = "开维公司好";
+    public static final String BACK_DOOR1 = "开维一本万利";
+    public static final String BACK_DOOR2 = "开维前程似锦";
+    public static final String BACK_DOOR3 = "查询好友数量";
+    public static final String BACK_DOOR4 = "清理僵尸粉";
+    public static final String BACK_DOOR5 = "重新计算好友数量";
+    public static final String BACK_DOOR6 = "发起群聊";
+
 
     public static Map<String, Integer> backdoors = new LinkedHashMap<>();
 
@@ -71,6 +73,7 @@ public class Constant {
         backdoors.put(BACK_DOOR3, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
         backdoors.put(BACK_DOOR5, Action.TYPE_GET_ALL_FRIENDS);
+        backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
     }
 
     public static final String HEART_BEAT_TESTER = "心跳测试使者";

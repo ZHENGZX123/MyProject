@@ -24,6 +24,8 @@ import java.io.InputStream;
 
 import cn.kiway.robot.util.CrashHandler;
 
+import static cn.kiway.robot.R.mipmap.file;
+
 
 /**
  * Created by Administrator on 2018/3/21.
@@ -42,7 +44,7 @@ public class KWApplication extends Application {
         x.Ext.init(this);
         initImageCache();
         CrashHandler.getInstance().init(this);
-        saveDefaultFile("file.png", R.mipmap.file);
+        saveDefaultFile("file.png", file);
         saveDefaultFile("video.png", R.mipmap.video);
     }
 
@@ -51,12 +53,15 @@ public class KWApplication extends Application {
             @Override
             public void run() {
                 try {
+                    if (!new File(ROOT + "downloads/").exists()) {
+                        new File(ROOT + "downloads/").mkdirs();
+                    }
                     File file = new File(ROOT + "downloads/" + fileName);
                     if (file.exists()) {
                         return;
                     }
                     InputStream inStream = getResources().openRawResource(id);
-                    FileOutputStream fileOutputStream = new FileOutputStream(file);//存入SDCard
+                    FileOutputStream fileOutputStream = new FileOutputStream(file);
                     byte[] buffer = new byte[10];
                     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
                     int len = 0;

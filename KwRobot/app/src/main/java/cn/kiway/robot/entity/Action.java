@@ -32,8 +32,9 @@ public class Action {
     public static final int TYPE_REQUEST_FRIEND = 104;//好友请求
     public static final int TYPE_AUTO_MATCH = 109;//自动匹配的消息
     public static final int TYPE_BACK_DOOR = 110;//机器人后门用
-    public static final int TYPE_CLEAR_ZOMBIE_FAN = 111;
-    public static final  int TYPE_GET_ALL_FRIENDS = 112;
+    public static final int TYPE_CLEAR_ZOMBIE_FAN = 111;//清理僵尸粉
+    public static final  int TYPE_GET_ALL_FRIENDS = 112;//重新计算好友数量
+    public static final  int TYPE_CREATE_GROUP_CHAT = 113;//发起群聊
 
     public PendingIntent intent;
     public String sender;
