@@ -954,10 +954,10 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }, 2000);
                 return true;
-            } else if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("确定")) {
+            }
+            else if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("确定")) {
                 sureButton = nodeInfo;
             }
-
             if (findFriendListView(nodeInfo, clearZombie)) {
                 return true;
             }
@@ -974,7 +974,7 @@ public class AutoReplyService extends AccessibilityService {
                     start = 0;
                     end = Integer.parseInt(Utils.getParentRemark(getApplication()));
                 }
-                int scrollCount = (end - start) / 8 + 1;
+                int scrollCount = (end - start) / 6 + 1;
                 Log.d("test", "scrollCount = " + scrollCount);
 
                 checkedFriends.clear();
@@ -1002,6 +1002,9 @@ public class AutoReplyService extends AccessibilityService {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                }
+                if (true) {
+                    return;
                 }
                 //点一下确定。建群时间比较长
                 mHandler.post(new Runnable() {
@@ -1149,15 +1152,18 @@ public class AutoReplyService extends AccessibilityService {
             if (nodeInfo.getClassName().equals("android.widget.CheckBox")) {
                 AccessibilityNodeInfo prevNode = rootNode.getChild(i - 1);
                 String nickname = prevNode.getText().toString();
-                if (checkedFriends.contains(nickname)) {
-                    continue;
-                }
+                Log.d("test", "nickname = " + nickname);
                 String content = actions.get(currentActionID).content;
                 if (clearZombie) {
-                    nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    checkedFriends.add(nickname);
+                    //清理僵尸粉，全选
+                    if (!checkedFriends.contains(nickname)) {
+                        Log.d("test", "nickname add ...");
+                        nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        checkedFriends.add(nickname);
+                    }
                 } else {
-                    if (content.contains(nickname)) {
+                    if (content.contains(nickname) && !checkedFriends.contains(nickname)) {
+                        Log.d("test", "nickname add ...");
                         nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         checkedFriends.add(nickname);
                     }
@@ -2852,7 +2858,6 @@ public class AutoReplyService extends AccessibilityService {
                     .put("me", name)
                     .put("areaCode", areaCode)
                     .toString();
-
 
             int msgType = TYPE_TEXT;
             if (content.startsWith("[图片]")) {
