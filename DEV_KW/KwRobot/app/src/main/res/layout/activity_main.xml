@@ -37,7 +37,7 @@
         android:layout_below="@+id/name">
 
         <Button
-            android:id="@+id/star"
+            android:id="@+id/start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="start"
@@ -76,14 +76,6 @@
             android:layout_height="wrap_content"
             android:onClick="reLogin"
             android:text="重新登录" />
-
-        <Button
-            android:id="@+id/logout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="logout"
-            android:text="注销本次登录"
-            android:visibility="gone" />
 
         <Button
             android:layout_width="wrap_content"

@@ -24,6 +24,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +39,7 @@ import io.zbus.mq.MqClient;
 
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
+import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
 
 /**
@@ -349,4 +352,24 @@ public class Utils {
     }
 
 
+    public static int checkInBackDoor(String content) {
+        if (TextUtils.isEmpty(content)) {
+            return 0;
+        }
+        boolean fastCheck = backdoors.containsKey(content);
+        if (fastCheck) {
+            return backdoors.get(content);
+        } else {
+            Iterator<Map.Entry<String, Integer>> it = backdoors.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<String, Integer> entry = it.next();
+                String key = entry.getKey();
+                int value = entry.getValue();
+                if (content.contains(key)) {
+                    return value;
+                }
+            }
+        }
+        return 0;
+    }
 }

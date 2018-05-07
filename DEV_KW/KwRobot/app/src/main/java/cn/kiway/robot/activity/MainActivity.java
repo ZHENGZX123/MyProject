@@ -60,7 +60,7 @@ public class MainActivity extends BaseActivity {
 
 
     public static MainActivity instance;
-    private Button star;
+    private Button start;
 
     public static final int MSG_NETWORK_OK = 11;
     public static final int MSG_NETWORK_ERR = 22;
@@ -89,7 +89,7 @@ public class MainActivity extends BaseActivity {
 
     private void initView() {
         nameTV = (TextView) findViewById(R.id.name);
-        star = (Button) findViewById(R.id.star);
+        start = (Button) findViewById(R.id.start);
         getPic = (CheckBox) findViewById(R.id.getPic);
 
         versionTV = (TextView) findViewById(R.id.version);
@@ -341,24 +341,6 @@ public class MainActivity extends BaseActivity {
         finish();
     }
 
-    public void logout(View view) {
-        toast("3秒后返回登录界面");
-        ZbusUtils.close();
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                getSharedPreferences("kiway", 0).edit().clear().commit();
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                finish();
-            }
-        }.start();
-    }
-
     public void checkNewVersion(View view) {
         new Thread() {
             @Override
@@ -417,7 +399,8 @@ public class MainActivity extends BaseActivity {
                 try {
                     String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
                     if (TextUtils.isEmpty(areaCode)) {
-                        areaCode = "440303";
+                        toast("areaCode为空");
+                        return;
                     }
                     Log.d("test", "areaCode = " + areaCode);
 
@@ -540,12 +523,12 @@ public class MainActivity extends BaseActivity {
 
     private void updateServiceStatus() {
         if (isServiceEnabled()) {
-            star.setText("服务已经开启");
-            star.setEnabled(false);
+            start.setText("服务已经开启");
+            start.setEnabled(false);
             updateOpenIdOrStatus(1);
         } else {
-            star.setText("点击开启服务");
-            star.setEnabled(true);
+            start.setText("点击开启服务");
+            start.setEnabled(true);
             updateOpenIdOrStatus(2);
         }
     }
@@ -593,7 +576,6 @@ public class MainActivity extends BaseActivity {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 rl_nonet.setVisibility(View.VISIBLE);
                 Log.d("test", "无网络");
-                ZbusUtils.close();
             } else if (msg.what == MSG_UPGRADE) {
                 mHandler.removeMessages(MSG_UPGRADE);
                 checkNewVersion(null);
