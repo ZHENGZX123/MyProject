@@ -19,7 +19,6 @@ public class Action {
     //public static final int TYPE_GPS = 99;
     public static final int TYPE_MOMENT = 100;
 
-
     public static final int TYPE_SET_FORWARDTO = 100;//设置消息转发对象：公众号、消息收集人，都是这个设置。
 
     public static final int TYPE_PUBLIC_ACCONT_FORWARDING = 101;//需要转发给指定的人
