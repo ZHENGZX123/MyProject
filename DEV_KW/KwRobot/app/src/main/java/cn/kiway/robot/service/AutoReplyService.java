@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -59,6 +60,8 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
 import cn.sharesdk.wechat.moments.WechatMoments;
 
+import static android.util.Base64.NO_WRAP;
+import static cn.kiway.robot.entity.Action.TYPE_ADD_GROUP_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_AUTO_MATCH;
 import static cn.kiway.robot.entity.Action.TYPE_BACK_DOOR;
 import static cn.kiway.robot.entity.Action.TYPE_CARD;
@@ -541,7 +544,7 @@ public class AutoReplyService extends AccessibilityService {
                     if (ticker.contains(":")) {
                         String[] cc = ticker.split(":");
                         sender = Utils.replace(cc[0].trim());
-                        content = cc[1].trim();
+                        content = ticker.substring(ticker.indexOf(":") + 1);
                         Log.d("test", "sender name = " + sender);
                         Log.d("test", "sender content = " + content);
                         if (Utils.isInfilters(getApplicationContext(), sender)) {
@@ -647,8 +650,15 @@ public class AutoReplyService extends AccessibilityService {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, true);
                     } else if (action.actionType == TYPE_CREATE_GROUP_CHAT) {
-                        //hardcode
-                        action.content = "5之,33 5行,30 执着";
+                        //发起群聊：5之,33 5行,30 执着
+                        //{"cmd": "发起群聊","members": ["5行","5之","执着"],"groupName": "111"}
+                        action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
+                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+                        sendReplyImmediately(fakeRecv, true);
+                    } else if (action.actionType == TYPE_ADD_GROUP_PEOPLE) {
+                        //拉人入群：32 风过无痕
+                        //{"cmd": "拉人入群","members": ["5行","5之"],"groupName": "111"}
+                        action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, true);
                     }
@@ -748,12 +758,11 @@ public class AutoReplyService extends AccessibilityService {
                 } else if (actionType == TYPE_CREATE_GROUP_CHAT) {
                     if (!checkIsWxHomePage()) {
                         try {
-                            String content = actions.get(currentActionID).content;
+                            String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                             Log.d("test", "content = " + content);
-                            //JSONObject o = new JSONObject(content);
-                            //JSONArray friends = o.getJSONArray("friends");
-                            String[] friends = content.split(",");
-                            int count = friends.length;
+                            JSONObject o = new JSONObject(content);
+                            JSONArray friends = o.getJSONArray("members");
+                            int count = friends.length();
                             if (count < 2 || count > 500) {
                                 sendTextOnly2("好友数量必须是2-500个", true);
                                 return;
@@ -772,8 +781,30 @@ public class AutoReplyService extends AccessibilityService {
                                     }, 2000);
                                 }
                             }, 3000);
-
-
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            sendTextOnly2("输入命令有误", true);
+                        }
+                    }
+                } else if (actionType == TYPE_ADD_GROUP_PEOPLE) {
+                    if (!checkIsWxHomePage()) {
+                        try {
+                            String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                            Log.d("test", "content = " + content);
+                            JSONObject o = new JSONObject(content);
+                            JSONArray friends = o.getJSONArray("friends");
+                            int count = friends.length();
+                            if (count < 0 || count > 10) {
+                                sendTextOnly2("好友数量必须是1-10个", true);
+                                return;
+                            }
+                            sendTextOnly2("正在拉人入群，请稍等", false);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                }
+                            }, 3000);
                         } catch (Exception e) {
                             e.printStackTrace();
                             sendTextOnly2("输入命令有误", true);
@@ -977,42 +1008,38 @@ public class AutoReplyService extends AccessibilityService {
         new Thread() {
             @Override
             public void run() {
-                //FIXME clearZombie=true：先滚动到指定位置才开始； clearZombie=false:从头滚到尾
-                if (!clearZombie) {
-                    start = 0;
-                    end = Integer.parseInt(Utils.getParentRemark(getApplication()));
-                }
-                int scrollCount = (end - start) / 8 + 1;
-                Log.d("test", "scrollCount = " + scrollCount);
+                try {
+                    //FIXME clearZombie=true：先滚动到指定位置才开始； clearZombie=false:从头滚到尾
+                    if (!clearZombie) {
+                        start = 0;
+                        end = Integer.parseInt(Utils.getParentRemark(getApplication()));
+                    }
+                    int scrollCount = (end - start) / 8 + 1;
+                    Log.d("test", "scrollCount = " + scrollCount);
 
-                checkedFriends.clear();
-                for (int i = 0; i < scrollCount; i++) {
-                    Log.d("test", "==========doCheckFriend===========");
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            doCheckFriend(getRootInActiveWindow(), clearZombie);
-                        }
-                    });
-                    try {
+                    checkedFriends.clear();
+                    for (int i = 0; i < scrollCount; i++) {
+                        Log.d("test", "==========doCheckFriend===========");
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                doCheckFriend(getRootInActiveWindow(), clearZombie);
+                            }
+                        });
                         sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            listViewNode.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-                        }
-                    });
-                    try {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                listViewNode.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+                            }
+                        });
                         sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
+                    //点一下确定。建群时间比较长
+                    clickSureButton(clearZombie);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                //点一下确定。建群时间比较长
-                clickSureButton(clearZombie);
             }
         }.start();
     }
@@ -1021,37 +1048,33 @@ public class AutoReplyService extends AccessibilityService {
         new Thread() {
             @Override
             public void run() {
-                String content = actions.get(currentActionID).content;
-                String[] friends = content.split(",");
-                int count = friends.length;
-                for (int i = 0; i < count; i++) {
-                    int finalI = i;
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            findInputEditText(getRootInActiveWindow(), friends[finalI]);
-                        }
-                    });
-                    try {
+                try {
+                    String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                    JSONObject o = new JSONObject(content);
+                    JSONArray friends = o.getJSONArray("members");
+                    int count = friends.length();
+                    for (int i = 0; i < count; i++) {
+                        String temp = friends.getString(i);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                findInputEditText(getRootInActiveWindow(), temp);
+                            }
+                        });
                         Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            doCheckFriend(getRootInActiveWindow(), true);
-                        }
-                    });
-                    try {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                doCheckFriend(getRootInActiveWindow(), true);
+                            }
+                        });
                         Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
+                    //点一下确定。建群时间比较长
+                    clickSureButton(clearZombie);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                //点一下确定。建群时间比较长
-                clickSureButton(clearZombie);
             }
         }.start();
     }
@@ -1109,16 +1132,27 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        findInputEditText(getRootInActiveWindow(), "群聊" + System.currentTimeMillis());
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                boolean find = findSaveButton(getRootInActiveWindow());
-                                if (!find) {
-                                    release();
-                                }
+                        try {
+                            String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                            Log.d("test", "content = " + content);
+                            JSONObject o = new JSONObject(content);
+                            String groupName = o.optString("groupName");
+                            if (TextUtils.isEmpty(groupName)) {
+                                groupName = "群聊" + System.currentTimeMillis();
                             }
-                        }, 1000);
+                            findInputEditText(getRootInActiveWindow(), groupName);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    boolean find = findSaveButton(getRootInActiveWindow());
+                                    if (!find) {
+                                        release();
+                                    }
+                                }
+                            }, 1000);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, 2000);
                 return true;

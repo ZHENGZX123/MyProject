@@ -62,6 +62,7 @@ public class Constant {
     public static final String BACK_DOOR4 = "清理僵尸粉";
     public static final String BACK_DOOR5 = "重新计算好友数量";
     public static final String BACK_DOOR6 = "发起群聊";
+    public static final String BACK_DOOR7 = "拉人入群";
 
 
     public static Map<String, Integer> backdoors = new LinkedHashMap<>();
@@ -74,6 +75,7 @@ public class Constant {
         backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
         backdoors.put(BACK_DOOR5, Action.TYPE_GET_ALL_FRIENDS);
         backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
+        backdoors.put(BACK_DOOR7, Action.TYPE_ADD_GROUP_PEOPLE);
     }
 
     public static final String HEART_BEAT_TESTER = "心跳测试使者";
