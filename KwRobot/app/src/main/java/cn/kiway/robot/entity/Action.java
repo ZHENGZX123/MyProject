@@ -35,6 +35,8 @@ public class Action {
     public static final int TYPE_CLEAR_ZOMBIE_FAN = 111;//清理僵尸粉
     public static final  int TYPE_GET_ALL_FRIENDS = 112;//重新计算好友数量
     public static final  int TYPE_CREATE_GROUP_CHAT = 113;//发起群聊
+    public static final  int TYPE_ADD_GROUP_PEOPLE = 114;//拉人进群
+
 
     public PendingIntent intent;
     public String sender;
