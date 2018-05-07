@@ -919,6 +919,7 @@ public class AutoReplyService extends AccessibilityService {
                         Log.d("test", "================findFriendListView===================");
                         listViewNode = null;
                         sureButton = null;
+                        inputEditText = null;
                         boolean find = findFriendListView(getRootInActiveWindow(), clearZombie);
                         if (!find) {
                             release();
@@ -935,6 +936,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private AccessibilityNodeInfo sureButton;
+    private AccessibilityNodeInfo inputEditText;
 
     private boolean findFriendListView(AccessibilityNodeInfo rootNode, boolean clearZombie) {
         int count = rootNode.getChildCount();
@@ -950,14 +952,20 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        checkFriendInListView(clearZombie);
+                        if (clearZombie) {
+                            checkFriendInListView(clearZombie);
+                        } else {
+                            checkFriendInListView2(clearZombie);
+                        }
                     }
                 }, 2000);
                 return true;
-            }
-            else if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("确定")) {
+            } else if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("确定")) {
                 sureButton = nodeInfo;
+            } else if (nodeInfo.getClassName().equals("android.widget.TextView")) {
+                inputEditText = nodeInfo;
             }
+
             if (findFriendListView(nodeInfo, clearZombie)) {
                 return true;
             }
@@ -974,20 +982,20 @@ public class AutoReplyService extends AccessibilityService {
                     start = 0;
                     end = Integer.parseInt(Utils.getParentRemark(getApplication()));
                 }
-                int scrollCount = (end - start) / 6 + 1;
+                int scrollCount = (end - start) / 8 + 1;
                 Log.d("test", "scrollCount = " + scrollCount);
 
                 checkedFriends.clear();
                 for (int i = 0; i < scrollCount; i++) {
+                    Log.d("test", "==========doCheckFriend===========");
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d("test", "==========doCheckFriend===========");
                             doCheckFriend(getRootInActiveWindow(), clearZombie);
                         }
                     });
                     try {
-                        sleep(2000);
+                        sleep(3000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -998,38 +1006,154 @@ public class AutoReplyService extends AccessibilityService {
                         }
                     });
                     try {
-                        sleep(2000);
+                        sleep(3000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                if (true) {
-                    return;
+                //点一下确定。建群时间比较长
+                clickSureButton(clearZombie);
+            }
+        }.start();
+    }
+
+    private void checkFriendInListView2(boolean clearZombie) {
+        new Thread() {
+            @Override
+            public void run() {
+                String content = actions.get(currentActionID).content;
+                String[] friends = content.split(",");
+                int count = friends.length;
+                for (int i = 0; i < count; i++) {
+                    int finalI = i;
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            findInputEditText(getRootInActiveWindow(), friends[finalI]);
+                        }
+                    });
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            doCheckFriend(getRootInActiveWindow(), true);
+                        }
+                    });
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
                 //点一下确定。建群时间比较长
-                mHandler.post(new Runnable() {
+                clickSureButton(clearZombie);
+            }
+        }.start();
+    }
+
+    private void clickSureButton(boolean clearZombie) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                sureButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        sureButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        if (clearZombie) {
+                            boolean find = findZombieFans(getRootInActiveWindow());
+                            if (!find) {
+                                Log.d("test", "创建失败或者没有僵尸粉");
+                                release();
+                            }
+                        } else {
+                            lastImageButton = null;
+                            findUserInfoButton(getRootInActiveWindow());
+                            if (lastImageButton == null) {
+                                release();
+                                return;
+                            }
+                            lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            //找到群聊名称
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    boolean find = findGroupName(getRootInActiveWindow());
+                                    if (!find) {
+                                        release();
+                                    }
+                                }
+                            }, 2000);
+                        }
+                    }
+                }, 8000);
+            }
+        });
+    }
+
+    private boolean findGroupName(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("群聊名称")) {
+                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        findInputEditText(getRootInActiveWindow(), "群聊" + System.currentTimeMillis());
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if (clearZombie) {
-                                    boolean find = findZombieFans(getRootInActiveWindow());
-                                    if (!find) {
-                                        Log.d("test", "创建失败或者没有僵尸粉");
-                                        release();
-                                    }
-                                } else {
-                                    Log.d("test", "............................");
+                                boolean find = findSaveButton(getRootInActiveWindow());
+                                if (!find) {
                                     release();
                                 }
                             }
-                        }, 8000);
+                        }, 1000);
                     }
-                });
+                }, 2000);
+                return true;
             }
-        }.start();
+            if (findGroupName(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findSaveButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("保存")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        release();
+                    }
+                }, 5000);
+                return true;
+            }
+            if (findSaveButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean findZombieFans(AccessibilityNodeInfo rootNode) {
@@ -1154,20 +1278,15 @@ public class AutoReplyService extends AccessibilityService {
                 String nickname = prevNode.getText().toString();
                 Log.d("test", "nickname = " + nickname);
                 String content = actions.get(currentActionID).content;
-                if (clearZombie) {
-                    //清理僵尸粉，全选
-                    if (!checkedFriends.contains(nickname)) {
-                        Log.d("test", "nickname add ...");
-                        nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        checkedFriends.add(nickname);
-                    }
-                } else {
-                    if (content.contains(nickname) && !checkedFriends.contains(nickname)) {
-                        Log.d("test", "nickname add ...");
-                        nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        checkedFriends.add(nickname);
-                    }
+                if (checkedFriends.contains(nickname)) {
+                    continue;
                 }
+                if (!clearZombie && !content.contains(nickname)) {
+                    continue;
+                }
+                Log.d("test", "nickname add ...");
+                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                checkedFriends.add(nickname);
             }
             if (doCheckFriend(nodeInfo, clearZombie)) {
                 return true;
