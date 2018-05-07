@@ -1071,6 +1071,8 @@ public class AutoReplyService extends AccessibilityService {
 
                     resetMaxReleaseTime(10000 * count);
 
+                    checkedFriends.clear();
+
                     for (int i = 0; i < count; i++) {
                         String temp = members.getString(i);
                         mHandler.post(new Runnable() {
@@ -1111,13 +1113,13 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (type == 1) {
+                        if (type == TYPE_CLEAR_ZOMBIE_FAN) {
                             boolean find = findZombieFans(getRootInActiveWindow());
                             if (!find) {
                                 Log.d("test", "创建失败或者没有僵尸粉");
                                 release();
                             }
-                        } else if (type == 2) {
+                        } else if (type == TYPE_CREATE_GROUP_CHAT) {
                             lastImageButton = null;
                             findUserInfoButton(getRootInActiveWindow());
                             if (lastImageButton == null) {
@@ -1135,7 +1137,7 @@ public class AutoReplyService extends AccessibilityService {
                                     }
                                 }
                             }, 2000);
-                        } else if (type == 3) {
+                        } else if (type == TYPE_ADD_GROUP_PEOPLE) {
                             release();
                         }
                     }
