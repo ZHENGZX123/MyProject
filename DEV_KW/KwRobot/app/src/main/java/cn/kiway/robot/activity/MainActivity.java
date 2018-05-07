@@ -93,7 +93,7 @@ public class MainActivity extends BaseActivity {
         getPic = (CheckBox) findViewById(R.id.getPic);
 
         versionTV = (TextView) findViewById(R.id.version);
-        versionTV.setText("当前版本号：" + getCurrentVersion(this));
+        versionTV.setText((clientUrl.contains("robot") ? "正式版：" : "测试版：") + getCurrentVersion(this));
     }
 
     private void initListener() {
@@ -412,7 +412,7 @@ public class MainActivity extends BaseActivity {
                     String ret = EntityUtils.toString(response.getEntity(), "utf-8");
                     Log.d("test", "getWelcomeTitle  = " + ret);
                     JSONObject obj = new JSONObject(ret);
-                    String welcomeTitle = obj.getString(areaCode);
+                    String welcomeTitle = obj.optString(areaCode);
                     if (TextUtils.isEmpty(welcomeTitle)) {
                         welcomeTitle = DEFAULT_WELCOME_TITLE;
                     }
