@@ -75,6 +75,7 @@ import static cn.kiway.robot.entity.Action.TYPE_FIX_GROUP_NAME;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_GROUP_NOTICE;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
 import static cn.kiway.robot.entity.Action.TYPE_GET_ALL_FRIENDS;
+import static cn.kiway.robot.entity.Action.TYPE_GROUP_CHAT;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_LINK;
 import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING;
@@ -658,12 +659,15 @@ public class AutoReplyService extends AccessibilityService {
                             || action.actionType == TYPE_DELETE_GROUP_PEOPLE
                             || action.actionType == TYPE_FIX_GROUP_NAME
                             || action.actionType == TYPE_FIX_GROUP_NOTICE
+                            || action.actionType == TYPE_GROUP_CHAT
                             ) {
                         //{"cmd": "发起群聊","members": ["5行","5之","执着"],"groupName": "111"}
                         //{"cmd": "拉人入群","members": ["5行","5之"],"groupName": "111"}
                         //{"cmd": "踢人出群","members": ["5行","5之"],"groupName": "111"}
                         //{"cmd": "修改群公告","content": "群公告啊啊啊","groupName": "222"}
                         //{"cmd": "修改群名称","content":"1","groupName": "111"}
+                        //{"cmd": "群发消息","content":"1","groupName": "111"}
+
                         action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, true);
@@ -796,7 +800,11 @@ public class AutoReplyService extends AccessibilityService {
                             sendTextOnly2("输入命令有误", true);
                         }
                     }
-                } else if (actionType == TYPE_ADD_GROUP_PEOPLE || actionType == TYPE_DELETE_GROUP_PEOPLE || actionType == TYPE_FIX_GROUP_NOTICE || actionType == TYPE_FIX_GROUP_NAME) {
+                } else if (actionType == TYPE_ADD_GROUP_PEOPLE
+                        || actionType == TYPE_DELETE_GROUP_PEOPLE
+                        || actionType == TYPE_FIX_GROUP_NOTICE
+                        || actionType == TYPE_FIX_GROUP_NAME
+                        || actionType == TYPE_GROUP_CHAT) {
                     if (!checkIsWxHomePage()) {
                         try {
                             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
@@ -829,6 +837,16 @@ public class AutoReplyService extends AccessibilityService {
                                     sendTextOnly2("群公告字数太长", true);
                                     return;
                                 }
+                            } else if (actionType == TYPE_GROUP_CHAT) {
+                                String notice = o.optString("content");
+                                if (TextUtils.isEmpty(notice)) {
+                                    sendTextOnly2("消息内容不能为空", true);
+                                    return;
+                                }
+                                if (notice.length() > 5000) {
+                                    sendTextOnly2("消息内容字数太长", true);
+                                    return;
+                                }
                             }
                             String text = "";
                             if (actionType == TYPE_ADD_GROUP_PEOPLE) {
@@ -839,6 +857,8 @@ public class AutoReplyService extends AccessibilityService {
                                 text = "正在修改群名称，请稍等";
                             } else if (actionType == TYPE_FIX_GROUP_NOTICE) {
                                 text = "正在修改群公告，请稍等";
+                            } else if (actionType == TYPE_GROUP_CHAT) {
+                                text = "正在群发消息，请稍等";
                             }
                             sendTextOnly2(text, false);
                             mHandler.postDelayed(new Runnable() {
@@ -1625,7 +1645,11 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 try {
                     String sender = "";
-                    if (type == TYPE_ADD_GROUP_PEOPLE || type == TYPE_DELETE_GROUP_PEOPLE || type == TYPE_FIX_GROUP_NAME || type == TYPE_FIX_GROUP_NOTICE) {
+                    if (type == TYPE_ADD_GROUP_PEOPLE
+                            || type == TYPE_DELETE_GROUP_PEOPLE
+                            || type == TYPE_FIX_GROUP_NAME
+                            || type == TYPE_FIX_GROUP_NOTICE
+                            || type == TYPE_GROUP_CHAT) {
                         String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                         JSONObject o = new JSONObject(content);
                         sender = o.optString("groupName");
@@ -1845,6 +1869,15 @@ public class AutoReplyService extends AccessibilityService {
                                     }
                                 }
                             }, 2000);
+                        } else if (type == TYPE_GROUP_CHAT) {
+                            try {
+                                String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                                JSONObject o = new JSONObject(content);
+                                String text = o.optString("content");
+                                sendTextOnly2(text, true);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }, 3000);
