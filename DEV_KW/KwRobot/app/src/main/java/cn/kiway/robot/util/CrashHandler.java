@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.kiway.robot.KWApplication;
+
 /**
  * Created by Administrator on 2018/3/5.
  */
@@ -73,10 +75,11 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             mDefaultHandler.uncaughtException(thread, ex);
         } else {
             //zbus的异常过滤掉
-//            if (ex.toString().startsWith("java.util.concurrent.RejectedExecutionException")) {
-//                return;
-//            }
-//            ZbusUtils.close();
+            //if (ex.toString().startsWith("java.util.concurrent.RejectedExecutionException")) {
+            //return;
+            //}
+            //ZbusUtils.close();
+            KWApplication.closeMQ();
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {

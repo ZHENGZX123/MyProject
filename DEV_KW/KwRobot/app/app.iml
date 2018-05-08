@@ -119,11 +119,11 @@
     <orderEntry type="library" exported="" name="logback-core-1.1.11" level="project" />
     <orderEntry type="library" exported="" name="fastjson-1.2.47" level="project" />
     <orderEntry type="library" exported="" name="ShareSDK-Wechat-Core-3.1.4" level="project" />
-    <orderEntry type="library" exported="" name="rabbitmq-client" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.5" level="project" />
     <orderEntry type="library" exported="" name="support-v4-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="support-media-compat-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="wx-reply-rabbitMQ-1.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="amqp-client-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />
     <orderEntry type="library" exported="" name="MobTools-2018.0419.1211" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-25.3.1" level="project" />

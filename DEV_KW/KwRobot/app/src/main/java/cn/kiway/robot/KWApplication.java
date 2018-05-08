@@ -36,8 +36,8 @@ public class KWApplication extends Application {
     public static String defaultFile = ROOT + "/downloads/file.png";
     public static String defaultVideo = ROOT + "/downloads/video.png";
 
-    public static RabbitMQUtils utils;
-    public static RabbitMQUtils utils2;
+    public static RabbitMQUtils consumeUtil;
+    public static RabbitMQUtils sendUtil;
 
     @Override
     public void onCreate() {
@@ -53,15 +53,18 @@ public class KWApplication extends Application {
             @Override
             public void run() {
                 Log.d("test", "addShutdownHook");
-                if (utils != null) {
-                    utils.close();
-                }
-                if (utils2 != null) {
-                    utils2.close();
-                }
-
+                closeMQ();
             }
         });
+    }
+
+    public static void closeMQ() {
+        if (consumeUtil != null) {
+            consumeUtil.close();
+        }
+        if (sendUtil != null) {
+            sendUtil.close();
+        }
     }
 
 

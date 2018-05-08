@@ -62,7 +62,7 @@ import cn.sharesdk.wechat.friends.Wechat;
 import cn.sharesdk.wechat.moments.WechatMoments;
 
 import static android.util.Base64.NO_WRAP;
-import static cn.kiway.robot.KWApplication.utils2;
+import static cn.kiway.robot.KWApplication.sendUtil;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_GROUP_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_AUTO_MATCH;
 import static cn.kiway.robot.entity.Action.TYPE_BACK_DOOR;
@@ -446,8 +446,8 @@ public class AutoReplyService extends AccessibilityService {
 
                     Log.d("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
 
-                    utils2 = new RabbitMQUtils(Constant.zbusHost, topic, topic);
-                    utils2.sendMsg(pushMessageVo);
+                    sendUtil = new RabbitMQUtils(Constant.zbusHost, topic, topic);
+                    sendUtil.sendMsg(pushMessageVo);
                     //ZbusUtils.sendMsg(topic, pushMessageVo);
                 } catch (Exception e) {
                     e.printStackTrace();
