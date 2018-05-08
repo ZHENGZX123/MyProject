@@ -64,7 +64,8 @@ public class Constant {
     public static final String BACK_DOOR6 = "发起群聊";
     public static final String BACK_DOOR7 = "拉人入群";
     public static final String BACK_DOOR8 = "踢人出群";
-    public static final String BACK_DOOR9 = "修改群公告";
+    public static final String BACK_DOOR9 = "修改群名称";
+    public static final String BACK_DOOR10 = "修改群公告";
 
 
     public static Map<String, Integer> backdoors = new LinkedHashMap<>();
@@ -79,7 +80,8 @@ public class Constant {
         backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
         backdoors.put(BACK_DOOR7, Action.TYPE_ADD_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR8, Action.TYPE_DELETE_GROUP_PEOPLE);
-        backdoors.put(BACK_DOOR9, Action.TYPE_FIX_GROUP_NOTICE);
+        backdoors.put(BACK_DOOR9, Action.TYPE_FIX_GROUP_NAME);
+        backdoors.put(BACK_DOOR10, Action.TYPE_FIX_GROUP_NOTICE);
     }
 
     public static final String HEART_BEAT_TESTER = "心跳测试使者";
