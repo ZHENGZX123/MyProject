@@ -36,9 +36,9 @@ public class Action {
     public static final int TYPE_CREATE_GROUP_CHAT = 113;//发起群聊
     public static final int TYPE_ADD_GROUP_PEOPLE = 114;//拉人进群
     public static final int TYPE_DELETE_GROUP_PEOPLE = 115;//踢人出群
-    public static final int TYPE_FIX_GROUP_NAME = 116;//修改群公告
+    public static final int TYPE_FIX_GROUP_NAME = 116;//修改群名称
     public static final int TYPE_FIX_GROUP_NOTICE = 117;//修改群公告
-
+    public static final int TYPE_GROUP_CHAT = 118;//修改群公告
 
     public PendingIntent intent;
     public String sender;
