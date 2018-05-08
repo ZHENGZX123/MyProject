@@ -71,6 +71,7 @@ import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_CREATE_GROUP_CHAT;
 import static cn.kiway.robot.entity.Action.TYPE_DELETE_GROUP_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_FILE;
+import static cn.kiway.robot.entity.Action.TYPE_FIX_GROUP_NAME;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_GROUP_NOTICE;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
 import static cn.kiway.robot.entity.Action.TYPE_GET_ALL_FRIENDS;
@@ -652,23 +653,17 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (action.actionType == TYPE_GET_ALL_FRIENDS) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, true);
-                    } else if (action.actionType == TYPE_CREATE_GROUP_CHAT) {
+                    } else if (action.actionType == TYPE_CREATE_GROUP_CHAT
+                            || action.actionType == TYPE_ADD_GROUP_PEOPLE
+                            || action.actionType == TYPE_DELETE_GROUP_PEOPLE
+                            || action.actionType == TYPE_FIX_GROUP_NAME
+                            || action.actionType == TYPE_FIX_GROUP_NOTICE
+                            ) {
                         //{"cmd": "发起群聊","members": ["5行","5之","执着"],"groupName": "111"}
-                        action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
-                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv, true);
-                    } else if (action.actionType == TYPE_ADD_GROUP_PEOPLE) {
                         //{"cmd": "拉人入群","members": ["5行","5之"],"groupName": "111"}
-                        action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
-                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv, true);
-                    } else if (action.actionType == TYPE_DELETE_GROUP_PEOPLE) {
                         //{"cmd": "踢人出群","members": ["5行","5之"],"groupName": "111"}
-                        action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
-                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv, true);
-                    } else if (action.actionType == TYPE_FIX_GROUP_NOTICE) {
                         //{"cmd": "修改群公告","content": "群公告啊啊啊","groupName": "222"}
+                        //{"cmd": "修改群名称","content":"1","groupName": "111"}
                         action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, true);
@@ -801,7 +796,7 @@ public class AutoReplyService extends AccessibilityService {
                             sendTextOnly2("输入命令有误", true);
                         }
                     }
-                } else if (actionType == TYPE_ADD_GROUP_PEOPLE || actionType == TYPE_DELETE_GROUP_PEOPLE || actionType == TYPE_FIX_GROUP_NOTICE) {
+                } else if (actionType == TYPE_ADD_GROUP_PEOPLE || actionType == TYPE_DELETE_GROUP_PEOPLE || actionType == TYPE_FIX_GROUP_NOTICE || actionType == TYPE_FIX_GROUP_NAME) {
                     if (!checkIsWxHomePage()) {
                         try {
                             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
@@ -812,6 +807,16 @@ public class AutoReplyService extends AccessibilityService {
                                 int count = members.length();
                                 if (count < 0 || count > 10) {
                                     sendTextOnly2("数量必须是1-10个", true);
+                                    return;
+                                }
+                            } else if (actionType == TYPE_FIX_GROUP_NAME) {
+                                String notice = o.optString("content");
+                                if (TextUtils.isEmpty(notice)) {
+                                    sendTextOnly2("群名称不能为空", true);
+                                    return;
+                                }
+                                if (notice.length() > 15) {
+                                    sendTextOnly2("群名称字数太长", true);
                                     return;
                                 }
                             } else if (actionType == TYPE_FIX_GROUP_NOTICE) {
@@ -830,6 +835,8 @@ public class AutoReplyService extends AccessibilityService {
                                 text = "正在拉人入群，请稍等";
                             } else if (actionType == TYPE_DELETE_GROUP_PEOPLE) {
                                 text = "正在踢人出群，请稍等";
+                            } else if (actionType == TYPE_FIX_GROUP_NAME) {
+                                text = "正在修改群名称，请稍等";
                             } else if (actionType == TYPE_FIX_GROUP_NOTICE) {
                                 text = "正在修改群公告，请稍等";
                             }
@@ -867,7 +874,7 @@ public class AutoReplyService extends AccessibilityService {
                         boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
                         Log.d("test", "isCorrect = " + isCorrect);
                         if (isCorrect) {
-                            doActionByActionType();
+                            doChatByActionType();
                         } else {
                             backToWxHomePage();
                         }
@@ -1461,7 +1468,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private boolean realSendText;
 
-    private void doActionByActionType() {
+    private void doChatByActionType() {
         int actionType = actions.get(currentActionID).actionType;
         if (actionType == TYPE_TEXT || actionType == TYPE_AUTO_MATCH || actionType == TYPE_BACK_DOOR) {
             if (realSendText) {
@@ -1618,11 +1625,10 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 try {
                     String sender = "";
-                    if (type == TYPE_ADD_GROUP_PEOPLE || type == TYPE_DELETE_GROUP_PEOPLE || type == TYPE_FIX_GROUP_NOTICE) {
+                    if (type == TYPE_ADD_GROUP_PEOPLE || type == TYPE_DELETE_GROUP_PEOPLE || type == TYPE_FIX_GROUP_NAME || type == TYPE_FIX_GROUP_NOTICE) {
                         String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                         JSONObject o = new JSONObject(content);
-                        String groupName = o.optString("groupName");
-                        sender = groupName;
+                        sender = o.optString("groupName");
                     } else {
                         sender = actions.get(currentActionID).sender;
                     }
@@ -1794,13 +1800,12 @@ public class AutoReplyService extends AccessibilityService {
                 AccessibilityNodeInfo parent = nodeInfo.getParent();
                 parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
 
-                //跳到聊天页面
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         if (type == 1) {
                             //开始聊天
-                            doActionByActionType();
+                            doChatByActionType();
                         } else if (type == TYPE_CLEAR_ZOMBIE_FAN) {
                             //清粉
                             lastImageButton = null;
@@ -1819,7 +1824,7 @@ public class AutoReplyService extends AccessibilityService {
                                     }
                                 }
                             }, 2000);
-                        } else if (type == TYPE_ADD_GROUP_PEOPLE || type == TYPE_DELETE_GROUP_PEOPLE || type == TYPE_FIX_GROUP_NOTICE) {
+                        } else if (type == TYPE_ADD_GROUP_PEOPLE || type == TYPE_DELETE_GROUP_PEOPLE || type == TYPE_FIX_GROUP_NAME || type == TYPE_FIX_GROUP_NOTICE) {
                             lastImageButton = null;
                             findUserInfoButton(getRootInActiveWindow());
                             if (lastImageButton == null) {
@@ -1835,6 +1840,8 @@ public class AutoReplyService extends AccessibilityService {
                                         addOrDeleteGroupPeople(type);
                                     } else if (type == TYPE_FIX_GROUP_NOTICE) {
                                         fixGroupNameOrNotice(getRootInActiveWindow(), "群公告");
+                                    } else if (type == TYPE_FIX_GROUP_NAME) {
+                                        fixGroupNameOrNotice(getRootInActiveWindow(), "群聊名称");
                                     }
                                 }
                             }, 2000);
@@ -1975,7 +1982,7 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("完成")) {
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && (nodeInfo.getText().toString().equals("完成") || nodeInfo.getText().toString().equals("保存"))) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 mHandler.postDelayed(new Runnable() {
                     @Override

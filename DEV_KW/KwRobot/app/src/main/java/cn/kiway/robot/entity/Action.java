@@ -32,12 +32,12 @@ public class Action {
     public static final int TYPE_AUTO_MATCH = 109;//自动匹配的消息
     public static final int TYPE_BACK_DOOR = 110;//机器人后门用
     public static final int TYPE_CLEAR_ZOMBIE_FAN = 111;//清理僵尸粉
-    public static final  int TYPE_GET_ALL_FRIENDS = 112;//重新计算好友数量
-    public static final  int TYPE_CREATE_GROUP_CHAT = 113;//发起群聊
-    public static final  int TYPE_ADD_GROUP_PEOPLE = 114;//拉人进群
-    public static final  int TYPE_DELETE_GROUP_PEOPLE = 115;//拉人进群
-    public static final  int TYPE_FIX_GROUP_NOTICE = 116;//拉人进群
-
+    public static final int TYPE_GET_ALL_FRIENDS = 112;//重新计算好友数量
+    public static final int TYPE_CREATE_GROUP_CHAT = 113;//发起群聊
+    public static final int TYPE_ADD_GROUP_PEOPLE = 114;//拉人进群
+    public static final int TYPE_DELETE_GROUP_PEOPLE = 115;//踢人出群
+    public static final int TYPE_FIX_GROUP_NAME = 116;//修改群公告
+    public static final int TYPE_FIX_GROUP_NOTICE = 117;//修改群公告
 
 
     public PendingIntent intent;
