@@ -23,8 +23,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 
 import cn.kiway.robot.util.CrashHandler;
-
-import static cn.kiway.robot.R.mipmap.file;
+import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
 
 /**
@@ -37,6 +36,9 @@ public class KWApplication extends Application {
     public static String defaultFile = ROOT + "/downloads/file.png";
     public static String defaultVideo = ROOT + "/downloads/video.png";
 
+    public static RabbitMQUtils utils;
+    public static RabbitMQUtils utils2;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -44,9 +46,24 @@ public class KWApplication extends Application {
         x.Ext.init(this);
         initImageCache();
         CrashHandler.getInstance().init(this);
-        saveDefaultFile("file.png", file);
+        saveDefaultFile("file.png", R.mipmap.file);
         saveDefaultFile("video.png", R.mipmap.video);
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                Log.d("test", "addShutdownHook");
+                if (utils != null) {
+                    utils.close();
+                }
+                if (utils2 != null) {
+                    utils2.close();
+                }
+
+            }
+        });
     }
+
 
     public void saveDefaultFile(String fileName, int id) {
         new Thread() {

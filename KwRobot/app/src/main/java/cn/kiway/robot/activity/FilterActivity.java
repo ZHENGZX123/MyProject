@@ -3,6 +3,7 @@ package cn.kiway.robot.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import cn.kiway.robot.R;
-import io.netty.util.internal.StringUtil;
 
 /**
  * Created by Administrator on 2018/3/27.
@@ -101,7 +101,7 @@ public class FilterActivity extends BaseActivity {
         }
         filterNames.clear();
         for (String temp : filters) {
-            if (StringUtil.isNullOrEmpty(temp)) {
+            if (TextUtils.isEmpty(temp)) {
                 continue;
             }
             filterNames.add(temp);

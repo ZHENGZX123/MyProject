@@ -39,6 +39,7 @@ public class Action {
     public static final int TYPE_FIX_GROUP_NAME = 116;//修改群名称
     public static final int TYPE_FIX_GROUP_NOTICE = 117;//修改群公告
     public static final int TYPE_GROUP_CHAT = 118;//修改群公告
+    public static final int TYPE_AT_GROUP_PEOPLE = 119;//艾特某人
 
     public PendingIntent intent;
     public String sender;
