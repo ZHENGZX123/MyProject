@@ -549,7 +549,7 @@ public class AutoReplyService extends AccessibilityService {
                     if (ticker.contains(":")) {
                         String[] cc = ticker.split(":");
                         sender = Utils.replace(cc[0].trim());
-                        content = ticker.substring(ticker.indexOf(":") + 1);
+                        content = ticker.substring(ticker.indexOf(":") + 1).trim();
                         Log.d("test", "sender name = " + sender);
                         Log.d("test", "sender content = " + content);
                         if (Utils.isInfilters(getApplicationContext(), sender)) {
@@ -2772,9 +2772,9 @@ public class AutoReplyService extends AccessibilityService {
             //TODO 目前公众号只有文字、链接。个人微信和公众号微信要做到兼容
             //个人微信发来文字类：android.view.View
             //个人微信发来的链接、图片、位置、名片：android.widget.FrameLayout
-            //公众号微信发来的文字类：android.view.View
+            //公众号微信发来的文字类：android.view.TextView
             //公众号微信发来的链接：android.widget.LinearLayout
-            if (nodeInfo.getClassName().equals("android.view.View") || nodeInfo.getClassName().equals("android.widget.FrameLayout")) {
+            if (/*nodeInfo.getClassName().equals("android.view.View") ||*/ nodeInfo.getClassName().equals("android.widget.FrameLayout")) {
                 lastMsgView = nodeInfo;
             } else if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getParent().getClassName().equals("android.widget.LinearLayout")) {
                 lastMsgView = nodeInfo.getParent();
