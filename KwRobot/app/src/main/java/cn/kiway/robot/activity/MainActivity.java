@@ -335,6 +335,8 @@ public class MainActivity extends BaseActivity {
 
     public void reLogin(View view) {
         //ZbusUtils.close();
+        KWApplication.closeMQ();
+
         getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
         startActivity(new Intent(this, LoginActivity.class));
         finish();

@@ -37,7 +37,7 @@ import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
-import static cn.kiway.robot.KWApplication.utils;
+import static cn.kiway.robot.KWApplication.consumeUtil;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.backdoors;
@@ -239,15 +239,14 @@ public class Utils {
                 try {
                     String topic = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
                     Log.d("test", "topic = " + topic);
-                    //rbtest.kiway.cn
-                      utils = new RabbitMQUtils(Constant.zbusHost,topic,topic);
+                    consumeUtil = new RabbitMQUtils(Constant.zbusHost, topic, topic);
                     try {
-                        utils.consumeMsg(new DefaultConsumer(utils.getChannel()){
+                        consumeUtil.consumeMsg(new DefaultConsumer(consumeUtil.getChannel()) {
                             @Override
                             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                                 //消费消费
-                                String msg = new String(body,"utf-8");
-                                System.out.println("consume msg: "+msg);
+                                String msg = new String(body, "utf-8");
+                                System.out.println("consume msg: " + msg);
                                 //处理逻辑
                                 //FIXME 在这里要做一个预处理，如果是图片的话，先别急加进去要事先下载
                                 if (AutoReplyService.instance != null) {
@@ -259,9 +258,9 @@ public class Utils {
                                     }
                                 }
                                 //手动消息确认
-                                getChannel().basicAck(envelope.getDeliveryTag(),false);
+                                getChannel().basicAck(envelope.getDeliveryTag(), false);
                             }
-                    });
+                        });
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
