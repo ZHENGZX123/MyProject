@@ -87,13 +87,20 @@ dependencies {
     targetCompatibility = '1.7'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile files('libs/android-async-http-1.4.5.jar')
-    compile files('libs/fastjson-1.2.24.jar')
-    compile files('libs/hutool-all-3.2.3.jar')
-    compile files('libs/netty-all-4.0.51.Final.jar')
-    compile files('libs/zbus-0.11.3.jar')
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-    compile files('libs/wx-reply-zbus-1.0-SNAPSHOT.jar')
     compile 'org.xutils:xutils:3.5.0'
     compile files('libs/wtoolsdk.jar')
-
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    //zbus
+    //    compile files('libs/fastjson-1.2.24.jar')
+    //    compile files('libs/hutool-all-3.2.3.jar')
+    //    compile files('libs/netty-all-4.0.51.Final.jar')
+    //    compile files('libs/zbus-0.11.3.jar')
+    //    compile files('libs/wx-reply-zbus-1.0-SNAPSHOT.jar')
+    //rabbitMQ
+    compile files('libs/fastjson-1.2.47.jar')
+    compile files('libs/logback-classic-1.1.11.jar')
+    compile files('libs/logback-core-1.1.11.jar')
+    compile files('libs/rabbitmq-client.jar')
+    compile files('libs/slf4j-api-1.7.25.jar')
+    compile files('libs/wx-reply-rabbitMQ-1.0-SNAPSHOT.jar')
 }

@@ -11,12 +11,16 @@ import android.util.Log;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
 
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.text.ParseException;
@@ -31,12 +35,9 @@ import java.util.regex.Pattern;
 
 import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.service.AutoReplyService;
-import cn.kiway.wx.reply.utils.ZbusUtils;
-import io.netty.util.internal.StringUtil;
-import io.zbus.mq.Message;
-import io.zbus.mq.MessageHandler;
-import io.zbus.mq.MqClient;
+import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
+import static cn.kiway.robot.KWApplication.utils;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.backdoors;
@@ -116,7 +117,7 @@ public class Utils {
             return false;
         }
         for (String temp : filters) {
-            if (StringUtil.isNullOrEmpty(temp)) {
+            if (TextUtils.isEmpty(temp)) {
                 continue;
             }
             if (temp.equals(sender)) {
@@ -238,22 +239,32 @@ public class Utils {
                 try {
                     String topic = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
                     Log.d("test", "topic = " + topic);
-                    ZbusUtils.consumeMsg(topic, new MessageHandler() {
-
-                        @Override
-                        public void handle(Message message, MqClient mqClient) {
-                            String msg = message.getBodyString();
-                            //FIXME 在这里要做一个预处理，如果是图片的话，先别急加进去要事先下载
-                            if (AutoReplyService.instance != null) {
-                                //如果发送者是test888，添加到队头
-                                if (msg.contains(HEART_BEAT_TESTER)) {
-                                    AutoReplyService.instance.sendReplyImmediately(msg, true);
-                                } else {
-                                    AutoReplyService.instance.sendReplyImmediately(msg, false);
+                    //rbtest.kiway.cn
+                      utils = new RabbitMQUtils(Constant.zbusHost,topic,topic);
+                    try {
+                        utils.consumeMsg(new DefaultConsumer(utils.getChannel()){
+                            @Override
+                            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                                //消费消费
+                                String msg = new String(body,"utf-8");
+                                System.out.println("consume msg: "+msg);
+                                //处理逻辑
+                                //FIXME 在这里要做一个预处理，如果是图片的话，先别急加进去要事先下载
+                                if (AutoReplyService.instance != null) {
+                                    //如果发送者是test888，添加到队头
+                                    if (msg.contains(HEART_BEAT_TESTER)) {
+                                        AutoReplyService.instance.sendReplyImmediately(msg, true);
+                                    } else {
+                                        AutoReplyService.instance.sendReplyImmediately(msg, false);
+                                    }
                                 }
+                                //手动消息确认
+                                getChannel().basicAck(envelope.getDeliveryTag(),false);
                             }
-                        }
-                    }, Constant.zbusHost + ":" + Constant.zbusPort);
+                    });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

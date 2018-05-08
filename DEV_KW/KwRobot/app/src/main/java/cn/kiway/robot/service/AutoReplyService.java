@@ -54,7 +54,7 @@ import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.FileUtils;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
-import cn.kiway.wx.reply.utils.ZbusUtils;
+import cn.kiway.wx.reply.utils.RabbitMQUtils;
 import cn.kiway.wx.reply.vo.PushMessageVo;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
@@ -62,6 +62,7 @@ import cn.sharesdk.wechat.friends.Wechat;
 import cn.sharesdk.wechat.moments.WechatMoments;
 
 import static android.util.Base64.NO_WRAP;
+import static cn.kiway.robot.KWApplication.utils2;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_GROUP_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_AUTO_MATCH;
 import static cn.kiway.robot.entity.Action.TYPE_BACK_DOOR;
@@ -137,7 +138,7 @@ public class AutoReplyService extends AccessibilityService {
         Log.d("maptrix", "service oncreate");
         instance = this;
         mHandler.sendEmptyMessage(MSG_TRAVERSAL_QUEUE);
-        mHandler.sendEmptyMessage(MSG_HEART_BEAT);
+        //mHandler.sendEmptyMessage(MSG_HEART_BEAT);
     }
 
     private Handler mHandler = new Handler() {
@@ -239,7 +240,7 @@ public class AutoReplyService extends AccessibilityService {
                         Log.d("test", "没有id！！！");
                         return;
                     }
-                    doCheckZbusStatus(id, recv.msg);
+                    //doCheckZbusStatus(id, recv.msg);
                     //心跳测试不用拉起微信
                     if (recv.msg.contains(HEART_BEAT_TESTER)) {
                         return;
@@ -384,7 +385,7 @@ public class AutoReplyService extends AccessibilityService {
                             @Override
                             public void run() {
                                 //断开后3秒重连
-                                ZbusUtils.close();
+                                //ZbusUtils.close();
                                 try {
                                     sleep(3000);
                                 } catch (InterruptedException e) {
@@ -444,8 +445,10 @@ public class AutoReplyService extends AccessibilityService {
                     pushMessageVo.setInstallationId(installationId);
 
                     Log.d("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
-                    ZbusUtils.sendMsg(topic, pushMessageVo);
 
+                    utils2 = new RabbitMQUtils(Constant.zbusHost, topic, topic);
+                    utils2.sendMsg(pushMessageVo);
+                    //ZbusUtils.sendMsg(topic, pushMessageVo);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

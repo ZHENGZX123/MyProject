@@ -46,7 +46,6 @@ import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
-import cn.kiway.wx.reply.utils.ZbusUtils;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
@@ -335,7 +334,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void reLogin(View view) {
-        ZbusUtils.close();
+        //ZbusUtils.close();
         getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
         startActivity(new Intent(this, LoginActivity.class));
         finish();
