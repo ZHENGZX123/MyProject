@@ -90,7 +90,6 @@ import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
 import static cn.kiway.robot.util.Constant.BACK_DOOR3;
-import static cn.kiway.robot.util.Constant.BACK_DOOR4;
 import static cn.kiway.robot.util.Constant.DEFAULT_BUSY;
 import static cn.kiway.robot.util.Constant.DEFAULT_OFFLINE;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
@@ -647,20 +646,20 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (action.actionType == TYPE_REQUEST_FRIEND) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, false);
-                    } else if (action.actionType == TYPE_CLEAR_ZOMBIE_FAN) {
-                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv, true);
                     } else if (action.actionType == TYPE_GET_ALL_FRIENDS) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, true);
-                    } else if (action.actionType == TYPE_CREATE_GROUP_CHAT
-                            || action.actionType == TYPE_ADD_GROUP_PEOPLE
-                            || action.actionType == TYPE_DELETE_GROUP_PEOPLE
-                            || action.actionType == TYPE_FIX_GROUP_NAME
-                            || action.actionType == TYPE_FIX_GROUP_NOTICE
-                            || action.actionType == TYPE_GROUP_CHAT
-                            || action.actionType == TYPE_AT_GROUP_PEOPLE
+                    } else if (
+                            action.actionType == TYPE_CLEAR_ZOMBIE_FAN
+                                    || action.actionType == TYPE_CREATE_GROUP_CHAT
+                                    || action.actionType == TYPE_ADD_GROUP_PEOPLE
+                                    || action.actionType == TYPE_DELETE_GROUP_PEOPLE
+                                    || action.actionType == TYPE_FIX_GROUP_NAME
+                                    || action.actionType == TYPE_FIX_GROUP_NOTICE
+                                    || action.actionType == TYPE_GROUP_CHAT
+                                    || action.actionType == TYPE_AT_GROUP_PEOPLE
                             ) {
+                        //{"cmd": "清理僵尸粉","start": "1","end":"20"}
                         //{"cmd": "发起群聊","members": ["5行","5之","执着"],"groupName": "111"}
                         //{"cmd": "拉人入群","members": ["5行","5之"],"groupName": "111"}
                         //{"cmd": "踢人出群","members": ["5行","5之"],"groupName": "111"}
@@ -713,21 +712,17 @@ public class AutoReplyService extends AccessibilityService {
                 } else if (actionType == TYPE_CLEAR_ZOMBIE_FAN) {
                     if (!checkIsWxHomePage()) {
                         //先分析命令是否正确
-                        String content = actions.get(currentActionID).content;
-                        String temp[] = content.replace(BACK_DOOR4, "").trim().split("-");
-
-                        if (temp.length != 2) {
-                            sendTextOnly2("请输入正确的命令，比如清理僵尸粉1-500", true);
-                            return;
-                        }
                         try {
-                            start = Integer.parseInt(temp[0]);
-                            end = Integer.parseInt(temp[1]);
+                            String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                            JSONObject o = new JSONObject(content);
+                            start = o.optInt("start");
+                            end = o.optInt("end");
                         } catch (Exception e) {
                             e.printStackTrace();
-                            sendTextOnly2("请输入正确的命令，比如清理僵尸粉1-500", true);
+                            sendTextOnly2("请输入正确的命令", true);
                             return;
                         }
+
                         int friendCount = Integer.parseInt(Utils.getParentRemark(getApplication()));
                         if (friendCount < start) {
                             sendTextOnly2("你输入的命令不正确，当前好友数量是：" + friendCount, true);

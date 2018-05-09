@@ -452,7 +452,7 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
             }
-        }, 10000);
+        },10000);
 
     }
 
