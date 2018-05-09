@@ -76,6 +76,7 @@ public class Constant {
         backdoors.put(BACK_DOOR1, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR2, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR3, Action.TYPE_BACK_DOOR);
+
         backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
         backdoors.put(BACK_DOOR5, Action.TYPE_GET_ALL_FRIENDS);
         backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
