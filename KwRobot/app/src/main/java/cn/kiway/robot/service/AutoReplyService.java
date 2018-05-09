@@ -1947,8 +1947,11 @@ public class AutoReplyService extends AccessibilityService {
                                                     @Override
                                                     public void run() {
                                                         findInputEditText(getRootInActiveWindow(), m);
-                                                        boolean find = findTargetPeople4(getRootInActiveWindow(), m);
+                                                        boolean find = findTargetPeople3(getRootInActiveWindow(), m);
                                                         if (!find) {
+                                                            //FXIME 这里最好做检测
+                                                            performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                                            performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                                             performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                                         }
                                                     }
@@ -1966,11 +1969,47 @@ public class AutoReplyService extends AccessibilityService {
                         });
                         sleep(10000);
                     }
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendTextOnly2("", false);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    String contentStr = o.optString("content");
+                                    sendTextOnly2(contentStr, true);
+                                }
+                            }, 3000);
+                        }
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }.start();
+    }
+
+    private boolean findTargetPeople3(AccessibilityNodeInfo rootNode, String forwardto) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            //equails
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().contains(forwardto)) {
+                Log.d("test", "click targetPeople = " + forwardto);
+                AccessibilityNodeInfo parent = nodeInfo.getParent();
+                parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                return true;
+            }
+            if (findTargetPeople3(nodeInfo, forwardto)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean fixGroupNameOrNotice(AccessibilityNodeInfo rootNode, String target) {
@@ -2533,6 +2572,8 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("发消息")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+
+
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -3152,18 +3193,20 @@ public class AutoReplyService extends AccessibilityService {
                 continue;
             }
             if ("android.widget.EditText".equals(nodeInfo.getClassName())) {
-                Bundle arguments = new Bundle();
-                arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
-                        AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
-                arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN,
-                        true);
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY,
-                        arguments);
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                ClipData clip = ClipData.newPlainText("label", reply);
-                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                clipboardManager.setPrimaryClip(clip);
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
+                if (!TextUtils.isEmpty(reply)) {
+                    Bundle arguments = new Bundle();
+                    arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
+                            AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
+                    arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN,
+                            true);
+                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY,
+                            arguments);
+                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+                    ClipData clip = ClipData.newPlainText("label", reply);
+                    ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    clipboardManager.setPrimaryClip(clip);
+                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
+                }
                 return true;
             }
             if (findInputEditText(nodeInfo, reply)) {
