@@ -250,7 +250,7 @@ public class Utils {
                                 //处理逻辑
                                 //FIXME 在这里要做一个预处理，如果是图片的话，先别急加进去要事先下载
                                 if (AutoReplyService.instance != null) {
-                                    //如果发送者是test888，添加到队头
+                                    //如果发送者是心跳，添加到队头
                                     if (msg.contains(HEART_BEAT_TESTER)) {
                                         AutoReplyService.instance.sendReplyImmediately(msg, true);
                                     } else {
