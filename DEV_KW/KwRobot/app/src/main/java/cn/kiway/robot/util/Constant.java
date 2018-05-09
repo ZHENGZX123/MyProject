@@ -55,25 +55,24 @@ public class Constant {
         qas.put("[动画表情]", "暂不支持动画表情咨询。");
     }
 
-    public static final String BACK_DOOR0 = "开维公司好";
-    public static final String BACK_DOOR1 = "开维一本万利";
-    public static final String BACK_DOOR2 = "开维前程似锦";
-    public static final String BACK_DOOR3 = "查询好友数量";
+    public static final String BACK_DOOR1 = "开维公司好";
+    public static final String BACK_DOOR2 = "开维一本万利";
+    public static final String BACK_DOOR3 = "开维前程似锦";
+
     public static final String BACK_DOOR4 = "清理僵尸粉";
-    public static final String BACK_DOOR5 = "重新计算好友数量";
+    public static final String BACK_DOOR5 = "查询好友数量";
     public static final String BACK_DOOR6 = "发起群聊";
     public static final String BACK_DOOR7 = "拉人入群";
     public static final String BACK_DOOR8 = "踢人出群";
     public static final String BACK_DOOR9 = "修改群名称";
-    public static final String BACK_DOOR10 = "修改群公告";
-    public static final String BACK_DOOR11 = "群发消息";
-    public static final String BACK_DOOR12 = "艾特某人";
+    public static final String BACK_DOOR20 = "修改群公告";
+    public static final String BACK_DOOR21 = "群发消息";
+    public static final String BACK_DOOR22 = "艾特某人";
 
 
     public static Map<String, Integer> backdoors = new LinkedHashMap<>();
 
     static {
-        backdoors.put(BACK_DOOR0, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR1, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR2, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR3, Action.TYPE_BACK_DOOR);
@@ -83,9 +82,9 @@ public class Constant {
         backdoors.put(BACK_DOOR7, Action.TYPE_ADD_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR8, Action.TYPE_DELETE_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR9, Action.TYPE_FIX_GROUP_NAME);
-        backdoors.put(BACK_DOOR10, Action.TYPE_FIX_GROUP_NOTICE);
-        backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
-        backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
+        backdoors.put(BACK_DOOR20, Action.TYPE_FIX_GROUP_NOTICE);
+        backdoors.put(BACK_DOOR21, Action.TYPE_GROUP_CHAT);
+        backdoors.put(BACK_DOOR22, Action.TYPE_AT_GROUP_PEOPLE);
     }
 
     public static final String HEART_BEAT_TESTER = "心跳测试使者";
