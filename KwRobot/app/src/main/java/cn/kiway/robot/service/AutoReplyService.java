@@ -646,11 +646,9 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (action.actionType == TYPE_REQUEST_FRIEND) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, false);
-                    } else if (action.actionType == TYPE_GET_ALL_FRIENDS) {
-                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv, true);
                     } else if (
-                            action.actionType == TYPE_CLEAR_ZOMBIE_FAN
+                            action.actionType == TYPE_GET_ALL_FRIENDS
+                                    || action.actionType == TYPE_CLEAR_ZOMBIE_FAN
                                     || action.actionType == TYPE_CREATE_GROUP_CHAT
                                     || action.actionType == TYPE_ADD_GROUP_PEOPLE
                                     || action.actionType == TYPE_DELETE_GROUP_PEOPLE
@@ -659,6 +657,7 @@ public class AutoReplyService extends AccessibilityService {
                                     || action.actionType == TYPE_GROUP_CHAT
                                     || action.actionType == TYPE_AT_GROUP_PEOPLE
                             ) {
+                        //{"cmd": "查询好友数量"}
                         //{"cmd": "清理僵尸粉","start": "1","end":"20"}
                         //{"cmd": "发起群聊","members": ["5行","5之","执着"],"groupName": "111"}
                         //{"cmd": "拉人入群","members": ["5行","5之"],"groupName": "111"}
@@ -738,7 +737,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 } else if (actionType == TYPE_GET_ALL_FRIENDS) {
                     if (!checkIsWxHomePage()) {
-                        sendTextOnly2("正在重新计算好友数量，请稍等", false);
+                        sendTextOnly2("正在查询数量，请稍等", false);
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -912,7 +911,6 @@ public class AutoReplyService extends AccessibilityService {
         new Thread() {
             @Override
             public void run() {
-                //TODO 这里是否先要滚动到头部
                 //开始滚动读取
                 while (true) {
                     Log.d("test", "==============findFriendView=============");
@@ -940,7 +938,14 @@ public class AutoReplyService extends AccessibilityService {
                 int count = friends.size();
                 Log.d("test", "friends.size = " + count);
                 FileUtils.saveFile(count + "", "parent.txt");
-                release();
+
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        searchSenderInWxHomePage(TYPE_GET_ALL_FRIENDS);
+                    }
+                }, 2000);
+
             }
         }.start();
     }
@@ -1079,14 +1084,24 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 try {
-                    //TODO 这里要滚动到预置好的位子。
+                    //这里要滚动到预置好的位子。
+                    int preScollCount = start / 10 + 1;
+                    Log.d("test", "preScollCount = " + preScollCount);
+                    for (int i = 0; i < preScollCount; i++) {
+                        Log.d("test", "预滚第" + (i + 1) + "次");
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                listViewNode.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+                            }
+                        });
+                        sleep(3000);
+                    }
 
                     int scrollCount = (end - start) / 8 + 1;
                     Log.d("test", "scrollCount = " + scrollCount);
                     checkedFriends.clear();
-
                     for (int i = 0; i < scrollCount; i++) {
-                        Log.d("test", "==========doCheckFriend1===========");
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -1883,6 +1898,8 @@ public class AutoReplyService extends AccessibilityService {
                         } else if (type == TYPE_AT_GROUP_PEOPLE) {
                             //循环开始艾特人
                             startAtPeople();
+                        } else if (type == TYPE_GET_ALL_FRIENDS) {
+                            sendTextOnly2("好友数量：" + Utils.getParentRemark(getApplication()), true);
                         }
                     }
                 }, 3000);
