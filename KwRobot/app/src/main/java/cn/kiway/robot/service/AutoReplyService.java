@@ -64,6 +64,7 @@ import cn.sharesdk.wechat.moments.WechatMoments;
 import static android.util.Base64.NO_WRAP;
 import static cn.kiway.robot.KWApplication.sendUtil;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_GROUP_PEOPLE;
+import static cn.kiway.robot.entity.Action.TYPE_AT_GROUP_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_AUTO_MATCH;
 import static cn.kiway.robot.entity.Action.TYPE_BACK_DOOR;
 import static cn.kiway.robot.entity.Action.TYPE_CARD;
@@ -663,6 +664,7 @@ public class AutoReplyService extends AccessibilityService {
                             || action.actionType == TYPE_FIX_GROUP_NAME
                             || action.actionType == TYPE_FIX_GROUP_NOTICE
                             || action.actionType == TYPE_GROUP_CHAT
+                            || action.actionType == TYPE_AT_GROUP_PEOPLE
                             ) {
                         //{"cmd": "发起群聊","members": ["5行","5之","执着"],"groupName": "111"}
                         //{"cmd": "拉人入群","members": ["5行","5之"],"groupName": "111"}
@@ -670,6 +672,7 @@ public class AutoReplyService extends AccessibilityService {
                         //{"cmd": "修改群公告","content": "群公告啊啊啊","groupName": "222"}
                         //{"cmd": "修改群名称","content":"1","groupName": "111"}
                         //{"cmd": "群发消息","content":"1","groupName": "111"}
+                        //{"cmd": "艾特某人","members": ["执着","朋友圈使者擦"],"groupName": "222"}
 
                         action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
@@ -774,13 +777,13 @@ public class AutoReplyService extends AccessibilityService {
                             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                             Log.d("test", "content = " + content);
                             JSONObject o = new JSONObject(content);
-                            JSONArray friends = o.getJSONArray("members");
+                            JSONArray members = o.getJSONArray("members");
                             String groupName = o.optString("groupName");
                             if (TextUtils.isEmpty(groupName)) {
                                 sendTextOnly2("groupName不能为空", true);
                                 return;
                             }
-                            int count = friends.length();
+                            int count = members.length();
                             if (count < 2 || count > 500) {
                                 sendTextOnly2("好友数量必须是2-500个", true);
                                 return;
@@ -807,13 +810,16 @@ public class AutoReplyService extends AccessibilityService {
                         || actionType == TYPE_DELETE_GROUP_PEOPLE
                         || actionType == TYPE_FIX_GROUP_NOTICE
                         || actionType == TYPE_FIX_GROUP_NAME
-                        || actionType == TYPE_GROUP_CHAT) {
+                        || actionType == TYPE_GROUP_CHAT
+                        || actionType == TYPE_AT_GROUP_PEOPLE) {
                     if (!checkIsWxHomePage()) {
                         try {
                             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                             Log.d("test", "content = " + content);
                             JSONObject o = new JSONObject(content);
-                            if (actionType == TYPE_ADD_GROUP_PEOPLE || actionType == TYPE_DELETE_GROUP_PEOPLE) {
+                            if (actionType == TYPE_ADD_GROUP_PEOPLE
+                                    || actionType == TYPE_DELETE_GROUP_PEOPLE
+                                    || actionType == TYPE_AT_GROUP_PEOPLE) {
                                 JSONArray members = o.optJSONArray("members");
                                 int count = members.length();
                                 if (count < 0 || count > 10) {
@@ -862,6 +868,8 @@ public class AutoReplyService extends AccessibilityService {
                                 text = "正在修改群公告，请稍等";
                             } else if (actionType == TYPE_GROUP_CHAT) {
                                 text = "正在群发消息，请稍等";
+                            } else if (actionType == TYPE_AT_GROUP_PEOPLE) {
+                                text = "正在艾特某人，请稍等";
                             }
                             sendTextOnly2(text, false);
                             mHandler.postDelayed(new Runnable() {
@@ -1652,7 +1660,8 @@ public class AutoReplyService extends AccessibilityService {
                             || type == TYPE_DELETE_GROUP_PEOPLE
                             || type == TYPE_FIX_GROUP_NAME
                             || type == TYPE_FIX_GROUP_NOTICE
-                            || type == TYPE_GROUP_CHAT) {
+                            || type == TYPE_GROUP_CHAT
+                            || type == TYPE_AT_GROUP_PEOPLE) {
                         String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                         JSONObject o = new JSONObject(content);
                         sender = o.optString("groupName");
@@ -1881,6 +1890,9 @@ public class AutoReplyService extends AccessibilityService {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
+                        } else if (type == TYPE_AT_GROUP_PEOPLE) {
+                            //循环开始艾特人
+                            startAtPeople();
                         }
                     }
                 }, 3000);
@@ -1891,6 +1903,74 @@ public class AutoReplyService extends AccessibilityService {
             }
         }
         return false;
+    }
+
+    private void startAtPeople() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                    Log.d("test", "content = " + content);
+                    JSONObject o = new JSONObject(content);
+                    JSONArray members = o.getJSONArray("members");
+                    int count = members.length();
+
+                    resetMaxReleaseTime(count * 15000);
+
+                    for (int i = 0; i < count; i++) {
+                        String m = members.getString(i);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                findInputEditText(getRootInActiveWindow(), "@");
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        findSearchButton(getRootInActiveWindow());
+                                    }
+
+                                    private boolean findSearchButton(AccessibilityNodeInfo rootNode) {
+                                        int count = rootNode.getChildCount();
+                                        for (int i = 0; i < count; i++) {
+                                            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+                                            if (nodeInfo == null) {
+                                                continue;
+                                            }
+                                            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+                                            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+                                            if (nodeInfo.getClassName().equals("android.widget.TextView")
+                                                    && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("选择提醒的人")) {
+                                                AccessibilityNodeInfo lastNode = rootNode.getChild(i + 1);
+                                                lastNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                                mHandler.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        findInputEditText(getRootInActiveWindow(), m);
+                                                        boolean find = findTargetPeople4(getRootInActiveWindow(), m);
+                                                        if (!find) {
+                                                            performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                                        }
+                                                    }
+                                                }, 1000);
+                                                return true;
+                                            }
+                                            if (findSearchButton(nodeInfo)) {
+                                                return true;
+                                            }
+                                        }
+                                        return false;
+                                    }
+                                }, 3000);
+                            }
+                        });
+                        sleep(10000);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     private boolean fixGroupNameOrNotice(AccessibilityNodeInfo rootNode, String target) {
@@ -2117,7 +2197,6 @@ public class AutoReplyService extends AccessibilityService {
         }
         return false;
     }
-
 
     private boolean findTargetPeople4(AccessibilityNodeInfo rootNode, String forwardto) {
         int count = rootNode.getChildCount();
