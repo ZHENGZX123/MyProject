@@ -87,7 +87,6 @@ import static cn.kiway.robot.entity.Action.TYPE_SET_FRIEND_CIRCLER_REMARK;
 import static cn.kiway.robot.entity.Action.TYPE_TEXT;
 import static cn.kiway.robot.entity.Action.TYPE_VIDEO;
 import static cn.kiway.robot.util.Constant.APPID;
-import static cn.kiway.robot.util.Constant.BACK_DOOR0;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
 import static cn.kiway.robot.util.Constant.BACK_DOOR3;
@@ -199,10 +198,6 @@ public class AutoReplyService extends AccessibilityService {
 
             if (maxReleaseTime < 60000) {
                 maxReleaseTime = 60000;
-            }
-            int actionType = actions.get(currentActionID).actionType;
-            if (actionType == TYPE_GET_ALL_FRIENDS) {
-                maxReleaseTime = 30 * 60 * 1000;
             }
             mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, maxReleaseTime);
         } catch (Exception e) {
@@ -673,7 +668,6 @@ public class AutoReplyService extends AccessibilityService {
                         //{"cmd": "修改群名称","content":"1","groupName": "111"}
                         //{"cmd": "群发消息","content":"1","groupName": "111"}
                         //{"cmd": "艾特某人","members": ["执着","朋友圈使者擦"],"groupName": "222"}
-
                         action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, true);
@@ -919,17 +913,18 @@ public class AutoReplyService extends AccessibilityService {
 
     private void doFindFriendInListView() {
         friends.clear();
-
+        resetMaxReleaseTime(30 * 60 * 1000);
         new Thread() {
             @Override
             public void run() {
+                //TODO 这里是否先要滚动到头部
                 //开始滚动读取
                 while (true) {
                     Log.d("test", "==============findFriendView=============");
                     findFriendView(getRootInActiveWindow());
                     //查询是否滚动到底部
-                    Log.d("test", "==============checkIsBottom=============");
-                    boolean isBottom = checkIsBottom(getRootInActiveWindow());
+                    Log.d("test", "==============checkIsListBottom=============");
+                    boolean isBottom = checkIsListBottom(getRootInActiveWindow());
                     Log.d("test", "isBottom = " + isBottom);
                     if (isBottom) {
                         break;
@@ -955,7 +950,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private boolean checkIsBottom(AccessibilityNodeInfo rootNode) {
+    private boolean checkIsListBottom(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
@@ -967,7 +962,7 @@ public class AutoReplyService extends AccessibilityService {
             if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().endsWith("位联系人")) {
                 return true;
             }
-            if (checkIsBottom(nodeInfo)) {
+            if (checkIsListBottom(nodeInfo)) {
                 return true;
             }
         }
@@ -1089,6 +1084,8 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 try {
+                    //TODO 这里要滚动到预置好的位子。
+
                     int scrollCount = (end - start) / 8 + 1;
                     Log.d("test", "scrollCount = " + scrollCount);
                     checkedFriends.clear();
@@ -1307,7 +1304,7 @@ public class AutoReplyService extends AccessibilityService {
                     release();
                 }
 
-                resetMaxReleaseTime(30000 * temp.length);
+                resetMaxReleaseTime(60000 * temp.length);
 
                 zombies.clear();
                 for (String t : temp) {
@@ -1453,21 +1450,21 @@ public class AutoReplyService extends AccessibilityService {
 
     private String getBackDoorByKey(String key) {
         StringBuilder sb = new StringBuilder();
-        if (key.equals(BACK_DOOR0)) {
+        if (key.equals(BACK_DOOR1)) {
             sb.append("你可以发送以下后台命令：\n");
             Iterator<Map.Entry<String, Integer>> it = backdoors.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry<String, Integer> entry = it.next();
                 sb.append(entry.getKey() + "\n");
             }
-        } else if (key.equals(BACK_DOOR1)) {
+        } else if (key.equals(BACK_DOOR2)) {
             int totalActionCount = actions.size();
             int undoCount = zbusRecvs.size() + 1;
             int doneCount = totalActionCount - undoCount;
             sb.append("家长问题总个数：" + totalActionCount + "，\n");
             sb.append("其中已回复个数：" + doneCount + "，\n");
             sb.append("未回复个数：" + undoCount + "。");
-        } else if (key.equals(BACK_DOOR2)) {
+        } else if (key.equals(BACK_DOOR3)) {
             int totalActionCount = actions.size();
             if (totalActionCount == 0) {
                 return "目前还没有家长提问";
@@ -1491,8 +1488,6 @@ public class AutoReplyService extends AccessibilityService {
 
             sb.append("家长问题总个数：" + totalActionCount + "，\n");
             sb.append("其中自动回复个数：" + autoCount + "，占比" + percent + "%");
-        } else if (key.equals(BACK_DOOR3)) {
-            sb.append("好友数量：" + Utils.getParentRemark(this));
         }
         return sb.toString();
     }
