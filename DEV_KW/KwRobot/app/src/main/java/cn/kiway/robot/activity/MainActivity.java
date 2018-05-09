@@ -440,12 +440,20 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test(View v) {
-        String fakeRecv = "{\"sender\":\"小辉小号\",\"me\":\"客服888\"," +
-                "\"returnMessage\":[{\"content\":\"http://upload.jnwb.net/2014/0311/1394514005639.jpg\"," +
-                "\"returnType\":2}]," +
-                "\"id\":9999,\"time\":1523342900085," +
-                "\"content\":\"学位房\"}";
-        AutoReplyService.instance.sendReplyImmediately(fakeRecv, false);
+//        String fakeRecv = "{\"sender\":\"小辉小号\",\"me\":\"客服888\"," +
+//                "\"returnMessage\":[{\"content\":\"http://upload.jnwb.net/2014/0311/1394514005639.jpg\"," +
+//                "\"returnType\":2}]," +
+//                "\"id\":9999,\"time\":1523342900085," +
+//                "\"content\":\"学位房\"}";
+//        AutoReplyService.instance.sendReplyImmediately(fakeRecv, false);
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
+            }
+        }, 10000);
+
     }
 
     public void sharePic(View view) {
