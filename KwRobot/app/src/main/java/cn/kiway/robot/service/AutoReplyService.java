@@ -624,7 +624,7 @@ public class AutoReplyService extends AccessibilityService {
                         sendReplyImmediately(fakeRecv, false);
                     } else if (action.actionType == TYPE_PUBLIC_ACCONT_FORWARDING || action.actionType == TYPE_COLLECTOR_FORWARDING) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv, false);
+                        sendReplyImmediately(fakeRecv, true);//false
                     } else if (action.actionType == TYPE_SET_FORWARDTO) {
                         String forwardto = action.content.replace("设置转发对象：", "").trim();
                         if (TextUtils.isEmpty(forwardto)) {
@@ -3605,4 +3605,19 @@ public class AutoReplyService extends AccessibilityService {
         }, 3000);
     }
 
+    public boolean test(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (findHungupButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

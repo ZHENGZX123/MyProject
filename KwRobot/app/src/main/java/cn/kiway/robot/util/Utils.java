@@ -271,7 +271,6 @@ public class Utils {
         }.start();
     }
 
-
     public static boolean isEffectiveDate() {
         try {
             String format = "HH:mm:ss";
