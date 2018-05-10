@@ -48,4 +48,32 @@
         android:layout_height="wrap_content"
         android:onClick="getFriendCircle"
         android:text="获取所有好友的朋友圈"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/latitude"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="经度"/>
+
+        <EditText
+            android:id="@+id/longitude"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="经度"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/jingweidu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="chageJinWei"
+        android:text="修改经纬度"/>
+
 </LinearLayout>

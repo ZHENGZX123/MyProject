@@ -1,11 +1,14 @@
 package cn.kiway.robot.activity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.easy.wtool.sdk.MessageEvent;
@@ -31,6 +34,8 @@ import cn.kiway.robot.moment.Task;
 import cn.kiway.robot.moment.common.Share;
 import cn.kiway.robot.util.WxUtils;
 
+import static cn.kiway.robot.hook.TencentLocationManagerHook.XSPlatitude;
+import static cn.kiway.robot.hook.TencentLocationManagerHook.XSPlongitude;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static com.loopj.android.http.AsyncHttpClient.LOG_TAG;
 
@@ -44,12 +49,17 @@ public class WeChatActivity extends BaseActivity {
     JSONArray wxRoomList = new JSONArray();
     SnsStat snsStat = null;
     Task task = null;
+    SharedPreferences sharedPreferences;
+    EditText latitude, longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferences = getSharedPreferences(getPackageName() + "_preferences", Activity.MODE_WORLD_READABLE);
         task = new Task(this.getApplicationContext());
         setContentView(R.layout.activity_wechat);
+        latitude = (EditText) findViewById(R.id.latitude);
+        longitude = (EditText) findViewById(R.id.longitude);
         task.testRoot();
         wToolSDK.encodeValue("1");
         //String s = wToolSDK.init("9999", "757533D0860F8CC0590B510BE2374F48C5750673");临时
@@ -85,6 +95,12 @@ public class WeChatActivity extends BaseActivity {
                         .getTaskId());
             }
         });
+    }
+
+
+    public void chageJinWei(View view) {
+        sharedPreferences.edit().putString(XSPlatitude, latitude.getText().toString()).commit();
+        sharedPreferences.edit().putString(XSPlongitude, longitude.getText().toString()).commit();
     }
 
     public void getFriend(View view) {
