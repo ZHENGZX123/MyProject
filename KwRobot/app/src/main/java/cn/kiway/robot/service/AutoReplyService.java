@@ -72,6 +72,7 @@ import static cn.kiway.robot.entity.Action.TYPE_CLEAR_ZOMBIE_FAN;
 import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_CREATE_GROUP_CHAT;
 import static cn.kiway.robot.entity.Action.TYPE_DELETE_GROUP_PEOPLE;
+import static cn.kiway.robot.entity.Action.TYPE_DELETE_MOMENT;
 import static cn.kiway.robot.entity.Action.TYPE_FILE;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_GROUP_NAME;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_GROUP_NOTICE;
@@ -656,6 +657,7 @@ public class AutoReplyService extends AccessibilityService {
                                     || action.actionType == TYPE_FIX_GROUP_NOTICE
                                     || action.actionType == TYPE_GROUP_CHAT
                                     || action.actionType == TYPE_AT_GROUP_PEOPLE
+                                    || action.actionType == TYPE_DELETE_MOMENT
                             ) {
                         //{"cmd": "查询好友数量"}
                         //{"cmd": "清理僵尸粉","start": "1","end":"20"}
@@ -666,6 +668,7 @@ public class AutoReplyService extends AccessibilityService {
                         //{"cmd": "修改群名称","content":"1","groupName": "111"}
                         //{"cmd": "群发消息","content":"1","groupName": "111"}
                         //{"cmd": "艾特某人","members": ["执着","朋友圈使者擦"],"groupName": "222"}
+                        //{"cmd": "删除朋友圈","content":"密密麻麻"}
                         action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, true);
@@ -799,7 +802,8 @@ public class AutoReplyService extends AccessibilityService {
                         || actionType == TYPE_FIX_GROUP_NOTICE
                         || actionType == TYPE_FIX_GROUP_NAME
                         || actionType == TYPE_GROUP_CHAT
-                        || actionType == TYPE_AT_GROUP_PEOPLE) {
+                        || actionType == TYPE_AT_GROUP_PEOPLE
+                        || actionType == TYPE_DELETE_MOMENT) {
                     if (!checkIsWxHomePage()) {
                         try {
                             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
@@ -844,7 +848,14 @@ public class AutoReplyService extends AccessibilityService {
                                     sendTextOnly2("消息内容字数太长", true);
                                     return;
                                 }
+                            } else if (actionType == TYPE_DELETE_MOMENT) {
+                                String notice = o.optString("content");
+                                if (TextUtils.isEmpty(notice)) {
+                                    sendTextOnly2("朋友圈关键字不能为空", true);
+                                    return;
+                                }
                             }
+
                             String text = "";
                             if (actionType == TYPE_ADD_GROUP_PEOPLE) {
                                 text = "正在拉人入群，请稍等";
@@ -858,6 +869,8 @@ public class AutoReplyService extends AccessibilityService {
                                 text = "正在群发消息，请稍等";
                             } else if (actionType == TYPE_AT_GROUP_PEOPLE) {
                                 text = "正在艾特某人，请稍等";
+                            } else if (actionType == TYPE_DELETE_MOMENT) {
+                                text = "正在删除朋友圈，请稍等";
                             }
                             sendTextOnly2(text, false);
                             mHandler.postDelayed(new Runnable() {
@@ -867,9 +880,14 @@ public class AutoReplyService extends AccessibilityService {
                                     mHandler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-                                            //搜索群名
                                             checkIsWxHomePage();
-                                            searchSenderInWxHomePage(actionType);
+                                            if (actionType == TYPE_DELETE_MOMENT) {
+                                                //我-相册
+                                                deleteMoment();
+                                            } else {
+                                                //搜索群名
+                                                searchSenderInWxHomePage(actionType);
+                                            }
                                         }
                                     }, 2000);
                                 }
@@ -901,6 +919,193 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 break;
         }
+    }
+
+    private void deleteMoment() {
+        woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                boolean find = findAlbum(getRootInActiveWindow());
+                if (!find) {
+                    release();
+                }
+            }
+        }, 1000);
+    }
+
+    private boolean findAlbum(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("相册")) {
+                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        listViewNode = null;
+                        findMomentListView(getRootInActiveWindow());
+                        if (listViewNode == null) {
+                            release();
+                            return;
+                        }
+                        startFindMoment();
+                    }
+                }, 2000);
+                return true;
+            }
+            if (findAlbum(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findMoment = false;
+
+    private void startFindMoment() {
+
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    findMoment = false;
+                    int tryCount = 10;//尝试下拉次数
+                    resetMaxReleaseTime(tryCount * 10000);
+
+                    String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                    JSONObject o = new JSONObject(content);
+                    String text = o.optString("content");
+
+                    for (int i = 0; i < tryCount; i++) {
+                        if (findMoment) {
+                            break;
+                        }
+                        sleep(5000);
+                        //find
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d("test", "============findMomentInListView===========");
+                                findMoment = findMomentInListView(getRootInActiveWindow(), text);
+                                Log.d("test", "findMoment = " + findMoment);
+                            }
+                        });
+                        sleep(5000);
+                        if (findMoment) {
+                            break;
+                        }
+                        //scroll
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                listViewNode.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    release();
+                }
+            }
+        }.start();
+    }
+
+    private AccessibilityNodeInfo deleteNode;
+
+    private boolean findMomentInListView(AccessibilityNodeInfo rootNode, String text) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().contains(text)) {
+                //AccessibilityNodeInfo parent = nodeInfo.getParent();
+                //parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+
+                Rect r = new Rect();
+                nodeInfo.getBoundsInScreen(r);
+                int x = r.width() / 2 + r.left;
+                int y = r.height() / 2 + r.top;
+                String cmd = "input tap " + x + " " + y;
+                RootCmd.execRootCmdSilent(cmd);
+
+                //跳页去删除。。。
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //如果是网文，点进去直接删除；
+                        //如果是图片，右上角删除；
+                        deleteNode = null;
+                        hasDeleteButton(getRootInActiveWindow());
+                        if (deleteNode == null) {
+
+                        } else {
+                            deleteNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    findSureButtonInDialog(getRootInActiveWindow());
+                                }
+                            }, 2000);
+                        }
+                    }
+                }, 2000);
+                return true;
+            }
+            if (findMomentInListView(nodeInfo, text)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasDeleteButton(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("删除")) {
+                deleteNode = nodeInfo;
+                return true;
+            }
+            if (hasDeleteButton(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findMomentListView(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.ListView")) {
+                listViewNode = nodeInfo;
+                return true;
+            }
+            if (findMomentListView(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Set<String> friends = new HashSet<>();
@@ -1700,6 +1905,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private AccessibilityNodeInfo tongxunluTextView;
+    private AccessibilityNodeInfo woTextView;
     private int listviewCount;
     private AccessibilityNodeInfo secondListView;
 
@@ -1711,6 +1917,7 @@ public class AutoReplyService extends AccessibilityService {
         lastTextView = null;
         lastRelativeLayout = null;
         tongxunluTextView = null;
+        woTextView = null;
         listviewCount = 0;
         secondListView = null;
         checkIsWxHomePage(getRootInActiveWindow());
@@ -1801,6 +2008,7 @@ public class AutoReplyService extends AccessibilityService {
                         faxian = true;
                     } else if (text.equals("我")) {
                         wo = true;
+                        woTextView = nodeInfo.getParent();
                     } else if (text.startsWith("微信号：")) {
                         Log.d("test", "===============wxNo compare==============");
                         String realWxNo = text.replace("微信号：", "");
