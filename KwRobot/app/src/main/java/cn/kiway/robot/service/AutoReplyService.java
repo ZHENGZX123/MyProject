@@ -975,7 +975,7 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 try {
                     findMoment = false;
-                    int tryCount = 10;//尝试下拉次数
+                    int tryCount = 20;//尝试下拉次数
                     resetMaxReleaseTime(tryCount * 10000);
 
                     String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
@@ -1001,12 +1001,8 @@ public class AutoReplyService extends AccessibilityService {
                             break;
                         }
                         //scroll
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                listViewNode.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-                            }
-                        });
+                        String cmd = "input swipe 360 900 360 300";
+                        RootCmd.execRootCmdSilent(cmd);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1028,16 +1024,8 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().contains(text)) {
-                //AccessibilityNodeInfo parent = nodeInfo.getParent();
-                //parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-
-                Rect r = new Rect();
-                nodeInfo.getBoundsInScreen(r);
-                int x = r.width() / 2 + r.left;
-                int y = r.height() / 2 + r.top;
-                String cmd = "input tap " + x + " " + y;
-                RootCmd.execRootCmdSilent(cmd);
-
+                AccessibilityNodeInfo parent = nodeInfo.getParent();
+                parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 //跳页去删除。。。
                 mHandler.postDelayed(new Runnable() {
                     @Override
@@ -1047,7 +1035,22 @@ public class AutoReplyService extends AccessibilityService {
                         deleteNode = null;
                         hasDeleteButton(getRootInActiveWindow());
                         if (deleteNode == null) {
-
+                            lastImageButton = null;
+                            findUserInfoButton(getRootInActiveWindow());
+                            if (lastImageButton == null) {
+                                release();
+                                return;
+                            }
+                            lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    boolean find = findDeleteButton3(getRootInActiveWindow());
+                                    if (!find) {
+                                        release();
+                                    }
+                                }
+                            }, 2000);
                         } else {
                             deleteNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             mHandler.postDelayed(new Runnable() {
@@ -3217,6 +3220,63 @@ public class AutoReplyService extends AccessibilityService {
                 return true;
             }
             if (findDeleteButton2(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private boolean findDeleteButton3(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("删除")) {
+                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "===============findDeleteButton4================");
+                        boolean find = findDeleteButton4(getRootInActiveWindow());
+                        if (!find) {
+                            release();
+                        }
+                    }
+                }, 2000);
+                return true;
+            }
+            if (findDeleteButton3(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findDeleteButton4(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("确定")) {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        release();
+                    }
+                }, 3000);
+                return true;
+            }
+            if (findDeleteButton4(nodeInfo)) {
                 return true;
             }
         }
