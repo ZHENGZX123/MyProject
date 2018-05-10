@@ -1293,16 +1293,12 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 try {
                     //这里要滚动到预置好的位子。
-                    int preScollCount = start / 10 + 1;
+                    int preScollCount = start / 8;
                     Log.d("test", "preScollCount = " + preScollCount);
                     for (int i = 0; i < preScollCount; i++) {
                         Log.d("test", "预滚第" + (i + 1) + "次");
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                listViewNode.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-                            }
-                        });
+                        String cmd = "input swipe 360 900 360 300";
+                        RootCmd.execRootCmdSilent(cmd);
                         sleep(3000);
                     }
 
@@ -1310,20 +1306,12 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("test", "scrollCount = " + scrollCount);
                     checkedFriends.clear();
                     for (int i = 0; i < scrollCount; i++) {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                doCheckFriend1(getRootInActiveWindow());
-                            }
-                        });
+                        doCheckFriend1(getRootInActiveWindow());
                         sleep(3000);
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                listViewNode.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-                            }
-                        });
+                        String cmd = "input swipe 360 900 360 300";
+                        RootCmd.execRootCmdSilent(cmd);
                         sleep(3000);
+                        doCheckFriend1(getRootInActiveWindow());
                     }
                     //点一下确定。建群时间比较长
                     clickSureButton();
@@ -1609,31 +1597,33 @@ public class AutoReplyService extends AccessibilityService {
         });
     }
 
-    private boolean doCheckFriend1(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.CheckBox")) {
-                AccessibilityNodeInfo prevNode = rootNode.getChild(i - 1);
-                String nickname = prevNode.getText().toString();
-                Log.d("test", "nickname = " + nickname);
-                if (checkedFriends.contains(nickname)) {
-                    continue;
+    private void doCheckFriend1(AccessibilityNodeInfo rootNode) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                int count = rootNode.getChildCount();
+                for (int i = 0; i < count; i++) {
+                    AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+                    if (nodeInfo == null) {
+                        continue;
+                    }
+                    Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+                    Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+                    if (nodeInfo.getClassName().equals("android.widget.CheckBox")) {
+                        AccessibilityNodeInfo prevNode = rootNode.getChild(i - 1);
+                        String nickname = prevNode.getText().toString();
+                        Log.d("test", "nickname = " + nickname);
+                        if (checkedFriends.contains(nickname)) {
+                            continue;
+                        }
+                        Log.d("test", "nickname add ...");
+                        nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        checkedFriends.add(nickname);
+                    }
+                    doCheckFriend1(nodeInfo);
                 }
-                Log.d("test", "nickname add ...");
-                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                checkedFriends.add(nickname);
             }
-            if (doCheckFriend1(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
+        });
     }
 
     private boolean doCheckFriend2(AccessibilityNodeInfo rootNode) {
