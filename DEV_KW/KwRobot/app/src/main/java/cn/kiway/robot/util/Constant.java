@@ -65,10 +65,10 @@ public class Constant {
     public static final String BACK_DOOR7 = "拉人入群";
     public static final String BACK_DOOR8 = "踢人出群";
     public static final String BACK_DOOR9 = "修改群名称";
-    public static final String BACK_DOOR20 = "修改群公告";
-    public static final String BACK_DOOR21 = "群发消息";
-    public static final String BACK_DOOR22 = "艾特某人";
-
+    public static final String BACK_DOOR10 = "修改群公告";
+    public static final String BACK_DOOR11 = "群发消息";
+    public static final String BACK_DOOR12 = "艾特某人";
+    public static final String BACK_DOOR13 = "删除朋友圈";
 
     public static Map<String, Integer> backdoors = new LinkedHashMap<>();
 
@@ -83,9 +83,11 @@ public class Constant {
         backdoors.put(BACK_DOOR7, Action.TYPE_ADD_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR8, Action.TYPE_DELETE_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR9, Action.TYPE_FIX_GROUP_NAME);
-        backdoors.put(BACK_DOOR20, Action.TYPE_FIX_GROUP_NOTICE);
-        backdoors.put(BACK_DOOR21, Action.TYPE_GROUP_CHAT);
-        backdoors.put(BACK_DOOR22, Action.TYPE_AT_GROUP_PEOPLE);
+        backdoors.put(BACK_DOOR10, Action.TYPE_FIX_GROUP_NOTICE);
+        backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
+        backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
+        backdoors.put(BACK_DOOR13, Action.TYPE_DELETE_MOMENT);
+
     }
 
     public static final String HEART_BEAT_TESTER = "心跳测试使者";
