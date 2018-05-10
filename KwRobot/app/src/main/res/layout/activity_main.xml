@@ -136,7 +136,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="shareWeb"
+            android:onClick="shareProgram"
             android:text="分享"
             android:visibility="gone" />
 

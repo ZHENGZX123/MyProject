@@ -42,6 +42,7 @@ import java.util.List;
 
 import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.R;
+import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
@@ -445,13 +446,13 @@ public class MainActivity extends BaseActivity {
 //                "\"id\":9999,\"time\":1523342900085," +
 //                "\"content\":\"学位房\"}";
 //        AutoReplyService.instance.sendReplyImmediately(fakeRecv, false);
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
-//            }
-//        }, 10000);
-
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
+//                AutoReplyService.instance.getTextLengthInEditText(2);
+            }
+        }, 10000);
     }
 
     public void sharePic(View view) {
@@ -526,6 +527,16 @@ public class MainActivity extends BaseActivity {
 //        sp.setShareType(Platform.SHARE_TEXT);
 //        Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
 //        wx.share(sp);
+    }
+
+    public void shareProgram(View view) {
+        Platform.ShareParams sp = new Platform.ShareParams();
+        sp.setTitle("title");
+        sp.setWxUserName("gh_afb25ac019c9");
+        sp.setWxPath("/page/API");
+        sp.setShareType(Platform.SHARE_WXMINIPROGRAM);
+        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
+        wx.share(sp);
     }
 
     private void updateServiceStatus() {

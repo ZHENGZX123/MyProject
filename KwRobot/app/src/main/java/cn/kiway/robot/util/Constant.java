@@ -69,6 +69,8 @@ public class Constant {
     public static final String BACK_DOOR11 = "群发消息";
     public static final String BACK_DOOR12 = "艾特某人";
     public static final String BACK_DOOR13 = "删除朋友圈";
+    public static final String BACK_DOOR14 = "添加朋友";//电话号码或微信号
+    public static final String BACK_DOOR15 = "漏网之鱼";
 
     public static Map<String, Integer> backdoors = new LinkedHashMap<>();
 
@@ -87,6 +89,7 @@ public class Constant {
         backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
         backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR13, Action.TYPE_DELETE_MOMENT);
+        backdoors.put(BACK_DOOR14, Action.TYPE_ADD_FRIEND);
 
     }
 
