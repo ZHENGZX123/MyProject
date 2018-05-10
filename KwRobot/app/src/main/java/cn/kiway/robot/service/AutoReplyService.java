@@ -659,16 +659,16 @@ public class AutoReplyService extends AccessibilityService {
                                     || action.actionType == TYPE_AT_GROUP_PEOPLE
                                     || action.actionType == TYPE_DELETE_MOMENT
                             ) {
-                        //{"cmd": "查询好友数量"}
-                        //{"cmd": "清理僵尸粉","start": "1","end":"20"}
-                        //{"cmd": "发起群聊","members": ["5行","5之","执着"],"groupName": "111"}
-                        //{"cmd": "拉人入群","members": ["5行","5之"],"groupName": "111"}
-                        //{"cmd": "踢人出群","members": ["5行","5之"],"groupName": "111"}
-                        //{"cmd": "修改群公告","content": "群公告啊啊啊","groupName": "222"}
-                        //{"cmd": "修改群名称","content":"1","groupName": "111"}
-                        //{"cmd": "群发消息","content":"1","groupName": "111"}
-                        //{"cmd": "艾特某人","members": ["执着","朋友圈使者擦"],"groupName": "222"}
-                        //{"cmd": "删除朋友圈","content":"密密麻麻"}
+                        //{"cmd": "查询好友数量","backdoor":true}
+                        //{"cmd": "清理僵尸粉","start": "1","end":"20","backdoor":true}
+                        //{"cmd": "发起群聊","members": ["5行","5之","执着"],"groupName": "111","backdoor":true}
+                        //{"cmd": "拉人入群","members": ["5行","5之"],"groupName": "111","backdoor":true}
+                        //{"cmd": "踢人出群","members": ["5行","5之"],"groupName": "111","backdoor":true}
+                        //{"cmd": "修改群公告","content": "群公告啊啊啊","groupName": "222","backdoor":true}
+                        //{"cmd": "修改群名称","content":"1","groupName": "111","backdoor":true}
+                        //{"cmd": "群发消息","content":"1","groupName": "111","backdoor":true}
+                        //{"cmd": "艾特某人","members": ["执着","朋友圈使者擦"],"groupName": "222","backdoor":true}
+                        //{"cmd": "删除朋友圈","content":"密密麻麻","backdoor":true}
                         action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, true);
@@ -713,73 +713,99 @@ public class AutoReplyService extends AccessibilityService {
                     }, 3000);
                 } else if (actionType == TYPE_CLEAR_ZOMBIE_FAN) {
                     if (!checkIsWxHomePage()) {
-                        //先分析命令是否正确
+                        boolean backdoor = false;
                         try {
                             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                             JSONObject o = new JSONObject(content);
                             start = o.optInt("start");
                             end = o.optInt("end");
+                            backdoor = o.optBoolean("backdoor");
+
+                            int friendCount = Integer.parseInt(Utils.getParentRemark(getApplication()));
+                            if (friendCount < start) {
+                                if (backdoor) {
+                                    sendTextOnly2("你输入的命令不正确，当前好友数量是：" + friendCount, true);
+                                }
+                                return;
+                            }
+                            performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    findTopRightToolBarInHomePage();
+                                }
+                            }, 2000);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            sendTextOnly2("请输入正确的命令", true);
-                            return;
-                        }
-
-                        int friendCount = Integer.parseInt(Utils.getParentRemark(getApplication()));
-                        if (friendCount < start) {
-                            sendTextOnly2("你输入的命令不正确，当前好友数量是：" + friendCount, true);
-                            return;
-                        }
-                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                findTopRightToolBarInHomePage();
+                            if (backdoor) {
+                                sendTextOnly2("请输入正确的命令", true);
+                            } else {
+                                release();
                             }
-                        }, 2000);
+                        }
                     }
                 } else if (actionType == TYPE_GET_ALL_FRIENDS) {
                     if (!checkIsWxHomePage()) {
-                        sendTextOnly2("正在查询数量，请稍等", false);
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        checkIsWxHomePage();
-                                        tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                        mHandler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                checkIsWxHomePage();
-                                                doFindFriendInListView();
-                                            }
-                                        }, 3000);
-                                    }
-                                }, 2000);
+                        boolean backdoor = false;
+                        try {
+                            String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                            JSONObject o = new JSONObject(content);
+                            backdoor = o.optBoolean("backdoor");
+                            if (backdoor) {
+                                sendTextOnly2("正在查询数量，请稍等", false);
                             }
-                        }, 3000);
+                            boolean finalBackdoor = backdoor;
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            checkIsWxHomePage();
+                                            tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                            mHandler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    checkIsWxHomePage();
+                                                    doFindFriendInListView(finalBackdoor);
+                                                }
+                                            }, 3000);
+                                        }
+                                    }, 2000);
+                                }
+                            }, 3000);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            if (backdoor) {
+                                sendTextOnly2("请输入正确的命令", true);
+                            } else {
+                                release();
+                            }
+                        }
                     }
                 } else if (actionType == TYPE_CREATE_GROUP_CHAT) {
                     if (!checkIsWxHomePage()) {
+                        boolean backdoor = false;
                         try {
                             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                             Log.d("test", "content = " + content);
                             JSONObject o = new JSONObject(content);
                             JSONArray members = o.getJSONArray("members");
                             String groupName = o.optString("groupName");
-                            if (TextUtils.isEmpty(groupName)) {
-                                sendTextOnly2("groupName不能为空", true);
-                                return;
+                            backdoor = o.optBoolean("backdoor");
+                            if (backdoor) {
+                                if (TextUtils.isEmpty(groupName)) {
+                                    sendTextOnly2("groupName不能为空", true);
+                                    return;
+                                }
+                                int count = members.length();
+                                if (count < 2 || count > 500) {
+                                    sendTextOnly2("好友数量必须是2-500个", true);
+                                    return;
+                                }
+                                sendTextOnly2("正在创建群组，请稍等", false);
                             }
-                            int count = members.length();
-                            if (count < 2 || count > 500) {
-                                sendTextOnly2("好友数量必须是2-500个", true);
-                                return;
-                            }
-                            sendTextOnly2("正在创建群组，请稍等", false);
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -794,7 +820,11 @@ public class AutoReplyService extends AccessibilityService {
                             }, 3000);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            sendTextOnly2("输入命令有误", true);
+                            if (backdoor) {
+                                sendTextOnly2("输入命令有误", true);
+                            } else {
+                                release();
+                            }
                         }
                     }
                 } else if (actionType == TYPE_ADD_GROUP_PEOPLE
@@ -805,74 +835,79 @@ public class AutoReplyService extends AccessibilityService {
                         || actionType == TYPE_AT_GROUP_PEOPLE
                         || actionType == TYPE_DELETE_MOMENT) {
                     if (!checkIsWxHomePage()) {
+                        boolean backdoor = false;
                         try {
                             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                             Log.d("test", "content = " + content);
                             JSONObject o = new JSONObject(content);
-                            if (actionType == TYPE_ADD_GROUP_PEOPLE
-                                    || actionType == TYPE_DELETE_GROUP_PEOPLE
-                                    || actionType == TYPE_AT_GROUP_PEOPLE) {
-                                JSONArray members = o.optJSONArray("members");
-                                int count = members.length();
-                                if (count < 0 || count > 10) {
-                                    sendTextOnly2("数量必须是1-10个", true);
-                                    return;
-                                }
-                            } else if (actionType == TYPE_FIX_GROUP_NAME) {
-                                String notice = o.optString("content");
-                                if (TextUtils.isEmpty(notice)) {
-                                    sendTextOnly2("群名称不能为空", true);
-                                    return;
-                                }
-                                if (notice.length() > 15) {
-                                    sendTextOnly2("群名称字数太长", true);
-                                    return;
-                                }
-                            } else if (actionType == TYPE_FIX_GROUP_NOTICE) {
-                                String notice = o.optString("content");
-                                if (TextUtils.isEmpty(notice)) {
-                                    sendTextOnly2("群公告不能为空", true);
-                                    return;
-                                }
-                                if (notice.length() > 2000) {
-                                    sendTextOnly2("群公告字数太长", true);
-                                    return;
-                                }
-                            } else if (actionType == TYPE_GROUP_CHAT) {
-                                String notice = o.optString("content");
-                                if (TextUtils.isEmpty(notice)) {
-                                    sendTextOnly2("消息内容不能为空", true);
-                                    return;
-                                }
-                                if (notice.length() > 5000) {
-                                    sendTextOnly2("消息内容字数太长", true);
-                                    return;
-                                }
-                            } else if (actionType == TYPE_DELETE_MOMENT) {
-                                String notice = o.optString("content");
-                                if (TextUtils.isEmpty(notice)) {
-                                    sendTextOnly2("朋友圈关键字不能为空", true);
-                                    return;
-                                }
-                            }
 
-                            String text = "";
-                            if (actionType == TYPE_ADD_GROUP_PEOPLE) {
-                                text = "正在拉人入群，请稍等";
-                            } else if (actionType == TYPE_DELETE_GROUP_PEOPLE) {
-                                text = "正在踢人出群，请稍等";
-                            } else if (actionType == TYPE_FIX_GROUP_NAME) {
-                                text = "正在修改群名称，请稍等";
-                            } else if (actionType == TYPE_FIX_GROUP_NOTICE) {
-                                text = "正在修改群公告，请稍等";
-                            } else if (actionType == TYPE_GROUP_CHAT) {
-                                text = "正在群发消息，请稍等";
-                            } else if (actionType == TYPE_AT_GROUP_PEOPLE) {
-                                text = "正在艾特某人，请稍等";
-                            } else if (actionType == TYPE_DELETE_MOMENT) {
-                                text = "正在删除朋友圈，请稍等";
+                            backdoor = o.optBoolean("backdoor");
+                            if (backdoor) {
+                                if (actionType == TYPE_ADD_GROUP_PEOPLE
+                                        || actionType == TYPE_DELETE_GROUP_PEOPLE
+                                        || actionType == TYPE_AT_GROUP_PEOPLE) {
+                                    JSONArray members = o.optJSONArray("members");
+                                    int count = members.length();
+                                    if (count < 0 || count > 10) {
+                                        sendTextOnly2("数量必须是1-10个", true);
+                                        return;
+                                    }
+                                } else if (actionType == TYPE_FIX_GROUP_NAME) {
+                                    String notice = o.optString("content");
+                                    if (TextUtils.isEmpty(notice)) {
+                                        sendTextOnly2("群名称不能为空", true);
+                                        return;
+                                    }
+                                    if (notice.length() > 15) {
+                                        sendTextOnly2("群名称字数太长", true);
+                                        return;
+                                    }
+                                } else if (actionType == TYPE_FIX_GROUP_NOTICE) {
+                                    String notice = o.optString("content");
+                                    if (TextUtils.isEmpty(notice)) {
+                                        sendTextOnly2("群公告不能为空", true);
+                                        return;
+                                    }
+                                    if (notice.length() > 2000) {
+                                        sendTextOnly2("群公告字数太长", true);
+                                        return;
+                                    }
+                                } else if (actionType == TYPE_GROUP_CHAT) {
+                                    String notice = o.optString("content");
+                                    if (TextUtils.isEmpty(notice)) {
+                                        sendTextOnly2("消息内容不能为空", true);
+                                        return;
+                                    }
+                                    if (notice.length() > 5000) {
+                                        sendTextOnly2("消息内容字数太长", true);
+                                        return;
+                                    }
+                                } else if (actionType == TYPE_DELETE_MOMENT) {
+                                    String notice = o.optString("content");
+                                    if (TextUtils.isEmpty(notice)) {
+                                        sendTextOnly2("朋友圈关键字不能为空", true);
+                                        return;
+                                    }
+                                }
+
+                                String text = "";
+                                if (actionType == TYPE_ADD_GROUP_PEOPLE) {
+                                    text = "正在拉人入群，请稍等";
+                                } else if (actionType == TYPE_DELETE_GROUP_PEOPLE) {
+                                    text = "正在踢人出群，请稍等";
+                                } else if (actionType == TYPE_FIX_GROUP_NAME) {
+                                    text = "正在修改群名称，请稍等";
+                                } else if (actionType == TYPE_FIX_GROUP_NOTICE) {
+                                    text = "正在修改群公告，请稍等";
+                                } else if (actionType == TYPE_GROUP_CHAT) {
+                                    text = "正在群发消息，请稍等";
+                                } else if (actionType == TYPE_AT_GROUP_PEOPLE) {
+                                    text = "正在艾特某人，请稍等";
+                                } else if (actionType == TYPE_DELETE_MOMENT) {
+                                    text = "正在删除朋友圈，请稍等";
+                                }
+                                sendTextOnly2(text, false);
                             }
-                            sendTextOnly2(text, false);
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -894,7 +929,11 @@ public class AutoReplyService extends AccessibilityService {
                             }, 3000);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            sendTextOnly2("输入命令有误", true);
+                            if (backdoor) {
+                                sendTextOnly2("输入命令有误", true);
+                            } else {
+                                release();
+                            }
                         }
                     }
                 } else {
@@ -1113,7 +1152,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private Set<String> friends = new HashSet<>();
 
-    private void doFindFriendInListView() {
+    private void doFindFriendInListView(boolean backdoor) {
         friends.clear();
         resetMaxReleaseTime(30 * 60 * 1000);
         new Thread() {
@@ -1147,13 +1186,16 @@ public class AutoReplyService extends AccessibilityService {
                 Log.d("test", "friends.size = " + count);
                 FileUtils.saveFile(count + "", "parent.txt");
 
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        searchSenderInWxHomePage(TYPE_GET_ALL_FRIENDS);
-                    }
-                }, 2000);
-
+                if (backdoor) {
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            searchSenderInWxHomePage(TYPE_GET_ALL_FRIENDS);
+                        }
+                    }, 2000);
+                } else {
+                    release();
+                }
             }
         }.start();
     }
