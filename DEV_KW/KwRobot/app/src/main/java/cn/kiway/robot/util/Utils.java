@@ -134,6 +134,10 @@ public class Utils {
         return c.getSharedPreferences("getPic", 0).getBoolean("getPic", true);
     }
 
+    public static boolean isUselessContent(String content) {
+        return content.equals("我通过了你的朋友验证请求，现在我们可以开始聊天了");
+    }
+
     public static String getCurrentVersion(Context c) {
         String versionName = "1.0.0";
         try {
