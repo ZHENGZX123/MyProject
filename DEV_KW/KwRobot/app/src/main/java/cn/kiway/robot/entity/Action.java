@@ -44,6 +44,7 @@ public class Action {
     public static final int TYPE_ADD_FRIEND = 121;//主动搜索并添加好友
     public static final int TYPE_MISSING_FISH = 122;//漏网之鱼
     public static final int TYPE_FIX_NICKNAME = 123;//修改昵称
+    public static final int TYPE_FIX_ICON = 124;//修改头像
 
     public PendingIntent intent;
     public String sender;
