@@ -951,6 +951,8 @@ public class AutoReplyService extends AccessibilityService {
                                 });
                                 sleep(30000);
                             }
+
+                            release();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
