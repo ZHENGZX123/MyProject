@@ -74,27 +74,26 @@ public class Constant {
     public static final String BACK_DOOR17 = "修改头像";
 
 
-
     public static Map<String, Integer> backdoors = new LinkedHashMap<>();
 
     static {
         backdoors.put(BACK_DOOR2, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR3, Action.TYPE_BACK_DOOR);
 
-//        backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
-//        backdoors.put(BACK_DOOR5, Action.TYPE_GET_ALL_FRIENDS);
-//        backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
-//        backdoors.put(BACK_DOOR7, Action.TYPE_ADD_GROUP_PEOPLE);
-//        backdoors.put(BACK_DOOR8, Action.TYPE_DELETE_GROUP_PEOPLE);
-//        backdoors.put(BACK_DOOR9, Action.TYPE_FIX_GROUP_NAME);
-//        backdoors.put(BACK_DOOR10, Action.TYPE_FIX_GROUP_NOTICE);
-//        backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
-//        backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
-//        backdoors.put(BACK_DOOR13, Action.TYPE_DELETE_MOMENT);
-//        backdoors.put(BACK_DOOR14, Action.TYPE_ADD_FRIEND);
-//        backdoors.put(BACK_DOOR15, Action.TYPE_MISSING_FISH);
-//        backdoors.put(BACK_DOOR16, Action.TYPE_FIX_NICKNAME);
-//        backdoors.put(BACK_DOOR17, Action.TYPE_FIX_ICON);
+        backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
+        backdoors.put(BACK_DOOR5, Action.TYPE_GET_ALL_FRIENDS);
+        backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
+        backdoors.put(BACK_DOOR7, Action.TYPE_ADD_GROUP_PEOPLE);
+        backdoors.put(BACK_DOOR8, Action.TYPE_DELETE_GROUP_PEOPLE);
+        backdoors.put(BACK_DOOR9, Action.TYPE_FIX_GROUP_NAME);
+        backdoors.put(BACK_DOOR10, Action.TYPE_FIX_GROUP_NOTICE);
+        backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
+        backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
+        backdoors.put(BACK_DOOR13, Action.TYPE_DELETE_MOMENT);
+        backdoors.put(BACK_DOOR14, Action.TYPE_ADD_FRIEND);
+        backdoors.put(BACK_DOOR15, Action.TYPE_MISSING_FISH);
+        backdoors.put(BACK_DOOR16, Action.TYPE_FIX_NICKNAME);
+        backdoors.put(BACK_DOOR17, Action.TYPE_FIX_ICON);
 
     }
 
