@@ -90,7 +90,7 @@ public class Constant {
         backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR13, Action.TYPE_DELETE_MOMENT);
         backdoors.put(BACK_DOOR14, Action.TYPE_ADD_FRIEND);
-
+        backdoors.put(BACK_DOOR15, Action.TYPE_MISSING_FISH);
     }
 
     public static final String HEART_BEAT_TESTER = "心跳测试使者";

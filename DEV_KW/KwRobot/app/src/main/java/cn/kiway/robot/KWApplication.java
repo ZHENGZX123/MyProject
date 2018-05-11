@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 
 import cn.kiway.robot.util.CrashHandler;
+import cn.kiway.robot.util.FileUtils;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
 
@@ -53,6 +54,7 @@ public class KWApplication extends Application {
             @Override
             public void run() {
                 Log.d("test", "addShutdownHook");
+                FileUtils.saveFile("shutdown", "shutdown.txt");
                 closeMQ();
             }
         });
