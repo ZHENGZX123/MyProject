@@ -55,7 +55,6 @@ public class Constant {
         qas.put("[动画表情]", "暂不支持动画表情咨询。");
     }
 
-    public static final String BACK_DOOR1 = "开维公司好";
     public static final String BACK_DOOR2 = "开维一本万利";
     public static final String BACK_DOOR3 = "开维前程似锦";
 
@@ -71,11 +70,11 @@ public class Constant {
     public static final String BACK_DOOR13 = "删除朋友圈";
     public static final String BACK_DOOR14 = "添加朋友";//电话号码或微信号
     public static final String BACK_DOOR15 = "漏网之鱼";
+    public static final String BACK_DOOR16 = "修改昵称";
 
     public static Map<String, Integer> backdoors = new LinkedHashMap<>();
 
     static {
-        backdoors.put(BACK_DOOR1, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR2, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR3, Action.TYPE_BACK_DOOR);
 
@@ -91,6 +90,8 @@ public class Constant {
         backdoors.put(BACK_DOOR13, Action.TYPE_DELETE_MOMENT);
         backdoors.put(BACK_DOOR14, Action.TYPE_ADD_FRIEND);
         backdoors.put(BACK_DOOR15, Action.TYPE_MISSING_FISH);
+        backdoors.put(BACK_DOOR16, Action.TYPE_FIX_NICKNAME);
+
     }
 
     public static final String HEART_BEAT_TESTER = "心跳测试使者";
