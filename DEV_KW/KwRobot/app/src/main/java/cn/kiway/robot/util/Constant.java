@@ -16,8 +16,8 @@ public class Constant {
     public static final String APPID = "930a4b41b8c92d30f790a6bf01bfe78a";
     public static final String APPKEY = "c83f643092046c0328624fe59aeec6548dac256c";
 
-    public static String zbusHost = "robot.kiway.cn";
-    public static String zbusPort = "15555";
+    public static String host = "robot.kiway.cn";
+    public static String port = "5676";
 
     public static String clientUrl = "http://robot.kiway.cn";
 
@@ -25,16 +25,16 @@ public class Constant {
 
     static {
 
-//        zbusHost = "robot.kiway.cn";
-//        zbusPort = "15555";
+//        host = "robot.kiway.cn";
+//        port = "5676";
 //        clientUrl = "http://robot.kiway.cn";
 
-        zbusHost = "rbtest.kiway.cn";
-        zbusPort = "25555";
+        host = "rbtest.kiway.cn";
+        port = "5672";
         clientUrl = "http://rbtest.kiway.cn";
 
-//        zbusHost = "192.168.8.161";
-//        zbusPort = "15555";
+//        host = "192.168.8.161";
+//        port = "15555";
 //        clientUrl = "http://192.168.8.161:8081";
     }
 
@@ -81,20 +81,20 @@ public class Constant {
         backdoors.put(BACK_DOOR2, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR3, Action.TYPE_BACK_DOOR);
 
-        backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
-        backdoors.put(BACK_DOOR5, Action.TYPE_GET_ALL_FRIENDS);
-        backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
-        backdoors.put(BACK_DOOR7, Action.TYPE_ADD_GROUP_PEOPLE);
-        backdoors.put(BACK_DOOR8, Action.TYPE_DELETE_GROUP_PEOPLE);
-        backdoors.put(BACK_DOOR9, Action.TYPE_FIX_GROUP_NAME);
-        backdoors.put(BACK_DOOR10, Action.TYPE_FIX_GROUP_NOTICE);
-        backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
-        backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
-        backdoors.put(BACK_DOOR13, Action.TYPE_DELETE_MOMENT);
-        backdoors.put(BACK_DOOR14, Action.TYPE_ADD_FRIEND);
-        backdoors.put(BACK_DOOR15, Action.TYPE_MISSING_FISH);
-        backdoors.put(BACK_DOOR16, Action.TYPE_FIX_NICKNAME);
-        backdoors.put(BACK_DOOR17, Action.TYPE_FIX_ICON);
+//        backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
+//        backdoors.put(BACK_DOOR5, Action.TYPE_GET_ALL_FRIENDS);
+//        backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
+//        backdoors.put(BACK_DOOR7, Action.TYPE_ADD_GROUP_PEOPLE);
+//        backdoors.put(BACK_DOOR8, Action.TYPE_DELETE_GROUP_PEOPLE);
+//        backdoors.put(BACK_DOOR9, Action.TYPE_FIX_GROUP_NAME);
+//        backdoors.put(BACK_DOOR10, Action.TYPE_FIX_GROUP_NOTICE);
+//        backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
+//        backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
+//        backdoors.put(BACK_DOOR13, Action.TYPE_DELETE_MOMENT);
+//        backdoors.put(BACK_DOOR14, Action.TYPE_ADD_FRIEND);
+//        backdoors.put(BACK_DOOR15, Action.TYPE_MISSING_FISH);
+//        backdoors.put(BACK_DOOR16, Action.TYPE_FIX_NICKNAME);
+//        backdoors.put(BACK_DOOR17, Action.TYPE_FIX_ICON);
 
     }
 

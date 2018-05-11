@@ -45,6 +45,7 @@ import static cn.kiway.robot.util.Constant.BACK_DOOR3;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
+import static cn.kiway.robot.util.Constant.port;
 
 /**
  * Created by Administrator on 2018/3/21.
@@ -246,7 +247,7 @@ public class Utils {
                 try {
                     String topic = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
                     Log.d("test", "topic = " + topic);
-                    consumeUtil = new RabbitMQUtils(Constant.zbusHost, topic, topic);
+                    consumeUtil = new RabbitMQUtils(Constant.host, topic, topic, port);
                     try {
                         consumeUtil.consumeMsg(new DefaultConsumer(consumeUtil.getChannel()) {
                             @Override

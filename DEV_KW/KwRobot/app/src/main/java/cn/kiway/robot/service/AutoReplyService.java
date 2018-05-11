@@ -100,6 +100,7 @@ import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.qas;
+import static cn.kiway.robot.util.Constant.port;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
 import static cn.kiway.robot.util.Utils.getParentRemark;
 import static java.lang.System.currentTimeMillis;
@@ -428,7 +429,7 @@ public class AutoReplyService extends AccessibilityService {
 
                     //topic : robotId#userId
                     String topic = robotId + "#" + wxNo;
-                    String url = Constant.zbusHost + ":" + Constant.zbusPort;
+                    String url = Constant.host + ":" + port;
                     PushMessageVo pushMessageVo = new PushMessageVo();
                     pushMessageVo.setDescription("desc");
                     pushMessageVo.setTitle("title");
@@ -445,7 +446,7 @@ public class AutoReplyService extends AccessibilityService {
 
                     Log.d("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
 
-                    sendUtil = new RabbitMQUtils(Constant.zbusHost, topic, topic);
+                    sendUtil = new RabbitMQUtils(Constant.host, topic, topic, port);
                     sendUtil.sendMsg(pushMessageVo);
                     //ZbusUtils.sendMsg(topic, pushMessageVo);
                 } catch (Exception e) {
@@ -2213,7 +2214,12 @@ public class AutoReplyService extends AccessibilityService {
                         String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                         JSONObject o = new JSONObject(content);
                         sender = o.optString("groupName");
+                    } else if (type == TYPE_FIX_NICKNAME) {
+                        String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                        JSONObject o = new JSONObject(content);
+                        sender = o.optString("oldName");
                     } else {
+                        //不需要base64
                         sender = actions.get(currentActionID).sender;
                     }
 
@@ -4178,17 +4184,20 @@ public class AutoReplyService extends AccessibilityService {
                 continue;
             }
             Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("发送")) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                if (release) {
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            release();
-                        }
-                    }, 3000);
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null) {
+                String text = nodeInfo.getText().toString();
+                if (text.equals("发送") || text.equals("发表")) {
+                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    if (release) {
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                release();
+                            }
+                        }, 3000);
+                    }
+                    return true;
                 }
-                return true;
             }
             if (findSendImageButton(nodeInfo, release)) {
                 return true;
