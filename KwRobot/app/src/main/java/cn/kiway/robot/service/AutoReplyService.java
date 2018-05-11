@@ -77,6 +77,7 @@ import static cn.kiway.robot.entity.Action.TYPE_DELETE_MOMENT;
 import static cn.kiway.robot.entity.Action.TYPE_FILE;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_GROUP_NAME;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_GROUP_NOTICE;
+import static cn.kiway.robot.entity.Action.TYPE_FIX_ICON;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_NICKNAME;
 import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
 import static cn.kiway.robot.entity.Action.TYPE_GET_ALL_FRIENDS;
@@ -666,6 +667,7 @@ public class AutoReplyService extends AccessibilityService {
                                     || action.actionType == TYPE_ADD_FRIEND
                                     || action.actionType == TYPE_MISSING_FISH
                                     || action.actionType == TYPE_FIX_NICKNAME
+                                    || action.actionType == TYPE_FIX_ICON
                             ) {
                         //{"cmd": "漏网之鱼","backdoor":true}
                         //{"cmd": "添加朋友","members":["18626318013","13267069058"], "content":"你好，可以加个好友吗？","backdoor":true}
@@ -680,6 +682,7 @@ public class AutoReplyService extends AccessibilityService {
                         //{"cmd": "艾特某人","members": ["执着","朋友圈使者擦"],"groupName": "222","backdoor":true}
                         //{"cmd": "删除朋友圈","content":"密密麻麻","backdoor":true}
                         //{"cmd": "修改昵称","new":"我是客服888", "old":"客服888", "backdoor":true}
+                        //{"cmd": "修改头像","url":"http://upload.jnwb.net/2014/0311/1394514005639.jpg", "backdoor":true}
 
                         action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
@@ -735,6 +738,7 @@ public class AutoReplyService extends AccessibilityService {
                         || actionType == TYPE_ADD_FRIEND
                         || actionType == TYPE_MISSING_FISH
                         || actionType == TYPE_FIX_NICKNAME
+                        || actionType == TYPE_FIX_ICON
                         ) {
                     if (!checkIsWxHomePage()) {
                         boolean backdoor = false;
@@ -746,6 +750,7 @@ public class AutoReplyService extends AccessibilityService {
                             backdoor = o.optBoolean("backdoor");
                             start = o.optInt("start");
                             end = o.optInt("end");
+                            String url = o.optString("url");
 
                             if (backdoor) {
                                 if (actionType == TYPE_ADD_GROUP_PEOPLE
@@ -854,6 +859,8 @@ public class AutoReplyService extends AccessibilityService {
                                     text = "正在添加漏网之鱼，请稍等";
                                 } else if (actionType == TYPE_FIX_NICKNAME) {
                                     text = "正在修改昵称，请稍等";
+                                } else if (actionType == TYPE_FIX_ICON) {
+                                    text = "正在修改头像，请稍等";
                                 }
                                 sendTextOnly2(text, false);
                             }
@@ -878,9 +885,9 @@ public class AutoReplyService extends AccessibilityService {
                                             } else if (actionType == TYPE_MISSING_FISH) {
                                                 //通讯录-新的朋友
                                                 addMissingFish();
-                                            } else if (actionType == TYPE_FIX_NICKNAME && isMe()) {
+                                            } else if ((actionType == TYPE_FIX_NICKNAME && isMe()) || actionType == TYPE_FIX_ICON) {
                                                 //我-个人信息
-                                                updateMyNickname();
+                                                updateMyNicknameOrIcon(actionType, url);
                                             } else {
                                                 //搜索群名
                                                 searchSenderInWxHomePage(actionType);
@@ -922,21 +929,30 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void updateMyNickname() {
+    private void updateMyNicknameOrIcon(int actionType, String url) {
         woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-        mHandler.postDelayed(new Runnable() {
+
+        new Thread() {
             @Override
             public void run() {
-                boolean find = findTargetPeople3(getRootInActiveWindow(), "微信号：");
-                if (!find) {
-                    release();
-                    return;
+                if (actionType == TYPE_FIX_ICON) {
+                    //1.下载图片
+                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(url, KWApplication.getLoaderOptions());
+                    if (bmp == null) {
+                        release();
+                        return;
+                    }
+                    //2.保存图片
+                    boolean ret = saveImage(getApplication(), bmp);
+                    if (!ret) {
+                        release();
+                        return;
+                    }
                 }
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        String me = getSharedPreferences("kiway", 0).getString("name", "");
-                        boolean find = findTargetPeople3(getRootInActiveWindow(), me);
+                        boolean find = findTargetPeople3(getRootInActiveWindow(), "微信号：", true);
                         if (!find) {
                             release();
                             return;
@@ -944,35 +960,100 @@ public class AutoReplyService extends AccessibilityService {
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                try {
-                                    String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
-                                    Log.d("test", "content = " + content);
-                                    JSONObject o = new JSONObject(content);
-                                    String newName = o.optString("newName");
-                                    int length = getTextLengthInEditText(1, content);
-                                    for (int i = 0; i < length; i++) {
-                                        String cmd = "input keyevent  " + KeyEvent.KEYCODE_DEL;
-                                        RootCmd.execRootCmdSilent(cmd);
-                                    }
-                                    findInputEditText(getRootInActiveWindow(), newName);
-                                    mHandler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            boolean find = findSaveButton(getRootInActiveWindow());
-                                            if (!find) {
-                                                release();
-                                            }
-                                        }
-                                    }, 1000);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                                String target = "";
+                                int sleepTime = 3000;
+                                if (actionType == TYPE_FIX_NICKNAME) {
+                                    target = getSharedPreferences("kiway", 0).getString("name", "");
+                                    sleepTime = 3000;
+                                } else if (actionType == TYPE_FIX_ICON) {
+                                    target = "头像";
+                                    sleepTime = 5000;
                                 }
+                                boolean find = findTargetPeople3(getRootInActiveWindow(), target, true);
+                                if (!find) {
+                                    release();
+                                    return;
+                                }
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            if (actionType == TYPE_FIX_NICKNAME) {
+                                                String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                                                Log.d("test", "content = " + content);
+                                                JSONObject o = new JSONObject(content);
+                                                String newName = o.optString("newName");
+                                                int length = getTextLengthInEditText(1, content);
+                                                for (int i = 0; i < length; i++) {
+                                                    String cmd = "input keyevent  " + KeyEvent.KEYCODE_DEL;
+                                                    RootCmd.execRootCmdSilent(cmd);
+                                                }
+                                                findInputEditText(getRootInActiveWindow(), newName);
+                                                mHandler.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        boolean find = findSaveButton(getRootInActiveWindow());
+                                                        if (!find) {
+                                                            release();
+                                                        }
+                                                    }
+                                                }, 1000);
+                                            } else if (actionType == TYPE_FIX_ICON) {
+                                                //选图片
+                                                relativeLayoutCount = 0;
+                                                boolean find = findFirstPicture(getRootInActiveWindow());
+                                                if (!find) {
+                                                    release();
+                                                }
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }, sleepTime);
                             }
-                        },3000);
+                        }, 3000);
                     }
                 }, 3000);
             }
-        }, 3000);
+        }.start();
+    }
+
+    private int relativeLayoutCount = 0;
+
+    private boolean findFirstPicture(AccessibilityNodeInfo rootNode) {
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (nodeInfo.getClassName().equals("android.widget.RelativeLayout")) {
+                relativeLayoutCount++;
+                if (relativeLayoutCount == 2) {
+                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            findTargetPeople3(getRootInActiveWindow(), "使用", false);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    release();
+                                }
+                            }, 5000);
+                        }
+                    }, 2000);
+                    return true;
+                }
+            }
+            if (findFirstPicture(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isMe() {
@@ -1008,7 +1089,6 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 checkIsWxHomePage();
                 clickSomeWhere(newFriendTextView);
-
 
                 new Thread() {
                     @Override
@@ -1467,7 +1547,7 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        findTargetPeople3(getRootInActiveWindow(), m);
+                        findTargetPeople3(getRootInActiveWindow(), m, true);
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -2417,7 +2497,7 @@ public class AutoReplyService extends AccessibilityService {
                                                     @Override
                                                     public void run() {
                                                         findInputEditText(getRootInActiveWindow(), m);
-                                                        boolean find = findTargetPeople3(getRootInActiveWindow(), m);
+                                                        boolean find = findTargetPeople3(getRootInActiveWindow(), m, true);
                                                         if (!find) {
                                                             //FXIME 这里最好做检测
                                                             performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
@@ -2459,7 +2539,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private boolean findTargetPeople3(AccessibilityNodeInfo rootNode, String forwardto) {
+    private boolean findTargetPeople3(AccessibilityNodeInfo rootNode, String forwardto, boolean clickParent) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
@@ -2471,11 +2551,14 @@ public class AutoReplyService extends AccessibilityService {
             //equails
             if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().contains(forwardto)) {
                 Log.d("test", "click targetPeople = " + forwardto);
-                AccessibilityNodeInfo parent = nodeInfo.getParent();
-                parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                if (clickParent) {
+                    nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                } else {
+                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                }
                 return true;
             }
-            if (findTargetPeople3(nodeInfo, forwardto)) {
+            if (findTargetPeople3(nodeInfo, forwardto, clickParent)) {
                 return true;
             }
         }
@@ -3834,9 +3917,9 @@ public class AutoReplyService extends AccessibilityService {
         return localPath;
     }
 
-    public void saveImage(Context context, Bitmap bmp) {
+    public boolean saveImage(Context context, Bitmap bmp) {
         if (bmp == null) {
-            return;
+            return false;
         }
         // 首先保存图片
         File appDir = new File(Environment.getExternalStorageDirectory(), "DCIM");
@@ -3850,21 +3933,20 @@ public class AutoReplyService extends AccessibilityService {
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();
+
+            insertDB(context, file);
+
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        insertDB(context, file);
+        return false;
     }
 
-    private void insertDB(Context context, File file) {
+    private void insertDB(Context context, File file) throws FileNotFoundException {
         // 其次把文件插入到系统图库
-        try {
-            MediaStore.Images.Media.insertImage(context.getContentResolver(),
-                    file.getAbsolutePath(), file.getName(), null);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                file.getAbsolutePath(), file.getName(), null);
         // 最后通知图库更新
         context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file.getAbsolutePath())));
     }
