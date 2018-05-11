@@ -929,6 +929,8 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 checkIsWxHomePage();
                 clickSomeWhere(newFriendTextView);
+
+
                 new Thread() {
                     @Override
                     public void run() {
@@ -2934,13 +2936,18 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        //找到发消息，发一段话
-                        boolean find = findSendButton(getRootInActiveWindow());
-                        if (!find) {
-                            if (adding_missing_fish) {
-                                performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                            } else {
-                                release();
+                        if (adding_missing_fish) {
+                            //漏网之鱼不再发消息
+                            performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                        } else {
+                            //找到发消息，发一段话
+                            boolean find = findSendButton(getRootInActiveWindow());
+                            if (!find) {
+                                if (adding_missing_fish) {
+                                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                } else {
+                                    release();
+                                }
                             }
                         }
                     }
@@ -2973,15 +2980,11 @@ public class AutoReplyService extends AccessibilityService {
                         String welcome = getSharedPreferences("welcome", 0).getString("welcome", DEFAULT_WELCOME);
                         boolean find = findInputEditText(getRootInActiveWindow(), welcome);
                         if (find) {
-                            sendTextOnly2(welcome, !adding_missing_fish);
+                            sendTextOnly2(welcome, true);
                             String current = System.currentTimeMillis() + "";
                             Utils.uploadFriend(getApplication(), nickname, remark + " " + nickname, current, current);
                         } else {
-                            if (adding_missing_fish) {
-                                performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                            } else {
-                                release();
-                            }
+                            release();
                         }
                     }
                 }, 3000);
