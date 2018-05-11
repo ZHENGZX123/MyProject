@@ -42,7 +42,7 @@ public class Action {
     public static final int TYPE_AT_GROUP_PEOPLE = 119;//艾特某人
     public static final int TYPE_DELETE_MOMENT = 120;//踢人出群
     public static final int TYPE_ADD_FRIEND = 121;//主动搜索并添加好友
-
+    public static final int TYPE_MISSING_FISH = 122;//主动搜索并添加好友
 
     public PendingIntent intent;
     public String sender;
