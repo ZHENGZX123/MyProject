@@ -72,6 +72,7 @@ public class Constant {
     public static final String BACK_DOOR15 = "漏网之鱼";
     public static final String BACK_DOOR16 = "修改昵称";
     public static final String BACK_DOOR17 = "修改头像";
+    public static final String BACK_DOOR18 = "检查新版本";
 
 
     public static Map<String, Integer> backdoors = new LinkedHashMap<>();
@@ -94,7 +95,7 @@ public class Constant {
         backdoors.put(BACK_DOOR15, Action.TYPE_MISSING_FISH);
         backdoors.put(BACK_DOOR16, Action.TYPE_FIX_NICKNAME);
         backdoors.put(BACK_DOOR17, Action.TYPE_FIX_ICON);
-
+        backdoors.put(BACK_DOOR18, Action.TYPE_CHECK_NEW_VERSION);
     }
 
     public static final String HEART_BEAT_TESTER = "心跳测试使者";

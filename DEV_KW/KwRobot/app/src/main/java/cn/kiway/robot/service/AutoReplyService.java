@@ -69,6 +69,7 @@ import static cn.kiway.robot.entity.Action.TYPE_AT_GROUP_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_AUTO_MATCH;
 import static cn.kiway.robot.entity.Action.TYPE_BACK_DOOR;
 import static cn.kiway.robot.entity.Action.TYPE_CARD;
+import static cn.kiway.robot.entity.Action.TYPE_CHECK_NEW_VERSION;
 import static cn.kiway.robot.entity.Action.TYPE_CLEAR_ZOMBIE_FAN;
 import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_CREATE_GROUP_CHAT;
@@ -99,8 +100,8 @@ import static cn.kiway.robot.util.Constant.DEFAULT_OFFLINE;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
-import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Constant.port;
+import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
 import static cn.kiway.robot.util.Utils.getParentRemark;
 import static java.lang.System.currentTimeMillis;
@@ -684,10 +685,14 @@ public class AutoReplyService extends AccessibilityService {
                         //{"cmd": "删除朋友圈","content":"密密麻麻","backdoor":true}
                         //{"cmd": "修改昵称","newName":"我是客服888", "oldName":"客服888", "backdoor":true}
                         //{"cmd": "修改头像","url":"http://upload.jnwb.net/2014/0311/1394514005639.jpg", "backdoor":true}
-
+                        //{"cmd": "检查新版本","backdoor":true}
                         action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, true);
+                    } else if (action.actionType == TYPE_CHECK_NEW_VERSION) {
+                        if (MainActivity.instance != null) {
+                            MainActivity.instance.checkNewVersion(null);
+                        }
                     }
                 }
                 break;
