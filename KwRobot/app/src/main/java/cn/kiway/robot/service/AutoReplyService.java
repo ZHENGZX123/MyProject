@@ -682,7 +682,7 @@ public class AutoReplyService extends AccessibilityService {
                         //{"cmd": "群发消息","content":"1","groupName": "111","backdoor":true}
                         //{"cmd": "艾特某人","members": ["执着","朋友圈使者擦"],"groupName": "222","backdoor":true}
                         //{"cmd": "删除朋友圈","content":"密密麻麻","backdoor":true}
-                        //{"cmd": "修改昵称","new":"我是客服888", "old":"客服888", "backdoor":true}
+                        //{"cmd": "修改昵称","newName":"我是客服888", "oldName":"客服888", "backdoor":true}
                         //{"cmd": "修改头像","url":"http://upload.jnwb.net/2014/0311/1394514005639.jpg", "backdoor":true}
 
                         action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
@@ -2411,7 +2411,10 @@ public class AutoReplyService extends AccessibilityService {
                                     }
                                 }
                             }, 2000);
-                        } else if (type == TYPE_ADD_GROUP_PEOPLE || type == TYPE_DELETE_GROUP_PEOPLE || type == TYPE_FIX_GROUP_NAME || type == TYPE_FIX_GROUP_NOTICE) {
+                        } else if (type == TYPE_ADD_GROUP_PEOPLE
+                                || type == TYPE_DELETE_GROUP_PEOPLE
+                                || type == TYPE_FIX_GROUP_NAME
+                                || type == TYPE_FIX_GROUP_NOTICE) {
                             lastImageButton = null;
                             findUserInfoButton(getRootInActiveWindow());
                             if (lastImageButton == null) {
@@ -2449,6 +2452,8 @@ public class AutoReplyService extends AccessibilityService {
                         } else if (type == TYPE_ADD_FRIEND) {
                             clickSomeWhere(nodeInfo);
                             startAddFriend();
+                        } else if (type == TYPE_FIX_NICKNAME) {
+                            fixFriendNickname(forwardto);
                         }
                     }
                 }, 3000);
@@ -2459,6 +2464,69 @@ public class AutoReplyService extends AccessibilityService {
             }
         }
         return false;
+    }
+
+    private void fixFriendNickname(String forwardto) {
+        lastImageButton = null;
+        findUserInfoButton(getRootInActiveWindow());
+        if (lastImageButton == null) {
+            release();
+            return;
+        }
+        lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                boolean find = findTargetPeople3(getRootInActiveWindow(), forwardto, true);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!find) {
+                            release();
+                            return;
+                        }
+                        boolean find = findTargetPeople3(getRootInActiveWindow(), "设置备注和标签", false);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!find) {
+                                    release();
+                                    return;
+                                }
+                                boolean find = findTargetPeople3(getRootInActiveWindow(), forwardto, false);
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (!find) {
+                                            release();
+                                            return;
+                                        }
+                                        try {
+                                            String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                                            Log.d("test", "content = " + content);
+                                            JSONObject o = new JSONObject(content);
+                                            String newName = o.optString("newName");
+                                            int length = getTextLengthInEditText(1, newName);
+                                            for (int i = 0; i < length; i++) {
+                                                String cmd = "input keyevent  " + KeyEvent.KEYCODE_DEL;
+                                                execRootCmdSilent(cmd);
+                                            }
+                                            findInputEditText(getRootInActiveWindow(), newName);
+                                            boolean find = findFinishButton2(getRootInActiveWindow());
+                                            if (!find) {
+                                                release();
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }, 3000);
+                            }
+                        }, 3000);
+                    }
+                }, 3000);
+            }
+        }, 3000);
     }
 
     private void startAtPeople() {
