@@ -18,6 +18,7 @@ import com.rabbitmq.client.Envelope;
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -39,6 +40,8 @@ import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
 import static cn.kiway.robot.KWApplication.consumeUtil;
 import static cn.kiway.robot.util.Constant.APPID;
+import static cn.kiway.robot.util.Constant.BACK_DOOR2;
+import static cn.kiway.robot.util.Constant.BACK_DOOR3;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
@@ -369,20 +372,35 @@ public class Utils {
         if (TextUtils.isEmpty(content)) {
             return 0;
         }
-        boolean fastCheck = backdoors.containsKey(content);
+        //1.直接匹配的
+        boolean fastCheck = content.equals(BACK_DOOR2) || content.equals(BACK_DOOR3);
         if (fastCheck) {
             return backdoors.get(content);
-        } else {
-            Iterator<Map.Entry<String, Integer>> it = backdoors.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<String, Integer> entry = it.next();
-                String key = entry.getKey();
-                int value = entry.getValue();
-                if (content.contains(key)) {
-                    return value;
-                }
+        }
+        //2.json判断
+        boolean isJsonString = true;
+        try {
+            JSONObject o = new JSONObject(content);
+        } catch (JSONException e) {
+            //e.printStackTrace();
+            isJsonString = false;
+        }
+        if (!isJsonString) {
+            return 0;
+        }
+        //3.json匹配的
+        Iterator<Map.Entry<String, Integer>> it = backdoors.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, Integer> entry = it.next();
+            String key = entry.getKey();
+            int value = entry.getValue();
+
+
+            if (content.contains(key)) {
+                return value;
             }
         }
+
         return 0;
     }
 }
