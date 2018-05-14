@@ -4138,19 +4138,18 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     public boolean test(AccessibilityNodeInfo rootNode) {
-//        int count = rootNode.getChildCount();
-//        for (int i = 0; i < count; i++) {
-//            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-//            if (nodeInfo == null) {
-//                continue;
-//            }
-//            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-//            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-//            if (test(nodeInfo)) {
-//                return true;
-//            }
-//        }
-        findCheckButton(getRootInActiveWindow(), "保存到通讯录");
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            if (test(nodeInfo)) {
+                return true;
+            }
+        }
         return false;
     }
 }
