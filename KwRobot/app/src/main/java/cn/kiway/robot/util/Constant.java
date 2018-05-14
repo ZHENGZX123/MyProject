@@ -12,7 +12,6 @@ import cn.kiway.robot.entity.Action;
 
 public class Constant {
 
-
     public static final String APPID = "930a4b41b8c92d30f790a6bf01bfe78a";
     public static final String APPKEY = "c83f643092046c0328624fe59aeec6548dac256c";
 
@@ -37,6 +36,17 @@ public class Constant {
 //        port = "15555";
 //        clientUrl = "http://192.168.8.161:8081";
     }
+
+    //NODE类型
+    public static final int NODE_TEXTVIEW = 1;
+    public static final int NODE_BUTTON = 2;
+    public static final int NODE_EDITTEXT = 3;
+    public static final int NODE_LISTVIEW = 4;
+
+    //点击类型
+    public static final int CLICK_NONE = 0;
+    public static final int CLICK_SELF = 1;
+    public static final int CLICK_PARENT = 2;
 
     public static Map<String, String> qas = new HashMap<>();
 
