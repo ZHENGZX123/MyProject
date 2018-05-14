@@ -38,10 +38,13 @@ public class Constant {
     }
 
     //NODE类型
-    public static final int NODE_TEXTVIEW = 1;
-    public static final int NODE_BUTTON = 2;
-    public static final int NODE_EDITTEXT = 3;
-    public static final int NODE_LISTVIEW = 4;
+    public static final String NODE_TEXTVIEW = "android.widget.TextView";
+    public static final String NODE_BUTTON = "android.widget.Button";
+    public static final String NODE_EDITTEXT = "android.widget.EditText";
+    public static final String NODE_LISTVIEW = "android.widget.ListView";
+    public static final String NODE_IMAGEVIEW = "android.widget.ImageView";
+    public static final String NODE_FRAMELAYOUT = "android.widget.FrameLayout";
+    public static final String NODE_RELATIVELAYOUT = "android.widget.RelativeLayout";
 
     //点击类型
     public static final int CLICK_NONE = 0;

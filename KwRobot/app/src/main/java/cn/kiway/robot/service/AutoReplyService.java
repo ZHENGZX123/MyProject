@@ -107,6 +107,10 @@ import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.NODE_BUTTON;
 import static cn.kiway.robot.util.Constant.NODE_EDITTEXT;
+import static cn.kiway.robot.util.Constant.NODE_FRAMELAYOUT;
+import static cn.kiway.robot.util.Constant.NODE_IMAGEVIEW;
+import static cn.kiway.robot.util.Constant.NODE_LISTVIEW;
+import static cn.kiway.robot.util.Constant.NODE_RELATIVELAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_TEXTVIEW;
 import static cn.kiway.robot.util.Constant.port;
 import static cn.kiway.robot.util.Constant.qas;
@@ -1275,9 +1279,8 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        listViewNode = null;
-                        findMomentListView(getRootInActiveWindow());
-                        if (listViewNode == null) {
+                        findTargetNode(getRootInActiveWindow(), NODE_LISTVIEW, 9999);
+                        if (findTargetNode == null) {
                             release();
                             return;
                         }
@@ -1286,26 +1289,6 @@ public class AutoReplyService extends AccessibilityService {
                 }, 2000);
             }
         }, 1000);
-    }
-
-    private boolean findMomentListView(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.ListView")) {
-                listViewNode = nodeInfo;
-                return true;
-            }
-            if (findMomentListView(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean findMoment = false;
@@ -1541,12 +1524,12 @@ public class AutoReplyService extends AccessibilityService {
 
     //首页右上角工具栏
     private void findTopRightToolBarInHomePage() {
-        checkIsWxHomePage();
-        if (lastRelativeLayout == null) {
+        findTargetNode(getRootInActiveWindow(), NODE_RELATIVELAYOUT, 9999);
+        if (findTargetNode == null) {
             release();
             return;
         }
-        lastRelativeLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        findTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -1565,7 +1548,7 @@ public class AutoReplyService extends AccessibilityService {
                             int actionType = actions.get(currentActionID).actionType;
                             boolean find = false;
                             if (actionType == TYPE_CREATE_GROUP_CHAT || actionType == TYPE_CLEAR_ZOMBIE_FAN) {
-                                listViewNode = null;
+                                findTargetNode = null;
                                 sureButton = null;
                                 find = findFriendListView(getRootInActiveWindow());
 
@@ -1597,12 +1580,12 @@ public class AutoReplyService extends AccessibilityService {
                     JSONArray members = o.getJSONArray("members");
                     int count = members.length();
 
-                    resetMaxReleaseTime(25000 * count);
+                    resetMaxReleaseTime(30000 * count);
 
                     for (int i = 0; i < count; i++) {
                         String member = members.getString(i);
                         addFriend(member);
-                        sleep(25000);
+                        sleep(30000);
                     }
                     release();
                 } catch (Exception e) {
@@ -1687,7 +1670,7 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.ListView")) {
-                listViewNode = nodeInfo;
+                findTargetNode = nodeInfo;
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -2136,15 +2119,13 @@ public class AutoReplyService extends AccessibilityService {
             }
         } else if (actionType == TYPE_FRIEND_CIRCLER) {
             // 找到最后一个链接，点击转发到朋友圈
-            lastFrameLayout = null;
-            Log.d("test", "----------------findLastImageOrLinkMsg------------------");
-            findLastImageOrLinkMsg(getRootInActiveWindow());
-            if (lastFrameLayout == null) {
+            findTargetNode(getRootInActiveWindow(), NODE_FRAMELAYOUT, 9999);
+            if (findTargetNode == null) {
                 Log.d("test", "没有找到最后一个链接？郁闷。。。");
                 release();
                 return;
             }
-            lastFrameLayout.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+            findTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -2177,15 +2158,15 @@ public class AutoReplyService extends AccessibilityService {
                 @Override
                 public void run() {
                     Log.d("test", "===============findMsgListView================");
-                    listViewNode = null;
-                    findMsgListView(getRootInActiveWindow());
-                    if (listViewNode == null) {
+                    findTargetNode(getRootInActiveWindow(), NODE_LISTVIEW, 1);
+                    if (findTargetNode == null) {
                         release();
                         return;
                     }
+
                     lastMsgView = null;
                     Log.d("test", "=================findLastMsgViewInListView====================");
-                    findLastMsgViewInListView(listViewNode);
+                    findLastMsgViewInListView(findTargetNode);
                     if (lastMsgView == null) {
                         Log.d("test", "没有找到最后一条消息。。。");
                         release();
@@ -2323,11 +2304,9 @@ public class AutoReplyService extends AccessibilityService {
         faxian = false;
         wo = false;
         lastTextView = null;
-        lastRelativeLayout = null;
         tongxunluTextView = null;
         woTextView = null;
         faxianView = null;
-        newFriendTextView = null;
         checkIsWxHomePage(getRootInActiveWindow());
         boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
         Log.d("test", "isWxHomePage = " + isWxHomePage);
@@ -2393,8 +2372,7 @@ public class AutoReplyService extends AccessibilityService {
     private boolean tongxunlu;
     private boolean faxian;
     private boolean wo;
-    private AccessibilityNodeInfo lastRelativeLayout;
-    private AccessibilityNodeInfo newFriendTextView;
+
     private AccessibilityNodeInfo tongxunluTextView;
     private AccessibilityNodeInfo woTextView;
     private AccessibilityNodeInfo faxianView;
@@ -2422,8 +2400,6 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (text.equals("我")) {
                         wo = true;
                         woTextView = nodeInfo.getParent();
-                    } else if (text.equals("新的朋友")) {
-                        newFriendTextView = nodeInfo;
                     } else if (text.startsWith("微信号：")) {
                         Log.d("test", "===============wxNo compare==============");
                         String realWxNo = text.replace("微信号：", "");
@@ -2436,8 +2412,6 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }
                 lastTextView = nodeInfo;
-            } else if (nodeInfo.getClassName().equals("android.widget.RelativeLayout")) {
-                lastRelativeLayout = nodeInfo;
             }
             checkIsWxHomePage(nodeInfo);
         }
@@ -2722,30 +2696,38 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     //TextView Button的nodeText是用来对比的；EditText的nodeText是用来做粘贴的
-    //TODO 新增index参数:0第一个  9999最后一个
+    //targetIndex: 1第一个  9999最后一个
     //clickType修改成int：0不点击 1点击自己 2点击parent
     //TODO 新增equals：true全文比较 false包含
-    private boolean findTargetNode(AccessibilityNodeInfo rootNode, int classType, String nodeText, int clickType) {
-        String className = "";
-        if (classType == 1) {
-            className = "android.widget.TextView";
-        } else if (classType == 2) {
-            className = "android.widget.Button";
-        } else if (classType == 3) {
-            className = "android.widget.EditText";
-        } else if (classType == 4) {
-            className = "android.widget.ListView";
-        }
+    private int nodeIndex = 0;
+    private AccessibilityNodeInfo findTargetNode;
+
+
+    private boolean findTargetNode(AccessibilityNodeInfo rootNode, String className, int targetIndex) {
+        nodeIndex = 0;
+        findTargetNode = null;
+        return doFindTargetNode(rootNode, className, targetIndex, null, CLICK_NONE);
+    }
+
+    private boolean findTargetNode(AccessibilityNodeInfo rootNode, String className, String nodeText, int clickType) {
+        nodeIndex = 0;
+        return doFindTargetNode(rootNode, className, 1, nodeText, clickType);
+    }
+
+    private boolean doFindTargetNode(AccessibilityNodeInfo rootNode, String className, int targetIndex, String nodeText, int clickType) {
+
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
             if (nodeInfo == null) {
                 continue;
             }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+
             if (nodeInfo.getClassName().equals(className)) {
-                if (className.equals("android.widget.TextView") || className.equals("android.widget.Button")) {
+                nodeIndex++;
+
+                if (className.equals(NODE_TEXTVIEW) || className.equals(NODE_BUTTON)) {
+                    //不支持nodeIndex
                     CharSequence text = nodeInfo.getText();
                     if (text != null && text.toString().contains(nodeText)) {//equals
                         if (clickType == CLICK_SELF) {
@@ -2755,8 +2737,9 @@ public class AutoReplyService extends AccessibilityService {
                         }
                         return true;
                     }
-                } else if (className.equals("android.widget.EditText")) {
-                    if (!TextUtils.isEmpty(nodeText)) {
+                } else if (className.equals(NODE_EDITTEXT)) {
+                    //支持nodeIndex
+                    if (!TextUtils.isEmpty(nodeText) && (nodeIndex == targetIndex)) {
                         Bundle arguments = new Bundle();
                         arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
                                 AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
@@ -2771,9 +2754,22 @@ public class AutoReplyService extends AccessibilityService {
                         nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
                     }
                     return true;
+                } else if (className.equals(NODE_LISTVIEW)
+                        || className.equals(NODE_IMAGEVIEW)
+                        || className.equals(NODE_FRAMELAYOUT)
+                        || className.equals(NODE_RELATIVELAYOUT)
+                        ) {
+                    findTargetNode = nodeInfo;
+                    if (targetIndex == 9999) {
+                        continue;
+                    } else {
+                        if (nodeIndex == targetIndex) {
+                            return true;
+                        }
+                    }
                 }
             }
-            if (findTargetNode(nodeInfo, classType, nodeText, clickType)) {
+            if (doFindTargetNode(nodeInfo, className, targetIndex, nodeText, clickType)) {
                 return true;
             }
         }
@@ -2887,25 +2883,17 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void addOrDeleteGroupPeople(int type) {
-        lastImageView = null;
-        imageViewIndex = 0;
-        int targetIndex = 0;
-        if (type == TYPE_ADD_GROUP_PEOPLE) {
-            targetIndex = 2;
-        } else if (type == TYPE_DELETE_GROUP_PEOPLE) {
-            targetIndex = 3;
-        }
-        findImageView(getRootInActiveWindow(), targetIndex);
-        if (lastImageView == null) {
+        findTargetNode(getRootInActiveWindow(), NODE_IMAGEVIEW, (type == TYPE_ADD_GROUP_PEOPLE) ? 2 : 3);
+        if (findTargetNode == null) {
             release();
             return;
         }
-        lastImageView.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        findTargetNode.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 Log.d("test", "================findFriendListView===================");
-                listViewNode = null;
+                findTargetNode = null;
                 sureButton = null;
                 boolean find = findFriendListView(getRootInActiveWindow());
                 if (!find) {
@@ -2917,27 +2905,6 @@ public class AutoReplyService extends AccessibilityService {
 
     private int imageViewIndex;
 
-    private boolean findImageView(AccessibilityNodeInfo rootNode, int index) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.ImageView")) {
-                imageViewIndex++;
-                if (imageViewIndex == index) {
-                    lastImageView = nodeInfo;
-                }
-            }
-            if (findImageView(nodeInfo, index)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private boolean findTargetPeople4(AccessibilityNodeInfo rootNode, String forwardto) {
         int count = rootNode.getChildCount();
@@ -3366,8 +3333,6 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-    private AccessibilityNodeInfo lastImageView;
-
     private boolean findSendButtonInDialog(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -3394,13 +3359,12 @@ public class AutoReplyService extends AccessibilityService {
                                 return;
                             }
                             //1.找到最后的ImageView
-                            lastImageView = null;
-                            findLastImageView(getRootInActiveWindow());
-                            if (lastImageView == null) {
+                            findTargetNode(getRootInActiveWindow(), NODE_IMAGEVIEW, 9999);
+                            if (findTargetNode == null) {
                                 release();
                                 return;
                             }
-                            lastImageView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            findTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             //2.发送文本内容
                             mHandler.postDelayed(new Runnable() {
                                 @Override
@@ -3416,47 +3380,6 @@ public class AutoReplyService extends AccessibilityService {
                 return true;
             }
             if (findSendButtonInDialog(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findLastImageView(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
-            if (nodeInfo.getClassName().equals("android.widget.ImageView")) {
-                lastImageView = nodeInfo;
-            }
-            if (findLastImageView(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private AccessibilityNodeInfo listViewNode;
-
-    private boolean findMsgListView(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.ListView")) {
-                listViewNode = nodeInfo;
-                return true;
-            }
-
-            if (findMsgListView(nodeInfo)) {
                 return true;
             }
         }
@@ -3530,7 +3453,6 @@ public class AutoReplyService extends AccessibilityService {
                                 }
                             }, 2000);
                         } else {
-                            secondLinearLayout = 0;
                             boolean find = findTargetNode(getRootInActiveWindow(), NODE_TEXTVIEW, "分享到朋友圈", CLICK_PARENT);
                             mHandler.postDelayed(new Runnable() {
                                 @Override
@@ -3559,9 +3481,6 @@ public class AutoReplyService extends AccessibilityService {
         }
         return false;
     }
-
-
-    int secondLinearLayout = 0;
 
     private boolean findMindEditText(AccessibilityNodeInfo rootNode, String mind) {
         int count = rootNode.getChildCount();
@@ -3598,28 +3517,6 @@ public class AutoReplyService extends AccessibilityService {
                 return true;
             }
             if (findMindEditText(nodeInfo, mind)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //找到最后的ImageView
-    private AccessibilityNodeInfo lastFrameLayout = null;
-
-    private boolean findLastImageOrLinkMsg(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.FrameLayout")) {
-                lastFrameLayout = nodeInfo;
-            }
-            if (findLastImageOrLinkMsg(nodeInfo)) {
                 return true;
             }
         }
