@@ -703,7 +703,8 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("maptrix", "没有事件，return1");
                     if (className.equals("com.tencent.mm.plugin.voip.ui.VideoActivity")) {
                         //视频通话，挂断并关闭页面即可。
-                        findHungupButton(getRootInActiveWindow());
+                        findTargetNode(NODE_TEXTVIEW, "挂断", -1);
+                        release();
                     }
                     return;
                 }
@@ -2616,7 +2617,7 @@ public class AutoReplyService extends AccessibilityService {
                                                     findTargetNode(NODE_EDITTEXT, member, CLICK_NONE);
                                                     boolean find = findTargetNode(NODE_TEXTVIEW, member, CLICK_PARENT);
                                                     if (!find) {
-                                                        //FXIME 这里最好做检测
+                                                        //FIXME 这里最好做检测
                                                         performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                                         performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                                         performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
@@ -2627,7 +2628,6 @@ public class AutoReplyService extends AccessibilityService {
                                             }
                                         }, 1000);
                                     }
-
                                 }, 3000);
                             }
                         });
@@ -2656,7 +2656,7 @@ public class AutoReplyService extends AccessibilityService {
     //TextView Button的nodeText是用来对比的；EditText的nodeText是用来做粘贴的
     //targetIndex: 1第一个  9999最后一个
     //clickType修改成int：0不点击 1点击自己 2点击parent
-    //TODO 新增equals：true全文比较 false包含
+    //TODO 新增equals：true全文比较 false包含?
     private int nodeIndex = 0;
     private AccessibilityNodeInfo mFindTargetNode;
 
@@ -3037,29 +3037,6 @@ public class AutoReplyService extends AccessibilityService {
                 }, 2000);
             }
         }, 2000);
-    }
-
-    //找到挂断按钮，回头重构这个。。。
-    private boolean findHungupButton(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("挂断")) {
-                AccessibilityNodeInfo prevNode = rootNode.getChild(i - 1);
-                prevNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                release();
-                return true;
-            }
-            if (findHungupButton(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     //自动加好友
