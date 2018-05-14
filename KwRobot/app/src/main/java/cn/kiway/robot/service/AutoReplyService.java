@@ -1256,7 +1256,7 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        findTargetNode(NODE_LISTVIEW, 9999);
+                        findTargetNode(NODE_LISTVIEW, Integer.MAX_VALUE);
                         if (mFindTargetNode == null) {
                             release();
                             return;
@@ -1501,7 +1501,7 @@ public class AutoReplyService extends AccessibilityService {
 
     //首页右上角工具栏
     private void findTopRightToolBarInHomePage() {
-        findTargetNode(NODE_RELATIVELAYOUT, 9999);
+        findTargetNode(NODE_RELATIVELAYOUT, Integer.MAX_VALUE);
         if (mFindTargetNode == null) {
             release();
             return;
@@ -2096,7 +2096,7 @@ public class AutoReplyService extends AccessibilityService {
             }
         } else if (actionType == TYPE_FRIEND_CIRCLER) {
             // 找到最后一个链接，点击转发到朋友圈
-            findTargetNode(NODE_FRAMELAYOUT, 9999);
+            findTargetNode(NODE_FRAMELAYOUT, Integer.MAX_VALUE);
             if (mFindTargetNode == null) {
                 Log.d("test", "没有找到最后一个链接？郁闷。。。");
                 release();
@@ -2152,10 +2152,9 @@ public class AutoReplyService extends AccessibilityService {
                     //1.如果是名片，判断一下是个人名片还是企业名片.
                     String content = actions.get(currentActionID).content;
                     if (content.contains("向你推荐了")) {
-                        lastTextView = null;
                         Log.d("test", "=============getLastTextView=============");
-                        getLastTextView(getRootInActiveWindow());
-                        String text = lastTextView.getText().toString().trim();
+                        findTargetNode(NODE_TEXTVIEW, Integer.MAX_VALUE);
+                        String text = mFindTargetNode.getText().toString().trim();
                         boolean isPublic = text.equals("公众号名片");
                         Log.d("test", "isPublic = " + isPublic);
                         if (isPublic) {
@@ -2223,11 +2222,12 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void searchSenderInWxHomePage(int type) {
-        if (lastTextView == null) {
+        findTargetNode(NODE_TEXTVIEW , Integer.MAX_VALUE);
+        if (mFindTargetNode == null) {
             release();
             return;
         }
-        lastTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -2280,7 +2280,6 @@ public class AutoReplyService extends AccessibilityService {
         tongxunlu = false;
         faxian = false;
         wo = false;
-        lastTextView = null;
         tongxunluTextView = null;
         woTextView = null;
         faxianView = null;
@@ -2388,7 +2387,6 @@ public class AutoReplyService extends AccessibilityService {
                         }
                     }
                 }
-                lastTextView = nodeInfo;
             }
             checkIsWxHomePage(nodeInfo);
         }
@@ -2709,18 +2707,30 @@ public class AutoReplyService extends AccessibilityService {
                 nodeIndex++;
 
                 if (className.equals(NODE_TEXTVIEW) || className.equals(NODE_BUTTON)) {
-                    //不支持nodeIndex
-                    CharSequence text = nodeInfo.getText();
-                    if (text != null && text.toString().contains(nodeText)) {//equals
-                        if (clickType == CLICK_SELF) {
-                            nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        } else if (clickType == CLICK_PARENT) {
-                            nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    if (TextUtils.isEmpty(nodeText)) {
+                        //根据nodeIndex匹配
+                        mFindTargetNode = nodeInfo;
+                        if (targetIndex == Integer.MAX_VALUE) {
+                            continue;
+                        } else {
+                            if (nodeIndex == targetIndex) {
+                                return true;
+                            }
                         }
-                        return true;
+                    } else {
+                        //根据nodeText匹配
+                        CharSequence text = nodeInfo.getText();
+                        if (text != null && text.toString().contains(nodeText)) {//equals
+                            if (clickType == CLICK_SELF) {
+                                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            } else if (clickType == CLICK_PARENT) {
+                                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            }
+                            return true;
+                        }
                     }
                 } else if (className.equals(NODE_EDITTEXT)) {
-                    //支持nodeIndex
+                    //根据nodeIndex匹配
                     if (!TextUtils.isEmpty(nodeText) && (nodeIndex == targetIndex)) {
                         Bundle arguments = new Bundle();
                         arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
@@ -2741,8 +2751,9 @@ public class AutoReplyService extends AccessibilityService {
                         || className.equals(NODE_FRAMELAYOUT)
                         || className.equals(NODE_RELATIVELAYOUT)
                         ) {
+                    //根据nodeIndex匹配
                     mFindTargetNode = nodeInfo;
-                    if (targetIndex == 9999) {
+                    if (targetIndex == Integer.MAX_VALUE) {
                         continue;
                     } else {
                         if (nodeIndex == targetIndex) {
@@ -2934,27 +2945,6 @@ public class AutoReplyService extends AccessibilityService {
                 lastImageButton = nodeInfo;
             }
             if (findUserInfoButton(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private AccessibilityNodeInfo lastTextView;
-
-    private boolean getLastTextView(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView")) {
-                lastTextView = nodeInfo;
-            }
-            if (getLastTextView(nodeInfo)) {
                 return true;
             }
         }
@@ -3342,7 +3332,7 @@ public class AutoReplyService extends AccessibilityService {
                                 return;
                             }
                             //1.找到最后的ImageView
-                            findTargetNode(NODE_IMAGEVIEW, 9999);
+                            findTargetNode(NODE_IMAGEVIEW, Integer.MAX_VALUE);
                             if (mFindTargetNode == null) {
                                 release();
                                 return;
@@ -3950,11 +3940,12 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void searchZombieInWxHomePage() {
-        if (lastTextView == null) {
+        findTargetNode(NODE_TEXTVIEW , Integer.MAX_VALUE);
+        if (mFindTargetNode == null) {
             currentZombie.cleared = true;
             return;
         }
-        lastTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
