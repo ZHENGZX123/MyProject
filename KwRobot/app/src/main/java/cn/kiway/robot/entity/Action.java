@@ -46,6 +46,7 @@ public class Action {
     public static final int TYPE_FIX_NICKNAME = 123;//修改昵称
     public static final int TYPE_FIX_ICON = 124;//修改头像
     public static final int TYPE_CHECK_NEW_VERSION = 125;//检查新版本
+    public static final int TYPE_NEARBY_PEOPLE = 126;//附近的人
 
     public PendingIntent intent;
     public String sender;
