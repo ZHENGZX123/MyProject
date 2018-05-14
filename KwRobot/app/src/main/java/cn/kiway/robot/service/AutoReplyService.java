@@ -188,9 +188,8 @@ public class AutoReplyService extends AccessibilityService {
                 action.sender = HEART_BEAT_TESTER;
                 action.content = "100007";
                 action.actionType = TYPE_TEXT;
-
-                //zbus发送
                 long id = System.currentTimeMillis();
+
                 sendMsgToServer(id, action);
                 sendReply20sLater(id, action);
             }
@@ -209,12 +208,6 @@ public class AutoReplyService extends AccessibilityService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-
-    private void backToRobot() {
-        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
-        startActivity(intent);
     }
 
     public void handleZbusMsg(ZbusRecv recv) {
@@ -373,7 +366,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void doCheckZbusStatus(long id, String msg) {
-        //心跳测试使者 100007
+        //检测心跳：心跳测试使者 100007
         if (msg.contains(HEART_BEAT_TESTER) && msg.contains("100007")) {
             if (msg.contains("客服已下线") || msg.contains("客服正忙")) {
                 if (id != lastHearBeatID) {
@@ -509,6 +502,11 @@ public class AutoReplyService extends AccessibilityService {
         }, 2000);
     }
 
+    private void backToRobot() {
+        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
+        startActivity(intent);
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -595,7 +593,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     //来自公众号的消息每一条都要转发：图片还没有做，需要测试
                     else if (content.startsWith("设置转发对象：")) {
-                        //设置转发对象有可能丢掉！因 为微信可能不弹出通知
+                        //设置转发对象有可能丢掉！因为微信可能不弹出通知
                         action.actionType = TYPE_SET_FORWARDTO;
                     }
                     //需要转发到“消息收集群”
@@ -633,7 +631,7 @@ public class AutoReplyService extends AccessibilityService {
                         sendReplyImmediately(fakeRecv, false);
                     } else if (action.actionType == TYPE_PUBLIC_ACCONT_FORWARDING || action.actionType == TYPE_COLLECTOR_FORWARDING) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv, true);//false
+                        sendReplyImmediately(fakeRecv, true);
                     } else if (action.actionType == TYPE_SET_FORWARDTO) {
                         String forwardto = action.content.replace("设置转发对象：", "").trim();
                         if (TextUtils.isEmpty(forwardto)) {
@@ -655,42 +653,22 @@ public class AutoReplyService extends AccessibilityService {
                         sendReplyImmediately(fakeRecv, false);
                     } else if (action.actionType == TYPE_REQUEST_FRIEND) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv, false);
-                    } else if (
-                            action.actionType == TYPE_GET_ALL_FRIENDS
-                                    || action.actionType == TYPE_CLEAR_ZOMBIE_FAN
-                                    || action.actionType == TYPE_CREATE_GROUP_CHAT
-                                    || action.actionType == TYPE_ADD_GROUP_PEOPLE
-                                    || action.actionType == TYPE_DELETE_GROUP_PEOPLE
-                                    || action.actionType == TYPE_FIX_GROUP_NAME
-                                    || action.actionType == TYPE_FIX_GROUP_NOTICE
-                                    || action.actionType == TYPE_GROUP_CHAT
-                                    || action.actionType == TYPE_AT_GROUP_PEOPLE
-                                    || action.actionType == TYPE_DELETE_MOMENT
-                                    || action.actionType == TYPE_ADD_FRIEND
-                                    || action.actionType == TYPE_MISSING_FISH
-                                    || action.actionType == TYPE_FIX_NICKNAME
-                                    || action.actionType == TYPE_FIX_ICON
-                                    || action.actionType == TYPE_NEARBY_PEOPLE
-                            ) {
-                        //{"cmd": "群里拉人","groupName":"测试群","backdoor":true}
-                        //{"cmd": "漏网之鱼","backdoor":true}
-                        //{"cmd": "添加朋友","members":["18626318013","13267069058"], "content":"你好，可以加个好友吗？","backdoor":true}
-                        //{"cmd": "查询好友数量","backdoor":true}
-                        //{"cmd": "清理僵尸粉","start": "1","end":"20","backdoor":true}
-                        //{"cmd": "发起群聊","members": ["5行","5之","执着"],"groupName": "111","backdoor":true}
-                        //{"cmd": "拉人入群","members": ["5行","5之"],"groupName": "111","backdoor":true}
-                        //{"cmd": "踢人出群","members": ["5行","5之"],"groupName": "111","backdoor":true}
-                        //{"cmd": "修改群公告","content": "群公告啊啊啊","groupName": "222","backdoor":true}
-                        //{"cmd": "修改群名称","content":"1","groupName": "111","backdoor":true}
-                        //{"cmd": "群发消息","content":"1","groupName": "111","backdoor":true}
-                        //{"cmd": "艾特某人","members": ["执着","朋友圈使者擦"],"groupName": "222","backdoor":true}
-                        //{"cmd": "删除朋友圈","content":"密密麻麻","backdoor":true}
-                        //{"cmd": "修改昵称","newName":"我是客服888", "oldName":"客服888", "backdoor":true}
-                        //{"cmd": "修改头像","url":"http://upload.jnwb.net/2014/0311/1394514005639.jpg", "backdoor":true}
-                        //{"cmd": "检查新版本"}
-                        //{"cmd": "附近的人" , "content":"你好，很高兴认识你。" ,"backdoor":true}
-
+                        sendReplyImmediately(fakeRecv, true);
+                    } else if (action.actionType == TYPE_GET_ALL_FRIENDS
+                            || action.actionType == TYPE_CLEAR_ZOMBIE_FAN
+                            || action.actionType == TYPE_CREATE_GROUP_CHAT
+                            || action.actionType == TYPE_ADD_GROUP_PEOPLE
+                            || action.actionType == TYPE_DELETE_GROUP_PEOPLE
+                            || action.actionType == TYPE_FIX_GROUP_NAME
+                            || action.actionType == TYPE_FIX_GROUP_NOTICE
+                            || action.actionType == TYPE_GROUP_CHAT
+                            || action.actionType == TYPE_AT_GROUP_PEOPLE
+                            || action.actionType == TYPE_DELETE_MOMENT
+                            || action.actionType == TYPE_ADD_FRIEND
+                            || action.actionType == TYPE_MISSING_FISH
+                            || action.actionType == TYPE_FIX_NICKNAME
+                            || action.actionType == TYPE_FIX_ICON
+                            || action.actionType == TYPE_NEARBY_PEOPLE) {
                         action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, true);
@@ -712,7 +690,7 @@ public class AutoReplyService extends AccessibilityService {
                 if (currentActionID == -1) {
                     Log.d("maptrix", "没有事件，return1");
                     if (className.equals("com.tencent.mm.plugin.voip.ui.VideoActivity")) {
-                        //判断是不是视频通话，挂断并关闭页面即可。
+                        //视频通话，挂断并关闭页面即可。
                         findHungupButton(getRootInActiveWindow());
                     }
                     return;
@@ -921,8 +899,7 @@ public class AutoReplyService extends AccessibilityService {
                         }
                     }
                 } else {
-                    //需要容错
-                    //1.判断当前是不是首页
+                    //聊天有关，需要容错
                     Log.d("test", "========================checkIsWxHomePage============");
                     if (checkIsWxHomePage()) {
                         //1.如果已经使用过的action，进来会去到首页
@@ -951,7 +928,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                boolean find = findTargetPeople3(getRootInActiveWindow(), "附近的人", true);
+                boolean find = findTargetTextNode(getRootInActiveWindow(), 1, "附近的人", true);
                 if (!find) {
                     release();
                     return;
@@ -1081,7 +1058,7 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        boolean find = findTargetPeople3(getRootInActiveWindow(), "微信号：", true);
+                        boolean find = findTargetTextNode(getRootInActiveWindow(), 1, "微信号：", true);
                         if (!find) {
                             release();
                             return;
@@ -1098,7 +1075,7 @@ public class AutoReplyService extends AccessibilityService {
                                     target = "头像";
                                     sleepTime = 5000;
                                 }
-                                boolean find = findTargetPeople3(getRootInActiveWindow(), target, true);
+                                boolean find = findTargetTextNode(getRootInActiveWindow(), 1, target, true);
                                 if (!find) {
                                     release();
                                     return;
@@ -1114,8 +1091,7 @@ public class AutoReplyService extends AccessibilityService {
                                                 String newName = o.optString("newName");
                                                 int length = getTextLengthInEditText(1, content);
                                                 for (int i = 0; i < length; i++) {
-                                                    String cmd = "input keyevent  " + KeyEvent.KEYCODE_DEL;
-                                                    RootCmd.execRootCmdSilent(cmd);
+                                                    RootCmd.execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                                 }
                                                 findInputEditText(getRootInActiveWindow(), newName);
                                                 mHandler.postDelayed(new Runnable() {
@@ -1166,7 +1142,7 @@ public class AutoReplyService extends AccessibilityService {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            findTargetPeople3(getRootInActiveWindow(), "使用", false);
+                            findTargetTextNode(getRootInActiveWindow(), 1, "使用", false);
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -1375,8 +1351,7 @@ public class AutoReplyService extends AccessibilityService {
                             break;
                         }
                         //scroll
-                        String cmd = "input swipe 360 900 360 300";
-                        execRootCmdSilent(cmd);
+                        execRootCmdSilent("input swipe 360 900 360 300");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1507,8 +1482,7 @@ public class AutoReplyService extends AccessibilityService {
                     if (isBottom) {
                         break;
                     }
-                    String cmd = "input swipe 360 900 360 300";
-                    execRootCmdSilent(cmd);
+                    execRootCmdSilent("input swipe 360 900 360 300");
                     try {
                         sleep(3000);
                     } catch (InterruptedException e) {
@@ -1654,8 +1628,8 @@ public class AutoReplyService extends AccessibilityService {
                     resetMaxReleaseTime(20000 * count);
 
                     for (int i = 0; i < count; i++) {
-                        String m = members.getString(i);
-                        addFriend(m);
+                        String member = members.getString(i);
+                        addFriend(member);
                         sleep(20000);
                     }
                     release();
@@ -1667,16 +1641,16 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void addFriend(String m) {
+    private void addFriend(String member) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                findInputEditText(getRootInActiveWindow(), m);
+                findInputEditText(getRootInActiveWindow(), member);
 
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        findTargetPeople3(getRootInActiveWindow(), m, true);
+                        findTargetTextNode(getRootInActiveWindow(), 1, member, true);
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -1700,8 +1674,7 @@ public class AutoReplyService extends AccessibilityService {
                                                 if (!TextUtils.isEmpty(content)) {
                                                     int length = getTextLengthInEditText(1, content);
                                                     for (int i = 0; i < length; i++) {
-                                                        String cmd = "input keyevent  " + KeyEvent.KEYCODE_DEL;
-                                                        RootCmd.execRootCmdSilent(cmd);
+                                                        RootCmd.execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                                     }
                                                     findInputEditText(getRootInActiveWindow(), content);
                                                 }
@@ -1778,8 +1751,7 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("test", "preScollCount = " + preScollCount);
                     for (int i = 0; i < preScollCount; i++) {
                         Log.d("test", "预滚第" + (i + 1) + "次");
-                        String cmd = "input swipe 360 900 360 300";
-                        execRootCmdSilent(cmd);
+                        execRootCmdSilent("input swipe 360 900 360 300");
                         sleep(3000);
                     }
 
@@ -1789,8 +1761,7 @@ public class AutoReplyService extends AccessibilityService {
                     for (int i = 0; i < scrollCount; i++) {
                         doCheckFriend1(getRootInActiveWindow());
                         sleep(3000);
-                        String cmd = "input swipe 360 900 360 300";
-                        execRootCmdSilent(cmd);
+                        execRootCmdSilent("input swipe 360 900 360 300");
                         sleep(3000);
                         doCheckFriend1(getRootInActiveWindow());
                     }
@@ -1881,7 +1852,7 @@ public class AutoReplyService extends AccessibilityService {
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    boolean find = findTargetPeople3(getRootInActiveWindow(), "群聊名称", true);
+                                    boolean find = findTargetTextNode(getRootInActiveWindow(), 1, "群聊名称", true);
                                     if (!find) {
                                         release();
                                         return;
@@ -2538,10 +2509,14 @@ public class AutoReplyService extends AccessibilityService {
                                 public void run() {
                                     if (type == TYPE_ADD_GROUP_PEOPLE || type == TYPE_DELETE_GROUP_PEOPLE) {
                                         addOrDeleteGroupPeople(type);
-                                    } else if (type == TYPE_FIX_GROUP_NOTICE) {
-                                        fixGroupNameOrNotice(getRootInActiveWindow(), "群公告");
-                                    } else if (type == TYPE_FIX_GROUP_NAME) {
-                                        fixGroupNameOrNotice(getRootInActiveWindow(), "群聊名称");
+                                    } else if (type == TYPE_FIX_GROUP_NOTICE || type == TYPE_FIX_GROUP_NAME) {
+                                        String target = type == TYPE_FIX_GROUP_NAME ? "群聊名称" : "群公告";
+                                        boolean find = findTargetTextNode(getRootInActiveWindow(), 1, target, true);
+                                        if (!find) {
+                                            release();
+                                            return;
+                                        }
+                                        fixGroupNameOrNotice();
                                     }
                                 }
                             }, 2000);
@@ -2576,7 +2551,40 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-    private void fixFriendNickname(String forwardto) {
+    private void fixGroupNameOrNotice() {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //判断是不是已经有了公告
+                try {
+                    String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                    JSONObject o = new JSONObject(content);
+                    String text = o.optString("content");
+                    boolean has = findTargetTextNode(getRootInActiveWindow(), 1, "编辑", false);
+                    if (has) {
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                //1.先执行删除键
+                                int length = getTextLengthInEditText(1, text);
+                                for (int i = 0; i < length; i++) {
+                                    execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
+                                }
+                                //2.再粘贴上content
+                                doFixGroupNameOrNotice(text);
+                            }
+                        }, 2000);
+                    } else {
+                        doFixGroupNameOrNotice(text);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 2000);
+    }
+
+    private void fixFriendNickname(String friend) {
         lastImageButton = null;
         findUserInfoButton(getRootInActiveWindow());
         if (lastImageButton == null) {
@@ -2587,7 +2595,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                boolean find = findTargetPeople3(getRootInActiveWindow(), forwardto, true);
+                boolean find = findTargetTextNode(getRootInActiveWindow(), 1, friend, true);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -2595,7 +2603,7 @@ public class AutoReplyService extends AccessibilityService {
                             release();
                             return;
                         }
-                        boolean find = findTargetPeople3(getRootInActiveWindow(), "设置备注和标签", false);
+                        boolean find = findTargetTextNode(getRootInActiveWindow(), 1, "设置备注和标签", false);
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -2603,7 +2611,7 @@ public class AutoReplyService extends AccessibilityService {
                                     release();
                                     return;
                                 }
-                                boolean find = findTargetPeople3(getRootInActiveWindow(), forwardto, false);
+                                boolean find = findTargetTextNode(getRootInActiveWindow(), 1, friend, false);
                                 mHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
@@ -2618,8 +2626,7 @@ public class AutoReplyService extends AccessibilityService {
                                             String newName = o.optString("newName");
                                             int length = getTextLengthInEditText(1, newName);
                                             for (int i = 0; i < length; i++) {
-                                                String cmd = "input keyevent  " + KeyEvent.KEYCODE_DEL;
-                                                execRootCmdSilent(cmd);
+                                                execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                             }
                                             findInputEditText(getRootInActiveWindow(), newName);
                                             boolean find = findFinishButton2(getRootInActiveWindow());
@@ -2653,7 +2660,7 @@ public class AutoReplyService extends AccessibilityService {
                     resetMaxReleaseTime(count * 15000);
 
                     for (int i = 0; i < count; i++) {
-                        String m = members.getString(i);
+                        String member = members.getString(i);
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -2680,8 +2687,8 @@ public class AutoReplyService extends AccessibilityService {
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        findInputEditText(getRootInActiveWindow(), m);
-                                                        boolean find = findTargetPeople3(getRootInActiveWindow(), m, true);
+                                                        findInputEditText(getRootInActiveWindow(), member);
+                                                        boolean find = findTargetTextNode(getRootInActiveWindow(), 1, member, true);
                                                         if (!find) {
                                                             //FXIME 这里最好做检测
                                                             performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
@@ -2723,7 +2730,13 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private boolean findTargetPeople3(AccessibilityNodeInfo rootNode, String forwardto, boolean clickParent) {
+    private boolean findTargetTextNode(AccessibilityNodeInfo rootNode, int classType, String target, boolean clickParent) {
+        String className = "";
+        if (classType == 1) {
+            className = "android.widget.TextView";
+        } else if (classType == 2) {
+            className = "android.widget.Button";
+        }
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
@@ -2733,8 +2746,7 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             //equails
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().contains(forwardto)) {
-                Log.d("test", "click targetPeople = " + forwardto);
+            if (nodeInfo.getClassName().equals(className) && nodeInfo.getText() != null && nodeInfo.getText().toString().contains(target)) {
                 if (clickParent) {
                     nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 } else {
@@ -2742,58 +2754,7 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 return true;
             }
-            if (findTargetPeople3(nodeInfo, forwardto, clickParent)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean fixGroupNameOrNotice(AccessibilityNodeInfo rootNode, String target) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(target)) {
-                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        //判断是不是已经有了公告
-                        try {
-                            String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
-                            JSONObject o = new JSONObject(content);
-                            String text = o.optString("content");
-                            boolean has = hasNoticeAlready(getRootInActiveWindow());
-                            if (has) {
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        //1.先执行删除键
-                                        int length = getTextLengthInEditText(1, text);
-                                        for (int i = 0; i < length; i++) {
-                                            String cmd = "input keyevent  " + KeyEvent.KEYCODE_DEL;
-                                            execRootCmdSilent(cmd);
-                                        }
-                                        //2.再粘贴上content
-                                        doFixGroupNameOrNotice(text);
-                                    }
-                                }, 2000);
-                            } else {
-                                doFixGroupNameOrNotice(text);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, 2000);
-                return true;
-            }
-            if (fixGroupNameOrNotice(nodeInfo, target)) {
+            if (findTargetTextNode(nodeInfo, classType, target, clickParent)) {
                 return true;
             }
         }
@@ -2813,27 +2774,6 @@ public class AutoReplyService extends AccessibilityService {
         }, 1000);
     }
 
-    private boolean hasNoticeAlready(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("编辑")) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-
-                return true;
-            }
-            if (hasNoticeAlready(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private AccessibilityNodeInfo editTextNode;
 
     public int getTextLengthInEditText(int index, String compare) {
@@ -2843,8 +2783,6 @@ public class AutoReplyService extends AccessibilityService {
         if (editTextNode == null) {
             return 0;
         }
-        //useless
-        //editTextNode.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
         String text = editTextNode.getText().toString();
         if (text.equals(compare)) {
             return 0;
@@ -2961,7 +2899,6 @@ public class AutoReplyService extends AccessibilityService {
         }, 2000);
     }
 
-    //android.widget.ImageView
     private int imageViewIndex;
 
     private boolean findImageView(AccessibilityNodeInfo rootNode, int index) {
@@ -3102,10 +3039,8 @@ public class AutoReplyService extends AccessibilityService {
         // 1.生成点击坐标
         int x = r.width() / 2 + r.left;
         int y = r.height() / 2 + r.top;
-        String cmd = "input tap " + x + " " + y;
-        Log.d("test", "cmd = " + cmd);
         // 2.执行su命令
-        int ret = execRootCmdSilent(cmd);
+        int ret = execRootCmdSilent("input tap " + x + " " + y);
         Log.d("test", "execRootCmdSilent ret = " + ret);
     }
 
@@ -3156,10 +3091,7 @@ public class AutoReplyService extends AccessibilityService {
         }, 2000);
     }
 
-
-    //---------------------下面都是找控件--------------------------
-
-    //找到挂断按钮
+    //找到挂断按钮，回头重构这个。。。
     private boolean findHungupButton(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -4477,10 +4409,6 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-//            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("新的朋友")) {
-//                clickSomeWhere(nodeInfo);
-//                return true;
-//            }
             if (test(nodeInfo)) {
                 return true;
             }
