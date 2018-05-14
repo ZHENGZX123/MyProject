@@ -469,7 +469,6 @@ public class MainActivity extends BaseActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_HOLO_LIGHT);
             dialog_download = builder.setMessage("有新的版本需要更新，您当前的网络是4G，确定使用流量下载新的APK吗？").setNegativeButton(android.R
                     .string.ok, new DialogInterface.OnClickListener() {
-
                 @Override
                 public void onClick(DialogInterface arg0, int arg1) {
                     toast("后台下载APK文件");
@@ -495,17 +494,14 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-
             }
 
             @Override
             public void onCancelled(CancelledException cex) {
-
             }
 
             @Override
             public void onFinished() {
-
             }
         });
     }

@@ -344,6 +344,7 @@ public class ResultActivity extends BaseActivity {
 
     public void stop(View view) {
         toast("时间到，停止作答");
+        hint.setText("答题已结束");
         questionTime = 0;
         timeup = true;
         mHandler.removeCallbacksAndMessages(null);

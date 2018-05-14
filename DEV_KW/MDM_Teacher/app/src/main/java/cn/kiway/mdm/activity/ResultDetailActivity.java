@@ -51,7 +51,7 @@ public class ResultDetailActivity extends BaseActivity {
     private LinearLayout ll_answer;
     private GridView answerGV;
     private TextView answerTV;
-    private ImageView answerIV;
+    private ImageView answerIV,answerTVB;
     private MyAdapter adapter;
     private ArrayList<Choice> choices = new ArrayList<>();
     private ImageButton right;
@@ -91,6 +91,9 @@ public class ResultDetailActivity extends BaseActivity {
         answerGV = (GridView) findViewById(R.id.answerGV);
         answerTV = (TextView) findViewById(R.id.answerTV);
         answerIV = (ImageView) findViewById(R.id.answerIV);
+        answerTVB= (ImageView) findViewById(R.id.answerIVB);
+        answerIV.setOnClickListener(this);
+        answerTVB.setOnClickListener(this);
         adapter = new MyAdapter();
         answerGV.setAdapter(adapter);
 
@@ -98,6 +101,21 @@ public class ResultDetailActivity extends BaseActivity {
             ok = (Button) findViewById(R.id.ok);
             ok.setText("批改");
             ok.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        super.onClick(view);
+        switch (view.getId()){
+            case R.id.answerIV:
+                answerTV.setVisibility(View.GONE);
+                answerTVB.setVisibility(View.VISIBLE);
+                break;
+            case R.id.answerIVB:
+                answerTV.setVisibility(View.VISIBLE);
+                answerTVB.setVisibility(View.GONE);
+                break;
         }
     }
 
@@ -257,6 +275,7 @@ public class ResultDetailActivity extends BaseActivity {
             answerTV.setVisibility(View.GONE);
             answerIV.setVisibility(View.VISIBLE);
             ImageLoader.getInstance().displayImage(q.studentAnswers.get(studentIndex), answerIV, KWApplication.getLoaderOptions());
+            ImageLoader.getInstance().displayImage(q.studentAnswers.get(studentIndex), answerTVB, KWApplication.getLoaderOptions());
             //老师来批改
             if (q.teacherJudges.get(studentIndex) == 2) {
                 right.setBackgroundResource(R.drawable.right2);
