@@ -1083,10 +1083,13 @@ public class AutoReplyService extends AccessibilityService {
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        boolean find = findSaveButton(getRootInActiveWindow());
-                                                        if (!find) {
-                                                            release();
-                                                        }
+                                                        findTargetNode(getRootInActiveWindow(), NODE_TEXTVIEW, "保存", CLICK_SELF);
+                                                        mHandler.postDelayed(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                release();
+                                                            }
+                                                        }, 3000);
                                                     }
                                                 }, 1000);
                                             } else if (actionType == TYPE_FIX_ICON) {
@@ -1254,7 +1257,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                findDeleteButton3(getRootInActiveWindow());
+                findTargetNode(getRootInActiveWindow(), NODE_TEXTVIEW, "删除", CLICK_PARENT);
             }
         }, 3000);
     }
@@ -1382,10 +1385,23 @@ public class AutoReplyService extends AccessibilityService {
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    boolean find = findDeleteButton3(getRootInActiveWindow());
-                                    if (!find) {
-                                        release();
-                                    }
+                                    boolean find = findTargetNode(getRootInActiveWindow(), NODE_TEXTVIEW, "删除", CLICK_PARENT);
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (find) {
+                                                findTargetNode(getRootInActiveWindow(), NODE_BUTTON, "确定", CLICK_SELF);
+                                                mHandler.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        release();
+                                                    }
+                                                }, 3000);
+                                            } else {
+                                                release();
+                                            }
+                                        }
+                                    }, 2000);
                                 }
                             }, 2000);
                         } else {
@@ -1740,7 +1756,7 @@ public class AutoReplyService extends AccessibilityService {
                     JSONArray members = o.getJSONArray("members");
                     int count = members.length();
 
-                    resetMaxReleaseTime(10000 * count);
+                    resetMaxReleaseTime(10000 * count + 15000);
 
                     checkedFriends.clear();
 
@@ -1826,20 +1842,30 @@ public class AutoReplyService extends AccessibilityService {
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        boolean find = findSaveButton(getRootInActiveWindow());
+                                                        boolean find = findTargetNode(getRootInActiveWindow(), NODE_TEXTVIEW, "保存", CLICK_SELF);
                                                         if (!find) {
                                                             release();
                                                             return;
                                                         }
-
-                                                        execRootCmdSilent("input swipe 360 900 360 300");
-
                                                         mHandler.postDelayed(new Runnable() {
                                                             @Override
                                                             public void run() {
+                                                                execRootCmdSilent("input swipe 360 900 360 300");
 
+                                                                mHandler.postDelayed(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        findCheckButton(getRootInActiveWindow(), "保存到通讯录");
+                                                                        mHandler.postDelayed(new Runnable() {
+                                                                            @Override
+                                                                            public void run() {
+                                                                                release();
+                                                                            }
+                                                                        }, 2000);
+                                                                    }
+                                                                }, 3000);
                                                             }
-                                                        }, 2000);
+                                                        }, 5000);
                                                     }
                                                 }, 1000);
                                             } catch (Exception e) {
@@ -1866,7 +1892,7 @@ public class AutoReplyService extends AccessibilityService {
         });
     }
 
-    private boolean findSaveButton(AccessibilityNodeInfo rootNode) {
+    private boolean findCheckButton(AccessibilityNodeInfo rootNode, String text) {
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
@@ -1875,17 +1901,13 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("保存")) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        release();
-                    }
-                }, 5000);
+            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(text)) {
+                AccessibilityNodeInfo checkNode = rootNode.getChild(i + 1);
+                //checkNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                clickSomeWhere(checkNode);
                 return true;
             }
-            if (findSaveButton(nodeInfo)) {
+            if (findCheckButton(nodeInfo, text)) {
                 return true;
             }
         }
@@ -3538,64 +3560,6 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-    private boolean findDeleteButton3(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("删除")) {
-                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                if (!adding_missing_fish) {
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            Log.d("test", "===============findDeleteButton4================");
-                            boolean find = findDeleteButton4(getRootInActiveWindow());
-                            if (!find) {
-                                release();
-                            }
-                        }
-                    }, 2000);
-                }
-                return true;
-            }
-            if (findDeleteButton3(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findDeleteButton4(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("确定")) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        release();
-                    }
-                }, 3000);
-                return true;
-            }
-            if (findDeleteButton4(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     int secondLinearLayout = 0;
 
@@ -4174,19 +4138,19 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     public boolean test(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        Log.d("test", "count = " + count);
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (test(nodeInfo)) {
-                return true;
-            }
-        }
+//        int count = rootNode.getChildCount();
+//        for (int i = 0; i < count; i++) {
+//            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+//            if (nodeInfo == null) {
+//                continue;
+//            }
+//            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+//            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+//            if (test(nodeInfo)) {
+//                return true;
+//            }
+//        }
+        findCheckButton(getRootInActiveWindow(), "保存到通讯录");
         return false;
     }
 }
