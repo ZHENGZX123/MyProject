@@ -29,6 +29,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xutils.common.util.DensityUtil;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
@@ -1074,7 +1075,7 @@ public class AutoReplyService extends AccessibilityService {
                                                 Log.d("test", "content = " + content);
                                                 JSONObject o = new JSONObject(content);
                                                 String newName = o.optString("newName");
-                                                int length = getTextLengthInEditText(1, content);
+                                                int length = getTextLengthInEditText(1);
                                                 for (int i = 0; i < length; i++) {
                                                     RootCmd.execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                                 }
@@ -1178,7 +1179,7 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 checkIsWxHomePage();
-                clickSomeWhere(newFriendTextView);
+                clickSomeWhere(DensityUtil.getScreenWidth() / 2, 296);
 
                 new Thread() {
                     @Override
@@ -1199,6 +1200,7 @@ public class AutoReplyService extends AccessibilityService {
                                     sleep(10000);
                                 } else if (ret == 3) {
                                     sleep(3000);
+                                    break;
                                 }
                             }
                             release();
@@ -1549,6 +1551,7 @@ public class AutoReplyService extends AccessibilityService {
                                 listViewNode = null;
                                 sureButton = null;
                                 find = findFriendListView(getRootInActiveWindow());
+
                             } else if (actionType == TYPE_ADD_FRIEND) {
                                 find = findTargetPeople2(getRootInActiveWindow(), "微信号/QQ号/手机号", actionType);
                             }
@@ -1577,12 +1580,12 @@ public class AutoReplyService extends AccessibilityService {
                     JSONArray members = o.getJSONArray("members");
                     int count = members.length();
 
-                    resetMaxReleaseTime(20000 * count);
+                    resetMaxReleaseTime(25000 * count);
 
                     for (int i = 0; i < count; i++) {
                         String member = members.getString(i);
                         addFriend(member);
-                        sleep(20000);
+                        sleep(25000);
                     }
                     release();
                 } catch (Exception e) {
@@ -1624,7 +1627,7 @@ public class AutoReplyService extends AccessibilityService {
 
                                                 //1.申请语句，这里要先点一下删除。
                                                 if (!TextUtils.isEmpty(content)) {
-                                                    int length = getTextLengthInEditText(1, content);
+                                                    int length = getTextLengthInEditText(1);
                                                     for (int i = 0; i < length; i++) {
                                                         RootCmd.execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                                     }
@@ -2520,7 +2523,7 @@ public class AutoReplyService extends AccessibilityService {
                             @Override
                             public void run() {
                                 //1.先执行删除键
-                                int length = getTextLengthInEditText(1, text);
+                                int length = getTextLengthInEditText(1);
                                 for (int i = 0; i < length; i++) {
                                     execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                 }
@@ -2578,7 +2581,7 @@ public class AutoReplyService extends AccessibilityService {
                                             Log.d("test", "content = " + content);
                                             JSONObject o = new JSONObject(content);
                                             String newName = o.optString("newName");
-                                            int length = getTextLengthInEditText(1, newName);
+                                            int length = getTextLengthInEditText(1);
                                             for (int i = 0; i < length; i++) {
                                                 execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                             }
@@ -2758,7 +2761,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private AccessibilityNodeInfo editTextNode;
 
-    public int getTextLengthInEditText(int index, String compare) {
+    public int getTextLengthInEditText(int index) {
         edittextCount = 0;
         editTextNode = null;
         findInputEditText(getRootInActiveWindow(), index);
@@ -2766,9 +2769,6 @@ public class AutoReplyService extends AccessibilityService {
             return 0;
         }
         String text = editTextNode.getText().toString();
-        if (text.equals(compare)) {
-            return 0;
-        }
         int length = text.length();
         Log.d("test", "text = " + text + " length = " + length);
         return length;
@@ -3020,6 +3020,12 @@ public class AutoReplyService extends AccessibilityService {
         // 1.生成点击坐标
         int x = r.width() / 2 + r.left;
         int y = r.height() / 2 + r.top;
+        // 2.执行su命令
+        int ret = execRootCmdSilent("input tap " + x + " " + y);
+        Log.d("test", "execRootCmdSilent ret = " + ret);
+    }
+
+    private void clickSomeWhere(int x, int y) {
         // 2.执行su命令
         int ret = execRootCmdSilent("input tap " + x + " " + y);
         Log.d("test", "execRootCmdSilent ret = " + ret);
