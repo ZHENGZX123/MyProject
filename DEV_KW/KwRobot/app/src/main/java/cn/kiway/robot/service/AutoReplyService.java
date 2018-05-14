@@ -1520,6 +1520,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
+    //首页右上角工具栏
     private void findTopRightToolBarInHomePage() {
         checkIsWxHomePage();
         if (lastRelativeLayout == null) {
@@ -1537,51 +1538,30 @@ public class AutoReplyService extends AccessibilityService {
                 } else if (actionType == TYPE_ADD_FRIEND) {
                     target = "添加朋友";
                 }
-                boolean find = findTargetButtonInToolBar(getRootInActiveWindow(), target);
-                if (!find) {
-                    release();
-                }
-            }
-        }, 2000);
-    }
-
-    private boolean findTargetButtonInToolBar(AccessibilityNodeInfo rootNode, String target) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(target)) {
-                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                boolean find = findTargetNode(getRootInActiveWindow(), NODE_TEXTVIEW, target, CLICK_PARENT);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        int actionType = actions.get(currentActionID).actionType;
-                        boolean find = false;
-                        if (actionType == TYPE_CREATE_GROUP_CHAT || actionType == TYPE_CLEAR_ZOMBIE_FAN) {
-                            listViewNode = null;
-                            sureButton = null;
-                            find = findFriendListView(getRootInActiveWindow());
-
-                        } else if (actionType == TYPE_ADD_FRIEND) {
-                            //在点一下文本框
-                            find = findTargetPeople2(getRootInActiveWindow(), "微信号/QQ号/手机号", actionType);
-                        }
-                        if (!find) {
+                        if (find) {
+                            int actionType = actions.get(currentActionID).actionType;
+                            boolean find = false;
+                            if (actionType == TYPE_CREATE_GROUP_CHAT || actionType == TYPE_CLEAR_ZOMBIE_FAN) {
+                                listViewNode = null;
+                                sureButton = null;
+                                find = findFriendListView(getRootInActiveWindow());
+                            } else if (actionType == TYPE_ADD_FRIEND) {
+                                find = findTargetPeople2(getRootInActiveWindow(), "微信号/QQ号/手机号", actionType);
+                            }
+                            if (!find) {
+                                release();
+                            }
+                        } else {
                             release();
                         }
                     }
                 }, 2000);
-                return true;
             }
-            if (findTargetButtonInToolBar(nodeInfo, target)) {
-                return true;
-            }
-        }
-        return false;
+        }, 2000);
     }
 
     private void startAddFriend() {
@@ -3115,8 +3095,6 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-    //查询是不是呼叫对话框
-
     //自动加好友
     private String nickname;
     private String remark;
@@ -3361,7 +3339,6 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("发送")) {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                Log.d("test", "转发完成");
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
