@@ -58,25 +58,44 @@ public class Constant {
     public static final String BACK_DOOR2 = "开维一本万利";
     public static final String BACK_DOOR3 = "开维前程似锦";
 
-    public static final String BACK_DOOR4 = "清理僵尸粉";
-    public static final String BACK_DOOR5 = "查询好友数量";
-    public static final String BACK_DOOR6 = "发起群聊";
-    public static final String BACK_DOOR7 = "拉人入群";
-    public static final String BACK_DOOR8 = "踢人出群";
-    public static final String BACK_DOOR9 = "修改群名称";
-    public static final String BACK_DOOR10 = "修改群公告";
-    public static final String BACK_DOOR11 = "群发消息";
-    public static final String BACK_DOOR12 = "艾特某人";
-    public static final String BACK_DOOR13 = "删除朋友圈";
-    public static final String BACK_DOOR14 = "添加朋友";//电话号码或微信号
-    public static final String BACK_DOOR15 = "漏网之鱼";
-    public static final String BACK_DOOR16 = "修改昵称";
-    public static final String BACK_DOOR17 = "修改头像";
-    public static final String BACK_DOOR18 = "检查新版本";
-    public static final String BACK_DOOR19 = "附近的人";
+    private static final String BACK_DOOR4 = "清理僵尸粉";
+    private static final String BACK_DOOR5 = "查询好友数量";
+    private static final String BACK_DOOR6 = "发起群聊";
+    private static final String BACK_DOOR7 = "拉人入群";
+    private static final String BACK_DOOR8 = "踢人出群";
+    private static final String BACK_DOOR9 = "修改群名称";
+    private static final String BACK_DOOR10 = "修改群公告";
+    private static final String BACK_DOOR11 = "群发消息";
+    private static final String BACK_DOOR12 = "艾特某人";
+    private static final String BACK_DOOR13 = "删除朋友圈";
+    private static final String BACK_DOOR14 = "添加朋友";//电话号码或微信号
+    private static final String BACK_DOOR15 = "漏网之鱼";
+    private static final String BACK_DOOR16 = "修改昵称";
+    private static final String BACK_DOOR17 = "修改头像";
+    private static final String BACK_DOOR18 = "检查新版本";
+    private static final String BACK_DOOR19 = "附近的人";
 
 
-    public static Map<String, Integer> backdoors = new LinkedHashMap<>();
+    //{"cmd": "群里拉人","groupName":"测试群","backdoor":true}
+    //{"cmd": "漏网之鱼","backdoor":true}
+    //{"cmd": "添加朋友","members":["18626318013","13267069058"], "content":"你好，可以加个好友吗？","backdoor":true}
+    //{"cmd": "查询好友数量","backdoor":true}
+    //{"cmd": "清理僵尸粉","start": "1","end":"20","backdoor":true}
+    //{"cmd": "发起群聊","members": ["5行","5之","执着"],"groupName": "111","backdoor":true}
+    //{"cmd": "拉人入群","members": ["5行","5之"],"groupName": "111","backdoor":true}
+    //{"cmd": "踢人出群","members": ["5行","5之"],"groupName": "111","backdoor":true}
+    //{"cmd": "修改群公告","content": "群公告啊啊啊","groupName": "222","backdoor":true}
+    //{"cmd": "修改群名称","content":"1","groupName": "111","backdoor":true}
+    //{"cmd": "群发消息","content":"1","groupName": "111","backdoor":true}
+    //{"cmd": "艾特某人","members": ["执着","朋友圈使者擦"],"groupName": "222","backdoor":true}
+    //{"cmd": "删除朋友圈","content":"密密麻麻","backdoor":true}
+    //{"cmd": "修改昵称","newName":"我是客服888", "oldName":"客服888", "backdoor":true}
+    //{"cmd": "修改头像","url":"http://upload.jnwb.net/2014/0311/1394514005639.jpg", "backdoor":true}
+    //{"cmd": "检查新版本"}
+    //{"cmd": "附近的人" , "content":"你好，很高兴认识你。" ,"backdoor":true}
+
+
+    static Map<String, Integer> backdoors = new LinkedHashMap<>();
 
     static {
         backdoors.put(BACK_DOOR2, Action.TYPE_BACK_DOOR);
