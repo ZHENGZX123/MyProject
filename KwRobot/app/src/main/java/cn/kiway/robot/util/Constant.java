@@ -47,9 +47,9 @@ public class Constant {
     public static final String NODE_RELATIVELAYOUT = "android.widget.RelativeLayout";
 
     //点击类型
-    public static final int CLICK_NONE = 0;
-    public static final int CLICK_SELF = 1;
-    public static final int CLICK_PARENT = 2;
+    public static final int CLICK_NONE = Integer.MIN_VALUE;
+    public static final int CLICK_SELF = 0;
+    public static final int CLICK_PARENT = Integer.MAX_VALUE;
 
     public static Map<String, String> qas = new HashMap<>();
 

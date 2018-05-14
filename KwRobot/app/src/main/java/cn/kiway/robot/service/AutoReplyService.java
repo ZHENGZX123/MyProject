@@ -2222,7 +2222,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void searchSenderInWxHomePage(int type) {
-        findTargetNode(NODE_TEXTVIEW , Integer.MAX_VALUE);
+        findTargetNode(NODE_TEXTVIEW, Integer.MAX_VALUE);
         if (mFindTargetNode == null) {
             release();
             return;
@@ -2608,43 +2608,26 @@ public class AutoReplyService extends AccessibilityService {
                                 mHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        findSearchButton(getRootInActiveWindow());
+                                        boolean find = findTargetNode(NODE_TEXTVIEW, "选择提醒的人", 1);
+                                        mHandler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (find) {
+                                                    findTargetNode(NODE_EDITTEXT, member, CLICK_NONE);
+                                                    boolean find = findTargetNode(NODE_TEXTVIEW, member, CLICK_PARENT);
+                                                    if (!find) {
+                                                        //FXIME 这里最好做检测
+                                                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                                    }
+                                                } else {
+                                                    release();
+                                                }
+                                            }
+                                        }, 1000);
                                     }
 
-                                    private boolean findSearchButton(AccessibilityNodeInfo rootNode) {
-                                        int count = rootNode.getChildCount();
-                                        for (int i = 0; i < count; i++) {
-                                            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-                                            if (nodeInfo == null) {
-                                                continue;
-                                            }
-                                            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-                                            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-                                            if (nodeInfo.getClassName().equals("android.widget.TextView")
-                                                    && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("选择提醒的人")) {
-                                                AccessibilityNodeInfo lastNode = rootNode.getChild(i + 1);
-                                                lastNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                                mHandler.postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        findTargetNode(NODE_EDITTEXT, member, CLICK_NONE);
-                                                        boolean find = findTargetNode(NODE_TEXTVIEW, member, CLICK_PARENT);
-                                                        if (!find) {
-                                                            //FXIME 这里最好做检测
-                                                            performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                                                            performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                                                            performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                                                        }
-                                                    }
-                                                }, 1000);
-                                                return true;
-                                            }
-                                            if (findSearchButton(nodeInfo)) {
-                                                return true;
-                                            }
-                                        }
-                                        return false;
-                                    }
                                 }, 3000);
                             }
                         });
@@ -2725,6 +2708,10 @@ public class AutoReplyService extends AccessibilityService {
                                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             } else if (clickType == CLICK_PARENT) {
                                 nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            } else if (clickType == CLICK_NONE) {
+                                //donothing
+                            } else {
+                                rootNode.getChild(i + clickType).performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             }
                             return true;
                         }
@@ -3940,7 +3927,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void searchZombieInWxHomePage() {
-        findTargetNode(NODE_TEXTVIEW , Integer.MAX_VALUE);
+        findTargetNode(NODE_TEXTVIEW, Integer.MAX_VALUE);
         if (mFindTargetNode == null) {
             currentZombie.cleared = true;
             return;
