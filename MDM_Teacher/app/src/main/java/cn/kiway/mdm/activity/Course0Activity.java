@@ -318,8 +318,7 @@ public class Course0Activity extends BaseActivity {
                     try {
                         JSONArray data = new JSONObject(ret).getJSONArray("data");
                         course.knowledgePoints = new GsonBuilder().create().fromJson(data.toString(), new
-                                TypeToken<List<KnowledgePoint>>() {
-                                }.getType());
+                                TypeToken<List<KnowledgePoint>>() {}.getType());
                         showTongjiDialog();
                     } catch (Exception e) {
                         e.printStackTrace();

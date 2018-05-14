@@ -240,5 +240,10 @@
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
-
+<ImageView
+    android:id="@+id/answerIVB"
+    android:layout_width="match_parent"
+    android:visibility="gone"
+    android:background="@color/_ffffff"
+    android:layout_height="match_parent"/>
 </RelativeLayout>

@@ -343,7 +343,8 @@ public class ZbusHost {
             } else {
                 commeand = "temporary_unlockScreen";
             }
-            String msg = new JSONObject().put("data", new JSONObject().put("command", commeand).put("currentTime", Utils.longToDate("" + System.currentTimeMillis())).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
+            String msg = new JSONObject().put("data", new JSONObject().put("command", commeand).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
+//            String msg = new JSONObject().put("data", new JSONObject().put("command", commeand).put("currentTime", Utils.longToDate("" + System.currentTimeMillis())).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
             doSendMsg(c, title, userId, msg, students);
             if (onListener != null) {
                 c.runOnUiThread(new Runnable() {
