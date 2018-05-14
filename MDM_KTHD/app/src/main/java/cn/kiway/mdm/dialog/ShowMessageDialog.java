@@ -11,10 +11,12 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 
+import cn.kiway.mdm.activity.QuestionActivity;
 import studentsession.kiway.cn.mdm_studentsession.R;
 
 import static cn.kiway.mdm.dialog.ShowMessageDialog.MessageId.ANSWERDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDialog.MessageId.DISMISS;
+import static cn.kiway.mdm.dialog.ShowMessageDialog.MessageId.QUESTIONDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDialog.MessageId.REPONSEDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDialog.MessageId.SIGNDIALOG;
 import static cn.kiway.mdm.dialog.ShowMessageDialog.MessageId.UNSWERDIALOG;
@@ -41,6 +43,7 @@ public class ShowMessageDialog extends Dialog implements View.OnClickListener, D
         public static final int REPONSEDIALOG = SIGNDIALOG + 1;//学生是否听懂
         public static final int ANSWERDIALOG = REPONSEDIALOG + 1;
         public static final int UNSWERDIALOG = ANSWERDIALOG + 1;
+        public static final int QUESTIONDIALOG=UNSWERDIALOG+1;
     }
 
     public ShowMessageDialog(Context context) {
@@ -100,6 +103,11 @@ public class ShowMessageDialog extends Dialog implements View.OnClickListener, D
                     case UNSWERDIALOG:
                         dismiss();
                         break;
+                    case QUESTIONDIALOG:
+                        if (context instanceof QuestionActivity){
+                            ((QuestionActivity) context).finish();
+                        }
+                        break;
                 }
                 break;
             case R.id.ok2:
@@ -113,6 +121,9 @@ public class ShowMessageDialog extends Dialog implements View.OnClickListener, D
                         handler.sendMessage(message);
                         break;
                     case UNSWERDIALOG:
+                        dismiss();
+                        break;
+                    case QUESTIONDIALOG:
                         dismiss();
                         break;
                 }

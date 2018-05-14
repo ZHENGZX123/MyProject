@@ -34,6 +34,7 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
@@ -392,6 +393,15 @@ public class Utils {
             }
         }
         return timeStr;
+    }
+
+    public static int retrunTime(String str) throws ParseException {
+        int time = 0;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = sdf.parse(str);
+        Date date1 = new Date(System.currentTimeMillis());
+        time = (int) ((date1.getTime()- date.getTime()) / 1000);
+        return time;
     }
 
     private static String unitFormat(int i) {

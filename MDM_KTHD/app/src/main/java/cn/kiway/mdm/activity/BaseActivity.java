@@ -33,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,8 +148,17 @@ public class BaseActivity extends Activity {
             @Override
             public void run() {
                 int questionType = data.optInt("questionType");
-                int questionTime = data.optInt("questionTime");
                 String questionStr = data.optString("questions");
+                //zzx add
+                int questionTime = data.optInt("questionTime");
+                String currentTime=data.optString("currentTime");
+                try {
+                    questionTime=questionTime-Utils.retrunTime(currentTime)+3;//
+                } catch (ParseException e) {
+                     questionTime = data.optInt("questionTime");
+                    e.printStackTrace();
+                }
+                ///
                 Log.d("test", "questionStr = " + questionStr);
                 ArrayList<Question> questions = new GsonBuilder().create().fromJson(questionStr, new
                         TypeToken<List<Question>>() {
