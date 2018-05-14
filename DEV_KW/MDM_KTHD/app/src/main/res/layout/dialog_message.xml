@@ -34,7 +34,7 @@
             android:background="@null"
             android:visibility="gone"
             android:padding="10dp"
-            android:text="不懂"
+            android:text="取消"
             android:textColor="@color/colorAccent"
             android:textSize="16dp"/>
         <Button

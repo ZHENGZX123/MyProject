@@ -42,6 +42,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import cn.kiway.mdm.App;
+import cn.kiway.mdm.dialog.ShowMessageDialog;
 import cn.kiway.mdm.model.AnswerVo;
 import cn.kiway.mdm.model.Choice;
 import cn.kiway.mdm.model.Question;
@@ -101,6 +102,8 @@ public class QuestionActivity extends BaseActivity {
     private ImageButton right;
     private ImageButton wrong;
     private LinearLayout ll_teacher_judge;
+    private TextView hint;
+    private ImageView answerTBd;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -121,6 +124,7 @@ public class QuestionActivity extends BaseActivity {
     public void initView() {
         super.initView();
         time = (TextView) findViewById(R.id.time);
+        hint = (TextView) findViewById(R.id.hint);
         prev = (Button) findViewById(R.id.prev);
         next = (Button) findViewById(R.id.next);
         type = (TextView) findViewById(R.id.type);
@@ -137,6 +141,7 @@ public class QuestionActivity extends BaseActivity {
         answerET = (EditText) findViewById(R.id.answerET);
         answerWV = (RelativeLayout) findViewById(R.id.answerWV);
         wvContainer = (RelativeLayout) findViewById(R.id.wvContainer);
+        answerTBd= (ImageView) findViewById(R.id.answerTBd);
         adapter = new MyAdapter();
         answerGV.setAdapter(adapter);
 
@@ -175,7 +180,8 @@ public class QuestionActivity extends BaseActivity {
         for (int i = 0; i < count; i++) {
             WebView wv = new WebView(this);
             setWebview(wv);
-            wvContainer.addView(wv, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+            wvContainer.addView(wv, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.MATCH_PARENT));
             String url = "file:///android_asset/whiteboard/index.html";
             Log.d("test", "url = " + url);
             wv.loadUrl(url);
@@ -270,7 +276,8 @@ public class QuestionActivity extends BaseActivity {
                     }
                 });
                 ImageLoader.getInstance().displayImage(imgs[i], iv, App.getLoaderOptions());
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
                 lp.setMargins(10, 10, 10, 10);
                 imgLL.addView(iv, lp);
             }
@@ -291,7 +298,8 @@ public class QuestionActivity extends BaseActivity {
                     }
                 });
                 ImageLoader.getInstance().displayImage(imgs[i], iv, App.getLoaderOptions());
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
                 lp.setMargins(10, 10, 10, 10);
                 imgLL2.addView(iv, lp);
             }
@@ -299,6 +307,8 @@ public class QuestionActivity extends BaseActivity {
 
         //reset
         if (collected) {
+            //zzx add
+            hint.setText("答题结果");
             ll_teacher_judge.setVisibility(View.VISIBLE);
             if (q.teacherJudge == 1) {
                 right.setBackgroundResource(R.drawable.right1);
@@ -308,6 +318,8 @@ public class QuestionActivity extends BaseActivity {
                 wrong.setBackgroundResource(R.drawable.wrong1);
             }
         } else {
+            //zzx add
+            hint.setText("答题卡");
             ll_teacher_judge.setVisibility(View.GONE);
         }
 
@@ -352,6 +364,7 @@ public class QuestionActivity extends BaseActivity {
             answerGV.setVisibility(View.INVISIBLE);
             answerET.setVisibility(View.INVISIBLE);
             answerWV.setVisibility(View.VISIBLE);
+            findViewById(R.id.answerWV).setVisibility(View.VISIBLE);
         }
     }
 
@@ -475,7 +488,8 @@ public class QuestionActivity extends BaseActivity {
                 return;
             }
             boolean isOrig = data.getBooleanExtra(ImagePreviewActivity.ISORIGIN, false);
-            ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+            ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker
+                    .EXTRA_RESULT_ITEMS);
             if (!isOrig) {
                 Log.d("test", "压缩前大小" + new File(images.get(0).path).length());
                 File newFile = CompressHelper.getDefault(this).compressToFile(new File(images.get(0).path));
@@ -525,11 +539,26 @@ public class QuestionActivity extends BaseActivity {
                                     @Override
                                     public void onImage(String filepath) {
                                         Log.d("test", "onImage = " + filepath);
-                                        String token = getSharedPreferences("kiwaykthd", 0).getString("x-auth-token", "");
-                                        String result = UploadUtil.uploadFile(filepath, Constant.clientUrl + "common/file?x-auth-token=" + token, new File(filepath).getName());
+                                        String token = getSharedPreferences("kiwaykthd", 0).getString("x-auth-token",
+                                                "");
+                                        String result = UploadUtil.uploadFile(filepath, Constant.clientUrl +
+                                                "common/file?x-auth-token=" + token, new File(filepath).getName());
                                         String url = null;
                                         try {
                                             url = new JSONObject(result).getJSONObject("data").getString("url");
+                                            //zzx add
+                                            final String finalUrl = url;
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    if (wvContainer.getVisibility() == View.VISIBLE) {
+                                                        wvContainer.setVisibility(View.INVISIBLE);
+                                                    }
+                                                    findViewById(R.id.showWVb).setVisibility(View.INVISIBLE);
+                                                    answerTBd.setVisibility(View.VISIBLE);
+                                                    ImageLoader.getInstance().displayImage(finalUrl,answerTBd,App.getLoaderOptions());
+                                                }
+                                            });
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                             toast("上传图片失败");
@@ -538,7 +567,7 @@ public class QuestionActivity extends BaseActivity {
                                         }
                                         q.studentAnswer = url;
                                         getImageCount++;
-                                        if (getImageCount == jsList.size()) {
+                                          if (getImageCount == jsList.size()) {
                                             //3.上传
                                             hidePD();
                                             doSubmitAnswer();
@@ -618,11 +647,12 @@ public class QuestionActivity extends BaseActivity {
     }
 
     public void clickForbid(View view) {
-        toast("不能再作答了");
+        toast("已批改，无法作答");
     }
 
     private int autoTeacherJudge(Question q) {
-        if (q.answerVo.content.replace("[", "").replace("]", "").replace("\"", "").replace(",", "").equals(q.studentAnswer)) {
+        if (q.answerVo.content.replace("[", "").replace("]", "").replace("\"", "").replace(",", "").equals(q
+                .studentAnswer)) {
             return 2;
         }
         return 1;
@@ -680,7 +710,11 @@ public class QuestionActivity extends BaseActivity {
             return;
         }
         if (!timeup && !collected) {
-            toast("老师还没有批改，不能退出本次问答/测评");
+            //zzx add
+            ShowMessageDialog dialog=new ShowMessageDialog(this);
+            dialog.setShowMessage("老师还没有批改，退出将无法看到批改结果",ShowMessageDialog.MessageId.QUESTIONDIALOG);
+            dialog.show();
+            //toast("老师还没有批改，不能退出本次问答/测评");
             return;
         }
         finish();
