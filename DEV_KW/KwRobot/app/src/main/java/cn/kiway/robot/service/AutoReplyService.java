@@ -149,6 +149,7 @@ public class AutoReplyService extends AccessibilityService {
     private int start;
     private int end;
 
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -1634,8 +1635,8 @@ public class AutoReplyService extends AccessibilityService {
                                                     findTargetNode(getRootInActiveWindow(), NODE_EDITTEXT, content, CLICK_NONE);
                                                 }
                                                 //2.备注
-                                                edittextCount = 0;
-                                                findSecondInputEditText(getRootInActiveWindow(), Utils.getParentRemark(getApplicationContext()));
+                                                findTargetNode(getRootInActiveWindow(), NODE_EDITTEXT, 2, Utils.getParentRemark(getApplicationContext()));
+
                                                 //3.点击发送按钮
                                                 findSendImageButton(getRootInActiveWindow(), false);
                                                 mHandler.postDelayed(new Runnable() {
@@ -2709,6 +2710,12 @@ public class AutoReplyService extends AccessibilityService {
         return doFindTargetNode(rootNode, className, targetIndex, null, CLICK_NONE);
     }
 
+    private boolean findTargetNode(AccessibilityNodeInfo rootNode, String className, int targetIndex, String nodeText) {
+        nodeIndex = 0;
+        findTargetNode = null;
+        return doFindTargetNode(rootNode, className, targetIndex, nodeText, CLICK_NONE);
+    }
+
     private boolean findTargetNode(AccessibilityNodeInfo rootNode, String className, String nodeText, int clickType) {
         nodeIndex = 0;
         return doFindTargetNode(rootNode, className, 1, nodeText, clickType);
@@ -2722,7 +2729,6 @@ public class AutoReplyService extends AccessibilityService {
             if (nodeInfo == null) {
                 continue;
             }
-
             if (nodeInfo.getClassName().equals(className)) {
                 nodeIndex++;
 
@@ -2752,8 +2758,8 @@ public class AutoReplyService extends AccessibilityService {
                         ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                         clipboardManager.setPrimaryClip(clip);
                         nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
+                        return true;
                     }
-                    return true;
                 } else if (className.equals(NODE_LISTVIEW)
                         || className.equals(NODE_IMAGEVIEW)
                         || className.equals(NODE_FRAMELAYOUT)
@@ -2789,6 +2795,7 @@ public class AutoReplyService extends AccessibilityService {
         }, 1000);
     }
 
+    private int edittextCount;
     private AccessibilityNodeInfo editTextNode;
 
     public int getTextLengthInEditText(int index) {
@@ -3596,43 +3603,6 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }, 3000);
         }
-    }
-
-    private int edittextCount;
-
-    private boolean findSecondInputEditText(AccessibilityNodeInfo rootNode, String reply) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            if ("android.widget.EditText".equals(nodeInfo.getClassName())) {
-                edittextCount++;
-                if (edittextCount != 2) {
-                    continue;
-                }
-                if (!TextUtils.isEmpty(reply)) {
-                    Bundle arguments = new Bundle();
-                    arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
-                            AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
-                    arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN,
-                            true);
-                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY,
-                            arguments);
-                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                    ClipData clip = ClipData.newPlainText("label", reply);
-                    ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                    clipboardManager.setPrimaryClip(clip);
-                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
-                }
-                return true;
-            }
-            if (findSecondInputEditText(nodeInfo, reply)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
