@@ -3516,9 +3516,21 @@ public class AutoReplyService extends AccessibilityService {
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.d("test", "===============findDeleteButton1================");
-                                    boolean find = findDeleteButton1(getRootInActiveWindow());
-                                    if (!find) {
+                                    boolean find = findTargetNode(getRootInActiveWindow(), 1, "删除", true);
+                                    if (find) {
+                                        mHandler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                findTargetNode(getRootInActiveWindow(), 2, "删除", false);
+                                                mHandler.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        currentZombie.cleared = true;
+                                                    }
+                                                }, 3000);
+                                            }
+                                        }, 2000);
+                                    } else {
                                         currentZombie.cleared = true;
                                     }
                                 }
@@ -3548,62 +3560,6 @@ public class AutoReplyService extends AccessibilityService {
                 return true;
             }
             if (findTopRightButton(nodeInfo, clearZombie)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findDeleteButton1(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("删除")) {
-                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("test", "===============findDeleteButton2================");
-                        boolean find = findDeleteButton2(getRootInActiveWindow());
-                        if (!find) {
-                            currentZombie.cleared = true;
-                        }
-                    }
-                }, 2000);
-                return true;
-            }
-            if (findDeleteButton1(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findDeleteButton2(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("删除")) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        currentZombie.cleared = true;
-                    }
-                }, 3000);
-                return true;
-            }
-            if (findDeleteButton2(nodeInfo)) {
                 return true;
             }
         }
