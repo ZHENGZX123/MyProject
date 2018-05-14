@@ -227,7 +227,7 @@ public class AutoReplyService extends AccessibilityService {
                     //0425新增朋友圈
                     if (o.has("type")) {
                         int type = o.getInt("type");
-                        if (type == 100) {
+                        if (type == 1 || type == 2) {
                             mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
                             currentActionID = 9999;
                             actioningFlag = true;
@@ -1679,7 +1679,7 @@ public class AutoReplyService extends AccessibilityService {
                         if (type == TYPE_CLEAR_ZOMBIE_FAN) {
                             checkFriendInListView1();
                         } else {
-                            checkFriendInListView2(type);
+                            checkFriendInListView2();
                         }
                     }
                 }, 2000);
@@ -1730,7 +1730,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void checkFriendInListView2(int type) {
+    private void checkFriendInListView2() {
         new Thread() {
             @Override
             public void run() {
@@ -1808,6 +1808,7 @@ public class AutoReplyService extends AccessibilityService {
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
+                                    //1. 修改群名称
                                     boolean find = findTargetNode(getRootInActiveWindow(), NODE_TEXTVIEW, "群聊名称", CLICK_PARENT);
                                     if (!find) {
                                         release();
@@ -1828,7 +1829,17 @@ public class AutoReplyService extends AccessibilityService {
                                                         boolean find = findSaveButton(getRootInActiveWindow());
                                                         if (!find) {
                                                             release();
+                                                            return;
                                                         }
+
+                                                        execRootCmdSilent("input swipe 360 900 360 300");
+
+                                                        mHandler.postDelayed(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+
+                                                            }
+                                                        }, 2000);
                                                     }
                                                 }, 1000);
                                             } catch (Exception e) {
@@ -2714,9 +2725,9 @@ public class AutoReplyService extends AccessibilityService {
             if (nodeInfo.getClassName().equals(className)) {
                 if (className.equals("android.widget.TextView") || className.equals("android.widget.Button")) {
                     CharSequence text = nodeInfo.getText();
-                    if (text != null && text.toString().contains(nodeText)) {  //equails
+                    if (text != null && text.toString().contains(nodeText)) {//equals
                         if (clickType == CLICK_SELF) {
-                            nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         } else if (clickType == CLICK_PARENT) {
                             nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         }
@@ -3955,7 +3966,8 @@ public class AutoReplyService extends AccessibilityService {
             String describe = contentO.getString("description");
             String imageUrl = contentO.getString("imgUrl");
             String url = contentO.getString("url");
-            if (title.equals("title") && url.equals("url")) {
+            int type = contentO.getInt("type");
+            if (type == 2) {
                 String[] imageArray = imageUrl.replace("[", "").replace("]", "").split(",");
                 //图文
                 ArrayList<Uri> imageUris = new ArrayList<>();
