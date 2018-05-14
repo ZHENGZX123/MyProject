@@ -69,8 +69,8 @@ public class WXApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        ROOT = "/mnt/sdcard/kiway_student/";
-        ROOT = this.getFilesDir().toString() + "/";
+        ROOT = "/mnt/sdcard/kiway_student/";
+//        ROOT = this.getFilesDir().toString() + "/";
 
         Log.d("test", "ROOT = " + ROOT);
 

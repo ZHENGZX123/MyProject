@@ -985,7 +985,6 @@ public class MainActivity extends BaseActivity {
                 }
             }
         }
-
     }
 
     private void doHttpRequest(final String url, final String param, final String method, final String tagname, final String time, final String related) {
