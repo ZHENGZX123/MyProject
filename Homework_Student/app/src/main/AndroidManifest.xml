@@ -362,7 +362,16 @@
         <meta-data
             android:name="JPUSH_APPKEY"
             android:value="94cc920c7e266802e3e5f9a2" /> <!--  </>值来自开发者平台取得的AppKey-->
-
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="cn.kiway.homework.student.fileprovider"
+            android:exported="false"
+            tools:replace="android:authorities"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
 
     </application>
 

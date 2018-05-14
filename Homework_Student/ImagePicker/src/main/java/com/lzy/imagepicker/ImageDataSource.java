@@ -117,7 +117,8 @@ public class ImageDataSource implements LoaderManager.LoaderCallbacks<Cursor> {
                 }
             }
             //防止没有图片报异常
-            if (data.getCount() > 0) {
+			//zzx add &&allImages.size()>0
+            if (data.getCount() > 0&&allImages.size()>0) {
                 //构造所有图片的集合
                 ImageFolder allImagesFolder = new ImageFolder();
                 allImagesFolder.name = activity.getResources().getString(R.string.all_images);

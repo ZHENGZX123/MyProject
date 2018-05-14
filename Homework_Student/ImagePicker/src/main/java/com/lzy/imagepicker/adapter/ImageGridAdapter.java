@@ -150,7 +150,7 @@ public class ImageGridAdapter extends BaseAdapter {
             } else {
                 holder.cbCheck.setVisibility(View.GONE);
             }
-            imagePicker.getImageLoader().displayImage(mActivity, imageItem.path, holder.ivThumb, mImageSize, mImageSize); //显示图片
+       imagePicker.getImageLoader().displayImage(mActivity, imageItem.path, holder.ivThumb, mImageSize, mImageSize); //显示图片
         }
         return convertView;
     }
