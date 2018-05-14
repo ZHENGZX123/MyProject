@@ -1445,14 +1445,10 @@ public class AutoReplyService extends AccessibilityService {
         new Thread() {
             @Override
             public void run() {
-                //开始滚动读取
+                //FIXME 有漏掉的现象？
                 while (true) {
-                    Log.d("test", "==============findFriendView=============");
-                    findFriendView(getRootInActiveWindow());
-                    //查询是否滚动到底部
-                    Log.d("test", "==============checkIsListBottom=============");
                     boolean isBottom = checkIsListBottom(getRootInActiveWindow());
-                    Log.d("test", "isBottom = " + isBottom);
+                    findFriendView(getRootInActiveWindow());
                     if (isBottom) {
                         break;
                     }
@@ -1462,10 +1458,13 @@ public class AutoReplyService extends AccessibilityService {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-
                 }
+
                 int count = friends.size();
                 Log.d("test", "friends.size = " + count);
+                for (String f : friends) {
+                    Log.d("test", "friend =====>" + f);
+                }
                 FileUtils.saveFile(count + "", "parent.txt");
 
                 if (backdoor) {
@@ -1514,9 +1513,11 @@ public class AutoReplyService extends AccessibilityService {
                 String nickname = nodeInfo.getText().toString();
                 String me = getSharedPreferences("kiway", 0).getString("name", "");
                 if (nickname.equals("微信团队") || nickname.equals("文件传输助手") || nickname.equals(me)) {
-                    continue;
+                    Log.d("test", "not add nickname = " + nickname);
+                } else {
+                    Log.d("test", "add nickname = " + nickname);
+                    friends.add(nickname);
                 }
-                friends.add(nickname);
             }
             findFriendView(nodeInfo);
         }
