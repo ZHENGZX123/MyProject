@@ -94,7 +94,6 @@ public class Constant {
     //{"cmd": "检查新版本"}
     //{"cmd": "附近的人" , "content":"你好，很高兴认识你。" ,"backdoor":true}
 
-
     static Map<String, Integer> backdoors = new LinkedHashMap<>();
 
     static {

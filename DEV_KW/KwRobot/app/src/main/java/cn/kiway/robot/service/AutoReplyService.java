@@ -928,7 +928,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                boolean find = findTargetTextNode(getRootInActiveWindow(), 1, "附近的人", true);
+                boolean find = findTargetNode(getRootInActiveWindow(), 1, "附近的人", true);
                 if (!find) {
                     release();
                     return;
@@ -957,14 +957,14 @@ public class AutoReplyService extends AccessibilityService {
                                             mHandler.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    boolean find = findTargetButton(getRootInActiveWindow(), "打招呼");
+                                                    boolean find = findTargetNode(getRootInActiveWindow(), 2, "打招呼", true);
                                                     if (!find) {
                                                         return;
                                                     }
                                                     mHandler.postDelayed(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            findInputEditText(getRootInActiveWindow(), content);
+                                                            findTargetNode(getRootInActiveWindow(), 3, content, true);
                                                             findSendImageButton(getRootInActiveWindow(), false);
                                                             mHandler.postDelayed(new Runnable() {
                                                                 @Override
@@ -991,27 +991,6 @@ public class AutoReplyService extends AccessibilityService {
                 }, 8000);
             }
         }, 3000);
-    }
-
-
-    private boolean findTargetButton(AccessibilityNodeInfo rootNode, String target) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(target)) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                return true;
-            }
-            if (findTargetButton(nodeInfo, target)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean findNearbyPeopleInListView(AccessibilityNodeInfo rootNode) {
@@ -1058,7 +1037,7 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        boolean find = findTargetTextNode(getRootInActiveWindow(), 1, "微信号：", true);
+                        boolean find = findTargetNode(getRootInActiveWindow(), 1, "微信号：", true);
                         if (!find) {
                             release();
                             return;
@@ -1075,7 +1054,7 @@ public class AutoReplyService extends AccessibilityService {
                                     target = "头像";
                                     sleepTime = 5000;
                                 }
-                                boolean find = findTargetTextNode(getRootInActiveWindow(), 1, target, true);
+                                boolean find = findTargetNode(getRootInActiveWindow(), 1, target, true);
                                 if (!find) {
                                     release();
                                     return;
@@ -1093,7 +1072,7 @@ public class AutoReplyService extends AccessibilityService {
                                                 for (int i = 0; i < length; i++) {
                                                     RootCmd.execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                                 }
-                                                findInputEditText(getRootInActiveWindow(), newName);
+                                                findTargetNode(getRootInActiveWindow(), 3, newName, true);
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
@@ -1142,7 +1121,7 @@ public class AutoReplyService extends AccessibilityService {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            findTargetTextNode(getRootInActiveWindow(), 1, "使用", false);
+                            findTargetNode(getRootInActiveWindow(), 1, "使用", false);
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -1277,25 +1256,11 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                boolean find = findAlbum(getRootInActiveWindow());
+                boolean find = findTargetNode(getRootInActiveWindow(), 1, "相册", true);
                 if (!find) {
                     release();
+                    return;
                 }
-            }
-        }, 1000);
-    }
-
-    private boolean findAlbum(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("相册")) {
-                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -1308,13 +1273,8 @@ public class AutoReplyService extends AccessibilityService {
                         startFindMoment();
                     }
                 }, 2000);
-                return true;
             }
-            if (findAlbum(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
+        }, 1000);
     }
 
     private boolean findMoment = false;
@@ -1645,12 +1605,12 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                findInputEditText(getRootInActiveWindow(), member);
+                findTargetNode(getRootInActiveWindow(), 3, member, true);
 
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        findTargetTextNode(getRootInActiveWindow(), 1, member, true);
+                        findTargetNode(getRootInActiveWindow(), 1, member, true);
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -1676,7 +1636,7 @@ public class AutoReplyService extends AccessibilityService {
                                                     for (int i = 0; i < length; i++) {
                                                         RootCmd.execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                                     }
-                                                    findInputEditText(getRootInActiveWindow(), content);
+                                                    findTargetNode(getRootInActiveWindow(), 3, content, true);
                                                 }
                                                 //2.备注
                                                 edittextCount = 0;
@@ -1793,7 +1753,7 @@ public class AutoReplyService extends AccessibilityService {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                findInputEditText(getRootInActiveWindow(), temp);
+                                findTargetNode(getRootInActiveWindow(), 3, temp, true);
                             }
                         });
                         Thread.sleep(2000);
@@ -1852,7 +1812,7 @@ public class AutoReplyService extends AccessibilityService {
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    boolean find = findTargetTextNode(getRootInActiveWindow(), 1, "群聊名称", true);
+                                    boolean find = findTargetNode(getRootInActiveWindow(), 1, "群聊名称", true);
                                     if (!find) {
                                         release();
                                         return;
@@ -1865,7 +1825,7 @@ public class AutoReplyService extends AccessibilityService {
                                                 Log.d("test", "content = " + content);
                                                 JSONObject o = new JSONObject(content);
                                                 String groupName = o.optString("groupName");
-                                                findInputEditText(getRootInActiveWindow(), groupName);
+                                                findTargetNode(getRootInActiveWindow(), 3, groupName, true);
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
@@ -2301,8 +2261,7 @@ public class AutoReplyService extends AccessibilityService {
                         sender = actions.get(currentActionID).sender;
                     }
 
-                    boolean find = findInputEditText(getRootInActiveWindow(), sender);
-                    Log.d("test", "findInputEditText = " + find);
+                    boolean find = findTargetNode(getRootInActiveWindow(), 3, sender, true);
                     if (!find) {
                         release();
                         return;
@@ -2511,7 +2470,7 @@ public class AutoReplyService extends AccessibilityService {
                                         addOrDeleteGroupPeople(type);
                                     } else if (type == TYPE_FIX_GROUP_NOTICE || type == TYPE_FIX_GROUP_NAME) {
                                         String target = type == TYPE_FIX_GROUP_NAME ? "群聊名称" : "群公告";
-                                        boolean find = findTargetTextNode(getRootInActiveWindow(), 1, target, true);
+                                        boolean find = findTargetNode(getRootInActiveWindow(), 1, target, true);
                                         if (!find) {
                                             release();
                                             return;
@@ -2560,7 +2519,7 @@ public class AutoReplyService extends AccessibilityService {
                     String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                     JSONObject o = new JSONObject(content);
                     String text = o.optString("content");
-                    boolean has = findTargetTextNode(getRootInActiveWindow(), 1, "编辑", false);
+                    boolean has = findTargetNode(getRootInActiveWindow(), 1, "编辑", false);
                     if (has) {
                         mHandler.postDelayed(new Runnable() {
                             @Override
@@ -2595,7 +2554,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                boolean find = findTargetTextNode(getRootInActiveWindow(), 1, friend, true);
+                boolean find = findTargetNode(getRootInActiveWindow(), 1, friend, true);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -2603,7 +2562,7 @@ public class AutoReplyService extends AccessibilityService {
                             release();
                             return;
                         }
-                        boolean find = findTargetTextNode(getRootInActiveWindow(), 1, "设置备注和标签", false);
+                        boolean find = findTargetNode(getRootInActiveWindow(), 1, "设置备注和标签", false);
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -2611,7 +2570,7 @@ public class AutoReplyService extends AccessibilityService {
                                     release();
                                     return;
                                 }
-                                boolean find = findTargetTextNode(getRootInActiveWindow(), 1, friend, false);
+                                boolean find = findTargetNode(getRootInActiveWindow(), 1, friend, false);
                                 mHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
@@ -2628,7 +2587,8 @@ public class AutoReplyService extends AccessibilityService {
                                             for (int i = 0; i < length; i++) {
                                                 execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                             }
-                                            findInputEditText(getRootInActiveWindow(), newName);
+                                            findTargetNode(getRootInActiveWindow(), 3, newName, true);
+
                                             boolean find = findFinishButton2(getRootInActiveWindow());
                                             if (!find) {
                                                 release();
@@ -2664,7 +2624,7 @@ public class AutoReplyService extends AccessibilityService {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                findInputEditText(getRootInActiveWindow(), "@");
+                                findTargetNode(getRootInActiveWindow(), 3, "@", true);
                                 mHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
@@ -2687,8 +2647,8 @@ public class AutoReplyService extends AccessibilityService {
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        findInputEditText(getRootInActiveWindow(), member);
-                                                        boolean find = findTargetTextNode(getRootInActiveWindow(), 1, member, true);
+                                                        findTargetNode(getRootInActiveWindow(), 3, member, true);
+                                                        boolean find = findTargetNode(getRootInActiveWindow(), 1, member, true);
                                                         if (!find) {
                                                             //FXIME 这里最好做检测
                                                             performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
@@ -2730,12 +2690,15 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private boolean findTargetTextNode(AccessibilityNodeInfo rootNode, int classType, String target, boolean clickParent) {
+    //TextView Button的nodeText是用来对比的；EditText的nodeText是用来做粘贴的
+    private boolean findTargetNode(AccessibilityNodeInfo rootNode, int classType, String nodeText, boolean clickParent) {
         String className = "";
         if (classType == 1) {
             className = "android.widget.TextView";
         } else if (classType == 2) {
             className = "android.widget.Button";
+        } else if (classType == 3) {
+            className = "android.widget.EditText";
         }
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -2746,15 +2709,40 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             //equails
-            if (nodeInfo.getClassName().equals(className) && nodeInfo.getText() != null && nodeInfo.getText().toString().contains(target)) {
-                if (clickParent) {
-                    nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                } else {
-                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+            if (nodeInfo.getClassName().equals(className)) {
+                if (className.equals("android.widget.TextView") || className.equals("android.widget.Button")) {
+                    CharSequence text = nodeInfo.getText();
+                    if (text != null && text.toString().contains(nodeText)) {
+                        if (className.equals("android.widget.Button")) {
+                            nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        } else {
+                            if (clickParent) {
+                                nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            } else {
+                                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            }
+                        }
+                        return true;
+                    }
+                } else if (className.equals("android.widget.EditText")) {
+                    if (!TextUtils.isEmpty(nodeText)) {
+                        Bundle arguments = new Bundle();
+                        arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
+                                AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
+                        arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN,
+                                true);
+                        nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY,
+                                arguments);
+                        nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+                        ClipData clip = ClipData.newPlainText("label", nodeText);
+                        ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        clipboardManager.setPrimaryClip(clip);
+                        nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
+                    }
+                    return true;
                 }
-                return true;
             }
-            if (findTargetTextNode(nodeInfo, classType, target, clickParent)) {
+            if (findTargetNode(nodeInfo, classType, nodeText, clickParent)) {
                 return true;
             }
         }
@@ -2762,7 +2750,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void doFixGroupNameOrNotice(String text) {
-        findInputEditText(getRootInActiveWindow(), text);
+        findTargetNode(getRootInActiveWindow(), 3, text, true);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -3171,7 +3159,7 @@ public class AutoReplyService extends AccessibilityService {
                             @Override
                             public void run() {
                                 remark = getParentRemark(getApplicationContext());
-                                boolean find = findInputEditText(getRootInActiveWindow(), remark);
+                                boolean find = findTargetNode(getRootInActiveWindow(), 3, remark, true);
                                 if (find) {
                                     mHandler.postDelayed(new Runnable() {
                                         @Override
@@ -3263,7 +3251,7 @@ public class AutoReplyService extends AccessibilityService {
                     public void run() {
                         //找到文本框输入文字发送
                         String welcome = getSharedPreferences("welcome", 0).getString("welcome", DEFAULT_WELCOME);
-                        boolean find = findInputEditText(getRootInActiveWindow(), welcome);
+                        boolean find = findTargetNode(getRootInActiveWindow(), 3, welcome, true);
                         if (find) {
                             sendTextOnly2(welcome, true);
                             String current = System.currentTimeMillis() + "";
@@ -3389,7 +3377,7 @@ public class AutoReplyService extends AccessibilityService {
                             if (actionType == TYPE_COLLECTOR_FORWARDING) {
                                 //这里要额外做一步，找到文本框并粘贴内容
                                 String content = getCollectorForwardingContent();
-                                boolean find = findInputEditText(getRootInActiveWindow(), content);
+                                boolean find = findTargetNode(getRootInActiveWindow(), 3, content, true);
                                 if (!find) {
                                     Log.d("test", "粘贴不上，不发过去");
                                     release();
@@ -3863,8 +3851,7 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 Log.d("test", "sendTextOnly is called");
-                AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-                boolean find = findInputEditText(rootNode, rm.content);
+                boolean find = findTargetNode(getRootInActiveWindow(), 3, rm.content, true);
                 Log.d("test", "findInputEditText = " + find);
                 if (!find) {
                     rm.returnFinished = true;
@@ -3899,8 +3886,7 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 Log.d("test", "sendTextOnly is called");
-                AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-                boolean find = findInputEditText(rootNode, reply);
+                boolean find = findTargetNode(getRootInActiveWindow(), 3, reply, true);
                 Log.d("test", "findInputEditText = " + find);
                 if (!find) {
                     return;
@@ -3931,37 +3917,6 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }, 3000);
         }
-    }
-
-    private boolean findInputEditText(AccessibilityNodeInfo rootNode, String reply) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            if ("android.widget.EditText".equals(nodeInfo.getClassName())) {
-                if (!TextUtils.isEmpty(reply)) {
-                    Bundle arguments = new Bundle();
-                    arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
-                            AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
-                    arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN,
-                            true);
-                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY,
-                            arguments);
-                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                    ClipData clip = ClipData.newPlainText("label", reply);
-                    ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                    clipboardManager.setPrimaryClip(clip);
-                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
-                }
-                return true;
-            }
-            if (findInputEditText(nodeInfo, reply)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private int edittextCount;
@@ -4253,7 +4208,7 @@ public class AutoReplyService extends AccessibilityService {
                 int delay = 0;
                 if (!TextUtils.isEmpty(remark)) {
                     //1.查找备注文本框并粘贴remark
-                    findInputEditText(getRootInActiveWindow(), remark);
+                    findTargetNode(getRootInActiveWindow(), 3, remark, true);
                     delay = 2000;
                 }
                 //2.查找发送按钮并点击
@@ -4378,7 +4333,7 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 String nickname = currentZombie.nickname;
-                boolean find = findInputEditText(getRootInActiveWindow(), nickname);
+                boolean find = findTargetNode(getRootInActiveWindow(), 3, nickname, true);
                 Log.d("test", "findInputEditText = " + find);
                 if (!find) {
                     currentZombie.cleared = true;
