@@ -225,11 +225,11 @@ public class ImageGridActivity extends ImageBaseActivity implements ImageDataSou
             } else if (resultCode == RESULT_OK && requestCode == ImagePicker.REQUEST_CODE_TAKE) {
             //如果是裁剪，因为裁剪指定了存储的Uri，所以返回的data一定为null
                 //发送广播通知图片增加了
-                ImagePicker.galleryAddPic(this, imagePicker.getTakeImageFile());
-                ImageItem imageItem = new ImageItem();
-                imageItem.path = imagePicker.getTakeImageFile().getAbsolutePath();
-                imagePicker.clearSelectedImages();
-                imagePicker.addSelectedImageItem(0, imageItem, true);
+//                ImagePicker.galleryAddPic(this, imagePicker.getTakeImageFile());
+//                ImageItem imageItem = new ImageItem();
+//                imageItem.path = imagePicker.getTakeImageFile().getAbsolutePath();
+//                imagePicker.clearSelectedImages();
+//                imagePicker.addSelectedImageItem(0, imageItem, true);
                 if (imagePicker.isCrop()) {
                     Intent intent = new Intent(ImageGridActivity.this, ImageCropActivity.class);
                     startActivityForResult(intent, ImagePicker.REQUEST_CODE_CROP);  //单选需要裁剪，进入裁剪界面
