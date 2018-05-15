@@ -720,8 +720,7 @@ public class AutoReplyService extends AccessibilityService {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d("test", "=============findAcceptButton===============");
-                            boolean find = findAcceptButton(getRootInActiveWindow());
+                            boolean find = findAcceptButton();
                             if (!find) {
                                 release();
                             }
@@ -1178,7 +1177,7 @@ public class AutoReplyService extends AccessibilityService {
                                 if (!actioningFlag) {
                                     break;
                                 }
-                                int ret = findAcceptButton_AddedButton(getRootInActiveWindow());
+                                int ret = findAcceptButton_AddedButton();
                                 if (ret == 1) {
                                     sleep(30000);
                                 } else if (ret == 2) {
@@ -1199,39 +1198,27 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     //1:30秒 2：10秒 3：3秒
-    private int findAcceptButton_AddedButton(AccessibilityNodeInfo rootNode) {
-        boolean find1 = findAcceptButton(rootNode);
+    private int findAcceptButton_AddedButton() {
+        boolean find1 = findAcceptButton();
         if (find1) {
             return 1;
         }
-        boolean find2 = findAddedTextView(rootNode);
+        boolean find2 = findAddedTextView();
         return find2 ? 2 : 3;
     }
 
-    private boolean findAddedTextView(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("已添加")) {
-                //长按
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        doLongClickNickname(nodeInfo);
-                    }
-                });
-                return true;
-            }
-            if (findAddedTextView(nodeInfo)) {
-                return true;
-            }
+    private boolean findAddedTextView() {
+        findTargetNode(NODE_TEXTVIEW, "已添加", CLICK_NONE);
+        if (mFindTargetNode == null) {
+            return false;
         }
-        return false;
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                doLongClickNickname(mFindTargetNode);
+            }
+        });
+        return true;
     }
 
     private void doLongClickNickname(AccessibilityNodeInfo nodeInfo) {
@@ -1814,7 +1801,12 @@ public class AutoReplyService extends AccessibilityService {
                                                                 mHandler.postDelayed(new Runnable() {
                                                                     @Override
                                                                     public void run() {
-                                                                        findCheckButton(getRootInActiveWindow(), "保存到通讯录");
+                                                                        findTargetNode(NODE_TEXTVIEW, "保存到通讯录", CLICK_NONE);
+                                                                        if (mFindTargetNode == null) {
+                                                                            release();
+                                                                            return;
+                                                                        }
+                                                                        clickSomeWhere(mFindTargetNode.getParent().getChild(1));
                                                                         mHandler.postDelayed(new Runnable() {
                                                                             @Override
                                                                             public void run() {
@@ -1849,28 +1841,6 @@ public class AutoReplyService extends AccessibilityService {
                 }, 5000);
             }
         });
-    }
-
-    private boolean findCheckButton(AccessibilityNodeInfo rootNode, String text) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(text)) {
-                AccessibilityNodeInfo checkNode = rootNode.getChild(i + 1);
-                //checkNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                clickSomeWhere(checkNode);
-                return true;
-            }
-            if (findCheckButton(nodeInfo, text)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean findZombieFans(AccessibilityNodeInfo rootNode) {
@@ -2683,6 +2653,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private boolean findTargetNode(String className, String targetText, int clickType) {
         nodeIndex = 0;
+        mFindTargetNode = null;
         return doFindTargetNode(getRootInActiveWindow(), className, 1, targetText, clickType);
     }
 
@@ -2721,6 +2692,7 @@ public class AutoReplyService extends AccessibilityService {
                             } else {
                                 rootNode.getChild(i + clickType).performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             }
+                            mFindTargetNode = nodeInfo;
                             return true;
                         }
                     }
@@ -2990,93 +2962,81 @@ public class AutoReplyService extends AccessibilityService {
     private String remark;
     private String lastNickname = "";
 
-    //这个太复杂，回头重构。。。
-    private boolean findAcceptButton(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("接受")) {
-                int finalI = i;
-                mHandler.post(new Runnable() {
+    private boolean findAcceptButton() {
+        findTargetNode(NODE_BUTTON, "接受", CLICK_NONE);
+        if (mFindTargetNode == null) {
+            return false;
+        }
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                AccessibilityNodeInfo nicknameNode = mFindTargetNode.getParent().getChild(0);
+                nickname = nicknameNode.getText().toString();
+                Log.d("test", "nickname = " + nickname);
+                if (lastNickname.equals(nickname)) {
+                    //重复nickname，执行删除操作
+                    doLongClickNickname(nicknameNode);
+                    return;
+                }
+                lastNickname = nickname;
+                mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        AccessibilityNodeInfo nicknameNode = rootNode.getChild(finalI - 2);
-                        nickname = nicknameNode.getText().toString();
-                        Log.d("test", "nickname = " + nickname);
+                        remark = getParentRemark(getApplicationContext());
+                        findTargetNode(NODE_EDITTEXT, remark, CLICK_NONE);
 
-                        if (lastNickname.equals(nickname)) {
-                            //重复nickname，执行删除操作
-                            doLongClickNickname(nicknameNode);
-                            return;
-                        }
-
-                        lastNickname = nickname;
-                        nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                remark = getParentRemark(getApplicationContext());
-                                findTargetNode(NODE_EDITTEXT, remark, CLICK_NONE);
-
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        boolean find = findTargetNode(NODE_TEXTVIEW, "完成", CLICK_SELF);
-                                        if (find) {
-                                            mHandler.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    if (adding_missing_fish) {
-                                                        //漏网之鱼不再发消息
-                                                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                                                    } else {
-                                                        //找到发消息，发一段话
-                                                        boolean find = findTargetNode(NODE_BUTTON, "发消息", CLICK_SELF);
-                                                        if (find) {
-                                                            mHandler.postDelayed(new Runnable() {
-                                                                @Override
-                                                                public void run() {
-                                                                    //找到文本框输入文字发送
-                                                                    String welcome = getSharedPreferences("welcome", 0).getString("welcome", DEFAULT_WELCOME);
-                                                                    boolean find = findTargetNode(NODE_EDITTEXT, welcome, CLICK_NONE);
-                                                                    release();
-                                                                    if (find) {
-                                                                        String current = System.currentTimeMillis() + "";
-                                                                        Utils.uploadFriend(getApplication(), nickname, remark + " " + nickname, current, current);
-                                                                    }
-                                                                }
-                                                            }, 3000);
-                                                        } else {
-                                                            release();
-                                                        }
-                                                    }
-                                                }
-                                            }, 5000);
-                                        } else {
+                                boolean find = findTargetNode(NODE_TEXTVIEW, "完成", CLICK_SELF);
+                                if (find) {
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
                                             if (adding_missing_fish) {
+                                                //漏网之鱼不再发消息
                                                 performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                             } else {
-                                                release();
+                                                //找到发消息，发一段话
+                                                boolean find = findTargetNode(NODE_BUTTON, "发消息", CLICK_SELF);
+                                                if (find) {
+                                                    mHandler.postDelayed(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            //找到文本框输入文字发送
+                                                            String welcome = getSharedPreferences("welcome", 0).getString
+                                                                    ("welcome", DEFAULT_WELCOME);
+                                                            boolean find = findTargetNode(NODE_EDITTEXT, welcome, CLICK_NONE);
+                                                            release();
+                                                            if (find) {
+                                                                String current = System.currentTimeMillis() + "";
+                                                                Utils.uploadFriend(getApplication(), nickname, remark + " " +
+                                                                        nickname, current, current);
+                                                            }
+                                                        }
+                                                    }, 3000);
+                                                } else {
+                                                    release();
+                                                }
                                             }
                                         }
+                                    }, 5000);
+                                } else {
+                                    if (adding_missing_fish) {
+                                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                    } else {
+                                        release();
                                     }
-                                }, 2000);
+                                }
                             }
-                        }, 3000);
+                        }, 2000);
                     }
-                });
-                return true;
+                }, 3000);
             }
-            if (findAcceptButton(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
+        });
+        return true;
     }
 
     private boolean findTransferButton(AccessibilityNodeInfo rootNode) {
