@@ -114,7 +114,6 @@ import static cn.kiway.robot.util.Constant.NODE_TEXTVIEW;
 import static cn.kiway.robot.util.Constant.port;
 import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
-import static cn.kiway.robot.util.Utils.getParentRemark;
 import static java.lang.System.currentTimeMillis;
 
 public class AutoReplyService extends AccessibilityService {
@@ -594,11 +593,11 @@ public class AutoReplyService extends AccessibilityService {
                         content = ticker.substring(ticker.indexOf(":") + 1).trim();
                         Log.d("test", "sender name = " + sender);
                         Log.d("test", "sender content = " + content);
-                        if (Utils.isInfilters(getApplicationContext(), sender)) {
+                        if (Utils.isInfilters(getApplication(), sender)) {
                             Log.d("test", "该昵称被过滤");
                             continue;
                         }
-                        if (!Utils.isGetPic(getApplicationContext(), content)) {
+                        if (!Utils.isGetPic(getApplication(), content)) {
                             Log.d("test", "图片接收被过滤");
                             continue;
                         }
@@ -834,7 +833,7 @@ public class AutoReplyService extends AccessibilityService {
                                         return;
                                     }
                                 } else if (actionType == TYPE_CLEAR_ZOMBIE_FAN) {
-                                    int friendCount = Integer.parseInt(Utils.getParentRemark(getApplication()));
+                                    int friendCount = Integer.parseInt(Utils.getParentRemark(getApplication(), 0));
                                     if (friendCount < start) {
                                         sendTextOnly2("你输入的命令不正确，当前好友数量是：" + friendCount, true);
                                         return;
@@ -1191,7 +1190,7 @@ public class AutoReplyService extends AccessibilityService {
                                 if (!actioningFlag) {
                                     break;
                                 }
-                                int ret = findAcceptButton_AddedButton();
+                                int ret = hasAcceptButtonOrAddedTextView();
                                 if (ret == 1) {
                                     sleep(30000);
                                 } else if (ret == 2) {
@@ -1212,7 +1211,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     //1:30秒 2：10秒 3：3秒
-    private int findAcceptButton_AddedButton() {
+    private int hasAcceptButtonOrAddedTextView() {
         boolean find1 = hasAcceptButton();
         if (find1) {
             return 1;
@@ -1383,7 +1382,7 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 //FIXME 有漏掉的现象？
                 while (true) {
-                    boolean isBottom = checkIsListBottom(getRootInActiveWindow());
+                    boolean isBottom = findTargetNode(NODE_TEXTVIEW, "位联系人", CLICK_NONE);
                     findFriendView(getRootInActiveWindow());
                     if (isBottom) {
                         break;
@@ -1415,25 +1414,6 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
         }.start();
-    }
-
-    private boolean checkIsListBottom(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().endsWith("位联系人")) {
-                return true;
-            }
-            if (checkIsListBottom(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void findFriendView(AccessibilityNodeInfo rootNode) {
@@ -1571,7 +1551,7 @@ public class AutoReplyService extends AccessibilityService {
                                                     }
                                                 }
                                                 //2.备注
-                                                findTargetNode(NODE_EDITTEXT, 2, Utils.getParentRemark(getApplicationContext()));
+                                                findTargetNode(NODE_EDITTEXT, 2, Utils.getParentRemark(getApplication(), 1));
 
                                                 //3.点击发送按钮
                                                 findTargetNode(NODE_TEXTVIEW, "发布|发表", CLICK_SELF);
@@ -2397,7 +2377,7 @@ public class AutoReplyService extends AccessibilityService {
                     //循环开始艾特人
                     startAtPeople();
                 } else if (type == TYPE_GET_ALL_FRIENDS) {
-                    sendTextOnly2("好友数量：" + Utils.getParentRemark(getApplication()), true);
+                    sendTextOnly2("好友数量：" + Utils.getParentRemark(getApplication(), 0), true);
                 } else if (type == TYPE_ADD_FRIEND) {
                     clickSomeWhere(mFindTargetNode);
                     startAddFriend();
@@ -2831,7 +2811,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private void toast(String txt) {
         if (AutoReplyService.instance != null) {
-            Toast.makeText(AutoReplyService.instance.getApplicationContext(), txt, Toast.LENGTH_LONG).show();
+            Toast.makeText(AutoReplyService.instance.getApplication(), txt, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -2862,7 +2842,7 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        remark = getParentRemark(getApplicationContext());
+                        remark = Utils.getParentRemark(getApplication(), 1);
                         findTargetNode(NODE_EDITTEXT, remark);
 
                         mHandler.postDelayed(new Runnable() {
