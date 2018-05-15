@@ -404,4 +404,20 @@ public class Utils {
 
         return 0;
     }
+
+    public static boolean aContainsB(String text, String targetText) {
+        if (TextUtils.isEmpty(text) || TextUtils.isEmpty(targetText)) {
+            return false;
+        }
+        if (!targetText.contains("|")) {
+            return false;
+        }
+        String[] targets = targetText.split("\\|");
+        for (String s : targets) {
+            if (text.contains(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
