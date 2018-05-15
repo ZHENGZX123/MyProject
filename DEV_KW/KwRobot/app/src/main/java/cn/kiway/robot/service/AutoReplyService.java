@@ -108,7 +108,6 @@ import static cn.kiway.robot.util.Constant.NODE_EDITTEXT;
 import static cn.kiway.robot.util.Constant.NODE_FRAMELAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_IMAGEBUTTON;
 import static cn.kiway.robot.util.Constant.NODE_IMAGEVIEW;
-import static cn.kiway.robot.util.Constant.NODE_LISTVIEW;
 import static cn.kiway.robot.util.Constant.NODE_RELATIVELAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_TEXTVIEW;
 import static cn.kiway.robot.util.Constant.port;
@@ -926,9 +925,9 @@ public class AutoReplyService extends AccessibilityService {
                         String targetSender = actions.get(currentActionID).sender;
                         Log.d("test", "checkIsCorrectPage targetSender = " + targetSender);
                         //2.容错判断
-                        boolean isCorrect = checkIsCorrectSender(getRootInActiveWindow(), targetSender);
-                        Log.d("test", "isCorrect = " + isCorrect);
-                        if (isCorrect) {
+                        boolean isCorrectPage = findTargetNode(NODE_TEXTVIEW, targetSender, CLICK_NONE);
+                        Log.d("test", "isCorrectPage = " + isCorrectPage);
+                        if (isCorrectPage) {
                             doChatByActionType();
                         } else {
                             backToWxHomePage();
@@ -1255,11 +1254,6 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        findTargetNode(NODE_LISTVIEW, Integer.MAX_VALUE);
-                        if (mFindTargetNode == null) {
-                            release();
-                            return;
-                        }
                         startFindMoment();
                     }
                 }, 2000);
@@ -1291,7 +1285,7 @@ public class AutoReplyService extends AccessibilityService {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                findMoment = findMomentInListView(text);
+                                findMoment = checkMomentInListView(text);
                                 Log.d("test", "findMoment = " + findMoment);
                             }
                         });
@@ -1310,7 +1304,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private boolean findMomentInListView(String text) {
+    private boolean checkMomentInListView(String text) {
         boolean find = findTargetNode(NODE_TEXTVIEW, text, CLICK_PARENT);
         if (!find) {
             return false;
@@ -1331,20 +1325,20 @@ public class AutoReplyService extends AccessibilityService {
                         @Override
                         public void run() {
                             boolean find = findTargetNode(NODE_TEXTVIEW, "删除", CLICK_PARENT);
+                            if (!find) {
+                                release();
+                                return;
+                            }
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (find) {
-                                        findTargetNode(NODE_BUTTON, "确定", CLICK_SELF);
-                                        mHandler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                release();
-                                            }
-                                        }, 3000);
-                                    } else {
-                                        release();
-                                    }
+                                    findTargetNode(NODE_BUTTON, "确定", CLICK_SELF);
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            release();
+                                        }
+                                    }, 3000);
                                 }
                             }, 2000);
                         }
@@ -1461,17 +1455,17 @@ public class AutoReplyService extends AccessibilityService {
                     public void run() {
                         if (find) {
                             int actionType = actions.get(currentActionID).actionType;
-                            boolean find = false;
-                            if (actionType == TYPE_CREATE_GROUP_CHAT || actionType == TYPE_CLEAR_ZOMBIE_FAN) {
-                                mFindTargetNode = null;
-                                sureButton = null;
-                                find = findFriendListView(getRootInActiveWindow());
+                            if (actionType == TYPE_CLEAR_ZOMBIE_FAN) {
+                                checkFriendInListView1();
+                            } else if (actionType == TYPE_CREATE_GROUP_CHAT) {
+                                checkFriendInListView2();
                             } else if (actionType == TYPE_ADD_FRIEND) {
-                                find = findTargetPeople2("微信号/QQ号/手机号", actionType);
+                                boolean find = enterChatView("微信号/QQ号/手机号", actionType);
+                                if (!find) {
+                                    release();
+                                }
                             }
-                            if (!find) {
-                                release();
-                            }
+
                         } else {
                             release();
                         }
@@ -1573,44 +1567,6 @@ public class AutoReplyService extends AccessibilityService {
         });
     }
 
-    private AccessibilityNodeInfo sureButton;
-
-    private boolean findFriendListView(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.ListView")) {
-                mFindTargetNode = nodeInfo;
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        int type = actions.get(currentActionID).actionType;
-                        if (type == TYPE_CLEAR_ZOMBIE_FAN) {
-                            checkFriendInListView1();
-                        } else {
-                            checkFriendInListView2();
-                        }
-                    }
-                }, 2000);
-                return true;
-            } else if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null) {
-                String text = nodeInfo.getText().toString();
-                if (text.equals("确定") || text.equals("删除")) {
-                    sureButton = nodeInfo;
-                }
-            }
-            if (findFriendListView(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void checkFriendInListView1() {
         new Thread() {
             @Override
@@ -1699,14 +1655,14 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                sureButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                findTargetNode(NODE_TEXTVIEW, "确定|删除", CLICK_SELF);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         int type = actions.get(currentActionID).actionType;
 
                         if (type == TYPE_CLEAR_ZOMBIE_FAN) {
-                            boolean find = findZombieFans(getRootInActiveWindow());
+                            boolean find = hasZombieFans();
                             if (!find) {
                                 Log.d("test", "创建失败或者没有僵尸粉");
                                 release();
@@ -1794,46 +1750,35 @@ public class AutoReplyService extends AccessibilityService {
         });
     }
 
-    private boolean findZombieFans(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().startsWith("你无法邀请未添加你为好友的用户进去群聊，请先向")) {
-                String text = nodeInfo.getText().toString().replace("你无法邀请未添加你为好友的用户进去群聊，请先向", "").replace("发送朋友验证申请。对方通过验证后，才能加入群聊。", "");
-                String[] temp = text.split("、");
-                Log.d("test", "僵尸粉的数量：" + temp.length);
-                //返回，通过搜索好友名字，去逐个删除。
-                if (temp.length == 0) {
-                    toast("僵尸粉数量为0");
-                    release();
-                }
-
-                resetMaxReleaseTime(60000 * temp.length);
-
-                zombies.clear();
-                for (String t : temp) {
-                    zombies.add(new Zombie(t, false));
-                }
-
-                performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        doSequeClearZombies();
-                    }
-                }, 2000);
-                return true;
-            }
-            if (findZombieFans(nodeInfo)) {
-                return true;
-            }
+    private boolean hasZombieFans() {
+        boolean has = findTargetNode(NODE_TEXTVIEW, "你无法邀请未添加你为好友的用户进去群聊，请先向", CLICK_NONE);
+        if (!has) {
+            return false;
         }
-        return false;
+        String text = mFindTargetNode.getText().toString().replace("你无法邀请未添加你为好友的用户进去群聊，请先向", "").replace("发送朋友验证申请。对方通过验证后，才能加入群聊。", "");
+        String[] temp = text.split("、");
+        Log.d("test", "僵尸粉的数量：" + temp.length);
+        //返回，通过搜索好友名字，去逐个删除。
+        if (temp.length == 0) {
+            toast("僵尸粉数量为0");
+            release();
+        }
+
+        resetMaxReleaseTime(60000 * temp.length);
+
+        zombies.clear();
+        for (String t : temp) {
+            zombies.add(new Zombie(t, false));
+        }
+
+        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doSequeClearZombies();
+            }
+        }, 2000);
+        return true;
     }
 
     private Zombie currentZombie;
@@ -2028,13 +1973,6 @@ public class AutoReplyService extends AccessibilityService {
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d("test", "===============findMsgListView================");
-                    findTargetNode(NODE_LISTVIEW, 1);
-                    if (mFindTargetNode == null) {
-                        release();
-                        return;
-                    }
-
                     //暂时去掉公众号、名片功能
                     Log.d("test", "=================findLastMsgViewInListView====================");
                     findTargetNode(NODE_FRAMELAYOUT, Integer.MAX_VALUE);
@@ -2082,26 +2020,6 @@ public class AutoReplyService extends AccessibilityService {
         }, 2000);
     }
 
-    private boolean checkIsCorrectSender(AccessibilityNodeInfo rootNode, String targetSender) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            //equals
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().contains(targetSender)) {
-                return true;
-            }
-            if (checkIsCorrectSender(nodeInfo, targetSender)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void searchSenderInWxHomePage(int type) {
         findTargetNode(NODE_TEXTVIEW, Integer.MAX_VALUE);
         if (mFindTargetNode == null) {
@@ -2141,10 +2059,10 @@ public class AutoReplyService extends AccessibilityService {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d("test", "=============findTargetPeople2==============");
-                            boolean find = findTargetPeople2(finalSender, type);
+                            Log.d("test", "=============enterChatView==============");
+                            boolean find = enterChatView(finalSender, type);
                             if (!find) {
-                                Log.d("test", "findTargetPeople2 failure");
+                                Log.d("test", "enterChatView failure");
                                 release();
                             }
                         }
@@ -2273,8 +2191,8 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    //1聊天 其他：actionType
-    private boolean findTargetPeople2(String forwardto, int type) {
+    // 好友、群的聊天窗口：1聊天 其他：actionType
+    private boolean enterChatView(String forwardto, int type) {
         findTargetNode(NODE_TEXTVIEW, forwardto, CLICK_PARENT);
         if (mFindTargetNode == null) {
             return false;
@@ -2660,8 +2578,7 @@ public class AutoReplyService extends AccessibilityService {
                             return true;
                         }
                     }
-                } else if (className.equals(NODE_LISTVIEW)
-                        || className.equals(NODE_IMAGEVIEW)
+                } else if (className.equals(NODE_IMAGEVIEW)
                         || className.equals(NODE_FRAMELAYOUT)
                         || className.equals(NODE_RELATIVELAYOUT)
                         || className.equals(NODE_IMAGEBUTTON)
@@ -2733,13 +2650,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Log.d("test", "================findFriendListView===================");
-                mFindTargetNode = null;
-                sureButton = null;
-                boolean find = findFriendListView(getRootInActiveWindow());
-                if (!find) {
-                    release();
-                }
+                checkFriendInListView2();
             }
         }, 2000);
     }
@@ -2947,9 +2858,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Log.d("test", "sendTextOnly is called");
                 boolean find = findTargetNode(NODE_EDITTEXT, rm.content);
-                Log.d("test", "findInputEditText = " + find);
                 if (!find) {
                     rm.returnFinished = true;
                     return;
@@ -2957,15 +2866,7 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
-                        List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByText("发送");
-                        if (list != null && list.size() > 0) {
-                            for (AccessibilityNodeInfo n : list) {
-                                if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
-                                    n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                }
-                            }
-                        }
+                        findTargetNode(NODE_BUTTON, "发送", CLICK_SELF);
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -3371,7 +3272,7 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        boolean find = findTargetPeople2(nickname, TYPE_CLEAR_ZOMBIE_FAN);
+                        boolean find = enterChatView(nickname, TYPE_CLEAR_ZOMBIE_FAN);
                         if (!find) {
                             currentZombie.cleared = true;
                         }
