@@ -39,6 +39,7 @@ public class KWApplication extends Application {
 
     public static RabbitMQUtils consumeUtil;
     public static RabbitMQUtils sendUtil;
+    public static RabbitMQUtils sendUtil2;
 
     @Override
     public void onCreate() {
@@ -66,6 +67,9 @@ public class KWApplication extends Application {
         }
         if (sendUtil != null) {
             sendUtil.close();
+        }
+        if (sendUtil2 != null) {
+            sendUtil2.close();
         }
     }
 

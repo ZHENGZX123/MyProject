@@ -447,13 +447,12 @@ public class MainActivity extends BaseActivity {
 //                "\"content\":\"学位房\"}";
 //        AutoReplyService.instance.sendReplyImmediately(fakeRecv, false);
 
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
-//                //AutoReplyService.instance.getTextLengthInEditText(2);
-//            }
-//        }, 10000);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
+            }
+        }, 10000);
 
         AutoReplyService.instance.sendMsgToServer2();
     }
