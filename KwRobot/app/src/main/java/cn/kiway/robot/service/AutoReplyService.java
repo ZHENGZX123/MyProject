@@ -720,7 +720,7 @@ public class AutoReplyService extends AccessibilityService {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            boolean find = findAcceptButton();
+                            boolean find = hasAcceptButton();
                             if (!find) {
                                 release();
                             }
@@ -1199,15 +1199,15 @@ public class AutoReplyService extends AccessibilityService {
 
     //1:30秒 2：10秒 3：3秒
     private int findAcceptButton_AddedButton() {
-        boolean find1 = findAcceptButton();
+        boolean find1 = hasAcceptButton();
         if (find1) {
             return 1;
         }
-        boolean find2 = findAddedTextView();
+        boolean find2 = hasAddedTextView();
         return find2 ? 2 : 3;
     }
 
-    private boolean findAddedTextView() {
+    private boolean hasAddedTextView() {
         findTargetNode(NODE_TEXTVIEW, "已添加", CLICK_NONE);
         if (mFindTargetNode == null) {
             return false;
@@ -2866,32 +2866,14 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
+                longClickSomeWhere(lastMsgView);
                 Log.d("test", "执行长按事件");
                 mHandler.postDelayed(new Runnable() {
-
                     @Override
                     public void run() {
-                        Log.d("test", "=================findTransferButton===============");
                         boolean find = findTransferButton(getRootInActiveWindow());
                         if (!find) {
-                            Log.d("test", "findTransferButton失败，长按不出来，点击了一下");
-
-                            clickSomeWhere(lastMsgView);
-
-                            mHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //3.点一下返回
-                                    String content = actions.get(currentActionID).content;
-                                    Log.d("test", "content = " + content);
-                                    if (content.startsWith("[图片]") || content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.startsWith("[位置]") || content.contains("向你推荐了") || findTargetNode(NODE_TEXTVIEW, "添加到手机通讯录", CLICK_SELF)) {
-                                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                                    }
-                                    //4.再次执行长按
-                                    doLongClickLastMsgAgain();
-                                }
-                            }, 2000);//有待查看
+                            release();
                         }
                     }
                 }, 2000);
@@ -2907,6 +2889,17 @@ public class AutoReplyService extends AccessibilityService {
         int y = r.height() / 2 + r.top;
         // 2.执行su命令
         int ret = execRootCmdSilent("input tap " + x + " " + y);
+        Log.d("test", "execRootCmdSilent ret = " + ret);
+    }
+
+    private void longClickSomeWhere(AccessibilityNodeInfo node) {
+        Rect r = new Rect();
+        node.getBoundsInScreen(r);
+        // 1.生成点击坐标
+        int x = r.width() / 2 + r.left;
+        int y = r.height() / 2 + r.top;
+        // 2.执行su命令
+        int ret = execRootCmdSilent("input touchscreen swipe " + x + " " + y + " " + x + " " + y + " 2000");
         Log.d("test", "execRootCmdSilent ret = " + ret);
     }
 
@@ -2938,37 +2931,12 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void doLongClickLastMsgAgain() {
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.d("test", "doLongClickLastMsgAgain");
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        lastMsgView.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Log.d("test", "=================findTransferButton===============");
-                                boolean find = findTransferButton(getRootInActiveWindow());
-                                if (!find) {
-                                    release();
-                                }
-                            }
-                        }, 2000);
-                    }
-                }, 2000);
-            }
-        }, 2000);
-    }
-
     //自动加好友
     private String nickname;
     private String remark;
     private String lastNickname = "";
 
-    private boolean findAcceptButton() {
+    private boolean hasAcceptButton() {
         findTargetNode(NODE_BUTTON, "接受", CLICK_NONE);
         if (mFindTargetNode == null) {
             return false;
