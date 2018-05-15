@@ -977,7 +977,7 @@ public class AutoReplyService extends AccessibilityService {
                                                         @Override
                                                         public void run() {
                                                             findTargetNode(NODE_EDITTEXT, content, CLICK_NONE);
-                                                            findSendImageButton(getRootInActiveWindow(), false);
+                                                            findTargetNode(NODE_TEXTVIEW, "发布|发表", CLICK_SELF);
                                                             mHandler.postDelayed(new Runnable() {
                                                                 @Override
                                                                 public void run() {
@@ -1601,7 +1601,7 @@ public class AutoReplyService extends AccessibilityService {
                                                 findTargetNode(NODE_EDITTEXT, 2, Utils.getParentRemark(getApplicationContext()));
 
                                                 //3.点击发送按钮
-                                                findSendImageButton(getRootInActiveWindow(), false);
+                                                findTargetNode(NODE_TEXTVIEW, "发布|发表", CLICK_SELF);
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
@@ -3300,11 +3300,13 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         Log.d("test", "----------findSendImageButton------------------");
-                        boolean find = findSendImageButton(getRootInActiveWindow(), true);
-                        if (!find) {
-                            Log.d("test", "找不到发送按钮，relase");
-                            release();
-                        }
+                        findTargetNode(NODE_TEXTVIEW, "发布|发表", CLICK_SELF);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                release();
+                            }
+                        }, 3000);
                     }
                 }, 2000);
                 return true;
@@ -3651,10 +3653,13 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        boolean find = findSendImageButton(getRootInActiveWindow(), true);
-                        if (!find) {
-                            release();
-                        }
+                        findTargetNode(NODE_TEXTVIEW, "发布|发表", CLICK_SELF);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                release();
+                            }
+                        }, 3000);
                     }
                 }, delay);
             }
@@ -3674,36 +3679,6 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
         }, 4000);
-    }
-
-    private boolean findSendImageButton(AccessibilityNodeInfo rootNode, boolean release) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo = " + nodeInfo.getClassName());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null) {
-                String text = nodeInfo.getText().toString();
-                if (text.equals("发送") || text.equals("发表")) {
-                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    if (release) {
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                release();
-                            }
-                        }, 3000);
-                    }
-                    return true;
-                }
-            }
-            if (findSendImageButton(nodeInfo, release)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private String getCollectorForwardingContent() {
