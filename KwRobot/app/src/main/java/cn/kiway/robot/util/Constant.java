@@ -68,8 +68,8 @@ public class Constant {
         qas.put("[动画表情]", "暂不支持动画表情咨询。");
     }
 
-    public static final String BACK_DOOR2 = "开维一本万利";
-    public static final String BACK_DOOR3 = "开维前程似锦";
+    public static final String BACK_DOOR1 = "开维一本万利";
+    public static final String BACK_DOOR2 = "开维前程似锦";
 
     private static final String BACK_DOOR4 = "清理僵尸粉";
     private static final String BACK_DOOR5 = "查询好友数量";
@@ -109,8 +109,8 @@ public class Constant {
     static Map<String, Integer> backdoors = new LinkedHashMap<>();
 
     static {
+        backdoors.put(BACK_DOOR1, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR2, Action.TYPE_BACK_DOOR);
-        backdoors.put(BACK_DOOR3, Action.TYPE_BACK_DOOR);
 
         backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
         backdoors.put(BACK_DOOR5, Action.TYPE_GET_ALL_FRIENDS);

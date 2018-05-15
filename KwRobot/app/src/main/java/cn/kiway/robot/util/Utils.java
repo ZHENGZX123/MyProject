@@ -40,8 +40,8 @@ import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
 import static cn.kiway.robot.KWApplication.consumeUtil;
 import static cn.kiway.robot.util.Constant.APPID;
+import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
-import static cn.kiway.robot.util.Constant.BACK_DOOR3;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
@@ -374,7 +374,7 @@ public class Utils {
             return 0;
         }
         //1.直接匹配的
-        boolean fastCheck = content.equals(BACK_DOOR2) || content.equals(BACK_DOOR3);
+        boolean fastCheck = content.equals(BACK_DOOR1) || content.equals(BACK_DOOR2);
         if (fastCheck) {
             return backdoors.get(content);
         }
@@ -415,6 +415,23 @@ public class Utils {
         String[] targets = targetText.split("\\|");
         for (String s : targets) {
             if (text.contains(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public static boolean aEqualsB(String text, String targetText) {
+        if (TextUtils.isEmpty(text) || TextUtils.isEmpty(targetText)) {
+            return false;
+        }
+        if (!targetText.contains("|")) {
+            return false;
+        }
+        String[] targets = targetText.split("\\|");
+        for (String s : targets) {
+            if (text.equals(s)) {
                 return true;
             }
         }
