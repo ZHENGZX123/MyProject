@@ -41,7 +41,6 @@ public class Constant {
     public static final String NODE_TEXTVIEW = "android.widget.TextView";
     public static final String NODE_BUTTON = "android.widget.Button";
     public static final String NODE_EDITTEXT = "android.widget.EditText";
-    public static final String NODE_LISTVIEW = "android.widget.ListView";
     public static final String NODE_IMAGEVIEW = "android.widget.ImageView";
     public static final String NODE_FRAMELAYOUT = "android.widget.FrameLayout";
     public static final String NODE_RELATIVELAYOUT = "android.widget.RelativeLayout";
