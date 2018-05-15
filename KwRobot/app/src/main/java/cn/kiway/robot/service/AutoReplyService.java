@@ -444,15 +444,44 @@ public class AutoReplyService extends AccessibilityService {
                     userIds.add(topic);
 
                     pushMessageVo.setUserId(userIds);
-                    pushMessageVo.setSenderId(wxNo);// userid imei
+                    pushMessageVo.setSenderId(wxNo);
                     pushMessageVo.setPushType("zbus");
                     pushMessageVo.setInstallationId(installationId);
 
                     Log.d("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
 
-                    sendUtil = new RabbitMQUtils(Constant.host, topic, topic, port);
+                    if (sendUtil == null) {
+                        sendUtil = new RabbitMQUtils(Constant.host, topic, topic, port);
+                    }
                     sendUtil.sendMsg(pushMessageVo);
-                    //ZbusUtils.sendMsg(topic, pushMessageVo);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    public synchronized void sendMsgToServer2() {
+        new Thread() {
+            @Override
+            public void run() {
+                Log.d("test", "sendMsgToServer2");
+                try {
+                    String topic = "kiway_wx_reply_result_react";
+                    String msg = new JSONObject()
+                            .put("cmd", "sendFriendCircleReplyCmd")
+                            .put("id", "4d65cd6es6w5")
+                            .put("type", "sendFriendCircleReplyCmd")
+                            .put("token", "12345")
+                            .toString();
+
+                    Log.d("test", "msg = " + msg);
+
+                    if (sendUtil == null) {
+                        sendUtil = new RabbitMQUtils(Constant.host, topic, topic, port);
+                    }
+                    sendUtil.sendMsgs(msg);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -869,7 +898,7 @@ public class AutoReplyService extends AccessibilityService {
                                                 addMissingFish();
                                             } else if ((actionType == TYPE_FIX_NICKNAME && isMe()) || actionType == TYPE_FIX_ICON) {
                                                 //我-个人信息
-                                                updateMyNicknameOrIcon(actionType, url);
+                                                fixMyNicknameOrIcon(actionType, url);
                                             } else if (actionType == TYPE_NEARBY_PEOPLE) {
                                                 addNearbyPeople(finalContent);
                                             } else {
@@ -955,7 +984,7 @@ public class AutoReplyService extends AccessibilityService {
                                                     mHandler.postDelayed(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            findTargetNode(NODE_EDITTEXT, content, CLICK_NONE);
+                                                            findTargetNode(NODE_EDITTEXT, content);
                                                             findTargetNode(NODE_TEXTVIEW, "发布|发表", CLICK_SELF);
                                                             mHandler.postDelayed(new Runnable() {
                                                                 @Override
@@ -1005,7 +1034,7 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-    private void updateMyNicknameOrIcon(int actionType, String url) {
+    private void fixMyNicknameOrIcon(int actionType, String url) {
         woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
 
         new Thread() {
@@ -1059,15 +1088,20 @@ public class AutoReplyService extends AccessibilityService {
                                                 Log.d("test", "content = " + content);
                                                 JSONObject o = new JSONObject(content);
                                                 String newName = o.optString("newName");
-                                                int length = getTextLengthInEditText(1);
+                                                int length = getTextLengthInEditText(1, newName);
                                                 for (int i = 0; i < length; i++) {
                                                     RootCmd.execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                                 }
-                                                findTargetNode(NODE_EDITTEXT, newName);
+                                                if (length != -1) {
+                                                    findTargetNode(NODE_EDITTEXT, newName);
+                                                }
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        findTargetNode(NODE_TEXTVIEW, "保存", CLICK_SELF);
+                                                        boolean find = findTargetNode(NODE_TEXTVIEW, "保存", CLICK_SELF);
+                                                        if (find) {
+                                                            getSharedPreferences("kiway", 0).edit().putString("name", newName).commit();
+                                                        }
                                                         mHandler.postDelayed(new Runnable() {
                                                             @Override
                                                             public void run() {
@@ -1494,9 +1528,8 @@ public class AutoReplyService extends AccessibilityService {
                                 mFindTargetNode = null;
                                 sureButton = null;
                                 find = findFriendListView(getRootInActiveWindow());
-
                             } else if (actionType == TYPE_ADD_FRIEND) {
-                                find = findTargetPeople2(getRootInActiveWindow(), "微信号/QQ号/手机号", actionType);
+                                find = findTargetPeople2("微信号/QQ号/手机号", actionType);
                             }
                             if (!find) {
                                 release();
@@ -1570,11 +1603,13 @@ public class AutoReplyService extends AccessibilityService {
 
                                                 //1.申请语句，这里要先点一下删除。
                                                 if (!TextUtils.isEmpty(content)) {
-                                                    int length = getTextLengthInEditText(1);
+                                                    int length = getTextLengthInEditText(1, content);
                                                     for (int i = 0; i < length; i++) {
                                                         RootCmd.execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                                     }
-                                                    findTargetNode(NODE_EDITTEXT, content);
+                                                    if (length != -1) {
+                                                        findTargetNode(NODE_EDITTEXT, content);
+                                                    }
                                                 }
                                                 //2.备注
                                                 findTargetNode(NODE_EDITTEXT, 2, Utils.getParentRemark(getApplicationContext()));
@@ -2170,7 +2205,7 @@ public class AutoReplyService extends AccessibilityService {
                         @Override
                         public void run() {
                             Log.d("test", "=============findTargetPeople2==============");
-                            boolean find = findTargetPeople2(getRootInActiveWindow(), finalSender, type);
+                            boolean find = findTargetPeople2(finalSender, type);
                             if (!find) {
                                 Log.d("test", "findTargetPeople2 failure");
                                 release();
@@ -2302,100 +2337,117 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     //1聊天 其他：actionType
-    private boolean findTargetPeople2(AccessibilityNodeInfo rootNode, String forwardto, int type) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            //equals
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().contains(forwardto)) {
-                Log.d("test", "click targetPeople = " + forwardto);
-                AccessibilityNodeInfo parent = nodeInfo.getParent();
-                parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (type == 1) {
-                            //开始聊天
-                            doChatByActionType();
-                        } else if (type == TYPE_CLEAR_ZOMBIE_FAN) {
-                            //清粉
-                            findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
-                            if (mFindTargetNode == null) {
+    private boolean findTargetPeople2(String forwardto, int type) {
+        findTargetNode(NODE_TEXTVIEW, forwardto, CLICK_PARENT);
+        if (mFindTargetNode == null) {
+            return false;
+        }
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (type == 1) {
+                    //开始聊天
+                    doChatByActionType();
+                } else if (type == TYPE_CLEAR_ZOMBIE_FAN) {
+                    //清粉
+                    findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
+                    if (mFindTargetNode == null) {
+                        currentZombie.cleared = true;
+                        return;
+                    }
+                    mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            boolean find = findTargetNode(NODE_TEXTVIEW, currentZombie.nickname, CLICK_PARENT);
+                            if (!find) {
                                 currentZombie.cleared = true;
                                 return;
                             }
-                            mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    boolean find = findTargetPeople4(getRootInActiveWindow(), currentZombie.nickname);
-                                    if (!find) {
+                                    findTargetNode(NODE_IMAGEBUTTON, 1);
+                                    if (mFindTargetNode == null) {
                                         currentZombie.cleared = true;
+                                        return;
                                     }
-                                }
-                            }, 2000);
-                        } else if (type == TYPE_ADD_GROUP_PEOPLE
-                                || type == TYPE_DELETE_GROUP_PEOPLE
-                                || type == TYPE_FIX_GROUP_NAME
-                                || type == TYPE_FIX_GROUP_NOTICE) {
-                            findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
-                            if (mFindTargetNode == null) {
-                                release();
-                                return;
-                            }
-                            mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-
-                            mHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (type == TYPE_ADD_GROUP_PEOPLE || type == TYPE_DELETE_GROUP_PEOPLE) {
-                                        addOrDeleteGroupPeople(type);
-                                    } else if (type == TYPE_FIX_GROUP_NOTICE || type == TYPE_FIX_GROUP_NAME) {
-                                        String target = type == TYPE_FIX_GROUP_NAME ? "群聊名称" : "群公告";
-                                        boolean find = findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT);
-                                        if (!find) {
-                                            release();
-                                            return;
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            boolean find = findTargetNode(NODE_TEXTVIEW, "删除", CLICK_PARENT);
+                                            if (find) {
+                                                mHandler.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        findTargetNode(NODE_BUTTON, "删除", CLICK_SELF);
+                                                        mHandler.postDelayed(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                currentZombie.cleared = true;
+                                                            }
+                                                        }, 3000);
+                                                    }
+                                                }, 2000);
+                                            } else {
+                                                currentZombie.cleared = true;
+                                            }
                                         }
-                                        fixGroupNameOrNotice();
-                                    }
+                                    }, 2000);
                                 }
-                            }, 2000);
-                        } else if (type == TYPE_GROUP_CHAT) {
-                            try {
-                                String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
-                                JSONObject o = new JSONObject(content);
-                                String text = o.optString("content");
-                                sendTextOnly2(text, true);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        } else if (type == TYPE_AT_GROUP_PEOPLE) {
-                            //循环开始艾特人
-                            startAtPeople();
-                        } else if (type == TYPE_GET_ALL_FRIENDS) {
-                            sendTextOnly2("好友数量：" + Utils.getParentRemark(getApplication()), true);
-                        } else if (type == TYPE_ADD_FRIEND) {
-                            clickSomeWhere(nodeInfo);
-                            startAddFriend();
-                        } else if (type == TYPE_FIX_NICKNAME) {
-                            fixFriendNickname(forwardto);
+                            }, 3000);
                         }
+                    }, 2000);
+                } else if (type == TYPE_ADD_GROUP_PEOPLE
+                        || type == TYPE_DELETE_GROUP_PEOPLE
+                        || type == TYPE_FIX_GROUP_NAME
+                        || type == TYPE_FIX_GROUP_NOTICE) {
+                    findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
+                    if (mFindTargetNode == null) {
+                        release();
+                        return;
                     }
-                }, 3000);
-                return true;
+                    mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (type == TYPE_ADD_GROUP_PEOPLE || type == TYPE_DELETE_GROUP_PEOPLE) {
+                                addOrDeleteGroupPeople(type);
+                            } else if (type == TYPE_FIX_GROUP_NOTICE || type == TYPE_FIX_GROUP_NAME) {
+                                String target = type == TYPE_FIX_GROUP_NAME ? "群聊名称" : "群公告";
+                                boolean find = findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT);
+                                if (!find) {
+                                    release();
+                                    return;
+                                }
+                                fixGroupNameOrNotice();
+                            }
+                        }
+                    }, 2000);
+                } else if (type == TYPE_GROUP_CHAT) {
+                    try {
+                        String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                        JSONObject o = new JSONObject(content);
+                        String text = o.optString("content");
+                        sendTextOnly2(text, true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else if (type == TYPE_AT_GROUP_PEOPLE) {
+                    //循环开始艾特人
+                    startAtPeople();
+                } else if (type == TYPE_GET_ALL_FRIENDS) {
+                    sendTextOnly2("好友数量：" + Utils.getParentRemark(getApplication()), true);
+                } else if (type == TYPE_ADD_FRIEND) {
+                    clickSomeWhere(mFindTargetNode);
+                    startAddFriend();
+                } else if (type == TYPE_FIX_NICKNAME) {
+                    fixFriendNickname(forwardto);
+                }
             }
-            if (findTargetPeople2(nodeInfo, forwardto, type)) {
-                return true;
-            }
-        }
-        return false;
+        }, 3000);
+        return true;
     }
 
     private void fixGroupNameOrNotice() {
@@ -2413,15 +2465,19 @@ public class AutoReplyService extends AccessibilityService {
                             @Override
                             public void run() {
                                 //1.先执行删除键
-                                int length = getTextLengthInEditText(1);
+                                int length = getTextLengthInEditText(1, text);
                                 for (int i = 0; i < length; i++) {
                                     execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                 }
                                 //2.再粘贴上content
+                                if (length != -1) {
+                                    findTargetNode(NODE_EDITTEXT, text);
+                                }
                                 doFixGroupNameOrNotice(text);
                             }
                         }, 2000);
                     } else {
+                        findTargetNode(NODE_EDITTEXT, text);
                         doFixGroupNameOrNotice(text);
                     }
                 } catch (Exception e) {
@@ -2470,11 +2526,13 @@ public class AutoReplyService extends AccessibilityService {
                                             Log.d("test", "content = " + content);
                                             JSONObject o = new JSONObject(content);
                                             String newName = o.optString("newName");
-                                            int length = getTextLengthInEditText(1);
+                                            int length = getTextLengthInEditText(1, newName);
                                             for (int i = 0; i < length; i++) {
                                                 execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                             }
-                                            findTargetNode(NODE_EDITTEXT, newName);
+                                            if (length != -1) {
+                                                findTargetNode(NODE_EDITTEXT, newName);
+                                            }
                                             boolean find = findTargetNode(NODE_TEXTVIEW, "完成", CLICK_SELF);
                                             mHandler.postDelayed(new Runnable() {
                                                 @Override
@@ -2644,20 +2702,27 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 } else if (className.equals(NODE_EDITTEXT)) {
                     //根据nodeIndex匹配
-                    if (!TextUtils.isEmpty(targetText) && (nodeIndex == targetIndex)) {
-                        Bundle arguments = new Bundle();
-                        arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
-                                AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
-                        arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN,
-                                true);
-                        nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY,
-                                arguments);
-                        nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                        ClipData clip = ClipData.newPlainText("label", targetText);
-                        ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                        clipboardManager.setPrimaryClip(clip);
-                        nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
-                        return true;
+                    mFindTargetNode = nodeInfo;
+                    if (targetIndex == Integer.MAX_VALUE) {
+                        continue;
+                    } else {
+                        if (nodeIndex == targetIndex) {
+                            if (!TextUtils.isEmpty(targetText)) {
+                                Bundle arguments = new Bundle();
+                                arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
+                                        AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
+                                arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN,
+                                        true);
+                                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY,
+                                        arguments);
+                                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+                                ClipData clip = ClipData.newPlainText("label", targetText);
+                                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                clipboardManager.setPrimaryClip(clip);
+                                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
+                            }
+                            return true;
+                        }
                     }
                 } else if (className.equals(NODE_LISTVIEW)
                         || className.equals(NODE_IMAGEVIEW)
@@ -2684,7 +2749,6 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void doFixGroupNameOrNotice(String text) {
-        findTargetNode(NODE_EDITTEXT, text);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -2709,43 +2773,18 @@ public class AutoReplyService extends AccessibilityService {
         }, 1000);
     }
 
-    private int edittextCount;
-    private AccessibilityNodeInfo editTextNode;
-
-    public int getTextLengthInEditText(int index) {
-        edittextCount = 0;
-        editTextNode = null;
-        findInputEditText(getRootInActiveWindow(), index);
-        if (editTextNode == null) {
+    public int getTextLengthInEditText(int index, String compare) {
+        findTargetNode(NODE_EDITTEXT, index);
+        if (mFindTargetNode == null) {
             return 0;
         }
-        String text = editTextNode.getText().toString();
+        String text = mFindTargetNode.getText().toString();
+        if (text.equals(compare)) {
+            return -1;
+        }
         int length = text.length();
         Log.d("test", "text = " + text + " length = " + length);
         return length;
-    }
-
-    private boolean findInputEditText(AccessibilityNodeInfo rootNode, int index) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.EditText")) {
-                edittextCount++;
-                if (edittextCount == index) {
-                    editTextNode = nodeInfo;
-                    return true;
-                }
-            }
-            if (findInputEditText(nodeInfo, index)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void addOrDeleteGroupPeople(int type) {
@@ -2767,39 +2806,6 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
         }, 2000);
-    }
-
-    private int imageViewIndex;
-
-
-    private boolean findTargetPeople4(AccessibilityNodeInfo rootNode, String forwardto) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals(forwardto)) {
-                AccessibilityNodeInfo parent = nodeInfo.getParent();
-                parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        boolean find = findTopRightButton(getRootInActiveWindow(), true);
-                        if (!find) {
-                            currentZombie.cleared = true;
-                        }
-                    }
-                }, 3000);
-                return true;
-            }
-            if (findTargetPeople4(nodeInfo, forwardto)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void doLongClickLastMsg() {
@@ -2995,179 +3001,61 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 Log.d("test", "=============findTargetPeople==============");
-                boolean find = findTargetPeople(forwardto, share);
+                boolean find = findTargetNode(NODE_TEXTVIEW, forwardto, CLICK_PARENT);
                 if (!find) {
-                    Log.d("test", "findTargetPeople failure");
                     release();
+                    return;
                 }
-            }
-        }, 2000);
-        return true;
-    }
-
-    private boolean findTargetPeople(String targetText, boolean share) {
-        boolean find = findTargetNode(NODE_TEXTVIEW, targetText, CLICK_PARENT);
-        if (!find) {
-            return false;
-        }
-
-        //弹出发送框框
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (share) {
-                    //分享
-                    findTargetNode(NODE_BUTTON, "分享", CLICK_SELF);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            release();
-                        }
-                    }, 2000);
-                } else {
-                    //转发
-                    int actionType = actions.get(currentActionID).actionType;
-                    if (actionType == TYPE_COLLECTOR_FORWARDING) {
-                        //这里要额外做一步，找到文本框并粘贴内容
-                        String content = getCollectorForwardingContent();
-                        boolean find = findTargetNode(NODE_EDITTEXT, content);
-                        if (!find) {
-                            Log.d("test", "粘贴不上，不发过去");
-                            release();
-                            return;
-                        }
-                    }
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            boolean find = findTargetNode(NODE_BUTTON, "发送", CLICK_SELF);
-                            if (!find) {
-                                release();
-                                return;
-                            }
+                //弹出发送框框
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (share) {
+                            //分享
+                            findTargetNode(NODE_BUTTON, "分享", CLICK_SELF);
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     release();
                                 }
-                            }, 4000);
-                        }
-                    }, 2000);
-                }
-            }
-        }, 3000);
-
-        return true;
-    }
-
-    private boolean findTopRightButton(AccessibilityNodeInfo rootNode, boolean clearZombie) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (clearZombie) {
-                            mHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    boolean find = findTargetNode(NODE_TEXTVIEW, "删除", CLICK_PARENT);
-                                    if (find) {
-                                        mHandler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                findTargetNode(NODE_BUTTON, "删除", CLICK_SELF);
-                                                mHandler.postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        currentZombie.cleared = true;
-                                                    }
-                                                }, 3000);
-                                            }
-                                        }, 2000);
-                                    } else {
-                                        currentZombie.cleared = true;
-                                    }
-                                }
                             }, 2000);
                         } else {
-                            boolean find = findTargetNode(NODE_TEXTVIEW, "分享到朋友圈", CLICK_PARENT);
+                            //转发
+                            int actionType = actions.get(currentActionID).actionType;
+                            if (actionType == TYPE_COLLECTOR_FORWARDING) {
+                                //这里要额外做一步，找到文本框并粘贴内容
+                                String content = getCollectorForwardingContent();
+                                boolean find = findTargetNode(NODE_EDITTEXT, content);
+                                if (!find) {
+                                    Log.d("test", "粘贴不上，不发过去");
+                                    release();
+                                    return;
+                                }
+                            }
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (find) {
-                                        //输入：这一刻的想法
-                                        String remark = getSharedPreferences("FCremark", 0).getString("FCremark", "");
-                                        Log.d("test", "--------------------findMindEditText----------");
-                                        boolean find = findMindEditText(getRootInActiveWindow(), remark);
-                                        if (!find) {
+                                    boolean find = findTargetNode(NODE_BUTTON, "发送", CLICK_SELF);
+                                    if (!find) {
+                                        release();
+                                        return;
+                                    }
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
                                             release();
                                         }
-                                    } else {
-                                        release();
-                                    }
+                                    }, 4000);
                                 }
-                            }, 3000);
+                            }, 2000);
                         }
                     }
-                }, 2000);
-                return true;
-            }
-            if (findTopRightButton(nodeInfo, clearZombie)) {
-                return true;
-            }
-        }
-        return false;
-    }
+                }, 3000);
 
-    private boolean findMindEditText(AccessibilityNodeInfo rootNode, String mind) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.EditText")) {
-                Bundle arguments = new Bundle();
-                arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
-                        AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
-                arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN, true);
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY, arguments);
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                ClipData clip = ClipData.newPlainText("label", mind);
-                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                clipboardManager.setPrimaryClip(clip);
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
 
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("test", "----------findSendImageButton------------------");
-                        findTargetNode(NODE_TEXTVIEW, "发布|发表", CLICK_SELF);
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                release();
-                            }
-                        }, 3000);
-                    }
-                }, 2000);
-                return true;
             }
-            if (findMindEditText(nodeInfo, mind)) {
-                return true;
-            }
-        }
-        return false;
+        }, 2000);
+        return true;
     }
 
     //---------------------------发送文字----------------
@@ -3211,25 +3099,14 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                Log.d("test", "sendTextOnly is called");
                 boolean find = findTargetNode(NODE_EDITTEXT, reply);
-                Log.d("test", "findInputEditText = " + find);
                 if (!find) {
                     return;
                 }
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
-
-                        List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByText("发送");
-                        if (list != null && list.size() > 0) {
-                            for (AccessibilityNodeInfo n : list) {
-                                if (n.getClassName().equals("android.widget.Button") && n.isEnabled()) {
-                                    n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                }
-                            }
-                        }
+                        findTargetNode(NODE_BUTTON, "发送", CLICK_SELF);
                     }
                 }, 1000);
             }
@@ -3597,7 +3474,6 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 String nickname = currentZombie.nickname;
                 boolean find = findTargetNode(NODE_EDITTEXT, nickname);
-                Log.d("test", "findInputEditText = " + find);
                 if (!find) {
                     currentZombie.cleared = true;
                     return;
@@ -3605,10 +3481,8 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d("test", "=============findTargetPeople2==============");
-                        boolean find = findTargetPeople2(getRootInActiveWindow(), nickname, TYPE_CLEAR_ZOMBIE_FAN);
+                        boolean find = findTargetPeople2(nickname, TYPE_CLEAR_ZOMBIE_FAN);
                         if (!find) {
-                            Log.d("test", "findTargetPeople2 failure");
                             currentZombie.cleared = true;
                         }
                     }

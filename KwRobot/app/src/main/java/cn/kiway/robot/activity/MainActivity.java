@@ -446,13 +446,16 @@ public class MainActivity extends BaseActivity {
 //                "\"id\":9999,\"time\":1523342900085," +
 //                "\"content\":\"学位房\"}";
 //        AutoReplyService.instance.sendReplyImmediately(fakeRecv, false);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
-//                AutoReplyService.instance.getTextLengthInEditText(2);
-            }
-        }, 10000);
+
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
+//                //AutoReplyService.instance.getTextLengthInEditText(2);
+//            }
+//        }, 10000);
+
+        AutoReplyService.instance.sendMsgToServer2();
     }
 
     public void sharePic(View view) {
