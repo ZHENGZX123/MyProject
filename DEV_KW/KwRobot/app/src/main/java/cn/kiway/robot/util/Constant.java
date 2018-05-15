@@ -45,6 +45,7 @@ public class Constant {
     public static final String NODE_IMAGEVIEW = "android.widget.ImageView";
     public static final String NODE_FRAMELAYOUT = "android.widget.FrameLayout";
     public static final String NODE_RELATIVELAYOUT = "android.widget.RelativeLayout";
+    public static final String NODE_IMAGEBUTTON = "android.widget.ImageButton";
 
     //点击类型
     public static final int CLICK_NONE = Integer.MIN_VALUE;
@@ -87,7 +88,6 @@ public class Constant {
     private static final String BACK_DOOR17 = "修改头像";
     private static final String BACK_DOOR18 = "检查新版本";
     private static final String BACK_DOOR19 = "附近的人";
-
 
     //{"cmd": "群里拉人","groupName":"测试群","backdoor":true}
     //{"cmd": "漏网之鱼","backdoor":true}

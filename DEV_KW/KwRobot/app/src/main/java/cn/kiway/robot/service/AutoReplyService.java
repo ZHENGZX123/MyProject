@@ -108,6 +108,7 @@ import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.NODE_BUTTON;
 import static cn.kiway.robot.util.Constant.NODE_EDITTEXT;
 import static cn.kiway.robot.util.Constant.NODE_FRAMELAYOUT;
+import static cn.kiway.robot.util.Constant.NODE_IMAGEBUTTON;
 import static cn.kiway.robot.util.Constant.NODE_IMAGEVIEW;
 import static cn.kiway.robot.util.Constant.NODE_LISTVIEW;
 import static cn.kiway.robot.util.Constant.NODE_RELATIVELAYOUT;
@@ -229,7 +230,7 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 try {
                     JSONObject o = new JSONObject(recv.msg);
-                    //0425新增朋友圈
+                    //新增后台发的命令
                     if (o.has("type")) {
                         int type = o.getInt("type");
                         if (type == 1 || type == 2) {
@@ -241,7 +242,6 @@ public class AutoReplyService extends AccessibilityService {
                         }
                         return;
                     }
-
                     long id = o.optLong("id");
                     if (id == 0) {
                         Log.d("test", "没有id！！！");
@@ -1336,13 +1336,12 @@ public class AutoReplyService extends AccessibilityService {
                         targetNode = null;
                         hasTargetButton(getRootInActiveWindow(), "删除");
                         if (targetNode == null) {
-                            lastImageButton = null;
-                            findUserInfoButton(getRootInActiveWindow());
-                            if (lastImageButton == null) {
+                            findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
+                            if (mFindTargetNode == null) {
                                 release();
                                 return;
                             }
-                            lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -1775,13 +1774,12 @@ public class AutoReplyService extends AccessibilityService {
                                 release();
                             }
                         } else if (type == TYPE_CREATE_GROUP_CHAT) {
-                            lastImageButton = null;
-                            findUserInfoButton(getRootInActiveWindow());
-                            if (lastImageButton == null) {
+                            findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
+                            if (mFindTargetNode == null) {
                                 release();
                                 return;
                             }
-                            lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -2417,13 +2415,12 @@ public class AutoReplyService extends AccessibilityService {
                             doChatByActionType();
                         } else if (type == TYPE_CLEAR_ZOMBIE_FAN) {
                             //清粉
-                            lastImageButton = null;
-                            findUserInfoButton(getRootInActiveWindow());
-                            if (lastImageButton == null) {
+                            findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
+                            if (mFindTargetNode == null) {
                                 currentZombie.cleared = true;
                                 return;
                             }
-                            lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -2437,13 +2434,12 @@ public class AutoReplyService extends AccessibilityService {
                                 || type == TYPE_DELETE_GROUP_PEOPLE
                                 || type == TYPE_FIX_GROUP_NAME
                                 || type == TYPE_FIX_GROUP_NOTICE) {
-                            lastImageButton = null;
-                            findUserInfoButton(getRootInActiveWindow());
-                            if (lastImageButton == null) {
+                            findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
+                            if (mFindTargetNode == null) {
                                 release();
                                 return;
                             }
-                            lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
 
                             mHandler.postDelayed(new Runnable() {
                                 @Override
@@ -2526,13 +2522,12 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void fixFriendNickname(String friend) {
-        lastImageButton = null;
-        findUserInfoButton(getRootInActiveWindow());
-        if (lastImageButton == null) {
+        findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
+        if (mFindTargetNode == null) {
             release();
             return;
         }
-        lastImageButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -2570,10 +2565,23 @@ public class AutoReplyService extends AccessibilityService {
                                                 execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                             }
                                             findTargetNode(NODE_EDITTEXT, newName, CLICK_NONE);
-                                            boolean find = findFinishButton2(getRootInActiveWindow());
-                                            if (!find) {
-                                                release();
-                                            }
+                                            boolean find = findTargetNode(NODE_TEXTVIEW, "完成", CLICK_SELF);
+                                            mHandler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    if (find) {
+                                                        findTargetNode(NODE_BUTTON, "发布", CLICK_SELF);
+                                                        mHandler.postDelayed(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                release();
+                                                            }
+                                                        }, 2000);
+                                                    } else {
+                                                        release();
+                                                    }
+                                                }
+                                            }, 5000);
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
@@ -2667,18 +2675,18 @@ public class AutoReplyService extends AccessibilityService {
         return doFindTargetNode(getRootInActiveWindow(), className, targetIndex, null, CLICK_NONE);
     }
 
-    private boolean findTargetNode(String className, int targetIndex, String nodeText) {
+    private boolean findTargetNode(String className, int targetIndex, String targetText) {
         nodeIndex = 0;
         mFindTargetNode = null;
-        return doFindTargetNode(getRootInActiveWindow(), className, targetIndex, nodeText, CLICK_NONE);
+        return doFindTargetNode(getRootInActiveWindow(), className, targetIndex, targetText, CLICK_NONE);
     }
 
-    private boolean findTargetNode(String className, String nodeText, int clickType) {
+    private boolean findTargetNode(String className, String targetText, int clickType) {
         nodeIndex = 0;
-        return doFindTargetNode(getRootInActiveWindow(), className, 1, nodeText, clickType);
+        return doFindTargetNode(getRootInActiveWindow(), className, 1, targetText, clickType);
     }
 
-    private boolean doFindTargetNode(AccessibilityNodeInfo rootNode, String className, int targetIndex, String nodeText, int clickType) {
+    private boolean doFindTargetNode(AccessibilityNodeInfo rootNode, String className, int targetIndex, String targetText, int clickType) {
 
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -2690,7 +2698,7 @@ public class AutoReplyService extends AccessibilityService {
                 nodeIndex++;
 
                 if (className.equals(NODE_TEXTVIEW) || className.equals(NODE_BUTTON)) {
-                    if (TextUtils.isEmpty(nodeText)) {
+                    if (TextUtils.isEmpty(targetText)) {
                         //根据nodeIndex匹配
                         mFindTargetNode = nodeInfo;
                         if (targetIndex == Integer.MAX_VALUE) {
@@ -2703,13 +2711,13 @@ public class AutoReplyService extends AccessibilityService {
                     } else {
                         //根据nodeText匹配
                         CharSequence text = nodeInfo.getText();
-                        if (text != null && text.toString().contains(nodeText)) {//equals
+                        if (text != null && ((text.toString().contains(targetText)) || (Utils.aContainsB(text.toString(), targetText)))) {//equals
                             if (clickType == CLICK_SELF) {
                                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             } else if (clickType == CLICK_PARENT) {
                                 nodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             } else if (clickType == CLICK_NONE) {
-                                //donothing
+                                //do nothing
                             } else {
                                 rootNode.getChild(i + clickType).performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             }
@@ -2718,7 +2726,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 } else if (className.equals(NODE_EDITTEXT)) {
                     //根据nodeIndex匹配
-                    if (!TextUtils.isEmpty(nodeText) && (nodeIndex == targetIndex)) {
+                    if (!TextUtils.isEmpty(targetText) && (nodeIndex == targetIndex)) {
                         Bundle arguments = new Bundle();
                         arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
                                 AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
@@ -2727,7 +2735,7 @@ public class AutoReplyService extends AccessibilityService {
                         nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY,
                                 arguments);
                         nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                        ClipData clip = ClipData.newPlainText("label", nodeText);
+                        ClipData clip = ClipData.newPlainText("label", targetText);
                         ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                         clipboardManager.setPrimaryClip(clip);
                         nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
@@ -2737,6 +2745,7 @@ public class AutoReplyService extends AccessibilityService {
                         || className.equals(NODE_IMAGEVIEW)
                         || className.equals(NODE_FRAMELAYOUT)
                         || className.equals(NODE_RELATIVELAYOUT)
+                        || className.equals(NODE_IMAGEBUTTON)
                         ) {
                     //根据nodeIndex匹配
                     mFindTargetNode = nodeInfo;
@@ -2749,7 +2758,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }
             }
-            if (doFindTargetNode(nodeInfo, className, targetIndex, nodeText, clickType)) {
+            if (doFindTargetNode(nodeInfo, className, targetIndex, targetText, clickType)) {
                 return true;
             }
         }
@@ -2761,10 +2770,23 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                boolean find = findFinishButton2(getRootInActiveWindow());
-                if (!find) {
-                    release();
-                }
+                boolean find = findTargetNode(NODE_TEXTVIEW, "保存|发布|完成", CLICK_SELF);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (find) {
+                            findTargetNode(NODE_BUTTON, "发布", CLICK_SELF);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    release();
+                                }
+                            }, 2000);
+                        } else {
+                            release();
+                        }
+                    }
+                }, 5000);
             }
         }, 1000);
     }
@@ -2802,61 +2824,6 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
             if (findInputEditText(nodeInfo, index)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findFinishButton2(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getText() != null && (nodeInfo.getText().toString().equals("完成") || nodeInfo.getText().toString().equals("保存"))) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        boolean find = findPublishButtonInDialog(getRootInActiveWindow());
-                        if (!find) {
-                            release();
-                        }
-                    }
-                }, 5000);
-                return true;
-            }
-            if (findFinishButton2(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean findPublishButtonInDialog(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.Button") && nodeInfo.getText() != null && nodeInfo.getText().toString().equals("发布")) {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        release();
-                    }
-                }, 2000);
-                return true;
-            }
-            if (findPublishButtonInDialog(nodeInfo)) {
                 return true;
             }
         }
@@ -2911,27 +2878,6 @@ public class AutoReplyService extends AccessibilityService {
                 return true;
             }
             if (findTargetPeople4(nodeInfo, forwardto)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private AccessibilityNodeInfo lastImageButton;
-
-    private boolean findUserInfoButton(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
-                lastImageButton = nodeInfo;
-            }
-            if (findUserInfoButton(nodeInfo)) {
                 return true;
             }
         }
